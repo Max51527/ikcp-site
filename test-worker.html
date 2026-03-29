@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Diagnostic Worker IKCP</title></head>
+<body style="font-family:sans-serif;padding:40px;max-width:600px;margin:0 auto;">
+<h2>Diagnostic Cloudflare Worker</h2>
+<div id="log" style="background:#f5f5f5;padding:20px;border-radius:8px;font-size:13px;line-height:1.8;white-space:pre-wrap;">Cliquez sur le bouton pour lancer le diagnostic...</div>
+<br>
+<button onclick="runDiag()" style="padding:14px 28px;font-size:16px;cursor:pointer;background:#1f1a16;color:white;border:none;border-radius:8px;">Lancer le diagnostic</button>
+<script>
+var log = document.getElementById('log');
+function addLog(msg) { log.textContent += '\n' + msg; }
+
+async function runDiag() {
+    log.textContent = '=== DIAGNOSTIC WORKER IKCP ===\n';
+    var url = 'https://ikcp-chat.maxime-ead.workers.dev';
+    
+    // Test 1: OPTIONS (CORS)
+    addLog('\n[1] Test CORS (OPTIONS)...');
+    try {
+        var r1 = await fetch(url, {method:'OPTIONS'});
+        addLog('Status: ' + r1.status);
+        addLog('CORS: ' + (r1.headers.get('access-control-allow-origin') || 'MANQUANT'));
+        if (r1.status === 200) addLog('>>> CORS OK');
+        else addLog('>>> PROBLEME CORS - status ' + r1.status);
+    } catch(e) {
+        addLog('>>> ERREUR: ' + e.message);
+        addLog('>>> Le worker est probablement INACTIVE ou supprime');
+    }
+
+    // Test 2: POST simple
+    addLog('\n[2] Test POST message...');
+    try {
+        var r2 = await fetch(url, {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({message:'Bonjour', history:[]})
+        });
+        addLog('Status: ' + r2.status);
+        var data = await r2.text();
+        addLog('Reponse brute: ' + data.substring(0, 500));
+        
+        try {
+            var json = JSON.parse(data);
+            if (json.reply && !json.reply.includes('indisponible') && !json.reply.includes('Erreur')) {
+                addLog('\n>>> CHATBOT FONCTIONNE !');
+                addLog('>>> Reponse Claude: ' + json.reply);
+            } else if (json.reply && json.reply.includes('Erreur')) {
+                addLog('\n>>> WORKER ACTIF mais ERREUR API');
+                addLog('>>> Verifier ANTHROPIC_API_KEY dans Cloudflare Settings > Variables');
+            } else if (json.reply && json.reply.includes('indisponible')) {
+                addLog('\n>>> WORKER ACTIF mais API ECHOUE');
+                addLog('>>> Causes possibles:');
+                addLog('   1. Cle API invalide ou expiree');
+                addLog('   2. Variable mal nommee (doit etre ANTHROPIC_API_KEY)');
+                addLog('   3. Pas de credit sur le compte Anthropic');
+            } else {
+                addLog('\n>>> REPONSE INATTENDUE');
+            }
+        } catch(pe) {
+            addLog('\n>>> REPONSE NON-JSON - le worker ne renvoie pas du JSON');
+            addLog('>>> Le code du worker est probablement incorrect');
+        }
+    } catch(e) {
+        addLog('>>> ERREUR RESEAU: ' + e.message);
+        addLog('\n>>> DIAGNOSTIC: Le worker est INACTIVE ou le domaine n existe pas');
+        addLog('>>> SOLUTION: Aller dans Cloudflare > Workers > ikcp-chat > Deploy');
+    }
+
+    addLog('\n=== FIN DU DIAGNOSTIC ===');
+}
+</script>
+</body></html>
