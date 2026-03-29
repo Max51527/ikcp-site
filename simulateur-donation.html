@@ -56,6 +56,7 @@
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Donations < 15 ans déjà faites (€)</label><input type="number" class="inp" id="donations" value="0" step="10000" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Réduisent l'abattement disponible</div></div>
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Âge du donateur</label><input type="number" class="inp" id="age" value="55" step="1" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Détermine la valeur de la nue-propriété (art. 669 CGI)</div></div>
 </div>
+        <div style="text-align:center;margin-top:24px"><button class="btn" onclick="calculate()" style="padding:16px 48px;font-size:16px;letter-spacing:0.5px">Calculer mes droits de donation →</button></div>
         <div id="results" style="margin-top:32px;display:none">
             <div style="height:1px;background:var(--border);margin-bottom:28px"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
@@ -159,6 +160,6 @@ function calculate(){
     updateChart(droitsPP,droitsNP,'Pleine propriété','Nue-propriété');
     el('results').style.display='block';
 }
-calculate();
+//calculate(); // user clicks button
 </script>
 </body></html>

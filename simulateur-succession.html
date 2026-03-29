@@ -83,6 +83,11 @@
             </div>
         </div>
 
+        <!-- BOUTON CALCULER -->
+        <div style="text-align:center;margin-top:24px">
+            <button class="btn-primary" onclick="calculate()" style="padding:16px 48px;font-size:16px;letter-spacing:0.5px">Calculer mes droits de succession →</button>
+        </div>
+
         <!-- RESULTS -->
         <div id="results" style="margin-top:32px;display:none">
             <div style="height:1px;background:var(--border);margin-bottom:28px"></div>
@@ -196,7 +201,7 @@
     <div style="color:rgba(109,92,74,0.6);font-size:10px;margin-top:12px">© 2026 IKCP — IKIGAÏ Conseil Patrimonial · Ce simulateur est fourni à titre indicatif et ne constitue pas un conseil en investissement personnalisé.</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ══ Barème succession ligne directe — art. 777 CGI ══
 const TRANCHES = [
     {max:8072, taux:0.05, label:'5%'},
@@ -230,8 +235,6 @@ function calculate() {
     const don = parseInt(document.getElementById('donations').value) || 0;
 
     if (nE === 0) { document.getElementById('results').style.display = 'none'; return; }
-    updateChart(droitsTotalSans,droitsTotalAvec,'Sans anticipation','Avec stratégie');
-    document.getElementById('results').style.display = 'block';
 
     // Scénario 1: Sans anticipation (pas d'AV, pas de donation)
     const partSans = Math.max(0, (pat / nE) - ABAT_ENFANT + (don / nE));
@@ -239,9 +242,9 @@ function calculate() {
     const droitsTotalSans = droitsParEnfantSans * nE;
 
     // Scénario 2: Avec stratégie (AV optimisée + donations utilisées)
-    const avOptimal = Math.min(pat * 0.3, ABAT_AV * nE); // Max 30% en AV, plafonné aux abattements
+    const avOptimal = Math.min(pat * 0.3, ABAT_AV * nE);
     const patApresAV = pat - avOptimal;
-    const donOptimal = ABAT_ENFANT * nE; // Donations à hauteur des abattements
+    const donOptimal = ABAT_ENFANT * nE;
     const patApresDon = Math.max(0, patApresAV - donOptimal);
     const partAvec = Math.max(0, (patApresDon / nE) - ABAT_ENFANT);
     const droitsParEnfantAvec = calcDroits(partAvec);
@@ -277,6 +280,12 @@ function calculate() {
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px">${l.title}</div>
         <div style="font-size:11px;color:var(--muted);line-height:1.5">${l.desc}</div>
     </div>`).join('');
+
+    // Graphique comparatif
+    updateChart(droitsTotalSans, droitsTotalAvec, 'Sans anticipation', 'Avec stratégie');
+
+    // Afficher les résultats
+    document.getElementById('results').style.display = 'block';
 }
 
 function toggleOptin() {
@@ -307,5 +316,12 @@ async function sendToNotion() {
         if (WEBHOOK_URL) {
             await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
         }
-    } catch<!-- ikcp.eu deploy 1774770980 -->
-<!-- force-deploy 1774789591 -->
+    } catch(e) { console.log('Webhook error'); }
+
+    document.getElementById('optinForm').style.display = 'none';
+    document.getElementById('optinConfirm').style.display = 'block';
+}
+</script>
+
+</body>
+</html>

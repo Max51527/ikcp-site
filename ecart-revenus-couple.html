@@ -52,6 +52,7 @@
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Charges fixes mensuelles</label><input type="number" class="inp" id="charges" value="3200" step="100" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Crédit, loyer, assurances, éducation, alimentation</div></div>
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Épargne disponible (€)</label><input type="number" class="inp" id="epargne" value="25000" step="5000" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Livrets, comptes courants, fonds euros accessibles</div></div>
 </div>
+        <div style="text-align:center;margin-top:24px"><button class="btn" onclick="calculate()" style="padding:16px 48px;font-size:16px;letter-spacing:0.5px">Simuler l'impact →</button></div>
         <div id="results" style="margin-top:32px;display:none">
             <div style="height:1px;background:var(--border);margin-bottom:28px"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
@@ -150,6 +151,6 @@ function calculate(){
     updateChart(r1,r2,'Revenus conjoint 1','Revenus conjoint 2');
     el('results').style.display='block';
 }
-calculate();
+//calculate(); // user clicks button
 </script>
 </body></html>

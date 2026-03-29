@@ -52,6 +52,7 @@
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Crédit restant dû (€)</label><input type="number" class="inp" id="credit" value="100000" step="10000" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Capital restant dû sur le prêt</div></div>
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Nombre d'héritiers</label><input type="number" class="inp" id="enfants" value="2" step="1" oninput="calculate()"></div>
 </div>
+        <div style="text-align:center;margin-top:24px"><button class="btn" onclick="calculate()" style="padding:16px 48px;font-size:16px;letter-spacing:0.5px">Calculer l'impact fiscal →</button></div>
         <div id="results" style="margin-top:32px;display:none">
             <div style="height:1px;background:var(--border);margin-bottom:28px"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
@@ -150,6 +151,6 @@ function calculate(){
     updateChart(impactDeces,droitsSucc,'Bénéfice exceptionnel','Droits succession');
     el('results').style.display='block';
 }
-calculate();
+//calculate(); // user clicks button
 </script>
 </body></html>
