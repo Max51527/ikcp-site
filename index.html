@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
     <title>IKCP — Protéger ce que vous êtes en train de bâtir | Lyon · Annonay · Combloux · Megève</title>
     <meta name="description" content="IKCP — Spécialiste en protection patrimoniale. Parents, dirigeants, transmission : approche juridique, financière et fiscale en coordination avec notaires, avocats et experts-comptables. Lyon, Annonay, Combloux, Megève.">
     <meta property="og:title" content="IKCP — Protéger ce que vous êtes en train de bâtir">
@@ -481,19 +484,17 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             else if (lower.match(/rendez|rdv|contact|échange|maxime|calendly/)) responseText = demoResponses.rdv;
                             else responseText = demoResponses.default;
                         } else {
-                            // ── Mode production (proxy Claude API) ──
+                            // ── Mode production (proxy Claude API via Cloudflare Worker) ──
                             const response = await fetch(PROXY_URL, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    model: 'claude-sonnet-4-20250514',
-                                    max_tokens: 400,
-                                    system: SYSTEM_PROMPT,
-                                    messages: this.history.slice(-8)
+                                    message: userText,
+                                    history: this.history.slice(-8)
                                 })
                             });
                             const data = await response.json();
-                            responseText = data.content?.[0]?.text || data.error?.message || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
+                            responseText = data.reply || data.content?.[0]?.text || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
                         }
                         this.history.push({ role: 'assistant', content: responseText });
                         this.messages.push({ role: 'assistant', html: marked.parse(String(responseText)) });
