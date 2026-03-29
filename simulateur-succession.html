@@ -161,7 +161,7 @@ function envoyerOptin(){
     var p=document.getElementById('optPrenom').value;
     var e=document.getElementById('optEmail').value;
     if(!p||!e){alert('Remplissez prenom et email.');return;}
-    fetch('https://hook.eu1.make.com/9e3k7ijjddiwcx6ermn4reo7alarfny4',{
+    fetch('https://ikcp-prospect.maxime-ead.workers.dev',{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({source:'Simulateur Succession IKCP',prenom:p,email:e,r1:document.getElementById('resSans').textContent,r2:document.getElementById('resAvec').textContent,eco:document.getElementById('resEco').textContent,date:new Date().toISOString()}),
         mode:'no-cors'
