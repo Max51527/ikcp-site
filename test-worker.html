@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html><head><title>Test Worker IKCP</title></head>
+<body style="font-family:sans-serif;padding:40px;max-width:600px;margin:0 auto;">
+<h2>Test Cloudflare Worker — IKCP Chat</h2>
+<p>Ce fichier teste si le worker Cloudflare répond correctement.</p>
+<button onclick="testWorker()" style="padding:12px 24px;font-size:16px;cursor:pointer;background:#1f1a16;color:white;border:none;border-radius:8px;">Tester le worker</button>
+<pre id="result" style="margin-top:20px;padding:16px;background:#f5f5f5;border-radius:8px;white-space:pre-wrap;font-size:13px;">En attente du test...</pre>
+<script>
+async function testWorker() {
+    var r = document.getElementById('result');
+    r.textContent = 'Envoi en cours...';
+    try {
+        var res = await fetch('https://ikcp-chat.maxime-ead.workers.dev', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: 'Bonjour, quel est le seuil IFI ?', history: []})
+        });
+        r.textContent = 'Status: ' + res.status + '\n\n';
+        var data = await res.json();
+        r.textContent += 'Réponse:\n' + JSON.stringify(data, null, 2);
+    } catch(e) {
+        r.textContent = 'ERREUR: ' + e.message;
+    }
+}
+</script>
+</body></html>
