@@ -2,6 +2,8 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulateur Droits de Succession 2026 — Calcul Gratuit | IKCP</title>
     <meta name="description" content="Calculez vos droits de succession en 30 secondes. Barème officiel 2026, abattements par enfant, assurance-vie. Comparatif sans/avec anticipation. Gratuit, sans inscription.">
@@ -127,6 +129,7 @@
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px" id="leviers"></div>
             </div>
 
+            <div id="vizChart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:20px"></div>
             <!-- OPT-IN -->
             <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border)" id="optinBlock">
                 <div id="optinForm">
@@ -219,6 +222,7 @@ function calcDroits(partTaxable) {
 
 function fmt(n) { return n.toLocaleString('fr-FR') + ' €'; }
 
+function updateChart(v1,v2,l1,l2){var ch=document.getElementById("vizChart");if(!ch)return;var max=Math.max(v1,v2,1);var p1=Math.round(v1/max*100);var p2=Math.round(v2/max*100);ch.innerHTML="<div style=\"margin-bottom:10px\"><div style=\"display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px\"><span style=\"color:#dc2626;font-weight:600\">"+l1+"</span><span style=\"color:#dc2626\">"+fmt(v1)+"</span></div><div style=\"background:#fecaca;border-radius:6px;height:28px;overflow:hidden\"><div style=\"background:linear-gradient(90deg,#dc2626,#ef4444);height:100%;border-radius:6px;width:"+p1+"%;transition:width 0.8s ease;min-width:2px\"></div></div></div><div><div style=\"display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px\"><span style=\"color:#16a34a;font-weight:600\">"+l2+"</span><span style=\"color:#16a34a\">"+fmt(v2)+"</span></div><div style=\"background:#bbf7d0;border-radius:6px;height:28px;overflow:hidden\"><div style=\"background:linear-gradient(90deg,#16a34a,#22c55e);height:100%;border-radius:6px;width:"+p2+"%;transition:width 0.8s ease;min-width:2px\"></div></div></div>";}
 function calculate() {
     const pat = parseInt(document.getElementById('patrimoine').value) || 0;
     const nE = parseInt(document.getElementById('enfants').value) || 0;
@@ -226,6 +230,7 @@ function calculate() {
     const don = parseInt(document.getElementById('donations').value) || 0;
 
     if (nE === 0) { document.getElementById('results').style.display = 'none'; return; }
+    updateChart(droitsTotalSans,droitsTotalAvec,'Sans anticipation','Avec stratégie');
     document.getElementById('results').style.display = 'block';
 
     // Scénario 1: Sans anticipation (pas d'AV, pas de donation)

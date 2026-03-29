@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Succession Famille Recomposée — Simulateur | IKCP</title>
     <meta name="description" content="Famille recomposée : le conjoint ne reçoit qu'1/4 en pleine propriété. Simulez la répartition et découvrez comment protéger tout le monde.">
     <meta property="og:title" content="Succession Famille Recomposée — Simulateur | IKCP">
@@ -82,6 +84,8 @@
                 <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:white" id="ecoval">—</div>
                 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecosub"></div>
             </div>
+            
+            <div id="vizChart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:20px"></div>
             <div id="details" style="background:var(--light);border-radius:12px;padding:16px;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.8"></div>
             <div style="background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
                 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
@@ -136,6 +140,15 @@ async function sendOpt(){
 
 var TR=[{m:8072,t:.05},{m:12109,t:.1},{m:15932,t:.15},{m:552324,t:.2},{m:902838,t:.3},{m:1805677,t:.4},{m:1e15,t:.45}];
 function calcS(base){var d=0,p=0;for(var i=0;i<TR.length;i++){if(base<=TR[i].m){d+=(base-p)*TR[i].t;break;}d+=(TR[i].m-p)*TR[i].t;p=TR[i].m;}return Math.round(d);}
+
+function updateChart(v1, v2, label1, label2) {
+    var ch = document.getElementById('vizChart');
+    if (!ch) return;
+    var max = Math.max(v1, v2, 1);
+    var p1 = Math.round(v1/max*100);
+    var p2 = Math.round(v2/max*100);
+    ch.innerHTML = '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#dc2626;font-weight:600">'+label1+'</span><span style="color:#dc2626">'+fmt(v1)+'</span></div><div style="background:#fecaca;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#dc2626,#ef4444);height:100%;border-radius:6px;width:'+p1+'%;transition:width 0.8s ease;min-width:2px"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#16a34a;font-weight:600">'+label2+'</span><span style="color:#16a34a">'+fmt(v2)+'</span></div><div style="background:#bbf7d0;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#16a34a,#22c55e);height:100%;border-radius:6px;width:'+p2+'%;transition:width 0.8s ease;min-width:2px"></div></div></div>';
+}
 function calculate(){
     var pat=parseInt(el('patrimoine').value)||0,ec=parseInt(el('enfCommuns').value)||0,ea=parseInt(el('enfAutre').value)||0,av=parseInt(el('av').value)||0;
     var totalE=ec+ea;if(totalE===0)totalE=1;
@@ -151,6 +164,7 @@ function calculate(){
     show('r2val',fmt(conjointAvecAV));show('r2sub','succession + assurance-vie hors succession');show('r2extra','AV exonérée : '+fmt(avExo)+' (abattement 152 500 €)');
     show('ecoval',fmt(protSupp));show('ecosub','de protection supplémentaire pour le conjoint grâce à l\'assurance-vie');
     el('details').innerHTML='Conjoint : '+fmt(conjointPP)+' (loi seule) → '+fmt(conjointAvecAV)+' (avec AV)<br>Enfants communs ('+ec+') : '+fmt(partEnfant)+' chacun<br>Enfants autre union ('+ea+') : '+fmt(partEnfant)+' chacun<br>⚠️ En famille recomposée, le conjoint n\'a PAS droit à l\'usufruit total — seulement 1/4 en pleine propriété.';
+    updateChart(conjointPP,conjointAvecAV,'Conjoint (loi seule)','Conjoint avec AV');
     el('results').style.display='block';
 }
 calculate();

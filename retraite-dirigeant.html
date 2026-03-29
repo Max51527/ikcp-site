@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulateur Retraite Dirigeant / TNS 2026 | IKCP</title>
     <meta name="description" content="Dirigeant, TNS : quel sera votre niveau de vie à la retraite ? Taux de remplacement, écart à combler, effort d'épargne nécessaire.">
     <meta property="og:title" content="Simulateur Retraite Dirigeant / TNS 2026 | IKCP">
@@ -84,6 +86,8 @@
                 <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:white" id="ecoval">—</div>
                 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecosub"></div>
             </div>
+            
+            <div id="vizChart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:20px"></div>
             <div id="details" style="background:var(--light);border-radius:12px;padding:16px;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.8"></div>
             <div style="background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
                 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
@@ -137,6 +141,15 @@ async function sendOpt(){
 }
 
 var TAUX={tns:0.35,salarie:0.55,liberal:0.30};
+
+function updateChart(v1, v2, label1, label2) {
+    var ch = document.getElementById('vizChart');
+    if (!ch) return;
+    var max = Math.max(v1, v2, 1);
+    var p1 = Math.round(v1/max*100);
+    var p2 = Math.round(v2/max*100);
+    ch.innerHTML = '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#dc2626;font-weight:600">'+label1+'</span><span style="color:#dc2626">'+fmt(v1)+'</span></div><div style="background:#fecaca;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#dc2626,#ef4444);height:100%;border-radius:6px;width:'+p1+'%;transition:width 0.8s ease;min-width:2px"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#16a34a;font-weight:600">'+label2+'</span><span style="color:#16a34a">'+fmt(v2)+'</span></div><div style="background:#bbf7d0;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#16a34a,#22c55e);height:100%;border-radius:6px;width:'+p2+'%;transition:width 0.8s ease;min-width:2px"></div></div></div>';
+}
 function calculate(){
     var age=parseInt(el('age').value)||45,rev=parseInt(el('revenu').value)||0,statut=el('statut').value,ep=parseInt(el('epargne').value)||0;
     var taux=TAUX[statut]||0.35,pension=Math.round(rev*taux),ecart=rev-pension;
@@ -147,6 +160,7 @@ function calculate(){
     show('r2val',fmt(effortMois)+'/mois');show('r2sub','d\'épargne mensuelle pour combler l\'écart');show('r2extra',annees+' ans avant la retraite · Capital visé : '+fmt(capitalNec));
     show('ecoval',fmt(ecartMois)+'/mois');show('ecosub','de perte de revenus entre aujourd\'hui et la retraite');
     el('details').innerHTML='Revenus actuels : '+fmt(rev)+'/an → Pension estimée : '+fmt(pension)+'/an<br>Écart annuel : '+fmt(ecart)+' pendant ~20 ans de retraite<br>Capital nécessaire : '+fmt(capitalNec)+' − épargne existante '+fmt(ep)+' = '+fmt(Math.max(0,capitalNec-ep))+' à constituer<br>PER déductible : chaque euro versé réduit votre impôt de '+(statut==='liberal'||statut==='tns'?'41':'30')+'% (tranche marginale estimée)';
+    updateChart(rev,pension,'Revenus actuels','Pension estimée');
     el('results').style.display='block';
 }
 calculate();

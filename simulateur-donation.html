@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulateur Donation 2026 — Calcul Gratuit | IKCP</title>
     <meta name="description" content="Calculez les droits de donation 2026 : abattement 100 000 € par enfant, barème progressif, démembrement. Comparez donation vs succession.">
     <meta property="og:title" content="Simulateur Donation 2026 — Calcul Gratuit | IKCP">
@@ -86,6 +88,8 @@
                 <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:white" id="ecoval">—</div>
                 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecosub"></div>
             </div>
+            
+            <div id="vizChart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:20px"></div>
             <div id="details" style="background:var(--light);border-radius:12px;padding:16px;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.8"></div>
             <div style="background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
                 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
@@ -143,6 +147,15 @@ var ABATS={enfant:100000,petitenfant:31865,fratrie:15932,epoux:80724,autre:1594}
 var TR=[{m:8072,t:.05},{m:12109,t:.1},{m:15932,t:.15},{m:552324,t:.2},{m:902838,t:.3},{m:1805677,t:.4},{m:1e15,t:.45}];
 function calcD(base){var d=0,p=0;for(var i=0;i<TR.length;i++){if(base<=TR[i].m){d+=(base-p)*TR[i].t;break;}d+=(TR[i].m-p)*TR[i].t;p=TR[i].m;}return Math.round(d);}
 function nueProp(age){if(age<21)return 0.1;if(age<31)return 0.2;if(age<41)return 0.3;if(age<51)return 0.4;if(age<61)return 0.5;if(age<71)return 0.6;if(age<81)return 0.7;if(age<91)return 0.8;return 0.9;}
+
+function updateChart(v1, v2, label1, label2) {
+    var ch = document.getElementById('vizChart');
+    if (!ch) return;
+    var max = Math.max(v1, v2, 1);
+    var p1 = Math.round(v1/max*100);
+    var p2 = Math.round(v2/max*100);
+    ch.innerHTML = '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#dc2626;font-weight:600">'+label1+'</span><span style="color:#dc2626">'+fmt(v1)+'</span></div><div style="background:#fecaca;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#dc2626,#ef4444);height:100%;border-radius:6px;width:'+p1+'%;transition:width 0.8s ease;min-width:2px"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#16a34a;font-weight:600">'+label2+'</span><span style="color:#16a34a">'+fmt(v2)+'</span></div><div style="background:#bbf7d0;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#16a34a,#22c55e);height:100%;border-radius:6px;width:'+p2+'%;transition:width 0.8s ease;min-width:2px"></div></div></div>';
+}
 function calculate(){
     var m=parseInt(el('montant').value)||0,lien=el('lien').value,don=parseInt(el('donations').value)||0,age=parseInt(el('age').value)||55;
     var abat=Math.max(0,(ABATS[lien]||1594)-don);
@@ -154,6 +167,7 @@ function calculate(){
     show('r2val',fmt(droitsNP));show('r2sub','nue-propriété = '+fmt(valNP)+' ('+Math.round(np*100)+'% à '+age+' ans)');show('r2extra','Taux effectif : '+(m>0?pct(droitsNP/m):'0%'));
     show('ecoval',fmt(eco));show('ecosub','en transmettant la nue-propriété plutôt que la pleine propriété');
     el('details').innerHTML='Abattement disponible : '+fmt(abat)+' ('+lien+')<br>Barème nue-propriété art. 669 CGI : '+Math.round(np*100)+'% à '+age+' ans<br>Abattement renouvelable dans '+(15-0)+' ans';
+    updateChart(droitsPP,droitsNP,'Pleine propriété','Nue-propriété');
     el('results').style.display='block';
 }
 calculate();

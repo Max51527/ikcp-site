@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Écart de Revenus dans le Couple — Simulateur Impact Décès | IKCP</title>
     <meta name="description" content="Que se passe-t-il si le conjoint qui gagne le plus disparaît ? Simulez la chute de niveau de vie et le capital prévoyance nécessaire.">
     <meta property="og:title" content="Écart de Revenus dans le Couple — Simulateur Impact Décès | IKCP">
@@ -82,6 +84,8 @@
                 <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:white" id="ecoval">—</div>
                 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecosub"></div>
             </div>
+            
+            <div id="vizChart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:20px"></div>
             <div id="details" style="background:var(--light);border-radius:12px;padding:16px;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.8"></div>
             <div style="background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
                 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
@@ -134,6 +138,15 @@ async function sendOpt(){
     el('optF').style.display='none';el('optCheck').parentElement.style.display='none';el('optOK').style.display='block';
 }
 
+
+function updateChart(v1, v2, label1, label2) {
+    var ch = document.getElementById('vizChart');
+    if (!ch) return;
+    var max = Math.max(v1, v2, 1);
+    var p1 = Math.round(v1/max*100);
+    var p2 = Math.round(v2/max*100);
+    ch.innerHTML = '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#dc2626;font-weight:600">'+label1+'</span><span style="color:#dc2626">'+fmt(v1)+'</span></div><div style="background:#fecaca;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#dc2626,#ef4444);height:100%;border-radius:6px;width:'+p1+'%;transition:width 0.8s ease;min-width:2px"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:#16a34a;font-weight:600">'+label2+'</span><span style="color:#16a34a">'+fmt(v2)+'</span></div><div style="background:#bbf7d0;border-radius:6px;height:28px;overflow:hidden"><div style="background:linear-gradient(90deg,#16a34a,#22c55e);height:100%;border-radius:6px;width:'+p2+'%;transition:width 0.8s ease;min-width:2px"></div></div></div>';
+}
 function calculate(){
     var r1=parseInt(el('rev1').value)||0,r2=parseInt(el('rev2').value)||0,ch=parseInt(el('charges').value)||0,ep=parseInt(el('epargne').value)||0;
     var total=r1+r2,pctR1=total>0?Math.round(r1/total*100):0;
@@ -145,6 +158,7 @@ function calculate(){
     show('r2val',mois>=999?'Autonome':mois+' mois');show('r2sub',mois>=999?'Le conjoint 2 couvre les charges seul':'avant épuisement de l\'épargne');show('r2extra',resteApres<0?'Déficit mensuel : '+fmt(Math.abs(resteApres))+'/mois':'');
     show('ecoval',fmt(capitalNec));show('ecosub',capitalNec>0?'pour maintenir le niveau de vie pendant 15 ans':'Pas de besoin immédiat — mais surveillez régulièrement');
     el('details').innerHTML='Revenus du foyer : '+fmt(total*12)+'/an<br>Part du conjoint 1 : '+pctR1+'% ('+fmt(r1)+'/mois)<br>Charges fixes : '+fmt(ch)+'/mois<br>Coût prévoyance estimé : '+(capitalNec>0?'~'+fmt(Math.round(capitalNec/12/15*0.003*12))+'/an':'non nécessaire');
+    updateChart(r1,r2,'Revenus conjoint 1','Revenus conjoint 2');
     el('results').style.display='block';
 }
 calculate();
