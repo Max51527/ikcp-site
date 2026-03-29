@@ -99,4 +99,4 @@ async function sendOpt(){
     var p=document.getElementById('optP').value,e=document.getElementById('optE').value;
     if(!p||!e)return;
     var W='YOUR_MAKE_WEBHOOK_URL';
-    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Dirigeant TNS Ardèche IKCP',prenom:p,email:e,date:new Date().toISOString()}),mode:'no-cors'})}catch(x){}
+    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Dirigeant TNS Ardèche IKCP',prenom:p,email:e,date:new Date().toISOString()}),mode:'no-cors'})}catch(x){}<!-- ikcp.eu deploy 1774770980 -->

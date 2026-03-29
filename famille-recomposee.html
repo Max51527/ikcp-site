@@ -72,4 +72,4 @@ async function sendOpt(){
     const p=document.getElementById('optP').value,e=document.getElementById('optE').value;
     if(!p||!e)return;
     const W='YOUR_MAKE_WEBHOOK_URL';
-    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Simulateur Famille Recomposée IKCP',prenom:p,email:e,date:new Date().toISOString()}),mode:'no-cors'})}catch(e){}
+    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Simulateur Famille Recomposée IKCP',prenom:p,email:e,date:new Date().toISOString()}),mode:'no-cors'})}catch(e){}<!-- ikcp.eu deploy 1774770980 -->
