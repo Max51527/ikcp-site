@@ -92,5 +92,3 @@ self.addEventListener('fetch', event => {
     })
   );
 });
-<!-- ikcp.eu deploy 1774770980 -->
-<!-- deploy-1774790692 -->
