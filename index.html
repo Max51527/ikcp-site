@@ -450,16 +450,26 @@ RÈGLES ABSOLUES :
 
 TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Comme un médecin de famille du patrimoine.`;
 
-            // ══ Proxy endpoint — à remplacer par ton Cloudflare Worker ══
+            // ══ Proxy endpoint ══
             const PROXY_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
+            const MAX_MESSAGES = 5;
 
             return {
                 isOpen: false, isLoading: false, userInput: '',
                 history: [],
+                msgCount: 0,
                 messages: [{ role: 'assistant', html: "<p>Bonjour ! Je suis l'assistant d'IKCP, spécialisé en protection patrimoniale. Comment puis-je vous aider ?</p>" }],
                 openChat(prompt) { this.isOpen = true; if (prompt) { this.userInput = prompt; } },
                 async sendMessage() {
                     if (!this.userInput || typeof this.userInput !== 'string' || this.userInput.trim() === '') return;
+                    // ── Rate limiting : 5 messages max par session ──
+                    if (this.msgCount >= MAX_MESSAGES) {
+                        this.messages.push({ role: 'assistant', html: "<p>Vous avez atteint la limite de questions pour cette session. Pour aller plus loin, je vous invite à <a href='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial' target='_blank' style='color:#b8956e;font-weight:bold;'>échanger directement avec Maxime</a> — il pourra analyser votre situation en détail.</p>" });
+                        this.userInput = '';
+                        this.$nextTick(() => { const c=document.getElementById('chat-messages'); if(c) c.scrollTop=c.scrollHeight; });
+                        return;
+                    }
+                    this.msgCount++;
                     const userText = this.userInput.trim();
                     this.messages.push({ role: 'user', html: '<p>'+userText.replace(/</g,'&lt;')+'</p>' });
                     this.history.push({ role: 'user', content: userText });
@@ -497,7 +507,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             responseText = data.reply || data.content?.[0]?.text || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
                         }
                         this.history.push({ role: 'assistant', content: responseText });
-                        this.messages.push({ role: 'assistant', html: marked.parse(String(responseText)) });
+                        let parsedResponse = marked.parse(String(responseText));
+                        if (this.msgCount >= MAX_MESSAGES) {
+                            parsedResponse += '<p style="font-size:11px;color:#b8956e;margin-top:8px;border-top:1px solid #e5ded2;padding-top:8px;">Vous avez utilisé vos 5 questions. Pour une analyse complète → <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" style="color:#b8956e;font-weight:bold;">Échanger avec Maxime</a></p>';
+                        } else if (this.msgCount >= 3) {
+                            parsedResponse += '<p style="font-size:10px;color:#9e9080;margin-top:6px;">' + (MAX_MESSAGES - this.msgCount) + ' question(s) restante(s)</p>';
+                        }
+                        this.messages.push({ role: 'assistant', html: parsedResponse });
                     } catch(e) {
                         this.messages.push({ role:'assistant', html:"<p>Un problème technique est survenu. Vous pouvez réessayer ou <a href='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial' target='_blank' class='underline font-bold'>échanger directement avec Maxime</a>.</p>" });
                     }
