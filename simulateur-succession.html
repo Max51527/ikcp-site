@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur Droits de Succession 2026 — Calcul Gratuit | IKCP</title>
+    <meta name="description" content="Calculez vos droits de succession en 30 secondes. Barème officiel 2026, abattements par enfant, assurance-vie. Comparatif sans/avec anticipation. Gratuit, sans inscription.">
+    <meta property="og:title" content="Simulateur Droits de Succession 2026 — IKCP">
+    <meta property="og:description" content="Combien vos enfants paieront-ils au fisc ? Calcul instantané avec barèmes 2026.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ikcp.eu/simulateur-succession">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ikcp.eu/simulateur-succession">
+    <meta name="theme-color" content="#1f1a16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+      {"@type":"Question","name":"Combien coûtent les droits de succession en ligne directe ?","acceptedAnswer":{"@type":"Answer","text":"Les droits de succession entre parent et enfant sont calculés après un abattement de 100 000 € par enfant (article 779 du Code général des impôts). Le barème progressif va de 5% à 45%. Le conjoint survivant est totalement exonéré."}},
+      {"@type":"Question","name":"Comment réduire les droits de succession ?","acceptedAnswer":{"@type":"Answer","text":"Trois leviers principaux : la donation progressive (100 000 € par enfant tous les 15 ans), l'assurance-vie (152 500 € par bénéficiaire exonérés avant 70 ans, art. 990 I CGI), et le démembrement de propriété. Un accompagnement patrimonial permet de combiner ces outils."}}
+    ]}
+    </script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--dark:#1f1a16;--gold:#b8956e;--cream:#f9f6f0;--border:#e5ded2;--text:#4d3f33;--muted:#9e9080;--light:#f3ede4}
+        body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased}
+        h1,h2,h3,.font-serif{font-family:'Playfair Display',serif}
+        ::selection{background:rgba(184,149,110,0.15)}
+        @keyframes goldShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .shimmer{background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e);background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 5s ease-in-out infinite}
+        .btn-primary{background:var(--dark);color:white;border:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s}
+        .btn-primary:hover{background:var(--gold);color:var(--dark);transform:translateY(-1px);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+        .input-field{width:100%;border:2px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;font-family:inherit;background:white;transition:border .2s;outline:none}
+        .input-field:focus{border-color:var(--gold)}
+        .card{background:white;border-radius:20px;border:1px solid var(--border);overflow:hidden}
+        .result-bar{height:8px;border-radius:4px;transition:width 1s ease}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .fade-up{animation:fadeUp .6s ease forwards}
+        .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(31,26,22,0.95);backdrop-filter:blur(12px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <a href="https://ikcp.eu" style="text-decoration:none;font-family:'Playfair Display',serif;font-size:20px;font-weight:700" class="shimmer">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.3)">.</span></a>
+    <a href="https://ikcp.eu" style="color:rgba(255,255,255,0.5);font-size:12px;text-decoration:none">← Retour au site</a>
+</nav>
+
+<!-- HERO -->
+<section style="padding:100px 20px 40px;text-align:center;max-width:720px;margin:0 auto">
+    <div style="display:inline-block;background:rgba(184,149,110,0.1);border:1px solid rgba(184,149,110,0.2);border-radius:40px;padding:6px 18px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px">Barème officiel 2026 · Art. 777 CGI</div>
+    <h1 style="font-size:clamp(28px,5vw,48px);color:var(--dark);line-height:1.1;margin-bottom:16px">Combien vos enfants<br>paieront-ils <span style="color:var(--gold)">au fisc ?</span></h1>
+    <p style="font-size:16px;color:var(--muted);max-width:500px;margin:0 auto 8px;line-height:1.6">Simulez vos droits de succession en 30 secondes. Comparez le coût sans anticipation et avec stratégie patrimoniale.</p>
+    <p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit · Sans inscription · Barèmes 2026 sourcés</p>
+</section>
+
+<!-- SIMULATOR -->
+<section style="max-width:800px;margin:0 auto;padding:0 20px 40px" id="sim">
+    <div class="card" style="padding:32px;margin-bottom:24px" id="simCard">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="inputs">
+            <div>
+                <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Patrimoine net estimé (€)</label>
+                <input type="number" class="input-field" id="patrimoine" value="800000" min="0" step="10000" oninput="calculate()">
+                <div style="font-size:11px;color:var(--muted);margin-top:4px">Immobilier + financier − dettes</div>
+            </div>
+            <div>
+                <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Nombre d'enfants</label>
+                <input type="number" class="input-field" id="enfants" value="2" min="0" max="10" oninput="calculate()">
+            </div>
+            <div>
+                <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Assurance-vie (avant 70 ans)</label>
+                <input type="number" class="input-field" id="av" value="0" min="0" step="10000" oninput="calculate()">
+                <div style="font-size:11px;color:var(--muted);margin-top:4px">152 500 €/bénéficiaire exonérés (art. 990 I)</div>
+            </div>
+            <div>
+                <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Donations déjà réalisées (−15 ans)</label>
+                <input type="number" class="input-field" id="donations" value="0" min="0" step="10000" oninput="calculate()">
+                <div style="font-size:11px;color:var(--muted);margin-top:4px">Réduisent l'abattement disponible</div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="results" style="margin-top:32px;display:none">
+            <div style="height:1px;background:var(--border);margin-bottom:28px"></div>
+
+            <!-- Scenario 1: Sans anticipation -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px">
+                <div style="background:#fef2f2;border-radius:16px;padding:24px;border:1px solid #fecaca">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#dc2626;margin-bottom:12px">❌ Sans anticipation</div>
+                    <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:#dc2626" id="droitsSans">—</div>
+                    <div style="font-size:13px;color:#991b1b;margin-top:4px">de droits de succession</div>
+                    <div style="margin-top:12px;font-size:12px;color:#b91c1c">
+                        <div>Par enfant : <strong id="parEnfantSans">—</strong></div>
+                        <div style="margin-top:2px">Taux effectif : <strong id="tauxSans">—</strong></div>
+                    </div>
+                </div>
+                <div style="background:#f0fdf4;border-radius:16px;padding:24px;border:1px solid #bbf7d0">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#16a34a;margin-bottom:12px">✅ Avec stratégie patrimoniale</div>
+                    <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:#16a34a" id="droitsAvec">—</div>
+                    <div style="font-size:13px;color:#166534;margin-top:4px">de droits de succession</div>
+                    <div style="margin-top:12px;font-size:12px;color:#15803d">
+                        <div>Par enfant : <strong id="parEnfantAvec">—</strong></div>
+                        <div style="margin-top:2px">Taux effectif : <strong id="tauxAvec">—</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Économie -->
+            <div style="background:var(--dark);border-radius:16px;padding:24px;text-align:center;margin-bottom:28px">
+                <div style="font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">Économie potentielle</div>
+                <div style="font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:white" id="economie">—</div>
+                <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">en combinant donation progressive + assurance-vie</div>
+            </div>
+
+            <!-- Barème détaillé -->
+            <div style="background:var(--light);border-radius:16px;padding:20px;margin-bottom:24px">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px">Barème appliqué — ligne directe (art. 777 CGI)</div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px" id="baremeVisuel"></div>
+                <div style="font-size:10px;color:var(--muted)">Abattement : 100 000 € par enfant (art. 779 CGI) · Conjoint survivant : exonéré · Source : impots.gouv.fr, LF 2026</div>
+            </div>
+
+            <!-- Leviers -->
+            <div style="margin-bottom:28px">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dark);margin-bottom:12px">Leviers utilisés dans le scénario optimisé</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px" id="leviers"></div>
+            </div>
+
+            <!-- OPT-IN -->
+            <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border)" id="optinBlock">
+                <div id="optinForm">
+                    <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start" onclick="document.getElementById('optCheck').checked=!document.getElementById('optCheck').checked;toggleOptin()">
+                        <input type="checkbox" id="optCheck" style="width:20px;height:20px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="toggleOptin()">
+                        <div>
+                            <div style="font-size:14px;font-weight:600;color:var(--dark)">Je souhaite partager cette simulation avec IKCP</div>
+                            <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">⚠️ En cochant cette case, vous acceptez que vos données saisies (prénom, email et résultats de la simulation) soient transmises à Maxime Juveneton — IKCP (ORIAS 23001568) dans le seul but de vous recontacter pour un échange patrimonial. Vos données ne seront ni vendues, ni partagées avec des tiers. Vous pouvez demander leur suppression à tout moment par email à <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c2f2322382d2f380c25272f3c622a3e">[email&#160;protected]</a>. <a href="https://www.cnil.fr/fr/les-droits-pour-maitriser-vos-donnees-personnelles" target="_blank" style="color:var(--gold)">Vos droits RGPD</a>.</div>
+                        </div>
+                    </label>
+                    <div id="optinFields" style="display:none;margin-top:16px">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                            <input type="text" class="input-field" id="optPrenom" placeholder="Votre prénom">
+                            <input type="email" class="input-field" id="optEmail" placeholder="votre@email.com">
+                        </div>
+                        <button class="btn-primary" style="width:100%;margin-top:12px" onclick="sendToNotion()">Envoyer ma simulation →</button>
+                    </div>
+                </div>
+                <div id="optinConfirm" style="display:none;text-align:center;padding:8px 0">
+                    <div style="font-size:16px;color:#16a34a;font-weight:600">✅ C'est envoyé. Maxime vous recontactera prochainement.</div>
+                </div>
+            </div>
+
+            <!-- Cross-sell -->
+            <div style="text-align:center;margin-top:28px;padding:24px;background:white;border-radius:16px;border:1px solid var(--border)">
+                <p style="font-size:14px;color:var(--text);margin-bottom:12px">Votre situation est plus complexe ?</p>
+                <a href="https://ikcp.eu/#bilan-patrimonial" class="btn-primary" style="display:inline-block;text-decoration:none">Faire le diagnostic patrimonial complet →</a>
+                <p style="font-size:11px;color:var(--muted);margin-top:10px">Score de protection, alertes personnalisées, 5 étapes</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ SEO -->
+<section style="max-width:700px;margin:0 auto;padding:0 20px 60px">
+    <h2 style="font-size:24px;color:var(--dark);margin-bottom:20px;text-align:center">Questions fréquentes</h2>
+    <div style="display:grid;gap:12px">
+        <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer">
+            <summary style="font-weight:600;font-size:14px;color:var(--dark)">Comment sont calculés les droits de succession en France ?</summary>
+            <p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Les droits de succession sont calculés sur la part nette reçue par chaque héritier, après application d'un abattement qui dépend du lien de parenté. Pour les enfants, l'abattement est de 100 000 € par enfant (article 779 du Code général des impôts). Le barème progressif en ligne directe va de 5 % (jusqu'à 8 072 €) à 45 % (au-delà de 1 805 677 €). Le conjoint survivant et le partenaire de PACS sont totalement exonérés.</p>
+        </details>
+        <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer">
+            <summary style="font-weight:600;font-size:14px;color:var(--dark)">L'assurance-vie est-elle soumise aux droits de succession ?</summary>
+            <p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Non pour les versements effectués avant 70 ans : chaque bénéficiaire désigné bénéficie d'un abattement de 152 500 € (article 990 I du Code général des impôts), puis un taux de 20 % jusqu'à 700 000 € et 31,25 % au-delà. Pour les versements après 70 ans, un abattement global de 30 500 € s'applique (article 757 B), puis les droits de succession classiques.</p>
+        </details>
+        <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer">
+            <summary style="font-weight:600;font-size:14px;color:var(--dark)">Comment réduire les droits de succession pour ses enfants ?</summary>
+            <p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Trois leviers principaux existent : la donation progressive (100 000 € par enfant tous les 15 ans, en franchise de droits), l'assurance-vie avant 70 ans (152 500 € par bénéficiaire hors succession), et le démembrement de propriété (donner la nue-propriété en conservant l'usufruit, ce qui réduit la base taxable). Un conseiller patrimonial peut combiner ces outils selon votre situation spécifique.</p>
+        </details>
+        <details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer">
+            <summary style="font-weight:600;font-size:14px;color:var(--dark)">Le conjoint survivant paie-t-il des droits de succession ?</summary>
+            <p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Non. Depuis 2007, le conjoint survivant et le partenaire de PACS sont totalement exonérés de droits de succession (article 796-0 bis du Code général des impôts), quel que soit le montant hérité. En revanche, le concubin n'est pas exonéré et paie des droits au taux de 60 %.</p>
+        </details>
+    </div>
+    <p style="text-align:center;font-size:10px;color:var(--muted);margin-top:16px">Sources : impots.gouv.fr · service-public.gouv.fr · Code général des impôts, art. 777, 779, 990 I · Loi de finances 2026</p>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:var(--dark);padding:40px 20px;text-align:center">
+    <a href="https://ikcp.eu" style="text-decoration:none;font-family:'Playfair Display',serif;font-size:18px;font-weight:700" class="shimmer">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.3)">.</span></a>
+    <div style="color:var(--muted);font-size:11px;margin-top:10px">ORIAS 23001568 · SIREN 947 972 436 · CIF — CNCEF Patrimoine · 100% indépendant</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:6px">Lyon · Annonay · Megève</div>
+    <div style="color:rgba(109,92,74,0.6);font-size:10px;margin-top:12px">© 2026 IKCP — IKIGAÏ Conseil Patrimonial · Ce simulateur est fourni à titre indicatif et ne constitue pas un conseil en investissement personnalisé.</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ══ Barème succession ligne directe — art. 777 CGI ══
+const TRANCHES = [
+    {max:8072, taux:0.05, label:'5%'},
+    {max:12109, taux:0.10, label:'10%'},
+    {max:15932, taux:0.15, label:'15%'},
+    {max:552324, taux:0.20, label:'20%'},
+    {max:902838, taux:0.30, label:'30%'},
+    {max:1805677, taux:0.40, label:'40%'},
+    {max:Infinity, taux:0.45, label:'45%'}
+];
+const ABAT_ENFANT = 100000; // art. 779 CGI
+const ABAT_AV = 152500; // art. 990 I CGI
+
+function calcDroits(partTaxable) {
+    let droits = 0, prev = 0;
+    for (const t of TRANCHES) {
+        if (partTaxable <= t.max) { droits += (partTaxable - prev) * t.taux; break; }
+        droits += (t.max - prev) * t.taux;
+        prev = t.max;
+    }
+    return Math.round(droits);
+}
+
+function fmt(n) { return n.toLocaleString('fr-FR') + ' €'; }
+
+function calculate() {
+    const pat = parseInt(document.getElementById('patrimoine').value) || 0;
+    const nE = parseInt(document.getElementById('enfants').value) || 0;
+    const av = parseInt(document.getElementById('av').value) || 0;
+    const don = parseInt(document.getElementById('donations').value) || 0;
+
+    if (nE === 0) { document.getElementById('results').style.display = 'none'; return; }
+    document.getElementById('results').style.display = 'block';
+
+    // Scénario 1: Sans anticipation (pas d'AV, pas de donation)
+    const partSans = Math.max(0, (pat / nE) - ABAT_ENFANT + (don / nE));
+    const droitsParEnfantSans = calcDroits(partSans);
+    const droitsTotalSans = droitsParEnfantSans * nE;
+
+    // Scénario 2: Avec stratégie (AV optimisée + donations utilisées)
+    const avOptimal = Math.min(pat * 0.3, ABAT_AV * nE); // Max 30% en AV, plafonné aux abattements
+    const patApresAV = pat - avOptimal;
+    const donOptimal = ABAT_ENFANT * nE; // Donations à hauteur des abattements
+    const patApresDon = Math.max(0, patApresAV - donOptimal);
+    const partAvec = Math.max(0, (patApresDon / nE) - ABAT_ENFANT);
+    const droitsParEnfantAvec = calcDroits(partAvec);
+    const droitsTotalAvec = droitsParEnfantAvec * nE;
+
+    const eco = droitsTotalSans - droitsTotalAvec;
+
+    // Affichage
+    document.getElementById('droitsSans').textContent = fmt(droitsTotalSans);
+    document.getElementById('parEnfantSans').textContent = fmt(droitsParEnfantSans);
+    document.getElementById('tauxSans').textContent = pat > 0 ? (droitsTotalSans / pat * 100).toFixed(1) + '%' : '0%';
+
+    document.getElementById('droitsAvec').textContent = fmt(droitsTotalAvec);
+    document.getElementById('parEnfantAvec').textContent = fmt(droitsParEnfantAvec);
+    document.getElementById('tauxAvec').textContent = pat > 0 ? (droitsTotalAvec / pat * 100).toFixed(1) + '%' : '0%';
+
+    document.getElementById('economie').textContent = fmt(eco);
+
+    // Barème visuel
+    const colors = ['#22c55e','#84cc16','#eab308','#f59e0b','#f97316','#ef4444','#dc2626'];
+    const labels = ['5%','10%','15%','20%','30%','40%','45%'];
+    document.getElementById('baremeVisuel').innerHTML = colors.map((c,i) =>
+        `<div style="text-align:center"><div style="height:${20+i*6}px;background:${c};border-radius:4px;margin-bottom:4px"></div><div style="font-size:9px;font-weight:700;color:${c}">${labels[i]}</div></div>`
+    ).join('');
+
+    // Leviers
+    document.getElementById('leviers').innerHTML = [
+        {icon:'🎁',title:'Donation progressive',desc:`${fmt(ABAT_ENFANT)} par enfant tous les 15 ans en franchise de droits`},
+        {icon:'🛡️',title:'Assurance-vie avant 70 ans',desc:`${fmt(ABAT_AV)} par bénéficiaire exonérés (art. 990 I CGI)`},
+        {icon:'🏠',title:'Démembrement de propriété',desc:'Donner la nue-propriété réduit la base taxable selon l\'âge du donateur'}
+    ].map(l => `<div style="background:var(--light);border-radius:12px;padding:16px;border:1px solid var(--border)">
+        <div style="font-size:20px;margin-bottom:8px">${l.icon}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px">${l.title}</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5">${l.desc}</div>
+    </div>`).join('');
+}
+
+function toggleOptin() {
+    const checked = document.getElementById('optCheck').checked;
+    document.getElementById('optinFields').style.display = checked ? 'block' : 'none';
+}
+
+async function sendToNotion() {
+    const prenom = document.getElementById('optPrenom').value;
+    const email = document.getElementById('optEmail').value;
+    if (!prenom || !email) return;
+
+    const payload = {
+        source: 'Simulateur Succession IKCP',
+        prenom, email,
+        patrimoine: document.getElementById('patrimoine').value,
+        enfants: document.getElementById('enfants').value,
+        assuranceVie: document.getElementById('av').value,
+        donations: document.getElementById('donations').value,
+        droitsSansAnticipation: document.getElementById('droitsSans').textContent,
+        droitsAvecStrategie: document.getElementById('droitsAvec').textContent,
+        economie: document.getElementById('economie').textContent,
+        date: new Date().toISOString()
+    };
+
+    const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL';
+    try {
+        if (WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL') {
+            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
+        }
+    } catch

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protection du Conjoint Survivant — Quiz Gratuit | IKCP</title>
+    <meta name="description" content="Votre conjoint est-il protégé si vous décédez demain ? Donation au dernier vivant, assurance-vie, régime matrimonial.">
+    <meta property="og:title" content="Protection du Conjoint Survivant — Quiz Gratuit | IKCP">
+    <link rel="canonical" href="https://ikcp.eu/protection-conjoint">
+    <meta name="theme-color" content="#1f1a16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--dark:#1f1a16;--gold:#b8956e;--cream:#f9f6f0;--border:#e5ded2;--text:#4d3f33;--muted:#9e9080;--light:#f3ede4}
+        body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased}
+        h1,h2,h3{font-family:'Playfair Display',serif}
+        ::selection{background:rgba(184,149,110,0.15)}
+        @keyframes gs{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        .shimmer{background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e);background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gs 5s ease-in-out infinite}
+        .btn{background:var(--dark);color:white;border:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+        .btn:hover{background:var(--gold);color:var(--dark);transform:translateY(-1px)}
+        .inp{width:100%;border:2px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;font-family:inherit;background:white;outline:none;transition:border .2s}
+        .inp:focus{border-color:var(--gold)}
+        .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(31,26,22,0.95);backdrop-filter:blur(12px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+    </style>
+</head>
+<body>
+<nav class="nav">
+    <a href="https://ikcp.eu" style="text-decoration:none;font-family:'Playfair Display',serif;font-size:20px;font-weight:700" class="shimmer">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.3)">.</span></a>
+    <a href="https://ikcp.eu" style="color:rgba(255,255,255,0.5);font-size:12px;text-decoration:none">← Retour au site</a>
+</nav>
+<section style="padding:100px 20px 40px;text-align:center;max-width:720px;margin:0 auto">
+    <div style="display:inline-block;background:rgba(184,149,110,0.1);border:1px solid rgba(184,149,110,0.2);border-radius:40px;padding:6px 18px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px">Protection patrimoniale · Art. 757 Code civil</div>
+    <h1 style="font-size:clamp(28px,5vw,46px);color:var(--dark);line-height:1.1;margin-bottom:16px">Si vous décédez demain,<br><span style="color:var(--gold)">votre conjoint est-il protégé ?</span></h1>
+    <p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">5 questions pour évaluer le niveau de protection de votre conjoint. Résultat en 2 minutes.</p>
+    <p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit · Sans inscription · Sources officielles 2026</p>
+</section>
+<section style="max-width:800px;margin:0 auto;padding:0 20px 40px">
+    <div style="background:white;border-radius:20px;border:1px solid var(--border);padding:32px">
+        <p style="text-align:center;font-size:15px;color:var(--text);padding:40px 20px;line-height:1.8">Ce simulateur sera personnalisé avec les barèmes 2026 et un calculateur interactif.<br><br>En attendant, faites le <strong>diagnostic patrimonial complet</strong> sur le site principal pour une analyse globale de votre situation.</p>
+        <div style="text-align:center;padding:20px 0">
+            <a href="https://ikcp.eu/#bilan-patrimonial" class="btn">Diagnostic patrimonial complet →</a>
+        </div>
+        <div style="margin-top:24px;background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
+            <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
+                <input type="checkbox" id="optCheck" style="width:20px;height:20px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optFields').style.display=this.checked?'block':'none'">
+                <div>
+                    <div style="font-size:14px;font-weight:600;color:var(--dark)">Je souhaite être recontacté par IKCP</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">⚠️ En cochant, vous acceptez que vos données soient transmises à Maxime Juveneton — IKCP (ORIAS 23001568) pour un échange patrimonial. Ni vendues, ni partagées. Suppression : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dbb8b4b5afbab8af9bb2b0b8abf5bda9">[email&#160;protected]</a>.</div>
+                </div>
+            </label>
+            <div id="optFields" style="display:none;margin-top:16px">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <input type="text" class="inp" id="optP" placeholder="Votre prénom">
+                    <input type="email" class="inp" id="optE" placeholder="votre@email.com">
+                </div>
+                <button class="btn" style="width:100%;margin-top:12px" onclick="sendOpt()">Envoyer →</button>
+            </div>
+            <div id="optOK" style="display:none;text-align:center;padding:8px;color:#16a34a;font-weight:600">✅ Envoyé. Maxime vous recontactera.</div>
+        </div>
+    </div>
+</section>
+<footer style="background:var(--dark);padding:40px 20px;text-align:center">
+    <a href="https://ikcp.eu" style="text-decoration:none;font-family:'Playfair Display',serif;font-size:18px;font-weight:700" class="shimmer">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.3)">.</span></a>
+    <div style="color:var(--muted);font-size:11px;margin-top:10px">ORIAS 23001568 · SIREN 947 972 436 · CIF — CNCEF Patrimoine</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:6px">Lyon · Annonay · Megève</div>
+    <div style="color:rgba(109,92,74,0.6);font-size:10px;margin-top:12px">© 2026 IKCP — Simulation indicative.</div>
+</footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+async function sendOpt(){
+    const p=document.getElementById('optP').value,e=document.getElementById('optE').value;
+    if(!p||!e)return;
+    const W='YOUR_MAKE_WEBHOOK_URL';
+    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Quiz Protection Conjoint IKCP',prenom:p,email:e,date:new Date().toISOString()}),mode:'no-cors'})}catch(e){}
