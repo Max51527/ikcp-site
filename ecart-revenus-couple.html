@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Écart de Revenus dans le Couple — Simulateur Impact Décès | IKCP</title>
-    <meta name="description" content="Que se passe-t-il si le conjoint qui gagne le plus disparaît ? Simulez la chute de niveau de vie.">
+    <meta name="description" content="Que se passe-t-il si le conjoint qui gagne le plus disparaît ? Simulez la chute de niveau de vie et le capital prévoyance nécessaire.">
     <meta property="og:title" content="Écart de Revenus dans le Couple — Simulateur Impact Décès | IKCP">
+    <meta property="og:description" content="Que se passe-t-il si le conjoint qui gagne le plus disparaît ? Simulez la chute de niveau de vie et le capital prévoyance nécessaire.">
     <link rel="canonical" href="https://ikcp.eu/ecart-revenus-couple">
     <meta name="theme-color" content="#1f1a16">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--dark:#1f1a16;--gold:#b8956e;--cream:#f9f6f0;--border:#e5ded2;--text:#4d3f33;--muted:#9e9080;--light:#f3ede4}
@@ -19,9 +20,10 @@
         @keyframes gs{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
         .shimmer{background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e);background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gs 5s ease-in-out infinite}
         .btn{background:var(--dark);color:white;border:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
-        .btn:hover{background:var(--gold);color:var(--dark);transform:translateY(-1px)}
-        .inp{width:100%;border:2px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;font-family:inherit;background:white;outline:none;transition:border .2s}
+        .btn:hover{background:var(--gold);color:var(--dark);transform:translateY(-1px);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+        .inp{width:100%;border:2px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;font-family:inherit;background:white;outline:none;transition:border .2s;-moz-appearance:textfield}
         .inp:focus{border-color:var(--gold)}
+        .inp::-webkit-inner-spin-button,.inp::-webkit-outer-spin-button{-webkit-appearance:none}
         .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(31,26,22,0.95);backdrop-filter:blur(12px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
     </style>
 </head>
@@ -33,44 +35,102 @@
 <section style="padding:100px 20px 40px;text-align:center;max-width:720px;margin:0 auto">
     <div style="display:inline-block;background:rgba(184,149,110,0.1);border:1px solid rgba(184,149,110,0.2);border-radius:40px;padding:6px 18px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px">Protection patrimoniale · Prévoyance</div>
     <h1 style="font-size:clamp(28px,5vw,46px);color:var(--dark);line-height:1.1;margin-bottom:16px">Si le salaire principal disparaît,<br><span style="color:var(--gold)">combien de mois tenez-vous ?</span></h1>
-    <p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">Dans la majorité des couples, un conjoint gagne 60 à 80% des revenus. Simulez l'impact d'un décès.</p>
-    <p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit · Sans inscription · Sources officielles 2026</p>
+    <p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">Dans la majorité des couples, un conjoint gagne 60 à 80% des revenus. Simulez l'impact financier d'un décès ou d'une invalidité.</p>
+    <p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit · Sans inscription · Barèmes officiels 2026</p>
 </section>
 <section style="max-width:800px;margin:0 auto;padding:0 20px 40px">
-    <div style="background:white;border-radius:20px;border:1px solid var(--border);padding:32px">
-        <p style="text-align:center;font-size:15px;color:var(--text);padding:40px 20px;line-height:1.8">Ce simulateur sera personnalisé avec les barèmes 2026 et un calculateur interactif.<br><br>En attendant, faites le <strong>diagnostic patrimonial complet</strong> sur le site principal pour une analyse globale de votre situation.</p>
-        <div style="text-align:center;padding:20px 0">
-            <a href="https://ikcp.eu/#bilan-patrimonial" class="btn">Diagnostic patrimonial complet →</a>
-        </div>
-        <div style="margin-top:24px;background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
-            <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
-                <input type="checkbox" id="optCheck" style="width:20px;height:20px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optFields').style.display=this.checked?'block':'none'">
-                <div>
-                    <div style="font-size:14px;font-weight:600;color:var(--dark)">Je souhaite être recontacté par IKCP</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">⚠️ En cochant, vous acceptez que vos données soient transmises à Maxime Juveneton — IKCP (ORIAS 23001568) pour un échange patrimonial. Ni vendues, ni partagées. Suppression : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afccc0c1dbceccdbefc6c4ccdf81c9dd">[email&#160;protected]</a>.</div>
+    <div style="background:white;border-radius:20px;border:1px solid var(--border);padding:32px;margin-bottom:24px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px"><div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Revenu mensuel net — Conjoint 1</label><input type="number" class="inp" id="rev1" value="4500" step="100" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Le revenu le plus élevé du foyer</div></div>
+<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Revenu mensuel net — Conjoint 2</label><input type="number" class="inp" id="rev2" value="1800" step="100" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Le revenu le moins élevé</div></div>
+<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Charges fixes mensuelles</label><input type="number" class="inp" id="charges" value="3200" step="100" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Crédit, loyer, assurances, éducation, alimentation</div></div>
+<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Épargne disponible (€)</label><input type="number" class="inp" id="epargne" value="25000" step="5000" oninput="calculate()"><div style="font-size:11px;color:var(--muted);margin-top:4px">Livrets, comptes courants, fonds euros accessibles</div></div>
+</div>
+        <div id="results" style="margin-top:32px;display:none">
+            <div style="height:1px;background:var(--border);margin-bottom:28px"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+                <div style="background:#fef2f2;border-radius:16px;padding:20px;border:1px solid #fecaca">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#dc2626;margin-bottom:10px">Dépendance au revenu principal</div>
+                    <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#dc2626" id="r1val">—</div>
+                    <div style="font-size:12px;color:#dc2626;opacity:0.7;margin-top:4px" id="r1sub"></div>
+                    <div style="font-size:11px;color:#dc2626;opacity:0.6;margin-top:6px" id="r1extra"></div>
                 </div>
-            </label>
-            <div id="optFields" style="display:none;margin-top:16px">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                    <input type="text" class="inp" id="optP" placeholder="Votre prénom">
-                    <input type="email" class="inp" id="optE" placeholder="votre@email.com">
+                <div style="background:#eff6ff;border-radius:16px;padding:20px;border:1px solid #bfdbfe">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#3b82f6;margin-bottom:10px">Capacité de survie financière</div>
+                    <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#3b82f6" id="r2val">—</div>
+                    <div style="font-size:12px;color:#3b82f6;opacity:0.7;margin-top:4px" id="r2sub"></div>
+                    <div style="font-size:11px;color:#3b82f6;opacity:0.6;margin-top:6px" id="r2extra"></div>
                 </div>
-                <button class="btn" style="width:100%;margin-top:12px" onclick="sendOpt()">Envoyer →</button>
             </div>
-            <div id="optOK" style="display:none;text-align:center;padding:8px;color:#16a34a;font-weight:600">✅ Envoyé. Maxime vous recontactera.</div>
+            <div style="background:var(--dark);border-radius:16px;padding:20px;text-align:center;margin-bottom:24px">
+                <div style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px">Capital prévoyance nécessaire</div>
+                <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:white" id="ecoval">—</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecosub"></div>
+            </div>
+            <div id="details" style="background:var(--light);border-radius:12px;padding:16px;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.8"></div>
+            <div style="background:var(--light);border-radius:16px;padding:20px;border:1px solid var(--border)">
+                <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
+                    <input type="checkbox" id="optCheck" style="width:20px;height:20px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optF').style.display=this.checked?'block':'none'">
+                    <div>
+                        <div style="font-size:14px;font-weight:600;color:var(--dark)">Je souhaite partager cette simulation avec IKCP</div>
+                        <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">⚠️ En cochant, vous acceptez que vos données (prénom, email, résultats) soient transmises à Maxime Juveneton — IKCP (ORIAS 23001568) pour un échange patrimonial. Ni vendues, ni partagées. Suppression : contact@ikcp.eu.</div>
+                    </div>
+                </label>
+                <div id="optF" style="display:none;margin-top:16px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <input type="text" class="inp" id="optP" placeholder="Votre prénom">
+                        <input type="email" class="inp" id="optE" placeholder="votre@email.com">
+                    </div>
+                    <button class="btn" style="width:100%;margin-top:12px" onclick="sendOpt()">Envoyer ma simulation →</button>
+                </div>
+                <div id="optOK" style="display:none;text-align:center;padding:8px;color:#16a34a;font-weight:600;font-size:15px">✅ Envoyé. Maxime vous recontactera.</div>
+            </div>
+            <div style="text-align:center;margin-top:24px;padding:20px;background:white;border-radius:16px;border:1px solid var(--border)">
+                <p style="font-size:14px;color:var(--text);margin-bottom:12px">Votre situation est plus complexe ?</p>
+                <a href="https://ikcp.eu/#bilan-patrimonial" class="btn">Diagnostic patrimonial complet →</a>
+            </div>
         </div>
     </div>
 </section>
-<div style="max-width:700px;margin:0 auto;padding:20px 20px 40px;text-align:center"><p style="font-size:11px;color:var(--muted);margin-bottom:8px">Voir aussi :</p><p style="font-size:12px;line-height:2.2"><a href="/protection-conjoint.html" style="color:var(--gold);text-decoration:none">Protection Conjoint</a> · <a href="/simulateur-succession.html" style="color:var(--gold);text-decoration:none">Simulateur Succession</a> · <a href="/deces-dirigeant.html" style="color:var(--gold);text-decoration:none">Décès Dirigeant</a></p></div>
+<section style="max-width:700px;margin:0 auto;padding:0 20px 60px">
+    <h2 style="font-size:22px;color:var(--dark);margin-bottom:16px;text-align:center">Questions fréquentes</h2>
+    <div style="display:grid;gap:10px"><details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer"><summary style="font-weight:600;font-size:14px;color:var(--dark)">Pourquoi l'écart de revenus est-il dangereux ?</summary><p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Quand un conjoint gagne 70% des revenus du foyer, son décès ou invalidité entraîne une chute immédiate du niveau de vie. Les charges fixes ne baissent pas. Sans prévoyance, le survivant peut être contraint de vendre la résidence familiale.</p></details>
+<details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer"><summary style="font-weight:600;font-size:14px;color:var(--dark)">Quelles solutions existent ?</summary><p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Trois outils : la prévoyance décès (capital versé au conjoint, souvent <100 €/mois), la donation au dernier vivant (~150 € chez le notaire), et l'assurance-vie avec clause bénéficiaire (capital hors succession, disponible en quelques jours).</p></details>
+</div>
+    <p style="text-align:center;font-size:10px;color:var(--muted);margin-top:14px">Sources : impots.gouv.fr · service-public.gouv.fr · Code général des impôts · LF 2026</p>
+</section>
+
 <footer style="background:var(--dark);padding:40px 20px;text-align:center">
     <a href="https://ikcp.eu" style="text-decoration:none;font-family:'Playfair Display',serif;font-size:18px;font-weight:700" class="shimmer">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.3)">.</span></a>
-    <div style="color:var(--muted);font-size:11px;margin-top:10px">ORIAS 23001568 · SIREN 947 972 436 · CIF — CNCEF Patrimoine</div>
+    <div style="color:var(--muted);font-size:11px;margin-top:10px">ORIAS 23001568 · SIREN 947 972 436 · CIF CNCEF Patrimoine · 100% indépendant</div>
     <div style="color:var(--muted);font-size:11px;margin-top:6px">Lyon · Annonay · Combloux · Megève</div>
-    <div style="color:rgba(109,92,74,0.6);font-size:10px;margin-top:12px">© 2026 IKCP — Simulation indicative.</div>
+    <div style="color:rgba(109,92,74,0.6);font-size:10px;margin-top:12px">© 2026 IKCP — Simulation indicative, ne constitue pas un conseil personnalisé.</div>
 </footer>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+function el(id){return document.getElementById(id)}
+function fmt(n){return Math.round(n).toLocaleString('fr-FR')+' €'}
+function pct(n){return (n*100).toFixed(1)+'%'}
+function show(id,v){var e=el(id);if(e)e.textContent=v;}
+function toggleOpt(){el('optF').style.display=el('optCheck').checked?'block':'none';}
 async function sendOpt(){
-    const p=document.getElementById('optP').value,e=document.getElementById('optE').value;
-    if(!p||!e)return;
-    const W='YOUR_MAKE_WEBHOOK_URL';
-    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Simulateur Écart Revenus IKCP',prenom:p,email:e,date:new Date().toISOString()}),mode:'no-cors'})}catch(e){}<!-- ikcp.eu deploy 1774770980 -->
+    var p=el('optP').value,e=el('optE').value;if(!p||!e)return;
+    var W='YOUR_MAKE_WEBHOOK_URL';
+    try{if(W!=='YOUR_MAKE_WEBHOOK_URL')await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Simulateur Écart Revenus IKCP',prenom:p,email:e,r1:el('r1val').textContent,r2:el('r2val').textContent,eco:el('ecoval').textContent,date:new Date().toISOString()}),mode:'no-cors'})}catch(x){}
+    el('optF').style.display='none';el('optCheck').parentElement.style.display='none';el('optOK').style.display='block';
+}
+
+function calculate(){
+    var r1=parseInt(el('rev1').value)||0,r2=parseInt(el('rev2').value)||0,ch=parseInt(el('charges').value)||0,ep=parseInt(el('epargne').value)||0;
+    var total=r1+r2,pctR1=total>0?Math.round(r1/total*100):0;
+    var resteApres=r2-ch;
+    var mois=resteApres<0&&ep>0?Math.round(ep/Math.abs(resteApres)):resteApres>=0?999:0;
+    var chute=total>0?Math.round((1-r2/total)*100):0;
+    var capitalNec=resteApres<0?Math.abs(resteApres)*12*15:0;
+    show('r1val',pctR1+'%');show('r1sub','des revenus reposent sur le conjoint 1');show('r1extra','Chute de niveau de vie au décès : −'+chute+'%');
+    show('r2val',mois>=999?'Autonome':mois+' mois');show('r2sub',mois>=999?'Le conjoint 2 couvre les charges seul':'avant épuisement de l\'épargne');show('r2extra',resteApres<0?'Déficit mensuel : '+fmt(Math.abs(resteApres))+'/mois':'');
+    show('ecoval',fmt(capitalNec));show('ecosub',capitalNec>0?'pour maintenir le niveau de vie pendant 15 ans':'Pas de besoin immédiat — mais surveillez régulièrement');
+    el('details').innerHTML='Revenus du foyer : '+fmt(total*12)+'/an<br>Part du conjoint 1 : '+pctR1+'% ('+fmt(r1)+'/mois)<br>Charges fixes : '+fmt(ch)+'/mois<br>Coût prévoyance estimé : '+(capitalNec>0?'~'+fmt(Math.round(capitalNec/12/15*0.003*12))+'/an':'non nécessaire');
+    el('results').style.display='block';
+}
+calculate();
+</script>
+</body></html>
