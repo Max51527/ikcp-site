@@ -1365,12 +1365,15 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ NOTRE OFFRE (REDESIGN) ══════════ -->
-    <section class="py-16 sm:py-24 bg-[#1f1a16] relative overflow-hidden">
-        <!-- Decorative elements -->
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#b8956e] to-transparent"></div>
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#b8956e] to-transparent"></div>
-        <div class="absolute top-20 right-10 w-64 h-64 rounded-full bg-[#b8956e]/5 blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-20 left-10 w-48 h-48 rounded-full bg-[#b8956e]/5 blur-3xl pointer-events-none"></div>
+    <section class="py-16 sm:py-24 relative overflow-hidden" style="background:linear-gradient(180deg, #2a2319 0%, #1f1a16 40%, #2a2319 100%);">
+        <!-- Gold borders top & bottom -->
+        <div class="absolute top-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg,transparent 5%,rgba(184,149,110,0.5) 30%,rgba(184,149,110,0.8) 50%,rgba(184,149,110,0.5) 70%,transparent 95%);"></div>
+        <div class="absolute bottom-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg,transparent 5%,rgba(184,149,110,0.5) 30%,rgba(184,149,110,0.8) 50%,rgba(184,149,110,0.5) 70%,transparent 95%);"></div>
+        <!-- Warm glow accents -->
+        <div class="absolute top-20 right-10 w-80 h-80 rounded-full bg-[#b8956e]/[0.07] blur-[80px] pointer-events-none"></div>
+        <div class="absolute bottom-20 left-10 w-64 h-64 rounded-full bg-[#b8956e]/[0.05] blur-[60px] pointer-events-none"></div>
+        <!-- Subtle diagonal pattern -->
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(184,149,110,0.3) 40px,rgba(184,149,110,0.3) 41px);"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
             <div class="text-center mb-14">
@@ -1381,23 +1384,23 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-                <div class="group bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-2xl p-7 hover:border-[#b8956e]/30 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/5">
-                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/20 group-hover:scale-110 transition-all duration-300 text-xl">💎</div>
+                <div class="group bg-white/[0.06] backdrop-blur border border-[#b8956e]/15 rounded-2xl p-7 hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10" style="box-shadow:inset 0 1px 0 rgba(184,149,110,0.1);">
+                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/15 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/25 group-hover:scale-110 transition-all duration-300 text-xl">💎</div>
                     <h3 class="text-white font-serif text-xl mb-2">Private Equity</h3>
-                    <p class="text-[#9e9080] text-sm font-light leading-relaxed mb-4">Accédez à des fonds non cotés (PME, infrastructure, secondaire) avec des objectifs de performance x1.5 à x2.5.</p>
-                    <div class="flex items-center gap-2 text-xs text-[#907b65]">🔒 Dossiers confidentiels sur demande</div>
+                    <p class="text-[#b5a898] text-sm font-light leading-relaxed mb-4">Accédez à des fonds non cotés (PME, infrastructure, secondaire) avec des objectifs de performance x1.5 à x2.5.</p>
+                    <div class="flex items-center gap-2 text-xs text-[#b8956e]/70">🔒 Dossiers confidentiels sur demande</div>
                 </div>
-                <div class="group bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-2xl p-7 hover:border-[#b8956e]/30 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/5">
-                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/20 group-hover:scale-110 transition-all duration-300 text-xl">🏛️</div>
+                <div class="group bg-white/[0.06] backdrop-blur border border-[#b8956e]/15 rounded-2xl p-7 hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10" style="box-shadow:inset 0 1px 0 rgba(184,149,110,0.1);">
+                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/15 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/25 group-hover:scale-110 transition-all duration-300 text-xl">🏛️</div>
                     <h3 class="text-white font-serif text-xl mb-2">Immobilier</h3>
-                    <p class="text-[#9e9080] text-sm font-light leading-relaxed mb-4">Pierre-papier, nue-propriété, Malraux, Monuments Historiques, déficit foncier… solutions directes et indirectes.</p>
-                    <div class="flex items-center gap-2 text-xs text-[#907b65]">📊 Rendements de 4 à 7 % nets visés</div>
+                    <p class="text-[#b5a898] text-sm font-light leading-relaxed mb-4">Pierre-papier, nue-propriété, Malraux, Monuments Historiques, déficit foncier… solutions directes et indirectes.</p>
+                    <div class="flex items-center gap-2 text-xs text-[#b8956e]/70">📊 Rendements de 4 à 7 % nets visés</div>
                 </div>
-                <div class="group bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-2xl p-7 hover:border-[#b8956e]/30 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/5">
-                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/20 group-hover:scale-110 transition-all duration-300 text-xl">⚖️</div>
+                <div class="group bg-white/[0.06] backdrop-blur border border-[#b8956e]/15 rounded-2xl p-7 hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10" style="box-shadow:inset 0 1px 0 rgba(184,149,110,0.1);">
+                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/15 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/25 group-hover:scale-110 transition-all duration-300 text-xl">⚖️</div>
                     <h3 class="text-white font-serif text-xl mb-2">Ingénierie Patrimoniale</h3>
-                    <p class="text-[#9e9080] text-sm font-light leading-relaxed mb-4">Optimisation IR/IFI/IS, holding, démembrement, transmission, épargne salariale dirigeant.</p>
-                    <div class="flex items-center gap-2 text-xs text-[#907b65]">🛡️ Stratégie sur-mesure</div>
+                    <p class="text-[#b5a898] text-sm font-light leading-relaxed mb-4">Optimisation IR/IFI/IS, holding, démembrement, transmission, épargne salariale dirigeant.</p>
+                    <div class="flex items-center gap-2 text-xs text-[#b8956e]/70">🛡️ Stratégie sur-mesure</div>
                 </div>
             </div>
 
@@ -1560,8 +1563,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="mt-10 space-y-6">
 
                 <!-- Chef d'orchestre -->
-                <div class="bg-gradient-to-r from-[#1f1a16] to-[#2e2520] rounded-2xl p-6 sm:p-8 text-white">
-                    <div class="max-w-3xl mx-auto">
+                <div class="relative rounded-2xl p-6 sm:p-8 text-white overflow-hidden" style="background:linear-gradient(135deg, #2a2319 0%, #1f1a16 50%, #2a2319 100%);">
+                    <!-- Gold liseré top -->
+                    <div class="absolute top-0 left-4 right-4 h-[2px] rounded-full" style="background:linear-gradient(90deg,transparent,rgba(184,149,110,0.6),transparent);"></div>
+                    <!-- Warm glow -->
+                    <div class="absolute top-0 right-0 w-48 h-48 rounded-full bg-[#b8956e]/[0.06] blur-[50px] pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-[#b8956e]/[0.04] blur-[40px] pointer-events-none"></div>
+                    <div class="max-w-3xl mx-auto relative z-10">
                         <div class="text-center mb-6">
                             <div class="text-xs uppercase tracking-wider font-semibold mb-2" style="color:#b8956e;">Le rôle de votre conseiller</div>
                             <h3 class="font-serif text-xl sm:text-2xl mb-3">Votre médecin de famille patrimonial.<br><span style="color:#b8956e;">Votre chef d'orchestre.</span></h3>
@@ -1574,27 +1582,27 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
                         <!-- Orchestre visuel -->
                         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
-                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-center p-3 bg-white/[0.06] rounded-xl border border-[#b8956e]/10">
                                 <div class="text-lg mb-1">⚖️</div>
-                                <div class="text-[10px] font-semibold text-[#ad9578]">Notaire</div>
-                                <div class="text-[9px] text-white/30 mt-0.5">Actes, donations</div>
+                                <div class="text-[10px] font-semibold text-[#b8956e]">Notaire</div>
+                                <div class="text-[9px] text-white/40 mt-0.5">Actes, donations</div>
                             </div>
-                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-center p-3 bg-white/[0.06] rounded-xl border border-[#b8956e]/10">
                                 <div class="text-lg mb-1">📋</div>
-                                <div class="text-[10px] font-semibold text-[#ad9578]">Avocat</div>
-                                <div class="text-[9px] text-white/30 mt-0.5">Statuts, pactes</div>
+                                <div class="text-[10px] font-semibold text-[#b8956e]">Avocat</div>
+                                <div class="text-[9px] text-white/40 mt-0.5">Statuts, pactes</div>
                             </div>
-                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-center p-3 bg-white/[0.06] rounded-xl border border-[#b8956e]/10">
                                 <div class="text-lg mb-1">📊</div>
-                                <div class="text-[10px] font-semibold text-[#ad9578]">Expert-comptable</div>
-                                <div class="text-[9px] text-white/30 mt-0.5">Bilans, fiscal pro</div>
+                                <div class="text-[10px] font-semibold text-[#b8956e]">Expert-comptable</div>
+                                <div class="text-[9px] text-white/40 mt-0.5">Bilans, fiscal pro</div>
                             </div>
-                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-center p-3 bg-white/[0.06] rounded-xl border border-[#b8956e]/10">
                                 <div class="text-lg mb-1">🏦</div>
-                                <div class="text-[10px] font-semibold text-[#ad9578]">Banquier</div>
-                                <div class="text-[9px] text-white/30 mt-0.5">Crédit, garanties</div>
+                                <div class="text-[10px] font-semibold text-[#b8956e]">Banquier</div>
+                                <div class="text-[9px] text-white/40 mt-0.5">Crédit, garanties</div>
                             </div>
-                            <div class="col-span-2 sm:col-span-1 text-center p-3 rounded-xl border-2" style="background:rgba(184,149,110,0.1);border-color:rgba(184,149,110,0.3);">
+                            <div class="col-span-2 sm:col-span-1 text-center p-3 rounded-xl border-2" style="background:rgba(184,149,110,0.12);border-color:rgba(184,149,110,0.4);box-shadow:0 0 20px rgba(184,149,110,0.08);">
                                 <div class="text-lg mb-1">🎯</div>
                                 <div class="text-[10px] font-bold" style="color:#b8956e;">Votre conseiller</div>
                                 <div class="text-[9px] text-white/50 mt-0.5">Stratégie + outils</div>
@@ -2031,7 +2039,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             </div>
             <div class="p-3 bg-white border-t border-[#e5ded2]"><div class="relative"><input type="text" x-model="userInput" @keydown.enter="sendMessage()" placeholder="Posez votre question..." class="w-full border border-[#d8d0c4] rounded-full pl-4 pr-10 py-2.5 text-sm focus:border-[#b8956e] outline-none"><button @click="sendMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#9e9080] hover:text-[#b8956e]">→</button></div></div>
         </div>
-        <button @click="isOpen=!isOpen" class="bg-[#1f1a16] text-white p-4 rounded-full shadow-xl hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all duration-300 hover:scale-105 hover:shadow-2xl relative"><span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span><svg x-show="!isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><svg x-show="isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button @click="isOpen=!isOpen" class="bg-[#1f1a16] text-white p-4 rounded-full shadow-xl hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all duration-300 hover:scale-105 hover:shadow-2xl relative"><span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span><svg x-show="!isOpen" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="9" rx="7" ry="8"/><line x1="9" y1="17" x2="8.5" y2="20"/><line x1="15" y1="17" x2="15.5" y2="20"/><rect x="8" y="20" width="8" height="3" rx="1" fill="currentColor" opacity="0.3"/><line x1="12" y1="1" x2="12" y2="2" stroke-width="2"/><path d="M7 4 C7 4 9 8 12 8 C15 8 17 4 17 4" stroke-width="1" opacity="0.5"/><path d="M6 7 C6 7 9 12 12 12 C15 12 18 7 18 7" stroke-width="1" opacity="0.3"/></svg><svg x-show="isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <!-- ══════════ PWA INSTALL PROMPT ══════════ -->
     <div id="pwa-install" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#1f1a16;color:white;padding:14px 24px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);font-size:14px;font-family:Inter,sans-serif;max-width:380px;width:calc(100% - 32px);">
