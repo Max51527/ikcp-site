@@ -556,6 +556,31 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             50%{background-position:100% 50%;}
             100%{background-position:0% 50%;}
         }
+        @keyframes gs {
+            0%{background-position:0% 50%;}
+            50%{background-position:100% 50%;}
+            100%{background-position:0% 50%;}
+        }
+        /* ═══ MONTGOLFIÈRE VOL ═══ */
+        @keyframes balloon-fly {
+            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(-12px) translateX(4px) rotate(2deg); }
+            50% { transform: translateY(-6px) translateX(-3px) rotate(-1deg); }
+            75% { transform: translateY(-14px) translateX(2px) rotate(1.5deg); }
+            100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        }
+        @keyframes balloon-glow {
+            0%, 100% { box-shadow: 0 4px 20px rgba(184,149,110,0.2); }
+            50% { box-shadow: 0 8px 30px rgba(184,149,110,0.5), 0 0 15px rgba(184,149,110,0.2); }
+        }
+        .balloon-fly {
+            animation: balloon-fly 4s ease-in-out infinite, balloon-glow 3s ease-in-out infinite;
+        }
+        .balloon-fly:hover {
+            animation-play-state: paused;
+            transform: scale(1.15) !important;
+            box-shadow: 0 8px 35px rgba(184,149,110,0.6) !important;
+        }
         .auto-color-change { 
             background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e,#f0dfc0,#9a7852,#b8956e);
             background-size:400% 100%;
@@ -722,7 +747,11 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              }"
              x-init="startRotation()">
 
-            <!-- IKCP brand removed -->
+            <!-- IKCP Brand -->
+            <div class="opacity-0 mb-6 sm:mb-10" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
+                <span class="font-serif text-3xl sm:text-4xl font-bold" style="background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e);background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gs 5s ease-in-out infinite;">IKCP<span style="-webkit-text-fill-color:rgba(184,149,110,0.3)">.</span></span>
+                <p class="text-xs sm:text-sm tracking-[3px] uppercase mt-2" style="color:#9e9080;">Cabinet en Gestion de Patrimoine</p>
+            </div>
 
             <!-- Title -->
             <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
@@ -2059,7 +2088,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         <style>@keyframes teaseFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}</style>
         <button @click="isOpen=!isOpen" class="relative group" style="background:none;border:none;cursor:pointer;padding:0;">
             <span class="absolute -top-1 -right-1 flex h-3 w-3 z-10"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span>
-            <img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" style="width:56px;height:56px;border-radius:50%;object-fit:cover;box-shadow:0 4px 20px rgba(0,0,0,0.15);transition:all 0.3s;border:2px solid rgba(184,149,110,0.3);" class="group-hover:scale-110 group-hover:shadow-2xl">
+            <img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" style="width:56px;height:56px;border-radius:50%;object-fit:cover;transition:all 0.3s;border:2px solid rgba(184,149,110,0.3);" class="balloon-fly">
             <div x-show="isOpen" style="width:56px;height:56px;border-radius:50%;background:#1f1a16;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
         </button>
     </div>
