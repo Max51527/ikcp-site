@@ -564,22 +564,49 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         /* ═══ MONTGOLFIÈRE VOL ═══ */
         @keyframes balloon-fly {
             0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-            25% { transform: translateY(-12px) translateX(4px) rotate(2deg); }
-            50% { transform: translateY(-6px) translateX(-3px) rotate(-1deg); }
-            75% { transform: translateY(-14px) translateX(2px) rotate(1.5deg); }
+            15% { transform: translateY(-18px) translateX(6px) rotate(3deg); }
+            30% { transform: translateY(-8px) translateX(-4px) rotate(-2deg); }
+            50% { transform: translateY(-22px) translateX(3px) rotate(2deg); }
+            70% { transform: translateY(-5px) translateX(-5px) rotate(-1.5deg); }
+            85% { transform: translateY(-16px) translateX(5px) rotate(2.5deg); }
             100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
         }
         @keyframes balloon-glow {
-            0%, 100% { box-shadow: 0 4px 20px rgba(184,149,110,0.2); }
-            50% { box-shadow: 0 8px 30px rgba(184,149,110,0.5), 0 0 15px rgba(184,149,110,0.2); }
+            0%, 100% { box-shadow: 0 4px 20px rgba(184,149,110,0.3), 0 0 0 0 rgba(184,149,110,0); }
+            50% { box-shadow: 0 8px 35px rgba(184,149,110,0.6), 0 0 20px rgba(184,149,110,0.3); }
+        }
+        @keyframes balloon-pulse {
+            0%, 100% { transform: scale(1); opacity: 0; }
+            50% { transform: scale(2.2); opacity: 0.4; }
+        }
+        @keyframes balloon-trail {
+            0% { opacity: 0.6; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(30px) scale(0.3); }
         }
         .balloon-fly {
-            animation: balloon-fly 4s ease-in-out infinite, balloon-glow 3s ease-in-out infinite;
+            animation: balloon-fly 5s ease-in-out infinite, balloon-glow 3s ease-in-out infinite;
         }
         .balloon-fly:hover {
             animation-play-state: paused;
-            transform: scale(1.15) !important;
-            box-shadow: 0 8px 35px rgba(184,149,110,0.6) !important;
+            transform: scale(1.2) !important;
+            box-shadow: 0 8px 40px rgba(184,149,110,0.7) !important;
+        }
+        .balloon-pulse-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(184,149,110,0.4);
+            animation: balloon-pulse 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .balloon-trail-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(184,149,110,0.4);
+            animation: balloon-trail 2s ease-out infinite;
+            pointer-events: none;
         }
         .auto-color-change { 
             background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e,#f0dfc0,#9a7852,#b8956e);
@@ -686,7 +713,10 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     <!-- ══════════ NAVIGATION ══════════ -->
     <nav :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'" class="fixed w-full z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
-            <a href="#" class="text-2xl font-serif font-bold auto-color-change">IKCP<span style="-webkit-text-fill-color:rgba(184,149,110,0.4);">.</span></a>
+            <a href="#" class="flex flex-col">
+                <span class="text-2xl font-serif font-bold auto-color-change">IKCP<span style="-webkit-text-fill-color:rgba(184,149,110,0.4);">.</span></span>
+                <span class="text-[9px] tracking-[2px] uppercase font-medium mt-[-2px]" :class="scrolled?'text-[#9e9080]':'text-white/40'">Cabinet en gestion de patrimoine</span>
+            </a>
             <div class="hidden lg:flex items-center space-x-1">
                 <a href="#bilan-patrimonial" class="px-4 py-2 text-sm font-medium rounded-lg transition-all" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e] hover:bg-[#f9f6f0]':'text-white/80 hover:text-white hover:bg-white/10'">Diagnostic</a>
                 <a href="#besoins" class="px-4 py-2 text-sm font-medium rounded-lg transition-all" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e] hover:bg-[#f9f6f0]':'text-white/80 hover:text-white hover:bg-white/10'">Cas concrets</a>
@@ -699,6 +729,10 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
         <div x-show="mobileMenuOpen" x-transition.opacity class="fixed inset-0 bg-white z-40 flex flex-col justify-center items-center space-y-6 p-6" style="display:none;">
             <button @click="mobileMenuOpen=false" class="absolute top-5 right-5 text-[#1f1a16] text-2xl p-2">✕</button>
+            <div class="text-center mb-4">
+                <span class="text-3xl font-serif font-bold gold-text">IKCP.</span>
+                <br><span class="text-[10px] tracking-[2px] uppercase text-[#9e9080]">Cabinet en gestion de patrimoine</span>
+            </div>
             <a @click="mobileMenuOpen=false" href="#bilan-patrimonial" class="text-xl font-serif text-[#1f1a16]">Diagnostic</a>
             <a @click="mobileMenuOpen=false" href="#besoins" class="text-xl font-serif text-[#1f1a16]">Cas concrets</a>
             <a @click="mobileMenuOpen=false" href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-xl font-serif gold-text">Sélection Privée</a>
@@ -968,7 +1002,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </script>
 
     <!-- ══════════ BILAN PATRIMONIAL FLASH ══════════ -->
-    <section id="bilan-patrimonial" class="py-16 sm:py-24 bg-[#f9f6f0] border-t border-[#e5ded2]">
+    <section id="bilan-patrimonial" class="py-20 sm:py-32 bg-[#f9f6f0] border-t border-[#e5ded2]">
         <div class="max-w-6xl mx-auto px-4 sm:px-6" x-data="bilanPatrimonialData()" x-init="initBilan()">
             <div class="text-center mb-10 sm:mb-14">
                 <span class="gold-text font-semibold tracking-widest text-xs uppercase mb-3 block">Votre outil exclusif · Sans inscription</span>
@@ -1342,7 +1376,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">🛡️ Focus Protection</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Après 10 ans d'exercice et des centaines d'entretiens, un constat s'est imposé : ce qui préoccupe le plus les familles et les dirigeants, ce n'est pas le rendement — c'est la question <strong class="text-[#1f1a16]">« que se passe-t-il si… ? »</strong></p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Après 10 ans d'exercice et des centaines d'entretiens, un constat s'est imposé : ce qui préoccupe le plus les familles et les dirigeants, ce n'est pas le rendement — c'est la question <strong class="text-[#1f1a16]">« que se passe-t-il si… ? »</strong></p>
                     <p class="text-sm text-[#6d5c4a] leading-relaxed">C'est pourquoi IKCP se spécialise dans la protection patrimoniale : anticiper les aléas de la vie, sécuriser ce que vous avez construit, et préparer sereinement ce que vous transmettrez. Chaque recommandation intègre cette dimension — même quand le sujet initial est fiscal ou financier.</p>
                 </div>
             </div>
@@ -1350,8 +1384,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">🤝 Approche pluridisciplinaire</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Votre conseiller ne travaille jamais seul. Chaque stratégie est construite en coordination avec vos professionnels de confiance — notaires, avocats, experts-comptables, banquiers.</p>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Le rôle du conseiller, c'est d'être le <strong class="text-[#1f1a16]">chef d'orchestre</strong> : celui qui a la vision d'ensemble et qui s'assure que chaque intervenant agit dans la même direction. Pas de silos, pas de contradictions entre vos conseillers.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Votre conseiller ne travaille jamais seul. Chaque stratégie est construite en coordination avec vos professionnels de confiance — notaires, avocats, experts-comptables, banquiers.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Le rôle du conseiller, c'est d'être le <strong class="text-[#1f1a16]">chef d'orchestre</strong> : celui qui a la vision d'ensemble et qui s'assure que chaque intervenant agit dans la même direction. Pas de silos, pas de contradictions entre vos conseillers.</p>
                     <div class="flex flex-wrap gap-2 mt-4">
                         <span class="text-xs px-3 py-1.5 rounded-full bg-white border border-[#e5ded2] text-[#6d5c4a]">⚖️ Notaire</span>
                         <span class="text-xs px-3 py-1.5 rounded-full bg-white border border-[#e5ded2] text-[#6d5c4a]">📋 Avocat</span>
@@ -1365,7 +1399,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">⚖️💰📉 Trois volets, une seule stratégie</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Chaque situation patrimoniale a trois dimensions indissociables. Les traiter séparément, c'est prendre le risque de résoudre un problème en en créant un autre.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Chaque situation patrimoniale a trois dimensions indissociables. Les traiter séparément, c'est prendre le risque de résoudre un problème en en créant un autre.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                         <div class="bg-white rounded-xl p-4 border border-[#e5ded2]">
                             <div class="text-lg mb-2">⚖️</div>
@@ -1389,7 +1423,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">💎 100% indépendant</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Aucun lien capitalistique avec une banque, une compagnie d'assurance ou un réseau. IKCP sélectionne les solutions les plus adaptées à votre situation parmi l'ensemble de l'offre du marché — pas dans un catalogue maison.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Aucun lien capitalistique avec une banque, une compagnie d'assurance ou un réseau. IKCP sélectionne les solutions les plus adaptées à votre situation parmi l'ensemble de l'offre du marché — pas dans un catalogue maison.</p>
                     <p class="text-sm text-[#6d5c4a] leading-relaxed">Trois implantations pour vous accompagner au plus près :</p>
                     <div class="flex flex-wrap gap-3 mt-4">
                         <div class="bg-white rounded-xl px-5 py-3 border border-[#e5ded2] text-center">
@@ -1411,7 +1445,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ NOTRE OFFRE (REDESIGN) ══════════ -->
-    <section class="py-16 sm:py-24 relative overflow-hidden" style="background:#f9f6f0;">
+    <section class="py-20 sm:py-32 relative overflow-hidden" style="background:#f9f6f0;">
         <!-- Gold borders top & bottom -->
         <div class="absolute top-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg,transparent 5%,rgba(184,149,110,0.4) 30%,rgba(184,149,110,0.8) 50%,rgba(184,149,110,0.4) 70%,transparent 95%);"></div>
         <div class="absolute bottom-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg,transparent 5%,rgba(184,149,110,0.4) 30%,rgba(184,149,110,0.8) 50%,rgba(184,149,110,0.4) 70%,transparent 95%);"></div>
@@ -1428,19 +1462,19 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 <div class="group bg-white rounded-2xl p-7 border border-[#e5ded2] hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10">
                     <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#b8956e]/20 group-hover:scale-110 transition-all duration-300 text-xl">💎</div>
                     <h3 class="text-[#1f1a16] font-serif text-xl mb-2">Private Equity</h3>
-                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-4">Accédez à des fonds non cotés (PME, infrastructure, secondaire) avec des objectifs de performance x1.5 à x2.5.</p>
+                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-6">Accédez à des fonds non cotés (PME, infrastructure, secondaire) avec des objectifs de performance x1.5 à x2.5.</p>
                     <div class="flex items-center gap-2 text-xs text-[#b8956e]">🔒 Dossiers confidentiels sur demande</div>
                 </div>
                 <div class="group bg-white rounded-2xl p-7 border border-[#e5ded2] hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10">
                     <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#b8956e]/20 group-hover:scale-110 transition-all duration-300 text-xl">🏛️</div>
                     <h3 class="text-[#1f1a16] font-serif text-xl mb-2">Immobilier</h3>
-                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-4">Pierre-papier, nue-propriété, Malraux, Monuments Historiques, déficit foncier… solutions directes et indirectes.</p>
+                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-6">Pierre-papier, nue-propriété, Malraux, Monuments Historiques, déficit foncier… solutions directes et indirectes.</p>
                     <div class="flex items-center gap-2 text-xs text-[#b8956e]">📊 Rendements de 4 à 7 % nets visés</div>
                 </div>
                 <div class="group bg-white rounded-2xl p-7 border border-[#e5ded2] hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10">
                     <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#b8956e]/20 group-hover:scale-110 transition-all duration-300 text-xl">⚖️</div>
                     <h3 class="text-[#1f1a16] font-serif text-xl mb-2">Ingénierie Patrimoniale</h3>
-                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-4">Optimisation IR/IFI/IS, holding, démembrement, transmission, épargne salariale dirigeant.</p>
+                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-6">Optimisation IR/IFI/IS, holding, démembrement, transmission, épargne salariale dirigeant.</p>
                     <div class="flex items-center gap-2 text-xs text-[#b8956e]">🛡️ Stratégie sur-mesure</div>
                 </div>
             </div>
@@ -1454,7 +1488,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ CAS PRATIQUES — PROTECTION EN ACTION ══════════ -->
-    <section id="besoins" class="py-16 sm:py-24 bg-[#f9f6f0]">
+    <section id="besoins" class="py-20 sm:py-32 bg-[#f9f6f0]">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
             <div class="text-center mb-12">
                 <span class="gold-text font-semibold tracking-widest text-xs uppercase mb-3 block">La protection en action</span>
@@ -1824,7 +1858,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ COMMENT ÇA FONCTIONNE — HONORAIRES & PROCESS ══════════ -->
-    <section class="py-16 sm:py-24 bg-white border-t border-[#e5ded2]">
+    <section class="py-20 sm:py-32 bg-white border-t border-[#e5ded2]">
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
 
             <div class="text-center mb-14">
@@ -1930,8 +1964,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
 
     <!-- ══════════ LE CABINET ══════════ -->
-    <section id="philosophie" class="py-16 sm:py-24 bg-[#f9f6f0]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="philosophie" class="py-20 sm:py-32 bg-[#f9f6f0]">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
                     <span class="gold-text font-semibold tracking-widest text-xs uppercase mb-4 block">Votre Partenaire</span>
@@ -2086,10 +2120,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             </div>
         </div>
         <style>@keyframes teaseFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}</style>
-        <button @click="isOpen=!isOpen" class="relative group" style="background:none;border:none;cursor:pointer;padding:0;">
-            <span class="absolute -top-1 -right-1 flex h-3 w-3 z-10"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span>
-            <img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" style="width:56px;height:56px;border-radius:50%;object-fit:cover;transition:all 0.3s;border:2px solid rgba(184,149,110,0.3);" class="balloon-fly">
-            <div x-show="isOpen" style="width:56px;height:56px;border-radius:50%;background:#1f1a16;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <button @click="isOpen=!isOpen" class="relative group" style="background:none;border:none;cursor:pointer;padding:8px;">
+            <div class="balloon-pulse-ring"></div>
+            <div class="balloon-trail-dot" style="bottom:0;left:50%;margin-left:-3px;"></div>
+            <div class="balloon-trail-dot" style="bottom:4px;left:35%;animation-delay:0.5s;"></div>
+            <div class="balloon-trail-dot" style="bottom:2px;left:65%;animation-delay:1s;"></div>
+            <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5 z-10"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#b8956e]"></span></span>
+            <img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" style="width:64px;height:64px;border-radius:50%;object-fit:cover;transition:all 0.3s;border:3px solid rgba(184,149,110,0.4);" class="balloon-fly">
+            <div x-show="isOpen" style="width:64px;height:64px;border-radius:50%;background:#1f1a16;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
         </button>
     </div>
     <!-- ══════════ PWA INSTALL PROMPT ══════════ -->
