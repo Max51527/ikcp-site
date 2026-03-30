@@ -66,6 +66,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecod"></div>
 </div>
 <div id="chart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:24px"></div>
+<div style="font-size:11px;color:var(--muted);line-height:1.8;padding:16px;background:var(--light);border-radius:12px;border:1px solid var(--border);margin-bottom:24px"><strong style="color:var(--dark)">Sources juridiques</strong><br>Bareme progressif en ligne directe : art. 777 du CGI (identique succession)<br>Abattement enfant : 100 000 EUR par parent (art. 779-I CGI), renouvelable tous les 15 ans (art. 784 CGI)<br>Abattement petit-enfant : 31 865 EUR (art. 790-B CGI)<br>Abattement frere/soeur : 15 932 EUR (art. 779-IV CGI)<br>Abattement epoux/PACS : 80 724 EUR (art. 790-E CGI)<br>Don familial numeraire : 31 865 EUR supplementaires (art. 790-G CGI), donateur < 80 ans<br>Table demembrement : art. 669 CGI<br>Baremes geles depuis LFR aout 2012. LF 2026 inchangee.<br><em>Simulation indicative. Ne constitue pas un conseil en investissement (MIF II).</em></div>
 <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px">
 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
 <input type="checkbox" id="optC" style="width:22px;height:22px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optF').style.display=this.checked?'block':'none'">
@@ -97,6 +98,18 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 </footer>
 <script>
 function fmt(n){return Math.round(n).toLocaleString('fr-FR')+' \u20AC';}
+// ═══ SOURCES JURIDIQUES — DONATION ═══
+// Barème progressif en ligne directe : art. 777 du CGI (identique succession)
+// Abattement enfant : 100 000 EUR par parent (art. 779-I CGI), renouvelable tous les 15 ans (art. 784 CGI)
+// Abattement petit-enfant : 31 865 EUR (art. 790-B CGI)
+// Abattement frère/sœur : 15 932 EUR (art. 779-IV CGI)
+// Abattement époux/PACS : 80 724 EUR (art. 790-E CGI)
+// Don familial de sommes d'argent (Sarkozy) : 31 865 EUR supplémentaires (art. 790-G CGI), cumulable, donateur < 80 ans, donataire majeur
+// Démembrement : table art. 669 CGI, nue-propriété décotée selon âge du donateur
+// Réduction pour donation avant 70 ans : supprimée depuis 2012
+// Rapport fiscal des donations < 15 ans (art. 784 CGI)
+// Barèmes gelés depuis 2012. LF 2026 inchangée sur ce point.
+// ═══════════════════════════════════════════
 var ABATS={enfant:100000,petitenfant:31865,fratrie:15932,epoux:80724};
 var TR=[{m:8072,t:.05},{m:12109,t:.1},{m:15932,t:.15},{m:552324,t:.2},{m:902838,t:.3},{m:1805677,t:.4},{m:1e15,t:.45}];
 function calcD(b){var d=0,p=0;for(var i=0;i<TR.length;i++){if(b<=TR[i].m){d+=(b-p)*TR[i].t;break;}d+=(TR[i].m-p)*TR[i].t;p=TR[i].m;}return Math.round(d);}

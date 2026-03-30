@@ -66,6 +66,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecod"></div>
 </div>
 <div id="chart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:24px"></div>
+<div style="font-size:11px;color:var(--muted);line-height:1.8;padding:16px;background:var(--light);border-radius:12px;border:1px solid var(--border);margin-bottom:24px"><strong style="color:var(--dark)">Sources juridiques</strong><br>IFI : art. 964 a 983 du CGI (cree par LF 2018, remplace ISF)<br>Seuil imposition : 1 300 000 EUR (art. 964 CGI), bareme a partir de 800 000 EUR<br>Bareme : 0,50% / 0,70% / 1,00% / 1,25% / 1,50% (art. 977 CGI)<br>Residence principale : abattement 30% (art. 973 CGI)<br>Dettes deductibles : emprunts immobiliers (art. 974 CGI)<br>Reduction dons : 75% plafonne 50 000 EUR (art. 978 CGI)<br>Biens professionnels : exoneres (art. 975 CGI)<br>Baremes inchanges par LF 2026.<br><em>Simulation indicative. Ne constitue pas un conseil en investissement (MIF II).</em></div>
 <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px">
 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
 <input type="checkbox" id="optC" style="width:22px;height:22px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optF').style.display=this.checked?'block':'none'">
@@ -97,6 +98,24 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 </footer>
 <script>
 function fmt(n){return Math.round(n).toLocaleString('fr-FR')+' \u20AC';}
+// ═══ SOURCES JURIDIQUES — IFI ═══
+// Impôt sur la Fortune Immobilière : art. 964 à 983 du CGI (créé par LF 2018, remplace l'ISF)
+// Seuil d'imposition : 1 300 000 EUR de patrimoine immobilier net (art. 964 CGI)
+// Seuil de taxation effective : 800 000 EUR (le barème démarre à 800K mais l'impôt n'est dû qu'au-delà de 1,3M)
+// Barème (art. 977 CGI) :
+//   0 à 800 000 : 0%
+//   800 000 à 1 300 000 : 0,50%
+//   1 300 000 à 2 570 000 : 0,70%
+//   2 570 000 à 5 000 000 : 1,00%
+//   5 000 000 à 10 000 000 : 1,25%
+//   > 10 000 000 : 1,50%
+// Décote (art. 977 CGI) : si patrimoine entre 1,3M et 1,4M → IFI = 17 500 - 1,25% × patrimoine net
+// Biens exonérés : biens professionnels (art. 975 CGI), bois/forêts 75% (art. 976 CGI)
+// Résidence principale : abattement 30% (art. 973 CGI)
+// Dettes déductibles : emprunts immobiliers (art. 974 CGI), plafonnement intégré
+// Réductions : dons à organismes d'intérêt général 75% plafonnés 50 000 EUR (art. 978 CGI)
+// Barème inchangé par LF 2026.
+// ═══════════════════════════════════════════
 function calcIFI(b){if(b<=800000)return 0;if(b<=1300000)return Math.round((b-800000)*0.005);var d=(1300000-800000)*0.005;if(b<=2570000){d+=(b-1300000)*0.007;}else{d+=(2570000-1300000)*0.007;if(b<=5000000){d+=(b-2570000)*0.01;}else{d+=(5000000-2570000)*0.01;if(b<=10000000){d+=(b-5000000)*0.0125;}else{d+=(10000000-5000000)*0.0125;d+=(b-10000000)*0.015;}}}return Math.round(d);}
 
 function chart(v1,v2,l1,l2){
