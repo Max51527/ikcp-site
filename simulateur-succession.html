@@ -161,10 +161,23 @@ function envoyerOptin(){
     var p=document.getElementById('optPrenom').value;
     var e=document.getElementById('optEmail').value;
     if(!p||!e){alert('Remplissez prenom et email.');return;}
+    var pat=document.getElementById('patrimoine').value;
+    var enf=document.getElementById('enfants').value;
     fetch('https://ikcp-prospect.maxime-ead.workers.dev',{
         method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({source:'Simulateur Succession IKCP',prenom:p,email:e,r1:document.getElementById('resSans').textContent,r2:document.getElementById('resAvec').textContent,eco:document.getElementById('resEco').textContent,date:new Date().toISOString()}),
-        mode:'no-cors'
+        body:JSON.stringify({
+            source:'Simulateur Succession IKCP',
+            prenom:p,
+            email:e,
+            r1:document.getElementById('resSans').textContent,
+            r2:document.getElementById('resAvec').textContent,
+            eco:document.getElementById('resEco').textContent,
+            patrimoine:pat+' EUR',
+            enfants:enf,
+            date:new Date().toISOString()
+        })
+    }).then(function(r){return r.json();}).then(function(d){
+        console.log('Worker response:',d);
     }).catch(function(x){console.log('webhook',x);});
     document.getElementById('optChamps').style.display='none';
     document.getElementById('optCheck').parentElement.style.display='none';
