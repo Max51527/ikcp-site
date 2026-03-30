@@ -205,99 +205,67 @@ document.getElementById('optOk').style.display='block';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script>
 function genPDF(){
-var{jsPDF}=window.jspdf;
+try{
+if(!window.jspdf){alert('Le module PDF charge encore. Reessayez dans 2 secondes.');return;}
+var jsPDF=window.jspdf.jsPDF;
 var doc=new jsPDF('p','mm','a4');
 var w=210,m=20,cw=w-2*m;
 var pat=document.getElementById('patrimoine').value||'0';
 var enf=document.getElementById('enfants').value||'0';
-var r1=document.getElementById('resSans').textContent;
-var r2=document.getElementById('resAvec').textContent;
-var eco=document.getElementById('resEco').textContent;
+var r1=document.getElementById('resSans').textContent||'-';
+var r2=document.getElementById('resAvec').textContent||'-';
+var eco=document.getElementById('resEco').textContent||'-';
 var dt=new Date().toLocaleDateString('fr-FR');
-
 doc.setFillColor(31,26,22);doc.rect(0,0,w,28,'F');
 doc.setFillColor(184,149,110);doc.rect(0,28,w,1,'F');
-doc.setTextColor(184,149,110);doc.setFont('helvetica','bold');doc.setFontSize(22);doc.drawString;
+doc.setTextColor(184,149,110);doc.setFont('helvetica','bold');doc.setFontSize(22);
 doc.text('IKCP.',m,18);
 doc.setTextColor(255,255,255);doc.setFontSize(7);
-doc.text('CABINET SPECIALISE EN PROTECTION & TRANSMISSION DU PATRIMOINE',m,24);
+doc.text('PROTECTION ET TRANSMISSION DU PATRIMOINE',m,24);
 doc.setFontSize(8);doc.text('ikcp.eu',w-m,18,{align:'right'});
-doc.setTextColor(150,150,150);doc.text(dt,w-m,24,{align:'right'});
-
+doc.setTextColor(150,150,150);doc.text('Rapport du '+dt,w-m,24,{align:'right'});
 var y=42;
 doc.setTextColor(31,26,22);doc.setFontSize(18);doc.setFont('helvetica','bold');
-doc.text('Votre simulation succession',m,y);
-y+=10;
+doc.text('Votre simulation succession',m,y);y+=8;
 doc.setTextColor(158,144,128);doc.setFontSize(10);doc.setFont('helvetica','normal');
-doc.text('Baremes officiels 2026 — Art. 777 du CGI',m,y);
-y+=14;
-
-doc.setFillColor(254,242,242);doc.roundedRect(m,y,cw/2-3,32,3,3,'F');
-doc.setDrawColor(254,202,202);doc.roundedRect(m,y,cw/2-3,32,3,3,'S');
+doc.text('Baremes officiels 2026 - Art. 777 du CGI',m,y);y+=14;
+doc.setFillColor(254,242,242);doc.rect(m,y,cw/2-4,30,'F');
 doc.setTextColor(220,38,38);doc.setFontSize(8);doc.setFont('helvetica','bold');
-doc.text('SANS ANTICIPATION',m+5,y+10);
-doc.setFontSize(20);doc.text(r1,m+5,y+24);
-
-var x2=m+cw/2+3;
-doc.setFillColor(240,253,244);doc.roundedRect(x2,y,cw/2-3,32,3,3,'F');
-doc.setDrawColor(187,247,208);doc.roundedRect(x2,y,cw/2-3,32,3,3,'S');
+doc.text('SANS ANTICIPATION',m+5,y+10);doc.setFontSize(18);doc.text(r1,m+5,y+24);
+var x2=m+cw/2+4;
+doc.setFillColor(240,253,244);doc.rect(x2,y,cw/2-4,30,'F');
 doc.setTextColor(22,163,74);doc.setFontSize(8);doc.setFont('helvetica','bold');
-doc.text('AVEC STRATEGIE PATRIMONIALE',x2+5,y+10);
-doc.setFontSize(20);doc.text(r2,x2+5,y+24);
-y+=40;
-
-doc.setFillColor(31,26,22);doc.roundedRect(m,y,cw,24,3,3,'F');
+doc.text('AVEC STRATEGIE',x2+5,y+10);doc.setFontSize(18);doc.text(r2,x2+5,y+24);y+=38;
+doc.setFillColor(31,26,22);doc.rect(m,y,cw,22,'F');
 doc.setTextColor(184,149,110);doc.setFontSize(8);doc.setFont('helvetica','bold');
 doc.text('ECONOMIE POTENTIELLE',w/2,y+8,{align:'center'});
-doc.setTextColor(255,255,255);doc.setFontSize(22);
-doc.text(eco,w/2,y+20,{align:'center'});
-y+=34;
-
+doc.setTextColor(255,255,255);doc.setFontSize(20);doc.text(eco,w/2,y+19,{align:'center'});y+=30;
 doc.setTextColor(31,26,22);doc.setFontSize(12);doc.setFont('helvetica','bold');
-doc.text('Donnees de votre simulation',m,y);
-doc.setFillColor(184,149,110);doc.rect(m,y+2,40,0.8,'F');
-y+=10;
+doc.text('Donnees de votre simulation',m,y);y+=3;
+doc.setFillColor(184,149,110);doc.rect(m,y,40,0.8,'F');y+=8;
 doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(77,63,51);
-var items=[['Patrimoine estime',pat+' EUR'],['Nombre d\'enfants',enf],['Bareme applique','Art. 777 CGI — Ligne directe'],['Abattement par enfant','100 000 EUR (art. 779-I CGI)'],['AV avant 70 ans','152 500 EUR/benef. (art. 990 I)'],['Conjoint survivant','Exonere (art. 796-0 bis CGI)']];
-items.forEach(function(it){doc.setFont('helvetica','normal');doc.text(it[0],m,y);doc.setFont('helvetica','bold');doc.text(it[1],w-m,y,{align:'right'});y+=7;});
-y+=6;
-
+var items=[['Patrimoine estime',pat+' EUR'],['Nombre d\'enfants',enf],['Bareme','Art. 777 CGI - Ligne directe'],['Abattement/enfant','100 000 EUR (art. 779-I CGI)'],['AV avant 70 ans','152 500 EUR/benef. (art. 990 I)'],['Conjoint','Exonere (art. 796-0 bis CGI)']];
+for(var i=0;i<items.length;i++){doc.setFont('helvetica','normal');doc.text(items[i][0],m,y);doc.setFont('helvetica','bold');doc.text(items[i][1],w-m,y,{align:'right'});y+=7;}
+y+=8;
 doc.setTextColor(31,26,22);doc.setFontSize(12);doc.setFont('helvetica','bold');
-doc.text('Leviers d\'optimisation identifies',m,y);
-doc.setFillColor(184,149,110);doc.rect(m,y+2,55,0.8,'F');
-y+=10;
-
-var leviers=[
-['1. Donation progressive','100 000 EUR par enfant par parent, renouvelable tous les 15 ans (art. 779-I et 784 CGI).'],
-['2. Assurance-vie avant 70 ans','152 500 EUR par beneficiaire exoneres (art. 990 I CGI). Pour 2 enfants = 305 000 EUR.'],
-['3. Demembrement de propriete','Donner la nue-propriete en conservant l\'usufruit. Droits sur la nue-propriete seulement (art. 669 CGI).']
-];
-leviers.forEach(function(l){
-doc.setFillColor(243,237,228);doc.roundedRect(m,y-3,cw,16,2,2,'F');
-doc.setTextColor(31,26,22);doc.setFontSize(9);doc.setFont('helvetica','bold');
-doc.text(l[0],m+4,y+3);
-doc.setTextColor(77,63,51);doc.setFont('helvetica','normal');doc.setFontSize(8);
-var lines=doc.splitTextToSize(l[1],cw-8);
-doc.text(lines,m+4,y+9);
-y+=18;
-});
-
-y+=4;
+doc.text('Leviers d\'optimisation',m,y);y+=3;
+doc.setFillColor(184,149,110);doc.rect(m,y,50,0.8,'F');y+=8;
+var leviers=[['1. Donation progressive','100 000 EUR/enfant/parent tous les 15 ans (art. 779-I, 784 CGI)'],['2. Assurance-vie avant 70 ans','152 500 EUR/beneficiaire exoneres (art. 990 I CGI)'],['3. Demembrement','Nue-propriete transmise, droits reduits (art. 669 CGI)']];
+for(var j=0;j<leviers.length;j++){doc.setFillColor(243,237,228);doc.rect(m,y-3,cw,14,'F');doc.setTextColor(31,26,22);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text(leviers[j][0],m+3,y+3);doc.setTextColor(77,63,51);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(leviers[j][1],m+3,y+9);y+=17;}
+y+=6;
 doc.setTextColor(158,144,128);doc.setFontSize(7);doc.setFont('helvetica','normal');
-doc.text('Simulation indicative. Ne constitue pas un conseil en investissement personnalise (MIF II, art. 325-3 RG AMF).',m,y);
-y+=4;
-doc.text('Sources : Art. 777, 779, 784, 990 I, 757 B, 669 du CGI. Baremes geles depuis LFR aout 2012. LF 2026 inchangee.',m,y);
-
+doc.text('Simulation indicative. Ne constitue pas un conseil en investissement (MIF II, art. 325-3 RG AMF).',m,y);y+=4;
+doc.text('Sources : Art. 777, 779, 784, 990 I, 757 B, 669 du CGI.',m,y);
 doc.setFillColor(31,26,22);doc.rect(0,282,w,15,'F');
 doc.setFillColor(184,149,110);doc.rect(0,281.5,w,0.5,'F');
 doc.setTextColor(184,149,110);doc.setFontSize(12);doc.setFont('helvetica','bold');
 doc.text('IKCP.',m,290);
 doc.setTextColor(150,150,150);doc.setFontSize(7);doc.setFont('helvetica','normal');
-doc.text('Maxime Juveneton - CGP independant - ORIAS 23001568 - SIREN 947 972 436',55,289);
+doc.text('Maxime Juveneton - CGP independant - ORIAS 23001568',55,289);
 doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','bold');
 doc.text('ikcp.eu',w-m,290,{align:'right'});
-
 doc.save('IKCP-Simulation-Succession.pdf');
+}catch(e){alert('Erreur PDF: '+e.message);console.error('PDF error:',e);}
 }
 </script>
 </body>
