@@ -154,7 +154,7 @@ document.getElementById('optC').parentElement.style.display='none';
 document.getElementById('optOk').innerHTML='<div style="font-size:16px;color:#16a34a;font-weight:600;margin-bottom:12px">Envoye !</div><div style="font-size:13px;color:var(--text);line-height:1.8">Vos resultats ont ete transmis a Maxime Juveneton.<br>Il vous recontactera par email avec une analyse personnalisee.<br><br><a href=\"https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial\" target=\"_blank\" style=\"display:inline-block;background:var(--dark);color:white;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:8px\">Ou reserver un echange maintenant</a></div>';
 document.getElementById('optOk').style.display='block';
 }
-</script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+</script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script>
 function genPDF(){
 var{jsPDF}=window.jspdf;var doc=new jsPDF('p','mm','a4');var w=210,m=20,cw=w-2*m;
