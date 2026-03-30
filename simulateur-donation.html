@@ -67,6 +67,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 </div>
 <div id="chart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:24px"></div>
 <div style="font-size:11px;color:var(--muted);line-height:1.8;padding:16px;background:var(--light);border-radius:12px;border:1px solid var(--border);margin-bottom:24px"><strong style="color:var(--dark)">Sources juridiques</strong><br>Bareme progressif en ligne directe : art. 777 du CGI (identique succession)<br>Abattement enfant : 100 000 EUR par parent (art. 779-I CGI), renouvelable tous les 15 ans (art. 784 CGI)<br>Abattement petit-enfant : 31 865 EUR (art. 790-B CGI)<br>Abattement frere/soeur : 15 932 EUR (art. 779-IV CGI)<br>Abattement epoux/PACS : 80 724 EUR (art. 790-E CGI)<br>Don familial numeraire : 31 865 EUR supplementaires (art. 790-G CGI), donateur < 80 ans<br>Table demembrement : art. 669 CGI<br>Baremes geles depuis LFR aout 2012. LF 2026 inchangee.<br><em>Simulation indicative. Ne constitue pas un conseil en investissement (MIF II).</em></div>
+<div style="text-align:center;margin-bottom:24px"><button onclick="genPDF()" class="btn" style="background:var(--gold);color:var(--dark);padding:14px 32px;font-size:15px">&#128196; Telecharger mon rapport PDF</button><p style="font-size:11px;color:var(--muted);margin-top:8px">Gratuit — vos resultats personnalises</p></div>
 <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px">
 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
 <input type="checkbox" id="optC" style="width:22px;height:22px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optF').style.display=this.checked?'block':'none'">
@@ -150,4 +151,31 @@ document.getElementById('optC').parentElement.style.display='none';
 document.getElementById('optOk').innerHTML='<div style="font-size:16px;color:#16a34a;font-weight:600;margin-bottom:12px">Envoye !</div><div style="font-size:13px;color:var(--text);line-height:1.8">Vos resultats ont ete transmis a Maxime Juveneton.<br>Il vous recontactera par email avec une analyse personnalisee.<br><br><a href=\"https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial\" target=\"_blank\" style=\"display:inline-block;background:var(--dark);color:white;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:8px\">Ou reserver un echange maintenant</a></div>';
 document.getElementById('optOk').style.display='block';
 }
-</script></body></html>
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script>
+function genPDF(){
+var{jsPDF}=window.jspdf;var doc=new jsPDF('p','mm','a4');var w=210,m=20,cw=w-2*m;
+var val=document.getElementById('montant').value||'0';
+var lien=document.getElementById('lien');var lienTxt=lien.options[lien.selectedIndex].text;
+var r1=document.getElementById('r1').textContent;
+var r2=document.getElementById('r2').textContent;
+var eco=document.getElementById('eco').textContent;
+var dt=new Date().toLocaleDateString('fr-FR');
+doc.setFillColor(31,26,22);doc.rect(0,0,w,28,'F');doc.setFillColor(184,149,110);doc.rect(0,28,w,1,'F');
+doc.setTextColor(184,149,110);doc.setFont('helvetica','bold');doc.setFontSize(22);doc.text('IKCP.',m,18);
+doc.setTextColor(255,255,255);doc.setFontSize(7);doc.text('PROTECTION & TRANSMISSION DU PATRIMOINE',m,24);
+doc.setFontSize(8);doc.text('ikcp.eu',w-m,18,{align:'right'});doc.setTextColor(150,150,150);doc.text(dt,w-m,24,{align:'right'});
+var y=42;doc.setTextColor(31,26,22);doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('Votre simulation donation',m,y);y+=10;
+doc.setTextColor(158,144,128);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Baremes 2026 - Art. 779 CGI',m,y);y+=14;
+doc.setFillColor(254,242,242);doc.roundedRect(m,y,cw/2-3,32,3,3,'F');
+doc.setTextColor(220,38,38);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('SANS OPTIMISATION',m+5,y+10);doc.setFontSize(20);doc.text(r1,m+5,y+24);
+var x2=m+cw/2+3;doc.setFillColor(240,253,244);doc.roundedRect(x2,y,cw/2-3,32,3,3,'F');
+doc.setTextColor(22,163,74);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('AVEC STRATEGIE',x2+5,y+10);doc.setFontSize(20);doc.text(r2,x2+5,y+24);y+=40;
+doc.setFillColor(31,26,22);doc.roundedRect(m,y,cw,24,3,3,'F');doc.setTextColor(184,149,110);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('ECONOMIE POTENTIELLE',w/2,y+8,{align:'center'});doc.setTextColor(255,255,255);doc.setFontSize(22);doc.text(eco,w/2,y+20,{align:'center'});y+=34;
+doc.setTextColor(31,26,22);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Montant : '+val+' EUR | Lien : '+lienTxt,m,y);y+=10;
+doc.setTextColor(158,144,128);doc.setFontSize(7);doc.text('Sources : Art. 777, 779, 790-B, 790-E, 790-G, 784, 669 CGI. MIF II.',m,y);
+doc.setFillColor(31,26,22);doc.rect(0,282,w,15,'F');doc.setFillColor(184,149,110);doc.rect(0,281.5,w,0.5,'F');doc.setTextColor(184,149,110);doc.setFontSize(12);doc.setFont('helvetica','bold');doc.text('IKCP.',m,290);doc.setTextColor(255,255,255);doc.setFontSize(9);doc.text('ikcp.eu',w-m,290,{align:'right'});
+doc.save('IKCP-Simulation-Donation.pdf');
+}
+</script>
+</body></html>
