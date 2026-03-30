@@ -34,8 +34,8 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <section style="padding:100px 20px 40px;text-align:center;max-width:720px;margin:0 auto">
 <div style="display:inline-block;background:rgba(184,149,110,0.1);border:1px solid rgba(184,149,110,0.2);border-radius:40px;padding:6px 18px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px">Retraite TNS - Taux de remplacement</div>
 <h1 style="font-size:clamp(28px,5vw,46px);color:var(--dark);line-height:1.1;margin-bottom:16px">Dirigeant, quel sera<br><span style="color:var(--gold)">votre niveau de vie a la retraite ?</span></h1>
-<p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">Les TNS ont un taux de remplacement de 30 a 50%. Simulez l'ecart.</p>
-<p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit - Sans inscription - Baremes 2026</p>
+<p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">Les TNS ont un taux de remplacement de 30 a 40% (source : DREES / COR 2024). Simulez l'ecart et l'effort d'epargne necessaire.</p>
+<p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit - Sans inscription - PASS 2026 : 48 060 EUR - Age legal : 64 ans (loi 2023-270)</p>
 </section>
 <section style="max-width:800px;margin:0 auto;padding:0 20px 40px">
 <div style="background:white;border-radius:20px;border:1px solid var(--border);padding:32px">
@@ -66,6 +66,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecod"></div>
 </div>
 <div id="chart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:24px"></div>
+<div id="sources" style="margin-bottom:24px"></div>
 <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px">
 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
 <input type="checkbox" id="optC" style="width:22px;height:22px;accent-color:var(--dark);margin-top:2px;flex-shrink:0" onchange="document.getElementById('optF').style.display=this.checked?'block':'none'">
@@ -88,6 +89,12 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <a href="https://ikcp.eu/#bilan-patrimonial" class="btn" style="padding:14px 32px;font-size:15px">Diagnostic patrimonial complet</a>
 </div>
 </div></div></section>
+<div style="max-width:700px;margin:0 auto;padding:20px 20px 10px"><h2 style="font-size:22px;color:var(--dark);margin-bottom:16px;text-align:center">Questions frequentes</h2><div style="display:grid;gap:10px">
+<details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer"><summary style="font-weight:600;font-size:14px;color:var(--dark)">Quel est le taux de remplacement reel d'un TNS ?</summary><p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Selon le rapport annuel du COR 2024 et les etudes de la DREES, le taux de remplacement net moyen d'un TNS artisan/commercant se situe entre 30 et 40% du dernier revenu d'activite, contre 50 a 60% pour un cadre salarie. La raison : les cotisations retraite des TNS (base SSI + complementaire RCI) sont plus faibles que celles du regime general + AGIRC-ARRCO. Source : rapport COR 2024, DREES Retraites 2023.</p></details>
+<details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer"><summary style="font-weight:600;font-size:14px;color:var(--dark)">Quel est le plafond PER pour un TNS en 2026 ?</summary><p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Le plafond de deduction fiscale PER pour un TNS est le plus eleve de : 10% du PASS (4 806 EUR) ou 10% du benefice imposable + 15% de la fraction du benefice entre 1 et 8 PASS. En 2026, le plafond maximum est de 88 911 EUR (art. 154 bis du CGI, PASS 2026 = 48 060 EUR). C'est un levier majeur de reduction d'IR + capitalisation retraite.</p></details>
+<details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer"><summary style="font-weight:600;font-size:14px;color:var(--dark)">Quelles sont les cotisations retraite TNS en 2026 ?</summary><p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">Retraite de base SSI : 17,75% sur les revenus inferieurs a 1 PASS + 0,72% au-dela (deplafonne). Retraite complementaire RCI : 8,1% sous 1 PASS + 9,1% entre 1 et 4 PASS. Sources : LFSS 2024 art. 18 et 26, decret n 2024-688 du 5 juillet 2024, reforme applicable a compter d'avril 2026. PASS 2026 : 48 060 EUR.</p></details>
+<details style="background:white;border-radius:12px;border:1px solid var(--border);padding:16px 20px;cursor:pointer"><summary style="font-weight:600;font-size:14px;color:var(--dark)">Age legal de depart a la retraite en 2026 ?</summary><p style="margin-top:10px;font-size:13px;line-height:1.7;color:var(--text)">64 ans pour les personnes nees a partir du 1er janvier 1968. Source : loi n 2023-270 du 14 avril 2023 de financement rectificative de la securite sociale pour 2023 (reforme des retraites). Le taux plein (sans decote) est atteint a 67 ans ou avec le nombre de trimestres requis (172 trimestres pour la generation 1968+, art. L.351-1 CSS).</p></details>
+</div></div>
 <div style="max-width:700px;margin:0 auto;padding:20px 20px 40px;text-align:center"><p style="font-size:11px;color:var(--muted);margin-bottom:8px">Voir aussi :</p><p style="font-size:12px;line-height:2.2"><a href="/deces-dirigeant.html" style="color:var(--gold);text-decoration:none">Deces Dirigeant</a> - <a href="/ardeche-dirigeant-tns.html" style="color:var(--gold);text-decoration:none">Dirigeants TNS Ardeche</a></p></div>
 <footer style="background:var(--dark);padding:40px 20px;text-align:center">
 <a href="https://ikcp.eu" style="text-decoration:none;font-family:'Playfair Display',serif;font-size:18px;font-weight:700" class="shimmer">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.3)">.</span></a>
@@ -97,7 +104,21 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 </footer>
 <script>
 function fmt(n){return Math.round(n).toLocaleString('fr-FR')+' \u20AC';}
+// ═══ SOURCES JURIDIQUES ═══
+// PASS 2026 : 48 060 EUR (arrêté du 19/12/2025, JORF 22/12/2025)
+// Retraite base TNS (SSI) : art. L.634-2 CSS, taux 17,75% <1 PASS + 0,72% déplafonné (décret 2024-688, LFSS 2024 art.18)
+// Retraite complémentaire TNS (RCI) : 8,1% <1 PASS + 9,1% 1-4 PASS (LFSS 2024, décret 2024-688)
+// Retraite base PL (CNAVPL) : 8,73% T1 + 2,10% T2 (2026, art. L.642-1 CSS)
+// Taux de remplacement : études DREES 2023-2024, rapport COR 2024
+//   - TNS artisan/commerçant (SSI) : 30-40% selon durée cotisation et revenus
+//   - Dirigeant assimilé salarié (CNAV + AGIRC-ARRCO) : 50-60%
+//   - Profession libérale (CNAVPL + caisse complémentaire) : 25-35%
+// PER TNS : art. 154 bis CGI, plafond = max(10% PASS, 10% bénéfice + 15% entre 1-8 PASS) = 88 911 EUR max 2026
+// Âge légal retraite : 64 ans (Loi 2023-270 du 14/04/2023, réforme des retraites)
+// ═══════════════════════════
+var PASS=48060;
 var TAUX={tns:0.35,salarie:0.55,liberal:0.30};
+var AGE_LEGAL=64;
 
 function chart(v1,v2,l1,l2){
 var c=document.getElementById('chart');if(!c)return;
@@ -110,16 +131,23 @@ var rev=parseInt(document.getElementById('revenu').value)||0;
 var st=document.getElementById('statut').value;
 var ep=parseInt(document.getElementById('epargne').value)||0;
 var tx=TAUX[st]||0.35;var pension=Math.round(rev*tx);var ecart=rev-pension;
-var annees=Math.max(0,65-age);var capitalNec=Math.round(ecart*20);
+var annees=Math.max(0,AGE_LEGAL-age);var capitalNec=Math.round(ecart*20);
 var effort=annees>0?Math.max(0,Math.round((capitalNec-ep)/(annees*12))):0;
+var plafondPER=Math.max(PASS*0.1,Math.min(rev*0.1+Math.max(0,Math.min(rev,PASS*8)-PASS)*0.15,88911));
 document.getElementById('r1').textContent=Math.round(tx*100)+'%';
 document.getElementById('r1d').textContent='Pension : '+fmt(pension)+'/an soit '+fmt(Math.round(pension/12))+'/mois';
 document.getElementById('r2').textContent=fmt(effort)+'/mois';
-document.getElementById('r2d').textContent=annees+' ans pour constituer '+fmt(capitalNec);
+document.getElementById('r2d').textContent=annees+' ans (depart a '+AGE_LEGAL+' ans) pour constituer '+fmt(capitalNec);
 document.getElementById('eco').textContent=fmt(Math.round(ecart/12))+'/mois';
-document.getElementById('ecod').textContent='de perte entre aujourd\'hui et la retraite';
+document.getElementById('ecod').textContent='Ecart mensuel entre revenus actuels et pension estimee';
 chart(rev,pension,'Revenus actuels','Pension estimee');
 document.getElementById('resultats').style.display='block';
+var srcDiv=document.getElementById('sources');
+if(srcDiv){
+var statName=st==='tns'?'TNS artisan/commercant (SSI)':st==='salarie'?'Dirigeant assimile salarie (CNAV + AGIRC-ARRCO)':'Profession liberale (CNAVPL)';
+var srcBase=st==='tns'?'Retraite base SSI : 17,75% < 1 PASS + 0,72% deplafonne (art. L.634-2 CSS, decret 2024-688)':st==='salarie'?'Retraite base CNAV : 17,75% < 1 PASS (art. L.351-1 CSS) + AGIRC-ARRCO':'Retraite base CNAVPL : 8,73% T1 + 2,10% T2 (art. L.642-1 CSS, 2026)';
+var srcComp=st==='tns'?'Retraite complementaire RCI : 8,1% < 1 PASS + 9,1% 1-4 PASS (LFSS 2024, decret 2024-688)':st==='salarie'?'Retraite complementaire AGIRC-ARRCO : taux appel 127% sur 6,20% T1 + 17,00% T2':'Retraite complementaire : selon caisse (CIPAV, CARMF, CAVEC...)';
+srcDiv.innerHTML='<div style="font-size:11px;color:var(--muted);line-height:1.8;padding:16px;background:var(--light);border-radius:12px;border:1px solid var(--border)"><strong style="color:var(--dark)">Sources et hypotheses</strong><br>Profil : '+statName+'<br>Taux de remplacement estime : '+Math.round(tx*100)+'% (source : etudes DREES 2023-2024, rapport annuel COR 2024)<br>'+srcBase+'<br>'+srcComp+'<br>PASS 2026 : '+fmt(PASS)+' (arrete du 19/12/2025)<br>Age legal de depart : '+AGE_LEGAL+' ans (loi 2023-270 du 14/04/2023)<br>Duree estimee de retraite : 20 ans (esperance de vie INSEE 2024)<br>PER TNS : plafond deductible '+fmt(Math.round(plafondPER))+' (art. 154 bis CGI)<br><em>Simulation indicative. Ne constitue pas un conseil en investissement (MIF II, art. 325-3 RG AMF).</em></div>';}
 document.getElementById('resultats').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
