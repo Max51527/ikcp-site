@@ -701,16 +701,16 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              }"
              x-init="startRotation()">
 
-            <!-- IKCP brand + implantations — LEFT ALIGNED -->
-            <div class="opacity-0 mb-8 sm:mb-10 text-left" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
-                <div class="font-serif text-3xl sm:text-4xl font-bold auto-color-change mb-1">IKCP<span class="gold-text">.</span></div>
-                <p class="text-[11px] sm:text-xs font-medium tracking-wide mb-3" style="color:#b8956e;">Cabinet spécialisé en Protection & Transmission du Patrimoine</p>
-                <div class="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-wider" style="color:#9e9080;">
-                    <span class="font-semibold" style="color:#1f1a16;">Ardèche</span>
-                    <span style="color:rgba(184,149,110,0.3);">—</span>
-                    <span>Saint-Marcel-lès-Annonay</span>
-                    <span style="color:rgba(184,149,110,0.2);">·</span>
-                    <span style="color:rgba(184,149,110,0.5);">Également à Combloux & Megève</span>
+            <!-- Implantation card — LEFT, under nav IKCP logo -->
+            <div class="opacity-0 mb-8 sm:mb-10 flex items-start" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
+                <div class="text-left">
+                    <p class="text-[10px] sm:text-[11px] font-medium tracking-wider mb-3" style="color:#b8956e;">Cabinet spécialisé en Protection & Transmission du Patrimoine</p>
+                    <div class="inline-block rounded-xl border border-[#e5ded2] bg-white/80 px-6 py-4 text-center" style="backdrop-filter:blur(4px);">
+                        <div class="font-serif text-lg sm:text-xl font-bold mb-1" style="color:#1f1a16;">Ardèche</div>
+                        <div class="text-xs sm:text-sm font-medium" style="color:#b8956e;">Saint-Marcel-lès-Annonay</div>
+                        <div class="h-px w-10 mx-auto my-2" style="background:rgba(184,149,110,0.2);"></div>
+                        <div class="text-[9px] sm:text-[10px] tracking-widest uppercase" style="color:rgba(184,149,110,0.45);">Également à Combloux · Megève</div>
+                    </div>
                 </div>
             </div>
 
