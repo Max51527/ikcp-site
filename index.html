@@ -701,7 +701,16 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              }"
              x-init="startRotation()">
 
-            <!-- IKCP brand removed -->
+            <!-- IKCP brand + implantations -->
+            <div class="opacity-0 mb-6 sm:mb-8" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
+                <div class="font-serif text-2xl sm:text-3xl font-bold auto-color-change mb-3">IKCP<span class="gold-text">.</span></div>
+                <div class="inline-block backdrop-blur-sm rounded-lg border border-[#b8956e]/15 px-4 py-2 sm:px-5 sm:py-2.5" style="background:rgba(255,255,255,0.03);">
+                    <p class="text-xs sm:text-sm font-serif font-bold tracking-wide" style="color:#1f1a16;">Ardèche</p>
+                    <p class="text-[9px] sm:text-[10px] font-medium tracking-wider" style="color:#b8956e;">Saint-Marcel-lès-Annonay</p>
+                    <div class="h-px w-6 mx-auto my-1" style="background:rgba(184,149,110,0.15);"></div>
+                    <p class="text-[8px] sm:text-[9px] tracking-widest uppercase" style="color:rgba(184,149,110,0.45);">Également à Combloux · Megève</p>
+                </div>
+            </div>
 
             <!-- Title -->
             <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
@@ -764,15 +773,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
         </div>
 
-        <!-- ═══ LOCATIONS — bottom center, shimmer ═══ -->
-        <div class="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 text-center opacity-0 w-full max-w-xs sm:max-w-sm px-4" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
-            <div class="backdrop-blur-sm bg-white/5 rounded-xl border border-[#b8956e]/10 px-4 py-3 sm:px-6 sm:py-4">
-                <p class="text-sm sm:text-base font-serif font-bold tracking-wide auto-color-change mb-0.5">Ardèche</p>
-                <p class="text-[9px] sm:text-[10px] text-[#b8956e]/60 tracking-wider">Saint-Marcel-lès-Annonay</p>
-                <div class="h-px w-8 mx-auto my-1.5 bg-[#b8956e]/15"></div>
-                <p class="text-[8px] sm:text-[9px] text-[#b8956e]/40 tracking-widest uppercase">Également à Combloux · Megève</p>
-            </div>
-        </div>
+
 
         <!-- Scroll indicator -->
         <div class="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.5s;z-index:10;">
