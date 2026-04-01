@@ -701,19 +701,21 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              }"
              x-init="startRotation()">
 
-            <!-- IKCP brand + implantations -->
-            <div class="opacity-0 mb-6 sm:mb-8" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
-                <div class="font-serif text-2xl sm:text-3xl font-bold auto-color-change mb-3">IKCP<span class="gold-text">.</span></div>
-                <div class="inline-block backdrop-blur-sm rounded-lg border border-[#b8956e]/15 px-4 py-2 sm:px-5 sm:py-2.5" style="background:rgba(255,255,255,0.03);">
-                    <p class="text-xs sm:text-sm font-serif font-bold tracking-wide" style="color:#1f1a16;">Ardèche</p>
-                    <p class="text-[9px] sm:text-[10px] font-medium tracking-wider" style="color:#b8956e;">Saint-Marcel-lès-Annonay</p>
-                    <div class="h-px w-6 mx-auto my-1" style="background:rgba(184,149,110,0.15);"></div>
-                    <p class="text-[8px] sm:text-[9px] tracking-widest uppercase" style="color:rgba(184,149,110,0.45);">Également à Combloux · Megève</p>
+            <!-- IKCP brand + implantations — LEFT ALIGNED -->
+            <div class="opacity-0 mb-8 sm:mb-10 text-left" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
+                <div class="font-serif text-3xl sm:text-4xl font-bold auto-color-change mb-1">IKCP<span class="gold-text">.</span></div>
+                <p class="text-[11px] sm:text-xs font-medium tracking-wide mb-3" style="color:#b8956e;">Cabinet spécialisé en Protection & Transmission du Patrimoine</p>
+                <div class="inline-flex items-center gap-2 text-[9px] sm:text-[10px] tracking-wider" style="color:#9e9080;">
+                    <span class="font-semibold" style="color:#1f1a16;">Ardèche</span>
+                    <span style="color:rgba(184,149,110,0.3);">—</span>
+                    <span>Saint-Marcel-lès-Annonay</span>
+                    <span style="color:rgba(184,149,110,0.2);">·</span>
+                    <span style="color:rgba(184,149,110,0.5);">Également à Combloux & Megève</span>
                 </div>
             </div>
 
-            <!-- Title -->
-            <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
+            <!-- Title — centered -->
+            <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
                 Protéger ce que vous êtes<br>
                 <span style="color:#b8956e;">en train de bâtir.</span>
             </h1>
