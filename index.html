@@ -641,16 +641,9 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     <!-- ══════════ NAVIGATION ══════════ -->
     <nav :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'" class="fixed w-full z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col">
                 <a href="#" class="text-2xl font-serif font-bold auto-color-change leading-none">IKCP<span class="gold-text">.</span></a>
-                <p class="text-[9px] sm:text-[10px] font-medium tracking-wide leading-relaxed" :class="scrolled?'text-[#b8956e]':'text-[#b8956e]/80'">Cabinet spécialisé en Protection & Transmission du Patrimoine</p>
-                <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-[9px] sm:text-[10px] font-bold tracking-wide" :class="scrolled?'text-[#1f1a16]':'text-[#1f1a16]/80'">Ardèche</span>
-                    <span class="text-[8px]" style="color:rgba(184,149,110,0.3);">—</span>
-                    <span class="text-[8px] sm:text-[9px] tracking-wide" :class="scrolled?'text-[#9e9080]':'text-[#9e9080]/70'">Saint-Marcel-lès-Annonay</span>
-                    <span class="text-[8px]" style="color:rgba(184,149,110,0.2);">|</span>
-                    <span class="text-[8px] sm:text-[9px] tracking-wide" :class="scrolled?'text-[#b8956e]/60':'text-[#b8956e]/40'">Combloux · Megève</span>
-                </div>
+                <p class="text-[9px] sm:text-[10px] font-medium tracking-wide mt-0.5" :class="scrolled?'text-[#b8956e]':'text-[#b8956e]/70'">Cabinet spécialisé en Protection & Transmission du Patrimoine</p>
             </div>
             <div class="hidden lg:flex items-center space-x-6">
                 <a href="#bilan-patrimonial" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Diagnostic</a>
@@ -710,6 +703,17 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 }
              }"
              x-init="startRotation()">
+
+            <!-- Implantation — subtle line above title -->
+            <div class="opacity-0 mb-4 sm:mb-5 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.15s;">
+                <div class="inline-flex items-center gap-2 text-[10px] sm:text-xs tracking-wider">
+                    <span class="font-bold" style="color:#1f1a16;">Ardèche</span>
+                    <span style="color:rgba(184,149,110,0.3);">—</span>
+                    <span style="color:#9e9080;">Saint-Marcel-lès-Annonay</span>
+                    <span style="color:rgba(184,149,110,0.2);">·</span>
+                    <span style="color:rgba(184,149,110,0.5);">Combloux · Megève</span>
+                </div>
+            </div>
 
             <!-- Title — centered -->
             <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
