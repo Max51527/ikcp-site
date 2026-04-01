@@ -644,6 +644,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="flex flex-col">
                 <a href="#" class="text-2xl font-serif font-bold auto-color-change leading-none">IKCP<span class="gold-text">.</span></a>
                 <p class="text-[8px] sm:text-[9px] font-medium tracking-wider mt-0.5" :class="scrolled?'text-[#b8956e]':'text-[#b8956e]/70'">Cabinet spécialisé en Protection & Transmission du Patrimoine</p>
+                <div class="flex items-center gap-1.5 mt-1">
+                    <span class="text-[8px] sm:text-[9px] font-bold" :class="scrolled?'text-[#1f1a16]':'text-[#1f1a16]/80'">Ardèche</span>
+                    <span class="text-[7px]" style="color:rgba(184,149,110,0.35);">·</span>
+                    <span class="text-[7px] sm:text-[8px]" :class="scrolled?'text-[#9e9080]':'text-[#9e9080]/70'">Saint-Marcel-lès-Annonay</span>
+                    <span class="text-[7px]" style="color:rgba(184,149,110,0.25);">·</span>
+                    <span class="text-[7px] sm:text-[8px]" :class="scrolled?'text-[#b8956e]/50':'text-[#b8956e]/35'">Combloux · Megève</span>
+                </div>
             </div>
             <div class="hidden lg:flex items-center space-x-6">
                 <a href="#bilan-patrimonial" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Diagnostic</a>
@@ -703,16 +710,6 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 }
              }"
              x-init="startRotation()">
-
-            <!-- Implantation card — LEFT aligned -->
-            <div class="opacity-0 mb-8 sm:mb-10 flex items-start" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
-                <div class="inline-block rounded-xl border border-[#e5ded2] bg-white/80 px-6 py-4 text-center" style="backdrop-filter:blur(4px);">
-                    <div class="font-serif text-lg sm:text-xl font-bold mb-1" style="color:#1f1a16;">Ardèche</div>
-                    <div class="text-xs sm:text-sm font-medium" style="color:#b8956e;">Saint-Marcel-lès-Annonay</div>
-                    <div class="h-px w-10 mx-auto my-2" style="background:rgba(184,149,110,0.2);"></div>
-                    <div class="text-[9px] sm:text-[10px] tracking-widest uppercase" style="color:rgba(184,149,110,0.45);">Également à Combloux · Megève</div>
-                </div>
-            </div>
 
             <!-- Title — centered -->
             <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
