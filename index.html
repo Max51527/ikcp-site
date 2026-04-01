@@ -765,10 +765,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
 
         <!-- ═══ LOCATIONS — bottom center, shimmer ═══ -->
-        <div class="absolute bottom-12 sm:bottom-14 left-1/2 -translate-x-1/2 text-center opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
-            <p class="text-[10px] sm:text-xs font-serif tracking-[0.2em] sm:tracking-[0.3em] uppercase auto-color-change">
-                Ardèche <span style="-webkit-text-fill-color:rgba(184,149,110,0.3);">·</span> Combloux <span style="-webkit-text-fill-color:rgba(184,149,110,0.3);">·</span> Megève
-            </p>
+        <div class="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 text-center opacity-0 w-full max-w-xs sm:max-w-sm px-4" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
+            <div class="backdrop-blur-sm bg-white/5 rounded-xl border border-[#b8956e]/10 px-4 py-3 sm:px-6 sm:py-4">
+                <p class="text-sm sm:text-base font-serif font-bold tracking-wide auto-color-change mb-0.5">Ardèche</p>
+                <p class="text-[9px] sm:text-[10px] text-[#b8956e]/60 tracking-wider">Saint-Marcel-lès-Annonay</p>
+                <div class="h-px w-8 mx-auto my-1.5 bg-[#b8956e]/15"></div>
+                <p class="text-[8px] sm:text-[9px] text-[#b8956e]/40 tracking-widest uppercase">Également à Combloux · Megève</p>
+            </div>
         </div>
 
         <!-- Scroll indicator -->
