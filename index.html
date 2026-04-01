@@ -704,17 +704,6 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              }"
              x-init="startRotation()">
 
-            <!-- Implantation — subtle line above title -->
-            <div class="opacity-0 mb-4 sm:mb-5 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.15s;">
-                <div class="inline-flex items-center gap-2 text-[10px] sm:text-xs tracking-wider">
-                    <span class="font-bold" style="color:#1f1a16;">Ardèche</span>
-                    <span style="color:rgba(184,149,110,0.3);">—</span>
-                    <span style="color:#9e9080;">Saint-Marcel-lès-Annonay</span>
-                    <span style="color:rgba(184,149,110,0.2);">·</span>
-                    <span style="color:rgba(184,149,110,0.5);">Combloux · Megève</span>
-                </div>
-            </div>
-
             <!-- Title — centered -->
             <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
                 Protéger ce que vous êtes<br>
@@ -777,6 +766,24 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
 
 
+
+        <!-- ═══ OÙ NOUS TROUVER — elegant location badge ═══ -->
+        <div class="absolute bottom-14 sm:bottom-16 left-0 right-0 text-center opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
+            <div class="inline-flex items-center gap-3 sm:gap-4 px-5 py-2.5 rounded-full border border-[#b8956e]/15" style="background:rgba(249,246,240,0.85);backdrop-filter:blur(8px);">
+                <div class="flex items-center gap-2">
+                    <div class="w-1.5 h-1.5 rounded-full bg-[#b8956e]"></div>
+                    <span class="text-[10px] sm:text-xs font-bold tracking-wide" style="color:#1f1a16;">Ardèche</span>
+                    <span class="text-[9px] sm:text-[10px]" style="color:#9e9080;">Saint-Marcel-lès-Annonay</span>
+                </div>
+                <div class="w-px h-3" style="background:rgba(184,149,110,0.2);"></div>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-[9px] sm:text-[10px]" style="color:rgba(184,149,110,0.6);">Également à</span>
+                    <span class="text-[10px] sm:text-xs font-medium" style="color:#9e9080;">Combloux</span>
+                    <span class="text-[8px]" style="color:rgba(184,149,110,0.25);">&</span>
+                    <span class="text-[10px] sm:text-xs font-medium" style="color:#9e9080;">Megève</span>
+                </div>
+            </div>
+        </div>
 
         <!-- Scroll indicator -->
         <div class="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.5s;z-index:10;">
