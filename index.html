@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VV19VXB879"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VV19VXB879');</script>
     <title>IKCP — Protéger ce que vous êtes en train de bâtir | Annonay · Combloux · Megève</title>
     <meta name="description" content="IKCP — Spécialiste en protection patrimoniale. Parents, dirigeants, transmission : approche juridique, financière et fiscale en coordination avec notaires, avocats et experts-comptables. Annonay, Combloux, Megève.">
     <meta property="og:title" content="IKCP — Protéger ce que vous êtes en train de bâtir">
@@ -171,10 +168,10 @@
                         leviers: this.leviers.map(l=>l.t).join(' | '),
                         date: new Date().toISOString()
                     };
-                    const WEBHOOK_URL = 'https://ikcp-prospect.maxime-ead.workers.dev';
+                    const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL';
                     try {
-                        if(WEBHOOK_URL){
-                            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+                        if(WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL'){
+                            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
                         }
                     } catch(e){ console.log('Webhook pending setup'); }
                     this.optInSent = true;
@@ -199,10 +196,10 @@
                         date:new Date().toISOString()
                     };
                     // ── WEBHOOK: Replace URL below with your Make.com webhook ──
-                    const WEBHOOK_URL = 'https://ikcp-prospect.maxime-ead.workers.dev';
+                    const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL';
                     try {
-                        if(WEBHOOK_URL){
-                            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+                        if(WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL'){
+                            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
                         }
                     } catch(e){ console.log('Webhook pending setup'); }
                     // Generate PDF recap
@@ -286,9 +283,7 @@
                         <p style="margin-top:6px;">CIF — CNCEF Patrimoine · ORIAS 23001568 · <a href="https://ikcp.eu">ikcp.eu</a></p>
                         <p style="margin-top:10px;font-size:9px;">Ce document est un aperçu indicatif. Il ne constitue pas un conseil en investissement personnalisé au sens de la réglementation MIF II.</p>
                     </div>
-                    <script src="/mobile-cta.js"></script>
-</body><!-- deployed 2026-04-01 06:42:48 UTC -->
-</html>`);
+                    </body></html>`);
                     w.document.close();
                     setTimeout(()=>{ w.print(); }, 800);
                 },
@@ -435,8 +430,6 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - Conjoint survivant : exonéré de droits de succession (art. 796-0 bis CGI)
 
 IMPLANTATIONS : Annonay · Combloux · Megève
-ANCRAGE : Saint-Marcel-lès-Annonay, Ardèche
-INTERVENANT : Droit des affaires & gestion de patrimoine au Campus Saint-Denis (Annonay, BUT Carrières Juridiques) et en Lycée
 CALENDLY : calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial
 ORIAS : 23001568 | SIREN : 947 972 436
 
@@ -454,26 +447,16 @@ RÈGLES ABSOLUES :
 
 TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Comme un médecin de famille du patrimoine.`;
 
-            // ══ Proxy endpoint ══
-            const PROXY_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
-            const MAX_MESSAGES = 5;
+            // ══ Proxy endpoint — à remplacer par ton Cloudflare Worker ══
+            const PROXY_URL = 'VOTRE_PROXY_CLAUDE_URL';
 
             return {
                 isOpen: false, isLoading: false, userInput: '',
                 history: [],
-                msgCount: 0,
                 messages: [{ role: 'assistant', html: "<p>Bonjour ! Je suis l'assistant d'IKCP, spécialisé en protection patrimoniale. Comment puis-je vous aider ?</p>" }],
                 openChat(prompt) { this.isOpen = true; if (prompt) { this.userInput = prompt; } },
                 async sendMessage() {
                     if (!this.userInput || typeof this.userInput !== 'string' || this.userInput.trim() === '') return;
-                    // ── Rate limiting : 5 messages max par session ──
-                    if (this.msgCount >= MAX_MESSAGES) {
-                        this.messages.push({ role: 'assistant', html: "<p>Vous avez atteint la limite de questions pour cette session. Pour aller plus loin, je vous invite à <a href='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial' target='_blank' style='color:#b8956e;font-weight:bold;'>échanger directement avec Maxime</a> — il pourra analyser votre situation en détail.</p>" });
-                        this.userInput = '';
-                        this.$nextTick(() => { const c=document.getElementById('chat-messages'); if(c) c.scrollTop=c.scrollHeight; });
-                        return;
-                    }
-                    this.msgCount++;
                     const userText = this.userInput.trim();
                     this.messages.push({ role: 'user', html: '<p>'+userText.replace(/</g,'&lt;')+'</p>' });
                     this.history.push({ role: 'user', content: userText });
@@ -481,7 +464,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                     this.$nextTick(() => { const c=document.getElementById('chat-messages'); if(c) c.scrollTop=c.scrollHeight; });
                     try {
                         let responseText = '';
-                        if (PROXY_URL === 'DEMO_MODE_ONLY') {
+                        if (PROXY_URL === 'VOTRE_PROXY_CLAUDE_URL') {
                             // ── Mode démo (pas de proxy configuré) ──
                             await new Promise(r => setTimeout(r, 800));
                             const demoResponses = {
@@ -498,26 +481,22 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             else if (lower.match(/rendez|rdv|contact|échange|maxime|calendly/)) responseText = demoResponses.rdv;
                             else responseText = demoResponses.default;
                         } else {
-                            // ── Mode production (proxy Claude API via Cloudflare Worker) ──
+                            // ── Mode production (proxy Claude API) ──
                             const response = await fetch(PROXY_URL, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    message: userText,
-                                    history: this.history.slice(-8)
+                                    model: 'claude-sonnet-4-20250514',
+                                    max_tokens: 400,
+                                    system: SYSTEM_PROMPT,
+                                    messages: this.history.slice(-8)
                                 })
                             });
                             const data = await response.json();
-                            responseText = data.reply || data.content?.[0]?.text || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
+                            responseText = data.content?.[0]?.text || data.error?.message || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
                         }
                         this.history.push({ role: 'assistant', content: responseText });
-                        let parsedResponse = marked.parse(String(responseText));
-                        if (this.msgCount >= MAX_MESSAGES) {
-                            parsedResponse += '<p style="font-size:11px;color:#b8956e;margin-top:8px;border-top:1px solid #e5ded2;padding-top:8px;">Vous avez utilisé vos 5 questions. Pour une analyse complète → <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" style="color:#b8956e;font-weight:bold;">Échanger avec Maxime</a></p>';
-                        } else if (this.msgCount >= 3) {
-                            parsedResponse += '<p style="font-size:10px;color:#9e9080;margin-top:6px;">' + (MAX_MESSAGES - this.msgCount) + ' question(s) restante(s)</p>';
-                        }
-                        this.messages.push({ role: 'assistant', html: parsedResponse });
+                        this.messages.push({ role: 'assistant', html: marked.parse(String(responseText)) });
                     } catch(e) {
                         this.messages.push({ role:'assistant', html:"<p>Un problème technique est survenu. Vous pouvez réessayer ou <a href='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial' target='_blank' class='underline font-bold'>échanger directement avec Maxime</a>.</p>" });
                     }
@@ -559,58 +538,6 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             0%{background-position:0% 50%;}
             50%{background-position:100% 50%;}
             100%{background-position:0% 50%;}
-        }
-        @keyframes gs {
-            0%{background-position:0% 50%;}
-            50%{background-position:100% 50%;}
-            100%{background-position:0% 50%;}
-        }
-        /* ═══ MONTGOLFIÈRE VOL ═══ */
-        @keyframes balloon-fly {
-            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-            15% { transform: translateY(-18px) translateX(6px) rotate(3deg); }
-            30% { transform: translateY(-8px) translateX(-4px) rotate(-2deg); }
-            50% { transform: translateY(-22px) translateX(3px) rotate(2deg); }
-            70% { transform: translateY(-5px) translateX(-5px) rotate(-1.5deg); }
-            85% { transform: translateY(-16px) translateX(5px) rotate(2.5deg); }
-            100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-        }
-        @keyframes balloon-glow {
-            0%, 100% { box-shadow: 0 4px 20px rgba(184,149,110,0.3), 0 0 0 0 rgba(184,149,110,0); }
-            50% { box-shadow: 0 8px 35px rgba(184,149,110,0.6), 0 0 20px rgba(184,149,110,0.3); }
-        }
-        @keyframes balloon-pulse {
-            0%, 100% { transform: scale(1); opacity: 0; }
-            50% { transform: scale(2.2); opacity: 0.4; }
-        }
-        @keyframes balloon-trail {
-            0% { opacity: 0.6; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(30px) scale(0.3); }
-        }
-        .balloon-fly {
-            animation: balloon-fly 5s ease-in-out infinite, balloon-glow 3s ease-in-out infinite;
-        }
-        .balloon-fly:hover {
-            animation-play-state: paused;
-            transform: scale(1.2) !important;
-            box-shadow: 0 8px 40px rgba(184,149,110,0.7) !important;
-        }
-        .balloon-pulse-ring {
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            border: 2px solid rgba(184,149,110,0.4);
-            animation: balloon-pulse 3s ease-in-out infinite;
-            pointer-events: none;
-        }
-        .balloon-trail-dot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(184,149,110,0.4);
-            animation: balloon-trail 2s ease-out infinite;
-            pointer-events: none;
         }
         .auto-color-change { 
             background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e,#f0dfc0,#9a7852,#b8956e);
@@ -708,35 +635,24 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
         .reveal.visible { opacity: 1; transform: translateY(0); }
     </style>
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"LocalBusiness","name":"IKCP — IKIGAÏ Conseil Patrimonial","description":"Cabinet indépendant de protection patrimoniale. Succession, donation, prévoyance, retraite dirigeant. Approche juridique, financière et fiscale.","url":"https://ikcp.eu","telephone":"","address":[{"@type":"PostalAddress","addressLocality":"Annonay","addressRegion":"Ardèche","postalCode":"07100","addressCountry":"FR"},{"@type":"PostalAddress","addressLocality":"Combloux","addressRegion":"Haute-Savoie","postalCode":"74920","addressCountry":"FR"},{"@type":"PostalAddress","addressLocality":"Megève","addressRegion":"Haute-Savoie","postalCode":"74120","addressCountry":"FR"}],"geo":{"@type":"GeoCoordinates","latitude":"45.2404","longitude":"4.6716"},"areaServed":["Annonay","Ardèche","Saint-Marcel-lès-Annonay","Combloux","Megève","Nord Ardèche","Rhône-Alpes"],"priceRange":"€€","openingHoursSpecification":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"18:00"},"sameAs":["https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial"]}
-    </script>
 </head>
 <body class="bg-[#f9f6f0] text-[#2e2520] antialiased" x-data="layoutData()" @scroll.window="scrolled = window.scrollY > 50">
 
     <!-- ══════════ NAVIGATION ══════════ -->
     <nav :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'" class="fixed w-full z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
-            <a href="#" class="flex flex-col">
-                <span class="text-2xl font-serif font-bold auto-color-change">IKCP<span style="-webkit-text-fill-color:rgba(184,149,110,0.4);">.</span></span>
-                <span class="text-[9px] tracking-[2px] uppercase font-medium mt-[-2px]" :class="scrolled?'text-[#9e9080]':'text-white/40'">Cabinet spécialisé en Protection &amp; Transmission du Patrimoine</span>
-            </a>
-            <div class="hidden lg:flex items-center space-x-1">
-                <a href="#bilan-patrimonial" class="px-4 py-2 text-sm font-medium rounded-lg transition-all" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e] hover:bg-[#f9f6f0]':'text-white/80 hover:text-white hover:bg-white/10'">Diagnostic</a>
-                <a href="#besoins" class="px-4 py-2 text-sm font-medium rounded-lg transition-all" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e] hover:bg-[#f9f6f0]':'text-white/80 hover:text-white hover:bg-white/10'">Cas concrets</a>
-                <a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-1.5" :class="scrolled?'text-[#b8956e] hover:bg-[#f9f6f0]':'text-[#b8956e] hover:bg-white/10'">⭐ Sélection Privée</a>
-                <a href="#philosophie" class="px-4 py-2 text-sm font-medium rounded-lg transition-all" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e] hover:bg-[#f9f6f0]':'text-white/80 hover:text-white hover:bg-white/10'">Le Cabinet</a>
-                <div class="w-px h-5 mx-2" :class="scrolled?'bg-[#e5ded2]':'bg-white/15'"></div>
-                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="px-5 py-2.5 text-sm font-bold rounded-lg transition-all shadow-lg hover:-translate-y-0.5" :class="scrolled?'bg-[#1f1a16] text-white hover:bg-[#b8956e] hover:text-[#1f1a16]':'bg-[#b8956e] text-[#1f1a16] hover:bg-white'">Échanger →</a>
+            <a href="#" class="text-2xl font-serif font-bold auto-color-change">IKCP<span class="gold-text">.</span></a>
+            <div class="hidden lg:flex items-center space-x-6">
+                <a href="#bilan-patrimonial" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-white/70 hover:text-white'">Diagnostic</a>
+                <a href="#besoins" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-white/70 hover:text-white'">Cas concrets</a>
+                <a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-sm font-medium transition flex items-center gap-1.5" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-white/70 hover:text-white'">⭐Sélection Privée</a>
+                <a href="#philosophie" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-white/70 hover:text-white'">Le Cabinet</a>
+                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="px-5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-sm font-bold rounded-lg hover:bg-[#f9f6f0] transition-all shadow-lg hover:-translate-y-0.5">Échanger →</a>
             </div>
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-xl p-2" :class="scrolled?'text-[#1f1a16]':'text-white'">☰</button>
         </div>
         <div x-show="mobileMenuOpen" x-transition.opacity class="fixed inset-0 bg-white z-40 flex flex-col justify-center items-center space-y-6 p-6" style="display:none;">
             <button @click="mobileMenuOpen=false" class="absolute top-5 right-5 text-[#1f1a16] text-2xl p-2">✕</button>
-            <div class="text-center mb-4">
-                <span class="text-3xl font-serif font-bold gold-text">IKCP.</span>
-                <br><span class="text-[10px] tracking-[2px] uppercase text-[#9e9080]">Cabinet spécialisé en Protection &amp; Transmission du Patrimoine</span>
-            </div>
             <a @click="mobileMenuOpen=false" href="#bilan-patrimonial" class="text-xl font-serif text-[#1f1a16]">Diagnostic</a>
             <a @click="mobileMenuOpen=false" href="#besoins" class="text-xl font-serif text-[#1f1a16]">Cas concrets</a>
             <a @click="mobileMenuOpen=false" href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-xl font-serif gold-text">Sélection Privée</a>
@@ -785,11 +701,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              }"
              x-init="startRotation()">
 
-            <!-- IKCP Brand -->
-            <div class="opacity-0 mb-6 sm:mb-10" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.1s;">
-                <span class="font-serif text-3xl sm:text-4xl font-bold" style="background:linear-gradient(90deg,#b8956e,#e0cba0,#8a6f48,#d4b888,#b8956e);background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gs 5s ease-in-out infinite;">IKCP<span style="-webkit-text-fill-color:rgba(184,149,110,0.3)">.</span></span>
-                <p class="text-xs sm:text-sm tracking-[3px] uppercase mt-2" style="color:#9e9080;">Cabinet spécialisé en Protection &amp; Transmission du Patrimoine</p>
-            </div>
+            <!-- IKCP brand removed -->
 
             <!-- Title -->
             <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
@@ -853,9 +765,9 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
 
         <!-- ═══ LOCATIONS — bottom center, shimmer ═══ -->
-        <div class="absolute bottom-12 sm:bottom-14 left-0 right-0 text-center opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
-            <p class="text-[10px] sm:text-xs font-serif tracking-[0.15em] sm:tracking-[0.25em] uppercase auto-color-change mx-auto" style="width:fit-content;">
-                Annonay <span style="-webkit-text-fill-color:rgba(184,149,110,0.25);">·</span> Combloux <span style="-webkit-text-fill-color:rgba(184,149,110,0.25);">·</span> Megève
+        <div class="absolute bottom-12 sm:bottom-14 left-1/2 -translate-x-1/2 text-center opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
+            <p class="text-[10px] sm:text-xs font-serif tracking-[0.2em] sm:tracking-[0.3em] uppercase auto-color-change">
+                Annonay <span style="-webkit-text-fill-color:rgba(184,149,110,0.3);">·</span> Megève
             </p>
         </div>
 
@@ -911,7 +823,11 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             addBranch(cx - 2, treeBase, -Math.PI/2 - 0.1, trunkLen, 0, 800, false);
             addBranch(cx + 2, treeBase, -Math.PI/2 + 0.1, trunkLen, 0, 1200, false);
             addBranch(cx, treeBase, -Math.PI/2, trunkLen * 0.85, 0, 1600, false);
-            // Roots removed — cleaner render
+            // Roots
+            addBranch(cx - 10, treeBase + 3, Math.PI/2 - 0.55, 40 * scale, 1, 600, true);
+            addBranch(cx + 10, treeBase + 3, Math.PI/2 + 0.55, 40 * scale, 1, 900, true);
+            addBranch(cx - 3, treeBase + 3, Math.PI/2 - 0.12, 35 * scale, 1, 1300, true);
+            addBranch(cx + 3, treeBase + 3, Math.PI/2 + 0.12, 35 * scale, 1, 1700, true);
         }
 
         function animate(timestamp){
@@ -983,7 +899,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 }
             }
 
-            // Ground line removed with roots
+            // Ground line — very slow fade in
+            var gA = Math.min(0.04, elapsed / 120000);
+            ctx.beginPath();
+            ctx.moveTo(cx - W * 0.2, treeBase + 4);
+            ctx.lineTo(cx + W * 0.2, treeBase + 4);
+            ctx.strokeStyle = 'rgba(184,149,110,' + gA + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
 
             requestAnimationFrame(animate);
         }
@@ -995,7 +918,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </script>
 
     <!-- ══════════ BILAN PATRIMONIAL FLASH ══════════ -->
-    <section id="bilan-patrimonial" class="py-20 sm:py-32 bg-[#f9f6f0] border-t border-[#e5ded2]">
+    <section id="bilan-patrimonial" class="py-16 sm:py-24 bg-[#f9f6f0] border-t border-[#e5ded2]">
         <div class="max-w-6xl mx-auto px-4 sm:px-6" x-data="bilanPatrimonialData()" x-init="initBilan()">
             <div class="text-center mb-10 sm:mb-14">
                 <span class="gold-text font-semibold tracking-widest text-xs uppercase mb-3 block">Votre outil exclusif · Sans inscription</span>
@@ -1133,8 +1056,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                                     <svg x-show="optIn" class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-[#2e2520] font-medium leading-snug">Je souhaite partager ce diagnostic avec un conseiller IKCP</p>
-                                    <p class="text-[11px] text-[#9e9080] mt-1.5 leading-relaxed">⚠️ En cochant cette case, vous acceptez que vos données saisies (prénom, email et résultats du diagnostic) soient transmises à Maxime Juveneton — IKCP (ORIAS 23001568) dans le seul but de vous recontacter pour un échange patrimonial. Vos données ne seront ni vendues, ni partagées avec des tiers. Vous pouvez demander leur suppression à tout moment par simple email à contact@ikcp.eu. <a href="https://www.cnil.fr/fr/les-droits-pour-maitriser-vos-donnees-personnelles" target="_blank" class="underline hover:text-[#b8956e]">Vos droits RGPD</a>.</p>
+                                    <p class="text-sm text-[#2e2520] font-medium leading-snug">Je souhaite partager ce diagnostic avec IKCP</p>
+                                    <p class="text-[11px] text-[#9e9080] mt-1.5 leading-relaxed">⚠️ En cochant cette case, vous acceptez que vos données saisies (prénom, email et résultats du diagnostic) soient transmises à Maxime Juveneton — IKCP (ORIAS 23001568) dans le seul but de vous recontacter pour un échange patrimonial. Vos données ne seront ni vendues, ni partagées avec des tiers. Vous pouvez demander leur suppression à tout moment par simple email à <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="492a26273d282a3d0920222a39672f3b">[email&#160;protected]</a>. <a href="https://www.cnil.fr/fr/les-droits-pour-maitriser-vos-donnees-personnelles" target="_blank" class="underline hover:text-[#b8956e]">Vos droits RGPD</a>.</p>
                                 </div>
                             </div>
 
@@ -1369,7 +1292,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">🛡️ Focus Protection</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Après 10 ans d'exercice et des centaines d'entretiens, un constat s'est imposé : ce qui préoccupe le plus les familles et les dirigeants, ce n'est pas seulement le rendement — c'est la question <strong class="text-[#1f1a16]">« que se passe-t-il si… ? »</strong></p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Après 10 ans d'exercice et des centaines d'entretiens, un constat s'est imposé : ce qui préoccupe le plus les familles et les dirigeants, ce n'est pas seulement le rendement — c'est la question <strong class="text-[#1f1a16]">« que se passe-t-il si… ? »</strong></p>
                     <p class="text-sm text-[#6d5c4a] leading-relaxed">C'est pourquoi IKCP se spécialise dans la protection patrimoniale : anticiper les aléas de la vie, sécuriser ce que vous avez construit, et préparer sereinement ce que vous transmettrez. Chaque recommandation intègre cette dimension — même quand le sujet initial est fiscal ou financier.</p>
                 </div>
             </div>
@@ -1377,8 +1300,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">🤝 Approche pluridisciplinaire</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Votre conseiller ne travaille jamais seul. Chaque stratégie est construite en coordination avec vos professionnels de confiance — notaires, avocats, experts-comptables, banquiers.</p>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Le rôle du conseiller, c'est d'être le <strong class="text-[#1f1a16]">chef d'orchestre</strong> : celui qui a la vision d'ensemble et qui s'assure que chaque intervenant agit dans la même direction. Pas de silos, pas de contradictions entre vos conseillers.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Votre conseiller ne travaille jamais seul. Chaque stratégie est construite en coordination avec vos professionnels de confiance — notaires, avocats, experts-comptables, banquiers.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Le rôle du conseiller, c'est d'être le <strong class="text-[#1f1a16]">chef d'orchestre</strong> : celui qui a la vision d'ensemble et qui s'assure que chaque intervenant agit dans la même direction. Pas de silos, pas de contradictions entre vos conseillers.</p>
                     <div class="flex flex-wrap gap-2 mt-4">
                         <span class="text-xs px-3 py-1.5 rounded-full bg-white border border-[#e5ded2] text-[#6d5c4a]">⚖️ Notaire</span>
                         <span class="text-xs px-3 py-1.5 rounded-full bg-white border border-[#e5ded2] text-[#6d5c4a]">📋 Avocat</span>
@@ -1392,7 +1315,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">⚖️💰📉 Trois volets, une seule stratégie</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Chaque situation patrimoniale a trois dimensions indissociables. Les traiter séparément, c'est prendre le risque de résoudre un problème en en créant un autre.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Chaque situation patrimoniale a trois dimensions indissociables. Les traiter séparément, c'est prendre le risque de résoudre un problème en en créant un autre.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                         <div class="bg-white rounded-xl p-4 border border-[#e5ded2]">
                             <div class="text-lg mb-2">⚖️</div>
@@ -1416,7 +1339,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div x-show="openTab===3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="bg-[#f9f6f0] rounded-2xl p-6 sm:p-8 border border-[#e5ded2]">
                 <div class="max-w-3xl mx-auto">
                     <h3 class="font-serif text-xl text-[#1f1a16] mb-3">💎 100% indépendant</h3>
-                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-6">Aucun lien capitalistique avec une banque, une compagnie d'assurance ou un réseau. IKCP sélectionne les solutions les plus adaptées à votre situation parmi l'ensemble de l'offre du marché — pas dans un catalogue maison.</p>
+                    <p class="text-sm text-[#6d5c4a] leading-relaxed mb-4">Aucun lien capitalistique avec une banque, une compagnie d'assurance ou un réseau. IKCP sélectionne les solutions les plus adaptées à votre situation parmi l'ensemble de l'offre du marché — pas dans un catalogue maison.</p>
                     <p class="text-sm text-[#6d5c4a] leading-relaxed">Trois implantations pour vous accompagner au plus près :</p>
                     <div class="flex flex-wrap gap-3 mt-4">
                         <div class="bg-white rounded-xl px-5 py-3 border border-[#e5ded2] text-center">
@@ -1424,8 +1347,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             <div class="text-[10px] text-[#9e9080]">Saint-Marcel-lès-Annonay</div>
                         </div>
                         <div class="bg-white rounded-xl px-5 py-3 border border-[#e5ded2] text-center">
-                            <div class="text-sm font-bold text-[#1f1a16]">Combloux</div>
-                            <div class="text-[10px] text-[#9e9080]">Haute-Savoie</div>
+                            <div class="text-sm font-bold text-[#1f1a16]">Annonay</div>
+                            <div class="text-[10px] text-[#9e9080]">Nord Ardèche</div>
                         </div>
                         <div class="bg-white rounded-xl px-5 py-3 border border-[#e5ded2] text-center">
                             <div class="text-sm font-bold text-[#1f1a16]">Megève</div>
@@ -1438,42 +1361,44 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ NOTRE OFFRE (REDESIGN) ══════════ -->
-    <section class="py-20 sm:py-32 relative overflow-hidden" style="background:#f9f6f0;">
-        <!-- Gold borders top & bottom -->
-        <div class="absolute top-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg,transparent 5%,rgba(184,149,110,0.4) 30%,rgba(184,149,110,0.8) 50%,rgba(184,149,110,0.4) 70%,transparent 95%);"></div>
-        <div class="absolute bottom-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg,transparent 5%,rgba(184,149,110,0.4) 30%,rgba(184,149,110,0.8) 50%,rgba(184,149,110,0.4) 70%,transparent 95%);"></div>
+    <section class="py-16 sm:py-24 bg-[#1f1a16] relative overflow-hidden">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#b8956e] to-transparent"></div>
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#b8956e] to-transparent"></div>
+        <div class="absolute top-20 right-10 w-64 h-64 rounded-full bg-[#b8956e]/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-20 left-10 w-48 h-48 rounded-full bg-[#b8956e]/5 blur-3xl pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
             <div class="text-center mb-14">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-[#b8956e]/10 border border-[#b8956e]/20 text-[#b8956e] text-xs font-bold uppercase tracking-wider mb-5">Sélection Privée</span>
-                <h2 class="text-3xl sm:text-5xl font-serif text-[#1f1a16] mb-4">Notre <span class="gold-text italic">Offre</span></h2>
+                <h2 class="text-3xl sm:text-5xl font-serif text-white mb-4">Notre <span class="gold-text italic">Offre</span></h2>
                 <div class="h-0.5 w-10 bg-[#b8956e]/30 mx-auto rounded mb-5"></div>
-                <p class="text-[#907b65] text-base max-w-lg mx-auto font-light leading-relaxed">Les outils pour protéger, valoriser et transmettre — sélectionnés pour leur qualité et leur adéquation à vos enjeux.</p>
+                <p class="text-[#9e9080] text-base max-w-lg mx-auto font-light leading-relaxed">Les outils pour protéger, valoriser et transmettre — sélectionnés pour leur qualité et leur adéquation à vos enjeux.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-                <div class="group bg-white rounded-2xl p-7 border border-[#e5ded2] hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10">
-                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#b8956e]/20 group-hover:scale-110 transition-all duration-300 text-xl">💎</div>
-                    <h3 class="text-[#1f1a16] font-serif text-xl mb-2">Private Equity</h3>
-                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-6">Accédez à des fonds non cotés (PME, infrastructure, secondaire) avec des objectifs de performance x1.5 à x2.5.</p>
-                    <div class="flex items-center gap-2 text-xs text-[#b8956e]">🔒 Dossiers confidentiels sur demande</div>
+                <div class="group bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-2xl p-7 hover:border-[#b8956e]/30 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/5">
+                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/20 group-hover:scale-110 transition-all duration-300 text-xl">💎</div>
+                    <h3 class="text-white font-serif text-xl mb-2">Private Equity</h3>
+                    <p class="text-[#9e9080] text-sm font-light leading-relaxed mb-4">Accédez à des fonds non cotés (PME, infrastructure, secondaire) avec des objectifs de performance x1.5 à x2.5.</p>
+                    <div class="flex items-center gap-2 text-xs text-[#907b65]">🔒 Dossiers confidentiels sur demande</div>
                 </div>
-                <div class="group bg-white rounded-2xl p-7 border border-[#e5ded2] hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10">
-                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#b8956e]/20 group-hover:scale-110 transition-all duration-300 text-xl">🏛️</div>
-                    <h3 class="text-[#1f1a16] font-serif text-xl mb-2">Immobilier</h3>
-                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-6">Pierre-papier, nue-propriété, Malraux, Monuments Historiques, déficit foncier… solutions directes et indirectes.</p>
-                    <div class="flex items-center gap-2 text-xs text-[#b8956e]">📊 Rendements de 4 à 7 % nets visés</div>
+                <div class="group bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-2xl p-7 hover:border-[#b8956e]/30 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/5">
+                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/20 group-hover:scale-110 transition-all duration-300 text-xl">🏛️</div>
+                    <h3 class="text-white font-serif text-xl mb-2">Immobilier</h3>
+                    <p class="text-[#9e9080] text-sm font-light leading-relaxed mb-4">Pierre-papier, nue-propriété, Malraux, Monuments Historiques, déficit foncier… solutions directes et indirectes.</p>
+                    <div class="flex items-center gap-2 text-xs text-[#907b65]">📊 Rendements de 4 à 7 % nets visés</div>
                 </div>
-                <div class="group bg-white rounded-2xl p-7 border border-[#e5ded2] hover:border-[#b8956e]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/10">
-                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#b8956e]/20 group-hover:scale-110 transition-all duration-300 text-xl">⚖️</div>
-                    <h3 class="text-[#1f1a16] font-serif text-xl mb-2">Ingénierie Patrimoniale</h3>
-                    <p class="text-[#907b65] text-sm font-light leading-relaxed mb-6">Optimisation IR/IFI/IS, holding, démembrement, transmission, épargne salariale dirigeant.</p>
-                    <div class="flex items-center gap-2 text-xs text-[#b8956e]">🛡️ Stratégie sur-mesure</div>
+                <div class="group bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-2xl p-7 hover:border-[#b8956e]/30 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#b8956e]/5">
+                    <div class="w-12 h-12 rounded-xl bg-[#b8956e]/10 flex items-center justify-center mb-5 group-hover:bg-[#a8854e]/20 group-hover:scale-110 transition-all duration-300 text-xl">⚖️</div>
+                    <h3 class="text-white font-serif text-xl mb-2">Ingénierie Patrimoniale</h3>
+                    <p class="text-[#9e9080] text-sm font-light leading-relaxed mb-4">Optimisation IR/IFI/IS, holding, démembrement, transmission, épargne salariale dirigeant.</p>
+                    <div class="flex items-center gap-2 text-xs text-[#907b65]">🛡️ Stratégie sur-mesure</div>
                 </div>
             </div>
 
             <div class="text-center">
-                <a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white font-bold uppercase tracking-wide rounded-lg hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-xl text-sm">
+                <a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#1f1a16] font-bold uppercase tracking-wide rounded-lg hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all shadow-xl text-sm border border-white/20">
                     ⭐ Découvrir la sélection
                 </a>
             </div>
@@ -1481,7 +1406,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ CAS PRATIQUES — PROTECTION EN ACTION ══════════ -->
-    <section id="besoins" class="py-20 sm:py-32 bg-[#f9f6f0]">
+    <section id="besoins" class="py-16 sm:py-24 bg-[#f9f6f0]">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
             <div class="text-center mb-12">
                 <span class="gold-text font-semibold tracking-widest text-xs uppercase mb-3 block">La protection en action</span>
@@ -1631,49 +1556,47 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="mt-10 space-y-6">
 
                 <!-- Chef d'orchestre -->
-                <div class="relative rounded-2xl p-6 sm:p-8 overflow-hidden bg-white border border-[#e5ded2] shadow-sm">
-                    <!-- Gold liseré top -->
-                    <div class="absolute top-0 left-4 right-4 h-[2px] rounded-full" style="background:linear-gradient(90deg,transparent,rgba(184,149,110,0.5),transparent);"></div>
-                    <div class="max-w-3xl mx-auto relative z-10">
+                <div class="bg-gradient-to-r from-[#1f1a16] to-[#2e2520] rounded-2xl p-6 sm:p-8 text-white">
+                    <div class="max-w-3xl mx-auto">
                         <div class="text-center mb-6">
                             <div class="text-xs uppercase tracking-wider font-semibold mb-2" style="color:#b8956e;">Le rôle de votre conseiller</div>
-                            <h3 class="font-serif text-xl sm:text-2xl mb-3 text-[#1f1a16]">Votre médecin de famille patrimonial.<br><span style="color:#b8956e;">Votre chef d'orchestre.</span></h3>
+                            <h3 class="font-serif text-xl sm:text-2xl mb-3">Votre médecin de famille patrimonial.<br><span style="color:#b8956e;">Votre chef d'orchestre.</span></h3>
                         </div>
-                        <div class="text-sm text-[#6d5c4a] space-y-4 leading-relaxed text-center max-w-2xl mx-auto mb-8">
-                            <p>Comme votre médecin de famille connaît votre historique et vous oriente vers le bon spécialiste, <strong class="text-[#1f1a16] font-medium">votre conseiller en gestion de patrimoine connaît l'ensemble de votre situation</strong> et vous oriente vers les bons professionnels au bon moment.</p>
-                            <p>Il ne remplace ni le notaire, ni l'avocat, ni l'expert-comptable. Il <strong class="text-[#1f1a16] font-medium">coordonne leur intervention</strong> pour que chaque décision — juridique, financière, fiscale — s'inscrive dans une stratégie globale cohérente.</p>
-                            <p>Mais son rôle ne s'arrête pas à la stratégie. Il intervient aussi sur la <strong class="text-[#1f1a16] font-medium">mise en place des outils concrets</strong> de protection : contrats de prévoyance, placements adaptés, restructuration de rémunération, arbitrages d'assurance-vie.</p>
+                        <div class="text-sm text-white/60 space-y-4 leading-relaxed text-center max-w-2xl mx-auto mb-8">
+                            <p>Comme votre médecin de famille connaît votre historique et vous oriente vers le bon spécialiste, <strong class="text-white font-medium">votre conseiller en gestion de patrimoine connaît l'ensemble de votre situation</strong> et vous oriente vers les bons professionnels au bon moment.</p>
+                            <p>Il ne remplace ni le notaire, ni l'avocat, ni l'expert-comptable. Il <strong class="text-white font-medium">coordonne leur intervention</strong> pour que chaque décision — juridique, financière, fiscale — s'inscrive dans une stratégie globale cohérente.</p>
+                            <p>Mais son rôle ne s'arrête pas à la stratégie. Il intervient aussi sur la <strong class="text-white font-medium">mise en place des outils concrets</strong> de protection : contrats de prévoyance, placements adaptés, restructuration de rémunération, arbitrages d'assurance-vie.</p>
                         </div>
 
                         <!-- Orchestre visuel -->
                         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
-                            <div class="text-center p-3 bg-[#f9f6f0] rounded-xl border border-[#e5ded2]">
+                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
                                 <div class="text-lg mb-1">⚖️</div>
-                                <div class="text-[10px] font-semibold text-[#907b65]">Notaire</div>
-                                <div class="text-[9px] text-[#b5a898] mt-0.5">Actes, donations</div>
+                                <div class="text-[10px] font-semibold text-[#ad9578]">Notaire</div>
+                                <div class="text-[9px] text-white/30 mt-0.5">Actes, donations</div>
                             </div>
-                            <div class="text-center p-3 bg-[#f9f6f0] rounded-xl border border-[#e5ded2]">
+                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
                                 <div class="text-lg mb-1">📋</div>
-                                <div class="text-[10px] font-semibold text-[#907b65]">Avocat</div>
-                                <div class="text-[9px] text-[#b5a898] mt-0.5">Statuts, pactes</div>
+                                <div class="text-[10px] font-semibold text-[#ad9578]">Avocat</div>
+                                <div class="text-[9px] text-white/30 mt-0.5">Statuts, pactes</div>
                             </div>
-                            <div class="text-center p-3 bg-[#f9f6f0] rounded-xl border border-[#e5ded2]">
+                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
                                 <div class="text-lg mb-1">📊</div>
-                                <div class="text-[10px] font-semibold text-[#907b65]">Expert-comptable</div>
-                                <div class="text-[9px] text-[#b5a898] mt-0.5">Bilans, fiscal pro</div>
+                                <div class="text-[10px] font-semibold text-[#ad9578]">Expert-comptable</div>
+                                <div class="text-[9px] text-white/30 mt-0.5">Bilans, fiscal pro</div>
                             </div>
-                            <div class="text-center p-3 bg-[#f9f6f0] rounded-xl border border-[#e5ded2]">
+                            <div class="text-center p-3 bg-white/5 rounded-xl border border-white/10">
                                 <div class="text-lg mb-1">🏦</div>
-                                <div class="text-[10px] font-semibold text-[#907b65]">Banquier</div>
-                                <div class="text-[9px] text-[#b5a898] mt-0.5">Crédit, garanties</div>
+                                <div class="text-[10px] font-semibold text-[#ad9578]">Banquier</div>
+                                <div class="text-[9px] text-white/30 mt-0.5">Crédit, garanties</div>
                             </div>
-                            <div class="col-span-2 sm:col-span-1 text-center p-3 rounded-xl border-2 bg-[#b8956e]/10" style="border-color:rgba(184,149,110,0.4);">
+                            <div class="col-span-2 sm:col-span-1 text-center p-3 rounded-xl border-2" style="background:rgba(184,149,110,0.1);border-color:rgba(184,149,110,0.3);">
                                 <div class="text-lg mb-1">🎯</div>
                                 <div class="text-[10px] font-bold" style="color:#b8956e;">Votre conseiller</div>
-                                <div class="text-[9px] text-[#907b65] mt-0.5">Stratégie + outils</div>
+                                <div class="text-[9px] text-white/50 mt-0.5">Stratégie + outils</div>
                             </div>
                         </div>
-                        <p class="text-center text-[11px] text-[#b5a898] italic">Le conseiller en gestion de patrimoine est le seul professionnel à avoir une vision transversale de votre situation — il voit ce que les spécialistes, chacun dans leur domaine, ne voient pas.</p>
+                        <p class="text-center text-[11px] text-white/30 italic">Le conseiller en gestion de patrimoine est le seul professionnel à avoir une vision transversale de votre situation — il voit ce que les spécialistes, chacun dans leur domaine, ne voient pas.</p>
                     </div>
                 </div>
 
@@ -1851,7 +1774,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </section>
 
     <!-- ══════════ COMMENT ÇA FONCTIONNE — HONORAIRES & PROCESS ══════════ -->
-    <section class="py-20 sm:py-32 bg-white border-t border-[#e5ded2]">
+    <section class="py-16 sm:py-24 bg-white border-t border-[#e5ded2]">
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
 
             <div class="text-center mb-14">
@@ -1957,8 +1880,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
 
     <!-- ══════════ LE CABINET ══════════ -->
-    <section id="philosophie" class="py-20 sm:py-32 bg-[#f9f6f0]">
-        <div class="max-w-7xl mx-auto px-5 sm:px-6">
+    <section id="philosophie" class="py-16 sm:py-24 bg-[#f9f6f0]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
                     <span class="gold-text font-semibold tracking-widest text-xs uppercase mb-4 block">Votre Partenaire</span>
@@ -1966,7 +1889,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                     <div class="h-1 w-12 bg-gold rounded mb-6"></div>
                     <div class="text-[#6d5c4a] font-light text-sm sm:text-base space-y-4 leading-relaxed text-justify">
                         <p>Fort de <strong class="font-medium text-[#2e2520]">dix années d'expérience</strong> à l'issue d'un Master en droit et gestion de patrimoine, après un parcours en banque privée, IKCP est né d'une conviction : ce qui compte, ce n'est pas seulement le rendement — c'est d'avoir <strong class="font-medium text-[#2e2520]">la liberté de choisir</strong>.</p>
-                        <p>Au fil de centaines d'entretiens, une évidence s'est imposée : ce qui préoccupe le plus les familles et les dirigeants, c'est la question <strong class="font-medium text-[#2e2520]">« que se passe-t-il si… ? »</strong></p>
+                        <p>Au fil de centaines d'entretiens, une évidence s'est imposée : ce qui préoccupe le plus les familles et les dirigeants, ce n'est pas seulement le rendement — c'est la question <strong class="font-medium text-[#2e2520]">« que se passe-t-il si… ? »</strong></p>
                         <p>C'est pourquoi IKCP se spécialise dans la <strong class="font-medium text-[#2e2520]">protection patrimoniale</strong> — en travaillant de concert avec vos notaires, avocats et experts-comptables pour couvrir les dimensions juridique, financière et fiscale de chaque situation.</p>
                         <p>Ancré à <strong class="font-medium text-[#2e2520]">Saint-Marcel-lès-Annonay</strong>, au cœur de l'Ardèche, vous pouvez également me retrouver sur le <strong class="font-medium text-[#2e2520]">Campus Saint-Denis à Annonay</strong> en tant qu'intervenant pour le BUT Carrières Juridiques, ainsi qu'au Lycée — où le plaisir d'enseigner le droit des affaires et la gestion de patrimoine nourrit chaque jour la pratique du conseil.</p>
                     </div>
@@ -2015,61 +1938,6 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
     </section>
 
-    <!-- ══════════ RESSOURCES — MAILLAGE INTERNE SEO ══════════ -->
-    <section class="py-12 bg-[#1f1a16] border-t border-white/5">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6">
-            <h2 class="font-serif text-lg text-white/80 text-center mb-8">Nos outils et ressources — accès libre</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                <a href="/simulateur-succession.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">⚰️</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Simulateur Succession</div>
-                </a>
-                <a href="/simulateur-donation.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">🎁</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Simulateur Donation</div>
-                </a>
-                <a href="/simulateur-ifi.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">🏠</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Simulateur IFI</div>
-                </a>
-                <a href="/assurance-vie-succession.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">🛡️</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Assurance-vie & Succession</div>
-                </a>
-                <a href="/protection-conjoint.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">💑</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Protection Conjoint</div>
-                </a>
-                <a href="/ecart-revenus-couple.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">💶</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Écart Revenus Couple</div>
-                </a>
-                <a href="/retraite-dirigeant.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">🧓</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Retraite Dirigeant</div>
-                </a>
-                <a href="/famille-recomposee.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">👨‍👩‍👧‍👦</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Famille Recomposée</div>
-                </a>
-                <a href="/lmnp-succession.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">🏗️</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">LMNP & Succession</div>
-                </a>
-                <a href="/deces-dirigeant.html" class="block p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-center group">
-                    <div class="text-lg mb-1">💼</div>
-                    <div class="text-[11px] font-semibold text-white/70 group-hover:text-white transition">Décès Dirigeant</div>
-                </a>
-            </div>
-            <div class="flex flex-wrap justify-center gap-3 mt-6">
-                <a href="/ardeche-patrimoine.html" class="text-[11px] text-[#b8956e] hover:text-white transition px-3 py-1.5 rounded-full border border-[#b8956e]/20 hover:border-[#b8956e]/50">📍 Patrimoine en Ardèche</a>
-                <a href="/ardeche-succession.html" class="text-[11px] text-[#b8956e] hover:text-white transition px-3 py-1.5 rounded-full border border-[#b8956e]/20 hover:border-[#b8956e]/50">📍 Succession en Ardèche</a>
-                <a href="/ardeche-gite-fiscalite.html" class="text-[11px] text-[#b8956e] hover:text-white transition px-3 py-1.5 rounded-full border border-[#b8956e]/20 hover:border-[#b8956e]/50">📍 Gîtes Ardèche — Fiscalité</a>
-                <a href="/ardeche-dirigeant-tns.html" class="text-[11px] text-[#b8956e] hover:text-white transition px-3 py-1.5 rounded-full border border-[#b8956e]/20 hover:border-[#b8956e]/50">📍 Dirigeants TNS Ardèche</a>
-            </div>
-        </div>
-    </section>
-
     <footer class="bg-[#1f1a16] text-white py-10 border-t border-slate-800">
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
@@ -2105,24 +1973,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             </div>
             <div class="p-3 bg-white border-t border-[#e5ded2]"><div class="relative"><input type="text" x-model="userInput" @keydown.enter="sendMessage()" placeholder="Posez votre question..." class="w-full border border-[#d8d0c4] rounded-full pl-4 pr-10 py-2.5 text-sm focus:border-[#b8956e] outline-none"><button @click="sendMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#9e9080] hover:text-[#b8956e]">→</button></div></div>
         </div>
-        <!-- Teasing bubble -->
-        <div x-show="!isOpen" x-data="{showTeaser:false}" x-init="setTimeout(()=>showTeaser=true,5000)" style="display:none;">
-            <div x-show="showTeaser" x-transition.opacity.duration.500ms @click="showTeaser=false;$dispatch('open-chat',{})" class="cursor-pointer bg-white rounded-2xl shadow-xl border border-[#e5ded2] p-3.5 max-w-[220px] relative" style="animation:teaseFloat 3s ease-in-out infinite;">
-                <p style="font-size:13px;color:#1f1a16;font-weight:600;margin:0 0 4px;line-height:1.4;">Une question patrimoniale ?</p>
-                <p style="font-size:11px;color:#907b65;margin:0;line-height:1.4;">Succession, donation, IFI, retraite… posez votre question ici 👇</p>
-                <div style="position:absolute;bottom:-6px;right:20px;width:12px;height:12px;background:white;border-right:1px solid #e5ded2;border-bottom:1px solid #e5ded2;transform:rotate(45deg);"></div>
-            </div>
-        </div>
-        <style>@keyframes teaseFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}</style>
-        <button @click="isOpen=!isOpen" class="relative group" style="background:none;border:none;cursor:pointer;padding:8px;">
-            <div class="balloon-pulse-ring"></div>
-            <div class="balloon-trail-dot" style="bottom:0;left:50%;margin-left:-3px;"></div>
-            <div class="balloon-trail-dot" style="bottom:4px;left:35%;animation-delay:0.5s;"></div>
-            <div class="balloon-trail-dot" style="bottom:2px;left:65%;animation-delay:1s;"></div>
-            <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5 z-10"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#b8956e]"></span></span>
-            <img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" style="width:64px;height:64px;border-radius:50%;object-fit:cover;transition:all 0.3s;border:3px solid rgba(184,149,110,0.4);" class="balloon-fly">
-            <div x-show="isOpen" style="width:64px;height:64px;border-radius:50%;background:#1f1a16;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
-        </button>
+        <button @click="isOpen=!isOpen" class="bg-[#1f1a16] text-white p-4 rounded-full shadow-xl hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all duration-300 hover:scale-105 hover:shadow-2xl relative"><span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span><svg x-show="!isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><svg x-show="isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <!-- ══════════ PWA INSTALL PROMPT ══════════ -->
     <div id="pwa-install" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#1f1a16;color:white;padding:14px 24px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);font-size:14px;font-family:Inter,sans-serif;max-width:380px;width:calc(100% - 32px);">
@@ -2137,7 +1988,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // ── Service Worker Registration ──
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -2185,5 +2036,4 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     }
     </script>
 </body>
-<!-- deployed 2026-04-01 06:42:48 UTC -->
 </html>
