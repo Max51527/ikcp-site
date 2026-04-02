@@ -241,7 +241,20 @@
                         .cta{text-align:center;margin:30px 0;padding:20px;background:linear-gradient(135deg,#1f1a16,#2d2d44);border-radius:12px;color:white;}
                         .cta a{display:inline-block;padding:12px 32px;background:#b8956e;color:#1f1a16;font-weight:700;border-radius:8px;text-decoration:none;font-size:14px;}
                         @media print{body{padding:20px;}.cta{display:none;}}
-                    </style></head><body>
+                    
+    @keyframes montgolFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        25% { transform: translateY(-6px) rotate(2deg); }
+        50% { transform: translateY(-3px) rotate(-1deg); }
+        75% { transform: translateY(-8px) rotate(1deg); }
+    }
+    .montgolfiere-float {
+        animation: montgolFloat 4s ease-in-out infinite;
+    }
+    .montgolfiere-float:hover {
+        animation-play-state: paused;
+    }
+</style></head><body>
                     <div class="header">
                         <h1>IKCP</h1>
                         <p>Bilan Flash Patrimonial</p>
@@ -407,7 +420,7 @@
         // ── CHATBOT ──
         function chatWidget() {
             // ══ IKCP Expert System Prompt ══
-            const SYSTEM_PROMPT = `Tu es l'assistant virtuel d'IKCP — IKIGAÏ Conseil Patrimonial, cabinet fondé par Maxime Juveneton.
+            const SYSTEM_PROMPT = `Tu t'appelles Marcel. Tu es l'assistant patrimonial d'IKCP — IKIGAÏ Conseil Patrimonial, cabinet fondé par Maxime Juveneton.
 
 POSITIONNEMENT : IKCP se spécialise dans la PROTECTION PATRIMONIALE — ce n'est pas seulement le rendement, c'est d'avoir la liberté de choisir. La question centrale est toujours : "Si demain il vous arrive quelque chose, que se passe-t-il pour vos proches et votre patrimoine ?"
 
@@ -453,7 +466,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             return {
                 isOpen: false, isLoading: false, userInput: '',
                 history: [],
-                messages: [{ role: 'assistant', html: "<p>Bonjour ! Je suis l'assistant d'IKCP, spécialisé en protection patrimoniale. Comment puis-je vous aider ?</p>" }],
+                messages: [{ role: 'assistant', html: "<p>Bonjour ! Je suis Marcel, votre assistant patrimonial IKCP. Posez-moi n'importe quelle question sur la succession, la donation, la protection ou la fiscalité.</p>" }],
                 openChat(prompt) { this.isOpen = true; if (prompt) { this.userInput = prompt; } },
                 async sendMessage() {
                     if (!this.userInput || typeof this.userInput !== 'string' || this.userInput.trim() === '') return;
@@ -1975,14 +1988,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     <!-- ══════════ CHATBOT ══════════ -->
     <div x-data="chatWidget()" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end space-y-3" @open-chat.window="openChat($event.detail.prompt)">
         <div x-show="isOpen" style="display:none;" class="bg-white w-[calc(100vw-2rem)] sm:w-96 h-[450px] sm:h-[500px] rounded-xl shadow-2xl border border-[#d8d0c4] flex flex-col overflow-hidden" x-transition.scale>
-            <div class="bg-[#1f1a16] p-4 flex justify-between items-center text-white rounded-t-xl"><div class="flex items-center space-x-2"><div class="w-2 h-2 bg-green-500 rounded-full"></div><span class="font-serif font-bold text-sm">Assistant IKCP</span></div><button @click="isOpen=false" class="text-[#9e9080] hover:text-white p-1">✕</button></div>
+            <div class="bg-[#1f1a16] p-4 flex justify-between items-center text-white rounded-t-xl"><div class="flex items-center space-x-2"><div class="w-2 h-2 bg-green-500 rounded-full"></div><span class="font-serif font-bold text-sm">MARCEL <span class="text-[#b8956e] text-[9px] font-normal tracking-wider">ASSISTANT PATRIMONIAL</span></span></div><button @click="isOpen=false" class="text-[#9e9080] hover:text-white p-1">✕</button></div>
             <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-[#f9f6f0]" id="chat-messages">
                 <template x-for="(msg,i) in messages" :key="i"><div :class="msg.role==='user'?'flex justify-end':'flex justify-start'"><div :class="msg.role==='user'?'bg-[#1f1a16] text-white rounded-tr-none':'bg-white border border-[#d8d0c4] text-[#2e2520] rounded-tl-none'" class="max-w-[85%] p-3 rounded-xl text-sm shadow-sm" x-html="msg.html"></div></div></template>
                 <div x-show="isLoading" class="flex justify-start"><div class="bg-white border border-[#d8d0c4] p-3 rounded-xl flex space-x-1"><div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay:75ms"></div><div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay:150ms"></div></div></div>
             </div>
             <div class="p-3 bg-white border-t border-[#e5ded2]"><div class="relative"><input type="text" x-model="userInput" @keydown.enter="sendMessage()" placeholder="Posez votre question..." class="w-full border border-[#d8d0c4] rounded-full pl-4 pr-10 py-2.5 text-sm focus:border-[#b8956e] outline-none"><button @click="sendMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#9e9080] hover:text-[#b8956e]">→</button></div></div>
         </div>
-        <button @click="isOpen=!isOpen" class="bg-[#f9f6f0] p-3 rounded-full shadow-xl hover:scale-105 transition-all duration-300 hover:shadow-2xl relative border border-[#e5ded2]"><span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span><img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" width="32" height="32" style="display:block;"><svg x-show="isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f1a16" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button @click="isOpen=!isOpen" class="bg-[#f9f6f0] p-3 rounded-full shadow-xl hover:scale-105 transition-all duration-300 hover:shadow-2xl relative border border-[#e5ded2] montgolfiere-float"><span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8956e] opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#b8956e]"></span></span><img x-show="!isOpen" src="/icons/montgolfiere.png" alt="Posez votre question" width="32" height="32" style="display:block;"><svg x-show="isOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f1a16" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <!-- ══════════ PWA INSTALL PROMPT ══════════ -->
     <div id="pwa-install" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#1f1a16;color:white;padding:14px 24px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);font-size:14px;font-family:Inter,sans-serif;max-width:380px;width:calc(100% - 32px);">
