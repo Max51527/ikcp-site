@@ -168,7 +168,7 @@
                         leviers: this.leviers.map(l=>l.t).join(' | '),
                         date: new Date().toISOString()
                     };
-                    const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL';
+                    const WEBHOOK_URL = 'https://ikcp-prospect.maxime-ead.workers.dev';
                     try {
                         if(WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL'){
                             await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
@@ -196,7 +196,7 @@
                         date:new Date().toISOString()
                     };
                     // ── WEBHOOK: Replace URL below with your Make.com webhook ──
-                    const WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL';
+                    const WEBHOOK_URL = 'https://ikcp-prospect.maxime-ead.workers.dev';
                     try {
                         if(WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL'){
                             await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
