@@ -150,59 +150,70 @@
                     p.push({icon:'🔮',title:'Et après ?',teaser:'Ce diagnostic couvre les grandes lignes. Un échange permettra d\'identifier les leviers concrets adaptés à votre situation spécifique.',locked:null});
                     return p;
                 },
-                // ── Opt-in: envoyer prospect à Notion via Make.com ──
+                // ── Envoi prospect → Cloudflare Worker → Notion ──
                 async sendOptIn(){
-                    if(!this.optIn || !this.contact.prenom || !this.contact.email) return;
+                    if(!this.contact.prenom || !this.contact.email) return;
                     this.optInLoading = true;
                     const payload = {
                         source: 'Diagnostic patrimonial IKCP',
                         prenom: this.contact.prenom,
                         email: this.contact.email,
+                        tel: this.contact.tel || '',
                         age: this.d.age,
                         situation: this.d.situation,
                         statut: this.d.statut,
                         enfants: this.d.enfants,
+                        revenuNet: this.d.revenuNet,
+                        revenuConj: this.d.revenuConj,
+                        revenuLoc: this.d.revenuLoc,
+                        effortMensuel: this.d.effortMensuel,
+                        rpValeur: this.d.rpValeur,
+                        rpCredit: this.d.rpCredit,
+                        immoLocatif: this.d.immoLocatif,
+                        creditLoc: this.d.creditLoc,
+                        epargne: this.d.epargne,
+                        av: this.d.av,
+                        pea: this.d.pea,
+                        per: this.d.per,
+                        patrimoinePro: this.d.patrimoinePro,
+                        prevoyance: this.d.prevoyance,
+                        testament: this.d.testament,
                         patrimoineNet: this.patrimoineNet,
+                        ir: this.ir,
+                        tmi: this.tmi,
                         score: this.score,
+                        succession: this.succession.droits,
+                        capitalRetraite: this.capitalRetraite,
                         alertes: this.alerts.map(a=>a.t).join(' | '),
                         leviers: this.leviers.map(l=>l.t).join(' | '),
                         date: new Date().toISOString()
                     };
-                    const WEBHOOK_URL = 'https://ikcp-prospect.maxime-ead.workers.dev';
                     try {
-                        if(WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL'){
-                            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
-                        }
-                    } catch(e){ console.log('Webhook pending setup'); }
+                        const res = await fetch('https://ikcp-prospect.maxime-ead.workers.dev', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const result = await res.json();
+                        console.log('Prospect envoyé:', result);
+                    } catch(e) {
+                        console.warn('Webhook error:', e);
+                    }
                     this.optInSent = true;
                     this.optInLoading = false;
                 },
-                // ── Send to webhook (Make.com / Notion) — legacy ──
+                // ── sendBilan : génère le PDF + envoie via sendOptIn ──
                 async sendBilan(){
                     if(!this.contact.prenom||!this.contact.email) return;
                     this.formLoading=true;
+                    await this.sendOptIn();
                     const payload={
-                        prenom:this.contact.prenom, email:this.contact.email, tel:this.contact.tel,
-                        age:this.d.age, situation:this.d.situation, statut:this.d.statut, enfants:this.d.enfants,
-                        revenuNet:this.d.revenuNet, revenuConj:this.d.revenuConj, revenuLoc:this.d.revenuLoc,
-                        effortMensuel:this.d.effortMensuel,
-                        rpValeur:this.d.rpValeur, rpCredit:this.d.rpCredit, immoLocatif:this.d.immoLocatif, creditLoc:this.d.creditLoc,
-                        epargne:this.d.epargne, av:this.d.av, pea:this.d.pea, per:this.d.per, patrimoinePro:this.d.patrimoinePro,
-                        prevoyance:this.d.prevoyance, testament:this.d.testament,
+                        prenom:this.contact.prenom, email:this.contact.email,
                         patrimoineNet:this.patrimoineNet, ir:this.ir, tmi:this.tmi, score:this.score,
                         succession:this.succession.droits, capitalRetraite:this.capitalRetraite,
                         alertes:this.alerts.map(a=>a.t).join(' | '),
                         leviers:this.leviers.map(l=>l.t).join(' | '),
-                        date:new Date().toISOString()
                     };
-                    // ── WEBHOOK: Replace URL below with your Make.com webhook ──
-                    const WEBHOOK_URL = 'https://ikcp-prospect.maxime-ead.workers.dev';
-                    try {
-                        if(WEBHOOK_URL !== 'YOUR_MAKE_WEBHOOK_URL'){
-                            await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
-                        }
-                    } catch(e){ console.log('Webhook pending setup'); }
-                    // Generate PDF recap
                     this.generatePDF(payload);
                     this.formSent=true;
                     this.formLoading=false;
