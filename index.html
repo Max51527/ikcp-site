@@ -275,75 +275,11 @@
         animation-play-state: paused;
     }
 </style>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "LocalBusiness",
-          "@id": "https://ikcp.eu/#business",
-          "name": "IKCP — IKIGAÏ Conseil Patrimonial",
-          "description": "Cabinet indépendant spécialisé en protection patrimoniale en Ardèche. CGP Ardèche — conseil en gestion de patrimoine pour particuliers, dirigeants et TNS.",
-          "url": "https://ikcp.eu",
-          "telephone": "+33667537979",
-          "email": "maxime@ikcp.eu",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Saint-Marcel-lès-Annonay",
-            "addressLocality": "Annonay",
-            "addressRegion": "Ardèche",
-            "postalCode": "07100",
-            "addressCountry": "FR"
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "45.2404",
-            "longitude": "4.6716"
-          },
-          "areaServed": ["Ardèche", "Annonay", "Nord Ardèche", "Tournon-sur-Rhône", "Aubenas", "Privas", "Combloux", "Megève"],
-          "priceRange": "$$",
-          "sameAs": [
-            "https://www.linkedin.com/in/maxime-juveneton-27913a150/",
-            "https://www.instagram.com/ikcp.patrimoine/"
-          ],
-          "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Services patrimoniaux",
-            "itemListElement": [
-              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Bilan patrimonial"}},
-              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Conseil en transmission"}},
-              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Optimisation fiscale"}},
-              {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Prévoyance dirigeant"}}
-            ]
-          }
-        },
-        {
-          "@type": "Person",
-          "@id": "https://ikcp.eu/#maxime",
-          "name": "Maxime Juveneton",
-          "jobTitle": "Conseiller en gestion de patrimoine — CGP Ardèche",
-          "description": "Fondateur IKCP, spécialiste protection patrimoniale en Ardèche. Intervenant en droit des affaires au Campus Saint-Denis Annonay.",
-          "worksFor": {"@id": "https://ikcp.eu/#business"},
-          "url": "https://ikcp.eu",
-          "image": "https://ikcp.eu/icons/icon-192.png",
-          "sameAs": "https://www.linkedin.com/in/maxime-juveneton-27913a150/"
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://ikcp.eu/#website",
-          "url": "https://ikcp.eu",
-          "name": "IKCP — Cabinet patrimoine Ardèche",
-          "description": "CGP Ardèche indépendant — protection, transmission et optimisation patrimoniale",
-          "publisher": {"@id": "https://ikcp.eu/#business"},
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://ikcp.eu/?s={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
-        }
-      ]
-    }
-    </script>
+    
+
+    
+
+
 </head><body>
                     <div class="header">
                         <h1>IKCP</h1>
@@ -607,6 +543,58 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 }
             };
         }
+    </script>
+
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://ikcp.eu/#business",
+          "name": "IKCP — IKIGAÏ Conseil Patrimonial",
+          "description": "Cabinet indépendant spécialisé en protection patrimoniale en Ardèche. CGP Ardèche — conseil en gestion de patrimoine pour particuliers, dirigeants et TNS.",
+          "url": "https://ikcp.eu",
+          "telephone": "+33667537979",
+          "email": "maxime@ikcp.eu",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Saint-Marcel-lès-Annonay",
+            "addressLocality": "Annonay",
+            "addressRegion": "Ardèche",
+            "postalCode": "07100",
+            "addressCountry": "FR"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "45.2404",
+            "longitude": "4.6716"
+          },
+          "areaServed": ["Ardèche", "Annonay", "Nord Ardèche", "Tournon-sur-Rhône", "Aubenas", "Privas", "Combloux", "Megève"],
+          "priceRange": "$$",
+          "sameAs": [
+            "https://www.linkedin.com/in/maxime-juveneton-27913a150/",
+            "https://www.instagram.com/ikcp.patrimoine/"
+          ]
+        },
+        {
+          "@type": "Person",
+          "@id": "https://ikcp.eu/#maxime",
+          "name": "Maxime Juveneton",
+          "jobTitle": "Conseiller en gestion de patrimoine — CGP Ardèche",
+          "worksFor": {"@id": "https://ikcp.eu/#business"},
+          "url": "https://ikcp.eu",
+          "sameAs": "https://www.linkedin.com/in/maxime-juveneton-27913a150/"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://ikcp.eu/#website",
+          "url": "https://ikcp.eu",
+          "name": "IKCP — Cabinet patrimoine Ardèche",
+          "publisher": {"@id": "https://ikcp.eu/#business"}
+        }
+      ]
+    }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.3/dist/cdn.min.js" defer></script>
