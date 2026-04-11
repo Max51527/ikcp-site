@@ -1,3 +1,4 @@
+# Worker principal : ikcp-prospect (pipeline prospects → Notion + emails)
 name = "ikcp-prospect"
 main = "index.js"
 compatibility_date = "2024-01-01"
@@ -6,7 +7,6 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 NOTIFY_EMAIL = "maxime@ikcp.eu"
 
-# Les secrets NOTION_TOKEN et NOTION_DB_ID doivent être ajoutés via :
+# Secrets à configurer via Cloudflare Dashboard (Settings → Variables and Secrets) :
 # wrangler secret put NOTION_TOKEN
 # wrangler secret put NOTION_DB_ID
-# OU directement dans le Dashboard Cloudflare → Workers → ikcp-prospect → Settings → Variables

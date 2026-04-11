@@ -1,0 +1,36 @@
+name: Deploy Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker/**'
+
+jobs:
+  deploy-ikcp-prospect:
+    name: Deploy ikcp-prospect
+    runs-on: ubuntu-latest
+    if: contains(github.event.commits[0].modified, 'worker/index.js') || contains(github.event.commits[0].added, 'worker/index.js')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: '3'
+          command: deploy index.js --name ikcp-prospect --compatibility-date 2024-01-01
+
+  deploy-ikcp-marcel:
+    name: Deploy ikcp-marcel
+    runs-on: ubuntu-latest
+    if: contains(github.event.commits[0].modified, 'worker/marcel-proxy.js') || contains(github.event.commits[0].added, 'worker/marcel-proxy.js')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: '3'
+          command: deploy marcel-proxy.js --name ikcp-marcel --compatibility-date 2024-01-01
