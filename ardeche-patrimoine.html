@@ -32,6 +32,29 @@
         .inp:focus{border-color:var(--gold)}
         .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(31,26,22,0.95);backdrop-filter:blur(12px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
     </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Qu'est-ce qu'un CGP indépendant en Ardèche ?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Un conseiller en gestion de patrimoine (CGP) indépendant comme IKCP n'a aucun lien capitalistique avec une banque ou un assureur. Il sélectionne les meilleures solutions parmi l'ensemble du marché — pas dans un catalogue maison. IKCP est enregistré à l'ORIAS sous le numéro 23001568 et exerce sous le statut CIF (Conseiller en Investissements Financiers)."}
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi faire appel à un CGP en Ardèche plutôt qu'à sa banque ?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Votre banque vous propose ce qu'elle vend. Un CGP indépendant comme IKCP a accès à plus de 800 supports d'assurance-vie, à des contrats luxembourgeois, à des fonds de private equity et à des solutions immobilières inaccessibles en agence. Et surtout, sa rémunération est alignée sur vos intérêts — pas sur des objectifs commerciaux."}
+    },
+    {
+      "@type": "Question",
+      "name": "Comment se déroule un premier rendez-vous avec IKCP en Ardèche ?",
+      "acceptedAnswer": {"@type": "Answer", "text": "Le premier échange dure 30 à 45 minutes. Maxime Juveneton analyse votre situation (revenus, patrimoine, famille, fiscalité) et identifie vos enjeux prioritaires. Aucun document n'est requis pour ce premier contact. Un Document d'Entrée en Relation vous est remis, conforme à la réglementation MIF II. Vous repartez avec des pistes concrètes, pas des brochures."}
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <nav class="nav">
@@ -127,4 +150,15 @@ async function sendOpt(){
     var W='https://ikcp-prospect.maxime-ead.workers.dev';
     try{if(W)await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Patrimoine Ardèche IKCP',prenom:p,email:e,date:new Date().toISOString()})})}catch(x){}
 </script><script src="/mobile-cta.js"></script>
-<script src="/chatbot-widget.js"></script></body></html>
+<script src="/chatbot-widget.js"></script><div style="max-width:700px;margin:40px auto;padding:0 20px;">
+<h2 style="font-family:'Playfair Display',serif;font-size:22px;color:#1f1a16;margin-bottom:20px;">Questions fréquentes</h2>
+<div style="margin-bottom:16px;padding:18px;background:#f9f6f0;border-radius:12px;border-left:3px solid #b8956e;"><h3 style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#1f1a16;margin:0 0 8px;">Qu'est-ce qu'un CGP indépendant en Ardèche ?</h3><p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#5c4d3c;line-height:1.7;margin:0;">Un conseiller en gestion de patrimoine (CGP) indépendant comme IKCP n'a aucun lien capitalistique avec une banque ou un assureur. Il sélectionne les meilleures solutions parmi l'ensemble du marché — pas dans un catalogue maison. IKCP est enregistré à l'ORIAS sous le numéro 23001568 et exerce sous le statut CIF (Conseiller en Investissements Financiers).</p></div>
+<div style="margin-bottom:16px;padding:18px;background:#f9f6f0;border-radius:12px;border-left:3px solid #b8956e;"><h3 style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#1f1a16;margin:0 0 8px;">Pourquoi faire appel à un CGP en Ardèche plutôt qu'à sa banque ?</h3><p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#5c4d3c;line-height:1.7;margin:0;">Votre banque vous propose ce qu'elle vend. Un CGP indépendant comme IKCP a accès à plus de 800 supports d'assurance-vie, à des contrats luxembourgeois, à des fonds de private equity et à des solutions immobilières inaccessibles en agence. Et surtout, sa rémunération est alignée sur vos intérêts — pas sur des objectifs commerciaux.</p></div>
+<div style="margin-bottom:16px;padding:18px;background:#f9f6f0;border-radius:12px;border-left:3px solid #b8956e;"><h3 style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#1f1a16;margin:0 0 8px;">Comment se déroule un premier rendez-vous avec IKCP en Ardèche ?</h3><p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#5c4d3c;line-height:1.7;margin:0;">Le premier échange dure 30 à 45 minutes. Maxime Juveneton analyse votre situation (revenus, patrimoine, famille, fiscalité) et identifie vos enjeux prioritaires. Aucun document n'est requis pour ce premier contact. Un Document d'Entrée en Relation vous est remis, conforme à la réglementation MIF II. Vous repartez avec des pistes concrètes, pas des brochures.</p></div>
+</div>
+
+<div style="max-width:600px;margin:40px auto;padding:32px;background:#1f1a16;border-radius:16px;text-align:center;">
+  <p style="font-family:'Playfair Display',serif;font-size:20px;color:white;margin:0 0 8px;">Votre situation mérite une analyse personnalisée.</p>
+  <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.5);margin:0 0 20px;">Premier échange gratuit — 30 minutes avec Maxime.</p>
+  <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" style="display:inline-block;padding:14px 32px;background:#b8956e;color:#1f1a16;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;border-radius:10px;text-decoration:none;">Réserver un échange →</a>
+</div></body></html>
