@@ -599,12 +599,23 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.3/dist/cdn.min.js" defer></script>
     <script>
-        // Scroll reveal — skip hero
+        // Scroll reveal — skip hero, skip absolute decorative divs
         document.addEventListener('DOMContentLoaded', () => {
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-            document.querySelectorAll('section:not(:first-of-type) > div').forEach(el => { el.classList.add('reveal'); obs.observe(el); });
+            }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+                        document.querySelectorAll('section:not(:first-of-type) > div').forEach(el => {
+                                            // Skip absolute-positioned decorative elements (they don't need reveal)
+                                            const pos = getComputedStyle(el).position;
+                                            if (pos === 'absolute' || pos === 'fixed') return;
+                                            el.classList.add('reveal');
+                                            obs.observe(el);
+                        });
+
+                        // Safety net: reveal any still-hidden sections after 2.5s (edge cases)
+                        setTimeout(() => {
+                                            document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
+                        }, 2500);
         });
     </script>
 
@@ -2081,7 +2092,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 py-5 border-t border-white/5 text-[11px] text-[#907b65]">
                 <span class="flex items-center gap-1.5">🛡CIF — CNCEF Patrimoine</span>
                 <span class="text-[#4d3f33]">·</span>
-                <span class="flex items-center gap-1.5">📋ORIAS n°23003862</span>
+                <span class="flex items-center gap-1.5">📋ORIAS n°23001568</span>
                 <span class="text-[#4d3f33]">·</span>
                 <span class="flex items-center gap-1.5">✅MIF II / DDA</span>
                 <span class="text-[#4d3f33]">·</span>
