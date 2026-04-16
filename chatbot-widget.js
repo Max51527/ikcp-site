@@ -27,6 +27,13 @@ var welcomeHTML=''
 + '<p class="ikcp-subtle">Posez votre question, ou cliquez sur un thème ci-dessous.</p>'
 
 + '<div class="ikcp-qs-group">'
++   '<div class="ikcp-qs-label">Une image vaut mille mots (Confucius)</div>'
++   '<div class="ikcp-qs">'
++     '<button class="ikcp-qs-btn ikcp-qs-confucius" onclick="window._ikcpOpenGallery()">🖼️ Voir les schémas pédagogiques</button>'
++   '</div>'
++ '</div>'
+
++ '<div class="ikcp-qs-group">'
 +   '<div class="ikcp-qs-label">Focus déclaration 2026</div>'
 +   '<div class="ikcp-qs">'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'per\')">PER</button>'
@@ -90,6 +97,8 @@ css.textContent=`
 .ikcp-qs{display:flex;gap:6px;flex-wrap:wrap}
 .ikcp-qs-btn{background:#f9f6f0;border:1px solid #d8d0c4;color:#1f1a16;border-radius:18px;padding:6px 12px;font-size:11px;font-family:'DM Sans',system-ui,sans-serif;cursor:pointer;transition:all 0.15s;font-weight:500;line-height:1.3}
 .ikcp-qs-btn:hover{background:#1f1a16;color:white;border-color:#1f1a16}
+.ikcp-qs-confucius{background:#1f1a16;color:white;border-color:#1f1a16;font-weight:600}
+.ikcp-qs-confucius:hover{background:#b8956e;color:white;border-color:#b8956e}
 #ikcp-chat-input{padding:12px;background:white;border-top:1px solid #e5ded2;display:flex;gap:8px}
 #ikcp-chat-panel.expanded #ikcp-chat-input{padding:16px max(16px, calc((100vw - 800px) / 2))}
 #ikcp-chat-input input{flex:1;border:1px solid #d8d0c4;border-radius:24px;padding:8px 16px;font-size:13px;outline:none;font-family:'DM Sans',system-ui,sans-serif}
@@ -221,6 +230,37 @@ window._ikcpToggle=toggle;
 window._ikcpSend=send;
 window._ikcpExpand=expand;
 window._ikcpQuick=quick;
+
+// Lazy load de la bibliothèque de schémas
+var schemasLoaded=false;
+function loadSchemasLib(cb){
+if(schemasLoaded||window._ikcpBuildGallery){schemasLoaded=true;cb();return;}
+var s=document.createElement('script');
+s.src='/marcel-schemas.js';
+s.onload=function(){schemasLoaded=true;cb();};
+s.onerror=function(){cb(new Error('schemas_load_failed'));};
+document.head.appendChild(s);
+}
+
+window._ikcpOpenGallery=function(){
+stripQuickstart();
+loadSchemasLib(function(err){
+if(err){msgs.push({role:'assistant',html:'<p>Les schémas sont momentanément indisponibles. Réessayez dans un instant.</p>'});render();return;}
+msgs.push({role:'assistant',html:window._ikcpBuildGallery()});
+render();
+});
+};
+
+window._ikcpSchema=function(key){
+if(!window._ikcpShowSchema){
+loadSchemasLib(function(err){if(!err)window._ikcpSchema(key);});
+return;
+}
+msgs.push({role:'assistant',html:window._ikcpShowSchema(key)});
+render();
+// Auto-expand si pas déjà agrandi
+if(!isExpanded){expand();}
+};
 
 render();
 setTimeout(function(){var t=document.getElementById('ikcp-tease');if(t&&!isOpen)t.style.display='block';},6000);
