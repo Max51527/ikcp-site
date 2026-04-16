@@ -4,21 +4,20 @@ var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 
 // Questions envoyées à Marcel — toutes interrogatives/factuelles, MIF II-safe
 var QS={
-// Groupe 1 — Votre déclaration 2026
+// Groupe 1 — Focus déclaration 2026
 'per':'Les versements sur un PER sont-ils deductibles des revenus imposables ?',
 'pensions':'Comment declarer une pension alimentaire versee ?',
 'fraisreels':'Quelle difference entre frais reels et abattement de 10 % sur les salaires ?',
 'fonciers':'Quelle difference entre micro-foncier et regime reel pour les revenus fonciers ?',
-// Groupe 2 — Autres thèmes fiscaux
 'dons':'Comment fonctionne la reduction d\'impot pour les dons aux associations ?',
-'niches':'Comment fonctionne le plafond global des niches fiscales ?',
-'pv':'Comment est calculee la plus-value immobiliere a la revente ?',
 'credits':'Comment fonctionnent les credits et reductions d\'impot ?',
-// Groupe 3 — Patrimoine
+// Groupe 2 — Gestion de patrimoine
 'bilan':'Je voudrais faire un mini-bilan patrimonial',
 'donation':'Combien puis-je donner a mes enfants sans droits ?',
 'conjoint':'Comment proteger mon conjoint en cas de deces ?',
-'ifi':'Comment fonctionne l\'impot sur l\'immobilier (IFI) ?'
+'ifi':'Comment fonctionne l\'impot sur l\'immobilier (IFI) ?',
+'pv':'Comment est calculee la plus-value immobiliere a la revente ?',
+'niches':'Comment fonctionne le plafond global des niches fiscales ?'
 };
 
 var welcomeHTML=''
@@ -28,32 +27,26 @@ var welcomeHTML=''
 + '<p class="ikcp-subtle">Posez votre question, ou cliquez sur un thème ci-dessous.</p>'
 
 + '<div class="ikcp-qs-group">'
-+   '<div class="ikcp-qs-label">Votre déclaration 2026</div>'
++   '<div class="ikcp-qs-label">Focus déclaration 2026</div>'
 +   '<div class="ikcp-qs">'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'per\')">PER</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'pensions\')">Pensions alimentaires</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'fraisreels\')">Frais réels</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'fonciers\')">Revenus fonciers</button>'
-+   '</div>'
-+ '</div>'
-
-+ '<div class="ikcp-qs-group">'
-+   '<div class="ikcp-qs-label">Autres thèmes fiscaux</div>'
-+   '<div class="ikcp-qs">'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'dons\')">Dons aux associations</button>'
-+     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'niches\')">Plafond des niches</button>'
-+     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'pv\')">Plus-value immo</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'credits\')">Crédits d\'impôt</button>'
 +   '</div>'
 + '</div>'
 
 + '<div class="ikcp-qs-group">'
-+   '<div class="ikcp-qs-label">Patrimoine</div>'
++   '<div class="ikcp-qs-label">Gestion de patrimoine</div>'
 +   '<div class="ikcp-qs">'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'bilan\')">Mini-bilan (2 min)</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'donation\')">Donation</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'conjoint\')">Protection conjoint</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'ifi\')">Impôt immobilier</button>'
++     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'pv\')">Plus-value immo</button>'
++     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'niches\')">Plafond des niches</button>'
 +   '</div>'
 + '</div>';
 
@@ -110,7 +103,7 @@ css.textContent=`
 @keyframes ikcp-bounce{to{transform:translateY(-6px);opacity:0.5}}
 #ikcp-tease{position:fixed;bottom:90px;right:20px;z-index:9998;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);border:1px solid #e5ded2;padding:12px 16px;max-width:260px;cursor:pointer;display:none;animation:ikcp-fly 3s ease-in-out infinite}
 #ikcp-tease p{margin:0;font-family:'DM Sans',system-ui,sans-serif}
-#ikcp-tease .t1{font-size:13px;color:#1f1a16;font-weight:500;line-height:1.4;font-family:'Playfair Display',Georgia,serif;font-style:italic}
+#ikcp-tease .t1{font-size:13px;color:#1f1a16;font-weight:600;line-height:1.4}
 #ikcp-tease .t2{font-size:11px;color:#907b65;line-height:1.4;margin-top:4px}
 .ikcp-meta{font-size:10px;color:#9e9080;margin-top:6px;font-style:italic}
 `;
@@ -210,7 +203,7 @@ if(b)b.title=isExpanded?'Réduire':'Agrandir';
 }
 
 var html=`
-<div id="ikcp-tease" onclick="document.querySelector('#ikcp-chat-btn').click()"><p class="t1">Payez le bon montant d\'impôt.</p><p class="t2">Pas un euro de plus. Marcel éclaire 24h/24 👇</p></div>
+<div id="ikcp-tease" onclick="document.querySelector('#ikcp-chat-btn').click()"><p class="t1">Une question patrimoniale&nbsp;?</p><p class="t2">Succession, donation, IFI&hellip; posez votre question 👇</p></div>
 <div id="ikcp-chat-panel">
 <div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
 <div id="ikcp-chat-msgs"></div>
