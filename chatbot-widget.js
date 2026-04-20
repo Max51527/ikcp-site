@@ -29,7 +29,7 @@ var welcomeHTML=''
 + '<div class="ikcp-qs-group">'
 +   '<div class="ikcp-qs-label">Une image vaut mille mots (Confucius)</div>'
 +   '<div class="ikcp-qs">'
-+     '<button class="ikcp-qs-btn ikcp-qs-confucius" onclick="window._ikcpOpenGallery()">🖼️ Voir les schémas pédagogiques</button>'
++     '<button class="ikcp-qs-btn ikcp-qs-confucius" data-action="open-gallery">🖼️ Voir les schémas pédagogiques</button>'
 +   '</div>'
 + '</div>'
 
@@ -264,4 +264,17 @@ if(!isExpanded){expand();}
 
 render();
 setTimeout(function(){var t=document.getElementById('ikcp-tease');if(t&&!isOpen)t.style.display='block';},6000);
+
+// Event delegation pour les schémas et la galerie (pas de onclick inline = CSP-safe)
+document.addEventListener('click',function(e){
+var btn=e.target.closest('[data-schema]');
+if(btn){
+var key=btn.getAttribute('data-schema');
+if(key&&window._ikcpSchema)window._ikcpSchema(key);
+else if(key)loadSchemasLib(function(){if(window._ikcpSchema)window._ikcpSchema(key);});
+return;
+}
+var action=e.target.closest('[data-action="open-gallery"]');
+if(action&&window._ikcpOpenGallery){window._ikcpOpenGallery();return;}
+});
 })();
