@@ -484,7 +484,7 @@ html+='<p style="margin:0 0 14px;color:#5f5e5a;font-size:12px;">Cliquez sur un t
 html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
 Object.keys(SCHEMAS).forEach(function(key){
 var s=SCHEMAS[key];
-html+='<button data-schema="'+key+'" style="background:#ffffff;border:1px solid #d8d0c4;border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left;transition:all 0.15s;font-family:inherit;">';
+html+='<button onclick="window._ikcpSchema(\''+key+'\')" style="background:#ffffff;border:1px solid #d8d0c4;border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left;transition:all 0.15s;font-family:inherit;">';
 html+='<div style="font-size:20px;margin-bottom:4px;">'+s.thumbnail+'</div>';
 html+='<div style="font-size:12px;color:#1f1a16;font-weight:500;line-height:1.3;margin-bottom:2px;">'+s.title+'</div>';
 html+='<div style="font-size:10px;color:#907b65;line-height:1.3;">'+s.subtitle+'</div>';

@@ -29,7 +29,7 @@ var welcomeHTML=''
 + '<div class="ikcp-qs-group">'
 +   '<div class="ikcp-qs-label">Une image vaut mille mots (Confucius)</div>'
 +   '<div class="ikcp-qs">'
-+     '<button class="ikcp-qs-btn ikcp-qs-confucius" data-action="open-gallery">🖼️ Voir les schémas pédagogiques</button>'
++     '<button class="ikcp-qs-btn ikcp-qs-confucius" onclick="window._ikcpOpenGallery()">🖼️ Voir les schémas pédagogiques</button>'
 +   '</div>'
 + '</div>'
 
@@ -69,7 +69,7 @@ css.textContent=`
 @keyframes ikcp-fly{0%,100%{transform:translateY(0) rotate(-1deg)}25%{transform:translateY(-8px) rotate(1deg)}50%{transform:translateY(-12px) rotate(-0.5deg)}75%{transform:translateY(-4px) rotate(0.5deg)}}
 #ikcp-chat-btn img{animation:ikcp-fly 7s ease-in-out infinite}
 #ikcp-chat-close-btn{width:64px;height:64px;border-radius:50%;background:#1f1a16;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;position:fixed;bottom:20px;right:20px;z-index:9999}
-#ikcp-chat-panel{position:fixed;bottom:100px;right:20px;z-index:9998;width:400px;max-width:calc(100vw - 32px);height:640px;max-height:calc(100vh - 140px);background:white;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.15);border:1px solid #d8d0c4;display:none;flex-direction:column;overflow:hidden;transition:all 0.28s cubic-bezier(0.4,0,0.2,1)}
+#ikcp-chat-panel{position:fixed;bottom:100px;right:20px;z-index:9998;width:440px;max-width:calc(100vw - 32px);height:calc(100vh - 120px);max-height:calc(100vh - 120px);background:white;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.15);border:1px solid #d8d0c4;display:none;flex-direction:column;overflow:hidden;transition:all 0.28s cubic-bezier(0.4,0,0.2,1)}
 #ikcp-chat-panel.open{display:flex}
 #ikcp-chat-panel.expanded{width:calc(100vw - 40px);max-width:calc(100vw - 40px);height:calc(100vh - 40px);max-height:calc(100vh - 40px);bottom:20px;right:20px;border-radius:20px}
 @media (max-width:600px){#ikcp-chat-panel{width:calc(100vw - 32px);height:calc(100vh - 140px)}#ikcp-chat-panel.expanded{width:calc(100vw - 16px);max-width:calc(100vw - 16px);height:calc(100vh - 16px);max-height:calc(100vh - 16px);right:8px;bottom:8px;border-radius:14px}}
@@ -265,16 +265,20 @@ if(!isExpanded){expand();}
 render();
 setTimeout(function(){var t=document.getElementById('ikcp-tease');if(t&&!isOpen)t.style.display='block';},6000);
 
-// Event delegation pour les schémas et la galerie (pas de onclick inline = CSP-safe)
-document.addEventListener('click',function(e){
-var btn=e.target.closest('[data-schema]');
-if(btn){
-var key=btn.getAttribute('data-schema');
-if(key&&window._ikcpSchema)window._ikcpSchema(key);
-else if(key)loadSchemasLib(function(){if(window._ikcpSchema)window._ikcpSchema(key);});
-return;
+// Preload des schémas dès que le chat s'ouvre (pas d'attente au clic galerie)
+var origToggle=toggle;
+function preloadSchemas(){
+if(!window._ikcpBuildGallery){
+var s=document.createElement('script');
+s.src='/marcel-schemas.js';
+document.head.appendChild(s);
 }
-var action=e.target.closest('[data-action="open-gallery"]');
-if(action&&window._ikcpOpenGallery){window._ikcpOpenGallery();return;}
-});
+}
+// Preload au premier clic sur la montgolfière
+var preloaded=false;
+var _origToggle=window._ikcpToggle;
+window._ikcpToggle=function(){
+if(!preloaded){preloaded=true;preloadSchemas();}
+_origToggle();
+};
 })();
