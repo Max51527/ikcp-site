@@ -5,8 +5,8 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VV19VXB879"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-VV19VXB879');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulateur IFI 2026 - Impot Fortune Immobiliere | IKCP</title>
-<meta name="description" content="Calculez votre IFI 2026. Seuil 1,3M, bareme 0,5-1,5%, abattement 30% residence principale.">
+<title>Simulateur IFI 2026 - Impôt Fortune Immobilière | IKCP</title>
+<meta name="description" content="Calculez votre IFI 2026. Seuil 1,3M, barème 0,5-1,5%, abattement 30% residence principale.">
 <link rel="canonical" href="https://ikcp.eu/simulateur-ifi">
 <meta name="theme-color" content="#1f1a16">
 <link rel="manifest" href="/manifest.json">
@@ -55,10 +55,10 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <a href="https://ikcp.eu" style="color:rgba(255,255,255,0.5);font-size:12px;text-decoration:none">Retour au site</a>
 </nav>
 <section style="padding:100px 20px 40px;text-align:center;max-width:720px;margin:0 auto">
-<div style="display:inline-block;background:rgba(184,149,110,0.1);border:1px solid rgba(184,149,110,0.2);border-radius:40px;padding:6px 18px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px">Bareme IFI 2026 - Art. 964 CGI</div>
+<div style="display:inline-block;background:rgba(184,149,110,0.1);border:1px solid rgba(184,149,110,0.2);border-radius:40px;padding:6px 18px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px">Barème IFI 2026 - Art. 964 CGI</div>
 <h1 style="font-size:clamp(28px,5vw,46px);color:var(--dark);line-height:1.1;margin-bottom:16px">Etes-vous redevable<br><span style="color:var(--gold)">de l'IFI ?</span></h1>
-<p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">Calculez votre impot sur la fortune immobiliere et decouvrez combien vous pourriez economiser.</p>
-<p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit - Sans inscription - Baremes 2026</p>
+<p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 8px;line-height:1.6">Calculez votre impôt sur la fortune immobilière et decouvrez combien vous pourriez economiser.</p>
+<p style="font-size:12px;color:var(--muted);opacity:0.6">Gratuit - Sans inscription - Barèmes 2026</p>
 </section>
 <section style="max-width:800px;margin:0 auto;padding:0 20px 40px">
 <div style="background:white;border-radius:20px;border:1px solid var(--border);padding:32px">
@@ -66,7 +66,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Residence principale (valeur venale)</label><input type="number" class="inp" id="rp" value="800000" step="50000"><div style="font-size:11px;color:var(--muted);margin-top:4px">Abattement automatique de 30%</div></div>
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Immobilier locatif</label><input type="number" class="inp" id="loc" value="500000" step="50000"></div>
 <div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Parts SCPI / SCI</label><input type="number" class="inp" id="scpi" value="150000" step="10000"></div>
-<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Dettes immobilieres deductibles</label><input type="number" class="inp" id="dettes" value="300000" step="50000"></div>
+<div><label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Dettes immobilières deductibles</label><input type="number" class="inp" id="dettes" value="300000" step="50000"></div>
 </div>
 <div style="text-align:center;margin-top:28px"><button class="btn" onclick="doCalcul()">Calculer mon IFI</button></div>
 <div id="resultats" style="margin-top:32px;display:none">
@@ -89,7 +89,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px" id="ecod"></div>
 </div>
 <div id="chart" style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:24px"></div>
-<div style="font-size:11px;color:var(--muted);line-height:1.8;padding:16px;background:var(--light);border-radius:12px;border:1px solid var(--border);margin-bottom:24px"><strong style="color:var(--dark)">Sources juridiques</strong><br>IFI : art. 964 a 983 du CGI (cree par LF 2018, remplace ISF)<br>Seuil imposition : 1 300 000 EUR (art. 964 CGI), bareme a partir de 800 000 EUR<br>Bareme : 0,50% / 0,70% / 1,00% / 1,25% / 1,50% (art. 977 CGI)<br>Residence principale : abattement 30% (art. 973 CGI)<br>Dettes deductibles : emprunts immobiliers (art. 974 CGI)<br>Reduction dons : 75% plafonne 50 000 EUR (art. 978 CGI)<br>Biens professionnels : exoneres (art. 975 CGI)<br>Baremes inchanges par LF 2026.<br><em>Simulation indicative. Ne constitue pas un conseil en investissement (MIF II).</em></div>
+<div style="font-size:11px;color:var(--muted);line-height:1.8;padding:16px;background:var(--light);border-radius:12px;border:1px solid var(--border);margin-bottom:24px"><strong style="color:var(--dark)">Sources juridiques</strong><br>IFI : art. 964 a 983 du CGI (cree par LF 2018, remplace ISF)<br>Seuil imposition : 1 300 000 EUR (art. 964 CGI), barème a partir de 800 000 EUR<br>Barème : 0,50% / 0,70% / 1,00% / 1,25% / 1,50% (art. 977 CGI)<br>Residence principale : abattement 30% (art. 973 CGI)<br>Dettes deductibles : emprunts immobiliers (art. 974 CGI)<br>Reduction dons : 75% plafonne 50 000 EUR (art. 978 CGI)<br>Biens professionnels : exoneres (art. 975 CGI)<br>Barèmes inchanges par LF 2026.<br><em>Simulation indicative. Ne constitue pas un conseil en investissement (MIF II).</em></div>
 <div style="text-align:center;margin-bottom:24px"><button onclick="genPDF()" class="btn" style="background:var(--gold);color:var(--dark);padding:14px 32px;font-size:15px">&#128196; Telecharger mon rapport PDF</button><p style="font-size:11px;color:var(--muted);margin-top:8px">Gratuit — vos resultats personnalises</p></div>
 <div style="background:var(--light);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px">
 <label style="display:flex;gap:12px;cursor:pointer;align-items:flex-start">
@@ -191,7 +191,7 @@ doc.setTextColor(184,149,110);doc.setFont('helvetica','bold');doc.setFontSize(22
 doc.setTextColor(255,255,255);doc.setFontSize(7);doc.text('PROTECTION & TRANSMISSION DU PATRIMOINE',m,24);
 doc.setFontSize(8);doc.text('ikcp.eu',w-m,18,{align:'right'});doc.setTextColor(150,150,150);doc.text(dt,w-m,24,{align:'right'});
 var y=42;doc.setTextColor(31,26,22);doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('Votre simulation IFI',m,y);y+=10;
-doc.setTextColor(158,144,128);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Baremes 2026 - Art. 964 a 983 CGI',m,y);y+=14;
+doc.setTextColor(158,144,128);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('Barèmes 2026 - Art. 964 a 983 CGI',m,y);y+=14;
 doc.setFillColor(254,242,242);doc.roundedRect(m,y,cw/2-3,32,3,3,'F');
 doc.setTextColor(220,38,38);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('IFI ACTUEL',m+5,y+10);doc.setFontSize(20);doc.text(r1,m+5,y+24);
 var x2=m+cw/2+3;doc.setFillColor(240,253,244);doc.roundedRect(x2,y,cw/2-3,32,3,3,'F');
