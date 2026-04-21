@@ -787,4 +787,25 @@ window._ikcpToggle=function(){
 if(!preloaded){preloaded=true;preloadSchemas();}
 _origToggle();
 };
+
+// ── Bridge : les boutons du message d'accueil dispatchent des CustomEvents ──
+// marcel-gallery : ouvrir le chat + afficher la galerie de schémas
+// marcel-quick   : ouvrir le chat + soumettre une question toute prête (detail.prompt)
+window.addEventListener('marcel-gallery',function(){
+if(!isOpen)toggle();
+if(window._ikcpOpenGallery){
+setTimeout(function(){window._ikcpOpenGallery();},80);
+}
+});
+window.addEventListener('marcel-quick',function(e){
+var prompt=e&&e.detail&&e.detail.prompt;
+if(!prompt)return;
+if(!isOpen)toggle();
+setTimeout(function(){
+var inp=document.getElementById('ikcp-inp');
+if(!inp)return;
+inp.value=prompt;
+if(typeof send==='function')send();
+},80);
+});
 })();
