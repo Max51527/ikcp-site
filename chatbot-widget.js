@@ -907,6 +907,9 @@ stripQuickstart();
 var txt=inp.value.trim()||(_pendingPdf?'Peux-tu analyser ce document et m\'aider à comprendre ma situation ?':'');
 // Extraction et persistance du profil
 extractProfile(txt);
+// Tracking : reset du timer "silence"
+if(typeof _lastUserMsgTime!=='undefined')_lastUserMsgTime=Date.now();
+if(typeof _relanceShown!=='undefined')_relanceShown=false;
 // Lead scoring
 _questionsHistory.push(txt.slice(0,200));
 scoreLead(txt);
@@ -1028,6 +1031,8 @@ document.getElementById('ikcp-chat-panel').classList.toggle('open',isOpen);
 document.getElementById('ikcp-chat-btn').style.display=isOpen?'none':'block';
 document.getElementById('ikcp-chat-close-btn').style.display=isOpen?'flex':'none';
 var t=document.getElementById('ikcp-tease');if(t)t.style.display='none';
+// Mémorise la fermeture explicite pour ne plus auto-ouvrir dans cette session
+if(!isOpen&&count>0){try{sessionStorage.setItem('ikcp_closed','1');}catch(e){}}
 if(isOpen)setTimeout(function(){var i=document.getElementById('ikcp-inp');if(i)i.focus();},100);
 }
 
@@ -1188,9 +1193,139 @@ if(!isExpanded){expand();}
 };
 
 render();
-setTimeout(function(){var t=document.getElementById('ikcp-tease');if(t&&!isOpen)t.style.display='block';},6000);
 
-// Preload des schémas dès que le chat s'ouvre (pas d'attente au clic galerie)
+// ══════════════════════════════════════════════════════════════════════
+// ACTIVE MARCEL — comportements proactifs
+// ══════════════════════════════════════════════════════════════════════
+
+// ── 1. Teaser contextualisé selon la page ──
+function getTeaserContent(){
+var t1='Une question patrimoniale ?';
+var t2='Succession, donation, IFI… posez votre question 👇';
+// Visiteur récurrent ?
+var isReturning=profile.lastSeen&&profile.created&&profile.lastSeen!==profile.created;
+var daysSince=0;
+if(profile.created){
+var delta=Date.now()-new Date(profile.created).getTime();
+daysSince=Math.floor(delta/86400000);
+}
+if(isReturning&&daysSince>=1){
+t1='Content de vous revoir 👋';
+t2='Reprenons là où nous en étions ?';
+return{t1:t1,t2:t2};
+}
+// Selon le sujet de la page
+if(_pageCtx&&_pageCtx.topic){
+var topic=_pageCtx.topic;
+if(/succession|transmission/i.test(topic)){t1='Cette page vous interpelle ?';t2='Les droits de succession peuvent atteindre 45%. Je vous explique comment les réduire.';}
+else if(/donation/i.test(topic)){t1='Vous pensez à une donation ?';t2='527 460 € sans droits pour un couple avec 2 enfants — je vous explique.';}
+else if(/ifi|fortune immobili/i.test(topic)){t1='Concerné par l\'IFI ?';t2='Seuil 1,3 M€. Des solutions existent — posez votre question.';}
+else if(/retraite|plan d\'?[eé]pargne retraite|per/i.test(topic)){t1='Préparer votre retraite ?';t2='Économisez 30% d\'impôt maintenant tout en préparant demain.';}
+else if(/conjoint|protection|d[eé]c[eè]s|pr[eé]voyance/i.test(topic)){t1='Que se passe-t-il si…';t2='Protéger votre famille en cas d\'imprévu. Parlons-en.';}
+else if(/lmnp|foncier|locatif/i.test(topic)){t1='Investisseur immobilier ?';t2='Attention à l\'impact successoral du meublé. Je vous explique.';}
+else if(/dirigeant|tns|entreprise/i.test(topic)){t1='Dirigeant ou indépendant ?';t2='Succession, protection, rémunération : les 3 points clés.';}
+else{t1='Besoin d\'aide sur ce sujet ?';t2='Je suis là pour répondre à vos questions patrimoniales.';}
+}
+return{t1:t1,t2:t2};
+}
+
+function showTeaser(customText){
+var t=document.getElementById('ikcp-tease');if(!t||isOpen)return;
+var content=customText||getTeaserContent();
+t.innerHTML='<p class="t1">'+content.t1+'</p><p class="t2">'+content.t2+'</p>';
+t.style.display='block';
+}
+function hideTeaser(){var t=document.getElementById('ikcp-tease');if(t)t.style.display='none';}
+
+// Affiche le teaser contextualisé après 6s
+setTimeout(function(){if(!isOpen)showTeaser();},6000);
+
+// ── 2. Auto-opening après 45s (si idle, pas mobile en train de lire) ──
+var _lastActivity=Date.now();
+['scroll','mousemove','keydown','touchstart'].forEach(function(ev){
+window.addEventListener(ev,function(){_lastActivity=Date.now();},{passive:true});
+});
+setTimeout(function(){
+if(isOpen)return;
+// Ne pas auto-ouvrir si le visiteur est activement en train de lire/scroller
+var idleFor=Date.now()-_lastActivity;
+if(idleFor<8000)return; // visiteur actif → on respecte
+// Visiteur récurrent : pas besoin d'auto-ouvrir agressivement
+if(profile.lastSeen&&profile.created&&profile.lastSeen!==profile.created){
+var ds=(Date.now()-new Date(profile.created).getTime())/86400000;
+if(ds<7)return; // revient dans la semaine → il sait où nous trouver
+}
+// Skip si déjà fermé explicitement dans cette session
+try{if(sessionStorage.getItem('ikcp_closed'))return;}catch(e){}
+// Auto-ouvre avec un message proactif
+toggle();
+setTimeout(function(){pushProactiveMessage();},400);
+},45000);
+
+// ── 3. Exit intent : souris qui remonte vers le haut ──
+var _exitShown=false;
+document.addEventListener('mouseout',function(e){
+if(_exitShown||isOpen)return;
+if(e.clientY<=5&&!e.toElement&&!e.relatedTarget){
+_exitShown=true;
+showTeaser({t1:'Une dernière question ?',t2:'Avant de partir, Marcel peut vous éclairer en 30 secondes.'});
+}
+});
+
+// ── 4. Message proactif d'ouverture ──
+function pushProactiveMessage(){
+var msg='';
+var content=getTeaserContent();
+if(_pageCtx&&_pageCtx.topic){
+var topic=_pageCtx.topic;
+if(/succession|transmission/i.test(topic)){msg='<p>Je remarque que vous consultez la page <strong>'+topic+'</strong>.</p><p>Une question que se posent souvent mes visiteurs : <em>"Si je meurs demain, combien mes enfants paieront-ils de droits ?"</em></p><p>Souhaitez-vous que je vous donne un ordre de grandeur pour votre situation ?</p>';}
+else if(/donation/i.test(topic)){msg='<p>Je vois que la donation vous intéresse.</p><p>Saviez-vous qu\'un couple avec 2 enfants peut transmettre <strong>527 460 €</strong> sans droits sur 15 ans ?</p><p>Quelle est votre situation ? (nombre d\'enfants, montant envisagé)</p>';}
+else if(/ifi/i.test(topic)){msg='<p>L\'IFI est un sujet technique mais optimisable.</p><p>Question : votre patrimoine immobilier net dépasse-t-il <strong>1,3 M€</strong> ?</p><p>Si oui, plusieurs leviers existent pour réduire la facture.</p>';}
+else if(/retraite|per/i.test(topic)){msg='<p>Préparer sa retraite est l\'un des sujets les plus rentables fiscalement.</p><p>À quelle tranche marginale d\'imposition êtes-vous ? (30% ? 41% ?)</p><p>Je vous calcule immédiatement votre économie d\'impôt potentielle.</p>';}
+else if(/conjoint|protection/i.test(topic)){msg='<p>La question centrale : <em>"Que se passe-t-il si demain il vous arrive quelque chose ?"</em></p><p>Êtes-vous marié(e), pacsé(e), en concubinage ? Avez-vous des enfants ?</p><p>Je vous explique concrètement ce qui change.</p>';}
+else{msg='<p>Besoin d\'aide sur <strong>'+topic+'</strong> ?</p><p>Posez votre question en toute simplicité, ou dites-moi votre situation et j\'adapte ma réponse.</p>';}
+}else{
+var isReturning=profile.lastSeen&&profile.created&&profile.lastSeen!==profile.created;
+if(isReturning){
+msg='<p>Bienvenue à nouveau 👋</p><p>Souhaitez-vous reprendre là où nous en étions, ou explorer un nouveau sujet aujourd\'hui ?</p>';
+}else{
+msg='<p>Bonjour 👋 Je suis Marcel, votre agent patrimonial IKCP.</p><p>Puis-je vous aider à éclaircir un point patrimonial ?</p><p>Quelques sujets fréquents : succession, donation, protection du conjoint, IFI, retraite…</p>';
+}
+}
+msgs.push({role:'assistant',html:msg,_proactive:true});
+render();
+}
+
+// ── 5. Relance après silence (chat ouvert, pas de message user depuis 90s) ──
+var _lastUserMsgTime=null;
+var _relanceShown=false;
+setInterval(function(){
+if(!isOpen||_relanceShown||count===0)return;
+if(!_lastUserMsgTime)return;
+if(Date.now()-_lastUserMsgTime<90000)return;
+_relanceShown=true;
+var relances=[
+'<p>Encore une question ? Je peux aussi vous proposer un <a href="#" onclick="window._ikcpAskFollow(\'Je voudrais faire un mini-bilan patrimonial\');return false;">mini-bilan en 2 minutes</a> si cela vous intéresse.</p>',
+'<p>Prenez votre temps. Si vous souhaitez aller plus loin, <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Maxime peut analyser votre situation en détail</a>.</p>',
+'<p>Besoin de précisions sur un point abordé ? Ou un autre sujet patrimonial qui vous préoccupe ?</p>'
+];
+msgs.push({role:'assistant',html:relances[Math.floor(Math.random()*relances.length)],_relance:true});
+render();
+},30000);
+
+// ── 6. Scroll trigger — quand le visiteur a lu >60% d'une page article ──
+var _scrollTriggered=false;
+window.addEventListener('scroll',function(){
+if(_scrollTriggered||isOpen||!_pageCtx)return;
+var scrolled=(window.scrollY+window.innerHeight)/document.documentElement.scrollHeight;
+if(scrolled>=0.6){
+_scrollTriggered=true;
+var content={t1:'Vous lisez attentivement 👏',t2:'Une question sur ce sujet ? Je suis là pour y répondre.'};
+showTeaser(content);
+}
+},{passive:true});
+
+// ── Preload des schémas dès que le chat s'ouvre (pas d'attente au clic galerie) ──
 var origToggle=toggle;
 function preloadSchemas(){
 if(!window._ikcpBuildGallery){
