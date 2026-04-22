@@ -120,6 +120,17 @@ FORMAT :
 - > pour chiffres clés
 - Questions à enjeu → terminer par **Piste de réflexion :** (jamais une recommandation directe)
 
+SUGGESTIONS DE SUIVI — OBLIGATOIRE À LA FIN DE CHAQUE RÉPONSE :
+Termine TOUJOURS ta réponse (APRÈS le disclaimer MIF II) par un bloc invisible au format exact :
+<!--follow_ups:["Question courte n°1","Question courte n°2","Question courte n°3"]-->
+
+Ces 3 questions sont des suivis naturels que le visiteur pourrait poser. Elles sont courtes (max 50 caractères), concrètes, et explorent une facette différente du sujet abordé. Exemples :
+- Si tu as expliqué la donation : "Et pour un petit-enfant ?" / "Combien pour un couple marié ?" / "Que se passe-t-il après 15 ans ?"
+- Si tu as expliqué la succession : "Et si on est pacsé ?" / "Et avec un enfant handicapé ?" / "Comment réduire ces droits ?"
+- Si tu as expliqué l'IFI : "Démembrement, ça marche ?" / "Et les crédits immobiliers ?" / "Quand faut-il déclarer ?"
+
+Le bloc HTML commentaire sera parsé côté frontend et transformé en boutons cliquables. N'ajoute JAMAIS de texte visible du type "voici des questions de suivi" — seulement le commentaire HTML.
+
 MINI-BILAN GUIDÉ :
 Si le visiteur demande un mini-bilan patrimonial, propose un parcours en 5 questions POSÉES UNE PAR UNE :
 1. Âge ?
@@ -310,8 +321,23 @@ export default {
 
       // Concat text blocks (web search retourne plusieurs blocks)
       const textBlocks = (data.content || []).filter(c => c.type === 'text');
-      const reply = textBlocks.map(c => c.text).join('\n\n')
+      let fullText = textBlocks.map(c => c.text).join('\n\n')
         || "Je n'ai pas pu traiter votre demande.";
+
+      // Extraire les follow-ups du bloc commentaire HTML
+      let followUps = [];
+      const followUpsMatch = fullText.match(/<!--\s*follow_ups\s*:\s*(\[[\s\S]*?\])\s*-->/i);
+      if (followUpsMatch) {
+        try {
+          const parsed = JSON.parse(followUpsMatch[1]);
+          if (Array.isArray(parsed)) {
+            followUps = parsed.filter(q => typeof q === 'string' && q.length > 0 && q.length < 120).slice(0, 3);
+          }
+        } catch (e) { /* ignore malformed */ }
+        // Retirer le commentaire du texte visible
+        fullText = fullText.replace(followUpsMatch[0], '').trim();
+      }
+      const reply = fullText;
 
       const webSearchUsed = (data.content || []).some(
         b => b.type === 'web_search_tool_use' || b.type === 'server_tool_use'
@@ -322,6 +348,7 @@ export default {
 
       return new Response(JSON.stringify({
         reply,
+        follow_ups: followUps,
         web_search_used: webSearchUsed,
         season: ctx.season,
       }), {

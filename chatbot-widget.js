@@ -714,6 +714,20 @@ css.textContent=`
 .ikcp-schema-hint-btn{background:#1f1a16;color:white;border:none;border-radius:14px;padding:5px 12px;font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',system-ui,sans-serif;transition:all 0.15s}
 .ikcp-schema-hint-btn:hover{background:#b8956e;color:#1f1a16}
 .ikcp-profile-pill{display:inline-block;margin:6px 0;padding:4px 10px;background:#f0ebe0;border-radius:12px;font-size:10px;color:#907b65}
+.ikcp-followups{margin-top:12px;padding-top:10px;border-top:1px dashed #e5ded2}
+.ikcp-followups-label{font-size:10px;color:#b8956e;letter-spacing:0.4px;text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.ikcp-followups-btns{display:flex;flex-direction:column;gap:6px}
+.ikcp-followup-btn{background:white;border:1px solid #e5ded2;color:#2e2520;border-radius:10px;padding:8px 12px;font-size:12px;font-family:'DM Sans',system-ui,sans-serif;cursor:pointer;text-align:left;transition:all 0.15s;font-weight:500;line-height:1.4}
+.ikcp-followup-btn:hover{background:#1f1a16;color:white;border-color:#1f1a16;transform:translateX(2px)}
+.ikcp-loading-bubble{display:flex;align-items:center;gap:12px;padding:12px 16px}
+.ikcp-balloon-wrap{flex-shrink:0;font-size:22px;animation:ikcp-balloon-rise 2.2s ease-in-out infinite}
+@keyframes ikcp-balloon-rise{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.ikcp-loading-text{font-size:12px;color:#907b65;font-style:italic;font-weight:500}
+.ikcp-loading-dots{display:inline-block;animation:ikcp-ellipsis 1.5s infinite;width:20px}
+@keyframes ikcp-ellipsis{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
+.ikcp-calendly-inline{margin-top:12px;background:white;border:1px solid #e5ded2;border-radius:10px;overflow:hidden}
+.ikcp-calendly-header{padding:8px 12px;font-size:11px;font-weight:600;color:#b8956e;background:#f9f6f0;border-bottom:1px solid #e5ded2}
+.ikcp-calendly-inline iframe{width:100%;height:620px;border:none;display:block}
 `;
 document.head.appendChild(css);
 
@@ -730,16 +744,35 @@ el.appendChild(d);
 el.scrollTop=el.scrollHeight;
 }
 
+var _loadingTimer=null;
+var LOADING_MSGS=[
+"Marcel consulte les barèmes 2026",
+"Marcel vérifie l'article du CGI",
+"Marcel croise les sources officielles",
+"Marcel examine votre situation",
+"Marcel met en perspective juridique et fiscal",
+"Marcel affine la réponse"
+];
 function showLoading(){
 var el=document.getElementById('ikcp-chat-msgs');
 var d=document.createElement('div');
 d.id='ikcp-loading';
-d.className='ikcp-msg ikcp-msg-a';
-d.innerHTML='<div class="ikcp-dots"><span></span><span></span><span></span></div>';
+d.className='ikcp-msg ikcp-msg-a ikcp-loading-bubble';
+d.innerHTML='<div class="ikcp-balloon-wrap"><span class="ikcp-balloon">🎈</span></div><div class="ikcp-loading-text" id="ikcp-loading-text">'+LOADING_MSGS[0]+'<span class="ikcp-loading-dots">…</span></div>';
 el.appendChild(d);
 el.scrollTop=el.scrollHeight;
+// Rotation des messages toutes les 1.8s
+var i=0;
+_loadingTimer=setInterval(function(){
+i=(i+1)%LOADING_MSGS.length;
+var t=document.getElementById('ikcp-loading-text');
+if(t)t.innerHTML=LOADING_MSGS[i]+'<span class="ikcp-loading-dots">…</span>';
+},1800);
 }
-function hideLoading(){var l=document.getElementById('ikcp-loading');if(l)l.remove();}
+function hideLoading(){
+if(_loadingTimer){clearInterval(_loadingTimer);_loadingTimer=null;}
+var l=document.getElementById('ikcp-loading');if(l)l.remove();
+}
 
 function stripQuickstart(){
 if(msgs[0]&&msgs[0]._hasQuickstart){
@@ -770,12 +803,27 @@ var txtWithCtx=ctx?ctx+'\n\n'+txt:txt;
 var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20)})});
 var d=await r.json();
 var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
+var followUps=Array.isArray(d.follow_ups)?d.follow_ups:[];
 history.push({role:'assistant',content:reply});
 var html=formatReply(reply);
 // Auto-schéma : si la réponse aborde un sujet avec schéma disponible
 var sch=suggestSchema(reply);
 if(sch){
 html+='<div class="ikcp-schema-hint"><span class="ikcp-schema-hint-text">📊 Schéma associé : '+sch.title+'</span><button class="ikcp-schema-hint-btn" onclick="window._ikcpSchema(\''+sch.key+'\')">Afficher</button></div>';
+}
+// Follow-ups : 3 questions de suivi cliquables générées par Marcel
+if(followUps.length){
+var fuHtml='<div class="ikcp-followups"><div class="ikcp-followups-label">Continuer la conversation</div><div class="ikcp-followups-btns">';
+followUps.forEach(function(q){
+var safe=q.replace(/"/g,'&quot;').replace(/</g,'&lt;');
+fuHtml+='<button class="ikcp-followup-btn" onclick="window._ikcpAskFollow(\''+safe.replace(/'/g,"\\'")+'\')">'+safe+' →</button>';
+});
+fuHtml+='</div></div>';
+html+=fuHtml;
+}
+// Détection d'intention RDV → embed Calendly
+if(/rendez-vous|échanger avec maxime|rdv|calendly/i.test(reply)&&!/calendly-embed-shown/.test(html)){
+html+='<div class="ikcp-calendly-inline" data-calendly-embed-shown="1"><div class="ikcp-calendly-header">📅 Prendre RDV directement :</div><iframe src="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial?embed_domain=ikcp.eu&embed_type=Inline&hide_gdpr_banner=1&background_color=f9f6f0&text_color=1f1a16&primary_color=b8956e" loading="lazy"></iframe></div>';
 }
 // Badge profil mémorisé
 var pCtx=profileAsContext();
@@ -845,6 +893,12 @@ window._ikcpToggle=toggle;
 window._ikcpSend=send;
 window._ikcpExpand=expand;
 window._ikcpQuick=quick;
+window._ikcpAskFollow=function(question){
+var inp=document.getElementById('ikcp-inp');
+if(!inp)return;
+inp.value=question;
+send();
+};
 
 // Lazy load de la bibliothèque de schémas
 var schemasLoaded=false;
