@@ -1,0 +1,30 @@
+# Wrangler config pour le Worker Marcel (nouvelle version v2)
+#
+# ─── POURQUOI "ikcp-chat" ? ───
+# Le frontend appelle actuellement https://ikcp-chat.maxime-ead.workers.dev
+# Le secret ANTHROPICAPIKEY existe déjà sur ce Worker.
+# On déploie donc notre nouveau code SUR ikcp-chat pour remplacer l'ancien en place.
+# Avantage : aucun changement frontend nécessaire, activation immédiate.
+#
+# ─── DÉPLOIEMENT ───
+#   cd workers/ikcp-marcel
+#   npx wrangler login          (une seule fois, ouvre le navigateur)
+#   npx wrangler deploy         (pousse le nouveau code)
+#
+# Après déploiement, le site a :
+#  - Marcel qui recherche le web quand utile (actualités fiscales)
+#  - Contexte saisonnier automatique
+#  - Exemples few-shot dans le prompt
+#  - Logging KV des questions (90j TTL)
+
+name = "ikcp-chat"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+
+# Logging KV — questions anonymisées (TTL 90j) pour analyser les sujets récurrents
+[[kv_namespaces]]
+binding = "MARCEL_LOGS"
+id = "64d10977135f400783a7e66f119c7b4f"
+
+[observability]
+enabled = true

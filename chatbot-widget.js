@@ -508,6 +508,83 @@ window._ikcpShowSchema=showSchema;
 var PROXY='https://ikcp-chat.maxime-ead.workers.dev';
 var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 
+// ──────────────────────────────────────────────────────────────
+// MÉMOIRE DE SESSION — stocke un mini-profil visiteur dans localStorage
+// Permet à Marcel de garder le contexte (âge, situation, enfants, statut, TMI)
+// d'une question à l'autre. Extrait à partir des messages user.
+// ──────────────────────────────────────────────────────────────
+var PROFILE_KEY='ikcp_marcel_profile_v1';
+function loadProfile(){
+try{var j=localStorage.getItem(PROFILE_KEY);return j?JSON.parse(j):{};}catch(e){return{};}
+}
+function saveProfile(p){
+try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));}catch(e){}
+}
+var profile=loadProfile();
+
+function extractProfile(text){
+var t=(text||'').toLowerCase();
+var changed=false;
+// Âge : "35 ans", "j'ai 42 ans"
+var mAge=t.match(/\b(\d{2})\s*ans?\b/);
+if(mAge){var a=parseInt(mAge[1],10);if(a>=18&&a<=99&&a!==profile.age){profile.age=a;changed=true;}}
+// Situation familiale
+if(/\bmari[ée]\b/.test(t)&&profile.situation!=='marié'){profile.situation='marié';changed=true;}
+else if(/\bpacs/.test(t)&&profile.situation!=='pacsé'){profile.situation='pacsé';changed=true;}
+else if(/\bc[ée]libataire\b/.test(t)&&profile.situation!=='célibataire'){profile.situation='célibataire';changed=true;}
+else if(/\bdivorc/.test(t)&&profile.situation!=='divorcé'){profile.situation='divorcé';changed=true;}
+else if(/\bveu[fv]\b/.test(t)&&profile.situation!=='veuf/veuve'){profile.situation='veuf/veuve';changed=true;}
+// Enfants : "2 enfants", "trois enfants"
+var mEnf=t.match(/\b(\d+)\s*enfant/);
+if(mEnf){var n=parseInt(mEnf[1],10);if(n>=0&&n<=10&&n!==profile.enfants){profile.enfants=n;changed=true;}}
+var mots={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5};
+for(var w in mots){if(new RegExp('\\b'+w+'\\s*enfant').test(t)&&mots[w]!==profile.enfants){profile.enfants=mots[w];changed=true;}}
+// Statut professionnel
+if(/\b(salari[ée])\b/.test(t)&&profile.statut!=='salarié'){profile.statut='salarié';changed=true;}
+else if(/\b(dirigeant|g[ée]rant)\b/.test(t)&&profile.statut!=='dirigeant'){profile.statut='dirigeant';changed=true;}
+else if(/\b(tns|ind[ée]pendant|profession lib[ée]rale)\b/.test(t)&&profile.statut!=='travailleur indépendant'){profile.statut='travailleur indépendant';changed=true;}
+else if(/\bretrait[ée]\b/.test(t)&&profile.statut!=='retraité'){profile.statut='retraité';changed=true;}
+// TMI explicite
+var mTmi=t.match(/\btmi\s*[àa]?\s*(\d{1,2})\s*%/);
+if(mTmi){var tmi=parseInt(mTmi[1],10);if([0,11,30,41,45].indexOf(tmi)>=0&&tmi!==profile.tmi){profile.tmi=tmi;changed=true;}}
+if(changed)saveProfile(profile);
+return changed;
+}
+
+function profileAsContext(){
+var parts=[];
+if(profile.age)parts.push(profile.age+' ans');
+if(profile.situation)parts.push(profile.situation);
+if(typeof profile.enfants==='number')parts.push(profile.enfants+' enfant'+(profile.enfants>1?'s':''));
+if(profile.statut)parts.push(profile.statut);
+if(profile.tmi)parts.push('tranche marginale '+profile.tmi+'%');
+return parts.length?'[Contexte du visiteur : '+parts.join(' · ')+']':'';
+}
+
+// ──────────────────────────────────────────────────────────────
+// AUTO-SCHEMA — détecte si la réponse de Marcel aborde un sujet
+// couvert par un schéma, et propose un bouton "Voir le schéma"
+// ──────────────────────────────────────────────────────────────
+var SCHEMA_TRIGGERS={
+abattements:/\b(abattement|100\s?000|donation|don familial|15 ans|790\s?[AG])/i,
+devolution:/\b(succession|h[ée]ritier|r[ée]serve h[ée]r[ée]ditaire|conjoint survivant|usufruit.*succession|757)/i,
+bareme_ir:/\b(bar[èe]me ir|tranche marginale|imp[ôo]t sur le revenu|11\s?600|29\s?579|84\s?577|181\s?917)/i,
+assurance_vie:/\b(assurance[- ]vie|152\s?500|clause b[ée]n[ée]ficiaire|990\s?I)/i,
+ifi:/\b(ifi|fortune immobili[èe]re|1\s?300\s?000|964 cgi)/i,
+per:/\b(plan d['′]?[ée]pargne retraite|\bper\b|\bpero?b?\b|d[ée]duction.*retraite)/i,
+foncier:/\b(revenu[s]? foncier|micro[- ]foncier|r[ée]gime r[ée]el|d[ée]ficit foncier)/i,
+demembrement:/\b(d[ée]membrement|usufruit|nue[- ]propri[ée]t[ée])/i
+};
+function suggestSchema(replyText){
+if(!window._ikcpSchemas)return null;
+for(var key in SCHEMA_TRIGGERS){
+if(SCHEMA_TRIGGERS[key].test(replyText)&&window._ikcpSchemas[key]){
+return{key:key,title:window._ikcpSchemas[key].title||key};
+}
+}
+return null;
+}
+
 // Questions envoyées à Marcel — toutes interrogatives/factuelles, MIF II-safe
 var QS={
 // Groupe 1 — Focus déclaration 2026
@@ -561,6 +638,12 @@ var welcomeHTML=''
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'pv\')">Plus-value immo</button>'
 +     '<button class="ikcp-qs-btn" onclick="window._ikcpQuick(\'niches\')">Plafond des niches</button>'
 +   '</div>'
++ '</div>'
+
++ '<div class="ikcp-maxime-cta">'
++   '<div class="ikcp-maxime-label">Pour votre situation personnelle</div>'
++   '<a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="ikcp-maxime-btn">📅 Échanger avec Maxime</a>'
++   '<div class="ikcp-maxime-note">Un entretien confidentiel · par téléphone ou en visio</div>'
 + '</div>';
 
 var msgs=[{role:'assistant',html:welcomeHTML,_hasQuickstart:true}];
@@ -621,6 +704,16 @@ css.textContent=`
 #ikcp-tease .t1{font-size:13px;color:#1f1a16;font-weight:600;line-height:1.4}
 #ikcp-tease .t2{font-size:11px;color:#907b65;line-height:1.4;margin-top:4px}
 .ikcp-meta{font-size:10px;color:#9e9080;margin-top:6px;font-style:italic}
+.ikcp-maxime-cta{margin-top:16px;padding:14px;background:linear-gradient(135deg,#1f1a16,#2d2520);border-radius:12px;text-align:center}
+.ikcp-maxime-label{font-size:10px;color:#b8956e;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.ikcp-maxime-btn{display:inline-block;background:#b8956e;color:#1f1a16;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:700;text-decoration:none;transition:all 0.15s;font-family:'DM Sans',system-ui,sans-serif}
+.ikcp-maxime-btn:hover{background:white;color:#1f1a16;transform:translateY(-1px)}
+.ikcp-maxime-note{font-size:10px;color:#9e9080;margin-top:8px;font-style:italic}
+.ikcp-schema-hint{margin-top:10px;padding:8px 12px;background:#f0ebe0;border-left:3px solid #b8956e;border-radius:6px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.ikcp-schema-hint-text{font-size:11px;color:#5f5e5a;font-weight:500}
+.ikcp-schema-hint-btn{background:#1f1a16;color:white;border:none;border-radius:14px;padding:5px 12px;font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',system-ui,sans-serif;transition:all 0.15s}
+.ikcp-schema-hint-btn:hover{background:#b8956e;color:#1f1a16}
+.ikcp-profile-pill{display:inline-block;margin:6px 0;padding:4px 10px;background:#f0ebe0;border-radius:12px;font-size:10px;color:#907b65}
 `;
 document.head.appendChild(css);
 
@@ -665,15 +758,31 @@ inp.value='';render();return;
 count++;
 stripQuickstart();
 var txt=inp.value.trim();
+// Extraction et persistance du profil
+extractProfile(txt);
 msgs.push({role:'user',html:'<p>'+txt.replace(/</g,'&lt;')+'</p>'});
 history.push({role:'user',content:txt});
 inp.value='';render();showLoading();
 try{
-var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txt,history:history.slice(-20)})});
+// Injecte le contexte profil dans le message envoyé (si contenu)
+var ctx=profileAsContext();
+var txtWithCtx=ctx?ctx+'\n\n'+txt:txt;
+var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20)})});
 var d=await r.json();
 var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
 history.push({role:'assistant',content:reply});
 var html=formatReply(reply);
+// Auto-schéma : si la réponse aborde un sujet avec schéma disponible
+var sch=suggestSchema(reply);
+if(sch){
+html+='<div class="ikcp-schema-hint"><span class="ikcp-schema-hint-text">📊 Schéma associé : '+sch.title+'</span><button class="ikcp-schema-hint-btn" onclick="window._ikcpSchema(\''+sch.key+'\')">Afficher</button></div>';
+}
+// Badge profil mémorisé
+var pCtx=profileAsContext();
+if(pCtx&&count===1){
+html+='<div class="ikcp-profile-pill">🧠 '+pCtx.replace('[Contexte du visiteur : ','').replace(']','')+' · mémorisé pour cette session</div>';
+}
+// Messages de rate limit
 if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges utilisés. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Poursuivre avec Maxime →</a></p>';
 else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
 msgs.push({role:'assistant',html:html});
