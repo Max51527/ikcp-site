@@ -514,13 +514,23 @@ var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 // d'une question à l'autre. Extrait à partir des messages user.
 // ──────────────────────────────────────────────────────────────
 var PROFILE_KEY='ikcp_marcel_profile_v1';
+function genUUID(){
+// UUID v4 simple (marketplace-safe, pas crypto grade)
+return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+var r=Math.random()*16|0;return (c==='x'?r:(r&0x3|0x8)).toString(16);
+});
+}
 function loadProfile(){
-try{var j=localStorage.getItem(PROFILE_KEY);return j?JSON.parse(j):{};}catch(e){return{};}
+try{var j=localStorage.getItem(PROFILE_KEY);var p=j?JSON.parse(j):{};
+if(!p.uuid){p.uuid=genUUID();p.created=new Date().toISOString();saveProfile(p);}
+p.lastSeen=new Date().toISOString();
+return p;}catch(e){return{uuid:genUUID(),created:new Date().toISOString()};}
 }
 function saveProfile(p){
 try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));}catch(e){}
 }
 var profile=loadProfile();
+saveProfile(profile);
 
 function extractProfile(text){
 var t=(text||'').toLowerCase();
@@ -605,6 +615,54 @@ return null;
 }
 var _pageCtx=detectPageContext();
 var _pageCtxSent=false;
+
+// ──────────────────────────────────────────────────────────────
+// LEAD SCORING — détecte les prospects "hot" et déclenche une alerte
+// ──────────────────────────────────────────────────────────────
+var _leadScore=0,_leadAlerted=false,_questionsHistory=[];
+var HOT_THRESHOLD=60;
+var LEAD_ALERT_URL='https://ikcp-prospect.maxime-ead.workers.dev';
+
+function scoreLead(userText){
+var t=(userText||'').toLowerCase();
+var add=0;
+// Signaux d'intention forte
+if(/\b(rendez[- ]?vous|rdv|parler avec|\b[ée]changer\b|contacter maxime|reserve)/i.test(t))add+=30;
+if(/\burgent|rapidement|d[eé]sjà|besoin d\'aide|situation|mon cas\b/i.test(t))add+=15;
+// Signaux de patrimoine substantiel
+if(/\b([1-9]\d{2}[\s,.]?000|[1-9][\s,.]?\d{3}[\s,.]?000|million|M€)\b/i.test(t))add+=25;
+// Situations complexes / entrepreneur
+if(/\b(dirigeant|entreprise|sarl|sas|sci|holding|cession|transmission.*entreprise)/i.test(t))add+=15;
+if(/\b(succession|d[eé]c[eè]s|invalidit[eé]|prot[eé]ger.*conjoint)/i.test(t))add+=10;
+// Profil renseigné complet
+if(profile.age&&profile.situation&&profile.statut&&typeof profile.enfants==='number')add+=15;
+// Engagement : nombre de messages
+if(count>=3)add+=5;
+if(count>=5)add+=10;
+_leadScore+=add;
+return _leadScore;
+}
+
+async function maybeFireLeadAlert(reply){
+if(_leadAlerted||_leadScore<HOT_THRESHOLD)return;
+_leadAlerted=true;
+try{
+var payload={
+source:'Marcel chatbot HOT lead',
+type:'marcel_hot_lead',
+score:_leadScore,
+profile:Object.assign({},profile),
+page:location.href,
+pageTitle:document.title,
+questionsCount:count,
+lastQuestion:_questionsHistory.slice(-1)[0]||'',
+allQuestions:_questionsHistory,
+date:new Date().toISOString(),
+userAgent:navigator.userAgent
+};
+fetch(LEAD_ALERT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
+}catch(e){}
+}
 
 // ──────────────────────────────────────────────────────────────
 // AUTO-SCHEMA — détecte si la réponse de Marcel aborde un sujet
@@ -837,18 +895,25 @@ msgs[0]._hasQuickstart=false;
 
 async function send(){
 var inp=document.getElementById('ikcp-inp');
-if(!inp||!inp.value.trim())return;
+if(!inp||(!inp.value.trim()&&!_pendingPdf))return;
 if(count>=MAX){
 msgs.push({role:'assistant',html:'<p>Vous avez atteint la limite de '+MAX+' échanges. Pour poursuivre, <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">prenez rendez-vous avec Maxime →</a></p>'});
 inp.value='';render();return;
 }
 count++;
 stripQuickstart();
-var txt=inp.value.trim();
+var txt=inp.value.trim()||(_pendingPdf?'Peux-tu analyser ce document et m\'aider à comprendre ma situation ?':'');
 // Extraction et persistance du profil
 extractProfile(txt);
-msgs.push({role:'user',html:'<p>'+txt.replace(/</g,'&lt;')+'</p>'});
-history.push({role:'user',content:txt});
+// Lead scoring
+_questionsHistory.push(txt.slice(0,200));
+scoreLead(txt);
+var pdfBadge=_pendingPdf?'<div style="margin:0 0 6px;padding:6px 10px;background:#f0ebe0;border-radius:8px;font-size:11px;color:#907b65;display:inline-block">📎 '+_pendingPdfName.replace(/</g,'&lt;')+' joint</div>':'';
+msgs.push({role:'user',html:pdfBadge+'<p>'+txt.replace(/</g,'&lt;')+'</p>'});
+history.push({role:'user',content:txt+(_pendingPdf?' [document PDF joint : '+_pendingPdfName+']':'')});
+var currentPdf=_pendingPdf;
+_pendingPdf=null;_pendingPdfName='';
+inp.placeholder='Posez votre question à Marcel...';
 inp.value='';render();showLoading();
 try{
 // Injecte le contexte profil + contexte de page dans le 1er message
@@ -860,7 +925,7 @@ _pageCtxSent=true;
 }
 var prefix=[pageLine,ctx].filter(Boolean).join('\n');
 var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
-var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20)})});
+var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf})});
 var d=await r.json();
 var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
 var followUps=Array.isArray(d.follow_ups)?d.follow_ups:[];
@@ -893,6 +958,8 @@ html+='<div class="ikcp-profile-pill">🧠 '+pCtx.replace('[Contexte du visiteur
 // Messages de rate limit
 if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges utilisés. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Poursuivre avec Maxime →</a></p>';
 else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
+// Hot lead alert (non bloquant)
+maybeFireLeadAlert(reply);
 msgs.push({role:'assistant',html:html});
 }catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Contactez Maxime directement</a>.</p>'});}
 hideLoading();render();
@@ -939,7 +1006,7 @@ var html=`
 <div id="ikcp-chat-panel">
 <div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
 <div id="ikcp-chat-msgs"></div>
-<div id="ikcp-chat-input"><button id="ikcp-voice" onclick="window._ikcpVoice()" title="Dicter la question" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
+<div id="ikcp-chat-input"><button id="ikcp-upload" onclick="document.getElementById('ikcp-file').click()" title="Envoyer un document PDF (avis d'imposition, contrat...)" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button><input type="file" id="ikcp-file" accept="application/pdf" style="display:none" onchange="window._ikcpFileChange(this)"><button id="ikcp-voice" onclick="window._ikcpVoice()" title="Dicter la question" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
 </div>
 <button id="ikcp-chat-btn" onclick="window._ikcpToggle()"><span class="dot"></span><img src="/icons/montgolfiere.png" alt="Marcel - Assistant patrimonial IKCP" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎈</text></svg>'"></button>
 <button id="ikcp-chat-close-btn" style="display:none" onclick="window._ikcpToggle()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -983,6 +1050,36 @@ setTimeout(function(){w.print();},500);
 // ──────────────────────────────────────────────────────────────
 // VOICE INPUT — Web Speech API (dictée navigateur, gratuit)
 // ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────
+// PDF UPLOAD — envoyer un document à analyser
+// ──────────────────────────────────────────────────────────────
+var _pendingPdf=null,_pendingPdfName='';
+window._ikcpFileChange=function(fileInput){
+var f=fileInput.files&&fileInput.files[0];
+if(!f)return;
+if(f.size>5*1024*1024){
+alert('Le fichier est trop volumineux (max 5 Mo).');
+fileInput.value='';return;
+}
+if(f.type!=='application/pdf'){
+alert('Seuls les fichiers PDF sont acceptés.');
+fileInput.value='';return;
+}
+var reader=new FileReader();
+reader.onload=function(e){
+var b64=(e.target.result||'').split(',')[1]||'';
+_pendingPdf=b64;
+_pendingPdfName=f.name;
+var inp=document.getElementById('ikcp-inp');
+if(inp){
+inp.placeholder='📎 '+f.name+' attaché · Posez votre question (ou appuyez sur →)';
+inp.focus();
+}
+};
+reader.readAsDataURL(f);
+fileInput.value='';
+};
+
 var _recognition=null,_isListening=false;
 window._ikcpVoice=function(){
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition;

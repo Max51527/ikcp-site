@@ -333,6 +333,89 @@ Barème progressif de 0,5% à 1,5% selon la tranche (art. 977 CGI).
 Ces informations sont pédagogiques et ne constituent pas un conseil en investissement au sens de la réglementation MIF II. Pour une analyse de votre situation, Maxime peut vous accompagner.`;
 }
 
+// ──────────────────────────────────────────────────────────────
+// DASHBOARD ADMIN — affiche les questions récentes et stats
+// ──────────────────────────────────────────────────────────────
+async function renderDashboard(env) {
+  if (!env.MARCEL_LOGS) {
+    return new Response('<h1>MARCEL_LOGS non configuré</h1>', {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  // Liste les clés (max 1000) et charge les valeurs
+  const list = await env.MARCEL_LOGS.list({ limit: 500 });
+  const entries = await Promise.all(
+    list.keys.map(async k => {
+      try {
+        const v = await env.MARCEL_LOGS.get(k.name);
+        return v ? JSON.parse(v) : null;
+      } catch { return null; }
+    })
+  );
+  const logs = entries.filter(Boolean).sort((a, b) => (b.ts || '').localeCompare(a.ts || ''));
+
+  // Stats agrégées
+  const total = logs.length;
+  const webCount = logs.filter(l => l.web).length;
+  const seasons = {};
+  logs.forEach(l => { if (l.season) seasons[l.season] = (seasons[l.season] || 0) + 1; });
+  const last7d = logs.filter(l => new Date(l.ts).getTime() > Date.now() - 7 * 86400000).length;
+
+  // Top sujets (mots-clés simples)
+  const topics = {
+    'Succession': /success|h[ée]rit|transm/i,
+    'Donation': /donat|don familial/i,
+    'IFI / Immobilier': /ifi|immobili[èe]re|fonci/i,
+    'Retraite / PER': /retrait|per |plan d[\'`]?[ée]pargne/i,
+    'Assurance-vie': /assurance[- ]vie/i,
+    'Protection conjoint': /conjoint|d[ée]c[eè]s|pr[ée]voyan/i,
+    'Dirigeant / TNS': /dirigeant|entreprise|tns|ind[ée]pendant/i,
+    'Impôt revenu': /imp[ôo]t.*revenu|\bir\b|tranche|tmi/i,
+  };
+  const topicCounts = {};
+  Object.keys(topics).forEach(t => { topicCounts[t] = logs.filter(l => topics[t].test(l.q || '')).length; });
+  const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]);
+
+  const rows = logs.slice(0, 100).map(l => {
+    const d = new Date(l.ts);
+    const dStr = d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const q = (l.q || '').replace(/</g, '&lt;').slice(0, 180);
+    const web = l.web ? '🌐' : '—';
+    return `<tr><td>${dStr}</td><td class="q">${q}</td><td style="text-align:center">${web}</td><td><span class="sb sb-${l.season}">${l.season || '—'}</span></td></tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Marcel Dashboard — IKCP</title><style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f9f6f0;color:#1f1a16;padding:28px;min-height:100vh}h1{font-family:Georgia,serif;font-weight:500;color:#1f1a16;margin-bottom:4px;font-size:28px}.sub{color:#b8956e;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:30px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:30px}.card{background:white;border:1px solid #e5ded2;border-radius:10px;padding:16px}.card .val{font-family:Georgia,serif;font-size:30px;font-weight:500;color:#1f1a16}.card .lbl{font-size:11px;color:#b8956e;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-top:4px}.section{background:white;border:1px solid #e5ded2;border-radius:10px;padding:20px;margin-bottom:20px}.section h2{font-family:Georgia,serif;font-size:18px;color:#1f1a16;margin-bottom:14px;font-weight:500}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;padding:10px 8px;border-bottom:2px solid #b8956e;color:#b8956e;text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:600}td{padding:10px 8px;border-bottom:1px solid #f0ebe0;vertical-align:top}td.q{color:#2e2520}.bar{display:flex;align-items:center;gap:12px;margin-bottom:8px}.bar-label{width:150px;font-size:13px;color:#1f1a16;font-weight:500}.bar-track{flex:1;height:18px;background:#f0ebe0;border-radius:4px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,#b8956e,#d4b888);border-radius:4px;transition:width 0.5s}.bar-count{width:50px;text-align:right;font-size:12px;color:#907b65;font-weight:600}.sb{font-size:10px;padding:2px 8px;border-radius:10px;display:inline-block;font-weight:600}.sb-declaration_revenus{background:#fef3c7;color:#92400e}.sb-ete{background:#dbeafe;color:#1e40af}.sb-rentree_fiscale{background:#fce7f3;color:#9f1239}.sb-fin_annee{background:#dcfce7;color:#166534}.sb-nouvelle_annee{background:#e0e7ff;color:#3730a3}@media print{body{background:white}}
+</style></head><body>
+<h1>Dashboard Marcel</h1><div class="sub">IKCP · Analyse des conversations anonymes · TTL 90 jours</div>
+<div class="cards">
+<div class="card"><div class="val">${total}</div><div class="lbl">Total questions (90j)</div></div>
+<div class="card"><div class="val">${last7d}</div><div class="lbl">7 derniers jours</div></div>
+<div class="card"><div class="val">${webCount}</div><div class="lbl">Web search utilisé</div></div>
+<div class="card"><div class="val">${total > 0 ? Math.round(webCount / total * 100) : 0}%</div><div class="lbl">Taux web search</div></div>
+</div>
+<div class="section"><h2>Top sujets abordés</h2>
+${sortedTopics.map(([t, c]) => {
+  const max = sortedTopics[0][1] || 1;
+  return `<div class="bar"><div class="bar-label">${t}</div><div class="bar-track"><div class="bar-fill" style="width:${c/max*100}%"></div></div><div class="bar-count">${c}</div></div>`;
+}).join('')}
+</div>
+<div class="section"><h2>Répartition saisonnière</h2>
+${Object.entries(seasons).map(([s, c]) => `<div class="bar"><div class="bar-label">${s}</div><div class="bar-track"><div class="bar-fill" style="width:${c/total*100}%"></div></div><div class="bar-count">${c}</div></div>`).join('') || '<p style="color:#907b65;font-size:12px">Aucune donnée</p>'}
+</div>
+<div class="section"><h2>100 dernières questions</h2>
+<table><thead><tr><th>Date</th><th>Question (anonyme)</th><th>Web</th><th>Saison</th></tr></thead><tbody>${rows || '<tr><td colspan="4" style="text-align:center;color:#907b65">Aucune conversation enregistrée pour le moment</td></tr>'}</tbody></table>
+</div>
+<p style="text-align:center;margin-top:30px;font-size:11px;color:#9e9080;font-style:italic">Données anonymisées · aucune information personnelle identifiable n'est stockée · purge automatique après 90 jours</p>
+</body></html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
+}
+
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -369,6 +452,18 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(request) });
     }
 
+    // ADMIN DASHBOARD : pas de check origin, juste token
+    // (accessible depuis n'importe quel navigateur privé)
+    const urlEarly = new URL(request.url);
+    if (request.method === 'GET' && urlEarly.pathname === '/admin') {
+      const token = urlEarly.searchParams.get('token') || '';
+      const expected = env.ADMIN_TOKEN || '';
+      if (!expected || token !== expected) {
+        return new Response('Unauthorized', { status: 401 });
+      }
+      return renderDashboard(env);
+    }
+
     const origin = request.headers.get('Origin') || '';
     if (!ALLOWED_ORIGINS.includes(origin)) {
       return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
@@ -381,9 +476,9 @@ export default {
       return new Response(JSON.stringify({
         status: 'ok',
         service: 'ikcp-marcel-proxy',
-        version: '2.0',
+        version: '2.1',
         model: 'claude-sonnet-4-20250514',
-        features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging'],
+        features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard'],
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
@@ -398,9 +493,9 @@ export default {
     }
 
     try {
-      const { message, history } = await request.json();
+      const { message, history, document_pdf } = await request.json();
 
-      if (!message || typeof message !== 'string' || message.trim() === '') {
+      if ((!message || typeof message !== 'string' || message.trim() === '') && !document_pdf) {
         return new Response(JSON.stringify({ error: 'Empty message' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
@@ -419,7 +514,30 @@ export default {
           }
         }
       }
-      messages.push({ role: 'user', content: message.slice(0, 2000) });
+
+      // Si un PDF est uploadé, on construit un message multi-content
+      if (document_pdf && typeof document_pdf === 'string') {
+        // document_pdf = base64 string (sans data:...prefix)
+        // Limite : Anthropic accepte jusqu'à 32MB, mais on cap à 5MB pour protéger le worker
+        if (document_pdf.length > 5 * 1024 * 1024 * 1.4) { // base64 ~1.4x taille réelle
+          return new Response(JSON.stringify({ error: 'PDF trop volumineux (max 5 MB)' }), {
+            status: 413,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
+          });
+        }
+        messages.push({
+          role: 'user',
+          content: [
+            {
+              type: 'document',
+              source: { type: 'base64', media_type: 'application/pdf', data: document_pdf },
+            },
+            { type: 'text', text: (message || 'Peux-tu analyser ce document et m\'aider à comprendre ma situation ?').slice(0, 2000) },
+          ],
+        });
+      } else {
+        messages.push({ role: 'user', content: message.slice(0, 2000) });
+      }
 
       const ctx = getCurrentContext();
       const systemPromptText = buildSystemPrompt(ctx);
