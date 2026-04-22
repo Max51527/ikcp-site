@@ -28,6 +28,132 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:5500',
 ];
 
+// ──────────────────────────────────────────────────────────────
+// TOOL DEFINITIONS — calculs déterministes (pas de hallucination LLM)
+// ──────────────────────────────────────────────────────────────
+const TOOLS_FISCAL = [
+  {
+    name: 'calc_impot_revenu',
+    description: "Calcule l'impôt sur le revenu (IR) 2026 selon le barème progressif officiel (LF 2026, revenus 2025). Utilise cet outil chaque fois que l'utilisateur demande un calcul d'IR, une estimation d'impôt, ou une simulation de tranche marginale.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        revenu_imposable: { type: 'number', description: 'Revenu net imposable annuel (en euros)' },
+        parts: { type: 'number', description: 'Nombre de parts fiscales (1 célibataire, 2 couple, +0.5 par enfant)' },
+      },
+      required: ['revenu_imposable', 'parts'],
+    },
+  },
+  {
+    name: 'calc_droits_succession',
+    description: "Calcule les droits de succession en ligne directe (enfants) 2026. Applique l'abattement de 100 000€ par enfant (art. 779 I CGI) et l'exonération assurance-vie avant 70 ans 152 500€/bénéficiaire (art. 990 I CGI). Utilise cet outil pour toute estimation de droits de succession.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        patrimoine_net: { type: 'number', description: 'Patrimoine net transmissible (après dettes) en euros' },
+        nb_enfants: { type: 'number', description: "Nombre d'enfants héritiers (ligne directe)" },
+        assurance_vie: { type: 'number', description: "Montant d'assurance-vie versée avant 70 ans (0 si aucune)" },
+      },
+      required: ['patrimoine_net', 'nb_enfants'],
+    },
+  },
+];
+
+// Barème IR 2026 (LF 2026, revenus 2025)
+const IR_BRACKETS = [
+  { max: 11600, rate: 0 },
+  { max: 29579, rate: 0.11 },
+  { max: 84577, rate: 0.30 },
+  { max: 181917, rate: 0.41 },
+  { max: Infinity, rate: 0.45 },
+];
+
+function calcIR(revenuImposable, parts) {
+  if (parts <= 0) parts = 1;
+  const quotient = revenuImposable / parts;
+  let impot = 0;
+  let prev = 0;
+  for (const b of IR_BRACKETS) {
+    if (quotient <= b.max) {
+      impot += (quotient - prev) * b.rate;
+      break;
+    }
+    impot += (b.max - prev) * b.rate;
+    prev = b.max;
+  }
+  impot = Math.round(impot * parts);
+  // TMI
+  let tmi = 0;
+  for (let i = IR_BRACKETS.length - 1; i >= 0; i--) {
+    const lower = i === 0 ? 0 : IR_BRACKETS[i - 1].max;
+    if (quotient > lower) { tmi = IR_BRACKETS[i].rate; break; }
+  }
+  return {
+    impot_estime: impot,
+    revenu_imposable: revenuImposable,
+    parts,
+    quotient_familial: Math.round(quotient),
+    tranche_marginale_pct: Math.round(tmi * 100),
+    taux_effectif_pct: revenuImposable > 0 ? +(impot / revenuImposable * 100).toFixed(2) : 0,
+    source: 'Barème IR 2026 — LF 2026 art. 2',
+  };
+}
+
+// Barème succession ligne directe (art. 777 CGI, inchangé depuis 2014)
+const SUCC_BRACKETS = [
+  { max: 8072, rate: 0.05 },
+  { max: 12109, rate: 0.10 },
+  { max: 15932, rate: 0.15 },
+  { max: 552324, rate: 0.20 },
+  { max: 902838, rate: 0.30 },
+  { max: 1805677, rate: 0.40 },
+  { max: Infinity, rate: 0.45 },
+];
+
+function calcSuccession(patrimoineNet, nbEnfants, avVal) {
+  if (nbEnfants <= 0) {
+    return { droits_total: 0, note: 'Aucun enfant : calcul non applicable en ligne directe. Consulter Maxime.' };
+  }
+  const avExonere = Math.min(avVal || 0, 152500 * nbEnfants);
+  const abattement = 100000 * nbEnfants;
+  const baseTaxable = Math.max(0, patrimoineNet - avExonere - abattement);
+  const parEnfant = baseTaxable / nbEnfants;
+  let droitsParEnfant = 0;
+  let prev = 0;
+  for (const b of SUCC_BRACKETS) {
+    if (parEnfant <= b.max) {
+      droitsParEnfant += (parEnfant - prev) * b.rate;
+      break;
+    }
+    droitsParEnfant += (b.max - prev) * b.rate;
+    prev = b.max;
+  }
+  const droitsTotal = Math.round(droitsParEnfant * nbEnfants);
+  return {
+    droits_total: droitsTotal,
+    droits_par_enfant: Math.round(droitsParEnfant),
+    patrimoine_net: patrimoineNet,
+    abattement_total: abattement,
+    assurance_vie_exoneree: avExonere,
+    base_taxable: Math.round(baseTaxable),
+    sources: 'art. 779 I CGI (abattement) · art. 990 I CGI (AV) · art. 777 CGI (barème)',
+  };
+}
+
+function executeTool(name, input) {
+  try {
+    if (name === 'calc_impot_revenu') {
+      return calcIR(+input.revenu_imposable || 0, +input.parts || 1);
+    }
+    if (name === 'calc_droits_succession') {
+      return calcSuccession(+input.patrimoine_net || 0, +input.nb_enfants || 0, +input.assurance_vie || 0);
+    }
+    return { error: 'Unknown tool: ' + name };
+  } catch (e) {
+    return { error: 'Tool execution error: ' + e.message };
+  }
+}
+
 function getCurrentContext() {
   const now = new Date();
   const month = now.getMonth() + 1;
@@ -80,6 +206,19 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - Donation tous les 15 ans : 100 000€/enfant (art. 779 I CGI) + 31 865€ don familial de sommes d'argent (art. 790 G CGI)
 - Don logement neuf/rénovation (jusqu'au 31/12/2026) : +100 000€ supplémentaires exonérés (art. 790 A bis CGI)
 - IFI : seuil 1 300 000€ de patrimoine immobilier net, abattement 30% résidence principale (art. 964 CGI)
+
+OUTILS DE CALCUL — UTILISATION OBLIGATOIRE POUR LES CHIFFRES EXACTS :
+Tu as accès à 2 calculateurs déterministes :
+- **calc_impot_revenu** : calcule l'IR 2026 exact (revenu imposable + nombre de parts)
+- **calc_droits_succession** : calcule les droits de succession exacts (patrimoine + enfants + AV avant 70 ans)
+
+UTILISE CES OUTILS SYSTÉMATIQUEMENT dès que :
+- L'utilisateur donne ou demande un calcul chiffré (IR, succession)
+- L'utilisateur pose une question du type "combien je paierais...", "quel serait l'impôt...", "quels droits pour..."
+
+N'utilise JAMAIS ton propre calcul mental pour ces chiffres — utilise toujours le tool. Les résultats du tool sont exacts et incluent les sources juridiques. Présente le résultat dans ta réponse avec ses chiffres ET ses sources.
+
+Si l'utilisateur ne précise pas les paramètres (ex: parts, enfants), pose UNE question pour les obtenir, puis utilise le tool.
 
 RECHERCHE WEB :
 Tu as un outil de recherche web. UTILISE-LE quand :
@@ -283,41 +422,78 @@ export default {
       messages.push({ role: 'user', content: message.slice(0, 2000) });
 
       const ctx = getCurrentContext();
-      const systemPrompt = buildSystemPrompt(ctx);
+      const systemPromptText = buildSystemPrompt(ctx);
 
-      const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': env.ANTHROPICAPIKEY,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 800,
-          system: systemPrompt,
-          messages,
-          tools: [{
-            type: 'web_search_20250305',
-            name: 'web_search',
-            max_uses: 2,
-          }],
-        }),
-      });
+      // Prompt caching : le system prompt est stable, on le marque pour cache
+      // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)
+      const systemParam = [{
+        type: 'text',
+        text: systemPromptText,
+        cache_control: { type: 'ephemeral' },
+      }];
 
-      if (!anthropicRes.ok) {
-        const errText = await anthropicRes.text();
-        console.error('Anthropic error:', anthropicRes.status, errText);
-        return new Response(JSON.stringify({
-          reply: "Un problème technique est survenu. Vous pouvez réessayer ou échanger directement avec Maxime.",
-          error: `API ${anthropicRes.status}`,
-        }), {
-          status: 200, // on renvoie 200 pour que le client affiche le message, pas une erreur
-          headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
+      const tools = [
+        { type: 'web_search_20250305', name: 'web_search', max_uses: 2 },
+        ...TOOLS_FISCAL,
+      ];
+
+      const workingMessages = messages.slice(); // copie pour loop tool_use
+      let data;
+      let totalIterations = 0;
+      const MAX_ITER = 4; // sécurité : max 4 tours de tool calling
+
+      while (totalIterations < MAX_ITER) {
+        totalIterations++;
+        const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': env.ANTHROPICAPIKEY,
+            'anthropic-version': '2023-06-01',
+            'anthropic-beta': 'prompt-caching-2024-07-31',
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 800,
+            system: systemParam,
+            messages: workingMessages,
+            tools,
+          }),
         });
-      }
 
-      const data = await anthropicRes.json();
+        if (!anthropicRes.ok) {
+          const errText = await anthropicRes.text();
+          console.error('Anthropic error:', anthropicRes.status, errText);
+          return new Response(JSON.stringify({
+            reply: "Un problème technique est survenu. Vous pouvez réessayer ou échanger directement avec Maxime.",
+            error: `API ${anthropicRes.status}`,
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
+          });
+        }
+
+        data = await anthropicRes.json();
+
+        // Gérer les tool_use calls côté client (calc_impot_revenu, calc_droits_succession)
+        // Web search est server-side : Anthropic le gère, pas nous
+        const toolUses = (data.content || []).filter(
+          b => b.type === 'tool_use' && (b.name === 'calc_impot_revenu' || b.name === 'calc_droits_succession')
+        );
+
+        if (toolUses.length === 0 || data.stop_reason !== 'tool_use') break;
+
+        // Ajoute la réponse de l'assistant avec tool_use à l'historique
+        workingMessages.push({ role: 'assistant', content: data.content });
+
+        // Exécute chaque tool et ajoute les résultats
+        const toolResults = toolUses.map(tu => ({
+          type: 'tool_result',
+          tool_use_id: tu.id,
+          content: JSON.stringify(executeTool(tu.name, tu.input || {})),
+        }));
+        workingMessages.push({ role: 'user', content: toolResults });
+      }
 
       // Concat text blocks (web search retourne plusieurs blocks)
       const textBlocks = (data.content || []).filter(c => c.type === 'text');

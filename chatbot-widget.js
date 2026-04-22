@@ -562,6 +562,51 @@ return parts.length?'[Contexte du visiteur : '+parts.join(' · ')+']':'';
 }
 
 // ──────────────────────────────────────────────────────────────
+// PAGE CONTEXT — détecte le sujet de la page depuis l'URL et l'injecte
+// dans le premier message pour que Marcel adapte sa réponse
+// ──────────────────────────────────────────────────────────────
+function detectPageContext(){
+var path=(location.pathname||'').toLowerCase().replace(/\.html$/,'').replace(/^\//,'');
+if(!path||path==='index'||path==='')return null;
+// Mapping URL → thème et titre humain
+var themes={
+'succession':'succession et droits de transmission',
+'donation':'donation et transmission progressive',
+'ifi':'impôt sur la fortune immobilière',
+'assurance-vie':'assurance-vie et clause bénéficiaire',
+'transmission':'transmission patrimoniale',
+'retraite':'préparation de la retraite',
+'prevoyance':'prévoyance et protection famille',
+'conjoint':'protection du conjoint',
+'lmnp':'location meublée non professionnelle et succession',
+'foncier':'revenus fonciers et fiscalité immobilière',
+'dirigeant':'protection du dirigeant',
+'tns':'travailleur non salarié et rémunération',
+'famille-recomposee':'famille recomposée et transmission',
+'ecart-revenus-couple':'écart de revenus dans le couple et protection',
+'deces-dirigeant':'impact du décès du dirigeant sur l\'entreprise',
+'plus-value':'plus-value immobilière',
+'simulateur-succession':'simulation de droits de succession',
+'simulateur-donation':'simulation de donation',
+'simulateur-ifi':'simulation IFI',
+'jeune-actif':'jeunes actifs et premiers pas patrimoniaux',
+'couple':'patrimoine du couple',
+'heritage':'héritage et succession',
+'sci':'société civile immobilière et gestion familiale',
+'ardeche':'patrimoine en Ardèche',
+'annonay':'patrimoine à Annonay',
+'combloux':'patrimoine à Combloux',
+'megeve':'patrimoine à Megève'
+};
+for(var k in themes){
+if(path.indexOf(k)>=0)return{topic:themes[k],page:path,title:(document.title||'').split('|')[0].trim()};
+}
+return null;
+}
+var _pageCtx=detectPageContext();
+var _pageCtxSent=false;
+
+// ──────────────────────────────────────────────────────────────
 // AUTO-SCHEMA — détecte si la réponse de Marcel aborde un sujet
 // couvert par un schéma, et propose un bouton "Voir le schéma"
 // ──────────────────────────────────────────────────────────────
@@ -646,6 +691,13 @@ var welcomeHTML=''
 +   '<div class="ikcp-maxime-note">Un entretien confidentiel · par téléphone ou en visio</div>'
 + '</div>';
 
+// Adapte le message d'accueil si la page a un sujet détecté
+if(_pageCtx){
+var pageIntro='<p style="margin:0 0 6px;"><strong style="color:#1f1a16;font-weight:500;">Bonjour, je suis Marcel</strong>, agent patrimonial IKCP.</p>'
++'<p style="margin:0 0 8px;">Vous consultez une page sur <strong style="color:#b8956e">'+_pageCtx.topic+'</strong>. Je suis là pour répondre à vos questions sur ce sujet — ou tout autre aspect patrimonial.</p>'
++'<p class="ikcp-subtle" style="margin-bottom:12px">Posez votre question, ou cliquez sur un thème ci-dessous.</p>';
+welcomeHTML=pageIntro+welcomeHTML.substring(welcomeHTML.indexOf('<div class="ikcp-qs-group">'));
+}
 var msgs=[{role:'assistant',html:welcomeHTML,_hasQuickstart:true}];
 
 var css=document.createElement('style');
@@ -692,8 +744,10 @@ css.textContent=`
 #ikcp-chat-panel.expanded #ikcp-chat-input{padding:16px max(16px, calc((100vw - 800px) / 2))}
 #ikcp-chat-input input{flex:1;border:1px solid #d8d0c4;border-radius:24px;padding:8px 16px;font-size:13px;outline:none;font-family:'DM Sans',system-ui,sans-serif}
 #ikcp-chat-input input:focus{border-color:#b8956e}
-#ikcp-chat-input button{background:none;border:none;cursor:pointer;font-size:18px;color:#9e9080;padding:0 4px}
+#ikcp-chat-input button{background:none;border:none;cursor:pointer;font-size:18px;color:#9e9080;padding:0 4px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
 #ikcp-chat-input button:hover{color:#b8956e}
+#ikcp-voice.ikcp-voice-listening{color:#ef4444;animation:ikcp-pulse-voice 1.2s infinite}
+@keyframes ikcp-pulse-voice{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.15)}}
 .ikcp-dots{display:flex;gap:4px;padding:10px 14px}
 .ikcp-dots span{width:8px;height:8px;background:#b4b2a9;border-radius:50%;animation:ikcp-bounce 0.6s infinite alternate}
 .ikcp-dots span:nth-child(2){animation-delay:0.1s}
@@ -797,9 +851,15 @@ msgs.push({role:'user',html:'<p>'+txt.replace(/</g,'&lt;')+'</p>'});
 history.push({role:'user',content:txt});
 inp.value='';render();showLoading();
 try{
-// Injecte le contexte profil dans le message envoyé (si contenu)
+// Injecte le contexte profil + contexte de page dans le 1er message
 var ctx=profileAsContext();
-var txtWithCtx=ctx?ctx+'\n\n'+txt:txt;
+var pageLine='';
+if(_pageCtx&&!_pageCtxSent){
+pageLine='[Page consultée : '+(_pageCtx.title||_pageCtx.page)+' · sujet : '+_pageCtx.topic+']';
+_pageCtxSent=true;
+}
+var prefix=[pageLine,ctx].filter(Boolean).join('\n');
+var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
 var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20)})});
 var d=await r.json();
 var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
@@ -877,9 +937,9 @@ if(b)b.title=isExpanded?'Réduire':'Agrandir';
 var html=`
 <div id="ikcp-tease" onclick="document.querySelector('#ikcp-chat-btn').click()"><p class="t1">Une question patrimoniale&nbsp;?</p><p class="t2">Succession, donation, IFI&hellip; posez votre question 👇</p></div>
 <div id="ikcp-chat-panel">
-<div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
+<div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
 <div id="ikcp-chat-msgs"></div>
-<div id="ikcp-chat-input"><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
+<div id="ikcp-chat-input"><button id="ikcp-voice" onclick="window._ikcpVoice()" title="Dicter la question" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
 </div>
 <button id="ikcp-chat-btn" onclick="window._ikcpToggle()"><span class="dot"></span><img src="/icons/montgolfiere.png" alt="Marcel - Assistant patrimonial IKCP" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎈</text></svg>'"></button>
 <button id="ikcp-chat-close-btn" style="display:none" onclick="window._ikcpToggle()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -898,6 +958,64 @@ var inp=document.getElementById('ikcp-inp');
 if(!inp)return;
 inp.value=question;
 send();
+};
+
+// ──────────────────────────────────────────────────────────────
+// EXPORT PDF — ouvre une fenêtre d'impression avec toute la conversation
+// ──────────────────────────────────────────────────────────────
+window._ikcpExport=function(){
+var w=window.open('','_blank','width=900,height=800');
+if(!w)return;
+var today=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+var profileLine=profileAsContext().replace('[Contexte du visiteur : ','').replace(']','');
+var content=msgs.map(function(m){
+var role=m.role==='user'?'Vous':'Marcel';
+var cls=m.role==='user'?'msg-u':'msg-a';
+// Stripper les éléments interactifs (buttons, onclick)
+var html=m.html.replace(/<button[^>]*>[\s\S]*?<\/button>/gi,'').replace(/<div class="ikcp-followups"[\s\S]*?<\/div>\s*<\/div>/gi,'').replace(/<div class="ikcp-schema-hint"[\s\S]*?<\/div>/gi,'').replace(/<div class="ikcp-calendly-inline"[\s\S]*?<\/div>/gi,'').replace(/<div class="ikcp-profile-pill"[\s\S]*?<\/div>/gi,'');
+return '<div class="msg '+cls+'"><div class="role">'+role+'</div>'+html+'</div>';
+}).join('\n');
+w.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Conversation Marcel — IKCP</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","DM Sans",sans-serif;color:#1f1a16;padding:40px;max-width:720px;margin:0 auto;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header{text-align:center;border-bottom:2px solid #b8956e;padding-bottom:22px;margin-bottom:28px}.header h1{font-family:Georgia,serif;font-size:26px;font-weight:500;color:#1f1a16}.header .sub{color:#b8956e;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-top:4px}.header .meta{color:#9e9080;font-size:11px;margin-top:10px;font-style:italic}.profile{background:#f9f6f0;border:1px solid #e5ded2;border-radius:8px;padding:10px 14px;font-size:12px;color:#907b65;margin-bottom:18px}.msg{margin-bottom:18px;padding:12px 16px;border-radius:10px;font-size:13px}.msg .role{font-size:10px;color:#b8956e;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:5px}.msg-u{background:#1f1a16;color:white;margin-left:60px}.msg-u .role{color:#b8956e}.msg-a{background:#f9f6f0;border:1px solid #e5ded2;margin-right:60px}.msg-a strong{color:#1f1a16}.msg p{margin:0 0 6px}.msg p:last-child{margin:0}.msg a{color:#b8956e}.footer{margin-top:40px;padding-top:18px;border-top:1px solid #e5ded2;text-align:center;font-size:10px;color:#9e9080;line-height:1.5}.footer strong{color:#1f1a16}.footer a{color:#b8956e;text-decoration:none}.cta{margin-top:22px;padding:16px;background:#1f1a16;color:white;border-radius:10px;text-align:center}.cta p{font-family:Georgia,serif;font-size:15px;margin-bottom:8px}.cta a{display:inline-block;padding:9px 20px;background:#b8956e;color:#1f1a16;font-weight:700;border-radius:6px;text-decoration:none;font-size:12px}@media print{.cta{display:none}body{padding:25px}}</style></head><body><div class="header"><h1>Votre échange avec Marcel</h1><div class="sub">IKCP · IKIGAÏ Conseil Patrimonial</div><div class="meta">Généré le '+today+'</div></div>'+(profileLine?'<div class="profile"><strong>Profil mémorisé :</strong> '+profileLine+'</div>':'')+content+'<div class="cta"><p>Aller plus loin ensemble.</p><a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial">Réserver un échange avec Maxime →</a></div><div class="footer"><strong>IKCP — IKIGAÏ Conseil Patrimonial</strong><br>CIF — CNCEF Patrimoine · ORIAS 23001568 · <a href="https://ikcp.eu">ikcp.eu</a><br><span style="font-size:9px;margin-top:8px;display:inline-block">Cette conversation pédagogique ne constitue pas un conseil en investissement personnalisé au sens MIF II.</span></div></body></html>');
+w.document.close();
+setTimeout(function(){w.print();},500);
+};
+
+// ──────────────────────────────────────────────────────────────
+// VOICE INPUT — Web Speech API (dictée navigateur, gratuit)
+// ──────────────────────────────────────────────────────────────
+var _recognition=null,_isListening=false;
+window._ikcpVoice=function(){
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var inp=document.getElementById('ikcp-inp');
+var btn=document.getElementById('ikcp-voice');
+if(!SR){alert('La reconnaissance vocale n\'est pas supportée par votre navigateur. Utilisez Chrome, Edge ou Safari.');return;}
+if(_isListening){
+if(_recognition)_recognition.stop();
+_isListening=false;
+if(btn)btn.classList.remove('ikcp-voice-listening');
+return;
+}
+_recognition=new SR();
+_recognition.lang='fr-FR';
+_recognition.continuous=false;
+_recognition.interimResults=true;
+_recognition.onstart=function(){
+_isListening=true;
+if(btn)btn.classList.add('ikcp-voice-listening');
+if(inp)inp.placeholder='Parlez maintenant...';
+};
+_recognition.onresult=function(e){
+var txt='';
+for(var i=0;i<e.results.length;i++)txt+=e.results[i][0].transcript;
+if(inp)inp.value=txt;
+};
+_recognition.onerror=function(e){console.log('Voice error:',e.error);};
+_recognition.onend=function(){
+_isListening=false;
+if(btn)btn.classList.remove('ikcp-voice-listening');
+if(inp)inp.placeholder='Posez votre question à Marcel...';
+};
+_recognition.start();
 };
 
 // Lazy load de la bibliothèque de schémas
