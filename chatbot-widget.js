@@ -840,6 +840,8 @@ css.textContent=`
 .ikcp-calendly-inline{margin-top:12px;background:white;border:1px solid #e5ded2;border-radius:10px;overflow:hidden}
 .ikcp-calendly-header{padding:8px 12px;font-size:11px;font-weight:600;color:#b8956e;background:#f9f6f0;border-bottom:1px solid #e5ded2}
 .ikcp-calendly-inline iframe{width:100%;height:620px;border:none;display:block}
+.ikcp-cursor{display:inline-block;width:2px;height:1em;background:#b8956e;vertical-align:text-bottom;margin-left:2px;animation:ikcp-blink 0.8s step-end infinite}
+@keyframes ikcp-blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
 `;
 document.head.appendChild(css);
 
@@ -960,9 +962,48 @@ if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px so
 else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
 // Hot lead alert (non bloquant)
 maybeFireLeadAlert(reply);
-msgs.push({role:'assistant',html:html});
+// Streaming visuel : message vide d'abord, puis remplissage progressif
+hideLoading();
+typeOutMessage(reply,html);
+return;
 }catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Contactez Maxime directement</a>.</p>'});}
 hideLoading();render();
+}
+
+// ──────────────────────────────────────────────────────────────
+// TYPING EFFECT — affiche la réponse progressivement, mot par mot
+// Donne la sensation d'un streaming (perception ~2× plus rapide)
+// ──────────────────────────────────────────────────────────────
+function typeOutMessage(plainReply,fullHtml){
+// Extraire la partie "réponse" du HTML (avant les blocs enrichis)
+// Chercher le début des blocs à préserver (follow-ups, schema, calendly, profile, rate limit)
+var markers=['<div class="ikcp-schema-hint"','<div class="ikcp-followups"','<div class="ikcp-calendly-inline"','<div class="ikcp-profile-pill"','<p class="ikcp-meta"'];
+var splitIdx=fullHtml.length;
+markers.forEach(function(m){var i=fullHtml.indexOf(m);if(i>=0&&i<splitIdx)splitIdx=i;});
+var replyHtml=fullHtml.substring(0,splitIdx);
+var extraHtml=fullHtml.substring(splitIdx);
+// Crée un message vide et le pousse
+var idx=msgs.length;
+msgs.push({role:'assistant',html:'<p><span class="ikcp-cursor"></span></p>',_typing:true});
+render();
+// Tokenize la réponse en mots (préserve les espaces)
+var tokens=replyHtml.split(/(\s+|<[^>]+>)/);
+var i=0;
+var currentHtml='';
+var interval=setInterval(function(){
+if(i>=tokens.length){
+clearInterval(interval);
+// Finalise : on remplace par le HTML complet (incluant extras : follow-ups, schema...)
+msgs[idx]={role:'assistant',html:fullHtml};
+render();
+return;
+}
+// Append 2-3 tokens à la fois pour un rythme naturel
+for(var k=0;k<3&&i<tokens.length;k++){currentHtml+=tokens[i++];}
+// Met à jour le message avec le curseur clignotant
+msgs[idx]={role:'assistant',html:currentHtml+'<span class="ikcp-cursor"></span>',_typing:true};
+render();
+},18);
 }
 
 function formatReply(txt){
