@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Aperçu nouveau hero</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1f1a16;
+  background: #f9f6f0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ NAV ═══ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 18px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(249, 246, 240, 0.75);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(184, 149, 110, 0.08);
+}
+nav .brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #b8956e;
+  letter-spacing: -0.5px;
+}
+nav .brand span { color: rgba(184, 149, 110, 0.4); }
+nav .brand-sub {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #9e9080;
+  margin-top: -2px;
+  display: block;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+nav ul a {
+  color: #6d5c4a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+nav ul a:hover { color: #b8956e; }
+nav .cta-nav {
+  padding: 10px 22px;
+  background: #1f1a16;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+nav .cta-nav:hover { background: #b8956e; color: #1f1a16; }
+
+/* ═══ HERO ═══ */
+.hero {
+  min-height: 100vh;
+  padding: 110px 40px 40px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+/* ─── LEFT COLUMN ─── */
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-left > * { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-left > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-left > *:nth-child(3) { animation-delay: 0.3s; }
+.hero-left > *:nth-child(4) { animation-delay: 0.4s; }
+.hero-left > *:nth-child(5) { animation-delay: 0.5s; }
+.hero-left > *:nth-child(6) { animation-delay: 0.6s; }
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #b8956e;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.kicker::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: #b8956e;
+}
+
+.numbers-bar {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.number {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.number-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f1a16;
+  line-height: 1;
+}
+.number-unit {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #907b65;
+  font-weight: 500;
+}
+.number-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #b8956e;
+  opacity: 0.6;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 4.8vw, 68px);
+  line-height: 1.02;
+  font-weight: 500;
+  letter-spacing: -1.5px;
+  color: #1f1a16;
+  margin-top: 4px;
+}
+h1 em {
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(90deg, #b8956e 0%, #d4b888 50%, #b8956e 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.sub {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5f5248;
+  max-width: 560px;
+  font-weight: 400;
+}
+.sub strong { color: #1f1a16; font-weight: 600; }
+
+.segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: white;
+  border: 1px solid #ece6da;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5f5248;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.seg:hover {
+  border-color: #b8956e;
+  background: #fffaf2;
+  transform: translateY(-1px);
+}
+.seg .emoji { font-size: 14px; }
+
+.cta-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-top: 10px;
+}
+.cta-primary {
+  padding: 16px 28px;
+  background: linear-gradient(135deg, #b8956e 0%, #a07b54 100%);
+  color: #fffaf2;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 12px 32px -8px rgba(184, 149, 110, 0.45), 0 0 0 1px rgba(184, 149, 110, 0.2);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -8px rgba(184, 149, 110, 0.55), 0 0 0 1px rgba(184, 149, 110, 0.3);
+}
+.cta-primary .micro {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.75;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.cta-primary .arrow {
+  transition: transform 0.2s;
+}
+.cta-primary:hover .arrow { transform: translateX(4px); }
+
+.cta-secondary {
+  padding: 14px 22px;
+  color: #1f1a16;
+  font-weight: 500;
+  font-size: 13px;
+  text-decoration: none;
+  border-bottom: 1px solid #d8c6a8;
+  transition: all 0.2s;
+}
+.cta-secondary:hover { color: #b8956e; border-color: #b8956e; }
+
+.trust-bar {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(184, 149, 110, 0.15);
+}
+.trust {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #907b65;
+  font-weight: 500;
+}
+.trust svg {
+  width: 12px;
+  height: 12px;
+  color: #b8956e;
+}
+
+/* ─── RIGHT COLUMN (visual block) ─── */
+.hero-right {
+  position: relative;
+  aspect-ratio: 4/5;
+  max-width: 560px;
+  margin-left: auto;
+  animation: fadeIn 1.3s ease both;
+  animation-delay: 0.3s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.video-block {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 40px 80px -20px rgba(31, 26, 22, 0.35),
+    0 0 0 1px rgba(184, 149, 110, 0.2);
+  background: #1f1a16;
+}
+.video-block video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.08) contrast(1.04);
+}
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(31, 26, 22, 0.12) 0%,
+    transparent 40%,
+    rgba(31, 26, 22, 0.72) 100%
+  );
+  pointer-events: none;
+}
+
+.badge-live {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  padding: 7px 13px 7px 10px;
+  background: rgba(31, 26, 22, 0.58);
+  backdrop-filter: blur(8px);
+  border-radius: 100px;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(184, 149, 110, 0.35);
+}
+.pulse-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b8956e;
+  box-shadow: 0 0 8px #b8956e;
+}
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid #b8956e;
+  animation: pulse 2s ease-out infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.tag-location {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 7px 13px;
+  background: rgba(249, 246, 240, 0.92);
+  backdrop-filter: blur(8px);
+  border-radius: 100px;
+  color: #1f1a16;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(184, 149, 110, 0.25);
+}
+
+.portrait-row {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+.portrait {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid rgba(184, 149, 110, 0.6);
+  background: linear-gradient(135deg, #f9f6f0, #e8dfce);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f1a16;
+  box-shadow: 0 4px 12px rgba(31, 26, 22, 0.3);
+}
+
+.caption-block {
+  flex: 1;
+  color: white;
+}
+.citation {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 6px;
+}
+.caption {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c9a96e;
+  font-weight: 600;
+}
+.caption-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 2px;
+}
+.caption-role {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.5px;
+}
+
+/* ═══ FLOATING CARDS (stats over video) ═══ */
+.float-card {
+  position: absolute;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px -8px rgba(31, 26, 22, 0.18);
+  border: 1px solid rgba(184, 149, 110, 0.15);
+  animation: floatY 6s ease-in-out infinite;
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-card.card-a {
+  bottom: 110px;
+  left: -36px;
+  animation-delay: 0s;
+}
+.float-card.card-b {
+  top: 70px;
+  right: -28px;
+  animation-delay: 3s;
+}
+.float-card .val {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f1a16;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.float-card .val small { font-size: 11px; color: #b8956e; font-weight: 500; }
+.float-card .lbl {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #907b65;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+@media (max-width: 960px) {
+  .hero { grid-template-columns: 1fr; gap: 40px; padding: 90px 20px 40px; }
+  .hero-right { order: -1; max-width: 100%; aspect-ratio: 4/3; }
+  .float-card { display: none; }
+  h1 { font-size: 40px; }
+  nav { padding: 14px 20px; }
+  nav ul { display: none; }
+  .trust-bar { gap: 10px; }
+  .trust { font-size: 10px; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <div class="brand">IKCP<span>.</span></div>
+    <span class="brand-sub">Cabinet · Protection & Transmission</span>
+  </div>
+  <ul>
+    <li><a href="#">Diagnostic</a></li>
+    <li><a href="#">Cas concrets</a></li>
+    <li><a href="#" style="color:#b8956e">⭐ Sélection Privée</a></li>
+    <li><a href="#">Le Cabinet</a></li>
+    <li><a href="#" class="cta-nav">Échanger →</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+
+  <!-- ═══ LEFT ═══ -->
+  <div class="hero-left">
+
+    <div class="kicker">IKCP · Conseil patrimonial indépendant</div>
+
+    <div class="numbers-bar">
+      <div class="number">
+        <span class="number-big">10</span>
+        <span class="number-unit">ans</span>
+      </div>
+      <span class="number-dot"></span>
+      <div class="number">
+        <span class="number-big">300+</span>
+        <span class="number-unit">familles</span>
+      </div>
+      <span class="number-dot"></span>
+      <div class="number">
+        <span class="number-big">100%</span>
+        <span class="number-unit">indépendant</span>
+      </div>
+      <span class="number-dot"></span>
+      <div class="number">
+        <span class="number-big">0%</span>
+        <span class="number-unit">frais d'entrée</span>
+      </div>
+    </div>
+
+    <h1>Protéger ce que vous êtes<br><em>en train de bâtir</em>.</h1>
+
+    <p class="sub">
+      Parce qu'élever son patrimoine demande autant de technique que de hauteur de vue.
+      <br><strong>Méthode 3R : Rémunérer · Retraiter · Réinvestir.</strong>
+    </p>
+
+    <div class="segments">
+      <span class="seg"><span class="emoji">👨‍👩‍👧‍👦</span> Parents & jeunes parents</span>
+      <span class="seg"><span class="emoji">💼</span> Entrepreneurs & TNS</span>
+      <span class="seg"><span class="emoji">🏛️</span> Transmission</span>
+      <span class="seg"><span class="emoji">🏠</span> Investisseurs immobiliers</span>
+    </div>
+
+    <div class="cta-row">
+      <a href="#" class="cta-primary">
+        <div>
+          <span class="micro">Diagnostic gratuit · 2 min</span>
+          <span>Réserver mon échange</span>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      <a href="#" class="cta-secondary">Découvrir la méthode</a>
+    </div>
+
+    <div class="trust-bar">
+      <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> CIF — CNCEF Patrimoine</span>
+      <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> ORIAS 23001568</span>
+      <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg> MIF II · DDA</span>
+      <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/><circle cx="9" cy="7" r="4"/></svg> Ardèche · Combloux · Megève</span>
+    </div>
+
+  </div>
+
+  <!-- ═══ RIGHT ═══ -->
+  <div class="hero-right">
+
+    <div class="video-block">
+
+      <video autoplay muted loop playsinline>
+        <source src="https://videos.pexels.com/video-files/3010014/3010014-uhd_2560_1440_30fps.mp4" type="video/mp4">
+      </video>
+
+      <div class="video-overlay"></div>
+
+      <div class="badge-live">
+        <span class="pulse-dot"></span>
+        Ardèche · Maintenant
+      </div>
+
+      <div class="tag-location">📍 Annonay</div>
+
+      <div class="portrait-row">
+        <div class="portrait">MJ</div>
+        <div class="caption-block">
+          <div class="caption-name">Maxime Juveneton</div>
+          <div class="caption-role">Conseiller patrimonial · Fondateur IKCP</div>
+          <div style="height:8px"></div>
+          <div class="citation">
+            "Prendre de la hauteur pour voir l'ensemble du paysage — et protéger ce qui compte."
+          </div>
+          <div class="caption">Méthode 3R · Ikigaï Conseil Patrimonial</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating cards premium -->
+    <div class="float-card card-a">
+      <div class="val">80<small>k€</small></div>
+      <div class="lbl">Éco. moyenne / dossier transmission</div>
+    </div>
+
+    <div class="float-card card-b">
+      <div class="val">4,9<small>/5</small></div>
+      <div class="lbl">Satisfaction clients</div>
+    </div>
+
+  </div>
+
+</section>
+
+</body>
+</html>
