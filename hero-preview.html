@@ -364,6 +364,11 @@ h1 em {
   height: 100%;
   object-fit: cover;
   filter: saturate(1.08) contrast(1.04);
+  animation: kenBurnsImg 22s ease-in-out infinite alternate;
+}
+@keyframes kenBurnsImg {
+  from { transform: scale(1.08); }
+  to { transform: scale(1.18); }
 }
 .video-block video {
   position: absolute;
@@ -741,9 +746,8 @@ h1 em {
 
     <div class="video-block">
 
-      <video class="hero-visual" autoplay muted loop playsinline preload="auto" poster="/images/hero-v2.jpg">
-        <source src="/videos/hero-sd.mp4" type="video/mp4">
-      </video>
+      <img class="hero-visual" src="/images/hero-v2.jpg" alt="Paysage de montagnes au lever du jour — vision patrimoniale d'ensemble">
+      <!-- Prod : basculer en <video> via Cloudflare Stream (voir docs/IKCP-API-READINESS.md) -->
 
       <div class="video-overlay"></div>
 
