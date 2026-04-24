@@ -250,15 +250,67 @@ h1 em {
 .cta-primary:hover .arrow { transform: translateX(4px); }
 
 .cta-secondary {
-  padding: 14px 22px;
+  padding: 14px 20px;
   color: #1f1a16;
   font-weight: 500;
   font-size: 13px;
   text-decoration: none;
-  border-bottom: 1px solid #d8c6a8;
+  border: 1px solid #e5ded2;
+  border-radius: 10px;
   transition: all 0.2s;
+  background: white;
 }
-.cta-secondary:hover { color: #b8956e; border-color: #b8956e; }
+.cta-secondary:hover {
+  border-color: #b8956e;
+  background: #fffaf2;
+  transform: translateY(-1px);
+}
+.cta-marcel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 12px;
+}
+.marcel-avatar {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fffaf2, #f0e6d2);
+  border: 2px solid rgba(184, 149, 110, 0.5);
+  font-size: 18px;
+  animation: marcelFloat 3s ease-in-out infinite;
+  position: relative;
+}
+.marcel-avatar::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 1.5px solid white;
+  animation: pulseDot 1.5s infinite;
+}
+@keyframes marcelFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0); }
+}
+.cta-marcel-sub {
+  display: block;
+  font-size: 10px;
+  color: #907b65;
+  font-weight: 500;
+  margin-top: 1px;
+}
 
 .trust-bar {
   display: flex;
@@ -303,10 +355,20 @@ h1 em {
   box-shadow:
     0 40px 80px -20px rgba(31, 26, 22, 0.35),
     0 0 0 1px rgba(184, 149, 110, 0.2);
-  background-color: #1f1a16;
-  background-image: url('https://images.unsplash.com/photo-1507608616040-6a13f19afb66?q=85&w=1400&auto=format&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background: #1f1a16;
+}
+.video-block .hero-visual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.08) contrast(1.04);
+  animation: kenBurnsImg 22s ease-in-out infinite alternate;
+}
+@keyframes kenBurnsImg {
+  from { transform: scale(1.08); }
+  to { transform: scale(1.18); }
 }
 .video-block video {
   position: absolute;
@@ -315,14 +377,7 @@ h1 em {
   height: 100%;
   object-fit: cover;
   filter: saturate(1.08) contrast(1.04);
-}
-/* Subtle ken-burns zoom pour simuler la vidéo (si video ne charge pas) */
-.video-block {
-  animation: kenBurns 20s ease-in-out infinite alternate;
-}
-@keyframes kenBurns {
-  from { background-size: 110% auto; background-position: 50% 50%; }
-  to { background-size: 125% auto; background-position: 48% 45%; }
+  z-index: 1;
 }
 .video-overlay {
   position: absolute;
@@ -463,15 +518,108 @@ h1 em {
   50% { transform: translateY(-8px); }
 }
 .float-card.card-a {
-  top: 32%;
+  top: 50%;
   left: -42px;
   animation-delay: 0s;
 }
-.float-card.card-b {
-  top: 8%;
-  right: -32px;
-  animation-delay: 3s;
+
+/* ═══ Marcel preview card ═══ */
+.marcel-card {
+  position: absolute;
+  top: 48px;
+  right: -40px;
+  width: 290px;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow:
+    0 20px 48px -16px rgba(31, 26, 22, 0.25),
+    0 0 0 1px rgba(184, 149, 110, 0.15);
+  animation: floatY 5s ease-in-out infinite;
+  animation-delay: 1.5s;
 }
+.marcel-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0ebe0;
+  margin-bottom: 10px;
+}
+.marcel-avatar-lg {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fffaf2, #f0e6d2);
+  border: 2px solid rgba(184, 149, 110, 0.5);
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.marcel-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f1a16;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.marcel-badge-ia {
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 6px;
+  background: linear-gradient(90deg, #b8956e, #d4b888);
+  color: white;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.marcel-status {
+  font-size: 10px;
+  color: #907b65;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+.marcel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulseDot 1.5s infinite;
+}
+.marcel-msg {
+  font-size: 11px;
+  color: #5f5248;
+  padding: 9px 11px;
+  background: #f9f6f0;
+  border-radius: 10px 10px 10px 2px;
+  margin-bottom: 6px;
+  line-height: 1.45;
+}
+.marcel-msg strong { color: #1f1a16; font-weight: 500; }
+.marcel-reply {
+  font-size: 11px;
+  color: #2e2520;
+  padding: 9px 11px;
+  background: #1f1a16;
+  color: white;
+  border-radius: 10px 10px 2px 10px;
+  line-height: 1.5;
+  position: relative;
+}
+.marcel-reply strong { color: #d4b888; font-weight: 600; }
+.marcel-reply em { color: rgba(255,255,255,0.6); font-size: 10px; }
+.marcel-reply::after {
+  content: '▍';
+  color: #b8956e;
+  animation: blink 0.9s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
 .float-card .val {
   font-family: 'Playfair Display', serif;
   font-size: 22px;
@@ -556,8 +704,8 @@ h1 em {
     <h1>Protéger ce que vous êtes<br><em>en train de bâtir</em>.</h1>
 
     <p class="sub">
-      Parce qu'élever son patrimoine demande autant de technique que de hauteur de vue.
-      <br><strong>Méthode 3R : Rémunérer · Retraiter · Réinvestir.</strong>
+      Un accompagnement sur-mesure — juridique, fiscal et financier.<br>
+      <strong>Protéger, valoriser, transmettre</strong> — là où les enjeux se croisent.
     </p>
 
     <div class="segments">
@@ -568,14 +716,20 @@ h1 em {
     </div>
 
     <div class="cta-row">
-      <a href="#" class="cta-primary">
+      <a href="#bilan-patrimonial" class="cta-primary">
         <div>
-          <span class="micro">Diagnostic gratuit · 2 min</span>
-          <span>Réserver mon échange</span>
+          <span class="micro">En ligne · 5 étapes · 2 minutes</span>
+          <span>Faire mon bilan patrimonial</span>
         </div>
         <span class="arrow">→</span>
       </a>
-      <a href="#" class="cta-secondary">Découvrir la méthode</a>
+      <a href="#" class="cta-secondary cta-marcel">
+        <span class="marcel-avatar">🎈</span>
+        <span>
+          <span style="font-weight:600">Parler à Marcel</span>
+          <span class="cta-marcel-sub">notre agent IA patrimonial</span>
+        </span>
+      </a>
     </div>
 
     <div class="trust-bar">
@@ -592,9 +746,10 @@ h1 em {
 
     <div class="video-block">
 
-      <video autoplay muted loop playsinline poster="https://images.pexels.com/videos/3010014/free-video-3010014.jpg?auto=compress&cs=tinysrgb&w=800">
+      <img class="hero-visual" src="https://images.unsplash.com/photo-1507608616040-6a13f19afb66?q=85&w=1400&auto=format&fit=crop" alt="Vue depuis une montgolfière sur un paysage de montagnes — métaphore de la vision patrimoniale" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1f1a16,#3a2e20)';">
+      <!-- Vidéo en overlay (prod utilisera Cloudflare Stream) -->
+      <video autoplay muted loop playsinline preload="none">
         <source src="https://videos.pexels.com/video-files/3010014/3010014-hd_1920_1080_30fps.mp4" type="video/mp4">
-        <source src="https://videos.pexels.com/video-files/3010014/3010014-sd_960_540_30fps.mp4" type="video/mp4">
       </video>
 
       <div class="video-overlay"></div>
@@ -621,15 +776,27 @@ h1 em {
 
     </div>
 
-    <!-- Floating cards premium -->
-    <div class="float-card card-a">
-      <div class="val">80<small>k€</small></div>
-      <div class="lbl">Éco. moyenne / dossier transmission</div>
+    <!-- Marcel preview card (mise en avant de l'IA) -->
+    <div class="marcel-card">
+      <div class="marcel-header">
+        <span class="marcel-avatar-lg">🎈</span>
+        <div>
+          <div class="marcel-name">Marcel <span class="marcel-badge-ia">IA</span></div>
+          <div class="marcel-status"><span class="marcel-dot"></span> En ligne · répond en 3s</div>
+        </div>
+      </div>
+      <div class="marcel-msg">
+        <strong>« Combien puis-je donner à mes enfants sans droits ? »</strong>
+      </div>
+      <div class="marcel-reply">
+        Chaque parent peut donner <strong>100 000 €</strong> tous les 15 ans en franchise <em>(art. 779 I CGI)</em>…
+      </div>
     </div>
 
-    <div class="float-card card-b">
-      <div class="val">4,9<small>/5</small></div>
-      <div class="lbl">Satisfaction clients</div>
+    <!-- Floating card premium -->
+    <div class="float-card card-a">
+      <div class="val">80<small>k€</small></div>
+      <div class="lbl">Éco. moyenne / transmission</div>
     </div>
 
   </div>
