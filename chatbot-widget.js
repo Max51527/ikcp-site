@@ -668,21 +668,27 @@ fetch(LEAD_ALERT_URL,{method:'POST',headers:{'Content-Type':'application/json'},
 // AUTO-SCHEMA — détecte si la réponse de Marcel aborde un sujet
 // couvert par un schéma, et propose un bouton "Voir le schéma"
 // ──────────────────────────────────────────────────────────────
-var SCHEMA_TRIGGERS={
-abattements:/\b(abattement|100\s?000|donation|don familial|15 ans|790\s?[AG])/i,
-devolution:/\b(succession|h[ée]ritier|r[ée]serve h[ée]r[ée]ditaire|conjoint survivant|usufruit.*succession|757)/i,
-bareme_ir:/\b(bar[èe]me ir|tranche marginale|imp[ôo]t sur le revenu|11\s?600|29\s?579|84\s?577|181\s?917)/i,
-assurance_vie:/\b(assurance[- ]vie|152\s?500|clause b[ée]n[ée]ficiaire|990\s?I)/i,
-ifi:/\b(ifi|fortune immobili[èe]re|1\s?300\s?000|964 cgi)/i,
-per:/\b(plan d['′]?[ée]pargne retraite|\bper\b|\bpero?b?\b|d[ée]duction.*retraite)/i,
-foncier:/\b(revenu[s]? foncier|micro[- ]foncier|r[ée]gime r[ée]el|d[ée]ficit foncier)/i,
-demembrement:/\b(d[ée]membrement|usufruit|nue[- ]propri[ée]t[ée])/i
-};
+// Liste ordonnée par PRIORITÉ (du plus spécifique au plus générique)
+// Évite qu'une question foncier déclenche le schéma donation parce que le mot
+// "abattement" est ambigu (existe aussi en foncier 30%, salaire 10%...)
+var SCHEMA_TRIGGERS=[
+{key:'foncier',re:/\b(revenu[s]? foncier|micro[- ]foncier|r[ée]gime r[ée]el|d[ée]ficit foncier|art\.?\s*32\s*cgi)/i},
+{key:'ifi',re:/\b(\bifi\b|fortune immobili[èe]re|1\s?300\s?000|964\s*cgi|977\s*cgi)/i},
+{key:'bareme_ir',re:/\b(bar[èe]me ir|tranche marginale|\btmi\b|11\s?600|29\s?579|84\s?577|181\s?917)/i},
+{key:'per',re:/\b(plan d['′]?[ée]pargne retraite|\bper\b|versement.*retraite|d[ée]duction.*retraite)/i},
+{key:'assurance_vie',re:/\b(assurance[- ]vie|152\s?500|clause b[ée]n[ée]ficiaire|990\s?I)/i},
+{key:'demembrement',re:/\b(d[ée]membrement|nue[- ]propri[ée]t[ée]|pleine propri[ée]t[ée])/i},
+{key:'devolution',re:/\b(d[ée]volution|ordre des h[ée]ritiers|r[ée]serve h[ée]r[ée]ditaire|\bart\.?\s*757\b|796)/i},
+// abattements EN DERNIER — exige contexte explicite donation/succession pour ne pas
+// déclencher sur "abattement forfaitaire 30%" des revenus fonciers
+{key:'abattements',re:/\b(donation[^.]{0,40}enfant|100\s?000[^.]{0,40}(15 ans|enfant|donation)|790\s?[AG]|don familial de sommes|31\s?865|779\s*I\s*cgi|527\s?460)/i}
+];
 function suggestSchema(replyText){
 if(!window._ikcpSchemas)return null;
-for(var key in SCHEMA_TRIGGERS){
-if(SCHEMA_TRIGGERS[key].test(replyText)&&window._ikcpSchemas[key]){
-return{key:key,title:window._ikcpSchemas[key].title||key};
+for(var i=0;i<SCHEMA_TRIGGERS.length;i++){
+var t=SCHEMA_TRIGGERS[i];
+if(t.re.test(replyText)&&window._ikcpSchemas[t.key]){
+return{key:t.key,title:window._ikcpSchemas[t.key].title||t.key};
 }
 }
 return null;
