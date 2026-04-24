@@ -303,13 +303,26 @@ h1 em {
   box-shadow:
     0 40px 80px -20px rgba(31, 26, 22, 0.35),
     0 0 0 1px rgba(184, 149, 110, 0.2);
-  background: #1f1a16;
+  background-color: #1f1a16;
+  background-image: url('https://images.unsplash.com/photo-1507608616040-6a13f19afb66?q=85&w=1400&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
 }
 .video-block video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   filter: saturate(1.08) contrast(1.04);
+}
+/* Subtle ken-burns zoom pour simuler la vidéo (si video ne charge pas) */
+.video-block {
+  animation: kenBurns 20s ease-in-out infinite alternate;
+}
+@keyframes kenBurns {
+  from { background-size: 110% auto; background-position: 50% 50%; }
+  to { background-size: 125% auto; background-position: 48% 45%; }
 }
 .video-overlay {
   position: absolute;
@@ -591,7 +604,7 @@ h1 em {
         Ardèche · Maintenant
       </div>
 
-      <div class="tag-location">Annonay · Combloux · Megève</div>
+      <div class="tag-location">📍 Ardèche</div>
 
       <div class="portrait-row">
         <div class="portrait">MJ</div>
