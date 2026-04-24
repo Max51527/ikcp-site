@@ -338,7 +338,7 @@ h1 em {
 /* ─── RIGHT COLUMN (visual block) ─── */
 .hero-right {
   position: relative;
-  aspect-ratio: 4/5;
+  width: 100%;
   max-width: 560px;
   margin-left: auto;
   animation: fadeIn 1.3s ease both;
@@ -349,13 +349,13 @@ h1 em {
 .video-block {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4/5;
   border-radius: 20px;
   overflow: hidden;
   box-shadow:
     0 40px 80px -20px rgba(31, 26, 22, 0.35),
     0 0 0 1px rgba(184, 149, 110, 0.2);
-  background: #1f1a16;
+  background: linear-gradient(135deg, #1f1a16 0%, #3a2e20 50%, #5a4a35 100%);
 }
 .video-block .hero-visual {
   position: absolute;
