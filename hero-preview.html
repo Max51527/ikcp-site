@@ -1337,18 +1337,17 @@ body:not(.marcel-open) .marcel-talk-card {
       <div class="balloon-stage" aria-label="Marcel — agent IA patrimonial IKCP">
         <svg class="balloon-svg" viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
-            <linearGradient id="goldStripe" x1="0%" x2="0%" y1="0%" y2="100%">
-              <stop offset="0%" stop-color="#fff0d4"/>
-              <stop offset="50%" stop-color="#d4b888"/>
-              <stop offset="100%" stop-color="#a07b54"/>
+            <linearGradient id="blueStripe" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stop-color="#3661a8"/>
+              <stop offset="100%" stop-color="#0a2855"/>
             </linearGradient>
             <linearGradient id="redStripe" x1="0%" x2="0%" y1="0%" y2="100%">
               <stop offset="0%" stop-color="#d05a4a"/>
               <stop offset="100%" stop-color="#7c2418"/>
             </linearGradient>
-            <linearGradient id="creamStripe" x1="0%" x2="0%" y1="0%" y2="100%">
-              <stop offset="0%" stop-color="#fffaf2"/>
-              <stop offset="100%" stop-color="#e8d8b8"/>
+            <linearGradient id="whiteStripe" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#e8e4dc"/>
             </linearGradient>
             <linearGradient id="basketGrad" x1="0%" x2="0%" y1="0%" y2="100%">
               <stop offset="0%" stop-color="#9a7a58"/>
@@ -1370,20 +1369,14 @@ body:not(.marcel-open) .marcel-talk-card {
             </clipPath>
           </defs>
 
-          <!-- Enveloppe principale dans un clip pour rayures verticales -->
+          <!-- Enveloppe principale : 3 bandes verticales bleu / blanc / rouge (drapeau français) -->
           <g clip-path="url(#balloonClip)">
-            <!-- Fond crème -->
-            <rect x="0" y="0" width="240" height="240" fill="url(#creamStripe)"/>
+            <!-- 3 panneaux principaux drapeau français -->
+            <rect x="0"   y="0" width="80" height="240" fill="url(#blueStripe)"/>
+            <rect x="80"  y="0" width="80" height="240" fill="url(#whiteStripe)"/>
+            <rect x="160" y="0" width="80" height="240" fill="url(#redStripe)"/>
 
-            <!-- 6 rayures verticales alternées rouge / or -->
-            <rect x="0"   y="0" width="40" height="240" fill="url(#redStripe)"/>
-            <rect x="40"  y="0" width="40" height="240" fill="url(#goldStripe)"/>
-            <rect x="80"  y="0" width="40" height="240" fill="url(#redStripe)"/>
-            <rect x="120" y="0" width="40" height="240" fill="url(#goldStripe)"/>
-            <rect x="160" y="0" width="40" height="240" fill="url(#redStripe)"/>
-            <rect x="200" y="0" width="40" height="240" fill="url(#goldStripe)"/>
-
-            <!-- Highlight subtil top-left -->
+            <!-- Highlight subtil top-left pour effet de volume -->
             <ellipse cx="80" cy="60" rx="50" ry="80" fill="#ffffff" opacity="0.18"/>
           </g>
 
