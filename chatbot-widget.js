@@ -804,6 +804,16 @@ css.textContent=`
 .ikcp-msg .ikcp-calendly-link{display:inline-block;margin:8px 0 4px;padding:8px 16px;background:linear-gradient(135deg,#b8956e,#a07b54);color:#fff!important;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none}
 .ikcp-msg .ikcp-disclaimer{font-size:10px;color:#a09080;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px dashed #e5ded2;line-height:1.5}
 .ikcp-msg em{color:#5f5248;font-style:italic}
+/* ═══ Affichage des schémas pédagogiques (SVG bibliothèque Marcel) ═══ */
+.ikcp-msg .ikcp-schema-block{margin:6px 0}
+.ikcp-msg .ikcp-schema-title{font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:600;color:#1f1a16;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e5ded2}
+.ikcp-msg .ikcp-schema-subtitle{color:#907b65;font-weight:500;font-style:italic;font-size:12px}
+.ikcp-msg .ikcp-schema-svg-wrap{width:100%;background:#f9f6f0;border-radius:8px;padding:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ikcp-msg .ikcp-schema-svg-wrap svg{width:100%!important;height:auto!important;max-width:100%;display:block}
+/* En mode chat normal (étroit), le bubble du schéma occupe toute la largeur */
+.ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:96%;width:96%;padding:12px 14px}
+/* Mode expanded (chat agrandi), bubble plus grand pour mieux voir les SVG */
+#ikcp-chat-panel.expanded .ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:760px}
 .ikcp-msg strong{color:#1f1a16;font-weight:500}
 .ikcp-msg a{color:#b8956e;font-weight:500;text-decoration:underline}
 .ikcp-msg-a{background:white;border:1px solid #d8d0c4;color:#2e2520;border-radius:14px 14px 14px 2px;align-self:flex-start}
