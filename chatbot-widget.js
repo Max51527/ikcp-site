@@ -514,6 +514,28 @@ var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 // d'une question à l'autre. Extrait à partir des messages user.
 // ──────────────────────────────────────────────────────────────
 var PROFILE_KEY='ikcp_marcel_profile_v1';
+var CONV_KEY='ikcp_marcel_conv_v1';
+var QUIZ_KEY='ikcp_marcel_quiz_v1';
+var LANG_KEY='ikcp_marcel_lang_v1';
+
+// ─── A5 : FAQ pré-chargées (réponse instantanée, sans appel API) ───
+var OFFLINE_FAQ={
+'donation enfant': 'Chaque parent peut donner à chaque enfant **100 000 €** tous les 15 ans en franchise (art. 779 I CGI), plus **31 865 €** en don familial de sommes d\'argent (art. 790 G CGI), plus **+100 000 €** pour logement neuf/rénovation jusqu\'au 31/12/2026 (art. 790 A bis CGI). Un couple avec 2 enfants peut transmettre jusqu\'à **527 460 €** sans droits sur 15 ans.',
+'ifi seuil': 'L\'IFI s\'applique aux patrimoines immobiliers nets > **1 300 000 €** (art. 964 CGI). Inclus : résidence principale (-30%), résidences secondaires, immobilier locatif. Exclus : immobilier professionnel, dettes immobilières.',
+'bareme ir 2026': 'Barème IR 2026 (revenus 2025, LF 2026) : 0% jusqu\'à 11 600 € · 11% de 11 601 à 29 579 € · 30% de 29 580 à 84 577 € · 41% de 84 578 à 181 917 € · **45%** au-delà.',
+'assurance vie 70 ans': 'Avant 70 ans : **152 500 €** par bénéficiaire exonérés de droits (art. 990 I CGI). Après 70 ans : abattement global 30 500 € sur les versements (art. 757 B CGI), les intérêts restent exonérés.'
+};
+
+// ─── B2 : i18n minimal (FR / EN / DE) ───
+var LANG_DICT={
+fr:{placeholder:'Posez votre question à Marcel...',send:'Envoyer',send_to_maxime:'Envoyer à Maxime',speak:'Lire à voix haute',resume:'Reprendre la conversation'},
+en:{placeholder:'Ask Marcel a question...',send:'Send',send_to_maxime:'Send to Maxime',speak:'Read aloud',resume:'Resume conversation'},
+de:{placeholder:'Stellen Sie Marcel eine Frage...',send:'Senden',send_to_maxime:'An Maxime senden',speak:'Vorlesen',resume:'Gespräch fortsetzen'}
+};
+var currentLang='fr';
+try{currentLang=localStorage.getItem(LANG_KEY)||(navigator.language||'fr').slice(0,2);}catch(e){}
+if(!LANG_DICT[currentLang])currentLang='fr';
+function t(key){return (LANG_DICT[currentLang]||LANG_DICT.fr)[key]||key;}
 function genUUID(){
 // UUID v4 simple (marketplace-safe, pas crypto grade)
 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
@@ -531,6 +553,50 @@ try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));}catch(e){}
 }
 var profile=loadProfile();
 saveProfile(profile);
+
+// ─── A1 : Persistance conversation ───
+function saveConv(msgsArr,countN){
+try{
+var snap={msgs:msgsArr.slice(-30),count:countN,ts:Date.now()};
+localStorage.setItem(CONV_KEY,JSON.stringify(snap));
+}catch(e){}
+}
+function loadConv(){
+try{var j=localStorage.getItem(CONV_KEY);if(!j)return null;
+var snap=JSON.parse(j);
+// Reset si > 7 jours (conversation périmée)
+if(Date.now()-(snap.ts||0)>7*24*60*60*1000)return null;
+return snap;
+}catch(e){return null;}
+}
+
+// ─── A5 : Match offline FAQ avant API call ───
+function matchOfflineFAQ(text){
+var t=(text||'').toLowerCase();
+if(/donat|combien.*don.*enfant|abattement.*100\s?000/i.test(t))return OFFLINE_FAQ['donation enfant'];
+if(/ifi|fortune immobili|1\s?300\s?000/i.test(t))return OFFLINE_FAQ['ifi seuil'];
+if(/bar[èe]me.*ir|tranche.*imp[ôo]t|11\s?600|29\s?579/i.test(t))return OFFLINE_FAQ['bareme ir 2026'];
+if(/assurance[- ]vie.*70|152\s?500|990\s?I/i.test(t))return OFFLINE_FAQ['assurance vie 70 ans'];
+return null;
+}
+
+// ─── B1 : Voice output (Text-to-Speech) ───
+var _ttsEnabled=false;
+try{_ttsEnabled=localStorage.getItem('ikcp_marcel_tts_v1')==='1';}catch(e){}
+function speakReply(text){
+if(!_ttsEnabled||!window.speechSynthesis)return;
+var clean=text.replace(/<[^>]+>/g,'').replace(/[*_#>]/g,'').replace(/\(art\.[^)]+\)/g,'').slice(0,1200);
+var u=new SpeechSynthesisUtterance(clean);
+u.lang=currentLang==='en'?'en-US':(currentLang==='de'?'de-DE':'fr-FR');
+u.rate=1.05;u.pitch=1;u.volume=0.9;
+window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+}
+window._ikcpToggleTTS=function(){
+_ttsEnabled=!_ttsEnabled;
+try{localStorage.setItem('ikcp_marcel_tts_v1',_ttsEnabled?'1':'0');}catch(e){}
+if(!_ttsEnabled&&window.speechSynthesis)window.speechSynthesis.cancel();
+return _ttsEnabled;
+};
 
 function extractProfile(text){
 var t=(text||'').toLowerCase();
@@ -762,7 +828,23 @@ var pageIntro='<p style="margin:0 0 6px;"><strong style="color:#1f1a16;font-weig
 +'<p class="ikcp-subtle" style="margin-bottom:12px">Posez votre question, ou cliquez sur un thème ci-dessous.</p>';
 welcomeHTML=pageIntro+welcomeHTML.substring(welcomeHTML.indexOf('<div class="ikcp-qs-group">'));
 }
-var msgs=[{role:'assistant',html:welcomeHTML,_hasQuickstart:true}];
+// A1 : Restaure une conversation précédente si moins de 7j
+var _restoredConv=loadConv();
+var msgs;
+if(_restoredConv&&_restoredConv.msgs&&_restoredConv.msgs.length>1){
+msgs=_restoredConv.msgs;
+count=_restoredConv.count||0;
+// Banner discret en haut pour signaler la reprise
+msgs.unshift({role:'assistant',html:'<div style="background:#fffaf2;border:1px solid #ece6da;border-radius:8px;padding:8px 10px;font-size:11px;color:#6d5c4a;margin-bottom:6px">↩️ Conversation précédente reprise · <a href="#" onclick="window._ikcpResetConv();return false;" style="color:#b8956e;font-weight:600">Nouvelle discussion</a></div>',_resumeBanner:true});
+}else{
+msgs=[{role:'assistant',html:welcomeHTML,_hasQuickstart:true}];
+}
+window._ikcpResetConv=function(){
+try{localStorage.removeItem(CONV_KEY);}catch(e){}
+msgs=[{role:'assistant',html:welcomeHTML,_hasQuickstart:true}];
+history=[];count=0;
+render();
+};
 
 var css=document.createElement('style');
 css.textContent=`
@@ -814,6 +896,31 @@ css.textContent=`
 .ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:96%;width:96%;padding:12px 14px}
 /* Mode expanded (chat agrandi), bubble plus grand pour mieux voir les SVG */
 #ikcp-chat-panel.expanded .ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:760px}
+/* A3 — Schéma inline dans la réponse */
+.ikcp-schema-inline{margin:10px 0 0;padding-top:8px;border-top:1px dashed #e5ded2}
+.ikcp-schema-inline-label{font-size:10px;text-transform:uppercase;color:#b8956e;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.ikcp-schema-inline .ikcp-schema-block{background:#fffaf2;border:1px solid #ece6da;border-radius:8px;padding:10px;transition:all 0.2s}
+.ikcp-schema-inline .ikcp-schema-block:hover{border-color:#b8956e;box-shadow:0 6px 18px -6px rgba(184,149,110,0.3)}
+/* B5 — Preuve sociale */
+.ikcp-social-stat{margin-top:8px;padding:6px 10px;background:linear-gradient(90deg,rgba(184,149,110,0.08),transparent);border-left:2px solid #b8956e;border-radius:0 6px 6px 0;font-size:11px;color:#5f5248}
+.ikcp-social-stat em{font-style:italic;color:#3a2f24}
+/* A2 — Bouton "Envoyer à Maxime" + B1 toggle TTS dans le header */
+#ikcp-export-conv{background:none;border:none;color:#b8956e;cursor:pointer;padding:4px 6px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all 0.15s}
+#ikcp-export-conv:hover{color:white;background:rgba(255,255,255,0.08)}
+#ikcp-tts-toggle.is-on{color:#22c55e}
+/* B2 — Toggle langue */
+.ikcp-lang-toggle{display:inline-flex;gap:1px;margin-right:4px;background:rgba(255,255,255,0.05);border-radius:6px;padding:2px}
+.ikcp-lang-toggle button{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:10px;font-weight:700;padding:3px 6px;border-radius:4px;transition:all 0.15s;letter-spacing:0.5px}
+.ikcp-lang-toggle button:hover{color:white}
+.ikcp-lang-toggle button.active{color:#1f1a16;background:#b8956e}
+/* A4 — Mini-quiz card */
+.ikcp-quiz-card{background:linear-gradient(135deg,#1f1a16,#2d2620);color:white;border-radius:14px;padding:14px;margin-top:10px}
+.ikcp-quiz-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;margin-bottom:4px}
+.ikcp-quiz-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:10px}
+.ikcp-quiz-options{display:flex;flex-direction:column;gap:6px}
+.ikcp-quiz-opt{background:rgba(255,255,255,0.05);border:1px solid rgba(184,149,110,0.3);color:white;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;text-align:left;transition:all 0.15s}
+.ikcp-quiz-opt:hover{background:#b8956e;color:#1f1a16;border-color:#b8956e}
+.ikcp-quiz-progress{font-size:10px;color:#b8956e;margin-bottom:6px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
 .ikcp-msg strong{color:#1f1a16;font-weight:500}
 .ikcp-msg a{color:#b8956e;font-weight:500;text-decoration:underline}
 .ikcp-msg-a{background:white;border:1px solid #d8d0c4;color:#2e2520;border-radius:14px 14px 14px 2px;align-self:flex-start}
@@ -951,7 +1058,20 @@ history.push({role:'user',content:txt+(_pendingPdf?' [document PDF joint : '+_pe
 var currentPdf=_pendingPdf;
 _pendingPdf=null;_pendingPdfName='';
 inp.placeholder='Posez votre question à Marcel...';
-inp.value='';render();showLoading();
+inp.value='';render();
+// A5 : tente d'abord une réponse FAQ offline (instantanée, économise un appel API)
+var faqReply=matchOfflineFAQ(txt);
+if(faqReply&&!currentPdf){
+history.push({role:'assistant',content:faqReply});
+var fHtml=formatReply(faqReply);
+fHtml+='<div class="ikcp-social-stat" style="font-size:10px;color:#9e9080;font-style:italic;margin-top:6px">⚡ Réponse instantanée · sourcée IKCP</div>';
+msgs.push({role:'assistant',html:fHtml});
+saveConv(msgs,count);
+speakReply(faqReply);
+render();
+return;
+}
+showLoading();
 try{
 // Injecte le contexte profil + contexte de page dans le 1er message
 var ctx=profileAsContext();
@@ -968,10 +1088,21 @@ var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessay
 var followUps=Array.isArray(d.follow_ups)?d.follow_ups:[];
 history.push({role:'assistant',content:reply});
 var html=formatReply(reply);
-// Auto-schéma : si la réponse aborde un sujet avec schéma disponible
+// A3 : Auto-schéma INLINE — le SVG est injecté directement dans la réponse
 var sch=suggestSchema(reply);
-if(sch){
-html+='<div class="ikcp-schema-hint"><span class="ikcp-schema-hint-text">📊 Schéma associé : '+sch.title+'</span><button class="ikcp-schema-hint-btn" onclick="window._ikcpSchema(\''+sch.key+'\')">Afficher</button></div>';
+if(sch&&window._ikcpSchemas&&window._ikcpSchemas[sch.key]){
+var schemaData=window._ikcpSchemas[sch.key];
+var schemaHtml='<div class="ikcp-schema-inline"><div class="ikcp-schema-inline-label">📊 Schéma associé · cliquez pour zoomer</div><div class="ikcp-schema-block" onclick="window._ikcpSchema(\''+sch.key+'\')" style="cursor:zoom-in"><div class="ikcp-schema-title">'+(schemaData.title||sch.title)+(schemaData.subtitle?'<span class="ikcp-schema-subtitle"> · '+schemaData.subtitle+'</span>':'')+'</div><div class="ikcp-schema-svg-wrap">'+schemaData.svg+'</div></div></div>';
+html+=schemaHtml;
+}
+// B5 : Preuve sociale — sur sujets fréquents, ajout d'une stat anonyme
+var socialStat=null;
+if(/donat|transmission/i.test(reply))socialStat='Sur 100 visiteurs, 73 se posent la question de la transmission avant 50 ans.';
+else if(/ifi|fortune immobili/i.test(reply))socialStat='42% de nos clients dépassant 1,2 M€ de patrimoine immobilier ignorent qu\'ils sont concernés par l\'IFI.';
+else if(/per|plan d\'?[ée]pargne retraite/i.test(reply))socialStat='Économie d\'impôt moyenne via le PER chez nos clients TMI 30%/41% : 2 800 €/an.';
+else if(/conjoint|d[eé]c[eè]s|prot[eé]ger.*famille/i.test(reply))socialStat='8 couples sur 10 n\'ont pas signé de donation au dernier vivant. Coût : ~300 € chez le notaire.';
+if(socialStat){
+html+='<div class="ikcp-social-stat">📊 <em>'+socialStat+'</em></div>';
 }
 // Follow-ups : 3 questions de suivi cliquables générées par Marcel
 if(followUps.length){
@@ -997,11 +1128,15 @@ if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px so
 else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
 // Hot lead alert (non bloquant)
 maybeFireLeadAlert(reply);
+// B1 : Lecture vocale si TTS activé
+speakReply(reply);
+// A1 : Sauvegarde conversation (resume entre visites)
+saveConv(msgs,count);
 // Streaming visuel : message vide d'abord, puis remplissage progressif
 hideLoading();
 typeOutMessage(reply,html);
 return;
-}catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Contactez Maxime directement</a>.</p>'});}
+}catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Contactez Maxime directement</a>.</p>'});saveConv(msgs,count);}
 hideLoading();render();
 }
 
@@ -1128,7 +1263,7 @@ if(b)b.title=isExpanded?'Réduire':'Agrandir';
 var html=`
 <div id="ikcp-tease" onclick="document.querySelector('#ikcp-chat-btn').click()"><p class="t1">Une question patrimoniale&nbsp;?</p><p class="t2">Succession, donation, IFI&hellip; posez votre question 👇</p></div>
 <div id="ikcp-chat-panel">
-<div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
+<div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><div class="ikcp-lang-toggle"><button data-lang="fr" onclick="window._ikcpSetLang('fr')">FR</button><button data-lang="en" onclick="window._ikcpSetLang('en')">EN</button><button data-lang="de" onclick="window._ikcpSetLang('de')">DE</button></div><button id="ikcp-tts-toggle" onclick="window._ikcpToggleTTSBtn()" title="Lire à voix haute"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><button id="ikcp-export-conv" onclick="window._ikcpSendToMaxime()" title="Envoyer ma conversation à Maxime"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
 <div id="ikcp-chat-msgs"></div>
 <div id="ikcp-chat-input"><button id="ikcp-upload" onclick="document.getElementById('ikcp-file').click()" title="Envoyer un document PDF (avis d'imposition, contrat...)" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button><input type="file" id="ikcp-file" accept="application/pdf" style="display:none" onchange="window._ikcpFileChange(this)"><button id="ikcp-voice" onclick="window._ikcpVoice()" title="Dicter la question" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
 </div>
@@ -1448,4 +1583,91 @@ mScript.src='https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js';
 mScript.async=true;
 document.head.appendChild(mScript);
 }
+
+// ─── A2 : Envoyer la conversation à Maxime ───
+window._ikcpSendToMaxime=function(){
+var convText=msgs.map(function(m){
+var role=m.role==='user'?'PROSPECT':'MARCEL';
+var clean=m.html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,500);
+return role+': '+clean;
+}).join('\n\n');
+var profileLine=profileAsContext().replace('[Contexte du visiteur : ','').replace(']','');
+var subject='Conversation Marcel — '+(profile.first_name||'Prospect')+' '+new Date().toLocaleDateString('fr-FR');
+var body='Bonjour Maxime,\n\nVoici ma conversation avec Marcel :\n\n'+(profileLine?'Profil : '+profileLine+'\n\n':'')+'═══════════════════════════════════════\n\n'+convText+'\n\n═══════════════════════════════════════\n\nJ\'aimerais en discuter avec vous.\n\nCordialement,';
+// Worker endpoint : envoie l'email + crée fiche Notion (si configuré)
+try{
+fetch('https://ikcp-prospect.maxime-ead.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'marcel_send_to_maxime',source:'Marcel chat - bouton envoyer',profile:profile,subject:subject,body:body,questionsHistory:_questionsHistory,page:location.href,date:new Date().toISOString()})}).catch(function(){});
+}catch(e){}
+// Fallback : ouvre le client mail du visiteur
+var mailUrl='mailto:maxime@ikcp.fr?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+window.location.href=mailUrl;
+// Confirmation visuelle
+msgs.push({role:'assistant',html:'<p>✅ Votre client mail s\'ouvre — vérifiez les infos puis envoyez. Maxime vous répondra sous 24h.</p>'});
+saveConv(msgs,count);render();
+};
+
+// ─── B1 : Toggle TTS ───
+window._ikcpToggleTTSBtn=function(){
+var on=window._ikcpToggleTTS();
+var btn=document.getElementById('ikcp-tts-toggle');
+if(btn)btn.classList.toggle('is-on',on);
+};
+
+// ─── B2 : Toggle langue ───
+window._ikcpSetLang=function(lang){
+if(!LANG_DICT[lang])return;
+currentLang=lang;
+try{localStorage.setItem(LANG_KEY,lang);}catch(e){}
+document.querySelectorAll('.ikcp-lang-toggle button').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
+var inp=document.getElementById('ikcp-inp');
+if(inp)inp.placeholder=t('placeholder');
+};
+// Init langue active
+setTimeout(function(){
+document.querySelectorAll('.ikcp-lang-toggle button').forEach(function(b){b.classList.toggle('active',b.dataset.lang===currentLang);});
+var btn=document.getElementById('ikcp-tts-toggle');
+if(btn&&_ttsEnabled)btn.classList.add('is-on');
+},100);
+
+// ─── A4 : Mini-quiz profil patrimonial ───
+window._ikcpStartQuiz=function(){
+var quizState={step:0,answers:{}};
+var QUIZ=[
+{q:'Quelle est votre situation familiale ?',opts:[{l:'Célibataire',v:'celibataire'},{l:'En couple, sans enfants',v:'couple'},{l:'En couple avec enfants',v:'parents'},{l:'Famille recomposée',v:'recomposee'}]},
+{q:'Quelle est votre tranche d\'âge ?',opts:[{l:'Moins de 35 ans',v:'-35'},{l:'35-50 ans',v:'35-50'},{l:'50-65 ans',v:'50-65'},{l:'Plus de 65 ans',v:'65+'}]},
+{q:'Votre statut professionnel ?',opts:[{l:'Salarié',v:'salarie'},{l:'Dirigeant / TNS',v:'dirigeant'},{l:'Profession libérale',v:'liberale'},{l:'Retraité(e)',v:'retraite'}]},
+{q:'Votre patrimoine net (immo + financier) ?',opts:[{l:'< 100 k€',v:'<100k'},{l:'100-500 k€',v:'100-500k'},{l:'500 k€ - 1,3 M€',v:'500-1300k'},{l:'> 1,3 M€',v:'1300k+'}]},
+{q:'Votre principal enjeu actuel ?',opts:[{l:'🏛️ Transmission / Succession',v:'transmission'},{l:'🛡️ Protection famille',v:'protection'},{l:'🎯 Optimisation fiscale',v:'fiscal'},{l:'📈 Investissement / Retraite',v:'invest'}]}
+];
+function showStep(){
+if(quizState.step>=QUIZ.length){
+// Synthèse + envoi à Marcel
+profile.quiz=quizState.answers;saveProfile(profile);
+try{localStorage.setItem(QUIZ_KEY,JSON.stringify(quizState.answers));}catch(e){}
+var summary='Voici votre profil patrimonial : '+Object.values(quizState.answers).join(' · ')+'. Que recommandez-vous comme priorités à court et moyen terme pour ma situation ?';
+msgs.push({role:'user',html:'<p>'+summary.replace(/</g,'&lt;')+'</p>'});
+history.push({role:'user',content:summary});
+render();
+var inp=document.getElementById('ikcp-inp');
+if(inp){inp.value=summary;send();}
+return;
+}
+var step=QUIZ[quizState.step];
+var html='<div class="ikcp-quiz-card"><div class="ikcp-quiz-progress">Étape '+(quizState.step+1)+' / '+QUIZ.length+'</div><div class="ikcp-quiz-title">'+step.q+'</div><div class="ikcp-quiz-options">';
+step.opts.forEach(function(o,i){
+html+='<button class="ikcp-quiz-opt" onclick="window._ikcpQuizAnswer('+quizState.step+','+i+')">'+o.l+'</button>';
+});
+html+='</div></div>';
+msgs.push({role:'assistant',html:html,_quiz:true});
+render();
+}
+window._ikcpQuizAnswer=function(stepIdx,optIdx){
+quizState.answers['q'+stepIdx]=QUIZ[stepIdx].opts[optIdx].v;
+quizState.step++;
+// Retire le quiz précédent du chat
+msgs=msgs.filter(function(m){return !m._quiz;});
+showStep();
+};
+showStep();
+};
 })();

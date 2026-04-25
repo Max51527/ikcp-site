@@ -1,0 +1,29 @@
+name = "ikcp-api"
+main = "worker.js"
+compatibility_date = "2026-04-25"
+
+[observability]
+enabled = true
+
+# ─── Variables et secrets à configurer dans Cloudflare Dashboard ───
+#
+# Onglet Settings → Variables and Secrets :
+#
+# SECRETS (chiffrés) :
+#   NOTION_TOKEN      — Token API Notion (https://www.notion.so/my-integrations)
+#   RESEND_API_KEY    — Clé API Resend (https://resend.com/api-keys)
+#   LEGIFRANCE_TOKEN  — Token api.piste.gouv.fr (optionnel, fallback gracieux)
+#   INSEE_KEY         — Clé API Insee (https://api.insee.fr — gratuit, inscription)
+#
+# VARIABLES (texte) :
+#   NOTION_DB_ID      — ID de la database Notion "Prospects IKCP"
+#   RESEND_FROM       — "Marcel <marcel@ikcp.eu>" (domaine vérifié sur Resend)
+#   RESEND_TO         — "maxime@ikcp.fr"
+
+# ─── Domaine custom (optionnel) ───
+# Pour exposer en https://api.ikcp.eu :
+#   1. Cloudflare DNS → ajouter CNAME api → ikcp-api.maxime-ead.workers.dev (proxy ON)
+#   2. Worker → Domains and Routes → Add → api.ikcp.eu
+#
+# Sans domaine custom, l'URL est :
+#   https://ikcp-api.maxime-ead.workers.dev
