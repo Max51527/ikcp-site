@@ -15,6 +15,142 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ═══ MUSIC PLAYER (top-right ambient) ═══ */
+.music-player {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 200;
+  font-family: 'Inter', system-ui, sans-serif;
+  user-select: none;
+}
+.music-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 11px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(184, 149, 110, 0.25);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f1a16;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px -6px rgba(31, 26, 22, 0.12);
+}
+.music-trigger:hover {
+  background: white;
+  border-color: rgba(184, 149, 110, 0.5);
+  transform: translateY(-1px);
+}
+.music-trigger .music-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 14px;
+  height: 14px;
+}
+.music-trigger .music-eq span {
+  display: block;
+  width: 2px;
+  background: #b8956e;
+  border-radius: 1px;
+  animation: eqBars 0.9s ease-in-out infinite;
+}
+.music-trigger .music-eq span:nth-child(1) { height: 30%; animation-delay: 0s; }
+.music-trigger .music-eq span:nth-child(2) { height: 80%; animation-delay: 0.15s; }
+.music-trigger .music-eq span:nth-child(3) { height: 50%; animation-delay: 0.3s; }
+.music-trigger .music-eq span:nth-child(4) { height: 90%; animation-delay: 0.45s; }
+@keyframes eqBars {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+.music-trigger.is-off .music-eq span {
+  animation-play-state: paused;
+  background: #b5a78b;
+  height: 50% !important;
+}
+.music-trigger.is-off .music-status::before { content: 'OFF'; }
+.music-trigger:not(.is-off) .music-status::before { content: attr(data-track); }
+
+.music-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: white;
+  border: 1px solid rgba(184, 149, 110, 0.2);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 18px 40px -10px rgba(31, 26, 22, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: all 0.2s;
+}
+.music-player.is-open .music-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.music-panel-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #b8956e;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.music-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.music-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #fdfaf5;
+  border: 1px solid #ece6da;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #2e2520;
+  transition: all 0.15s;
+  text-align: left;
+}
+.music-track:hover {
+  background: #1f1a16;
+  border-color: #1f1a16;
+  color: white;
+}
+.music-track.active {
+  background: linear-gradient(135deg, #b8956e, #a07b54);
+  border-color: #b8956e;
+  color: white;
+}
+.music-track .t-icon { font-size: 14px; }
+.music-off-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px;
+  background: white;
+  border: 1px solid #e5ded2;
+  border-radius: 8px;
+  font-size: 11px;
+  color: #6d5c4a;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.music-off-btn:hover { background: #1f1a16; color: white; border-color: #1f1a16; }
+
 /* ═══ NAV ═══ */
 nav {
   position: fixed;
@@ -1092,6 +1228,30 @@ body:not(.marcel-open) .marcel-talk-card {
 </head>
 <body>
 
+<!-- ═══ Player musical ambient (top-right) ═══ -->
+<div class="music-player is-off" id="music-player">
+  <button class="music-trigger is-off" id="music-trigger" aria-label="Ambiance musicale">
+    <span class="music-eq"><span></span><span></span><span></span><span></span></span>
+    <span class="music-status" data-track="OFF"></span>
+  </button>
+  <div class="music-panel">
+    <div class="music-panel-title">🎵 Ambiance musicale</div>
+    <div class="music-tracks">
+      <button class="music-track" data-id="piano" data-src="https://cdn.pixabay.com/audio/2024/03/19/audio_5e29e16f1f.mp3" data-label="Piano">
+        <span class="t-icon">🎹</span><span>Piano · Concentration</span>
+      </button>
+      <button class="music-track" data-id="ambient" data-src="https://cdn.pixabay.com/audio/2024/02/29/audio_e0a55ad7c8.mp3" data-label="Ambient">
+        <span class="t-icon">🌅</span><span>Ambient · Sérénité</span>
+      </button>
+      <button class="music-track" data-id="strings" data-src="https://cdn.pixabay.com/audio/2023/01/02/audio_1e0d5b5e4f.mp3" data-label="Cordes">
+        <span class="t-icon">🎻</span><span>Cordes · Élégance</span>
+      </button>
+    </div>
+    <button class="music-off-btn" id="music-off-btn">Couper la musique</button>
+  </div>
+  <audio id="music-audio" loop preload="none"></audio>
+</div>
+
 <nav>
   <div>
     <div class="brand">IKCP<span>.</span></div>
@@ -1383,6 +1543,118 @@ function openMarcelChat(){
   document.body.classList.add('marcel-open');
   if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
 }
+
+// ───────── PLAYER MUSICAL ambient (top-right) ─────────
+(function(){
+  const PREF_KEY = 'ikcp_music_v1';
+  const player = document.getElementById('music-player');
+  const trigger = document.getElementById('music-trigger');
+  const status = trigger.querySelector('.music-status');
+  const audio = document.getElementById('music-audio');
+  const offBtn = document.getElementById('music-off-btn');
+  const tracks = document.querySelectorAll('.music-track');
+
+  // Volume cible bas (ambient, non intrusif)
+  const TARGET_VOLUME = 0.28;
+  audio.volume = 0;
+
+  // Charge la préférence
+  let pref = {};
+  try { pref = JSON.parse(localStorage.getItem(PREF_KEY)) || {}; } catch(e){}
+
+  function fadeVolume(target, duration){
+    const steps = 20;
+    const stepDur = duration / steps;
+    const start = audio.volume;
+    const delta = (target - start) / steps;
+    let i = 0;
+    const interval = setInterval(()=>{
+      i++;
+      audio.volume = Math.max(0, Math.min(1, start + delta * i));
+      if(i >= steps){ clearInterval(interval); }
+    }, stepDur);
+  }
+
+  function playTrack(id, src, label){
+    tracks.forEach(t => t.classList.toggle('active', t.dataset.id === id));
+    if(audio.src !== src){
+      audio.src = src;
+      audio.load();
+    }
+    audio.play().then(()=>{
+      fadeVolume(TARGET_VOLUME, 800);
+      status.setAttribute('data-track', label.toUpperCase());
+      trigger.classList.remove('is-off');
+      player.classList.remove('is-off');
+      try { localStorage.setItem(PREF_KEY, JSON.stringify({id, src, label, on: true})); } catch(e){}
+    }).catch(err => {
+      console.log('Music play blocked or failed:', err.message);
+      // Restore OFF state if play fails
+      stopMusic(false);
+    });
+  }
+
+  function stopMusic(persist = true){
+    fadeVolume(0, 300);
+    setTimeout(()=>{
+      audio.pause();
+    }, 350);
+    tracks.forEach(t => t.classList.remove('active'));
+    status.setAttribute('data-track', 'OFF');
+    trigger.classList.add('is-off');
+    player.classList.add('is-off');
+    if(persist){
+      try { localStorage.setItem(PREF_KEY, JSON.stringify({on: false})); } catch(e){}
+    }
+  }
+
+  // Toggle panel d'ouverture
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    player.classList.toggle('is-open');
+  });
+
+  // Click outside ferme le panel
+  document.addEventListener('click', (e) => {
+    if(!player.contains(e.target)) player.classList.remove('is-open');
+  });
+
+  // Click sur une piste
+  tracks.forEach(t => {
+    t.addEventListener('click', () => {
+      playTrack(t.dataset.id, t.dataset.src, t.dataset.label);
+    });
+  });
+
+  // Bouton OFF
+  offBtn.addEventListener('click', () => {
+    stopMusic(true);
+    player.classList.remove('is-open');
+  });
+
+  // Restaure la préférence (sans autoplay car les browsers le bloquent)
+  if(pref.on && pref.id){
+    // Affiche la piste sélectionnée mais ne lance pas auto (besoin user interaction)
+    tracks.forEach(t => t.classList.toggle('active', t.dataset.id === pref.id));
+    status.setAttribute('data-track', (pref.label || 'ON').toUpperCase());
+    // Note: certains browsers permettent l'autoplay si même origine + user a interagi avant
+    audio.src = pref.src;
+    audio.play().then(()=>{
+      fadeVolume(TARGET_VOLUME, 800);
+      trigger.classList.remove('is-off');
+      player.classList.remove('is-off');
+    }).catch(()=>{
+      // Bloqué par le navigateur, reste en OFF visuel
+      stopMusic(false);
+    });
+  }
+
+  // Si la lecture audio échoue (404 sur l'URL Pixabay par exemple)
+  audio.addEventListener('error', () => {
+    console.log('Audio error — fallback OFF');
+    stopMusic(false);
+  });
+})();
 
 // Surveille la fermeture du panel pour réafficher la carte chat
 document.addEventListener('click', function(e){
