@@ -541,6 +541,27 @@ h1 em {
 }
 .marcel-talk-cta-icon { font-size: 16px; }
 
+/* Cacher les autres montgolfières (widget Marcel auto-injecté) sur la preview hero */
+#ikcp-chat-btn,
+#ikcp-tease,
+#ikcp-chat-close-btn { display: none !important; }
+
+/* Animation de rotation des questions */
+.marcel-q {
+  animation: qFadeIn 0.5s ease both;
+}
+.marcel-q.fading-out {
+  animation: qFadeOut 0.4s ease both;
+}
+@keyframes qFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes qFadeOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(8px); }
+}
+
 /* La montgolfière de Marcel qui vole */
 .balloon-stage {
   position: absolute;
@@ -1250,27 +1271,8 @@ h1 em {
           <span class="marcel-talk-badge">Réponses sourcées CGI · LF 2026</span>
         </div>
 
-        <div class="marcel-talk-questions">
-          <button class="marcel-q" onclick="askMarcel('Comment réduire les droits de succession pour mes enfants ?')">
-            <span class="q-icon">🏛️</span>
-            <span class="q-text">Comment réduire les droits de succession pour mes enfants ?</span>
-            <span class="q-arrow">→</span>
-          </button>
-          <button class="marcel-q" onclick="askMarcel('PER : combien je peux déduire de mes impôts cette année ?')">
-            <span class="q-icon">🎯</span>
-            <span class="q-text">PER : combien je peux déduire cette année ?</span>
-            <span class="q-arrow">→</span>
-          </button>
-          <button class="marcel-q" onclick="askMarcel('Suis-je concerné par l\'impôt sur la fortune immobilière (IFI) ?')">
-            <span class="q-icon">🏠</span>
-            <span class="q-text">Suis-je concerné par l'IFI ?</span>
-            <span class="q-arrow">→</span>
-          </button>
-          <button class="marcel-q" onclick="askMarcel('Que se passe-t-il pour mon conjoint si je décède demain ?')">
-            <span class="q-icon">🛡️</span>
-            <span class="q-text">Que se passe-t-il pour mon conjoint si je décède demain ?</span>
-            <span class="q-arrow">→</span>
-          </button>
+        <div class="marcel-talk-questions" id="marcel-questions">
+          <!-- Les 4 questions affichées sont injectées par JS et rotent toutes les 10s -->
         </div>
 
         <div class="marcel-talk-footer">
@@ -1291,6 +1293,61 @@ h1 em {
 <!-- Le widget Marcel réel (s'ouvre quand on clique une question) -->
 <script src="/chatbot-widget.js?v=13" defer></script>
 <script>
+// ───────── Pool de 12 problématiques patrimoniales (rotation toutes les 10s) ─────────
+const QUESTIONS_POOL = [
+  // Succession / Transmission
+  { icon:'🏛️', label:"Comment réduire les droits de succession pour mes enfants ?", q:"Comment réduire les droits de succession pour mes enfants ?" },
+  { icon:'💎', label:"Donation au-delà de 100 000 € : comment optimiser ?", q:"Comment optimiser ma transmission au-delà de l'abattement de 100 000 € par enfant ?" },
+  { icon:'⚖️', label:"Testament ou donation au dernier vivant ?", q:"Quelle différence entre testament et donation au dernier vivant pour protéger mon conjoint ?" },
+  { icon:'📋', label:"Puis-je donner à mes petits-enfants ?", q:"Comment fonctionne la donation aux petits-enfants ? Quels abattements ?" },
+  // Fiscal / IR
+  { icon:'🎯', label:"PER : combien je peux déduire cette année ?", q:"Le PER (plan d'épargne retraite) : combien je peux déduire de mes impôts cette année ?" },
+  { icon:'💰', label:"Comment réduire mon impôt sur le revenu ?", q:"Quels sont les leviers principaux pour réduire mon impôt sur le revenu cette année ?" },
+  { icon:'📊', label:"Plafond des niches fiscales : comment ça marche ?", q:"Comment fonctionne le plafond global des niches fiscales (10 000 €) ?" },
+  // IFI / Immobilier
+  { icon:'🏠', label:"Suis-je concerné par l'IFI ?", q:"Suis-je concerné par l'impôt sur la fortune immobilière (IFI) ? Quels biens compter ?" },
+  { icon:'🏘️', label:"SCI familiale : avantages et inconvénients ?", q:"Quels sont les avantages et inconvénients d'une SCI familiale pour gérer un patrimoine immobilier ?" },
+  // Protection conjoint / Famille
+  { icon:'🛡️', label:"Que se passe-t-il pour mon conjoint si je décède ?", q:"Que se passe-t-il pour mon conjoint si je décède demain ? Quels droits, quelle protection ?" },
+  { icon:'👨‍👩‍👧', label:"Famille recomposée : comment protéger chacun ?", q:"En famille recomposée, comment protéger mon conjoint sans léser mes enfants d'une 1ère union ?" },
+  // Pro / Entrepreneur
+  { icon:'💼', label:"Dirigeant : protéger entreprise et famille ?", q:"En tant que dirigeant, comment protéger mon entreprise et ma famille en cas d'imprévu ?" }
+];
+
+let _qIdx = 0;
+function renderQuestions() {
+  const container = document.getElementById('marcel-questions');
+  if (!container) return;
+  // Sélectionne 4 questions à partir de _qIdx
+  const visible = [];
+  for (let i = 0; i < 4; i++) visible.push(QUESTIONS_POOL[(_qIdx + i) % QUESTIONS_POOL.length]);
+  container.innerHTML = visible.map(item => `
+    <button class="marcel-q" onclick="askMarcel(${JSON.stringify(item.q).replace(/"/g,'&quot;')})">
+      <span class="q-icon">${item.icon}</span>
+      <span class="q-text">${item.label}</span>
+      <span class="q-arrow">→</span>
+    </button>
+  `).join('');
+}
+
+function rotateQuestions() {
+  const container = document.getElementById('marcel-questions');
+  if (!container) return;
+  // Fade out
+  container.querySelectorAll('.marcel-q').forEach(b => b.classList.add('fading-out'));
+  // Swap après l'animation de fade
+  setTimeout(() => {
+    _qIdx = (_qIdx + 4) % QUESTIONS_POOL.length;
+    renderQuestions();
+  }, 400);
+}
+
+// Init + rotation toutes les 10 secondes
+document.addEventListener('DOMContentLoaded', () => {
+  renderQuestions();
+  setInterval(rotateQuestions, 10000);
+});
+
 function askMarcel(question){
   // Ouvre le widget Marcel et soumet la question
   if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
