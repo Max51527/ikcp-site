@@ -546,6 +546,31 @@ h1 em {
 #ikcp-tease,
 #ikcp-chat-close-btn { display: none !important; }
 
+/* Quand le panel Marcel s'ouvre, on masque la carte chat du hero pour éviter
+   le doublon visuel (panel + carte qui se chevauchent) */
+body.marcel-open .marcel-talk-card {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+body:not(.marcel-open) .marcel-talk-card {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+}
+
+/* Le panel Marcel positionné dans la zone droite du hero (sur desktop large) */
+@media (min-width: 1100px) {
+  body.marcel-open #ikcp-chat-panel {
+    bottom: auto !important;
+    right: 40px !important;
+    top: 110px !important;
+    height: calc(100vh - 130px) !important;
+    max-height: 720px !important;
+  }
+}
+
 /* Animation de rotation des questions */
 .marcel-q {
   animation: qFadeIn 0.5s ease both;
@@ -1127,13 +1152,6 @@ h1 em {
         </div>
         <span class="arrow">→</span>
       </a>
-      <a href="#" class="cta-secondary cta-marcel">
-        <span class="marcel-avatar"><img src="/icons/montgolfiere.png" alt="" style="width:26px;height:26px;object-fit:cover;border-radius:50%"></span>
-        <span>
-          <span style="font-weight:600">Parler à Marcel</span>
-          <span class="cta-marcel-sub">notre agent IA patrimonial</span>
-        </span>
-      </a>
     </div>
 
     <div class="trust-bar">
@@ -1350,6 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function askMarcel(question){
   // Ouvre le widget Marcel et soumet la question
+  document.body.classList.add('marcel-open');
   if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
   setTimeout(function(){
     if(typeof window._ikcpAskFollow==='function'){window._ikcpAskFollow(question);}
@@ -1361,8 +1380,22 @@ function askMarcel(question){
   },300);
 }
 function openMarcelChat(){
+  document.body.classList.add('marcel-open');
   if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
 }
+
+// Surveille la fermeture du panel pour réafficher la carte chat
+document.addEventListener('click', function(e){
+  // Si l'utilisateur clique sur le bouton X dans le header du panel, on remet l'état
+  if(e.target && e.target.closest && e.target.closest('#ikcp-chat-head')){
+    setTimeout(function(){
+      var panel = document.getElementById('ikcp-chat-panel');
+      if(!panel || !panel.classList.contains('open')){
+        document.body.classList.remove('marcel-open');
+      }
+    }, 50);
+  }
+});
 </script>
 
 </body>
