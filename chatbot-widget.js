@@ -789,6 +789,21 @@ css.textContent=`
 .ikcp-msg{max-width:92%;padding:14px 16px;border-radius:14px;font-size:13px;line-height:1.6;font-family:'DM Sans',system-ui,sans-serif}
 #ikcp-chat-panel.expanded .ikcp-msg{font-size:14px;max-width:720px}
 .ikcp-msg p{margin:0 0 6px}.ikcp-msg p:last-child{margin:0}
+.ikcp-msg h3.ikcp-md-h3{font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:600;color:#1f1a16;margin:10px 0 6px;padding-bottom:3px;border-bottom:1px solid rgba(184,149,110,0.25)}
+.ikcp-msg h4.ikcp-md-h4{font-size:12px;font-weight:700;color:#b8956e;text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px}
+.ikcp-msg ul.ikcp-md-list{margin:6px 0 8px;padding-left:18px;list-style:disc}
+.ikcp-msg ul.ikcp-md-list li{margin:2px 0;line-height:1.5}
+.ikcp-msg ol{margin:6px 0 8px;padding-left:20px}
+.ikcp-msg ol li{margin:2px 0;line-height:1.5}
+.ikcp-msg blockquote.ikcp-md-quote{margin:8px 0;padding:8px 12px;background:#fffaf2;border-left:3px solid #b8956e;border-radius:0 6px 6px 0;font-family:'Playfair Display',Georgia,serif;font-style:italic;color:#3a2f24}
+.ikcp-msg table.ikcp-md-table{width:100%;margin:8px 0;border-collapse:collapse;font-size:11px;background:white;border-radius:6px;overflow:hidden;border:1px solid #e5ded2}
+.ikcp-msg table.ikcp-md-table th{background:#1f1a16;color:#fff;padding:6px 8px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+.ikcp-msg table.ikcp-md-table td{padding:6px 8px;border-bottom:1px solid #f0ebe0}
+.ikcp-msg table.ikcp-md-table tr:last-child td{border-bottom:none}
+.ikcp-msg .ikcp-cite{display:inline-block;font-size:10.5px;color:#b8956e;background:#fffaf2;border:1px solid #ece6da;border-radius:4px;padding:1px 6px;font-style:italic;font-weight:500;margin:0 1px;letter-spacing:0.2px}
+.ikcp-msg .ikcp-calendly-link{display:inline-block;margin:8px 0 4px;padding:8px 16px;background:linear-gradient(135deg,#b8956e,#a07b54);color:#fff!important;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none}
+.ikcp-msg .ikcp-disclaimer{font-size:10px;color:#a09080;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px dashed #e5ded2;line-height:1.5}
+.ikcp-msg em{color:#5f5248;font-style:italic}
 .ikcp-msg strong{color:#1f1a16;font-weight:500}
 .ikcp-msg a{color:#b8956e;font-weight:500;text-decoration:underline}
 .ikcp-msg-a{background:white;border:1px solid #d8d0c4;color:#2e2520;border-radius:14px 14px 14px 2px;align-self:flex-start}
@@ -838,7 +853,8 @@ css.textContent=`
 .ikcp-followup-btn{background:white;border:1px solid #e5ded2;color:#2e2520;border-radius:10px;padding:8px 12px;font-size:12px;font-family:'DM Sans',system-ui,sans-serif;cursor:pointer;text-align:left;transition:all 0.15s;font-weight:500;line-height:1.4}
 .ikcp-followup-btn:hover{background:#1f1a16;color:white;border-color:#1f1a16;transform:translateX(2px)}
 .ikcp-loading-bubble{display:flex;align-items:center;gap:12px;padding:12px 16px}
-.ikcp-balloon-wrap{flex-shrink:0;font-size:22px;animation:ikcp-balloon-rise 2.2s ease-in-out infinite}
+.ikcp-balloon-wrap{flex-shrink:0;width:32px;height:42px;display:flex;align-items:center;justify-content:center;animation:ikcp-balloon-rise 2.2s ease-in-out infinite}
+.ikcp-balloon-svg{width:30px;height:auto;filter:drop-shadow(0 3px 4px rgba(31,26,22,0.18))}
 @keyframes ikcp-balloon-rise{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
 .ikcp-loading-text{font-size:12px;color:#907b65;font-style:italic;font-weight:500}
 .ikcp-loading-dots{display:inline-block;animation:ikcp-ellipsis 1.5s infinite;width:20px}
@@ -878,7 +894,7 @@ var el=document.getElementById('ikcp-chat-msgs');
 var d=document.createElement('div');
 d.id='ikcp-loading';
 d.className='ikcp-msg ikcp-msg-a ikcp-loading-bubble';
-d.innerHTML='<div class="ikcp-balloon-wrap"><span class="ikcp-balloon">🎈</span></div><div class="ikcp-loading-text" id="ikcp-loading-text">'+LOADING_MSGS[0]+'<span class="ikcp-loading-dots">…</span></div>';
+d.innerHTML='<div class="ikcp-balloon-wrap"><svg class="ikcp-balloon-svg" viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="bClip"><path d="M30 4 C 48 4, 54 22, 54 38 C 54 50, 46 58, 38 60 L 22 60 C 14 58, 6 50, 6 38 C 6 22, 12 4, 30 4 Z"/></clipPath></defs><g clip-path="url(#bClip)"><rect x="0" y="0" width="20" height="60" fill="#1a4f9e"/><rect x="20" y="0" width="20" height="60" fill="#fff"/><rect x="40" y="0" width="20" height="60" fill="#d04a3a"/></g><line x1="22" y1="60" x2="22" y2="68" stroke="#1f1a16" stroke-width="0.8"/><line x1="38" y1="60" x2="38" y2="68" stroke="#1f1a16" stroke-width="0.8"/><rect x="20" y="68" width="20" height="9" rx="1" fill="#6b4f35"/></svg></div><div class="ikcp-loading-text" id="ikcp-loading-text">'+LOADING_MSGS[0]+'<span class="ikcp-loading-dots">…</span></div>';
 el.appendChild(d);
 el.scrollTop=el.scrollHeight;
 // Rotation des messages toutes les 1.8s
@@ -1015,10 +1031,56 @@ render();
 },18);
 }
 
+// Parser Markdown enrichi pour rendu pédagogique des réponses Marcel
+// Gère : titres ##, listes -, tableaux |..|, citations >, italique *, gras **,
+// liens [text](url), sources juridiques (art. X CGI), mots-clés monétaires
 function formatReply(txt){
-var html=txt.replace(/</g,'&lt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-if(!html.startsWith('<p>'))html='<p>'+html+'</p>';
-html=html.replace(/(https:\/\/calendly\.com\/[^\s<]+)/g,'<a href="$1" target="_blank">Prendre rendez-vous →</a>');
+if(typeof marked!=='undefined'&&marked.parse){
+// Si marked.js dispo (chargé sur index.html), utilise-le pour rendu Markdown complet
+try{
+marked.setOptions({breaks:true,gfm:true,headerIds:false,mangle:false});
+var html=marked.parse(txt);
+return enhanceMarcelReply(html);
+}catch(e){/* fallback ci-dessous */}
+}
+// Fallback : parser maison (au cas où marked non chargé)
+var html=txt.replace(/</g,'&lt;');
+// Tableaux Markdown : | col1 | col2 |
+html=html.replace(/(^\|.+\|.*\n\|[\s\-:|]+\|.*\n(?:\|.+\|.*\n?)+)/gm,function(match){
+var rows=match.trim().split('\n');
+var headers=rows[0].split('|').slice(1,-1).map(function(c){return c.trim();});
+var bodyRows=rows.slice(2);
+var thead='<thead><tr>'+headers.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead>';
+var tbody='<tbody>'+bodyRows.map(function(r){var cells=r.split('|').slice(1,-1).map(function(c){return c.trim();});return '<tr>'+cells.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>';}).join('')+'</tbody>';
+return '<table class="ikcp-md-table">'+thead+tbody+'</table>';
+});
+// Titres ## et ###
+html=html.replace(/^### (.+)$/gm,'<h4 class="ikcp-md-h4">$1</h4>');
+html=html.replace(/^## (.+)$/gm,'<h3 class="ikcp-md-h3">$1</h3>');
+// Citations >
+html=html.replace(/^> (.+)$/gm,'<blockquote class="ikcp-md-quote">$1</blockquote>');
+// Listes -
+html=html.replace(/((?:^- .+\n?)+)/gm,function(m){var items=m.trim().split('\n').map(function(l){return '<li>'+l.replace(/^- /,'')+'</li>';}).join('');return '<ul class="ikcp-md-list">'+items+'</ul>';});
+// Bold ** **
+html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+// Italic *texte*
+html=html.replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>');
+// Liens [text](url)
+html=html.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+// Paragraphes
+html=html.replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
+if(!/^<(h\d|table|ul|blockquote|p)/.test(html))html='<p>'+html+'</p>';
+return enhanceMarcelReply(html);
+}
+
+// Met en valeur les sources juridiques + chiffres importants
+function enhanceMarcelReply(html){
+// Articles CGI / Code civil → en valeur visuelle
+html=html.replace(/\(?(art\.?\s*[\d]+(?:[\s-][\dIVXAaberis]+)*\s*(?:du\s)?(?:CGI|Code(?:\sde[\sla]+)?(?:\s\w+)*|LF\s*\d{4}))\)?/gi,'<span class="ikcp-cite">$1</span>');
+// Liens calendly → bouton
+html=html.replace(/(https:\/\/calendly\.com\/[^\s<"]+)/g,'<a href="$1" target="_blank" class="ikcp-calendly-link">📅 Prendre rendez-vous →</a>');
+// Disclaimer MIF II : style discret
+html=html.replace(/(Ces informations sont pédagogiques[^<]*MIF\s*II[^<]*\.)/gi,'<p class="ikcp-disclaimer">$1</p>');
 return html;
 }
 
@@ -1368,4 +1430,12 @@ inp.value=prompt;
 if(typeof send==='function')send();
 },80);
 });
+
+// Charge marked.js si non présent (pour rendu Markdown des réponses Marcel)
+if(typeof marked==='undefined'){
+var mScript=document.createElement('script');
+mScript.src='https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js';
+mScript.async=true;
+document.head.appendChild(mScript);
+}
 })();
