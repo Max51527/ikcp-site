@@ -346,49 +346,322 @@ h1 em {
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.video-block {
+/* ═══ Sky block (fond pour Marcel qui vole) ═══ */
+.sky-block {
   position: relative;
   width: 100%;
   aspect-ratio: 4/5;
   border-radius: 20px;
   overflow: hidden;
   box-shadow:
-    0 40px 80px -20px rgba(31, 26, 22, 0.35),
-    0 0 0 1px rgba(184, 149, 110, 0.2);
-  background: linear-gradient(135deg, #1f1a16 0%, #3a2e20 50%, #5a4a35 100%);
+    0 40px 80px -20px rgba(184, 149, 110, 0.25),
+    0 0 0 1px rgba(184, 149, 110, 0.15);
+  background:
+    radial-gradient(ellipse at 75% 20%, rgba(255, 240, 210, 0.9) 0%, transparent 50%),
+    linear-gradient(180deg,
+      #fffaf2 0%,
+      #fef3df 30%,
+      #f5e6c8 70%,
+      #ece0c5 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
 }
-.video-block .hero-visual {
+
+/* Soleil halo doré */
+.sky-sun {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(1.08) contrast(1.04);
-  animation: kenBurnsImg 22s ease-in-out infinite alternate;
-}
-@keyframes kenBurnsImg {
-  from { transform: scale(1.08); }
-  to { transform: scale(1.18); }
-}
-.video-block video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(1.08) contrast(1.04);
-  z-index: 1;
-}
-.video-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(31, 26, 22, 0.12) 0%,
-    transparent 40%,
-    rgba(31, 26, 22, 0.72) 100%
-  );
+  top: 12%;
+  right: 18%;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 220, 150, 0.85) 0%,
+    rgba(255, 200, 120, 0.4) 40%,
+    transparent 70%);
+  filter: blur(8px);
+  animation: sunPulse 6s ease-in-out infinite;
   pointer-events: none;
+}
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+/* Nuages subtils */
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  filter: blur(14px);
+  pointer-events: none;
+}
+.cloud-1 { width: 90px; height: 30px; top: 20%; left: 15%; animation: drift 18s linear infinite; }
+.cloud-2 { width: 120px; height: 38px; top: 38%; left: 60%; animation: drift 22s linear infinite reverse; animation-delay: -6s; }
+.cloud-3 { width: 70px; height: 24px; top: 55%; left: 25%; animation: drift 25s linear infinite; animation-delay: -12s; opacity: 0.6; }
+@keyframes drift {
+  from { transform: translateX(-30px); }
+  to { transform: translateX(40px); }
+}
+
+/* Mots-clés patrimoniaux qui flottent dans le ciel autour de Marcel */
+.topic {
+  position: absolute;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(184, 149, 110, 0.25);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6d5c4a;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(31, 26, 22, 0.06);
+  animation: topicFloat 7s ease-in-out infinite;
+  pointer-events: none;
+}
+.topic-1 { top: 8%;  left: 10%; animation-delay: 0s; }
+.topic-2 { top: 18%; right: 8%; animation-delay: 1.2s; }
+.topic-3 { top: 32%; left: 6%;  animation-delay: 2.4s; }
+.topic-4 { top: 26%; right: 14%; animation-delay: 3s; }
+.topic-5 { top: 44%; right: 6%;  animation-delay: 1.8s; }
+.topic-6 { top: 48%; left: 12%; animation-delay: 0.6s; }
+@keyframes topicFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50%      { transform: translateY(-6px); opacity: 1; }
+}
+
+/* La montgolfière de Marcel qui vole */
+.balloon-stage {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 160px;
+  z-index: 2;
+  animation: balloonFly 8s ease-in-out infinite;
+}
+.balloon {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 18px 24px rgba(31, 26, 22, 0.18));
+  animation: balloonSway 4s ease-in-out infinite;
+}
+.balloon-shadow {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(31, 26, 22, 0.25), transparent 70%);
+  filter: blur(4px);
+  animation: shadowScale 8s ease-in-out infinite;
+}
+@keyframes balloonFly {
+  0%, 100% { transform: translate(-50%, 0) }
+  25%      { transform: translate(-46%, -12px) }
+  50%      { transform: translate(-54%, -6px) }
+  75%      { transform: translate(-50%, -18px) }
+}
+@keyframes balloonSway {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50%      { transform: rotate(2.5deg); }
+}
+@keyframes shadowScale {
+  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
+  50%      { transform: translateX(-50%) scaleX(0.8); opacity: 0.3; }
+}
+
+/* Étiquette "Marcel · IA patrimoniale" */
+.balloon-label {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px 6px 11px;
+  background: rgba(31, 26, 22, 0.88);
+  backdrop-filter: blur(8px);
+  border-radius: 100px;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(184, 149, 110, 0.4);
+  z-index: 3;
+}
+.balloon-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: balloonPulse 1.5s ease-in-out infinite;
+}
+@keyframes balloonPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ═══ Le launcher du bilan ═══ */
+.bilan-launcher {
+  position: relative;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(184, 149, 110, 0.25);
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+  box-shadow:
+    0 24px 56px -16px rgba(31, 26, 22, 0.18),
+    0 0 0 1px rgba(184, 149, 110, 0.08);
+  animation: bilanFloat 5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+@keyframes bilanFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.bilan-pretitle {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #b8956e;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.bilan-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f1a16;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+.bilan-subtitle {
+  font-size: 12px;
+  color: #6d5c4a;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* Stepper visuel des 5 étapes du bilan */
+.bilan-progress {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 12px 4px;
+  border-top: 1px solid #f0ebe0;
+  border-bottom: 1px solid #f0ebe0;
+}
+.bilan-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f0ebe0;
+  color: #b5a78b;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+.bilan-step-active .step-num {
+  background: linear-gradient(135deg, #b8956e, #d4b888);
+  color: white;
+  box-shadow: 0 4px 12px rgba(184, 149, 110, 0.4);
+}
+.step-label {
+  font-size: 9px;
+  color: #907b65;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+.bilan-step-active .step-label {
+  color: #1f1a16;
+}
+.step-connector {
+  flex: 0.5;
+  height: 2px;
+  background: #f0ebe0;
+  margin-top: -16px;
+  border-radius: 2px;
+}
+
+/* Le bouton CTA bilan */
+.bilan-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #1f1a16 0%, #2d2620 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(184, 149, 110, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+.bilan-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #b8956e 0%, #a07b54 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 0;
+}
+.bilan-cta > * { position: relative; z-index: 1; }
+.bilan-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -8px rgba(184, 149, 110, 0.5);
+  color: #1f1a16;
+}
+.bilan-cta:hover::before { opacity: 1; }
+.bilan-cta-arrow {
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+.bilan-cta:hover .bilan-cta-arrow {
+  transform: translateX(6px);
+}
+
+.bilan-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  gap: 8px;
+}
+.bilan-trust {
+  font-size: 10px;
+  color: #907b65;
+  font-weight: 500;
 }
 
 .badge-live {
@@ -744,56 +1017,83 @@ h1 em {
   <!-- ═══ RIGHT ═══ -->
   <div class="hero-right">
 
-    <div class="video-block">
+    <div class="sky-block">
+      <!-- Ciel dégradé crème → bleu doux (zone de vol Marcel) -->
 
-      <img class="hero-visual" src="/images/hero-v2.jpg" alt="Paysage de montagnes au lever du jour — vision patrimoniale d'ensemble">
-      <!-- Prod : basculer en <video> via Cloudflare Stream (voir docs/IKCP-API-READINESS.md) -->
+      <!-- Soleil/halo doré en arrière-plan -->
+      <div class="sky-sun"></div>
 
-      <div class="video-overlay"></div>
+      <!-- Nuages flottants subtils -->
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
 
-      <div class="badge-live">
-        <span class="pulse-dot"></span>
-        Ardèche · Maintenant
+      <!-- Mots-clés patrimoniaux flottants autour de la montgolfière -->
+      <span class="topic topic-1">Succession</span>
+      <span class="topic topic-2">Donation</span>
+      <span class="topic topic-3">IFI</span>
+      <span class="topic topic-4">Retraite</span>
+      <span class="topic topic-5">Protection conjoint</span>
+      <span class="topic topic-6">Démembrement</span>
+
+      <!-- Marcel : la montgolfière qui vole -->
+      <div class="balloon-stage">
+        <img class="balloon" src="/icons/montgolfiere.png" alt="Marcel — agent IA patrimonial IKCP">
+        <div class="balloon-shadow"></div>
       </div>
 
-      <div class="tag-location">📍 Ardèche</div>
+      <!-- Étiquette "Marcel" qui suit la montgolfière -->
+      <div class="balloon-label">
+        <span class="balloon-dot"></span>
+        Marcel · IA patrimoniale
+      </div>
 
-      <div class="portrait-row">
-        <div class="portrait">MJ</div>
-        <div class="caption-block">
-          <div class="caption-name">Maxime Juveneton</div>
-          <div class="caption-role">Conseiller patrimonial · Fondateur IKCP</div>
-          <div style="height:8px"></div>
-          <div class="citation">
-            "Prendre de la hauteur pour voir l'ensemble du paysage — et protéger ce qui compte."
+      <!-- Le launcher du bilan en bas -->
+      <div class="bilan-launcher">
+        <div class="bilan-header">
+          <div class="bilan-pretitle">⚡ DIAGNOSTIC EN LIGNE</div>
+          <div class="bilan-title">Votre bilan patrimonial</div>
+          <div class="bilan-subtitle">Personnalisé en 2 min · 100% gratuit · sans engagement</div>
+        </div>
+
+        <div class="bilan-progress">
+          <div class="bilan-step bilan-step-active">
+            <div class="step-num">1</div>
+            <div class="step-label">Profil</div>
           </div>
-          <div class="caption">Ikigaï Conseil Patrimonial · Ardèche</div>
+          <div class="step-connector"></div>
+          <div class="bilan-step">
+            <div class="step-num">2</div>
+            <div class="step-label">Revenus</div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="bilan-step">
+            <div class="step-num">3</div>
+            <div class="step-label">Patrimoine</div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="bilan-step">
+            <div class="step-num">4</div>
+            <div class="step-label">Protection</div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="bilan-step">
+            <div class="step-num">5</div>
+            <div class="step-label">Synthèse</div>
+          </div>
+        </div>
+
+        <a href="#bilan-patrimonial" class="bilan-cta">
+          <span>Commencer mon bilan</span>
+          <span class="bilan-cta-arrow">→</span>
+        </a>
+
+        <div class="bilan-footer">
+          <span class="bilan-trust">🔒 Données chiffrées · RGPD</span>
+          <span class="bilan-trust">⭐ 4,9/5 satisfaction</span>
         </div>
       </div>
 
-    </div>
-
-    <!-- Marcel preview card (mise en avant de l'IA) -->
-    <div class="marcel-card">
-      <div class="marcel-header">
-        <span class="marcel-avatar-lg"><img src="/icons/montgolfiere.png" alt="Marcel IKCP" style="width:30px;height:30px;object-fit:cover;border-radius:50%"></span>
-        <div>
-          <div class="marcel-name">Marcel <span class="marcel-badge-ia">IA</span></div>
-          <div class="marcel-status"><span class="marcel-dot"></span> En ligne · répond en 3s</div>
-        </div>
-      </div>
-      <div class="marcel-msg">
-        <strong>« Combien puis-je donner à mes enfants sans droits ? »</strong>
-      </div>
-      <div class="marcel-reply">
-        Chaque parent peut donner <strong>100 000 €</strong> tous les 15 ans en franchise <em>(art. 779 I CGI)</em>…
-      </div>
-    </div>
-
-    <!-- Floating card premium -->
-    <div class="float-card card-a">
-      <div class="val">80<small>k€</small></div>
-      <div class="lbl">Éco. moyenne / transmission</div>
     </div>
 
   </div>
