@@ -1,0 +1,16 @@
+{
+  "name": "ikcp-api",
+  "version": "1.0.0",
+  "description": "Gateway API IKCP — Notion + Resend + Légifrance + Insee",
+  "main": "worker.js",
+  "scripts": {
+    "login": "wrangler login",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.85.0"
+  },
+  "private": true
+}
