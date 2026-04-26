@@ -890,17 +890,23 @@ css.textContent=`
 .ikcp-msg .ikcp-schema-block{margin:6px 0}
 .ikcp-msg .ikcp-schema-title{font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:600;color:#1f1a16;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e5ded2}
 .ikcp-msg .ikcp-schema-subtitle{color:#907b65;font-weight:500;font-style:italic;font-size:12px}
-.ikcp-msg .ikcp-schema-svg-wrap{width:100%;background:#f9f6f0;border-radius:8px;padding:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.ikcp-msg .ikcp-schema-svg-wrap svg{width:100%!important;height:auto!important;max-width:100%;display:block}
-/* En mode chat normal (étroit), le bubble du schéma occupe toute la largeur */
-.ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:96%;width:96%;padding:12px 14px}
-/* Mode expanded (chat agrandi), bubble plus grand pour mieux voir les SVG */
-#ikcp-chat-panel.expanded .ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:760px}
+.ikcp-msg .ikcp-schema-svg-wrap{width:100%;min-height:220px;background:#f9f6f0;border-radius:8px;padding:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ikcp-msg .ikcp-schema-svg-wrap svg{width:100%!important;height:auto!important;max-width:100%;min-height:200px;display:block}
+/* En mode chat normal (étroit), le bubble du schéma occupe TOUTE la largeur dispo */
+.ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:100%;width:100%;padding:12px 14px;box-sizing:border-box}
+/* Mode expanded (chat agrandi), bubble encore plus grand */
+#ikcp-chat-panel.expanded .ikcp-msg.ikcp-msg-a:has(.ikcp-schema-block){max-width:820px}
+#ikcp-chat-panel.expanded .ikcp-msg .ikcp-schema-svg-wrap{min-height:380px}
+#ikcp-chat-panel.expanded .ikcp-msg .ikcp-schema-svg-wrap svg{min-height:360px}
 /* A3 — Schéma inline dans la réponse */
 .ikcp-schema-inline{margin:10px 0 0;padding-top:8px;border-top:1px dashed #e5ded2}
 .ikcp-schema-inline-label{font-size:10px;text-transform:uppercase;color:#b8956e;font-weight:700;letter-spacing:1px;margin-bottom:6px}
 .ikcp-schema-inline .ikcp-schema-block{background:#fffaf2;border:1px solid #ece6da;border-radius:8px;padding:10px;transition:all 0.2s}
 .ikcp-schema-inline .ikcp-schema-block:hover{border-color:#b8956e;box-shadow:0 6px 18px -6px rgba(184,149,110,0.3)}
+/* Disclaimer footer — MIF II / DDA compliance, visible en permanence */
+#ikcp-chat-disclaimer{display:flex;align-items:flex-start;gap:6px;padding:6px 14px 4px;background:rgba(184,149,110,0.06);border-top:1px solid #f0ebe0;color:#7a6c58;font-size:10px;line-height:1.4;font-style:italic;letter-spacing:0.01em}
+#ikcp-chat-disclaimer svg{flex-shrink:0;color:#b8956e;margin-top:1px}
+#ikcp-chat-disclaimer span{flex:1}
 /* B5 — Preuve sociale */
 .ikcp-social-stat{margin-top:8px;padding:6px 10px;background:linear-gradient(90deg,rgba(184,149,110,0.08),transparent);border-left:2px solid #b8956e;border-radius:0 6px 6px 0;font-size:11px;color:#5f5248}
 .ikcp-social-stat em{font-style:italic;color:#3a2f24}
@@ -1064,6 +1070,12 @@ var faqReply=matchOfflineFAQ(txt);
 if(faqReply&&!currentPdf){
 history.push({role:'assistant',content:faqReply});
 var fHtml=formatReply(faqReply);
+// Injection schéma sur la question utilisateur si match (donation, IFI, etc.)
+var faqSch=suggestSchema(txt+' '+faqReply);
+if(faqSch&&window._ikcpSchemas&&window._ikcpSchemas[faqSch.key]){
+var faqSchemaData=window._ikcpSchemas[faqSch.key];
+fHtml+='<div class="ikcp-schema-inline"><div class="ikcp-schema-inline-label">📊 Schéma associé · cliquez pour zoomer</div><div class="ikcp-schema-block" onclick="window._ikcpSchema(\''+faqSch.key+'\')" style="cursor:zoom-in"><div class="ikcp-schema-title">'+(faqSchemaData.title||faqSch.title)+(faqSchemaData.subtitle?'<span class="ikcp-schema-subtitle"> · '+faqSchemaData.subtitle+'</span>':'')+'</div><div class="ikcp-schema-svg-wrap">'+faqSchemaData.svg+'</div></div></div>';
+}
 fHtml+='<div class="ikcp-social-stat" style="font-size:10px;color:#9e9080;font-style:italic;margin-top:6px">⚡ Réponse instantanée · sourcée IKCP</div>';
 msgs.push({role:'assistant',html:fHtml});
 saveConv(msgs,count);
@@ -1265,6 +1277,7 @@ var html=`
 <div id="ikcp-chat-panel">
 <div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><div class="ikcp-lang-toggle"><button data-lang="fr" onclick="window._ikcpSetLang('fr')">FR</button><button data-lang="en" onclick="window._ikcpSetLang('en')">EN</button><button data-lang="de" onclick="window._ikcpSetLang('de')">DE</button></div><button id="ikcp-tts-toggle" onclick="window._ikcpToggleTTSBtn()" title="Lire à voix haute"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><button id="ikcp-export-conv" onclick="window._ikcpSendToMaxime()" title="Envoyer ma conversation à Maxime"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
 <div id="ikcp-chat-msgs"></div>
+<div id="ikcp-chat-disclaimer"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Marcel apporte un éclairage général — il ne remplace pas un professionnel. Pour votre situation, contactez Maxime.</span></div>
 <div id="ikcp-chat-input"><button id="ikcp-upload" onclick="document.getElementById('ikcp-file').click()" title="Envoyer un document PDF (avis d'imposition, contrat...)" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button><input type="file" id="ikcp-file" accept="application/pdf" style="display:none" onchange="window._ikcpFileChange(this)"><button id="ikcp-voice" onclick="window._ikcpVoice()" title="Dicter la question" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
 </div>
 <button id="ikcp-chat-btn" onclick="window._ikcpToggle()"><span class="dot"></span><img src="/icons/montgolfiere.png" alt="Marcel - Assistant patrimonial IKCP" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎈</text></svg>'"></button>
