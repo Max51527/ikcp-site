@@ -740,7 +740,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         @media (max-width:640px) {
             .input-luxe { font-size:16px; padding:12px 14px; }
             input[type=range]::-webkit-slider-thumb { height:28px; width:28px; }
-            h1 { font-size:2.2rem !important; }
+            section:not(.hero) h1 { font-size:2.2rem !important; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -750,6 +750,1268 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         /* Scroll reveal */
         .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
         .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* ═══════════════════════════════════════════════════════════
+           ═══ NEW HERO 2026 — music player + sky + Marcel + balloon
+           ═══════════════════════════════════════════════════════════ */
+
+        /* ═══ MUSIC PLAYER (top-right ambient) ═══ */
+        .music-player {
+          position: fixed;
+          top: 14px;
+          right: 14px;
+          z-index: 200;
+          font-family: 'Inter', system-ui, sans-serif;
+          user-select: none;
+        }
+        .music-trigger {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px 8px 11px;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(14px);
+          border: 1px solid rgba(184, 149, 110, 0.25);
+          border-radius: 100px;
+          font-size: 12px;
+          font-weight: 600;
+          color: #1f1a16;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 6px 20px -6px rgba(31, 26, 22, 0.12);
+        }
+        .music-trigger:hover {
+          background: white;
+          border-color: rgba(184, 149, 110, 0.5);
+          transform: translateY(-1px);
+        }
+        .music-trigger .music-eq {
+          display: inline-flex;
+          align-items: flex-end;
+          gap: 2px;
+          width: 14px;
+          height: 14px;
+        }
+        .music-trigger .music-eq span {
+          display: block;
+          width: 2px;
+          background: #b8956e;
+          border-radius: 1px;
+          animation: eqBars 0.9s ease-in-out infinite;
+        }
+        .music-trigger .music-eq span:nth-child(1) { height: 30%; animation-delay: 0s; }
+        .music-trigger .music-eq span:nth-child(2) { height: 80%; animation-delay: 0.15s; }
+        .music-trigger .music-eq span:nth-child(3) { height: 50%; animation-delay: 0.3s; }
+        .music-trigger .music-eq span:nth-child(4) { height: 90%; animation-delay: 0.45s; }
+        @keyframes eqBars {
+          0%, 100% { transform: scaleY(0.4); }
+          50% { transform: scaleY(1); }
+        }
+        .music-trigger.is-off .music-eq span {
+          animation-play-state: paused;
+          background: #b5a78b;
+          height: 50% !important;
+        }
+        .music-trigger.is-off .music-status::before { content: 'OFF'; }
+        .music-trigger:not(.is-off) .music-status::before { content: attr(data-track); }
+
+        .music-panel {
+          position: absolute;
+          top: calc(100% + 8px);
+          right: 0;
+          min-width: 220px;
+          background: white;
+          border: 1px solid rgba(184, 149, 110, 0.2);
+          border-radius: 14px;
+          padding: 12px;
+          box-shadow: 0 18px 40px -10px rgba(31, 26, 22, 0.18);
+          opacity: 0;
+          pointer-events: none;
+          transform: translateY(-6px);
+          transition: all 0.2s;
+        }
+        .music-player.is-open .music-panel {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateY(0);
+        }
+        .music-panel-title {
+          font-size: 10px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #b8956e;
+          font-weight: 700;
+          margin-bottom: 10px;
+        }
+        .music-tracks {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+        .music-track {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          background: #fdfaf5;
+          border: 1px solid #ece6da;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 500;
+          color: #2e2520;
+          transition: all 0.15s;
+          text-align: left;
+        }
+        .music-track:hover {
+          background: #1f1a16;
+          border-color: #1f1a16;
+          color: white;
+        }
+        .music-track.active {
+          background: linear-gradient(135deg, #b8956e, #a07b54);
+          border-color: #b8956e;
+          color: white;
+        }
+        .music-track .t-icon { font-size: 14px; }
+        .music-off-btn {
+          width: 100%;
+          margin-top: 8px;
+          padding: 7px;
+          background: white;
+          border: 1px solid #e5ded2;
+          border-radius: 8px;
+          font-size: 11px;
+          color: #6d5c4a;
+          cursor: pointer;
+          font-weight: 600;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          transition: all 0.15s;
+        }
+        .music-off-btn:hover { background: #1f1a16; color: white; border-color: #1f1a16; }
+        .music-credits {
+          margin-top: 10px;
+          font-size: 10px;
+          color: #9a8c78;
+          text-align: center;
+          letter-spacing: 0.02em;
+          line-height: 1.4;
+        }
+        .music-playlist-btn {
+          width: 100%;
+          margin-top: 6px;
+          padding: 9px;
+          background: linear-gradient(135deg, #b89968 0%, #a08555 100%);
+          border: none;
+          border-radius: 8px;
+          font-size: 11.5px;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          color: white;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 2px 8px rgba(184, 153, 104, 0.25);
+        }
+        .music-playlist-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(184, 153, 104, 0.4);
+        }
+
+        /* ═══ Overlay Playlist Maxime ═══ */
+        .playlist-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(20, 16, 12, 0.72);
+          backdrop-filter: blur(6px);
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 200;
+          animation: overlay-fadein 0.25s ease;
+        }
+        .playlist-overlay.is-open { display: flex; }
+        @keyframes overlay-fadein {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .playlist-modal {
+          position: relative;
+          width: min(560px, 92vw);
+          background: #faf6ef;
+          border-radius: 18px;
+          padding: 28px 26px 22px;
+          box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+          animation: modal-rise 0.3s cubic-bezier(.2,.8,.3,1);
+        }
+        @keyframes modal-rise {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .playlist-close {
+          position: absolute;
+          top: 12px;
+          right: 14px;
+          width: 30px;
+          height: 30px;
+          border: none;
+          background: transparent;
+          font-size: 26px;
+          line-height: 1;
+          color: #6d5c4a;
+          cursor: pointer;
+          border-radius: 50%;
+          transition: background 0.15s;
+        }
+        .playlist-close:hover { background: #efe6d6; }
+        .playlist-header {
+          text-align: center;
+          margin-bottom: 18px;
+        }
+        .playlist-title {
+          font-family: 'Playfair Display', serif;
+          font-size: 26px;
+          font-weight: 600;
+          color: #1f1a16;
+          margin-bottom: 4px;
+        }
+        .playlist-sub {
+          font-size: 12px;
+          color: #8a7a66;
+          letter-spacing: 0.04em;
+        }
+        .playlist-embed {
+          border-radius: 12px;
+          overflow: hidden;
+          min-height: 360px;
+          background: #1f1a16;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .playlist-embed iframe {
+          width: 100%;
+          height: 380px;
+          border: 0;
+          border-radius: 12px;
+        }
+        .playlist-placeholder {
+          padding: 24px;
+          color: #b89968;
+          font-size: 13px;
+          text-align: center;
+          line-height: 1.6;
+        }
+
+        /* ═══ HERO ═══ */
+        .hero {
+          min-height: 100vh;
+          padding: 110px 40px 40px;
+          display: grid;
+          grid-template-columns: 1.05fr 1fr;
+          gap: 56px;
+          align-items: center;
+          max-width: 1480px;
+          margin: 0 auto;
+        }
+
+        /* ─── LEFT COLUMN ─── */
+        .hero-left {
+          display: flex;
+          flex-direction: column;
+          gap: 22px;
+          animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .hero-left > * { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+        .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+        .hero-left > *:nth-child(2) { animation-delay: 0.2s; }
+        .hero-left > *:nth-child(3) { animation-delay: 0.3s; }
+        .hero-left > *:nth-child(4) { animation-delay: 0.4s; }
+        .hero-left > *:nth-child(5) { animation-delay: 0.5s; }
+        .hero-left > *:nth-child(6) { animation-delay: 0.6s; }
+
+        .kicker {
+          font-size: 11px;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          color: #b8956e;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .kicker::before {
+          content: '';
+          width: 24px;
+          height: 1px;
+          background: #b8956e;
+        }
+
+        .numbers-bar {
+          display: flex;
+          gap: 14px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .number {
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+        }
+        .number-big {
+          font-family: 'Playfair Display', serif;
+          font-size: 28px;
+          font-weight: 600;
+          color: #1f1a16;
+          line-height: 1;
+        }
+        .number-unit {
+          font-size: 10px;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          color: #907b65;
+          font-weight: 500;
+        }
+        .number-dot {
+          width: 3px;
+          height: 3px;
+          border-radius: 50%;
+          background: #b8956e;
+          opacity: 0.6;
+        }
+
+        .hero h1 {
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(42px, 4.8vw, 68px);
+          line-height: 1.02;
+          font-weight: 500;
+          letter-spacing: -1.5px;
+          color: #1f1a16;
+          margin-top: 4px;
+        }
+        .hero h1 em {
+          font-style: italic;
+          font-weight: 400;
+          background: linear-gradient(90deg, #b8956e 0%, #d4b888 50%, #b8956e 100%);
+          background-size: 200% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: shimmer 4s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+
+        .sub {
+          font-size: 16px;
+          line-height: 1.6;
+          color: #5f5248;
+          max-width: 560px;
+          font-weight: 400;
+        }
+        .sub strong { color: #1f1a16; font-weight: 600; }
+
+        .segments {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 4px;
+        }
+        .seg {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 14px;
+          background: white;
+          border: 1px solid #ece6da;
+          border-radius: 100px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #5f5248;
+          transition: all 0.2s;
+          cursor: pointer;
+        }
+        .seg:hover {
+          border-color: #b8956e;
+          background: #fffaf2;
+          transform: translateY(-1px);
+        }
+        .seg .emoji { font-size: 14px; }
+
+        .cta-row {
+          display: flex;
+          gap: 14px;
+          align-items: center;
+          margin-top: 10px;
+        }
+        .cta-primary {
+          padding: 16px 28px;
+          background: linear-gradient(135deg, #b8956e 0%, #a07b54 100%);
+          color: #fffaf2;
+          font-weight: 700;
+          font-size: 14px;
+          letter-spacing: 0.3px;
+          border-radius: 10px;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          box-shadow: 0 12px 32px -8px rgba(184, 149, 110, 0.45), 0 0 0 1px rgba(184, 149, 110, 0.2);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          position: relative;
+          overflow: hidden;
+        }
+        .cta-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 16px 40px -8px rgba(184, 149, 110, 0.55), 0 0 0 1px rgba(184, 149, 110, 0.3);
+        }
+        .cta-primary .micro {
+          display: block;
+          font-size: 10px;
+          font-weight: 500;
+          opacity: 0.75;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-bottom: 2px;
+        }
+        .cta-primary .arrow {
+          transition: transform 0.2s;
+        }
+        .cta-primary:hover .arrow { transform: translateX(4px); }
+
+        .cta-secondary {
+          padding: 14px 20px;
+          color: #1f1a16;
+          font-weight: 500;
+          font-size: 13px;
+          text-decoration: none;
+          border: 1px solid #e5ded2;
+          border-radius: 10px;
+          transition: all 0.2s;
+          background: white;
+        }
+        .cta-secondary:hover {
+          border-color: #b8956e;
+          background: #fffaf2;
+          transform: translateY(-1px);
+        }
+        .cta-marcel {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 18px 10px 12px;
+        }
+        .marcel-avatar {
+          width: 34px;
+          height: 34px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #fffaf2, #f0e6d2);
+          border: 2px solid rgba(184, 149, 110, 0.5);
+          font-size: 18px;
+          animation: marcelFloat 3s ease-in-out infinite;
+          position: relative;
+        }
+        .marcel-avatar::after {
+          content: '';
+          position: absolute;
+          top: 1px;
+          right: 1px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #22c55e;
+          border: 1.5px solid white;
+          animation: pulseDot 1.5s infinite;
+        }
+        @keyframes marcelFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+        @keyframes pulseDot {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+          50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0); }
+        }
+        .cta-marcel-sub {
+          display: block;
+          font-size: 10px;
+          color: #907b65;
+          font-weight: 500;
+          margin-top: 1px;
+        }
+
+        .trust-bar {
+          display: flex;
+          gap: 18px;
+          flex-wrap: wrap;
+          align-items: center;
+          margin-top: 24px;
+          padding-top: 20px;
+          border-top: 1px solid rgba(184, 149, 110, 0.15);
+        }
+        .trust {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+          color: #907b65;
+          font-weight: 500;
+        }
+        .trust svg {
+          width: 12px;
+          height: 12px;
+          color: #b8956e;
+        }
+
+        /* ─── RIGHT COLUMN (visual block) ─── */
+        .hero-right {
+          position: relative;
+          width: 100%;
+          max-width: 560px;
+          margin-left: auto;
+          animation: fadeIn 1.3s ease both;
+          animation-delay: 0.3s;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ═══ Sky block (fond pour Marcel qui vole) ═══ */
+        .sky-block {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 4/5;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow:
+            0 40px 80px -20px rgba(184, 149, 110, 0.25),
+            0 0 0 1px rgba(184, 149, 110, 0.15);
+          background:
+            radial-gradient(ellipse at 75% 20%, rgba(255, 240, 210, 0.9) 0%, transparent 50%),
+            linear-gradient(180deg,
+              #fffaf2 0%,
+              #fef3df 30%,
+              #f5e6c8 70%,
+              #ece0c5 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 24px;
+        }
+
+        /* Soleil halo doré */
+        .sky-sun {
+          position: absolute;
+          top: 12%;
+          right: 18%;
+          width: 110px;
+          height: 110px;
+          border-radius: 50%;
+          background: radial-gradient(circle,
+            rgba(255, 220, 150, 0.85) 0%,
+            rgba(255, 200, 120, 0.4) 40%,
+            transparent 70%);
+          filter: blur(8px);
+          animation: sunPulse 6s ease-in-out infinite;
+          pointer-events: none;
+        }
+        @keyframes sunPulse {
+          0%, 100% { transform: scale(1); opacity: 0.85; }
+          50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        /* Nuages subtils */
+        .cloud {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.75);
+          border-radius: 50%;
+          filter: blur(14px);
+          pointer-events: none;
+        }
+        .cloud-1 { width: 90px; height: 30px; top: 20%; left: 15%; animation: drift 18s linear infinite; }
+        .cloud-2 { width: 120px; height: 38px; top: 38%; left: 60%; animation: drift 22s linear infinite reverse; animation-delay: -6s; }
+        .cloud-3 { width: 70px; height: 24px; top: 55%; left: 25%; animation: drift 25s linear infinite; animation-delay: -12s; opacity: 0.6; }
+        @keyframes drift {
+          from { transform: translateX(-30px); }
+          to { transform: translateX(40px); }
+        }
+
+        /* ═══ Carte Marcel interactive (à droite) ═══ */
+        .marcel-talk-card {
+          position: relative;
+          z-index: 5;
+          background: rgba(255, 255, 255, 0.96);
+          backdrop-filter: blur(14px);
+          border: 1px solid rgba(184, 149, 110, 0.25);
+          border-radius: 18px;
+          padding: 18px;
+          box-shadow:
+            0 24px 56px -16px rgba(31, 26, 22, 0.18),
+            0 0 0 1px rgba(184, 149, 110, 0.08);
+          animation: bilanFloat 5s ease-in-out infinite;
+          animation-delay: 1s;
+        }
+        .marcel-talk-header {
+          margin-bottom: 14px;
+          padding-bottom: 14px;
+          border-bottom: 1px solid #f0ebe0;
+        }
+        .marcel-talk-title { display: flex; flex-direction: column; gap: 4px; }
+        .marcel-pretitle {
+          font-size: 10px;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+          color: #b8956e;
+          font-weight: 700;
+        }
+        .marcel-mainttitle {
+          font-family: 'Playfair Display', serif;
+          font-size: 20px;
+          font-weight: 600;
+          color: #1f1a16;
+          line-height: 1.2;
+        }
+        .marcel-talk-badge {
+          display: inline-block;
+          margin-top: 8px;
+          font-size: 10px;
+          color: #6d5c4a;
+          background: #fffaf2;
+          border: 1px solid #ece6da;
+          border-radius: 6px;
+          padding: 3px 8px;
+          font-weight: 500;
+        }
+        .marcel-talk-questions {
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+          margin-bottom: 12px;
+        }
+        .marcel-q {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+          background: #fdfaf5;
+          border: 1px solid #ece6da;
+          border-radius: 12px;
+          cursor: pointer;
+          text-align: left;
+          font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
+          font-size: 12px;
+          color: #2e2520;
+          font-weight: 500;
+          line-height: 1.4;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          width: 100%;
+        }
+        .marcel-q .q-icon {
+          flex-shrink: 0;
+          font-size: 16px;
+          width: 28px;
+          height: 28px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          background: white;
+          border: 1px solid #ece6da;
+        }
+        .marcel-q .q-text {
+          flex: 1;
+        }
+        .marcel-q .q-arrow {
+          color: #b8956e;
+          font-size: 16px;
+          flex-shrink: 0;
+          transition: transform 0.2s;
+          opacity: 0.5;
+        }
+        .marcel-q:hover {
+          background: #1f1a16;
+          border-color: #1f1a16;
+          color: white;
+          transform: translateX(2px);
+        }
+        .marcel-q:hover .q-icon {
+          background: rgba(184, 149, 110, 0.2);
+          border-color: rgba(184, 149, 110, 0.3);
+        }
+        .marcel-q:hover .q-arrow {
+          color: #d4b888;
+          opacity: 1;
+          transform: translateX(4px);
+        }
+        .marcel-talk-footer {
+          border-top: 1px solid #f0ebe0;
+          padding-top: 12px;
+        }
+        .marcel-talk-cta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          width: 100%;
+          padding: 11px 14px;
+          background: linear-gradient(135deg, #b8956e 0%, #a07b54 100%);
+          color: #fffaf2;
+          border: none;
+          border-radius: 10px;
+          font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 8px 24px -6px rgba(184, 149, 110, 0.4);
+        }
+        .marcel-talk-cta:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 12px 32px -6px rgba(184, 149, 110, 0.55);
+        }
+        .marcel-talk-cta-icon { font-size: 16px; }
+
+        /* Quand le panel Marcel s'ouvre, on masque la carte chat du hero pour éviter
+           le doublon visuel (panel + carte qui se chevauchent) */
+        body.marcel-open .marcel-talk-card {
+          opacity: 0;
+          transform: translateY(10px);
+          pointer-events: none;
+          transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        body:not(.marcel-open) .marcel-talk-card {
+          opacity: 1;
+          transform: translateY(0);
+          transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+        }
+
+        /* Le panel Marcel positionné dans la zone droite du hero (sur desktop large) */
+        @media (min-width: 1100px) {
+          body.marcel-open #ikcp-chat-panel {
+            bottom: auto !important;
+            right: 40px !important;
+            top: 110px !important;
+            height: calc(100vh - 130px) !important;
+            max-height: 720px !important;
+          }
+        }
+
+        /* Animation de rotation des questions */
+        .marcel-q {
+          animation: qFadeIn 0.5s ease both;
+        }
+        .marcel-q.fading-out {
+          animation: qFadeOut 0.4s ease both;
+        }
+        @keyframes qFadeIn {
+          from { opacity: 0; transform: translateX(-8px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes qFadeOut {
+          from { opacity: 1; transform: translateX(0); }
+          to { opacity: 0; transform: translateX(8px); }
+        }
+
+        /* La montgolfière de Marcel qui vole */
+        .balloon-stage {
+          position: absolute;
+          top: 6%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 115px;
+          z-index: 2;
+          animation: balloonFly 8s ease-in-out infinite;
+        }
+        .balloon-svg {
+          width: 115px;
+          height: auto;
+          display: block;
+          filter: drop-shadow(0 18px 24px rgba(31, 26, 22, 0.25)) drop-shadow(0 4px 8px rgba(184, 149, 110, 0.15));
+          animation: balloonSway 4.5s ease-in-out infinite;
+          transform-origin: 50% 90%;
+        }
+        /* Compat ancienne classe (au cas où) */
+        .balloon {
+          width: 130px;
+          height: auto;
+          display: block;
+          filter: drop-shadow(0 18px 24px rgba(31, 26, 22, 0.22));
+          animation: balloonSway 4.5s ease-in-out infinite;
+        }
+        .balloon-shadow {
+          position: absolute;
+          bottom: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 80px;
+          height: 14px;
+          border-radius: 50%;
+          background: radial-gradient(ellipse, rgba(31, 26, 22, 0.25), transparent 70%);
+          filter: blur(4px);
+          animation: shadowScale 8s ease-in-out infinite;
+        }
+        @keyframes balloonFly {
+          0%, 100% { transform: translate(-50%, 0) }
+          25%      { transform: translate(-46%, -12px) }
+          50%      { transform: translate(-54%, -6px) }
+          75%      { transform: translate(-50%, -18px) }
+        }
+        @keyframes balloonSway {
+          0%, 100% { transform: rotate(-2.5deg); }
+          50%      { transform: rotate(2.5deg); }
+        }
+        @keyframes shadowScale {
+          0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
+          50%      { transform: translateX(-50%) scaleX(0.8); opacity: 0.3; }
+        }
+
+        /* Étiquette "Marcel · IA patrimoniale" */
+        .balloon-label {
+          position: absolute;
+          top: 4%;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 6px 14px 6px 11px;
+          background: rgba(31, 26, 22, 0.88);
+          backdrop-filter: blur(8px);
+          border-radius: 100px;
+          color: white;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          border: 1px solid rgba(184, 149, 110, 0.4);
+          z-index: 3;
+        }
+        .balloon-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #22c55e;
+          box-shadow: 0 0 8px #22c55e;
+          animation: balloonPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes balloonPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%      { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        /* ═══ Le launcher du bilan ═══ */
+        .bilan-launcher {
+          position: relative;
+          z-index: 5;
+          background: rgba(255, 255, 255, 0.96);
+          backdrop-filter: blur(14px);
+          border: 1px solid rgba(184, 149, 110, 0.25);
+          border-radius: 18px;
+          padding: 22px 22px 18px;
+          box-shadow:
+            0 24px 56px -16px rgba(31, 26, 22, 0.18),
+            0 0 0 1px rgba(184, 149, 110, 0.08);
+          animation: bilanFloat 5s ease-in-out infinite;
+          animation-delay: 1s;
+        }
+        @keyframes bilanFloat {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-4px); }
+        }
+
+        .bilan-pretitle {
+          font-size: 10px;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+          color: #b8956e;
+          font-weight: 700;
+          margin-bottom: 4px;
+        }
+        .bilan-title {
+          font-family: 'Playfair Display', serif;
+          font-size: 22px;
+          font-weight: 600;
+          color: #1f1a16;
+          line-height: 1.15;
+          margin-bottom: 4px;
+        }
+        .bilan-subtitle {
+          font-size: 12px;
+          color: #6d5c4a;
+          font-weight: 500;
+          margin-bottom: 16px;
+        }
+
+        /* Stepper visuel des 5 étapes du bilan */
+        .bilan-progress {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          margin-bottom: 18px;
+          padding: 12px 4px;
+          border-top: 1px solid #f0ebe0;
+          border-bottom: 1px solid #f0ebe0;
+        }
+        .bilan-step {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          flex: 1;
+        }
+        .step-num {
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: #f0ebe0;
+          color: #b5a78b;
+          font-size: 11px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s;
+        }
+        .bilan-step-active .step-num {
+          background: linear-gradient(135deg, #b8956e, #d4b888);
+          color: white;
+          box-shadow: 0 4px 12px rgba(184, 149, 110, 0.4);
+        }
+        .step-label {
+          font-size: 9px;
+          color: #907b65;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+          text-align: center;
+        }
+        .bilan-step-active .step-label {
+          color: #1f1a16;
+        }
+        .step-connector {
+          flex: 0.5;
+          height: 2px;
+          background: #f0ebe0;
+          margin-top: -16px;
+          border-radius: 2px;
+        }
+
+        /* Le bouton CTA bilan */
+        .bilan-cta {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          width: 100%;
+          padding: 14px 18px;
+          background: linear-gradient(135deg, #1f1a16 0%, #2d2620 100%);
+          color: white;
+          font-weight: 700;
+          font-size: 14px;
+          border-radius: 12px;
+          text-decoration: none;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          border: 1px solid rgba(184, 149, 110, 0.3);
+          position: relative;
+          overflow: hidden;
+        }
+        .bilan-cta::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #b8956e 0%, #a07b54 100%);
+          opacity: 0;
+          transition: opacity 0.3s;
+          z-index: 0;
+        }
+        .bilan-cta > * { position: relative; z-index: 1; }
+        .bilan-cta:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 16px 40px -8px rgba(184, 149, 110, 0.5);
+          color: #1f1a16;
+        }
+        .bilan-cta:hover::before { opacity: 1; }
+        .bilan-cta-arrow {
+          font-size: 18px;
+          transition: transform 0.2s;
+        }
+        .bilan-cta:hover .bilan-cta-arrow {
+          transform: translateX(6px);
+        }
+
+        .bilan-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 12px;
+          gap: 8px;
+        }
+        .bilan-trust {
+          font-size: 10px;
+          color: #907b65;
+          font-weight: 500;
+        }
+
+        .badge-live {
+          position: absolute;
+          top: 18px;
+          left: 18px;
+          padding: 7px 13px 7px 10px;
+          background: rgba(31, 26, 22, 0.58);
+          backdrop-filter: blur(8px);
+          border-radius: 100px;
+          color: white;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          border: 1px solid rgba(184, 149, 110, 0.35);
+        }
+        .pulse-dot {
+          position: relative;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #b8956e;
+          box-shadow: 0 0 8px #b8956e;
+        }
+        .pulse-dot::after {
+          content: '';
+          position: absolute;
+          inset: -3px;
+          border-radius: 50%;
+          border: 2px solid #b8956e;
+          animation: pulse 2s ease-out infinite;
+        }
+        @keyframes pulse {
+          0% { transform: scale(0.8); opacity: 1; }
+          100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        .tag-location {
+          position: absolute;
+          top: 18px;
+          right: 18px;
+          padding: 7px 13px;
+          background: rgba(249, 246, 240, 0.92);
+          backdrop-filter: blur(8px);
+          border-radius: 100px;
+          color: #1f1a16;
+          font-size: 11px;
+          font-weight: 600;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          border: 1px solid rgba(184, 149, 110, 0.25);
+        }
+
+        .portrait-row {
+          position: absolute;
+          bottom: 18px;
+          left: 18px;
+          right: 18px;
+          display: flex;
+          gap: 14px;
+          align-items: flex-end;
+        }
+        .portrait {
+          flex-shrink: 0;
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          border: 2px solid rgba(184, 149, 110, 0.6);
+          background: linear-gradient(135deg, #f9f6f0, #e8dfce);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Playfair Display', serif;
+          font-size: 20px;
+          font-weight: 600;
+          color: #1f1a16;
+          box-shadow: 0 4px 12px rgba(31, 26, 22, 0.3);
+        }
+
+        .caption-block {
+          flex: 1;
+          color: white;
+        }
+        .citation {
+          font-family: 'Playfair Display', serif;
+          font-style: italic;
+          font-size: 13px;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.95);
+          margin-bottom: 6px;
+        }
+        .caption {
+          font-size: 10px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #c9a96e;
+          font-weight: 600;
+        }
+        .caption-name {
+          font-size: 12px;
+          font-weight: 600;
+          color: white;
+          margin-bottom: 2px;
+        }
+        .caption-role {
+          font-size: 10px;
+          color: rgba(255, 255, 255, 0.65);
+          letter-spacing: 0.5px;
+        }
+
+        /* ═══ FLOATING CARDS (stats over video) ═══ */
+        .float-card {
+          position: absolute;
+          background: white;
+          padding: 12px 16px;
+          border-radius: 12px;
+          box-shadow: 0 12px 32px -8px rgba(31, 26, 22, 0.18);
+          border: 1px solid rgba(184, 149, 110, 0.15);
+          animation: floatY 6s ease-in-out infinite;
+        }
+        @keyframes floatY {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        .float-card.card-a {
+          top: 50%;
+          left: -42px;
+          animation-delay: 0s;
+        }
+
+        /* ═══ Marcel preview card ═══ */
+        .marcel-card {
+          position: absolute;
+          top: 48px;
+          right: -40px;
+          width: 290px;
+          background: white;
+          border-radius: 16px;
+          padding: 16px;
+          box-shadow:
+            0 20px 48px -16px rgba(31, 26, 22, 0.25),
+            0 0 0 1px rgba(184, 149, 110, 0.15);
+          animation: floatY 5s ease-in-out infinite;
+          animation-delay: 1.5s;
+        }
+        .marcel-header {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #f0ebe0;
+          margin-bottom: 10px;
+        }
+        .marcel-avatar-lg {
+          width: 40px;
+          height: 40px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #fffaf2, #f0e6d2);
+          border: 2px solid rgba(184, 149, 110, 0.5);
+          font-size: 22px;
+          flex-shrink: 0;
+        }
+        .marcel-name {
+          font-family: 'Playfair Display', serif;
+          font-size: 15px;
+          font-weight: 600;
+          color: #1f1a16;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .marcel-badge-ia {
+          font-family: 'Inter', sans-serif;
+          font-size: 8px;
+          font-weight: 700;
+          padding: 2px 6px;
+          background: linear-gradient(90deg, #b8956e, #d4b888);
+          color: white;
+          border-radius: 3px;
+          letter-spacing: 0.5px;
+        }
+        .marcel-status {
+          font-size: 10px;
+          color: #907b65;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          margin-top: 2px;
+        }
+        .marcel-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #22c55e;
+          animation: pulseDot 1.5s infinite;
+        }
+        .marcel-msg {
+          font-size: 11px;
+          color: #5f5248;
+          padding: 9px 11px;
+          background: #f9f6f0;
+          border-radius: 10px 10px 10px 2px;
+          margin-bottom: 6px;
+          line-height: 1.45;
+        }
+        .marcel-msg strong { color: #1f1a16; font-weight: 500; }
+        .marcel-reply {
+          font-size: 11px;
+          color: #2e2520;
+          padding: 9px 11px;
+          background: #1f1a16;
+          color: white;
+          border-radius: 10px 10px 2px 10px;
+          line-height: 1.5;
+          position: relative;
+        }
+        .marcel-reply strong { color: #d4b888; font-weight: 600; }
+        .marcel-reply em { color: rgba(255,255,255,0.6); font-size: 10px; }
+        .marcel-reply::after {
+          content: '▍';
+          color: #b8956e;
+          animation: blink 0.9s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .float-card .val {
+          font-family: 'Playfair Display', serif;
+          font-size: 22px;
+          font-weight: 600;
+          color: #1f1a16;
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+        }
+        .float-card .val small { font-size: 11px; color: #b8956e; font-weight: 500; }
+        .float-card .lbl {
+          font-size: 9px;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          color: #907b65;
+          font-weight: 600;
+          margin-top: 2px;
+        }
+
+        @media (max-width: 960px) {
+          .hero { grid-template-columns: 1fr; gap: 40px; padding: 90px 20px 40px; }
+          .hero-right { order: -1; max-width: 100%; aspect-ratio: 4/3; }
+          .float-card { display: none; }
+          .hero h1 { font-size: 40px; }
+        }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(18px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-[#f9f6f0] text-[#2e2520] antialiased" x-data="layoutData()" @scroll.window="scrolled = window.scrollY > 50">
@@ -781,271 +2043,246 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </nav>
 
 
-    <!-- ══════════ HERO — CHÊNE ══════════ -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden" x-data="{shown:false}" x-init="setTimeout(()=>shown=true,300)">
+    <!-- ══════════ HERO 2026 — Music + Sky + Marcel ══════════ -->
 
-        <!-- ═══ BACKGROUND GRADIENT ═══ -->
-        <div class="absolute inset-0" style="z-index:0;background:linear-gradient(180deg, #f9f6f0 0%, #f3ede4 60%, #ece5d8 100%);"></div>
+    <!-- ═══ Player musical ambient (top-right) ═══ -->
+    <div class="music-player is-off" id="music-player">
+      <button class="music-trigger is-off" id="music-trigger" aria-label="Ambiance musicale">
+        <span class="music-eq"><span></span><span></span><span></span><span></span></span>
+        <span class="music-status" data-track="OFF"></span>
+      </button>
+      <div class="music-panel">
+        <div class="music-panel-title">🎵 Ambiance musicale</div>
+        <div class="music-tracks">
+          <button class="music-track" data-id="piano" data-src="/audio/piano.mp3" data-label="Piano Jazz">
+            <span class="t-icon">🎹</span><span>Piano Jazz</span>
+          </button>
+          <button class="music-track" data-id="mahler" data-src="/audio/mahler.mp3" data-label="Mahler Adagietto">
+            <span class="t-icon">🎻</span><span>Mahler · Adagietto</span>
+          </button>
+          <button class="music-track" data-id="gnossienne" data-src="/audio/gnossienne.mp3" data-label="Satie Gnossienne">
+            <span class="t-icon">🌊</span><span>Satie · Gnossienne</span>
+          </button>
+          <button class="music-track" data-id="bossa" data-src="/audio/bossa.mp3" data-label="Bossa nova">
+            <span class="t-icon">🎷</span><span>Bossa nova</span>
+          </button>
+        </div>
+        <button class="music-off-btn" id="music-off-btn">Couper la musique</button>
+        <button class="music-playlist-btn" id="music-playlist-btn">🎵 Playlist Maxime</button>
+        <div class="music-credits">Kevin MacLeod (incompetech) · CC-BY 4.0<br>Mahler / Satie — enregistrements domaine public</div>
+      </div>
+      <audio id="music-audio" loop preload="none"></audio>
+    </div>
 
-        <!-- ═══ TREE CANVAS ═══ -->
-        <canvas id="chene-canvas" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index:1;"></canvas>
+    <!-- ═══ Overlay Playlist Maxime ═══ -->
+    <div class="playlist-overlay" id="playlist-overlay" aria-hidden="true">
+      <div class="playlist-modal">
+        <button class="playlist-close" id="playlist-close" aria-label="Fermer">×</button>
+        <div class="playlist-header">
+          <div class="playlist-title">Playlist Maxime</div>
+          <div class="playlist-sub">Sélection personnelle — écoute libre</div>
+        </div>
+        <div class="playlist-embed" id="playlist-embed-wrap">
+          <!-- Spotify embed sera injecté ici à l'ouverture -->
+        </div>
+      </div>
+    </div>
 
-        <!-- ═══ TEXT READABILITY OVERLAY ═══ -->
-        <div class="absolute inset-0 pointer-events-none" style="z-index:3;background:radial-gradient(ellipse 70% 50% at 50% 40%, rgba(249,246,240,0.85) 0%, rgba(249,246,240,0.5) 50%, transparent 80%);"></div>
+    <section class="hero">
 
-        <!-- ═══ TOP GOLD EDGE ═══ -->
-        <div class="absolute top-0 left-0 right-0 h-[3px]" style="z-index:5;background:linear-gradient(90deg,transparent 10%,rgba(184,149,110,0.3) 35%,rgba(184,149,110,0.7) 50%,rgba(184,149,110,0.3) 65%,transparent 90%);"></div>
+      <!-- ═══ LEFT ═══ -->
+      <div class="hero-left">
 
-        <!-- ═══ LAYER 5: CONTENT ═══ -->
-        <div class="relative text-center px-6 max-w-4xl mx-auto py-8 sm:py-12" style="z-index:10;"
-             x-data="{
-                qIndex: 0,
-                questions: [
-                    { public:'Parents', q:'Si hier il vous était arrivé quelque chose, comment cela se passerait-il pour vos proches ?' },
-                    { public:'Dirigeant', q:'Quel serait l\'impact d\'un arrêt prolongé sur votre entreprise et vos proches ?' },
-                    { public:'Transmission', q:'Dans quelle mesure vos enfants hériteront-ils réellement de ce que vous construisez ?' },
-                    { public:'Investisseur', q:'Investisseur en meublé, connaissez-vous réellement l\'impact fiscal de votre montage à long terme ?' },
-                    { public:'Parents', q:'Que se passerait-il pour vos enfants si vous et votre conjoint disparaissiez simultanément ?' },
-                    { public:'Dirigeant', q:'Comment votre associé, votre banque et vos salariés réagiraient-ils à votre absence ?' },
-                    { public:'Investisseur', q:'Comment votre patrimoine immobilier serait-il traité en cas de contrôle fiscal ou de succession non anticipée ?' },
-                    { public:'Parents', q:'En cas de handicap, qui prendrait les décisions patrimoniales à votre place — et selon quelles règles ?' },
-                    { public:'Dirigeant', q:'Quelle part de votre rémunération pourrait être redirigée vers la protection de votre famille sans perdre en niveau de vie ?' },
-                    { public:'Transmission', q:'Comment transmettre progressivement sans vous démunir ni créer de conflits familiaux ?' },
-                    { public:'Investisseur', q:'Votre société civile immobilière ou votre location meublée est-elle toujours la structure la plus adaptée à votre situation familiale et fiscale ?' },
-                    { public:'Transmission', q:'À quel point la fiscalité successorale pourrait-elle transformer votre héritage en charge pour vos proches ?' },
-                ],
-                startRotation() {
-                    setInterval(() => { this.qIndex = (this.qIndex + 1) % this.questions.length; }, 6000);
-                }
-             }"
-             x-init="startRotation()">
+        <div class="kicker">IKCP · Conseil patrimonial indépendant</div>
 
-            <!-- Title — centered -->
-            <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl leading-[1.08] mb-6 sm:mb-8 opacity-0 text-center" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.3s;color:#1f1a16;">
-                Protéger ce que vous êtes<br>
-                <span style="color:#b8956e;">en train de bâtir.</span>
-            </h1>
+        <div class="numbers-bar">
+          <div class="number">
+            <span class="number-big">10</span>
+            <span class="number-unit">ans</span>
+          </div>
+          <span class="number-dot"></span>
+          <div class="number">
+            <span class="number-big">100%</span>
+            <span class="number-unit">indépendant</span>
+          </div>
+          <span class="number-dot"></span>
+          <div class="number">
+            <span class="number-big">0%</span>
+            <span class="number-unit">frais d'entrée</span>
+          </div>
+        </div>
 
-            <!-- Specialisation announcement -->
-            <div class="opacity-0 mb-8 sm:mb-12" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.45s;">
-                <p class="text-xs sm:text-sm font-light max-w-xl mx-auto leading-relaxed" style="color:#8a8578;">
-                    Après 10 ans d'exercice et des centaines d'entretiens, IKCP se spécialise dans la <strong class="font-medium" style="color:#1f1a16;">protection patrimoniale</strong> — là où les enjeux juridiques, financiers et fiscaux se croisent.
-                </p>
+        <h1>Protéger ce que vous êtes<br><em>en train de bâtir</em>.</h1>
+
+        <p class="sub">
+          Un accompagnement sur-mesure — juridique, fiscal et financier.<br>
+          <strong>Protéger, valoriser, transmettre</strong> — là où les enjeux se croisent.
+        </p>
+
+        <div class="segments">
+          <span class="seg"><span class="emoji">👨‍👩‍👧‍👦</span> Parents & jeunes parents</span>
+          <span class="seg"><span class="emoji">💼</span> Entrepreneurs & TNS</span>
+          <span class="seg"><span class="emoji">🏛️</span> Transmission</span>
+          <span class="seg"><span class="emoji">🏠</span> Investisseurs immobiliers</span>
+        </div>
+
+        <div class="cta-row">
+          <a href="#bilan-patrimonial" class="cta-primary">
+            <div>
+              <span class="micro">En ligne · 5 étapes · 2 minutes</span>
+              <span>Faire mon bilan patrimonial</span>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+
+        <div class="trust-bar">
+          <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> CIF — CNCEF Patrimoine</span>
+          <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> ORIAS 23001568</span>
+          <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg> MIF II · DDA</span>
+          <span class="trust"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/><circle cx="9" cy="7" r="4"/></svg> Ardèche · Combloux · Megève</span>
+        </div>
+
+      </div>
+
+      <!-- ═══ RIGHT ═══ -->
+      <div class="hero-right">
+
+        <div class="sky-block">
+          <!-- Ciel dégradé : Marcel vole en haut, chat en bas -->
+          <div class="sky-sun"></div>
+          <div class="cloud cloud-1"></div>
+          <div class="cloud cloud-2"></div>
+          <div class="cloud cloud-3"></div>
+
+          <!-- Marcel : la VRAIE montgolfière SVG qui vole -->
+          <div class="balloon-stage" aria-label="Marcel — agent IA patrimonial IKCP">
+            <svg class="balloon-svg" viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="blueStripe" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#3661a8"/>
+                  <stop offset="100%" stop-color="#0a2855"/>
+                </linearGradient>
+                <linearGradient id="redStripe" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#d05a4a"/>
+                  <stop offset="100%" stop-color="#7c2418"/>
+                </linearGradient>
+                <linearGradient id="whiteStripe" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="100%" stop-color="#e8e4dc"/>
+                </linearGradient>
+                <linearGradient id="basketGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#9a7a58"/>
+                  <stop offset="50%" stop-color="#6b4f35"/>
+                  <stop offset="100%" stop-color="#3e2818"/>
+                </linearGradient>
+                <clipPath id="balloonClip">
+                  <!-- Forme classique de montgolfière : goutte d'oignon -->
+                  <path d="M120 8
+                           C 195 8, 220 70, 220 130
+                           C 220 175, 200 210, 165 220
+                           C 158 222, 150 224, 138 224
+                           C 130 230, 130 235, 130 240
+                           L 110 240
+                           C 110 235, 110 230, 102 224
+                           C 90 224, 82 222, 75 220
+                           C 40 210, 20 175, 20 130
+                           C 20 70, 45 8, 120 8 Z"/>
+                </clipPath>
+              </defs>
+
+              <!-- Enveloppe principale : 3 bandes verticales bleu / blanc / rouge (drapeau français) -->
+              <g clip-path="url(#balloonClip)">
+                <!-- 3 panneaux principaux drapeau français -->
+                <rect x="0"   y="0" width="80" height="240" fill="url(#blueStripe)"/>
+                <rect x="80"  y="0" width="80" height="240" fill="url(#whiteStripe)"/>
+                <rect x="160" y="0" width="80" height="240" fill="url(#redStripe)"/>
+
+                <!-- Highlight subtil top-left pour effet de volume -->
+                <ellipse cx="80" cy="60" rx="50" ry="80" fill="#ffffff" opacity="0.18"/>
+              </g>
+
+              <!-- Contour de l'enveloppe -->
+              <path d="M120 8
+                       C 195 8, 220 70, 220 130
+                       C 220 175, 200 210, 165 220
+                       C 158 222, 150 224, 138 224
+                       L 102 224
+                       C 90 224, 82 222, 75 220
+                       C 40 210, 20 175, 20 130
+                       C 20 70, 45 8, 120 8 Z"
+                    fill="none" stroke="#1f1a16" stroke-width="1.2" stroke-opacity="0.35"/>
+
+              <!-- Ouverture basse (la "bouche" du ballon) -->
+              <rect x="108" y="220" width="24" height="22" fill="#3e2818" opacity="0.5"/>
+              <ellipse cx="120" cy="222" rx="14" ry="3" fill="#1f1a16" opacity="0.6"/>
+
+              <!-- Cables -->
+              <line x1="105" y1="240" x2="92" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+              <line x1="115" y1="240" x2="108" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+              <line x1="125" y1="240" x2="132" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+              <line x1="135" y1="240" x2="148" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+
+              <!-- Brûleur (petit anneau entre cables) -->
+              <rect x="100" y="260" width="40" height="8" rx="2" fill="#1f1a16"/>
+              <ellipse cx="120" cy="263" rx="6" ry="2" fill="#ffba4a" opacity="0.7"/>
+
+              <!-- NACELLE en osier — bien visible -->
+              <rect x="78" y="270" width="84" height="50" rx="6" fill="url(#basketGrad)" stroke="#1f1a16" stroke-width="0.8" stroke-opacity="0.4"/>
+
+              <!-- Bord supérieur épais (plus clair pour effet osier tressé) -->
+              <rect x="76" y="270" width="88" height="6" rx="2" fill="#b08868"/>
+              <rect x="76" y="270" width="88" height="6" rx="2" fill="none" stroke="#1f1a16" stroke-width="0.5" stroke-opacity="0.3"/>
+
+              <!-- Lignes horizontales d'osier tressé -->
+              <line x1="78" y1="285" x2="162" y2="285" stroke="#2a1810" stroke-width="0.8" opacity="0.65"/>
+              <line x1="78" y1="297" x2="162" y2="297" stroke="#2a1810" stroke-width="0.8" opacity="0.65"/>
+              <line x1="78" y1="309" x2="162" y2="309" stroke="#2a1810" stroke-width="0.8" opacity="0.65"/>
+
+              <!-- Lignes verticales d'osier tressé -->
+              <line x1="98"  y1="276" x2="98"  y2="320" stroke="#2a1810" stroke-width="0.4" opacity="0.4"/>
+              <line x1="118" y1="276" x2="118" y2="320" stroke="#2a1810" stroke-width="0.4" opacity="0.4"/>
+              <line x1="142" y1="276" x2="142" y2="320" stroke="#2a1810" stroke-width="0.4" opacity="0.4"/>
+            </svg>
+            <div class="balloon-shadow"></div>
+          </div>
+
+          <!-- Étiquette flottante "live" en haut -->
+          <div class="balloon-label">
+            <span class="balloon-dot"></span>
+            Marcel · En ligne
+          </div>
+
+          <!-- LA CARTE INTERACTIVE Marcel — questions cliquables qui ouvrent le chat -->
+          <div class="marcel-talk-card">
+
+            <div class="marcel-talk-header">
+              <div class="marcel-talk-title">
+                <span class="marcel-pretitle">⚡ AGENT IA PATRIMONIAL</span>
+                <span class="marcel-mainttitle">Posez votre question à Marcel</span>
+              </div>
+              <span class="marcel-talk-badge">Réponses sourcées CGI · LF 2026</span>
             </div>
 
-            <!-- Gold separator -->
-            <div class="h-[2px] w-10 sm:w-12 mx-auto mb-8 sm:mb-10 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.55s;background:linear-gradient(90deg,transparent,#b8956e,transparent);"></div>
-
-            <!-- Open question — BELOW title -->
-            <div class="mb-10 sm:mb-14 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.65s;">
-                <div class="relative" style="min-height:64px;">
-                    <template x-for="(q, i) in questions" :key="i">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center transition-all duration-700 px-2"
-                           :class="qIndex===i ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'">
-                            <p class="font-serif text-base sm:text-lg md:text-xl leading-snug italic" style="color:#1f1a16;" x-text="q.q"></p>
-                        </div>
-                    </template>
-                </div>
-                <!-- Dots + public tag -->
-                <div class="flex items-center justify-center gap-4 mt-5">
-                    <div class="flex gap-1.5">
-                        <template x-for="(q, i) in questions" :key="'dot'+i">
-                            <button @click="qIndex=i" class="h-1.5 rounded-full transition-all duration-300" :class="qIndex===i ? 'bg-[#b8956e] w-5' : 'bg-[#ad9578]/50 hover:bg-[#9e9080] w-1.5'"></button>
-                        </template>
-                    </div>
-                    <div class="px-2.5 py-1 rounded-full transition-all duration-500" style="background:rgba(184,149,110,0.08);border:1px solid rgba(184,149,110,0.15);">
-                        <span class="text-[10px] font-semibold uppercase tracking-wider" style="color:#b8956e;" x-text="questions[qIndex].public"></span>
-                    </div>
-                </div>
+            <div class="marcel-talk-questions" id="marcel-questions">
+              <!-- Les 4 questions affichées sont injectées par JS et rotent toutes les 10s -->
             </div>
 
-            <!-- 4 publics -->
-            <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:0.8s;">
-                <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl" style="background:rgba(31,26,22,0.04);border:1px solid rgba(31,26,22,0.06);">
-                    <span class="text-sm">👨‍👩‍👧‍👦</span>
-                    <span class="text-[11px] sm:text-xs font-medium" style="color:#64748b;">Parents & jeunes parents</span>
-                </div>
-                <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl" style="background:rgba(31,26,22,0.04);border:1px solid rgba(31,26,22,0.06);">
-                    <span class="text-sm">💼</span>
-                    <span class="text-[11px] sm:text-xs font-medium" style="color:#64748b;">Entrepreneurs & travailleurs non salariés</span>
-                </div>
-                <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl" style="background:rgba(31,26,22,0.04);border:1px solid rgba(31,26,22,0.06);">
-                    <span class="text-sm">🏛️</span>
-                    <span class="text-[11px] sm:text-xs font-medium" style="color:#64748b;">Préparation de la transmission</span>
-                </div>
-                <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl" style="background:rgba(31,26,22,0.04);border:1px solid rgba(31,26,22,0.06);">
-                    <span class="text-sm">🏠</span>
-                    <span class="text-[11px] sm:text-xs font-medium" style="color:#64748b;">Investisseurs immobiliers</span>
-                </div>
+            <div class="marcel-talk-footer">
+              <button class="marcel-talk-cta" onclick="openMarcelChat()">
+                <span>Ou tapez votre propre question</span>
+                <span class="marcel-talk-cta-icon">💬</span>
+              </button>
             </div>
+
+          </div>
 
         </div>
 
+      </div>
 
-
-        <!-- ═══ OÙ NOUS TROUVER — elegant location badge ═══ -->
-        <div class="absolute bottom-14 sm:bottom-16 left-0 right-0 text-center opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.2s;z-index:10;">
-            <div class="inline-flex items-center gap-3 sm:gap-4 px-5 py-2.5 rounded-full border border-[#b8956e]/15" style="background:rgba(249,246,240,0.85);backdrop-filter:blur(8px);">
-                <div class="flex items-center gap-2">
-                    <div class="w-1.5 h-1.5 rounded-full bg-[#b8956e]"></div>
-                    <span class="text-[10px] sm:text-xs font-bold tracking-wide" style="color:#1f1a16;">Ardèche</span>
-                    <span class="text-[9px] sm:text-[10px]" style="color:#9e9080;">Saint-Marcel-lès-Annonay</span>
-                </div>
-                <div class="w-px h-3" style="background:rgba(184,149,110,0.2);"></div>
-                <div class="flex items-center gap-1.5">
-                    <span class="text-[9px] sm:text-[10px]" style="color:rgba(184,149,110,0.6);">Également à</span>
-                    <span class="text-[10px] sm:text-xs font-medium" style="color:#9e9080;">Combloux</span>
-                    <span class="text-[8px]" style="color:rgba(184,149,110,0.25);">&</span>
-                    <span class="text-[10px] sm:text-xs font-medium" style="color:#9e9080;">Megève</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Scroll indicator -->
-        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0" :class="shown?'animate-fade-in-up':''" style="animation-delay:1.5s;z-index:10;">
-            <div class="w-5 h-8 rounded-full flex justify-center pt-1.5" style="border:1px solid rgba(180,170,155,0.25);">
-                <div class="w-1 h-2 rounded-full" style="background:rgba(180,170,155,0.3);animation:scrollDot 2s ease-in-out infinite;"></div>
-            </div>
-        </div>
     </section>
 
-    <!-- ═══ CHÊNE — ARBRE QUI POUSSE ═══ -->
-    <script>
-    (function(){
-        const c = document.getElementById('chene-canvas');
-        if(!c) return;
-        const ctx = c.getContext('2d');
-        const dpr = window.devicePixelRatio || 1;
-        let W, H, branches = [], startTime = null, treeReady = false;
-
-        function resize(){
-            const r = c.parentElement.getBoundingClientRect();
-            W = r.width; H = r.height;
-            c.width = W * dpr; c.height = H * dpr;
-            c.style.width = W + 'px'; c.style.height = H + 'px';
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            buildTree();
-            startTime = null;
-            treeReady = true;
-        }
-
-        function buildTree(){
-            branches = [];
-            const cx = W * 0.5, treeBase = H * 0.78;
-            const scale = Math.min(W, H) / 520;
-
-            function addBranch(x1, y1, angle, length, depth, delay, isRoot){
-                if(depth > 7 || length < 3) return;
-                const x2 = x1 + Math.cos(angle) * length;
-                const y2 = y1 + Math.sin(angle) * length;
-                branches.push({ x1, y1, x2, y2, depth, delay, isRoot, width: Math.max(0.3, (4.5 - depth * 0.55) * scale) });
-                const spread = 0.35 + Math.random() * 0.35;
-                const shrink = 0.6 + Math.random() * 0.18;
-                const nd = delay + 350 + Math.random() * 250;
-                addBranch(x2, y2, angle - spread, length * shrink, depth + 1, nd, isRoot);
-                addBranch(x2, y2, angle + spread, length * shrink, depth + 1, nd + 120, isRoot);
-                if(depth < 3 && Math.random() > 0.45){
-                    addBranch(x2, y2, angle + (Math.random() - 0.5) * 0.35, length * shrink * 0.7, depth + 1, nd + 200, isRoot);
-                }
-            }
-
-            const trunkLen = 60 * scale;
-            addBranch(cx - 2, treeBase, -Math.PI/2 - 0.1, trunkLen, 0, 800, false);
-            addBranch(cx + 2, treeBase, -Math.PI/2 + 0.1, trunkLen, 0, 1200, false);
-            addBranch(cx, treeBase, -Math.PI/2, trunkLen * 0.85, 0, 1600, false);
-            // Roots
-            addBranch(cx - 10, treeBase + 3, Math.PI/2 - 0.55, 40 * scale, 1, 600, true);
-            addBranch(cx + 10, treeBase + 3, Math.PI/2 + 0.55, 40 * scale, 1, 900, true);
-            addBranch(cx - 3, treeBase + 3, Math.PI/2 - 0.12, 35 * scale, 1, 1300, true);
-            addBranch(cx + 3, treeBase + 3, Math.PI/2 + 0.12, 35 * scale, 1, 1700, true);
-        }
-
-        function animate(timestamp){
-            if(!treeReady) { requestAnimationFrame(animate); return; }
-            if(!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-            ctx.clearRect(0, 0, W, H);
-
-            const cx = W * 0.5, treeBase = H * 0.78;
-
-            // Golden halo — appears very late, ultra soft
-            const haloP = Math.max(0, Math.min(1, (elapsed - 9000) / 5000));
-            if(haloP > 0){
-                const grad = ctx.createRadialGradient(cx, treeBase - H*0.15, H*0.02, cx, treeBase - H*0.1, H*0.3);
-                grad.addColorStop(0, 'rgba(184,149,110,' + (0.05 * haloP) + ')');
-                grad.addColorStop(0.6, 'rgba(184,149,110,' + (0.025 * haloP) + ')');
-                grad.addColorStop(1, 'transparent');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, W, H);
-            }
-
-            // Draw branches — slow, gentle draw
-            branches.forEach(function(b){
-                const bElapsed = elapsed - b.delay;
-                if(bElapsed <= 0) return;
-                const progress = Math.min(1, bElapsed / 1800);
-                const ease = 1 - Math.pow(1 - progress, 3);
-
-                const x2 = b.x1 + (b.x2 - b.x1) * ease;
-                const y2 = b.y1 + (b.y2 - b.y1) * ease;
-
-                ctx.beginPath();
-                ctx.moveTo(b.x1, b.y1);
-                ctx.lineTo(x2, y2);
-
-                if(b.isRoot){
-                    ctx.strokeStyle = 'rgba(160,135,100,' + ((0.08 + b.depth * 0.01) * ease) + ')';
-                } else {
-                    const alpha = Math.max(0.03, (0.22 - b.depth * 0.025) * ease);
-                    ctx.strokeStyle = 'rgba(31,26,22,' + alpha + ')';
-                }
-                ctx.lineWidth = b.width * ease;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-
-                // Leaves — appear gently after branch is drawn
-                if(b.depth >= 5 && !b.isRoot && progress >= 0.95){
-                    const leafFade = Math.min(1, (progress - 0.95) / 0.05);
-                    const leafPhase = Math.sin((elapsed - b.delay) * 0.001 + b.x1) * 0.2 + 0.6;
-                    const leafSize = 1.2 + Math.sin(elapsed * 0.0008 + b.y1) * 0.5;
-                    ctx.beginPath();
-                    ctx.arc(b.x2, b.y2, leafSize, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(184,149,110,' + (leafPhase * 0.35 * leafFade) + ')';
-                    ctx.fill();
-                }
-            });
-
-            // Floating pollen — appears much later, very gentle
-            if(elapsed > 8000){
-                const pA = Math.min(1, (elapsed - 8000) / 5000);
-                for(var i = 0; i < 16; i++){
-                    var px = cx + Math.sin(elapsed * 0.0003 + i * 2.6) * (W * 0.13 + i * W * 0.01);
-                    var py = treeBase - H * 0.18 + Math.cos(elapsed * 0.00025 + i * 2.1) * (H * 0.09 + i * H * 0.006);
-                    var pSize = 0.8 + Math.sin(elapsed * 0.0008 + i * 3.3) * 0.4;
-                    ctx.beginPath();
-                    ctx.arc(px, py, pSize, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(184,149,110,' + (0.1 * pA * (0.5 + Math.sin(elapsed * 0.0005 + i) * 0.5)) + ')';
-                    ctx.fill();
-                }
-            }
-
-            // Ground line — very slow fade in
-            var gA = Math.min(0.04, elapsed / 120000);
-            ctx.beginPath();
-            ctx.moveTo(cx - W * 0.2, treeBase + 4);
-            ctx.lineTo(cx + W * 0.2, treeBase + 4);
-            ctx.strokeStyle = 'rgba(184,149,110,' + gA + ')';
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-
-            requestAnimationFrame(animate);
-        }
-
-        resize();
-        window.addEventListener('resize', resize);
-        requestAnimationFrame(animate);
-    })();
-    </script>
 
     <!-- ══════════ BILAN PATRIMONIAL FLASH ══════════ -->
     <section id="bilan-patrimonial" class="py-16 sm:py-24 bg-[#f9f6f0] border-t border-[#e5ded2]">
@@ -2132,6 +3369,267 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <p class="text-center text-[10px] text-[#6d5c4a] mt-4 leading-relaxed">© 2026 IKCP — IKIGAÏ Conseil Patrimonial — EURL<br class="sm:hidden"> Les informations présentées ne constituent pas un conseil en investissement personnalisé.</p>
         </div>
     </footer>
+
+    <!-- ══════════ HERO 2026 — JS (questions Marcel + music player + playlist overlay) ══════════ -->
+    <script>
+    // ───────── Pool de 12 problématiques patrimoniales (rotation toutes les 10s) ─────────
+    const QUESTIONS_POOL = [
+      // Succession / Transmission
+      { icon:'🏛️', label:"Comment réduire les droits de succession pour mes enfants ?", q:"Comment réduire les droits de succession pour mes enfants ?" },
+      { icon:'💎', label:"Donation au-delà de 100 000 € : comment optimiser ?", q:"Comment optimiser ma transmission au-delà de l'abattement de 100 000 € par enfant ?" },
+      { icon:'⚖️', label:"Testament ou donation au dernier vivant ?", q:"Quelle différence entre testament et donation au dernier vivant pour protéger mon conjoint ?" },
+      { icon:'📋', label:"Puis-je donner à mes petits-enfants ?", q:"Comment fonctionne la donation aux petits-enfants ? Quels abattements ?" },
+      // Fiscal / IR
+      { icon:'🎯', label:"PER : combien je peux déduire cette année ?", q:"Le PER (plan d'épargne retraite) : combien je peux déduire de mes impôts cette année ?" },
+      { icon:'💰', label:"Comment réduire mon impôt sur le revenu ?", q:"Quels sont les leviers principaux pour réduire mon impôt sur le revenu cette année ?" },
+      { icon:'📊', label:"Plafond des niches fiscales : comment ça marche ?", q:"Comment fonctionne le plafond global des niches fiscales (10 000 €) ?" },
+      // IFI / Immobilier
+      { icon:'🏠', label:"Suis-je concerné par l'IFI ?", q:"Suis-je concerné par l'impôt sur la fortune immobilière (IFI) ? Quels biens compter ?" },
+      { icon:'🏘️', label:"SCI familiale : avantages et inconvénients ?", q:"Quels sont les avantages et inconvénients d'une SCI familiale pour gérer un patrimoine immobilier ?" },
+      // Protection conjoint / Famille
+      { icon:'🛡️', label:"Que se passe-t-il pour mon conjoint si je décède ?", q:"Que se passe-t-il pour mon conjoint si je décède demain ? Quels droits, quelle protection ?" },
+      { icon:'👨‍👩‍👧', label:"Famille recomposée : comment protéger chacun ?", q:"En famille recomposée, comment protéger mon conjoint sans léser mes enfants d'une 1ère union ?" },
+      // Pro / Entrepreneur
+      { icon:'💼', label:"Dirigeant : protéger entreprise et famille ?", q:"En tant que dirigeant, comment protéger mon entreprise et ma famille en cas d'imprévu ?" }
+    ];
+
+    let _qIdx = 0;
+    function renderQuestions() {
+      const container = document.getElementById('marcel-questions');
+      if (!container) return;
+      // Sélectionne 4 questions à partir de _qIdx
+      const visible = [];
+      for (let i = 0; i < 4; i++) visible.push(QUESTIONS_POOL[(_qIdx + i) % QUESTIONS_POOL.length]);
+      container.innerHTML = visible.map(item => `
+        <button class="marcel-q" onclick="askMarcel(${JSON.stringify(item.q).replace(/"/g,'&quot;')})">
+          <span class="q-icon">${item.icon}</span>
+          <span class="q-text">${item.label}</span>
+          <span class="q-arrow">→</span>
+        </button>
+      `).join('');
+    }
+
+    function rotateQuestions() {
+      const container = document.getElementById('marcel-questions');
+      if (!container) return;
+      // Fade out
+      container.querySelectorAll('.marcel-q').forEach(b => b.classList.add('fading-out'));
+      // Swap après l'animation de fade
+      setTimeout(() => {
+        _qIdx = (_qIdx + 4) % QUESTIONS_POOL.length;
+        renderQuestions();
+      }, 400);
+    }
+
+    // Init + rotation toutes les 10 secondes
+    document.addEventListener('DOMContentLoaded', () => {
+      renderQuestions();
+      setInterval(rotateQuestions, 10000);
+    });
+
+    function askMarcel(question){
+      // Ouvre le widget Marcel et soumet la question
+      document.body.classList.add('marcel-open');
+      if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
+      setTimeout(function(){
+        if(typeof window._ikcpAskFollow==='function'){window._ikcpAskFollow(question);}
+        else{
+          var inp=document.getElementById('ikcp-inp');
+          if(inp){inp.value=question;}
+          if(typeof window._ikcpSend==='function'){window._ikcpSend();}
+        }
+      },300);
+    }
+    function openMarcelChat(){
+      document.body.classList.add('marcel-open');
+      if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
+    }
+
+    // ───────── PLAYER MUSICAL ambient (top-right) ─────────
+    (function(){
+      const PREF_KEY = 'ikcp_music_v1';
+      const player = document.getElementById('music-player');
+      const trigger = document.getElementById('music-trigger');
+      const audio = document.getElementById('music-audio');
+      const offBtn = document.getElementById('music-off-btn');
+      const tracks = document.querySelectorAll('.music-track');
+      // Safety guard: bail out cleanly if hero player markup hasn't been added
+      if(!player || !trigger || !audio){ return; }
+      const status = trigger.querySelector('.music-status');
+
+      // Volume cible bas (ambient, non intrusif)
+      const TARGET_VOLUME = 0.28;
+      audio.volume = 0;
+
+      // Charge la préférence
+      let pref = {};
+      try { pref = JSON.parse(localStorage.getItem(PREF_KEY)) || {}; } catch(e){}
+
+      function fadeVolume(target, duration){
+        const steps = 20;
+        const stepDur = duration / steps;
+        const start = audio.volume;
+        const delta = (target - start) / steps;
+        let i = 0;
+        const interval = setInterval(()=>{
+          i++;
+          audio.volume = Math.max(0, Math.min(1, start + delta * i));
+          if(i >= steps){ clearInterval(interval); }
+        }, stepDur);
+      }
+
+      function playTrack(id, src, label){
+        tracks.forEach(t => t.classList.toggle('active', t.dataset.id === id));
+        if(audio.src !== src){
+          audio.src = src;
+          audio.load();
+        }
+        audio.play().then(()=>{
+          fadeVolume(TARGET_VOLUME, 800);
+          if(status) status.setAttribute('data-track', label.toUpperCase());
+          trigger.classList.remove('is-off');
+          player.classList.remove('is-off');
+          try { localStorage.setItem(PREF_KEY, JSON.stringify({id, src, label, on: true})); } catch(e){}
+        }).catch(err => {
+          console.log('Music play blocked or failed:', err.message);
+          // Restore OFF state if play fails
+          stopMusic(false);
+        });
+      }
+
+      function stopMusic(persist = true){
+        fadeVolume(0, 300);
+        setTimeout(()=>{
+          audio.pause();
+        }, 350);
+        tracks.forEach(t => t.classList.remove('active'));
+        if(status) status.setAttribute('data-track', 'OFF');
+        trigger.classList.add('is-off');
+        player.classList.add('is-off');
+        if(persist){
+          try { localStorage.setItem(PREF_KEY, JSON.stringify({on: false})); } catch(e){}
+        }
+      }
+
+      // Toggle panel d'ouverture
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        player.classList.toggle('is-open');
+      });
+
+      // Click outside ferme le panel
+      document.addEventListener('click', (e) => {
+        if(!player.contains(e.target)) player.classList.remove('is-open');
+      });
+
+      // Click sur une piste
+      tracks.forEach(t => {
+        t.addEventListener('click', () => {
+          playTrack(t.dataset.id, t.dataset.src, t.dataset.label);
+        });
+      });
+
+      // Bouton OFF
+      if(offBtn) offBtn.addEventListener('click', () => {
+        stopMusic(true);
+        player.classList.remove('is-open');
+      });
+
+      // Restaure la préférence si l'utilisateur avait déjà choisi → relance la même piste
+      // Sinon → tirage aléatoire d'une des 3 ambiances, lancement au 1er clic sur la page
+      if(pref.on && pref.id){
+        tracks.forEach(t => t.classList.toggle('active', t.dataset.id === pref.id));
+        if(status) status.setAttribute('data-track', (pref.label || 'ON').toUpperCase());
+        audio.src = pref.src;
+        audio.play().then(()=>{
+          fadeVolume(TARGET_VOLUME, 800);
+          trigger.classList.remove('is-off');
+          player.classList.remove('is-off');
+        }).catch(()=>{
+          // Bloqué par autoplay policy → on relance au 1er clic
+          armRandomOnFirstInteraction();
+        });
+      } else {
+        // Première visite (ou musique précédemment OFF) : tirage aléatoire
+        armRandomOnFirstInteraction();
+      }
+
+      function armRandomOnFirstInteraction(){
+        if(tracks.length === 0) return;
+        const random = tracks[Math.floor(Math.random() * tracks.length)];
+        const fire = () => {
+          document.removeEventListener('click', fire, true);
+          document.removeEventListener('keydown', fire, true);
+          document.removeEventListener('touchstart', fire, true);
+          // L'utilisateur a interagi → on a le droit de play()
+          playTrack(random.dataset.id, random.dataset.src, random.dataset.label);
+        };
+        document.addEventListener('click', fire, true);
+        document.addEventListener('keydown', fire, true);
+        document.addEventListener('touchstart', fire, true);
+      }
+
+      // Si la lecture audio échoue (404 sur l'URL Pixabay par exemple)
+      audio.addEventListener('error', () => {
+        console.log('Audio error — fallback OFF');
+        stopMusic(false);
+      });
+
+      // ═══ Playlist Maxime overlay ═══
+      const playlistBtn   = document.getElementById('music-playlist-btn');
+      const playlistOver  = document.getElementById('playlist-overlay');
+      const playlistEmbed = document.getElementById('playlist-embed-wrap');
+      const playlistClose = document.getElementById('playlist-close');
+
+      // À remplacer par l'URL de la playlist Spotify de Maxime quand créée
+      // Format : https://open.spotify.com/embed/playlist/<ID>?utm_source=generator
+      const SPOTIFY_PLAYLIST_URL = ''; // ← coller l'URL Spotify embed ici
+
+      function openPlaylist(){
+        if(!playlistEmbed || !playlistOver) return;
+        if(SPOTIFY_PLAYLIST_URL){
+          playlistEmbed.innerHTML = `<iframe src="${SPOTIFY_PLAYLIST_URL}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+        } else {
+          playlistEmbed.innerHTML = `<div class="playlist-placeholder">Playlist en cours de finalisation.<br>Reviens bientôt.</div>`;
+        }
+        playlistOver.classList.add('is-open');
+        playlistOver.setAttribute('aria-hidden', 'false');
+        // Met la musique d'ambiance en pause pendant que la playlist est ouverte
+        if(!audio.paused){ audio.pause(); }
+      }
+      function closePlaylist(){
+        if(!playlistOver) return;
+        playlistOver.classList.remove('is-open');
+        playlistOver.setAttribute('aria-hidden', 'true');
+        // Vide l'iframe pour stopper la lecture Spotify
+        setTimeout(()=>{ if(playlistEmbed) playlistEmbed.innerHTML = ''; }, 250);
+      }
+      if(playlistBtn) playlistBtn.addEventListener('click', () => {
+        player.classList.remove('is-open');
+        openPlaylist();
+      });
+      if(playlistClose) playlistClose.addEventListener('click', closePlaylist);
+      if(playlistOver) playlistOver.addEventListener('click', (e) => {
+        if(e.target === playlistOver) closePlaylist();
+      });
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && playlistOver && playlistOver.classList.contains('is-open')) closePlaylist();
+      });
+    })();
+
+    // Surveille la fermeture du panel pour réafficher la carte chat
+    document.addEventListener('click', function(e){
+      // Si l'utilisateur clique sur le bouton X dans le header du panel, on remet l'état
+      if(e.target && e.target.closest && e.target.closest('#ikcp-chat-head')){
+        setTimeout(function(){
+          var panel = document.getElementById('ikcp-chat-panel');
+          if(!panel || !panel.classList.contains('open')){
+            document.body.classList.remove('marcel-open');
+          }
+        }, 50);
+      }
+    });
+    </script>
 
     <!-- ══════════ CHATBOT MARCEL (widget externe) ══════════ -->
     <script src="/chatbot-widget.js?v=16"></script>
