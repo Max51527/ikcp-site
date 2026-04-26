@@ -1,5 +1,80 @@
+# ════════════════════════════════════════════════════════════════════
+#  IKCP — robots.txt
+#  © 2026 Maxime Juveneton — Tous droits réservés
+# ════════════════════════════════════════════════════════════════════
+
+# Crawlers classiques (moteurs de recherche) — autorisés
 User-agent: *
 Allow: /
 Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+# ════════════════════════════════════════════════════════════════════
+# OPT-OUT EXPLICITE pour les crawlers d'entraînement IA
+# (le contenu de ce site est protégé, l'autorisation d'utilisation
+#  pour entraîner des modèles n'est PAS accordée)
+# ════════════════════════════════════════════════════════════════════
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: PerplexityUser
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
 
 Sitemap: https://ikcp.eu/sitemap.xml
