@@ -1251,9 +1251,6 @@ body:not(.marcel-open) .marcel-talk-card {
       <button class="music-track" data-id="classique" data-src="/audio/classique.mp3" data-label="Classique">
         <span class="t-icon">🎻</span><span>Classique · Satie</span>
       </button>
-      <button class="music-track" data-id="ambient" data-src="/audio/ambient.mp3" data-label="Ambient">
-        <span class="t-icon">🌊</span><span>Ambient minimal</span>
-      </button>
       <button class="music-track" data-id="lofi" data-src="/audio/lofi.mp3" data-label="Lo-fi café">
         <span class="t-icon">☕</span><span>Lo-fi café</span>
       </button>
@@ -1637,21 +1634,38 @@ function openMarcelChat(){
     player.classList.remove('is-open');
   });
 
-  // Restaure la préférence (sans autoplay car les browsers le bloquent)
+  // Restaure la préférence si l'utilisateur avait déjà choisi → relance la même piste
+  // Sinon → tirage aléatoire d'une des 3 ambiances, lancement au 1er clic sur la page
   if(pref.on && pref.id){
-    // Affiche la piste sélectionnée mais ne lance pas auto (besoin user interaction)
     tracks.forEach(t => t.classList.toggle('active', t.dataset.id === pref.id));
     status.setAttribute('data-track', (pref.label || 'ON').toUpperCase());
-    // Note: certains browsers permettent l'autoplay si même origine + user a interagi avant
     audio.src = pref.src;
     audio.play().then(()=>{
       fadeVolume(TARGET_VOLUME, 800);
       trigger.classList.remove('is-off');
       player.classList.remove('is-off');
     }).catch(()=>{
-      // Bloqué par le navigateur, reste en OFF visuel
-      stopMusic(false);
+      // Bloqué par autoplay policy → on relance au 1er clic
+      armRandomOnFirstInteraction();
     });
+  } else {
+    // Première visite (ou musique précédemment OFF) : tirage aléatoire
+    armRandomOnFirstInteraction();
+  }
+
+  function armRandomOnFirstInteraction(){
+    if(tracks.length === 0) return;
+    const random = tracks[Math.floor(Math.random() * tracks.length)];
+    const fire = () => {
+      document.removeEventListener('click', fire, true);
+      document.removeEventListener('keydown', fire, true);
+      document.removeEventListener('touchstart', fire, true);
+      // L'utilisateur a interagi → on a le droit de play()
+      playTrack(random.dataset.id, random.dataset.src, random.dataset.label);
+    };
+    document.addEventListener('click', fire, true);
+    document.addEventListener('keydown', fire, true);
+    document.addEventListener('touchstart', fire, true);
   }
 
   // Si la lecture audio échoue (404 sur l'URL Pixabay par exemple)
