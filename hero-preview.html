@@ -158,6 +158,111 @@ body {
   letter-spacing: 0.02em;
   line-height: 1.4;
 }
+.music-playlist-btn {
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px;
+  background: linear-gradient(135deg, #b89968 0%, #a08555 100%);
+  border: none;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(184, 153, 104, 0.25);
+}
+.music-playlist-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(184, 153, 104, 0.4);
+}
+
+/* ═══ Overlay Playlist Maxime ═══ */
+.playlist-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 12, 0.72);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: overlay-fadein 0.25s ease;
+}
+.playlist-overlay.is-open { display: flex; }
+@keyframes overlay-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.playlist-modal {
+  position: relative;
+  width: min(560px, 92vw);
+  background: #faf6ef;
+  border-radius: 18px;
+  padding: 28px 26px 22px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  animation: modal-rise 0.3s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes modal-rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.playlist-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  color: #6d5c4a;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.playlist-close:hover { background: #efe6d6; }
+.playlist-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.playlist-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1f1a16;
+  margin-bottom: 4px;
+}
+.playlist-sub {
+  font-size: 12px;
+  color: #8a7a66;
+  letter-spacing: 0.04em;
+}
+.playlist-embed {
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 360px;
+  background: #1f1a16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.playlist-embed iframe {
+  width: 100%;
+  height: 380px;
+  border: 0;
+  border-radius: 12px;
+}
+.playlist-placeholder {
+  padding: 24px;
+  color: #b89968;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.6;
+}
 
 /* ═══ NAV ═══ */
 nav {
@@ -1248,17 +1353,35 @@ body:not(.marcel-open) .marcel-talk-card {
       <button class="music-track" data-id="piano" data-src="/audio/piano.mp3" data-label="Piano Jazz">
         <span class="t-icon">🎹</span><span>Piano Jazz</span>
       </button>
-      <button class="music-track" data-id="classique" data-src="/audio/classique.mp3" data-label="Classique">
-        <span class="t-icon">🎻</span><span>Classique · Satie</span>
+      <button class="music-track" data-id="mahler" data-src="/audio/mahler.mp3" data-label="Mahler Adagietto">
+        <span class="t-icon">🎻</span><span>Mahler · Adagietto</span>
       </button>
-      <button class="music-track" data-id="lofi" data-src="/audio/lofi.mp3" data-label="Lo-fi café">
-        <span class="t-icon">☕</span><span>Lo-fi café</span>
+      <button class="music-track" data-id="gnossienne" data-src="/audio/gnossienne.mp3" data-label="Satie Gnossienne">
+        <span class="t-icon">🌊</span><span>Satie · Gnossienne</span>
+      </button>
+      <button class="music-track" data-id="bossa" data-src="/audio/bossa.mp3" data-label="Bossa nova">
+        <span class="t-icon">🎷</span><span>Bossa nova</span>
       </button>
     </div>
     <button class="music-off-btn" id="music-off-btn">Couper la musique</button>
-    <div class="music-credits">Kevin MacLeod (incompetech) · CC-BY 4.0<br>Satie · Boston Symphony — domaine public</div>
+    <button class="music-playlist-btn" id="music-playlist-btn">🎵 Playlist Maxime</button>
+    <div class="music-credits">Kevin MacLeod (incompetech) · CC-BY 4.0<br>Mahler / Satie — enregistrements domaine public</div>
   </div>
   <audio id="music-audio" loop preload="none"></audio>
+</div>
+
+<!-- ═══ Overlay Playlist Maxime ═══ -->
+<div class="playlist-overlay" id="playlist-overlay" aria-hidden="true">
+  <div class="playlist-modal">
+    <button class="playlist-close" id="playlist-close" aria-label="Fermer">×</button>
+    <div class="playlist-header">
+      <div class="playlist-title">Playlist Maxime</div>
+      <div class="playlist-sub">Sélection personnelle — écoute libre</div>
+    </div>
+    <div class="playlist-embed" id="playlist-embed-wrap">
+      <!-- Spotify embed sera injecté ici à l'ouverture -->
+    </div>
+  </div>
 </div>
 
 <nav>
@@ -1672,6 +1795,46 @@ function openMarcelChat(){
   audio.addEventListener('error', () => {
     console.log('Audio error — fallback OFF');
     stopMusic(false);
+  });
+
+  // ═══ Playlist Maxime overlay ═══
+  const playlistBtn   = document.getElementById('music-playlist-btn');
+  const playlistOver  = document.getElementById('playlist-overlay');
+  const playlistEmbed = document.getElementById('playlist-embed-wrap');
+  const playlistClose = document.getElementById('playlist-close');
+
+  // À remplacer par l'URL de la playlist Spotify de Maxime quand créée
+  // Format : https://open.spotify.com/embed/playlist/<ID>?utm_source=generator
+  const SPOTIFY_PLAYLIST_URL = ''; // ← coller l'URL Spotify embed ici
+
+  function openPlaylist(){
+    if(!playlistEmbed) return;
+    if(SPOTIFY_PLAYLIST_URL){
+      playlistEmbed.innerHTML = `<iframe src="${SPOTIFY_PLAYLIST_URL}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+    } else {
+      playlistEmbed.innerHTML = `<div class="playlist-placeholder">Playlist en cours de finalisation.<br>Reviens bientôt.</div>`;
+    }
+    playlistOver.classList.add('is-open');
+    playlistOver.setAttribute('aria-hidden', 'false');
+    // Met la musique d'ambiance en pause pendant que la playlist est ouverte
+    if(!audio.paused){ audio.pause(); }
+  }
+  function closePlaylist(){
+    playlistOver.classList.remove('is-open');
+    playlistOver.setAttribute('aria-hidden', 'true');
+    // Vide l'iframe pour stopper la lecture Spotify
+    setTimeout(()=>{ if(playlistEmbed) playlistEmbed.innerHTML = ''; }, 250);
+  }
+  if(playlistBtn) playlistBtn.addEventListener('click', () => {
+    player.classList.remove('is-open');
+    openPlaylist();
+  });
+  if(playlistClose) playlistClose.addEventListener('click', closePlaylist);
+  if(playlistOver) playlistOver.addEventListener('click', (e) => {
+    if(e.target === playlistOver) closePlaylist();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && playlistOver && playlistOver.classList.contains('is-open')) closePlaylist();
   });
 })();
 
