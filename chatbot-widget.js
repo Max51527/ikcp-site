@@ -817,7 +817,7 @@ var welcomeHTML=''
 
 + '<div class="ikcp-maxime-cta">'
 +   '<div class="ikcp-maxime-label">Pour votre situation personnelle</div>'
-+   '<a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="ikcp-maxime-btn">📅 Échanger avec Maxime</a>'
++   '<a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank" class="ikcp-maxime-btn">📅 Échanger avec Maxime</a>'
 +   '<div class="ikcp-maxime-note">Un entretien confidentiel · par téléphone ou en visio</div>'
 + '</div>';
 
@@ -1044,7 +1044,7 @@ async function send(){
 var inp=document.getElementById('ikcp-inp');
 if(!inp||(!inp.value.trim()&&!_pendingPdf))return;
 if(count>=MAX){
-msgs.push({role:'assistant',html:'<p>Vous avez atteint la limite de '+MAX+' échanges. Pour poursuivre, <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">prenez rendez-vous avec Maxime →</a></p>'});
+msgs.push({role:'assistant',html:'<p>Vous avez atteint la limite de '+MAX+' échanges. Pour poursuivre, <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">prenez rendez-vous avec Maxime →</a></p>'});
 inp.value='';render();return;
 }
 count++;
@@ -1126,9 +1126,7 @@ fuHtml+='<button class="ikcp-followup-btn" onclick="window._ikcpAskFollow(\''+sa
 fuHtml+='</div></div>';
 html+=fuHtml;
 }
-// Détection d'intention RDV → embed Calendly
-if(/rendez-vous|échanger avec maxime|rdv|calendly/i.test(reply)&&!/calendly-embed-shown/.test(html)){
-html+='<div class="ikcp-calendly-inline" data-calendly-embed-shown="1"><div class="ikcp-calendly-header">📅 Prendre RDV directement :</div><iframe src="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial?embed_domain=ikcp.eu&embed_type=Inline&hide_gdpr_banner=1&background_color=f9f6f0&text_color=1f1a16&primary_color=b8956e" loading="lazy"></iframe></div>';
+// (Calendly désactivé — contact via recommandation, voir email mailto en footer)
 }
 // Badge profil mémorisé
 var pCtx=profileAsContext();
@@ -1136,7 +1134,7 @@ if(pCtx&&count===1){
 html+='<div class="ikcp-profile-pill">🧠 '+pCtx.replace('[Contexte du visiteur : ','').replace(']','')+' · mémorisé pour cette session</div>';
 }
 // Messages de rate limit
-if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges utilisés. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Poursuivre avec Maxime →</a></p>';
+if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges utilisés. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Poursuivre avec Maxime →</a></p>';
 else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
 // Hot lead alert (non bloquant)
 maybeFireLeadAlert(reply);
@@ -1148,7 +1146,7 @@ saveConv(msgs,count);
 hideLoading();
 typeOutMessage(reply,html);
 return;
-}catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Contactez Maxime directement</a>.</p>'});saveConv(msgs,count);}
+}catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>'});saveConv(msgs,count);}
 hideLoading();render();
 }
 
@@ -1314,7 +1312,7 @@ var cls=m.role==='user'?'msg-u':'msg-a';
 var html=m.html.replace(/<button[^>]*>[\s\S]*?<\/button>/gi,'').replace(/<div class="ikcp-followups"[\s\S]*?<\/div>\s*<\/div>/gi,'').replace(/<div class="ikcp-schema-hint"[\s\S]*?<\/div>/gi,'').replace(/<div class="ikcp-calendly-inline"[\s\S]*?<\/div>/gi,'').replace(/<div class="ikcp-profile-pill"[\s\S]*?<\/div>/gi,'');
 return '<div class="msg '+cls+'"><div class="role">'+role+'</div>'+html+'</div>';
 }).join('\n');
-w.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Conversation Marcel — IKCP</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","DM Sans",sans-serif;color:#1f1a16;padding:40px;max-width:720px;margin:0 auto;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header{text-align:center;border-bottom:2px solid #b8956e;padding-bottom:22px;margin-bottom:28px}.header h1{font-family:Georgia,serif;font-size:26px;font-weight:500;color:#1f1a16}.header .sub{color:#b8956e;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-top:4px}.header .meta{color:#9e9080;font-size:11px;margin-top:10px;font-style:italic}.profile{background:#f9f6f0;border:1px solid #e5ded2;border-radius:8px;padding:10px 14px;font-size:12px;color:#907b65;margin-bottom:18px}.msg{margin-bottom:18px;padding:12px 16px;border-radius:10px;font-size:13px}.msg .role{font-size:10px;color:#b8956e;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:5px}.msg-u{background:#1f1a16;color:white;margin-left:60px}.msg-u .role{color:#b8956e}.msg-a{background:#f9f6f0;border:1px solid #e5ded2;margin-right:60px}.msg-a strong{color:#1f1a16}.msg p{margin:0 0 6px}.msg p:last-child{margin:0}.msg a{color:#b8956e}.footer{margin-top:40px;padding-top:18px;border-top:1px solid #e5ded2;text-align:center;font-size:10px;color:#9e9080;line-height:1.5}.footer strong{color:#1f1a16}.footer a{color:#b8956e;text-decoration:none}.cta{margin-top:22px;padding:16px;background:#1f1a16;color:white;border-radius:10px;text-align:center}.cta p{font-family:Georgia,serif;font-size:15px;margin-bottom:8px}.cta a{display:inline-block;padding:9px 20px;background:#b8956e;color:#1f1a16;font-weight:700;border-radius:6px;text-decoration:none;font-size:12px}@media print{.cta{display:none}body{padding:25px}}</style></head><body><div class="header"><h1>Votre échange avec Marcel</h1><div class="sub">IKCP · IKIGAÏ Conseil Patrimonial</div><div class="meta">Généré le '+today+'</div></div>'+(profileLine?'<div class="profile"><strong>Profil mémorisé :</strong> '+profileLine+'</div>':'')+content+'<div class="cta"><p>Aller plus loin ensemble.</p><a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial">Réserver un échange avec Maxime →</a></div><div class="footer"><strong>IKCP — IKIGAÏ Conseil Patrimonial</strong><br>CIF — CNCEF Patrimoine · ORIAS 23001568 · <a href="https://ikcp.eu">ikcp.eu</a><br><span style="font-size:9px;margin-top:8px;display:inline-block">Cette conversation pédagogique ne constitue pas un conseil en investissement personnalisé au sens MIF II.</span></div></body></html>');
+w.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Conversation Marcel — IKCP</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","DM Sans",sans-serif;color:#1f1a16;padding:40px;max-width:720px;margin:0 auto;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header{text-align:center;border-bottom:2px solid #b8956e;padding-bottom:22px;margin-bottom:28px}.header h1{font-family:Georgia,serif;font-size:26px;font-weight:500;color:#1f1a16}.header .sub{color:#b8956e;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-top:4px}.header .meta{color:#9e9080;font-size:11px;margin-top:10px;font-style:italic}.profile{background:#f9f6f0;border:1px solid #e5ded2;border-radius:8px;padding:10px 14px;font-size:12px;color:#907b65;margin-bottom:18px}.msg{margin-bottom:18px;padding:12px 16px;border-radius:10px;font-size:13px}.msg .role{font-size:10px;color:#b8956e;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:5px}.msg-u{background:#1f1a16;color:white;margin-left:60px}.msg-u .role{color:#b8956e}.msg-a{background:#f9f6f0;border:1px solid #e5ded2;margin-right:60px}.msg-a strong{color:#1f1a16}.msg p{margin:0 0 6px}.msg p:last-child{margin:0}.msg a{color:#b8956e}.footer{margin-top:40px;padding-top:18px;border-top:1px solid #e5ded2;text-align:center;font-size:10px;color:#9e9080;line-height:1.5}.footer strong{color:#1f1a16}.footer a{color:#b8956e;text-decoration:none}.cta{margin-top:22px;padding:16px;background:#1f1a16;color:white;border-radius:10px;text-align:center}.cta p{font-family:Georgia,serif;font-size:15px;margin-bottom:8px}.cta a{display:inline-block;padding:9px 20px;background:#b8956e;color:#1f1a16;font-weight:700;border-radius:6px;text-decoration:none;font-size:12px}@media print{.cta{display:none}body{padding:25px}}</style></head><body><div class="header"><h1>Votre échange avec Marcel</h1><div class="sub">IKCP · IKIGAÏ Conseil Patrimonial</div><div class="meta">Généré le '+today+'</div></div>'+(profileLine?'<div class="profile"><strong>Profil mémorisé :</strong> '+profileLine+'</div>':'')+content+'<div class="cta"><p>Aller plus loin ensemble.</p><a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A">Réserver un échange avec Maxime →</a></div><div class="footer"><strong>IKCP — IKIGAÏ Conseil Patrimonial</strong><br>CIF — CNCEF Patrimoine · ORIAS 23001568 · <a href="https://ikcp.eu">ikcp.eu</a><br><span style="font-size:9px;margin-top:8px;display:inline-block">Cette conversation pédagogique ne constitue pas un conseil en investissement personnalisé au sens MIF II.</span></div></body></html>');
 w.document.close();
 setTimeout(function(){w.print();},500);
 };
@@ -1532,7 +1530,7 @@ if(Date.now()-_lastUserMsgTime<90000)return;
 _relanceShown=true;
 var relances=[
 '<p>Encore une question ? Je peux aussi vous proposer un <a href="#" onclick="window._ikcpAskFollow(\'Je voudrais faire un mini-bilan patrimonial\');return false;">mini-bilan en 2 minutes</a> si cela vous intéresse.</p>',
-'<p>Prenez votre temps. Si vous souhaitez aller plus loin, <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank">Maxime peut analyser votre situation en détail</a>.</p>',
+'<p>Prenez votre temps. Si vous souhaitez aller plus loin, <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Maxime peut analyser votre situation en détail</a>.</p>',
 '<p>Besoin de précisions sur un point abordé ? Ou un autre sujet patrimonial qui vous préoccupe ?</p>'
 ];
 msgs.push({role:'assistant',html:relances[Math.floor(Math.random()*relances.length)],_relance:true});

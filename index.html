@@ -349,7 +349,7 @@
                     <div class="cta">
                         <p style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px;">Aller plus loin ensemble.</p>
                         <p style="font-size:12px;opacity:0.5;margin-bottom:16px;">Identifier vos leviers concrets ensemble.</p>
-                        <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial">Réserver un échange →</a>
+                        <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A">Demander un échange →</a>
                     </div>
                     <div class="footer">
                         <p><strong>IKCP</strong> — IKIGAÏ Conseil Patrimonial · Ardèche · Combloux · Megève</p>
@@ -503,7 +503,7 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - Conjoint survivant : exonéré de droits de succession (art. 796-0 bis CGI)
 
 IMPLANTATIONS : Ardèche · Combloux · Megève
-CALENDLY : calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial
+CONTACT MAXIME : maxime@ikcp.fr (échange sur recommandation ou demande motivée — pas de prise de RDV publique)
 ORIAS : 23001568 | SIREN : 947 972 436
 
 RÈGLES ABSOLUES :
@@ -559,7 +559,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                                 succession: "La question de la transmission est centrale. Sans anticipation, les droits de succession en ligne directe peuvent atteindre 45% au-delà de 1,8 million d'euros (barème 2026, art. 777 du Code général des impôts). Mais avec un abattement de 100 000 € par enfant renouvelable tous les 15 ans, une assurance-vie bien structurée et une stratégie de donation progressive, l'impact peut être considérablement réduit. Chaque situation est unique — je vous invite à explorer le diagnostic patrimonial sur cette page.",
                                 protection: "Vous touchez au cœur de la spécialisation d'IKCP. La vraie question est : si demain il vous arrivait quelque chose, comment votre famille s'en sortirait-elle financièrement ? Prévoyance, mandat de protection future, donation au dernier vivant, clause bénéficiaire d'assurance-vie — ces outils coûtent très peu mais changent tout. Le diagnostic patrimonial ci-dessus vous donnera un premier état des lieux.",
                                 impot: "L'impôt sur le revenu en 2026 est calculé selon un barème progressif : 0% jusqu'à 11 600 €, puis 11%, 30%, 41% et 45% pour la tranche au-delà de 181 917 € (source : economie.gouv.fr, Loi de Finances 2026). Mais l'optimisation fiscale n'est jamais une fin en soi — elle doit s'intégrer dans une stratégie patrimoniale globale qui protège aussi votre famille.",
-                                rdv: "Si vous avez identifié des enjeux qui vous concernent, vous pouvez réserver un échange directement avec Maxime Juveneton. Il préparera des pistes concrètes adaptées à votre situation. Le lien Calendly est disponible en bas de cette page."
+                                rdv: "Si vous avez identifié des enjeux qui vous concernent, vous pouvez écrire à Maxime Juveneton à maxime@ikcp.fr en présentant brièvement votre situation. Les échanges se font sur recommandation ou suite à un bilan patrimonial — pas de prise de rendez-vous publique."
                             };
                             const lower = userText.toLowerCase();
                             if (lower.match(/success|héritage|transm|donat|enfant.*hérit/)) responseText = demoResponses.succession;
@@ -585,7 +585,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                         this.history.push({ role: 'assistant', content: responseText });
                         this.messages.push({ role: 'assistant', html: marked.parse(String(responseText)) });
                     } catch(e) {
-                        this.messages.push({ role:'assistant', html:"<p>Un problème technique est survenu. Vous pouvez réessayer ou <a href='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial' target='_blank' class='underline font-bold'>échanger directement avec Maxime</a>.</p>" });
+                        this.messages.push({ role:'assistant', html:"<p>Un problème technique est survenu. Vous pouvez réessayer ou <a href='mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A' target='_blank' class='underline font-bold'>échanger directement avec Maxime</a>.</p>" });
                     }
                     finally { this.isLoading=false; this.$nextTick(()=>{const c=document.getElementById('chat-messages');if(c)c.scrollTop=c.scrollHeight;}); }
                 }
@@ -2062,7 +2062,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 <a href="#besoins" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Cas concrets</a>
                 <a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-sm font-medium transition flex items-center gap-1.5" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">⭐Sélection Privée</a>
                 <a href="#philosophie" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Le Cabinet</a>
-                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="px-5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-sm font-bold rounded-lg hover:bg-[#f9f6f0] transition-all shadow-lg hover:-translate-y-0.5">Échanger →</a>
+                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="px-5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-sm font-bold rounded-lg hover:bg-[#f9f6f0] transition-all shadow-lg hover:-translate-y-0.5">Échanger →</a>
             </div>
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-xl p-2" :class="scrolled?'text-[#1f1a16]':'text-white'">☰</button>
         </div>
@@ -2072,7 +2072,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <a @click="mobileMenuOpen=false" href="#besoins" class="text-xl font-serif text-[#1f1a16]">Cas concrets</a>
             <a @click="mobileMenuOpen=false" href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-xl font-serif gold-text">Sélection Privée</a>
             <a @click="mobileMenuOpen=false" href="#philosophie" class="text-xl font-serif text-[#1f1a16]">Le Cabinet</a>
-            <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="mt-4 px-8 py-3 bg-[#b8956e] text-[#1f1a16] font-bold rounded-lg">Échanger →</a>
+            <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="mt-4 px-8 py-3 bg-[#b8956e] text-[#1f1a16] font-bold rounded-lg">Échanger →</a>
         </div>
     </nav>
 
@@ -2488,12 +2488,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                                 <p class="text-sm text-green-700 font-medium">✅ C'est noté, <span x-text="contact.prenom"></span>. Maxime vous recontactera prochainement.</p>
                             </div>
 
-                            <!-- Calendly toujours visible -->
+                            <!-- Contact direct (mailto) — sur recommandation / motivé -->
                             <div class="mt-4 pt-4 border-t border-[#e5ded2] text-center">
-                                <p class="text-xs text-[#9e9080] mb-2">Vous préférez prendre rendez-vous directement ?</p>
-                                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="inline-flex items-center gap-2 text-sm font-semibold text-[#b8956e] hover:text-[#1f1a16] transition-colors">
-                                    Échanger avec Maxime →
+                                <p class="text-xs text-[#9e9080] mb-2">Vous préférez écrire directement à Maxime ?</p>
+                                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 text-sm font-semibold text-[#b8956e] hover:text-[#1f1a16] transition-colors">
+                                    Écrire à Maxime →
                                 </a>
+                                <p class="text-[10px] text-[#9e9080] mt-2 italic">Sur recommandation ou suite à un bilan patrimonial.</p>
                             </div>
                         </div>
                     </div>
@@ -2652,7 +2653,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="bg-gradient-to-br from-[#1f1a16] to-[#2e2520] rounded-xl p-6 sm:p-8 text-center text-white shadow-lg max-w-2xl mx-auto">
                 <p class="font-serif text-xl mb-2">Aller plus loin ensemble.</p>
                 <p class="text-sm text-[#9e9080] mb-5">Explorez les 5 étapes du diagnostic, identifiez vos leviers et réservez un échange.</p>
-                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="inline-block px-8 py-3.5 bg-[#b8956e] text-[#1f1a16] font-bold text-sm rounded-lg hover:scale-105 transition-transform shadow-lg">Réserver un échange →</a>
+                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-block px-8 py-3.5 bg-[#b8956e] text-[#1f1a16] font-bold text-sm rounded-lg hover:scale-105 transition-transform shadow-lg">Demander un échange →</a>
                 <p class="text-[10px] text-[#6d5c4a] mt-4">IKCP — Ardèche · Combloux · Megève</p>
             </div>
         </div>
@@ -3148,7 +3149,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                                     </div>
                                 </div>
                                 <div class="text-center mt-5">
-                                    <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank"
+                                    <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A"
                                        class="inline-flex items-center gap-2 px-6 py-3 bg-[#1f1a16] text-white text-xs font-bold rounded-xl hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-lg hover:-translate-y-0.5">
                                         Découvrir les solutions adaptées à ma situation →
                                     </a>
@@ -3299,10 +3300,10 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             </div>
 
             <div class="text-center">
-                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-xl hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-lg">
-                    Prendre rendez-vous →
+                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-xl hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-lg">
+                    Demander un échange →
                 </a>
-                <p class="text-[10px] text-[#ad9578] mt-3">Vous savez ce que vous voulez protéger. Nous savons comment.</p>
+                <p class="text-[10px] text-[#ad9578] mt-3">Sur recommandation ou suite à un bilan patrimonial.</p>
             </div>
         </div>
     </section>
@@ -3351,13 +3352,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <p class="text-[#907b65] text-sm mb-8 max-w-md mx-auto">Un premier échange pour comprendre ce que vous êtes en train de bâtir — et comment le protéger.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
-                <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-lg hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all shadow-xl hover:-translate-y-0.5">
-                    📅 Réserver un créneau
+                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-lg hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all shadow-xl hover:-translate-y-0.5">
+                    ✉️ Écrire à Maxime
                 </a>
                 <a href="tel:0667537979" class="inline-flex items-center gap-2 px-8 py-4 border border-[#d8d0c4] text-[#4d3f33] text-sm font-medium rounded-lg hover:bg-[#1f1a16] hover:text-white hover:border-slate-900 transition">
                     📞 06 67 53 79 79
                 </a>
             </div>
+            <p class="text-[11px] text-[#9e9080] italic -mt-6 mb-10">Échange sur recommandation ou suite à un bilan patrimonial.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm text-[#9e9080]">
                 <a href="/cdn-cgi/l/email-protection#1f727e6776727a5f76747c6f31796d" class="hover:text-[#b8956e] transition"><span class="__cf_email__" data-cfemail="8fe2eef7e6e2eacfe6e4ecffa1e9fd">[email&#160;protected]</span></a>
@@ -3670,7 +3672,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </script>
 
     <!-- ══════════ CHATBOT MARCEL (widget externe) ══════════ -->
-    <script src="/chatbot-widget.js?v=17"></script>
+    <script src="/chatbot-widget.js?v=18"></script>
     <!-- ══════════ PWA INSTALL PROMPT ══════════ -->
     <div id="pwa-install" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#1f1a16;color:white;padding:14px 24px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);font-size:14px;font-family:Inter,sans-serif;max-width:380px;width:calc(100% - 32px);">
         <div style="display:flex;align-items:center;gap:14px;">
