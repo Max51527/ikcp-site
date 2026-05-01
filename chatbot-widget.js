@@ -914,6 +914,11 @@ css.textContent=`
 #ikcp-export-conv{background:none;border:none;color:#b8956e;cursor:pointer;padding:4px 6px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all 0.15s}
 #ikcp-export-conv:hover{color:white;background:rgba(255,255,255,0.08)}
 #ikcp-tts-toggle.is-on{color:#22c55e}
+#ikcp-synthesis-btn{background:none;border:none;color:#b8956e;cursor:pointer;padding:4px 6px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all 0.15s;font-size:14px}
+#ikcp-synthesis-btn:hover{color:white;background:rgba(255,255,255,0.08)}
+.ikcp-synthesis-offer{display:flex;gap:10px;background:linear-gradient(135deg,#fffaf2,#fdf3e3);border:1px solid #ece6da;border-radius:10px;padding:10px 12px;margin:6px 0;align-items:flex-start}
+.ikcp-synthesis-icon{font-size:22px;line-height:1}
+.ikcp-synthesis-body{flex:1;font-size:12px;color:#1f1a16}
 /* B2 — Toggle langue */
 .ikcp-lang-toggle{display:inline-flex;gap:1px;margin-right:4px;background:rgba(255,255,255,0.05);border-radius:6px;padding:2px}
 .ikcp-lang-toggle button{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:10px;font-weight:700;padding:3px 6px;border-radius:4px;transition:all 0.15s;letter-spacing:0.5px}
@@ -1001,6 +1006,8 @@ d.innerHTML=m.html;
 el.appendChild(d);
 });
 el.scrollTop=el.scrollHeight;
+// Auto-trigger synthèse après 4+ échanges (defined after render(), guard via typeof)
+if(typeof maybeOfferSynthesis==='function')maybeOfferSynthesis();
 }
 
 var _loadingTimer=null;
@@ -1273,7 +1280,7 @@ if(b)b.title=isExpanded?'Réduire':'Agrandir';
 var html=`
 <div id="ikcp-tease" onclick="document.querySelector('#ikcp-chat-btn').click()"><p class="t1">Une question patrimoniale&nbsp;?</p><p class="t2">Succession, donation, IFI&hellip; posez votre question 👇</p></div>
 <div id="ikcp-chat-panel">
-<div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><div class="ikcp-lang-toggle"><button data-lang="fr" onclick="window._ikcpSetLang('fr')">FR</button><button data-lang="en" onclick="window._ikcpSetLang('en')">EN</button><button data-lang="de" onclick="window._ikcpSetLang('de')">DE</button></div><button id="ikcp-tts-toggle" onclick="window._ikcpToggleTTSBtn()" title="Lire à voix haute"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><button id="ikcp-export-conv" onclick="window._ikcpSendToMaxime()" title="Envoyer ma conversation à Maxime"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
+<div id="ikcp-chat-head"><div><span class="gr"></span><span class="ikcp-title">Marcel &mdash; IKCP</span></div><div class="ikcp-actions"><div class="ikcp-lang-toggle"><button data-lang="fr" onclick="window._ikcpSetLang('fr')">FR</button><button data-lang="en" onclick="window._ikcpSetLang('en')">EN</button><button data-lang="de" onclick="window._ikcpSetLang('de')">DE</button></div><button id="ikcp-tts-toggle" onclick="window._ikcpToggleTTSBtn()" title="Lire à voix haute"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><button id="ikcp-synthesis-btn" onclick="window._ikcpRequestSynthesis()" title="Recevoir ma synthèse par email">📧</button><button id="ikcp-export-conv" onclick="window._ikcpSendToMaxime()" title="Envoyer ma conversation à Maxime"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button><button id="ikcp-export" onclick="window._ikcpExport()" title="Exporter la conversation en PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button id="ikcp-expand" onclick="window._ikcpExpand()" title="Agrandir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button><button onclick="window._ikcpToggle()" title="Fermer" style="font-size:16px">✕</button></div></div>
 <div id="ikcp-chat-msgs"></div>
 <div id="ikcp-chat-disclaimer"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Marcel apporte un éclairage général — il ne remplace pas un professionnel. Pour votre situation, contactez Maxime.</span></div>
 <div id="ikcp-chat-input"><button id="ikcp-upload" onclick="document.getElementById('ikcp-file').click()" title="Envoyer un document PDF (avis d'imposition, contrat...)" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button><input type="file" id="ikcp-file" accept="application/pdf" style="display:none" onchange="window._ikcpFileChange(this)"><button id="ikcp-voice" onclick="window._ikcpVoice()" title="Dicter la question" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button><input id="ikcp-inp" type="text" placeholder="Posez votre question à Marcel..." onkeydown="if(event.key==='Enter')document.getElementById('ikcp-send').click()"><button id="ikcp-send" onclick="window._ikcpSend()">→</button></div>
@@ -1616,6 +1623,79 @@ window.location.href=mailUrl;
 msgs.push({role:'assistant',html:'<p>✅ Votre client mail s\'ouvre — vérifiez les infos puis envoyez. Maxime vous répondra sous 24h.</p>'});
 saveConv(msgs,count);render();
 };
+
+// ─── Synthèse PDF par email — capture email visiteur + envoi récap + alerte Maxime ───
+window._ikcpRequestSynthesis=function(presetEmail){
+// 1. Vérifie qu'il y a une vraie conversation (au moins 2 échanges)
+var realMsgs=msgs.filter(function(m){return !m._resumeBanner&&!m._hasQuickstart;});
+if(realMsgs.length<2){
+msgs.push({role:'assistant',html:'<p style="font-size:12px;color:#6d5c4a">Posez d\'abord une question — je pourrai ensuite vous envoyer la synthèse.</p>'});
+saveConv(msgs,count);render();return;
+}
+// 2. Récupère email (paramètre, profile, ou prompt)
+var email=presetEmail||(profile&&profile.email)||'';
+if(!email){
+var inputEmail=window.prompt('Votre email pour recevoir la synthèse :','');
+if(!inputEmail||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail.trim()))return;
+email=inputEmail.trim();
+profile.email=email;saveProfile(profile);
+}
+// 3. Construit transcript propre
+var convText=msgs.map(function(m){
+if(m._resumeBanner||m._hasQuickstart)return '';
+var role=m.role==='user'?'VOUS':'MARCEL';
+var clean=m.html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+return clean?role+': '+clean:'';
+}).filter(Boolean).join('\n\n');
+var profileLine=profileAsContext().replace('[Contexte du visiteur : ','').replace(']','');
+var firstName=(profile&&profile.first_name)||'';
+var dateStr=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+var subject='Votre synthèse IKCP — '+dateStr;
+var body='Bonjour'+(firstName?' '+firstName:'')+',\n\n'
++'Merci pour cet échange avec Marcel. Voici la synthèse de notre conversation :\n\n'
++'═══════════════════════════════════════\n\n'
++convText+'\n\n'
++'═══════════════════════════════════════\n\n'
++(profileLine?'Profil identifié : '+profileLine+'\n\n':'')
++'Pour aller plus loin, n\'hésitez pas à m\'écrire en répondant à cet email — je préparerai des pistes adaptées à votre situation.\n\n'
++'À bientôt,\n'
++'Maxime Juveneton — IKCP\n'
++'maxime@ikcp.fr · ikcp.eu\n'
++'ORIAS 23001568';
+// 4. POST au worker prospect (alerte Maxime + tracker)
+try{
+fetch('https://ikcp-prospect.maxime-ead.workers.dev',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+type:'marcel_synthesis_request',
+source:'Marcel chat - synthèse email',
+visitor_email:email,
+profile:profile,
+subject:subject,
+body:body,
+questionsHistory:_questionsHistory,
+page:location.href,
+date:new Date().toISOString()
+})
+}).catch(function(){});
+}catch(e){}
+// 5. Confirmation in-chat + fallback mailto-self pour copie immédiate
+msgs.push({role:'assistant',html:'<p>📧 Synthèse envoyée à <strong>'+email+'</strong>. Vérifiez votre boîte (et les spams) dans 1-2 minutes.</p><p style="font-size:11px;color:#9e9080;margin-top:6px;font-style:italic">Maxime a été notifié. Si votre situation est urgente, écrivez-lui directement à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>.</p>'});
+saveConv(msgs,count);render();
+};
+
+// Auto-trigger discret : après 4 échanges, propose la synthèse une fois (puis n'insiste plus)
+var _synthesisOffered=false;
+function maybeOfferSynthesis(){
+if(_synthesisOffered)return;
+var realCount=msgs.filter(function(m){return !m._resumeBanner&&!m._hasQuickstart;}).length;
+if(realCount>=8){
+_synthesisOffered=true;
+msgs.push({role:'assistant',html:'<div class="ikcp-synthesis-offer"><div class="ikcp-synthesis-icon">📧</div><div class="ikcp-synthesis-body"><strong>Souhaitez-vous recevoir cette conversation par email ?</strong><div style="font-size:11px;color:#6d5c4a;margin-top:4px">Récap complet + email Maxime pour aller plus loin.</div><button onclick="window._ikcpRequestSynthesis()" style="margin-top:8px;background:linear-gradient(135deg,#b8956e,#a07b54);color:white;border:none;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:600;cursor:pointer">Recevoir ma synthèse →</button></div></div>'});
+saveConv(msgs,count);
+}
+}
 
 // ─── B1 : Toggle TTS ───
 window._ikcpToggleTTSBtn=function(){
