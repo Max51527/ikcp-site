@@ -1,0 +1,32 @@
+name = "ikcp-prospect"
+main = "worker.js"
+compatibility_date = "2026-04-25"
+
+[observability]
+enabled = true
+
+# ─── Bindings nécessaires (déjà configurés en prod via Dashboard) ───
+#
+# SECRETS (Settings → Variables and Secrets → Encrypted) :
+#   NOTION_TOKEN     — token API Notion
+#   NOTION_DB_ID     — ID de la database Notion "Prospects IKCP"
+#   RESEND_API_KEY   — clé API Resend
+#
+# VARIABLES (Settings → Variables and Secrets → Plain text) :
+#   NOTIFY_EMAIL     — adresse email Maxime (default maxime@ikcp.eu)
+#
+# KV NAMESPACES (Settings → KV Namespace Bindings) :
+#   IDEMPOTENCY      — pour cache requestId + bilan KV (TTL 30j)
+#   RATE_LIMIT       — pour rate limit IP (optionnel)
+#
+# Ces bindings sont DÉJÀ en place sur le worker actuel — le redéploiement
+# conserve tous les bindings existants. Pas besoin de les recréer.
+
+# Si tu veux gérer les KV ici aussi (recommandé pour reproductibilité) :
+# [[kv_namespaces]]
+# binding = "IDEMPOTENCY"
+# id = "<id-from-dashboard>"
+#
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<id-from-dashboard>"
