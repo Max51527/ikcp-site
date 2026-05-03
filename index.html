@@ -1575,20 +1575,33 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           }
         }
 
-        /* Animation de rotation des questions */
+        /* Animation de rotation des questions — fade staggered, doux */
+        #marcel-questions { min-height: 220px; }
         .marcel-q {
-          animation: qFadeIn 0.5s ease both;
+          animation: qFadeIn 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+          will-change: opacity, transform;
         }
+        .marcel-q:nth-child(1) { animation-delay: 0.00s; }
+        .marcel-q:nth-child(2) { animation-delay: 0.07s; }
+        .marcel-q:nth-child(3) { animation-delay: 0.14s; }
+        .marcel-q:nth-child(4) { animation-delay: 0.21s; }
         .marcel-q.fading-out {
-          animation: qFadeOut 0.4s ease both;
+          animation: qFadeOut 0.45s cubic-bezier(0.4, 0, 1, 1) both;
         }
+        .marcel-q.fading-out:nth-child(1) { animation-delay: 0.00s; }
+        .marcel-q.fading-out:nth-child(2) { animation-delay: 0.06s; }
+        .marcel-q.fading-out:nth-child(3) { animation-delay: 0.12s; }
+        .marcel-q.fading-out:nth-child(4) { animation-delay: 0.18s; }
         @keyframes qFadeIn {
-          from { opacity: 0; transform: translateX(-8px); }
-          to { opacity: 1; transform: translateX(0); }
+          0%   { opacity: 0; transform: translateY(8px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
         @keyframes qFadeOut {
-          from { opacity: 1; transform: translateX(0); }
-          to { opacity: 0; transform: translateX(8px); }
+          0%   { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-6px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .marcel-q, .marcel-q.fading-out { animation: none !important; }
         }
 
         /* La montgolfière de Marcel qui vole */
@@ -2194,11 +2207,6 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           <div class="number">
             <span class="number-big">100%</span>
             <span class="number-unit">indépendant</span>
-          </div>
-          <span class="number-dot"></span>
-          <div class="number">
-            <span class="number-big">0%</span>
-            <span class="number-unit">frais d'entrée</span>
           </div>
         </div>
 
@@ -3422,44 +3430,117 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         </div>
     </section>
 
-    <footer class="bg-[#1f1a16] text-white py-10 border-t border-slate-800">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                <a href="#" class="text-xl font-serif font-bold auto-color-change tracking-wide">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.4);">.</span></a>
-                <div class="flex items-center gap-4">
-                    <a href="https://www.linkedin.com/in/maxime-juveneton-27913a150/" target="_blank" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-[#9e9080] hover:text-white hover:bg-[#0077B5]/20 transition-all">in</a>
-                    <a href="https://www.instagram.com/ikcp.patrimoine/" target="_blank" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-[#9e9080] hover:text-white hover:bg-[#E4405F]/20 transition-all">ig</a>
-                    <a href="https://www.facebook.com/ikcp.patrimoine/" target="_blank" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-[#9e9080] hover:text-white hover:bg-[#1877F2]/20 transition-all">fb</a>
+    <!-- ══════════ FOOTER 4 COLONNES ══════════ -->
+    <footer class="bg-[#1f1a16] text-white border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-14 pb-6">
+
+            <!-- Bloc principal : 4 colonnes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+                <!-- Colonne 1 : Cabinet -->
+                <div>
+                    <a href="#" class="text-2xl font-serif font-bold auto-color-change tracking-wide block mb-1">IKCP<span style="-webkit-text-fill-color:rgba(255,255,255,0.4);">.</span></a>
+                    <p class="text-[11px] text-[#9e9080] tracking-wide uppercase mb-4">Cabinet patrimonial indépendant</p>
+                    <p class="text-sm text-[#c8bfb5] leading-relaxed mb-4">Protéger ce que vous êtes en train de bâtir. Juridique, fiscal, financier — sur recommandation ou suite à un bilan patrimonial.</p>
+                    <p class="text-[11px] text-[#9e9080] leading-relaxed">
+                      <strong class="text-[#b8956e]">Maxime Juveneton</strong><br>
+                      Fondateur · CIF — CNCEF Patrimoine<br>
+                      ORIAS n°23001568 · SIREN 947 972 436
+                    </p>
+                </div>
+
+                <!-- Colonne 2 : Expertises (SEO maillage) -->
+                <div>
+                    <h4 class="text-[11px] font-bold tracking-[0.2em] text-[#b8956e] uppercase mb-4">Expertises</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="/ardeche-patrimoine" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Patrimoine Ardèche</a></li>
+                        <li><a href="/ardeche-succession" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Succession & transmission</a></li>
+                        <li><a href="/ardeche-donation" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Donation</a></li>
+                        <li><a href="/ardeche-ifi" class="text-[#c8bfb5] hover:text-[#b8956e] transition">IFI</a></li>
+                        <li><a href="/assurance-vie-ardeche" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Assurance-vie</a></li>
+                        <li><a href="/ardeche-dirigeant-tns" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Dirigeants & TNS</a></li>
+                        <li><a href="/ardeche-retraite" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Retraite & PER</a></li>
+                        <li><a href="/protection-conjoint" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Protection du conjoint</a></li>
+                    </ul>
+                </div>
+
+                <!-- Colonne 3 : Outils & ressources -->
+                <div>
+                    <h4 class="text-[11px] font-bold tracking-[0.2em] text-[#b8956e] uppercase mb-4">Outils &amp; ressources</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="#bilan-patrimonial" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Diagnostic patrimonial</a></li>
+                        <li><a href="/simulateurs-patrimoine" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Simulateurs</a></li>
+                        <li><a href="/simulateur-donation" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Calculateur donation</a></li>
+                        <li><a href="/simulateur-succession" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Calculateur succession</a></li>
+                        <li><a href="/simulateur-ifi" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Calculateur IFI</a></li>
+                        <li><a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" rel="noopener" class="text-[#c8bfb5] hover:text-[#b8956e] transition">⭐ Sélection Privée</a></li>
+                        <li><a href="/pourquoi-ikcp" class="text-[#c8bfb5] hover:text-[#b8956e] transition">Pourquoi IKCP ?</a></li>
+                    </ul>
+                </div>
+
+                <!-- Colonne 4 : Contact -->
+                <div>
+                    <h4 class="text-[11px] font-bold tracking-[0.2em] text-[#b8956e] uppercase mb-4">Contact</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-[#b8956e] mt-0.5">📍</span>
+                            <span class="text-[#c8bfb5]">Ardèche · Combloux · Megève<br><span class="text-[11px] text-[#9e9080]">Sur rendez-vous uniquement</span></span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-[#b8956e] mt-0.5">✉️</span>
+                            <a href="mailto:maxime@ikcp.fr" class="text-[#c8bfb5] hover:text-[#b8956e] transition">maxime@ikcp.fr</a>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="text-[#b8956e] mt-0.5">📞</span>
+                            <a href="tel:0667537979" class="text-[#c8bfb5] hover:text-[#b8956e] transition">06 67 53 79 79</a>
+                        </li>
+                    </ul>
+
+                    <h4 class="text-[11px] font-bold tracking-[0.2em] text-[#b8956e] uppercase mb-3 mt-7">Suivre IKCP</h4>
+                    <div class="flex items-center gap-2.5">
+                        <a href="https://www.linkedin.com/in/maxime-juveneton-27913a150/" target="_blank" rel="noopener" aria-label="LinkedIn Maxime Juveneton" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#c8bfb5] hover:text-white hover:bg-[#0077B5] transition-all">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/ikcp.patrimoine/" target="_blank" rel="noopener" aria-label="Instagram IKCP" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#c8bfb5] hover:text-white hover:bg-[#E4405F] transition-all">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com/ikcp.patrimoine/" target="_blank" rel="noopener" aria-label="Facebook IKCP" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#c8bfb5] hover:text-white hover:bg-[#1877F2] transition-all">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 py-5 border-t border-white/5 text-[11px] text-[#907b65]">
-                <span class="flex items-center gap-1.5">🛡CIF — CNCEF Patrimoine</span>
-                <span class="text-[#4d3f33]">·</span>
-                <span class="flex items-center gap-1.5">📋ORIAS n°23001568</span>
-                <span class="text-[#4d3f33]">·</span>
-                <span class="flex items-center gap-1.5">✅MIF II / DDA</span>
-                <span class="text-[#4d3f33]">·</span>
-                <span class="flex items-center gap-1.5">⚖COA</span>
-                <span class="text-[#4d3f33]">·</span>
-                <span class="flex items-center gap-1.5">🤝100% indépendant</span>
-            </div>
-<!-- Bloc maillage interne SEO -->
-<div style="max-width:900px;margin:2rem auto;padding:1.5rem 0;border-top:1px solid rgba(180,160,130,0.3);text-align:center;">
-  <p style="font-size:0.85rem;color:#b4a082;text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;">Nos expertises</p>
-  <nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem 1.5rem;">
-    <a href="/ardeche-patrimoine" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">Patrimoine Ardèche</a>
-    <a href="/annonay-patrimoine" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">CGP Annonay</a>
-    <a href="/ardeche-succession" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">Succession Ardèche</a>
-    <a href="/ardeche-dirigeant-tns" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">Dirigeants TNS</a>
-    <a href="/ardeche-retraite" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">Retraite Ardèche</a>
-    <a href="/simulateurs-patrimoine" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">Simulateurs</a>
-    <a href="/assurance-vie-ardeche" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">Assurance-vie</a>
-    <a href="/ardeche-ifi" style="color:#8a7560;text-decoration:none;font-size:0.9rem;">IFI Ardèche</a>
-  </nav>
-</div>
 
-            <p class="text-center text-[10px] text-[#6d5c4a] mt-4 leading-relaxed">© 2026 IKCP — IKIGAÏ Conseil Patrimonial — EURL<br class="sm:hidden"> Les informations présentées ne constituent pas un conseil en investissement personnalisé.</p>
-            <p class="text-center text-[9px] text-[#5a4d3e] mt-3 leading-relaxed opacity-80">Site conçu et rédigé par Maxime Juveneton. Structure, contenus et chatbot Marcel protégés par le droit d'auteur (art. L.111-1 et L.122-4 CPI). Toute reproduction, copie ou imitation — totale ou partielle — est interdite sans autorisation écrite préalable.</p>
+            <!-- Bandeau certifications -->
+            <div class="border-t border-white/10 pt-6 pb-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] text-[#907b65]">
+                <span class="flex items-center gap-1.5">🛡 CIF — CNCEF Patrimoine</span>
+                <span class="text-[#4d3f33]">·</span>
+                <span class="flex items-center gap-1.5">📋 ORIAS n°23001568</span>
+                <span class="text-[#4d3f33]">·</span>
+                <span class="flex items-center gap-1.5">✅ MIF II / DDA</span>
+                <span class="text-[#4d3f33]">·</span>
+                <span class="flex items-center gap-1.5">⚖ COA</span>
+                <span class="text-[#4d3f33]">·</span>
+                <span class="flex items-center gap-1.5">🤝 100% indépendant</span>
+                <span class="text-[#4d3f33]">·</span>
+                <span class="flex items-center gap-1.5">🇫🇷 SIREN 947 972 436</span>
+            </div>
+
+            <!-- Légal / RGPD -->
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px]">
+                <a href="/mentions-legales" class="text-[#9e9080] hover:text-[#b8956e] transition">Mentions légales</a>
+                <span class="text-[#4d3f33]">·</span>
+                <a href="/politique-confidentialite" class="text-[#9e9080] hover:text-[#b8956e] transition">Politique de confidentialité (RGPD)</a>
+                <span class="text-[#4d3f33]">·</span>
+                <a href="/cgu" class="text-[#9e9080] hover:text-[#b8956e] transition">CGU</a>
+                <span class="text-[#4d3f33]">·</span>
+                <a href="/sitemap.xml" class="text-[#9e9080] hover:text-[#b8956e] transition">Plan du site</a>
+                <span class="text-[#4d3f33]">·</span>
+                <a href="mailto:maxime@ikcp.fr?subject=Demande%20RGPD" class="text-[#9e9080] hover:text-[#b8956e] transition">Exercer mes droits RGPD</a>
+            </div>
+
+            <p class="text-center text-[10px] text-[#6d5c4a] mt-6 leading-relaxed">© 2026 IKCP — IKIGAÏ Conseil Patrimonial — EURL.<br class="sm:hidden"> Les informations présentées ne constituent pas un conseil en investissement personnalisé au sens de l'art. L533-13 du Code monétaire et financier.</p>
+            <p class="text-center text-[9px] text-[#5a4d3e] mt-3 leading-relaxed opacity-80 max-w-3xl mx-auto">Site conçu et rédigé par Maxime Juveneton. Structure, contenus et chatbot Marcel protégés par le droit d'auteur (art. L.111-1 et L.122-4 CPI). Toute reproduction, copie ou imitation — totale ou partielle — est interdite sans autorisation écrite préalable.</p>
         </div>
     </footer>
 
@@ -3505,19 +3586,20 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     function rotateQuestions() {
       const container = document.getElementById('marcel-questions');
       if (!container) return;
-      // Fade out
+      // Pause si onglet caché ou hover utilisateur (évite saut au retour)
+      if (document.hidden || container.matches(':hover')) return;
+      // Fade out staggered (durée totale ~0.45s + 0.18s stagger = 0.63s)
       container.querySelectorAll('.marcel-q').forEach(b => b.classList.add('fading-out'));
-      // Swap après l'animation de fade
       setTimeout(() => {
         _qIdx = (_qIdx + 4) % QUESTIONS_POOL.length;
         renderQuestions();
-      }, 400);
+      }, 700);
     }
 
-    // Init + rotation toutes les 10 secondes
+    // Init + rotation toutes les 12 secondes (lecture confortable)
     document.addEventListener('DOMContentLoaded', () => {
       renderQuestions();
-      setInterval(rotateQuestions, 10000);
+      setInterval(rotateQuestions, 12000);
     });
 
     function askMarcel(question){
