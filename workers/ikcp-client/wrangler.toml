@@ -1,0 +1,37 @@
+name = "ikcp-client"
+main = "worker.js"
+compatibility_date = "2026-04-25"
+
+[observability]
+enabled = true
+
+# ─── D1 database ───
+# 1. Créer la DB :  npx wrangler d1 create ikcp-client-db
+# 2. Coller l'ID retourné ci-dessous
+# 3. Migrer le schéma : npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
+[[d1_databases]]
+binding = "DB"
+database_name = "ikcp-client-db"
+database_id = "REMPLACER_PAR_ID_DB"
+
+# ─── KV namespace pour magic tokens ───
+# Créer : npx wrangler kv namespace create CLIENT_TOKENS
+[[kv_namespaces]]
+binding = "TOKENS"
+id = "REMPLACER_PAR_ID_KV"
+
+# ─── Variables (texte plain) ───
+[vars]
+RESEND_FROM = "IKCP <maxime@ikcp.eu>"
+APP_URL = "https://ikcp-client.maxime-ead.workers.dev"
+ADMIN_EMAILS = "maxime@ikcp.fr,maxime@ikcp.eu"
+
+# ─── Domaine custom (optionnel) ───
+# Pour exposer en https://client.ikcp.eu :
+#   1. Cloudflare DNS → ajouter CNAME 'client' → 'ikcp-client.maxime-ead.workers.dev' (proxy ON)
+#   2. Worker → Domains and Routes → Add Custom Domain → 'client.ikcp.eu'
+#   3. Mettre à jour APP_URL ci-dessus → https://client.ikcp.eu
+
+# ─── Secrets à pousser via wrangler (jamais dans ce fichier !) ───
+#   npx wrangler secret put JWT_SECRET       (générer 64 chars random)
+#   npx wrangler secret put RESEND_API_KEY   (re_xxx... depuis resend.com)
