@@ -2,9 +2,17 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>IKCP — Dashboard Family Office · Famille Dupont</title>
 <meta name="robots" content="noindex, nofollow">
+
+<!-- ═══ PWA — installable mobile + desktop ═══ -->
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP Family Office">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -334,6 +342,101 @@ section.block {
 .partn-name { color: var(--ink); margin-top: 2px; }
 .partn-meta { color: var(--ink-faint); font-size: 10.5px; margin-top: 2px; }
 
+/* ─── DÉNICHEUR D'OFFRES ─── */
+.opp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
+.opp-card {
+  padding: 22px 24px 20px;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 1px;
+  display: flex; flex-direction: column;
+  transition: border-color 0.25s, transform 0.25s;
+}
+.opp-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.opp-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 14px; }
+.opp-cat {
+  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+  padding: 4px 10px; border: 1px solid rgba(196,162,115,0.4); border-radius: 1px;
+  font-family: 'Inter', sans-serif;
+}
+.opp-fit {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  display: flex; align-items: center; gap: 6px;
+}
+.opp-fit-bar { width: 50px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; }
+.opp-fit-bar > span { display: block; height: 100%; background: var(--gold); }
+.opp-fit-pct { color: var(--gold-bright); font-weight: 500; }
+.opp-fit.high .opp-fit-pct { color: var(--ok); }
+.opp-fit.high .opp-fit-bar > span { background: var(--ok); }
+.opp-fit.med .opp-fit-pct { color: var(--warn); }
+.opp-fit.med .opp-fit-bar > span { background: var(--warn); }
+.opp-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 10px; line-height: 1.3; }
+.opp-pitch { font-size: 12.5px; color: var(--ink-mute); line-height: 1.55; margin-bottom: 14px; flex: 1; }
+.opp-tickets {
+  font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--gold-bright);
+  margin-bottom: 10px;
+}
+.opp-tickets small { color: var(--ink-faint); margin-left: 6px; }
+.opp-deadline {
+  font-size: 11px; color: var(--warn); margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.opp-source { font-size: 11px; color: var(--ink-faint); margin-bottom: 12px; font-style: italic; font-family: 'Playfair Display', serif; }
+.opp-fit-detail {
+  font-size: 11.5px; color: var(--ink-mute); line-height: 1.6;
+  padding: 10px 12px; background: rgba(196,162,115,0.04);
+  border-left: 2px solid var(--line-strong); margin-bottom: 14px;
+}
+.opp-fit-detail strong { color: var(--ink); font-weight: 500; }
+.opp-cta-row { display: flex; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* ─── SERVICES PREMIUM ─── */
+.serv-prem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.serv-prem-card {
+  padding: 22px 22px 18px;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 1px;
+  display: flex; flex-direction: column;
+  transition: border-color 0.25s;
+}
+.serv-prem-card:hover { border-color: var(--gold); }
+.serv-prem-status {
+  display: inline-block; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 1px; margin-bottom: 12px;
+  font-family: 'Inter', sans-serif;
+}
+.serv-prem-status.actif              { background: rgba(127,174,125,0.12); color: var(--ok); border: 1px solid rgba(127,174,125,0.3); }
+.serv-prem-status.permanent          { background: rgba(127,174,125,0.12); color: var(--ok); border: 1px solid rgba(127,174,125,0.3); }
+.serv-prem-status.realise_q1_2026    { background: rgba(127,174,125,0.12); color: var(--ok); border: 1px solid rgba(127,174,125,0.3); }
+.serv-prem-status.audit_planifie_juin{ background: rgba(196,162,115,0.12); color: var(--gold); border: 1px solid rgba(196,162,115,0.3); }
+.serv-prem-status.inscription_proposee{ background: rgba(212,168,90,0.12); color: var(--warn); border: 1px solid rgba(212,168,90,0.3); }
+.serv-prem-status.a_initier          { background: rgba(94,88,81,0.18); color: var(--ink-mute); border: 1px solid var(--line); }
+.serv-prem-label { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--ink); margin-bottom: 8px; }
+.serv-prem-pitch { font-size: 12.5px; color: var(--ink-mute); line-height: 1.55; margin-bottom: 12px; flex: 1; }
+.serv-prem-detail { font-size: 11.5px; color: var(--ink-faint); font-style: italic; padding-top: 10px; border-top: 1px solid var(--line); font-family: 'Playfair Display', serif; line-height: 1.5; }
+
+/* ─── INSTALL BANNER (PWA mobile) ─── */
+.install-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+  display: none;
+  padding: 12px 18px;
+  background: var(--bg-2); border-top: 1px solid var(--gold);
+  color: var(--ink); font-size: 13px;
+  align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+}
+.install-banner.show { display: flex; }
+.install-banner-text { flex: 1; min-width: 200px; line-height: 1.4; }
+.install-banner-text strong { color: var(--gold); }
+.install-banner-actions { display: flex; gap: 8px; }
+.install-banner button {
+  background: var(--gold); color: var(--bg); border: none;
+  padding: 8px 14px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-weight: 600; cursor: pointer; border-radius: 1px;
+  font-family: 'Inter', sans-serif;
+}
+.install-banner button.dismiss {
+  background: transparent; color: var(--ink-mute); border: 1px solid var(--line);
+}
+
 /* ─── BACKTEST ─── */
 section.backtest {
   padding: 50px 40px;
@@ -422,16 +525,89 @@ footer.proto a:hover { border-color: var(--gold); }
   .serv-wrap { grid-template-columns: 1fr; }
   .bt-vs { grid-template-columns: 1fr; }
   .act-row { grid-template-columns: 1fr; gap: 4px; }
+  .opp-grid { grid-template-columns: 1fr; }
+  .serv-prem-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
-  nav.top { padding: 12px 18px; flex-wrap: wrap; gap: 10px; }
+  /* Nav : masque le menu desktop, garde brand + user-chip */
+  nav.top { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
   nav .menu { display: none; }
-  section.hero, section.scorecard, section.block, section.backtest { padding-left: 18px; padding-right: 18px; }
-  .hero-h1 { font-size: 30px; }
-  .pat-net-value { font-size: 40px; }
+  nav .user-chip { font-size: 10px; padding: 6px 10px; letter-spacing: 0.04em; }
+
+  /* Sections : padding mobile + hero plus compact */
+  section.hero { padding: 30px 16px 20px; }
+  section.scorecard { padding: 20px 16px; }
+  section.block { padding: 36px 16px 20px; }
+  section.backtest { padding: 36px 16px; }
+  .hero-h1 { font-size: 28px; }
+  .hero-meta { flex-direction: column; gap: 10px; font-size: 12px; }
+
+  /* Patrimoine */
+  .pat-net-value { font-size: 38px; }
+  .pat-net-currency { font-size: 18px; }
+  .pat-net, .pat-alloc { padding: 22px 18px; }
+  .alloc-row { flex-wrap: wrap; gap: 8px; }
+  .alloc-class { width: 100%; font-size: 12px; }
+  .alloc-bar-wrap { width: 100%; flex: 1 1 100%; }
+  .alloc-pct, .alloc-eur, .alloc-target { width: auto; font-size: 10.5px; }
+
+  /* Score : 1 col */
   .score-strip { grid-template-columns: 1fr; }
-  .timeline-row { grid-template-columns: 1fr; gap: 6px; }
+  .score-cell { padding: 18px 18px; }
+  .score-num { font-size: 26px; }
+
+  /* Timeline */
+  .timeline-row { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
   .timeline-amount, .timeline-status { text-align: left; }
+  .timeline-date strong { font-size: 18px; }
+
+  /* Arbitrages */
+  .arbitrages-grid { grid-template-columns: 1fr; gap: 14px; }
+  .arb-card { padding: 22px 20px 18px; }
+  .arb-foot { flex-direction: column; align-items: stretch; gap: 12px; }
+  .arb-actions { justify-content: flex-end; }
+
+  /* Documents */
+  .docs-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .doc-card { padding: 12px 14px; min-height: 100px; }
+  .doc-label { font-size: 12px; }
+
+  /* Livrables */
+  .liv-row { padding: 14px 18px; }
+
+  /* Opportunités */
+  .opp-card { padding: 18px 18px 16px; }
+  .opp-cta-row { flex-direction: column; }
+  .opp-cta-row .btn-mini { text-align: center; }
+
+  /* Services premium */
+  .serv-prem-card { padding: 18px 18px; }
+
+  /* Block heads */
+  .block-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .block-h2 { font-size: 22px; }
+  .block-meta { text-align: left; }
+
+  /* Backtest */
+  .bt-metrics { grid-template-columns: 1fr; }
+  .bt-vs { padding: 18px 20px; }
+  .bt-value { font-size: 26px; }
+
+  /* Marcel modal full-screen sur mobile */
+  .marcel-overlay { padding: 0; align-items: flex-end; }
+  .marcel-panel {
+    width: 100%; max-height: 90vh; border-radius: 0;
+    border-bottom: none; padding: 22px 18px 18px;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0));
+  }
+  .marcel-input-row { flex-direction: column; }
+  .marcel-send { padding: 12px; }
+
+  /* Footer */
+  footer.proto { padding: 24px 16px; }
+
+  /* Padding bottom si banner d'install affiché */
+  body:has(.install-banner.show) { padding-bottom: 88px; }
 }
 </style>
 </head>
@@ -569,6 +745,30 @@ footer.proto a:hover { border-color: var(--gold); }
   <div class="liv-list" id="liv-list"></div>
 </section>
 
+<!-- ═══ DÉNICHEUR D'OFFRES — la pièce maîtresse d'un FO digital ═══ -->
+<section class="block" id="opportunites">
+  <div class="block-head">
+    <div>
+      <div class="block-kicker">— Dénicheur d'offres</div>
+      <div class="block-h2">Opportunités <em>scorées</em> pour votre profil.</div>
+    </div>
+    <div class="block-meta">Off-market · co-invest · fenêtres fiscales · art · tarifs</div>
+  </div>
+  <div class="opp-grid" id="opp-grid"></div>
+</section>
+
+<!-- ═══ SERVICES PREMIUM (au-delà du conseil) ═══ -->
+<section class="block" id="services-premium">
+  <div class="block-head">
+    <div>
+      <div class="block-kicker">— Au-delà du conseil patrimonial</div>
+      <div class="block-h2">Services <em>premium</em> de votre family office.</div>
+    </div>
+    <div class="block-meta">Family governance · NextGen · cyber · health · audit</div>
+  </div>
+  <div class="serv-prem-grid" id="serv-prem-grid"></div>
+</section>
+
 <!-- ═══ SERVICES ═══ -->
 <section class="block" id="services">
   <div class="block-head">
@@ -615,6 +815,17 @@ footer.proto a:hover { border-color: var(--gold); }
 </footer>
 
 </main>
+
+<!-- ═══ PWA install banner ═══ -->
+<div class="install-banner" id="install-banner" role="region" aria-label="Installer l'application">
+  <div class="install-banner-text">
+    <strong>Installer IKCP Family Office</strong> — votre dashboard, Marcel, vos documents en accès rapide depuis l'écran d'accueil.
+  </div>
+  <div class="install-banner-actions">
+    <button id="install-btn" type="button">Installer</button>
+    <button class="dismiss" id="install-dismiss" type="button">Plus tard</button>
+  </div>
+</div>
 
 <!-- ═══ MARCEL EMBED MODAL ═══ -->
 <div class="marcel-overlay" id="marcel-overlay">

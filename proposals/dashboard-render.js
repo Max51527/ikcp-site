@@ -267,6 +267,82 @@ function renderLivrables() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// DÉNICHEUR D'OFFRES
+
+function renderOpportunites() {
+  const root = document.getElementById('opp-grid');
+  if (!root || !D.opportunites) return;
+  root.innerHTML = D.opportunites.map(o => {
+    const fitClass = o.fit_score >= 85 ? 'high' : (o.fit_score >= 70 ? '' : 'med');
+    const ticket = o.ticket_min ? (o.ticket_min === o.ticket_max ? fmtEurShort(o.ticket_min) : `${fmtEurShort(o.ticket_min)} – ${fmtEurShort(o.ticket_max)}`) : null;
+    const deadline = o.deadline ? `Avant le ${fmtDate(o.deadline)}` : '';
+    const reasons = o.fit_reasons.map(r => `· ${escape(r)}`).join('<br>');
+    return `
+      <div class="opp-card">
+        <div class="opp-head">
+          <span class="opp-cat">${escape(o.categorie)}</span>
+          <span class="opp-fit ${fitClass}" title="Adéquation au profil">
+            <span class="opp-fit-bar"><span style="width:${o.fit_score}%"></span></span>
+            <span class="opp-fit-pct">${o.fit_score}/100</span>
+          </span>
+        </div>
+        <div class="opp-title">${escape(o.titre)}</div>
+        <div class="opp-pitch">${escape(o.pitch)}</div>
+        ${ticket ? `<div class="opp-tickets">Ticket : ${ticket}<small>${o.ticket_min === o.ticket_max ? 'unique' : 'min – max'}</small></div>` : ''}
+        ${deadline ? `<div class="opp-deadline">⏱ ${escape(deadline)}</div>` : ''}
+        <div class="opp-source">${escape(o.source)}</div>
+        <div class="opp-fit-detail"><strong>Pourquoi vous</strong><br>${reasons}</div>
+        <div class="opp-cta-row">
+          <button class="btn-mini" onclick="openMarcelOnOpportunite('${o.id}')">${escape(o.cta || 'Approfondir avec Marcel')}</button>
+          <a class="btn-mini primary" href="mailto:maxime@ikcp.fr?subject=${encodeURIComponent('IKCP — opportunité : ' + o.titre)}">Discuter</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openMarcelOnOpportunite(oppId) {
+  const o = D.opportunites.find(x => x.id === oppId);
+  if (!o) return;
+  openMarcelModal({
+    title: o.titre,
+    theme: null,
+    prompts: [
+      'Quels sont les risques principaux ?',
+      'Calcule l\'impact fiscal si je participe',
+      'Compare avec mes alternatives actuelles',
+    ],
+    prefill: `Que penses-tu de l'opportunité "${o.titre}" pour notre famille ? Notre profil et notre patrimoine te sont connus.`,
+  });
+}
+window.openMarcelOnOpportunite = openMarcelOnOpportunite;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SERVICES PREMIUM
+
+const PREM_STATUS_LABELS = {
+  actif: 'Actif',
+  permanent: 'Permanent',
+  realise_q1_2026: 'Réalisé Q1 2026',
+  audit_planifie_juin: 'Planifié juin',
+  inscription_proposee: 'À ouvrir',
+  a_initier: 'À initier',
+};
+
+function renderServicesPremium() {
+  const root = document.getElementById('serv-prem-grid');
+  if (!root || !D.services_premium) return;
+  root.innerHTML = D.services_premium.map(s => `
+    <div class="serv-prem-card">
+      <span class="serv-prem-status ${s.status}">${escape(PREM_STATUS_LABELS[s.status] || s.status)}</span>
+      <div class="serv-prem-label">${escape(s.label)}</div>
+      <div class="serv-prem-pitch">${escape(s.pitch)}</div>
+      <div class="serv-prem-detail">${escape(s.detail)}</div>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SERVICES
 
 function renderServices() {
@@ -490,6 +566,75 @@ function mdLite(text) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// PWA — installable mobile + desktop
+//
+// Pattern : on capture `beforeinstallprompt` (Chrome/Android), on stocke
+// l'event, et au clic sur "Installer" on appelle `prompt()`. Sur iOS Safari
+// (qui n'a pas l'event), on affiche un message contextuel "Partager →
+// Sur l'écran d'accueil".
+
+let deferredPrompt = null;
+const DISMISSED_KEY = 'ikcp_install_dismissed_until';
+
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+}
+
+function isIos() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function shouldShowBanner() {
+  if (isStandalone()) return false;
+  const dismissed = +localStorage.getItem(DISMISSED_KEY) || 0;
+  if (dismissed > Date.now()) return false;
+  return true;
+}
+
+function setupPwaInstall() {
+  // Service worker — réutilise le sw.js du site
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('../sw.js').catch(() => {});
+  }
+
+  const banner = document.getElementById('install-banner');
+  const btn = document.getElementById('install-btn');
+  const dismiss = document.getElementById('install-dismiss');
+  if (!banner || !btn || !dismiss) return;
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (shouldShowBanner()) banner.classList.add('show');
+  });
+
+  btn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.classList.remove('show');
+    } else if (isIos()) {
+      alert("Sur iPhone : touchez le bouton Partager (carré avec flèche) puis « Sur l'écran d'accueil ».");
+    } else {
+      alert("Pour installer : utilisez le menu de votre navigateur → Installer l'application.");
+    }
+  });
+
+  dismiss.addEventListener('click', () => {
+    banner.classList.remove('show');
+    // Re-proposer dans 7 jours
+    localStorage.setItem(DISMISSED_KEY, Date.now() + 7 * 86400000);
+  });
+
+  // Sur iOS (pas d'event natif) — on affiche après 3 s si la fenêtre n'est pas standalone
+  if (isIos() && shouldShowBanner()) {
+    setTimeout(() => banner.classList.add('show'), 3000);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // INIT
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -501,9 +646,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderConversations();
   renderDocuments();
   renderLivrables();
+  renderOpportunites();
+  renderServicesPremium();
   renderServices();
   renderBacktest();
   renderActivity();
+  setupPwaInstall();
 
   // Modal Marcel — bind close + send + Enter
   document.getElementById('marcel-close').addEventListener('click', closeMarcelModal);

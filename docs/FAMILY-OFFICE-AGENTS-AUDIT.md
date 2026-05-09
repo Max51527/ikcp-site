@@ -583,5 +583,73 @@ L'endpoint à exposer : `GET /api/dashboard/me` sur `workers/ikcp-client`, qui r
 
 ---
 
+## 10. Valeur ajoutée d'un FO digital — au-delà du conseil
+
+### 10.1 Les 5 axes de valeur que doit couvrir un FO digital
+
+Un cabinet de gestion de patrimoine *traditionnel* fait du conseil. Un FO *digital* doit faire bien plus pour justifier l'abonnement et la confiance. Cinq axes :
+
+| Axe | Promesse | Comment IKCP le rend |
+|---|---|---|
+| **i. Dénicheur d'offres** | Accès à des opportunités **scorées par profil** : off-market immo, co-invest PE, fenêtres fiscales, art en pré-vente, tarifs négociés. | Pipeline IKCP + réseau notaires + Christie's/Sotheby's + Bigdata.com → Marcel score chaque offre par adéquation profil (allocation, conversations, deadlines fiscales). Section **Opportunités** du dashboard. |
+| **ii. Conseil premium** | Le sur-mesure introuvable chez les robo-advisors : family governance, NextGen, transmission inter-générationnelle, audit assurance complet. | Section **Services premium** du dashboard : 6 services activables — *family governance*, *programme NextGen*, *cyber-protection*, *health concierge*, *audit assurance*, *tarifs négociés*. |
+| **iii. Services avantageux** | Tarifs négociés sur Lombard, signature électronique, banques privées, plateformes PE. Mise en concurrence systématique 3 offres > 50 k€. | Concrètement : Lombard renégocié OAT+85 pb (vs OAT+110) = **5 800 €/an économisés** sur 2 M€ — détecté par Marcel et placé en opportunité. |
+| **iv. Toujours dans la poche** | PWA installable (iOS + Android + desktop). Notifications push échéances. Marcel 24/7 mobile. Photo → coffre-fort instantané. Mode hors-ligne (FAQ). | `manifest.json` enrichi (raccourcis Dashboard + Marcel) · meta `apple-mobile-web-app-*` · service worker existant (`sw.js`) · banner installation auto sur mobile. |
+| **v. Multi-générationnel** | Sous-comptes Emma & Thomas, programme pédagogique, préparation à recevoir la transmission. Gouvernance familiale outillée. | Service premium *Programme NextGen* + page de transmission liée à la file `arbitrages` (mémo Dutreil 4,8 M€ DupSoft accessible aux deux générations). |
+
+### 10.2 Mapping value-add → revenus
+
+L'enjeu : chaque service premium doit avoir une **valeur économique mesurable** côté client *et* un **modèle de revenus** côté IKCP.
+
+| Service premium | Valeur client | Source revenus IKCP |
+|---|---|---|
+| Dénicheur d'offres | 5-50 k€/an d'optimisations identifiées | Commission apporteur (PE/structurés/immo) — transparente |
+| Family governance | Charte familiale, 2-4 réunions/an | Honoraire forfait 2-4 k€/an |
+| NextGen | 1-2 modules/an Emma + Thomas | Honoraire 800-1 500 €/module |
+| Cyber-protection | Audit annuel + alerte fuite | White-label CYRPA (~500 €/an) |
+| Health concierge | Bilan préventif + 2nd avis | White-label SOS Médecin Privé (~1 800 €/an) |
+| Audit assurance | Identification lacunes RC/cyber/K&R | Commission courtage CO |
+| Tarifs négociés | -25% sur Lombard, signature, etc. | Pas de revenu direct — mais argument de fidélisation |
+
+**Forfait FO digital cible** : **6 800 €/an** (vs 25-40 k€ d'un FO classique 0,5-1% AUM sur 4 M€). À cela s'ajoutent les commissions apporteur (transparentes, MIF II) et les forfaits services premium activés à la demande.
+
+### 10.3 Ce qui rend la version mobile critique
+
+Un FO traditionnel s'utilise au cabinet, sur RDV. Un FO digital doit être **dans la poche** :
+
+1. **Notifications push échéances** — J−8 sur déclaration 2042, alerte sur offre off-market avec deadline 4 semaines, validation Maxime requise.
+2. **Photo → coffre-fort** — courrier RAR DGFiP reçu : photo depuis le téléphone → upload R2 → `documents-agent` Haiku 4.5 le classe + `suivi-agent` programme le rappel.
+3. **Marcel mobile 24/7** — question patrimoniale en RDV chez le notaire, réponse instantanée avec sources.
+4. **Conciergerie en mobilité** — ESTA à renouveler avant voyage NYC : visible directement sur le dashboard.
+
+### 10.4 Ce qui est livré dans cette PR (commit `<dashboard v2>`)
+
+- `proposals/dashboard-data.js` enrichi de :
+  - **`opportunites[]`** (6 offres pre-screened : off-market Combloux 4,8 M€, co-invest PE SaaS B2B, fenêtre CGI 790 A bis, Soulages Christie's, renégociation Lombard, structuré EuroStoxx)
+  - **`services_premium[]`** (6 services : governance, NextGen, cyber, health, audit assurance, tarifs négociés) avec status (actif / à initier / planifié / etc.)
+- `proposals/dashboard-famille-office.html` :
+  - 2 nouvelles sections : **Dénicheur d'offres** + **Services premium**
+  - Meta PWA iOS (`apple-mobile-web-app-*`, `apple-touch-icon`)
+  - **Banner d'installation** "Installer IKCP Family Office" qui apparaît sur mobile non-installé
+  - Responsive mobile renforcé (12 nouveaux breakpoints à 720 px : nav compact, modal Marcel full-screen, opp-card 1 col, etc.)
+- `proposals/dashboard-render.js` :
+  - `renderOpportunites()` avec scoring fit (high/med/normal) + bar de progression + raisons "pourquoi vous"
+  - `renderServicesPremium()` avec status par service
+  - `setupPwaInstall()` : capture `beforeinstallprompt`, banner sur Android/Chrome, message contextuel sur iOS Safari, opt-out 7 jours
+- `proposals/family-office-v4-live.html` : meta PWA + manifest ajoutés (la page d'entrée publique est aussi installable)
+- `manifest.json` : 4 raccourcis (Dashboard, Marcel orchestrateur, Diagnostic patrimonial, RDV)
+
+### 10.5 Ce qu'il reste à brancher (Phase 2)
+
+| # | Action | Pourquoi |
+|---|---|---|
+| 1 | **Pipeline notaires off-market** : flux mensuel des biens > 2 M€ pré-MEM (réseau Maxime). Indexation D1 + scoring Marcel. | Cœur du dénicheur d'offres immo. |
+| 2 | **Alertes Christie's / Sotheby's** : RSS → `art-agent` parse les ventes à venir → match avec préférences client (Soulages, Hartung, Hantaï…). | L'art comme vraie classe d'actif. |
+| 3 | **Notifications push** via Web Push API (VAPID keys dans `ikcp-client`). | Sans push, on perd les J−8 échéances. |
+| 4 | **Service binding `MARCEL` activé** sur `ikcp-api` (déjà déclaré dans wrangler.toml — il faut juste deployer). | Latence quasi nulle entre `/v1/agents/ask` et Marcel. |
+| 5 | **Sous-comptes Emma + Thomas** : ajout `family_id` + `role` (principal/co/enfant) dans schema D1, vue partielle pour les enfants. | NextGen activable. |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*

@@ -163,6 +163,131 @@ window.IKCP_DASHBOARD = (function () {
     { id: 'liv_005', type: 'plan_action', label: 'Plan d\'action 2026 — 5 leviers identifiés', date: '2026-01-22', signed: true, pages: 8 },
   ];
 
+  // ─── DÉNICHEUR D'OFFRES — la pièce maîtresse d'un FO digital ───
+  // Marcel score chaque opportunité par adéquation au profil (allocation,
+  // patrimoine, conversations passées, échéances fiscales). 0 → 100.
+  // Sources : réseau partenaires whitelistés + APIs (Bigdata, Artprice, off-market notaires).
+  const opportunites = [
+    {
+      id: 'opp_001',
+      categorie: 'Immobilier off-market',
+      titre: "Maison contemporaine Combloux 8 ch · vue Mont-Blanc",
+      pitch: "À 12 min de Megève. 380 m². Pré-MEM accessible avant mise sur marché public dans 4 semaines.",
+      ticket_min: 4800000, ticket_max: 4800000,
+      deadline: '2026-06-05',
+      source: 'Étude Bertrand · réseau notaires Haute-Savoie',
+      fit_score: 78,
+      fit_reasons: ['Présence Megève déjà établie', 'Capacité Lombard 1,2 M€ disponible', 'Intérêt résidence secondaire évoqué Q1'],
+      cta: 'Demander la visite',
+    },
+    {
+      id: 'opp_002',
+      categorie: 'Co-investissement PE',
+      titre: "Série A · SaaS B2B finance 6 M€ levée — ticket 50-200 k€",
+      pitch: "Plateforme conformité MIF II pour CGP. ARR 1,2 M€, +180% YoY. Lead Serena Capital. Co-invest LPs IKCP.",
+      ticket_min: 50000, ticket_max: 200000,
+      deadline: '2026-05-30',
+      source: 'Pipeline IKCP · DD partagé',
+      fit_score: 92,
+      fit_reasons: ['Marc dirigeant SaaS DupSoft — connaît le secteur', 'Apport-cession holding éligible 150-0 B ter', 'Thèse PE déjà alloc. cible 12%'],
+      cta: 'Recevoir le memo + term sheet',
+    },
+    {
+      id: 'opp_003',
+      categorie: 'Fenêtre fiscale',
+      titre: "Don logement neuf 100 k€ — exonération CGI 790 A bis avant 31/12/2026",
+      pitch: "Donation supplémentaire 100 k€/parent/enfant pour acquisition logement neuf ou rénovation énergétique. Cumulable avec abattement 100 k€/15 ans.",
+      ticket_min: 100000, ticket_max: 200000,
+      deadline: '2026-12-31',
+      source: 'Veille fiscale IKCP · CGI 790 A bis',
+      fit_score: 88,
+      fit_reasons: ['Emma cherche acquisition Lyon depuis 2025', 'Abattement 100k€ Marc→Emma déjà entamé', 'Économie nette ~20 k€ vs donation classique'],
+      cta: 'Calculer avec Marcel',
+    },
+    {
+      id: 'opp_004',
+      categorie: "Marché de l'art",
+      titre: "Soulages encre 1971 · pré-vente Christie's 18 juin",
+      pitch: "Œuvre sur papier 65×50 cm. Provenance Galerie de France. Estimation 240-320 k€. Possibilité offre conditionnelle pré-vente.",
+      ticket_min: 240000, ticket_max: 320000,
+      deadline: '2026-06-18',
+      source: "Christie's France · alerte Marcel sur Soulages",
+      fit_score: 81,
+      fit_reasons: ['Collection Soulages déjà initiée (1959)', 'Liquidités disponibles (87 k€) + Lombard', 'Hors IFI'],
+      cta: "Demander la fiche d'œuvre",
+    },
+    {
+      id: 'opp_005',
+      categorie: 'Renégociation tarifs',
+      titre: "Lombard mieux placé : Edmond de Rothschild OAT+85 pb",
+      pitch: "Votre offre actuelle BNP Wealth est OAT+110 pb. Edmond de Rothschild propose OAT+85 pb pour profil >2 M€ AUM. Économie ~5 800 €/an sur ligne 2 M€.",
+      ticket_min: null, ticket_max: null,
+      deadline: '2026-07-31',
+      source: 'IKCP · mise en concurrence systématique',
+      fit_score: 95,
+      fit_reasons: ['Lombard actif chez BNP Wealth', 'AUM dépasse seuil 2 M€', 'Garantie cross-collateral PEA + AV'],
+      cta: 'Lancer la mise en concurrence',
+    },
+    {
+      id: 'opp_006',
+      categorie: 'Produit structuré',
+      titre: "Capital protégé 100% · sous-jacent EuroStoxx 50 · 6 ans",
+      pitch: "Coupon conditionnel 8% si EuroStoxx 50 ≥ niveau initial à chaque date d'observation annuelle. Capital garanti à échéance même en cas de baisse.",
+      ticket_min: 50000, ticket_max: 500000,
+      deadline: '2026-06-15',
+      source: 'Émetteur BNP · proposé par Nortia',
+      fit_score: 64,
+      fit_reasons: ['Allocation coté légèrement sous-pondérée vs cible', 'Profil prudent (protection capital)', 'Liquidité 6 ans acceptable'],
+      cta: 'Lire la documentation',
+    },
+  ];
+
+  // ─── SERVICES PREMIUM — au-delà du conseil patrimonial ───
+  const services_premium = [
+    {
+      key: 'governance',
+      label: 'Family governance',
+      pitch: 'Charte familiale · conseil de famille trimestriel · règles transmission + valeurs',
+      status: 'a_initier',
+      detail: 'Document fondateur qui aligne Marc, Sophie, Emma et Thomas sur la vision long terme.',
+    },
+    {
+      key: 'nextgen',
+      label: 'Programme NextGen',
+      pitch: 'Modules pédagogiques pour Emma & Thomas · vision patrimoniale, fiscalité, transmission',
+      status: 'inscription_proposee',
+      detail: 'Emma 30 ans + Thomas 28 ans. Préparation à recevoir la transmission DupSoft.',
+    },
+    {
+      key: 'cyber',
+      label: 'Cyber-protection famille',
+      pitch: 'Audit annuel données personnelles · alerte fuite identité · VPN famille · gestion 2FA',
+      status: 'audit_planifie_juin',
+      detail: 'Audit prévu 12-15 juin par partenaire IKCP (CYRPA). Suite à demande Sophie en mars.',
+    },
+    {
+      key: 'health',
+      label: 'Health concierge',
+      pitch: 'Bilan préventif annuel American Hospital · accès rapide spécialistes · 2nd avis médical',
+      status: 'actif',
+      detail: 'Marc bilan effectué oct 2025. Sophie programmé sept 2026.',
+    },
+    {
+      key: 'insurance_audit',
+      label: 'Audit assurances complet',
+      pitch: 'RC vie privée · cyber · K&R · responsabilité dirigeants · invalidité TNS',
+      status: 'realise_q1_2026',
+      detail: 'Effectué février 2026. 2 lacunes identifiées : RC dirigeant DupSoft sous-dimensionnée, K&R inexistant pour Megève. Devis en cours.',
+    },
+    {
+      key: 'negociated_rates',
+      label: 'Tarifs négociés écosystème',
+      pitch: 'Lombard · signature · banques privées · plateformes PE · galeries — 3 offres mises en concurrence',
+      status: 'permanent',
+      detail: 'Mise en concurrence systématique sur chaque décision > 50 k€. 5 800 €/an économisés sur Lombard détectés ce mois (cf. opportunités).',
+    },
+  ];
+
   // Services & conciergerie
   const services = {
     rdv_prochain: {
@@ -232,6 +357,8 @@ window.IKCP_DASHBOARD = (function () {
     documents,
     livrables,
     services,
+    opportunites,
+    services_premium,
     value_scorecard,
     backtest_12m,
     activity,
