@@ -2,6 +2,7 @@
  * ikcp-api — Worker gateway pour les intégrations API gratuites
  *
  * Endpoints :
+ *   POST /v1/agents/ask    → orchestration multi-thématiques (proxy → Marcel)
  *   POST /v1/notion        → crée une fiche prospect dans Notion
  *   POST /v1/email         → envoie un email via Resend
  *   GET  /v1/legifrance    → proxy Légifrance (recherche article)
@@ -21,6 +22,8 @@
  *
  * Toutes les réponses : { success, data, error, trace_id, timestamp }
  */
+
+import { handleAgentsAsk } from './agents.js';
 
 const ALLOWED_ORIGINS = [
   'https://ikcp.eu',
@@ -246,8 +249,9 @@ export default {
         data: {
           service: 'ikcp-api',
           version: '1.0.0',
-          endpoints: ['/v1/notion', '/v1/email', '/v1/legifrance?q=', '/v1/insee?commune='],
+          endpoints: ['/v1/agents/ask', '/v1/notion', '/v1/email', '/v1/legifrance?q=', '/v1/insee?commune='],
           configured: {
+            marcel_binding: !!env.MARCEL,
             notion: !!env.NOTION_TOKEN,
             resend: !!env.RESEND_API_KEY,
             legifrance: !!env.LEGIFRANCE_TOKEN,
@@ -258,6 +262,7 @@ export default {
     }
 
     // Routing
+    if (path === '/v1/agents/ask' && request.method === 'POST') return handleAgentsAsk(request, env, json, trace);
     if (path === '/v1/notion' && request.method === 'POST') return handleNotion(request, env, trace);
     if (path === '/v1/email' && request.method === 'POST') return handleEmail(request, env, trace);
     if (path === '/v1/legifrance' && request.method === 'GET') return handleLegifrance(request, env, trace);

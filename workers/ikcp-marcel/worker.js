@@ -57,6 +57,59 @@ const TOOLS_FISCAL = [
       required: ['patrimoine_net', 'nb_enfants'],
     },
   },
+  {
+    name: 'calc_donation',
+    description: "Calcule les droits de donation parent → enfant en 2026 (art. 779 I CGI abattement 100 000€/15 ans, barème art. 777 CGI). Utilise pour toute simulation de donation. Tient compte de l'antériorité (donation < 15 ans qui consomme l'abattement).",
+    input_schema: {
+      type: 'object',
+      properties: {
+        montant: { type: 'number', description: 'Montant de la donation envisagée (en euros)' },
+        donation_anterieure: { type: 'number', description: "Montant déjà donné par le même parent au même enfant dans les 15 dernières années (0 si aucune)" },
+        don_familial_31865: { type: 'boolean', description: "Cumul du don familial 31 865€ (CGI 790 G) — uniquement si parent < 80 ans + enfant majeur. Défaut false." },
+      },
+      required: ['montant'],
+    },
+  },
+  {
+    name: 'calc_ifi',
+    description: "Calcule l'IFI 2026 (art. 964 et suivants CGI). Seuil 1 300 000€ de patrimoine immobilier net, abattement 30% résidence principale, barème progressif 0,5% à 1,5%. Utilise pour toute estimation IFI.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        patrimoine_immo_brut: { type: 'number', description: "Patrimoine immobilier brut (résidence principale + secondaire + locatif + parts SCI)" },
+        residence_principale: { type: 'number', description: "Valeur de la résidence principale (avant abattement 30%) — 0 si pas de RP" },
+        dettes_immo: { type: 'number', description: "Dettes immobilières en cours (crédits restant dus)" },
+      },
+      required: ['patrimoine_immo_brut'],
+    },
+  },
+  {
+    name: 'calc_plus_value_immo',
+    description: "Calcule la plus-value immobilière de cession et les abattements pour durée de détention (CGI 150 U). Exonération IR à 22 ans, prélèvements sociaux à 30 ans. Surtaxe PV élevée éventuelle (CGI 1609 nonies G).",
+    input_schema: {
+      type: 'object',
+      properties: {
+        prix_acquisition: { type: 'number', description: "Prix d'acquisition initial (en euros)" },
+        prix_cession: { type: 'number', description: 'Prix de cession (en euros)' },
+        annees_detention: { type: 'number', description: 'Années de détention complètes' },
+        residence_principale: { type: 'boolean', description: 'Cession de la résidence principale (exonération totale CGI 150 U II 1°). Défaut false.' },
+        travaux_justifies: { type: 'number', description: 'Travaux effectivement réalisés et justifiés (en euros) — pour majorer le prix d\'acquisition. Défaut 0.' },
+      },
+      required: ['prix_acquisition', 'prix_cession', 'annees_detention'],
+    },
+  },
+  {
+    name: 'calc_demembrement',
+    description: "Calcule la valeur de la nue-propriété et de l'usufruit selon le barème fiscal art. 669 CGI (en fonction de l'âge de l'usufruitier). Utile pour donation en NP, démembrement viager, donation-partage avec démembrement.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        valeur_pleine_propriete: { type: 'number', description: 'Valeur du bien en pleine propriété (en euros)' },
+        age_usufruitier: { type: 'number', description: "Âge de l'usufruitier au moment du démembrement (années révolues)" },
+      },
+      required: ['valeur_pleine_propriete', 'age_usufruitier'],
+    },
+  },
 ];
 
 // Barème IR 2026 (LF 2026, revenus 2025)
@@ -140,6 +193,188 @@ function calcSuccession(patrimoineNet, nbEnfants, avVal) {
   };
 }
 
+// Barème DMTG ligne directe 2026 (art. 777 CGI) — même grille que succession
+const DMTG_BRACKETS = SUCC_BRACKETS;
+
+function calcDonation(montant, donationAnterieure = 0, donFamilial31865 = false) {
+  const ABATTEMENT = 100000; // CGI 779 I
+  const DON_FAMILIAL = 31865; // CGI 790 G
+  const abattementResiduel = Math.max(0, ABATTEMENT - (donationAnterieure || 0));
+  const donFamilialApplicable = donFamilial31865 ? DON_FAMILIAL : 0;
+  const baseTaxable = Math.max(0, montant - abattementResiduel - donFamilialApplicable);
+
+  let droits = 0;
+  let prev = 0;
+  for (const b of DMTG_BRACKETS) {
+    if (baseTaxable <= b.max) {
+      droits += (baseTaxable - prev) * b.rate;
+      break;
+    }
+    droits += (b.max - prev) * b.rate;
+    prev = b.max;
+  }
+  droits = Math.round(droits);
+  return {
+    droits_dus: droits,
+    montant_donation: montant,
+    abattement_applique: abattementResiduel,
+    abattement_consomme_15ans: donationAnterieure || 0,
+    don_familial_cumule: donFamilialApplicable,
+    base_taxable: Math.round(baseTaxable),
+    montant_net_recu: montant - droits,
+    sources: 'art. 779 I CGI (abattement 100k€/15 ans) · art. 790 G CGI (don familial) · art. 777 CGI (barème DMTG)',
+  };
+}
+
+// IFI 2026 — barème art. 977 CGI (inchangé depuis 2018)
+const IFI_BRACKETS = [
+  { max: 800000, rate: 0 },
+  { max: 1300000, rate: 0.005 }, // tranche 800k-1,3M : 0,5% mais déclenchement à 1,3M
+  { max: 2570000, rate: 0.007 },
+  { max: 5000000, rate: 0.01 },
+  { max: 10000000, rate: 0.0125 },
+  { max: Infinity, rate: 0.015 },
+];
+
+function calcIFI(patrimoineImmoBrut, residencePrincipale = 0, dettesImmo = 0) {
+  const SEUIL = 1300000;
+  const ABATTEMENT_RP_PCT = 0.30;
+  const rpAbattue = (residencePrincipale || 0) * (1 - ABATTEMENT_RP_PCT);
+  const horsRP = Math.max(0, patrimoineImmoBrut - (residencePrincipale || 0));
+  const assietteBrute = rpAbattue + horsRP;
+  const assietteNette = Math.max(0, assietteBrute - (dettesImmo || 0));
+
+  if (assietteNette < SEUIL) {
+    return {
+      ifi_du: 0,
+      assiette_nette: Math.round(assietteNette),
+      seuil_assujettissement: SEUIL,
+      assujetti: false,
+      note: `Patrimoine immobilier net ${Math.round(assietteNette).toLocaleString('fr-FR')}€ inférieur au seuil 1 300 000€ — non assujetti à l'IFI 2026.`,
+      sources: 'art. 964 CGI (seuil) · art. 977 CGI (barème)',
+    };
+  }
+
+  let ifi = 0;
+  let prev = 0;
+  for (const b of IFI_BRACKETS) {
+    if (assietteNette <= b.max) {
+      ifi += (assietteNette - prev) * b.rate;
+      break;
+    }
+    ifi += (b.max - prev) * b.rate;
+    prev = b.max;
+  }
+  // Décote (CGI 977-bis) entre 1,3M et 1,4M
+  if (assietteNette >= SEUIL && assietteNette < 1400000) {
+    const decote = 17500 - 1.25 * assietteNette / 100;
+    ifi = Math.max(0, ifi - decote);
+  }
+  ifi = Math.round(ifi);
+  return {
+    ifi_du: ifi,
+    assiette_nette: Math.round(assietteNette),
+    residence_principale_apres_abattement: Math.round(rpAbattue),
+    abattement_rp_30pct_applique: residencePrincipale ? Math.round((residencePrincipale || 0) * ABATTEMENT_RP_PCT) : 0,
+    dettes_deduites: dettesImmo || 0,
+    sources: 'art. 964 CGI (seuil 1,3M€) · art. 968 CGI (RP -30%) · art. 977 CGI (barème) · art. 977-bis CGI (décote)',
+  };
+}
+
+// Abattements PV immo CGI 150 V C — barème depuis 2014
+function calcPlusValueImmo(prixAcq, prixCess, annees, rp = false, travauxJustifies = 0) {
+  if (rp) {
+    return {
+      pv_brute: 0,
+      impot_du: 0,
+      exoneration: 'Résidence principale exonérée totalement',
+      sources: 'art. 150 U II 1° CGI',
+    };
+  }
+  // Frais d'acquisition forfait 7,5% (ou réels si prouvés)
+  const fraisAcq = prixAcq * 0.075;
+  const acqMajore = prixAcq + fraisAcq + (travauxJustifies || 0);
+  const pvBrute = Math.max(0, prixCess - acqMajore);
+  if (pvBrute === 0) {
+    return { pv_brute: 0, impot_du: 0, note: 'Aucune plus-value', sources: 'art. 150 U CGI' };
+  }
+  // Abattement IR : 6%/an de 6 à 21, 4% à 22 → exo 22 ans
+  let abIR = 0;
+  if (annees >= 22) abIR = 1;
+  else if (annees > 5) abIR = Math.min(1, (annees - 5) * 0.06 + (annees >= 21 ? 0.04 : 0));
+  // Recalcul propre :
+  abIR = 0;
+  for (let y = 6; y <= Math.min(annees, 21); y++) abIR += 0.06;
+  if (annees >= 22) abIR += 0.04;
+  abIR = Math.min(1, abIR);
+
+  // Abattement PS : 1,65%/an 6-21, 1,60% à 22, 9% par an 23-30 → exo 30 ans
+  let abPS = 0;
+  for (let y = 6; y <= Math.min(annees, 21); y++) abPS += 0.0165;
+  if (annees >= 22) abPS += 0.016;
+  for (let y = 23; y <= Math.min(annees, 30); y++) abPS += 0.09;
+  abPS = Math.min(1, abPS);
+
+  const pvIR = pvBrute * (1 - abIR);
+  const pvPS = pvBrute * (1 - abPS);
+  const ir = pvIR * 0.19;
+  const ps = pvPS * 0.172;
+  const totalImpot = Math.round(ir + ps);
+
+  // Surtaxe PV élevée (CGI 1609 nonies G) si pvIR > 50 000
+  let surtaxe = 0;
+  if (pvIR > 50000) {
+    if (pvIR <= 100000) surtaxe = (pvIR - 50000) * 0.02;
+    else if (pvIR <= 150000) surtaxe = 1000 + (pvIR - 100000) * 0.03;
+    else if (pvIR <= 200000) surtaxe = 2500 + (pvIR - 150000) * 0.04;
+    else if (pvIR <= 250000) surtaxe = 4500 + (pvIR - 200000) * 0.05;
+    else surtaxe = 7000 + (pvIR - 250000) * 0.06;
+  }
+
+  return {
+    pv_brute: Math.round(pvBrute),
+    pv_apres_abattement_ir: Math.round(pvIR),
+    pv_apres_abattement_ps: Math.round(pvPS),
+    abattement_ir_pct: Math.round(abIR * 100),
+    abattement_ps_pct: Math.round(abPS * 100),
+    impot_ir_19pct: Math.round(ir),
+    prelevements_sociaux_172pct: Math.round(ps),
+    surtaxe_pv_elevee: Math.round(surtaxe),
+    impot_du: totalImpot + Math.round(surtaxe),
+    annees_detention: annees,
+    sources: 'art. 150 U CGI · art. 150 V C CGI (abattements) · art. 1609 nonies G CGI (surtaxe PV élevée)',
+  };
+}
+
+// Démembrement — barème art. 669 CGI
+const USUFRUIT_BAREME = [
+  { ageMax: 20, usufruit: 0.90 },
+  { ageMax: 30, usufruit: 0.80 },
+  { ageMax: 40, usufruit: 0.70 },
+  { ageMax: 50, usufruit: 0.60 },
+  { ageMax: 60, usufruit: 0.50 },
+  { ageMax: 70, usufruit: 0.40 },
+  { ageMax: 80, usufruit: 0.30 },
+  { ageMax: 90, usufruit: 0.20 },
+  { ageMax: Infinity, usufruit: 0.10 },
+];
+
+function calcDemembrement(valeurPP, ageUsufruitier) {
+  const tranche = USUFRUIT_BAREME.find(t => ageUsufruitier <= t.ageMax);
+  const usuPct = tranche.usufruit;
+  const npPct = 1 - usuPct;
+  return {
+    valeur_pleine_propriete: valeurPP,
+    age_usufruitier: ageUsufruitier,
+    valeur_usufruit: Math.round(valeurPP * usuPct),
+    valeur_nue_propriete: Math.round(valeurPP * npPct),
+    usufruit_pct: Math.round(usuPct * 100),
+    nue_propriete_pct: Math.round(npPct * 100),
+    note: `À ${ageUsufruitier} ans, l'usufruit vaut ${Math.round(usuPct * 100)}% et la NP ${Math.round(npPct * 100)}% (barème fiscal). En donation NP, seule la NP est taxée — l'usufruit revient gratuitement à la NP au décès de l'usufruitier (CGI 1133).`,
+    sources: 'art. 669 CGI (barème usufruit) · art. 1133 CGI (extinction usufruit)',
+  };
+}
+
 function executeTool(name, input) {
   try {
     if (name === 'calc_impot_revenu') {
@@ -148,11 +383,76 @@ function executeTool(name, input) {
     if (name === 'calc_droits_succession') {
       return calcSuccession(+input.patrimoine_net || 0, +input.nb_enfants || 0, +input.assurance_vie || 0);
     }
+    if (name === 'calc_donation') {
+      return calcDonation(+input.montant || 0, +input.donation_anterieure || 0, !!input.don_familial_31865);
+    }
+    if (name === 'calc_ifi') {
+      return calcIFI(+input.patrimoine_immo_brut || 0, +input.residence_principale || 0, +input.dettes_immo || 0);
+    }
+    if (name === 'calc_plus_value_immo') {
+      return calcPlusValueImmo(+input.prix_acquisition || 0, +input.prix_cession || 0, +input.annees_detention || 0, !!input.residence_principale, +input.travaux_justifies || 0);
+    }
+    if (name === 'calc_demembrement') {
+      return calcDemembrement(+input.valeur_pleine_propriete || 0, +input.age_usufruitier || 0);
+    }
     return { error: 'Unknown tool: ' + name };
   } catch (e) {
     return { error: 'Tool execution error: ' + e.message };
   }
 }
+
+// ──────────────────────────────────────────────────────────────
+// CONTEXTES THÉMATIQUES — injectés dans le system prompt quand le front
+// envoie un `theme` (page family-office). Permet à Marcel de focaliser sa
+// réponse sur la bonne expertise, sans changer l'identité ni les règles MIF II.
+// ──────────────────────────────────────────────────────────────
+const THEME_CONTEXTS = {
+  art:
+    "FOCUS THÉMATIQUE — MARCHÉ DE L'ART. Tu réponds avec : (1) ordre de grandeur d'estimation " +
+    "si la question le permet (cite Artprice/Artnet/maisons de vente comme référentiel), (2) régime " +
+    "fiscal applicable (exclusion IFI art. 885 I CGI, taxation forfaitaire 6,5% du prix de cession " +
+    "art. 150 V bis CGI, exonération PV générale après 22 ans). (3) Si patrimoine art > 1 M€, mentionne " +
+    "1-2 schémas de structuration (SC dédiée, fondation abritée, OBO art via holding).",
+  markets:
+    "FOCUS THÉMATIQUE — MARCHÉS FINANCIERS. Tu donnes des éléments de cadrage (multiples indicatifs, " +
+    "fiscalité par enveloppe : PEA art. 150-0 D CGI, AV art. 125-0 A et 990 I CGI, PER art. 163 " +
+    "quatervicies CGI). Tu ne nommes JAMAIS de produit ou fonds spécifique. Tu rappelles que la " +
+    "sélection de valeurs/UC relève de la recommandation personnalisée — donc validation Maxime obligatoire.",
+  fiscal:
+    "FOCUS THÉMATIQUE — INGÉNIERIE FISCALE. Utilise SYSTÉMATIQUEMENT tes tools (calc_impot_revenu, " +
+    "calc_droits_succession, calc_donation, calc_ifi, calc_plus_value_immo, calc_demembrement). " +
+    "Cite l'article CGI applicable et le millésime du barème.",
+  juridique:
+    "FOCUS THÉMATIQUE — JURIDIQUE & SUCCESSION. Réponds en citant le Code civil, le CGI et la " +
+    "jurisprudence pertinente. Pour le pacte Dutreil (art. 787 B CGI), rappelle les 4 conditions " +
+    "(engagement collectif 2 ans / engagement individuel 4 ans / fonction de direction 3 ans / " +
+    "holding animatrice si pertinent — Cass. com. 2024 a durci l'appréciation).",
+  immo:
+    "FOCUS THÉMATIQUE — ACTIFS IMMOBILIERS. Pour les estimations, indique que la source est DVF " +
+    "(api.gouv.fr — données officielles ventes). Utilise calc_ifi et calc_plus_value_immo dès qu'un " +
+    "calcul est possible. Cite art. 964 CGI (IFI), art. 150 U CGI (PV), art. 31 CGI (déductibilité).",
+  pe:
+    "FOCUS THÉMATIQUE — PRIVATE EQUITY. Maîtrise art. 150-0 B ter CGI (apport-cession holding), " +
+    "art. 199 terdecies-0 A CGI (IR-PME), art. 219 I a quinquies CGI (exonération PV holding). " +
+    "Pour les FPCI, mentionne les conditions 75% titres éligibles non cotés, durée minimale 5 ans.",
+  transmission:
+    "FOCUS THÉMATIQUE — TRANSMISSION D'ENTREPRISE. Pour toute valorisation > 1 M€, présente 4 " +
+    "schémas comparés : (A) cession 100% à un tiers — PFU 30%, (B) donation-cession enfants avant " +
+    "cession — purge PV pour la part donnée, (C) holding apport CGI 150-0 B ter — report PV, (D) " +
+    "Dutreil familial complet CGI 787 B — abattement 75%. Chiffre l'impact fiscal de chacun.",
+  financement:
+    "FOCUS THÉMATIQUE — FINANCEMENT. Pour le Lombard, base les taux indicatifs sur OAT 10y + spread " +
+    "bancaire (90-110 pb private banking) ; LTV typique 60-65%. Mentionne risque margin call. Cite " +
+    "art. 31 CGI (déductibilité intérêts emprunt locatif).",
+  philanthropie:
+    "FOCUS THÉMATIQUE — PHILANTHROPIE. Compare fonds de dotation (loi 2008-776) / fondation abritée " +
+    "/ FRUP. Cite la fiscalité dotateur : art. 200 CGI (IR 66%), art. 978 CGI (IFI 75%), art. 238 " +
+    "bis CGI (IS 60%).",
+  admin:
+    "FOCUS THÉMATIQUE — CONCIERGERIE & ADMINISTRATIF. Calendrier fiscal du trimestre en cours, " +
+    "rappels d'échéances, classement de courrier sensible. Pour la conciergerie (voyage, scolarité), " +
+    "indique que IKCP coordonne avec un prestataire white-label — pas d'auto-booking direct.",
+};
 
 function getCurrentContext() {
   const now = new Date();
@@ -170,7 +470,8 @@ function getCurrentContext() {
   return { dateStr, season, month };
 }
 
-function buildSystemPrompt(ctx) {
+function buildSystemPrompt(ctx, theme) {
+  const themeNote = (theme && THEME_CONTEXTS[theme]) ? `\n\n${THEME_CONTEXTS[theme]}\n` : '';
   const seasonalNote = {
     declaration_revenus: `CONTEXTE SAISONNIER : Période de déclaration des revenus (mars-juin). Les visiteurs ont souvent des questions sur leur déclaration (frais réels, pensions alimentaires, revenus fonciers, dons, crédits d'impôt). Sois particulièrement attentif à ces sujets.`,
     ete: `CONTEXTE SAISONNIER : Été. Période fiscalement calme — bon moment pour prendre du recul, faire un point stratégique, anticiper la rentrée.`,
@@ -182,7 +483,7 @@ function buildSystemPrompt(ctx) {
   return `Tu t'appelles Marcel. Tu es l'assistant patrimonial d'IKCP — IKIGAÏ Conseil Patrimonial, cabinet fondé par Maxime Juveneton, conseiller en gestion de patrimoine indépendant implanté à Saint-Marcel-lès-Annonay en Ardèche.
 
 DATE DU JOUR : ${ctx.dateStr}
-${seasonalNote[ctx.season]}
+${seasonalNote[ctx.season]}${themeNote}
 
 POSITIONNEMENT : IKCP se spécialise dans la PROTECTION PATRIMONIALE. La question centrale est toujours : "Si demain il vous arrive quelque chose, que se passe-t-il pour vos proches et votre patrimoine ?"
 
@@ -208,12 +509,16 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - IFI : seuil 1 300 000€ de patrimoine immobilier net, abattement 30% résidence principale (art. 964 CGI)
 
 OUTILS DE CALCUL — UTILISATION OBLIGATOIRE POUR LES CHIFFRES EXACTS :
-Tu as accès à 2 calculateurs déterministes :
-- **calc_impot_revenu** : calcule l'IR 2026 exact (revenu imposable + nombre de parts)
-- **calc_droits_succession** : calcule les droits de succession exacts (patrimoine + enfants + AV avant 70 ans)
+Tu as accès à 6 calculateurs déterministes (résultats exacts, sources juridiques incluses) :
+- **calc_impot_revenu** : IR 2026 (revenu imposable + parts)
+- **calc_droits_succession** : droits de succession ligne directe (patrimoine + enfants + AV avant 70 ans)
+- **calc_donation** : droits de donation parent → enfant (montant + antériorité 15 ans + don familial 31 865€)
+- **calc_ifi** : IFI 2026 (patrimoine immo brut + RP + dettes immo)
+- **calc_plus_value_immo** : PV immobilière de cession + abattements durée détention + surtaxe PV élevée
+- **calc_demembrement** : valeur usufruit / nue-propriété selon barème art. 669 CGI (âge usufruitier)
 
 UTILISE CES OUTILS SYSTÉMATIQUEMENT dès que :
-- L'utilisateur donne ou demande un calcul chiffré (IR, succession)
+- L'utilisateur donne ou demande un calcul chiffré (IR, succession, donation, IFI, PV immo, démembrement)
 - L'utilisateur pose une question du type "combien je paierais...", "quel serait l'impôt...", "quels droits pour..."
 
 N'utilise JAMAIS ton propre calcul mental pour ces chiffres — utilise toujours le tool. Les résultats du tool sont exacts et incluent les sources juridiques. Présente le résultat dans ta réponse avec ses chiffres ET ses sources.
@@ -518,7 +823,7 @@ export default {
     }
 
     try {
-      const { message, history, document_pdf } = await request.json();
+      const { message, history, document_pdf, theme } = await request.json();
 
       if ((!message || typeof message !== 'string' || message.trim() === '') && !document_pdf) {
         return new Response(JSON.stringify({ error: 'Empty message' }), {
@@ -565,7 +870,11 @@ export default {
       }
 
       const ctx = getCurrentContext();
-      const systemPromptText = buildSystemPrompt(ctx);
+      // `theme` est optionnel : page family-office l'envoie pour focaliser la
+      // réponse sur l'expertise (art / markets / fiscal / juridique / immo / pe /
+      // transmission / financement / philanthropie / admin). Cf. THEME_CONTEXTS.
+      const safeTheme = (typeof theme === 'string' && THEME_CONTEXTS[theme]) ? theme : null;
+      const systemPromptText = buildSystemPrompt(ctx, safeTheme);
 
       // Prompt caching : le system prompt est stable, on le marque pour cache
       // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)
@@ -618,10 +927,18 @@ export default {
 
         data = await anthropicRes.json();
 
-        // Gérer les tool_use calls côté client (calc_impot_revenu, calc_droits_succession)
+        // Gérer les tool_use calls côté client (tous les calc_*)
         // Web search est server-side : Anthropic le gère, pas nous
+        const CLIENT_TOOLS = new Set([
+          'calc_impot_revenu',
+          'calc_droits_succession',
+          'calc_donation',
+          'calc_ifi',
+          'calc_plus_value_immo',
+          'calc_demembrement',
+        ]);
         const toolUses = (data.content || []).filter(
-          b => b.type === 'tool_use' && (b.name === 'calc_impot_revenu' || b.name === 'calc_droits_succession')
+          b => b.type === 'tool_use' && CLIENT_TOOLS.has(b.name)
         );
 
         if (toolUses.length === 0 || data.stop_reason !== 'tool_use') break;

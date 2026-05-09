@@ -396,5 +396,79 @@ de la page.
 
 ---
 
+## 8. Expérience client + différentiation marché
+
+### 8.1 Les 4 promesses qui nous distinguent
+
+Quatre promesses rendues *visibles* dans l'expérience (page `proposals/family-office-v4-live.html`) :
+
+| # | Promesse | Ce que le visiteur voit | Pourquoi ça change |
+|---|---|---|---|
+| **i.** | **Sources visibles** | Chaque réponse affiche des chips avec article CGI, BOFIP, Bigdata, DVF, Pappers. | Anti-hallucination. Un cabinet sans sources = un cabinet sans audit possible. |
+| **ii.** | **Orchestration apparente** | Le panel affiche les agents mobilisés (`Triage · Fiscal · Reporting`). Marcel est nommé comme orchestrateur. | Le théâtre de la coordination. Le visiteur sent qu'il y a une équipe — pas un chatbot. |
+| **iii.** | **Multi-classe coordonné** | Une seule conversation couvre art / marchés / immo / PE / philanthropie. | L'art *et* les marchés *et* la transmission — là où Finary et les robo-advisors restent monolignes. |
+| **iv.** | **Validation Maxime** | Footer de chaque réponse : *"préparation, pas recommandation"* + CTA *"Continuer avec Maxime"* préréempli. | Conformité MIF II by-design. La ligne rouge réglementaire devient un argument commercial. |
+
+### 8.2 Concurrents et positionnement
+
+| Acteur | Force | Limite | Notre angle |
+|---|---|---|---|
+| **Robo-advisors** (Nalo, Yomoni, Ramify, Goodvest) | Onboarding fluide, allocations standardisées | 1 classe d'actifs, pas de conseil pluridisciplinaire | Multi-classe (i-x) + arbitrage humain |
+| **Agrégateurs** (Finary, Cashbee) | Vision consolidée | Ne conseillent pas, ne font pas exécuter | On *commence* par un avis transversal, on *exécute* avec validation |
+| **Family offices traditionnels** | Sur-mesure, légitimité | Inaccessibles < 10 M€, opaques, lents | Sur-mesure dès 2 M€, sources visibles, réponse en 90 secondes sur un sujet précis |
+| **CGP digitalisés** (≪ 1% du marché) | Expertise + outils | Pas de pluri-classe, pas d'art / PE | Marcel + 6 agents transversaux + 10 thématiques sourcées |
+
+**La case vide** : un cabinet où le visiteur peut, en 90 secondes, **interroger 10 expertises** — voir les sources — recevoir un diagnostic synthétisé — *et* être pris en main par un humain identifié (Maxime).
+
+### 8.3 Architecture client → Marcel → agents
+
+```
+Page family-office-v4-live.html
+        │
+        │  POST { theme, question, history }
+        ▼
+api.ikcp.eu/v1/agents/ask  ──── service binding ────▶ Worker ikcp-chat (Marcel)
+        │                                                       │
+        │  ┌───────────── THEME_CONTEXTS ─────────────┐         │
+        │  │ Système prompt augmenté pour la thématique│         │
+        │  └───────────────────────────────────────────┘         │
+        │                                                       │
+        │  ┌────────── 6 tools déterministes ─────────┐         │
+        │  │ calc_impot_revenu  · calc_droits_succ.    │◀────────┤
+        │  │ calc_donation      · calc_ifi              │         │
+        │  │ calc_plus_value_immo · calc_demembrement   │         │
+        │  └────────────────────────────────────────────┘         │
+        │                                                       │
+        │  ┌─── web_search natif (Anthropic) ──────────┐         │
+        │  │ actualités fiscales, jurisprudence récente│◀────────┤
+        │  └────────────────────────────────────────────┘         │
+        │                                                       │
+        ▼                                                       │
+   Réponse front : { text, sources[], next_action, follow_ups[] } ◀┘
+```
+
+### 8.4 Ce qui est déjà en code (PR courante)
+
+- ✅ `proposals/family-office-v4-live.html` — page interactive avec 10 thématiques
+- ✅ `proposals/family-office-agents.js` — panels inline, streaming texte, chips sources, fallback mock
+- ✅ `workers/ikcp-marcel/worker.js` — extension Marcel :
+  - Acceptation du paramètre optionnel `theme`
+  - 4 nouveaux tools déterministes : `calc_donation`, `calc_ifi`, `calc_plus_value_immo`, `calc_demembrement`
+  - 10 contextes thématiques (`THEME_CONTEXTS`) injectés dans le system prompt
+- ✅ `workers/ikcp-api/agents.js` + route `/v1/agents/ask` — proxy via service binding vers Marcel
+- ✅ `workers/ikcp-api/wrangler.toml` — service binding `MARCEL` configuré
+
+### 8.5 Ce qu'il reste à faire (Phase 2)
+
+| # | Action | Pourquoi |
+|---|---|---|
+| 1 | **Brancher les vraies APIs externes** comme tools Marcel : Bigdata.com (markets), DVF (immo), Pappers (transmission), Légifrance (RAG juridique). | Aujourd'hui les sources sont citées dans le prompt mais pas requêtées en temps réel. |
+| 2 | **Migrer Marcel sur le modèle 4.6/4.7** (`claude-sonnet-4-6`) — actuellement `claude-sonnet-4-20250514`. | Bénéficier de l'amélioration tool-calling + raisonnement. |
+| 3 | **Sub-agents Claude Agent SDK** : un sous-agent par expertise lourde (juridique avec RAG Légifrance, art avec Artprice scraping, etc.) — orchestré par Marcel. | Aujourd'hui Marcel est mono-agent. La couche sub-agents permet : tools spécialisés par domaine, économie via Haiku 4.5 sur les tâches simples. |
+| 4 | **Intégrer la page v4 dans le site** (route `/family-office`). Décider si v4 remplace v1/v2/v3 ou cohabite. | Décision Maxime. |
+| 5 | **Ajouter la donnée client** (`profile`) dans le payload pour personnaliser : drift d'allocation, calcul IFI sur patrimoine réel, etc. | Aujourd'hui les exemples sont génériques. La valeur client réelle est dans le sur-mesure. |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
