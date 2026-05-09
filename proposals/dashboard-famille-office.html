@@ -522,6 +522,8 @@ section.backtest {
 .marcel-response { background: var(--bg); border-left: 2px solid var(--gold); padding: 18px 22px; font-size: 14px; line-height: 1.7; color: var(--ink); white-space: pre-wrap; max-height: 320px; overflow-y: auto; }
 .marcel-response strong { color: var(--gold); font-weight: 500; }
 .marcel-response em { font-style: italic; color: var(--ink-mute); }
+.marcel-response a.src-link, .arb-context a.src-link, .up-alerte a.src-link { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(196,162,115,0.4); padding-bottom: 1px; transition: all 0.2s; }
+.marcel-response a.src-link:hover { background: rgba(196,162,115,0.08); border-bottom-style: solid; }
 .marcel-loader { display: flex; align-items: center; gap: 12px; color: var(--ink-mute); font-size: 13px; font-style: italic; font-family: 'Playfair Display', serif; }
 .marcel-loader .pulse { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
@@ -655,8 +657,11 @@ footer.proto a:hover { border-color: var(--gold); }
     <a href="#services">Services</a>
     <a href="#backtest">Backtest 12 mois</a>
   </div>
-  <div class="user-chip">
-    <strong id="user-chip-name">Marc & Sophie</strong> · membre depuis <span id="user-chip-since"></span>
+  <div style="display:flex; gap:12px; align-items:center;">
+    <a href="#" id="export-data-btn" title="Exporter toutes vos données — RGPD" style="font-size:11px;letter-spacing:0.06em;color:var(--ink-mute);text-decoration:none;padding:7px 12px;border:1px solid var(--line);border-radius:1px;font-family:'JetBrains Mono', monospace;">⬇ Exporter</a>
+    <div class="user-chip">
+      <strong id="user-chip-name">Marc & Sophie</strong> · membre depuis <span id="user-chip-since"></span>
+    </div>
   </div>
 </nav>
 
@@ -888,6 +893,7 @@ footer.proto a:hover { border-color: var(--gold); }
   </div>
 </div>
 
+<script src="./linkify-sources.js" defer></script>
 <script src="./dashboard-data.js" defer></script>
 <script src="./dashboard-render.js" defer></script>
 </body>

@@ -363,6 +363,298 @@ const handleDossiers = requireAuth(async (req, env, ctx, user) => {
   });
 });
 
+// GET /api/export/me — export complet des données du client (RGPD portabilité)
+//
+// Retourne un JSON unique structuré avec :
+//   - profile : infos user (depuis users)
+//   - sessions : sessions actives
+//   - conversations : historique Marcel (history JSON)
+//   - dossiers : dossiers patrimoniaux ouverts
+//   - audit_log : événements (limité aux 1000 derniers)
+//   - export_meta : version + horodatage + hash SHA-256 pour vérification
+//
+// Headers : application/json + Content-Disposition attachment pour
+// déclencher le téléchargement côté navigateur. La page UI proposera un
+// "Exporter mes données" qui ouvre simplement cette URL.
+//
+// Argumentaire commercial : *vos données vous appartiennent · 1 clic*.
+// Anti-friction à l'adhésion (cf. avantage concurrentiel #5 du doc audit).
+const handleExportMe = requireAuth(async (req, env, ctx, user) => {
+  const { results: sessions = [] } = await env.DB.prepare(
+    'SELECT id, expires_at, ip, ua, created_at FROM sessions WHERE user_id = ? ORDER BY created_at DESC'
+  ).bind(user.id).all();
+
+  let conversations = [], dossiers = [], audit_log = [];
+  try {
+    const r = await env.DB.prepare(
+      'SELECT id, title, history, profile, created_at, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC'
+    ).bind(user.id).all();
+    conversations = (r.results || []).map(c => ({
+      ...c,
+      history: c.history ? safeJSON(c.history) : null,
+      profile: c.profile ? safeJSON(c.profile) : null,
+    }));
+  } catch (e) { /* table non encore créée — silencieux */ }
+
+  try {
+    const r = await env.DB.prepare(
+      'SELECT id, title, category, status, notes, created_at, updated_at FROM dossiers WHERE user_id = ? ORDER BY updated_at DESC'
+    ).bind(user.id).all();
+    dossiers = r.results || [];
+  } catch (e) { /* idem */ }
+
+  try {
+    const r = await env.DB.prepare(
+      'SELECT action, detail, ip, ua, ts FROM audit_log WHERE user_id = ? ORDER BY ts DESC LIMIT 1000'
+    ).bind(user.id).all();
+    audit_log = r.results || [];
+  } catch (e) { /* idem */ }
+
+  const payload = {
+    export_meta: {
+      version: '1.0',
+      generated_at: new Date().toISOString(),
+      service: 'ikcp-client',
+      legal_basis: 'RGPD art. 20 — droit à la portabilité',
+    },
+    profile: {
+      id: user.id, email: user.email,
+      first_name: user.first_name, last_name: user.last_name,
+      role: user.role, status: user.status,
+      created_at: user.created_at, last_login_at: user.last_login_at,
+    },
+    sessions, conversations, dossiers, audit_log,
+  };
+
+  const body = JSON.stringify(payload, null, 2);
+  const sha256 = await hashSha256(body);
+  payload.export_meta.sha256 = sha256;
+  const finalBody = JSON.stringify(payload, null, 2);
+
+  audit(env, { user_id: user.id, email: user.email, action: 'data_export', detail: `sha256=${sha256.slice(0, 16)}…` });
+
+  const filename = `ikcp-export-${user.email.replace(/[^a-z0-9]/gi, '_')}-${new Date().toISOString().slice(0, 10)}.json`;
+  return new Response(finalBody, {
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'X-Export-Sha256': sha256,
+    }
+  });
+});
+
+// GET /api/dashboard/me — agrège toutes les tables D1 dans le shape exact
+// attendu par proposals/dashboard-render.js (cf. dashboard-data.js).
+// Permet au front de basculer du mock à la donnée réelle sans modif rendu.
+//
+// Shape retournée :
+//   { client, patrimoine, echeances, conversations, arbitrages,
+//     documents, livrables, services, univers_perso, opportunites,
+//     value_scorecard, backtest_12m, activity }
+//
+// Tolérant à l'absence de données (tables non encore peuplées) — chaque
+// section retourne [] ou un objet vide cohérent. Permet de servir un
+// utilisateur fraîchement onboardé.
+const handleDashboardMe = requireAuth(async (req, env, ctx, user) => {
+  const NOW = Date.now();
+  const NOW_ISO = new Date().toISOString();
+
+  // Helpers
+  const safeAll = async (sql, ...binds) => {
+    try { const r = await env.DB.prepare(sql).bind(...binds).all(); return r.results || []; }
+    catch { return []; }
+  };
+  const safeOne = async (sql, ...binds) => {
+    try { const r = await env.DB.prepare(sql).bind(...binds).first(); return r || null; }
+    catch { return null; }
+  };
+
+  // CLIENT — depuis users + members (à ajouter en Phase 2 multi-utilisateur)
+  const client = {
+    id: user.id,
+    family_name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.email.split('@')[0],
+    members: [{ first: user.first_name || '', last: user.last_name || '', age: null, role: 'principal' }],
+    member_since: new Date(user.created_at).toISOString().slice(0, 10),
+    cgp: 'Maxime Juveneton',
+    tier: 'Family Office augmenté',
+    email: user.email,
+  };
+
+  // PATRIMOINE — dernier snapshot
+  const patSnap = await safeOne(
+    'SELECT * FROM patrimoine_snapshot WHERE user_id = ? ORDER BY asof DESC LIMIT 1',
+    user.id
+  );
+  const patrimoine = patSnap ? {
+    net_worth: patSnap.net_worth,
+    variation_trimestre_pct: patSnap.variation_trim_pct,
+    variation_an_pct: patSnap.variation_an_pct,
+    classes: safeJSON(patSnap.classes_json) || [],
+    allocation_cible: safeJSON(patSnap.allocation_cible_json) || {},
+    drift_max_pct: patSnap.drift_max_pct,
+    drift_severity: patSnap.drift_severity,
+  } : { net_worth: 0, classes: [], allocation_cible: {}, drift_severity: 'none', drift_max_pct: 0 };
+
+  // ÉCHÉANCES — 8 prochaines à venir
+  const echeancesRaw = await safeAll(
+    'SELECT * FROM echeances WHERE user_id = ? AND date >= date("now") ORDER BY date ASC LIMIT 8',
+    user.id
+  );
+  const echeances = echeancesRaw.map(e => ({
+    date: e.date, label: e.label, montant: e.montant, source: e.source,
+    status: e.status, urgent: !!e.urgent,
+  }));
+
+  // CONVERSATIONS — 5 plus récentes
+  const convRaw = await safeAll(
+    'SELECT id, title, history, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC LIMIT 5',
+    user.id
+  );
+  const conversations = convRaw.map(c => {
+    const hist = safeJSON(c.history) || [];
+    const lastUser = [...hist].reverse().find(h => h.role === 'user');
+    const lastAssistant = [...hist].reverse().find(h => h.role === 'assistant');
+    return {
+      id: c.id, title: c.title || '(sans titre)',
+      last_question: lastUser ? String(lastUser.content || '').slice(0, 200) : '',
+      last_message: lastAssistant ? String(lastAssistant.content || '').slice(0, 240) : '',
+      date: new Date(c.updated_at).toISOString().slice(0, 10),
+      theme: null, theme_label: '', agents: [], status: 'cloturee',
+    };
+  });
+
+  // ARBITRAGES — en attente + en discussion
+  const arbRaw = await safeAll(
+    'SELECT * FROM arbitrages WHERE user_id = ? AND status IN ("en_attente", "en_discussion") ORDER BY prepared_at DESC',
+    user.id
+  );
+  const arbitrages = arbRaw.map(a => ({
+    id: a.id, conv_id: a.conv_id, titre: a.titre,
+    contexte: a.contexte, reco_marcel: a.reco_marcel,
+    sources: safeJSON(a.sources_json) || [],
+    gain_estime: a.gain_estime, gain_qualitatif: a.gain_qualitatif,
+    status: a.status,
+    preparé_le: new Date(a.prepared_at).toISOString().slice(0, 10),
+  }));
+
+  // DOCUMENTS — tous les non-générés (les générés vont dans livrables)
+  const docsRaw = await safeAll(
+    'SELECT * FROM documents WHERE user_id = ? AND generated = 0 ORDER BY date_recu DESC LIMIT 50',
+    user.id
+  );
+  const documents = docsRaw.map(d => ({
+    id: d.id, type: d.type, label: d.label, annee: d.annee,
+    date_recu: new Date(d.date_recu).toISOString().slice(0, 10),
+    tags: safeJSON(d.tags_json) || [], pages: d.pages,
+  }));
+
+  // LIVRABLES — documents générés par Reporting-agent
+  const livRaw = await safeAll(
+    'SELECT * FROM documents WHERE user_id = ? AND generated = 1 ORDER BY date_recu DESC LIMIT 20',
+    user.id
+  );
+  const livrables = livRaw.map(l => ({
+    id: l.id, type: l.type, label: l.label,
+    date: new Date(l.date_recu).toISOString().slice(0, 10),
+    signed: !!l.signed_at, pages: l.pages,
+    requires_signature: !l.signed_at && (l.type === 'memo' || l.type === 'der' || l.type === 'rapport_adequation'),
+  }));
+
+  // UNIVERS PERSO — groupés par univers_key
+  const universRaw = await safeAll(
+    'SELECT * FROM univers_items WHERE user_id = ? ORDER BY univers_key, updated_at DESC',
+    user.id
+  );
+  const universByKey = {};
+  for (const u of universRaw) {
+    if (!universByKey[u.univers_key]) {
+      universByKey[u.univers_key] = { key: u.univers_key, items: [], total_estime: 0, derniere_alerte: u.derniere_alerte };
+    }
+    universByKey[u.univers_key].items.push({
+      titre: u.titre, etat: u.etat, valeur_estimee: u.valeur_estimee,
+      source: u.source_estimation, tendance: u.tendance,
+    });
+    universByKey[u.univers_key].total_estime += (u.valeur_estimee || 0);
+  }
+  const univers_perso = Object.values(universByKey);
+
+  // OPPORTUNITÉS — open + ciblé sur user (ou pool global)
+  const oppRaw = await safeAll(
+    'SELECT * FROM opportunites WHERE (user_id = ? OR user_id IS NULL) AND status = "open" ORDER BY fit_score DESC LIMIT 10',
+    user.id
+  );
+  const opportunites = oppRaw.map(o => ({
+    id: o.id, categorie: o.categorie, titre: o.titre, pitch: o.pitch,
+    ticket_min: o.ticket_min, ticket_max: o.ticket_max,
+    deadline: o.deadline, source: o.source,
+    fit_score: o.fit_score, fit_reasons: safeJSON(o.fit_reasons_json) || [],
+  }));
+
+  // ACTIVITY — 20 derniers events
+  const evtRaw = await safeAll(
+    'SELECT who, what, ts FROM events WHERE user_id = ? ORDER BY ts DESC LIMIT 20',
+    user.id
+  );
+  const activity = evtRaw.map(e => ({
+    ts: new Date(e.ts).toISOString(),
+    who: e.who, what: e.what,
+  }));
+
+  // VALUE SCORECARD — agrégats sur le mois en cours
+  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+  const monthStartTs = monthStart.getTime();
+  const [{ count: questionsTraitees = 0 } = {}] = await safeAll(
+    'SELECT COUNT(*) as count FROM events WHERE user_id = ? AND who = "Marcel" AND ts >= ?',
+    user.id, monthStartTs
+  );
+  const [{ count: docsClasses = 0 } = {}] = await safeAll(
+    'SELECT COUNT(*) as count FROM documents WHERE user_id = ? AND created_at >= ? AND generated = 0',
+    user.id, monthStartTs
+  );
+  const [{ count: arbPrepares = 0 } = {}] = await safeAll(
+    'SELECT COUNT(*) as count FROM arbitrages WHERE user_id = ? AND status = "en_attente"',
+    user.id
+  );
+  const [{ sum: optimisations = 0 } = {}] = await safeAll(
+    'SELECT COALESCE(SUM(gain_estime), 0) as sum FROM arbitrages WHERE user_id = ? AND prepared_at >= ?',
+    user.id, monthStartTs
+  );
+  const nextDeadlineDays = echeances.length > 0
+    ? Math.max(0, Math.round((new Date(echeances[0].date).getTime() - NOW) / 86400000))
+    : null;
+
+  const value_scorecard = {
+    periode_label: new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+    questions_traitees: questionsTraitees,
+    documents_classes_auto: docsClasses,
+    arbitrages_prepares: arbPrepares,
+    optimisations_identifiees_eur: optimisations || 0,
+    prochaines_echeances: echeances.length,
+    next_deadline_days: nextDeadlineDays,
+  };
+
+  return Response.json({
+    NOW: NOW_ISO,
+    client, patrimoine, echeances, conversations, arbitrages,
+    documents, livrables,
+    services: { rdv_prochain: null, voyages_planifies: [], partenaires: [] },
+    univers_perso, opportunites,
+    services_premium: [],
+    value_scorecard,
+    backtest_12m: { metrics: [], vs_family_office_classique: {} },
+    activity,
+  });
+});
+
+async function hashSha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function safeJSON(s) {
+  try { return JSON.parse(s); } catch { return s; }
+}
+
 // ─── Routing ───
 export default {
   async fetch(req, env, ctx) {
@@ -396,6 +688,8 @@ export default {
     if (p === '/dashboard' && m === 'GET') return handleDashboard(req, env, ctx);
     if (p === '/marcel' && m === 'GET') return handleMarcel(req, env, ctx);
     if (p === '/dossiers' && m === 'GET') return handleDossiers(req, env, ctx);
+    if (p === '/api/export/me' && m === 'GET') return handleExportMe(req, env, ctx);
+    if (p === '/api/dashboard/me' && m === 'GET') return handleDashboardMe(req, env, ctx);
 
     return new Response('Not found', { status: 404 });
   }
@@ -583,6 +877,11 @@ section.dash { padding:120px 40px 80px; max-width:1200px; margin:0 auto; }
       <a href="mailto:maxime@ikcp.fr?subject=Demande%20depuis%20espace%20client" class="action">
         <span class="action-icon">✉️</span>
         <span><span class="action-text">Écrire à Maxime</span><br><span class="action-sub">Réponse sous 24h</span></span>
+        <span class="action-arrow">→</span>
+      </a>
+      <a href="/api/export/me" class="action" download>
+        <span class="action-icon">⬇</span>
+        <span><span class="action-text">Exporter mes données</span><br><span class="action-sub">RGPD · 1 clic · JSON signé SHA-256</span></span>
         <span class="action-arrow">→</span>
       </a>
     </div>

@@ -466,12 +466,13 @@ function renderSources(el, sources) {
 }
 
 function mdLite(text) {
-  return String(text)
+  const html = String(text)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/\n/g, '<br>')
     .replace(/<!--[\s\S]*?-->/g, '');
+  return (typeof window !== 'undefined' && window.IKCP_linkify) ? window.IKCP_linkify(html) : html;
 }
 
 function stripMd(text) {

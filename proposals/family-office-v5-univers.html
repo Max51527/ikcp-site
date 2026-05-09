@@ -248,6 +248,8 @@ section.block { padding: 80px 32px 50px; max-width: 1320px; margin: 0 auto; }
 .panel-sources.visible { display: flex; }
 .panel-sources-label { letter-spacing: 0.18em; text-transform: uppercase; }
 .source-chip { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 5px 10px; background: rgba(196, 162, 115, 0.08); border: 1px solid var(--line-strong); color: var(--gold); }
+.panel-response a.src-link { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(196,162,115,0.4); transition: all 0.2s; padding-bottom: 1px; }
+.panel-response a.src-link:hover { background: rgba(196,162,115,0.08); border-bottom-style: solid; border-bottom-color: var(--gold); }
 
 .panel-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; border-top: 1px solid var(--line); flex-wrap: wrap; gap: 16px; }
 .panel-footer-note { font-size: 11.5px; color: var(--ink-faint); font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.5; max-width: 560px; }
@@ -423,6 +425,7 @@ footer.proto a:hover { border-color: var(--gold); }
   </div>
   <div class="nav-right">
     <span class="freemium-counter" id="freemium-counter">3 questions gratuites</span>
+    <a href="#calculateur" style="font-size:11px;letter-spacing:0.06em;color:var(--ink-mute);text-decoration:none;">Calculateur</a>
     <a href="#tarifs" class="cta-nav">Devenir membre</a>
   </div>
 </nav>
@@ -462,6 +465,172 @@ footer.proto a:hover { border-color: var(--gold); }
   </div>
   <div id="univers"></div>
 </section>
+
+<!-- ═══ CALCULATEUR — vous économisez X € ═══ -->
+<section class="block" id="calculateur">
+  <div class="block-head">
+    <div>
+      <div class="block-kicker">— Calculateur transparent</div>
+      <div class="block-h2">Combien vous coûte votre <em>plate-forme actuelle</em> ?</div>
+    </div>
+    <div class="block-meta">Sans nommer<br>tarifs publics du marché</div>
+  </div>
+
+  <div class="calc-wrap">
+    <div class="calc-controls">
+      <div class="calc-row">
+        <label class="calc-label" for="calc-aum">Patrimoine sous gestion (AUM)</label>
+        <div class="calc-slider-wrap">
+          <input type="range" id="calc-aum" min="500000" max="20000000" step="100000" value="4000000">
+          <div class="calc-value" id="calc-aum-val">4 000 000 €</div>
+        </div>
+      </div>
+      <div class="calc-row">
+        <label class="calc-label" for="calc-rate">Taux annuel banque privée (typique 0,5 - 1 %)</label>
+        <div class="calc-slider-wrap">
+          <input type="range" id="calc-rate" min="0.3" max="1.2" step="0.05" value="0.75">
+          <div class="calc-value" id="calc-rate-val">0,75 %</div>
+        </div>
+      </div>
+      <div class="calc-row">
+        <label class="calc-label" for="calc-years">Horizon</label>
+        <div class="calc-slider-wrap">
+          <input type="range" id="calc-years" min="1" max="20" step="1" value="10">
+          <div class="calc-value" id="calc-years-val">10 ans</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-results">
+      <div class="calc-card them">
+        <div class="calc-card-label">Plate-forme traditionnelle</div>
+        <div class="calc-card-line">Coût annuel <span id="calc-them-yr">30 000 €</span></div>
+        <div class="calc-card-line">Coût total <span id="calc-them-tot">300 000 €</span></div>
+      </div>
+      <div class="calc-card us">
+        <div class="calc-card-label">IKCP Family Office augmenté</div>
+        <div class="calc-card-line">Coût annuel <span id="calc-us-yr">6 800 €</span></div>
+        <div class="calc-card-line">Coût total <span id="calc-us-tot">68 000 €</span></div>
+      </div>
+      <div class="calc-card savings">
+        <div class="calc-card-label">Vous économisez</div>
+        <div class="calc-savings-value" id="calc-savings">232 000 €</div>
+        <div class="calc-savings-pct">soit <span id="calc-savings-pct">77 %</span> du coût plate-forme traditionnelle</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="calc-note">
+    Comparaison à périmètre fonctionnel équivalent (conseil patrimonial, dashboard, dénicheur d'offres, services premium). Les frais commissions / rétrocom assureurs ne sont pas inclus de part et d'autre — IKCP les affiche en clair, MIF II l'exige.
+  </p>
+</section>
+
+<style>
+.calc-wrap { display: grid; grid-template-columns: 1fr 1.4fr; gap: 36px; align-items: stretch; }
+.calc-controls { padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--line); }
+.calc-row { margin-bottom: 26px; }
+.calc-row:last-child { margin-bottom: 0; }
+.calc-label { display: block; font-size: 11.5px; color: var(--ink-mute); margin-bottom: 12px; letter-spacing: 0.04em; }
+.calc-slider-wrap { display: flex; gap: 18px; align-items: center; }
+.calc-value {
+  font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--gold-bright);
+  min-width: 130px; text-align: right; letter-spacing: 0.02em;
+}
+input[type='range'] {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 4px; background: var(--line); border-radius: 1px;
+  outline: none; cursor: pointer;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%; background: var(--gold);
+  cursor: grab; box-shadow: 0 0 0 4px rgba(196,162,115,0.18);
+  transition: transform 0.15s;
+}
+input[type='range']::-webkit-slider-thumb:active { transform: scale(1.15); cursor: grabbing; }
+input[type='range']::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%; background: var(--gold); border: none;
+  cursor: grab; box-shadow: 0 0 0 4px rgba(196,162,115,0.18);
+}
+
+.calc-results {
+  display: grid; grid-template-rows: 1fr 1fr 1.3fr; gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.calc-card { padding: 24px 28px; background: var(--bg); display: flex; flex-direction: column; justify-content: center; }
+.calc-card-label { font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 12px; }
+.calc-card.us .calc-card-label { color: var(--gold); }
+.calc-card.savings { background: linear-gradient(135deg, rgba(196,162,115,0.1) 0%, rgba(196,162,115,0.02) 100%); }
+.calc-card-line {
+  display: flex; justify-content: space-between; padding: 6px 0;
+  font-size: 13px; color: var(--ink-mute); border-bottom: 1px solid var(--line-faint);
+}
+.calc-card-line:last-child { border-bottom: none; }
+.calc-card-line span { font-family: 'JetBrains Mono', monospace; color: var(--ink); font-size: 13.5px; }
+.calc-card.them .calc-card-line span { color: var(--ink-mute); }
+.calc-card.us .calc-card-line span { color: var(--gold-bright); }
+
+.calc-savings-value {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+  font-size: 44px; color: var(--gold); line-height: 1; letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.calc-savings-pct { font-size: 12px; color: var(--ink-mute); line-height: 1.5; font-style: italic; font-family: 'Playfair Display', serif; }
+.calc-savings-pct span { color: var(--gold); font-weight: 500; font-style: normal; font-family: 'Inter', sans-serif; }
+
+.calc-note {
+  margin-top: 24px; padding: 18px 22px; background: rgba(196,162,115,0.03);
+  border-left: 2px solid var(--line-strong);
+  font-size: 11.5px; color: var(--ink-faint); font-style: italic; line-height: 1.7;
+  font-family: 'Playfair Display', serif;
+}
+
+@media (max-width: 900px) {
+  .calc-wrap { grid-template-columns: 1fr; }
+  .calc-savings-value { font-size: 34px; }
+}
+</style>
+
+<script>
+(function () {
+  const aum = document.getElementById('calc-aum');
+  const rate = document.getElementById('calc-rate');
+  const years = document.getElementById('calc-years');
+  if (!aum) return;
+  const aumVal = document.getElementById('calc-aum-val');
+  const rateVal = document.getElementById('calc-rate-val');
+  const yearsVal = document.getElementById('calc-years-val');
+  const themYr = document.getElementById('calc-them-yr');
+  const themTot = document.getElementById('calc-them-tot');
+  const usYr = document.getElementById('calc-us-yr');
+  const usTot = document.getElementById('calc-us-tot');
+  const savings = document.getElementById('calc-savings');
+  const savingsPct = document.getElementById('calc-savings-pct');
+
+  const fmt = n => Math.round(n).toLocaleString('fr-FR') + ' €';
+
+  function refresh() {
+    const a = +aum.value;
+    const r = +rate.value;
+    const y = +years.value;
+    aumVal.textContent = fmt(a);
+    rateVal.textContent = r.toFixed(2).replace('.', ',') + ' %';
+    yearsVal.textContent = y + (y > 1 ? ' ans' : ' an');
+    const them = a * r / 100;
+    const us = 6800;
+    themYr.textContent = fmt(them);
+    themTot.textContent = fmt(them * y);
+    usYr.textContent = fmt(us);
+    usTot.textContent = fmt(us * y);
+    const save = (them - us) * y;
+    savings.textContent = fmt(save);
+    const pct = them > 0 ? Math.round((1 - us / them) * 100) : 0;
+    savingsPct.textContent = pct + ' %';
+  }
+  [aum, rate, years].forEach(el => el.addEventListener('input', refresh));
+  refresh();
+})();
+</script>
 
 <!-- ═══ TARIFS ═══ -->
 <section id="tarifs">
@@ -558,6 +727,7 @@ footer.proto a:hover { border-color: var(--gold); }
   </div>
 </div>
 
+<script src="./linkify-sources.js" defer></script>
 <script src="./family-office-univers.js" defer></script>
 </body>
 </html>

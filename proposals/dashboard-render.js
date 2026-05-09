@@ -613,12 +613,13 @@ async function submitMarcel() {
 }
 
 function mdLite(text) {
-  return String(text)
+  const html = String(text)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/\n/g, '<br>')
     .replace(/<!--[\s\S]*?-->/g, '');  // strip follow-ups HTML comment
+  return (typeof window !== 'undefined' && window.IKCP_linkify) ? window.IKCP_linkify(html) : html;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -721,6 +722,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && overlay().classList.contains('visible')) closeMarcelModal();
+  });
+
+  // Bouton "Exporter mes données" — déclenche le download d'un JSON démo
+  document.getElementById('export-data-btn')?.addEventListener('click', e => {
+    e.preventDefault();
+    const payload = {
+      export_meta: {
+        version: '1.0-demo',
+        generated_at: new Date().toISOString(),
+        service: 'ikcp-client (preview)',
+        legal_basis: 'RGPD art. 20 — droit à la portabilité',
+        note: 'Export démo depuis le dashboard backtesté. En production, ce JSON est généré côté Worker ikcp-client via GET /api/export/me.',
+      },
+      family: D.client,
+      patrimoine: D.patrimoine,
+      univers_perso: D.univers_perso,
+      conversations: D.conversations,
+      arbitrages: D.arbitrages,
+      documents: D.documents,
+      livrables: D.livrables,
+      activity: D.activity,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ikcp-export-famille-dupont-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 100);
   });
 
   // Bouton "+ nouvelle question"

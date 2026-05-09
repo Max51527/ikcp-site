@@ -300,6 +300,8 @@ section.live {
 .panel-response.visible { display: block; }
 .panel-response strong { color: var(--gold); font-weight: 500; }
 .panel-response em { font-style: italic; color: var(--ink-mute); }
+.panel-response a.src-link { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(196,162,115,0.4); padding-bottom: 1px; transition: all 0.2s; }
+.panel-response a.src-link:hover { background: rgba(196,162,115,0.08); border-bottom-style: solid; }
 
 .panel-loader {
   display: none; align-items: center; gap: 12px;
@@ -611,6 +613,7 @@ footer.proto a:hover { border-color: var(--gold); }
 
 </main>
 
+<script src="./linkify-sources.js" defer></script>
 <script src="./family-office-agents.js" defer></script>
 </body>
 </html>
