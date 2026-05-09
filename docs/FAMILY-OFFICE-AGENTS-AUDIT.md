@@ -470,5 +470,118 @@ api.ikcp.eu/v1/agents/ask  ──── service binding ────▶ Worker i
 
 ---
 
+## 9. Dashboard client backtesté — la valeur ajoutée *mesurée*
+
+### 9.1 Pourquoi un dashboard, et pourquoi backtesté
+
+Une page family-office "live" (v4) suffit à *qualifier* un prospect : il peut tester Marcel, voir les sources, mesurer le sérieux du dispositif. Mais elle ne dit rien sur **ce qu'il se passera après la signature**. Pour cela il faut un *espace client* qui :
+
+- centralise patrimoine + échéances + documents + conversations
+- montre **mesurément** ce que l'IA + le CGP ont fait
+- permet de réinterroger Marcel à tout moment, dans le contexte personnel
+- met dans une file `arbitrages_en_attente_maxime` les recommandations préparées
+
+Le **backtest** consiste à charger une famille fictive cohérente (patrimoine, structures, donations, drift) et à exécuter le dashboard pour voir ce qui apparaît à l'écran. C'est ainsi qu'on valide la promesse avant la signature : si la value scorecard est convaincante sur la Famille Dupont (mock), elle l'est en production.
+
+### 9.2 Famille Dupont — profil de backtest
+
+| Élément | Valeur |
+|---|---|
+| Membres | Marc 58 ans + Sophie 56 ans + Emma 30 + Thomas 28 |
+| Net worth consolidé | **4 247 000 €** (+2,3% trimestre, +6,8% sur 12 mois) |
+| Allocation | Immo 38% · Coté 24% · AV 13% · Société 11% · Art 9% · Cash 2% · Autre 3% |
+| Drift max vs cible | 4 pts (drift modéré — coté -4, pe -1, immo +3) |
+| Société familiale | SARL DupSoft 4,8 M€ (logiciels, IS, dirigeant Marc) |
+| Société immo | SCI La Roseraie 920 k€ brut (3 biens locatifs Paris) |
+| Œuvres d'art | Soulages 1959 100×81 (estimé 1,4 M€) + 2 autres |
+| Membre IKCP depuis | avril 2024 (2 ans à fin avril 2026) |
+
+### 9.3 Architecture de la page
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│ proposals/dashboard-famille-office.html  +  dashboard-data.js  +     │
+│ dashboard-render.js  →  s'ouvre en local sans backend                │
+│                                                                      │
+│ Sections (top-to-bottom) :                                           │
+│  1. Hero — Bonjour Marc & Sophie · 4,2 M€ · membre depuis 04/2024    │
+│  2. Value Scorecard — 5 métriques d'activité IA du mois              │
+│  3. Patrimoine 360° — net worth + allocation barres + drift par      │
+│     classe (chaque classe avec écart vs cible)                       │
+│  4. Échéances — 8 prochaines, status [Préparé Marcel / À préparer /  │
+│     Expert-comptable / Prélevé auto / Analyse en cours]              │
+│  5. Arbitrages en attente Maxime — cartes avec contexte + reco       │
+│     Marcel + sources sourcées + gain estimé + actions Approfondir/   │
+│     Discuter                                                         │
+│  6. Conversations Marcel — par thème (clic → modal avec embed Marcel)│
+│  7. Documents — grid avec OCR + classement automatique               │
+│  8. Livrables — bilan trimestriel, DER, mémo Dutreil, etc. (signé    │
+│     ou à signer)                                                     │
+│  9. Services — RDV Maxime, voyages, partenaires whitelistés          │
+│ 10. Backtest 12 mois — 5 résultats mesurés + comparatif vs FO        │
+│     classique (coût, délai, valeur)                                  │
+│ 11. Journal d'activité — feed des actions agents (audit log)         │
+│                                                                      │
+│ Modal "Marcel privé" — POST direct vers ikcp-chat.maxime-ead.workers │
+│ avec préambule [Espace privé · Famille Dupont] + theme               │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### 9.4 Value scorecard — la pièce maîtresse
+
+Le bandeau de 5 cellules juste sous le hero. Sur la Famille Dupont en mai 2026 :
+
+| Métrique | Valeur backtest | Pourquoi ça compte |
+|---|---|---|
+| Questions Marcel traitées | 12 ce mois | Le client *utilise* — démontre l'usage réel |
+| Documents classés automatiquement | 3 | Le coffre-fort se construit *sans effort client* |
+| Arbitrages prêts pour Maxime | 1 (Dutreil DupSoft) | Le CGP a une file de travail *préparée* — il décide, il ne fouille pas |
+| Optimisations identifiées (€) | 24 700 € ce mois | La valeur ajoutée chiffrée — quantifiable |
+| Prochaine échéance | J−6 (déclaration 2042) | Le client ne rate plus rien, anticipation visible |
+
+### 9.5 Backtest 12 mois — les 5 chiffres qui closent une vente
+
+| Métrique | 12 mois Famille Dupont | Détail |
+|---|---|---|
+| **Heures économisées** | 24 h | Documents + rappels + relances partenaires |
+| **Occasions saisies** | 5 | Don familial 31 865 €, micro→réel SCI, allègement LVMH, donation Emma 2025, optimisation PER Q4 |
+| **Erreurs évitées** | 2 | Échéance CFE 2025 rappelée J−8, clause bénéficiaire AV Sophie corrigée |
+| **Gains nets identifiés** | **47 200 €** | Cumul des optimisations validées |
+| **Économie potentielle Dutreil DupSoft (en attente)** | **1 400 000 €** | Mémo livré 07/05 — décision famille |
+
+**Comparatif vs Family Office classique** :
+- IKCP : honoraires forfait 6 800 €/an + commissions transparentes
+- FO classique : 0,5-1% AUM = ~25-40 k€/an pour 4 M€
+- **Préparation dossier : 90 min IA → 25 min Maxime**, soit −70%
+
+### 9.6 Pourquoi cette page transforme la promesse en preuve
+
+La page `family-office-v4-live.html` parle de **promesses** (4 promesses, 10 thématiques, sources visibles). La page `dashboard-famille-office.html` montre les **preuves** :
+- les sources promises sont *cliquables* sur des arbitrages réels
+- les agents promis sont *nommés* sur des conversations réelles
+- la coordination promise est *visible* sur les partenaires whitelistés
+- la valeur promise est *chiffrée* (47 200 € + 1,4 M€ en attente)
+
+C'est la même page qu'un prospect verra **après un mois d'utilisation** — donc on peut la lui montrer **avant** comme un *back-test* de ce qu'il aura.
+
+### 9.7 Lien avec le code existant (Phase 2)
+
+| Source | Ce qu'il faudra connecter |
+|---|---|
+| `D.client` | Table `users` (existe — `workers/ikcp-client/schema.sql`) |
+| `D.patrimoine` | À créer : table `patrimoine_snapshot(user_id, asof, classes_json)` + cron weekly |
+| `D.echeances` | À créer : table `echeances(user_id, date, label, status, source)` |
+| `D.conversations` | Table `conversations` (existe) |
+| `D.arbitrages` | À créer : table `arbitrages(user_id, conv_id, status, reco_json, sources_json, gain_estime)` |
+| `D.documents` | À créer : table `documents(user_id, r2_key, type, tags_json, sha256)` + R2 bucket `ikcp-docs-private` |
+| `D.livrables` | Sous-ensemble de `documents` avec `generated=true` + signature `signed_at` |
+| `D.activity` | Table `audit_log` (existe — peut être enrichie) |
+| `D.value_scorecard` | Calcul agrégé sur `audit_log` + `arbitrages` (cron quotidien) |
+| `D.backtest_12m` | Calcul agrégé sur historique 365j |
+
+L'endpoint à exposer : `GET /api/dashboard/me` sur `workers/ikcp-client`, qui renvoie ce JSON exact (cf. `proposals/dashboard-data.js` pour le shape). Le rendu côté front (`dashboard-render.js`) reste identique.
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
