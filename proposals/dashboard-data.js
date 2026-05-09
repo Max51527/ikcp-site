@@ -163,6 +163,68 @@ window.IKCP_DASHBOARD = (function () {
     { id: 'liv_005', type: 'plan_action', label: 'Plan d\'action 2026 — 5 leviers identifiés', date: '2026-01-22', signed: true, pages: 8 },
   ];
 
+  // ─── UNIVERS PERSONNELS — patrimoine émotionnel de la famille ───
+  // Marcel surveille les marchés de chaque univers et notifie quand quelque
+  // chose bouge (cote, comparable, pré-vente, opportunité).
+  const univers_perso = [
+    {
+      key: 'voitures', icon: '🏎', label: 'Voitures de collection',
+      items: [
+        { titre: 'Porsche 911 2.7 RS Touring 1973', etat: 'État #2', valeur_estimee: 645000, source: 'Hagerty + Artcurial', tendance: '-8% / 12 mois' },
+        { titre: 'Porsche 911 GT3 RS 992 (2024)', etat: 'État #1, 280 km', valeur_estimee: 348000, source: 'Classic.com', tendance: '+4% / 12 mois' },
+      ],
+      total_estime: 993000,
+      derniere_alerte: 'Une 2.7 RS Touring s\'est vendue 645 k€ chez Artcurial Le Mans — baseline confirmée.',
+    },
+    {
+      key: 'vins', icon: '🍷', label: 'Cave d\'investissement',
+      items: [
+        { titre: 'Pétrus 2009', etat: '4 caisses 12 btl', valeur_estimee: 192000, source: 'Liv-ex Mid-Price', tendance: '+12% / 24 mois' },
+        { titre: 'Château Margaux 2010', etat: '8 caisses 12 btl', valeur_estimee: 168000, source: 'iDealwine', tendance: '+6% / 24 mois' },
+        { titre: 'Château Lafite 2015', etat: '6 caisses 12 btl', valeur_estimee: 134000, source: 'Liv-ex', tendance: '+9% / 24 mois' },
+      ],
+      total_estime: 494000,
+      derniere_alerte: 'Pétrus 2009 +3% sur Liv-ex en avril — surveillance Marcel active.',
+    },
+    {
+      key: 'art_collection', icon: '🎨', label: 'Œuvres d\'art',
+      items: [
+        { titre: 'Soulages — huile 1959 100×81 cm', etat: 'Provenance Galerie de France', valeur_estimee: 1400000, source: 'Artprice + Christie\'s', tendance: 'stable / 36 mois' },
+        { titre: 'Hartung — gouache 1962', etat: 'Cadre original', valeur_estimee: 280000, source: 'Artnet', tendance: '+15% / 12 mois' },
+        { titre: 'Photo Sebastião Salgado — Genesis 2013', etat: 'Tirage 5/30 signé', valeur_estimee: 38000, source: 'Sotheby\'s', tendance: 'stable' },
+      ],
+      total_estime: 1718000,
+      derniere_alerte: 'Pré-vente Christie\'s 18 juin : Soulages encre 1971 estimé 240-320 k€ — opportunité dénicheur.',
+    },
+    {
+      key: 'montres', icon: '⌚', label: 'Collection montres',
+      items: [
+        { titre: 'Patek Philippe 5167A 2018', etat: 'Full set', valeur_estimee: 28000, source: 'Chrono24', tendance: '-6% / 12 mois' },
+        { titre: 'AP Royal Oak 15400ST 2019', etat: 'Full set', valeur_estimee: 38000, source: 'WatchCharts', tendance: '-12% / 12 mois' },
+      ],
+      total_estime: 66000,
+      derniere_alerte: 'Marché stabilisé Q4 2025 — bon moment pour reprendre des positions sur les modèles discontinués.',
+    },
+    {
+      key: 'voyages', icon: '✈', label: 'Voyages & destinations',
+      items: [
+        { titre: 'NYC juillet 2026 — 7 jours', etat: 'ESTA à renouveler · billets non émis', valeur_estimee: null, source: 'John Paul', tendance: null },
+        { titre: 'Megève — chalet familial', etat: 'Acquisition 2018 · 250 m²', valeur_estimee: 4625000, source: 'Knight Frank', tendance: '+9% / 5 ans' },
+      ],
+      total_estime: 4625000,
+      derniere_alerte: 'Off-market Combloux 4,8 M€ disponible (cf. dénicheur d\'offres) — Marcel l\'a matché à votre profil.',
+    },
+    {
+      key: 'immo_prestige', icon: '🏛', label: 'Immobilier prestige',
+      items: [
+        { titre: 'Résidence principale Paris 16e — 4 ch.', etat: '180 m², 6e étage, vue Seine', valeur_estimee: 2380000, source: 'BIEN Notaires + DVF', tendance: '+11% / 5 ans' },
+        { titre: 'Chalet Megève (cf. voyages)', etat: '250 m², 4 ch.', valeur_estimee: 4625000, source: 'Knight Frank', tendance: '+9% / 5 ans' },
+      ],
+      total_estime: 7005000,
+      derniere_alerte: '12 propriétés Saint-Gervais 2-4 M€ remontées par Knight Frank — alternative Megève.',
+    },
+  ];
+
   // ─── DÉNICHEUR D'OFFRES — la pièce maîtresse d'un FO digital ───
   // Marcel score chaque opportunité par adéquation au profil (allocation,
   // patrimoine, conversations passées, échéances fiscales). 0 → 100.
@@ -357,6 +419,7 @@ window.IKCP_DASHBOARD = (function () {
     documents,
     livrables,
     services,
+    univers_perso,
     opportunites,
     services_premium,
     value_scorecard,

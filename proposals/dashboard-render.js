@@ -267,6 +267,62 @@ function renderLivrables() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// UNIVERS PERSO
+
+function renderUniversPerso() {
+  const root = document.getElementById('univers-perso-grid');
+  if (!root || !D.univers_perso) return;
+  root.innerHTML = D.univers_perso.map(u => {
+    const items = u.items.map(it => {
+      let trendClass = 'flat';
+      let trendArrow = '·';
+      if (it.tendance) {
+        if (it.tendance.startsWith('+')) { trendClass = ''; trendArrow = '↗'; }
+        else if (it.tendance.startsWith('-')) { trendClass = 'neg'; trendArrow = '↘'; }
+      }
+      const valeur = it.valeur_estimee ? fmtEurShort(it.valeur_estimee) : (it.etat || '');
+      return `
+        <div class="up-item">
+          <div class="up-item-titre">${escape(it.titre)}</div>
+          <div class="up-item-meta">
+            <span>${escape(it.etat || '')}${it.valeur_estimee ? ' · ' + escape(it.source) : ''}</span>
+            <span>
+              ${it.valeur_estimee ? `<strong style="color:var(--ink);">${valeur}</strong>` : ''}
+              ${it.tendance ? `<span class="up-item-tendance ${trendClass}">${trendArrow} ${escape(it.tendance)}</span>` : ''}
+            </span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    return `
+      <div class="univers-perso-card" onclick="openMarcelOnUnivers('${u.key}', '${escape(u.label)}')">
+        <div class="up-head">
+          <span class="up-icon">${u.icon}</span>
+          <span class="up-label">${escape(u.label)}</span>
+          <span class="up-total">${fmtEurShort(u.total_estime)}</span>
+        </div>
+        <div class="up-items">${items}</div>
+        ${u.derniere_alerte ? `<div class="up-alerte">${escape(u.derniere_alerte)}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function openMarcelOnUnivers(univKey, univLabel) {
+  openMarcelModal({
+    title: univLabel,
+    theme: univKey,
+    prompts: [
+      'Reprendre le suivi marché de cet univers',
+      'Détecter les opportunités à venir',
+      'Comparer avec d\'autres pistes',
+    ],
+    prefill: '',
+  });
+}
+window.openMarcelOnUnivers = openMarcelOnUnivers;
+
+// ─────────────────────────────────────────────────────────────────────────────
 // DÉNICHEUR D'OFFRES
 
 function renderOpportunites() {
@@ -645,6 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderArbitrages();
   renderConversations();
   renderDocuments();
+  renderUniversPerso();
   renderLivrables();
   renderOpportunites();
   renderServicesPremium();

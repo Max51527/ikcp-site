@@ -651,5 +651,127 @@ Un FO traditionnel s'utilise au cabinet, sur RDV. Un FO digital doit être **dan
 
 ---
 
+## 11. Pivot stratégique — univers de vie + freemium
+
+### 11.1 Le constat sur les versions précédentes
+
+Les pages v3 et v4 entrent par l'**expertise technique** (fiscal, juridique, succession, transmission…). Cette entrée a sa place — pour un prospect *déjà sensibilisé* à la complexité patrimoniale. Mais elle rate la *vraie* porte d'entrée d'un FO digital : **l'émotion de la possession**.
+
+Un prospect qui a 4 M€ ne se réveille pas en pensant *"je dois optimiser ma DMTG"*. Il pense :
+- *"j'ai vu une 2.7 RS Touring chez Artcurial, est-ce que c'est le moment ?"*
+- *"on part 7 jours à NYC en juillet, jet ou first ?"*
+- *"Pétrus 2009, ça remonte ou pas ?"*
+- *"Chalet Combloux ou Megève pour les vacances ?"*
+
+L'**univers de vie** est la porte. La fiscalité vient *après* — et c'est là que se joue l'expertise IKCP.
+
+### 11.2 Les 8 univers — l'entrée freemium
+
+Page `proposals/family-office-v5-univers.html` :
+
+| Univers | APIs comparateurs | Exemple Marcel |
+|---|---|---|
+| ✈ **Voyages & vacances** | Amadeus · Skyscanner · NetJets · VistaJet · Booking | "Jet privé vs first class Paris-NYC pour 4 personnes" |
+| 🏎 **Voitures de collection** | Hagerty · Classic.com · Artcurial · RM Sotheby's | "Estimer Porsche 911 2.7 RS 1973 état #2" |
+| 🎨 **Œuvres d'art** | Artprice · Artnet · Christie's · Sotheby's · MutualArt | "Soulages 1959 vs encre 1971 — comparables 5 ans" |
+| 🍷 **Vins & spiritueux** | Liv-ex · iDealwine · Wine-Searcher · Bordeaux primeurs | "Pétrus 2009 — cote actuelle marché secondaire" |
+| ⌚ **Montres** | Chrono24 · WatchCharts · Phillips · Antiquorum | "Patek 5711 vs AP RO 15500 — décote 2024-2026" |
+| ⛵ **Yachts** | Yatco · Yachtworld · Camper & Nicholsons · Burgess | "Ferretti 720 vs Princess Y72 — TCO 5 ans" |
+| 🏛 **Immobilier prestige** | Sotheby's Realty · Knight Frank · BIEN Notaires · DVF | "Combloux ou Megève — valorisation 5 ans" |
+| 🐎 **Chevaux & sport** | France Galop · Goffs · Tattersalls · Equiratings · FFE | "Yearling Deauville — budget 200 k€" |
+
+Chaque univers a, dans `workers/ikcp-marcel/worker.js`, son `THEME_CONTEXTS[univers]` qui focalise Marcel : APIs à citer, fiscalité à rappeler (CGI 885 I, 150 V bis, 779 I), schémas de structuration au-delà d'un seuil. Marcel devient un **comparateur sourcé** — pas un chatbot vague.
+
+### 11.3 Le 9e slot — locké, F.O. premium
+
+Carte 9 du grid v5 : **"Conseil patrimonial premium"** verrouillée. Au clic → modal *"Devenez membre Family Office augmenté"*. Le conseil patrimonial complet (les 10 expertises de v4-live) est l'**offre payante** — et c'est elle qui justifie le forfait.
+
+### 11.4 Modèle freemium opérationnel
+
+Quota local `localStorage` : **3 questions gratuites par session toutes thématiques confondues** (`FREEMIUM_QUOTA = 3`, clé `ikcp_freemium_count_v1`). Compteur visible en nav. Au-delà : modal de gate qui propose l'adhésion.
+
+Le compteur est honnête (visible en clair, dégradable mais incite à ne pas tricher). Pour la production, le quota peut basculer côté Worker (cookie/IP+UA) avec rate limit dur.
+
+### 11.5 Trois formules tarifaires
+
+Section `#tarifs` de la page v5 :
+
+| Formule | Prix | Promesse |
+|---|---|---|
+| **Freemium** | Gratuit | 3 questions Marcel · 8 univers comparateurs · sources publiques · pas de Maxime |
+| **Family Office augmenté** ⭐ | **6 800 €/an** | Marcel illimité + Maxime + dashboard + dénicheur d'offres scoré + services premium |
+| **Family Office Bespoke** | Sur devis | FRUP · multi-juridictions · réseau global · conciergerie premium · équipe dédiée |
+
+Le ⭐ est le plus choisi (positionnement clair vs FO classique 25-40 k€/an).
+
+### 11.6 Côté Dashboard — les *univers personnels* surveillés
+
+La famille membre a sa propre vue *"Vos univers"* (section `#univers-perso` du dashboard `proposals/dashboard-famille-office.html`). Pour la Famille Dupont : 6 univers consolidés totalisant **14,9 M€** de patrimoine émotionnel (au-delà du financier) :
+
+| Univers | Items | Valeur |
+|---|---|---|
+| 🏎 Voitures collection | 911 2.7 RS 1973 · 911 GT3 RS 992 | **993 k€** |
+| 🍷 Cave investissement | Pétrus 2009 · Margaux 2010 · Lafite 2015 (18 caisses) | **494 k€** |
+| 🎨 Œuvres d'art | Soulages 1959 · Hartung 1962 · Salgado 2013 | **1 718 k€** |
+| ⌚ Montres | Patek 5167A · AP RO 15400ST | **66 k€** |
+| ✈ Voyages & destinations | NYC juillet · Megève chalet | **4 625 k€** |
+| 🏛 Immobilier prestige | RP Paris 16 · Megève chalet | **7 005 k€** |
+
+Chaque univers affiche : items + valeur estimée + tendance + **alerte Marcel** (ex: *"Pré-vente Christie's 18 juin : Soulages encre 1971 estimé 240-320 k€ — opportunité dénicheur"*).
+
+### 11.7 Funnel de conversion
+
+```
+PROSPECT (organique / SEO / réseau)
+    │
+    ▼
+[1] family-office-v5-univers.html  ← entrée émotionnelle
+    │  · choisit un univers (voitures, art, vins…)
+    │  · pose 1-3 questions à Marcel comparateur
+    │  · voit les sources, l'analyse, la fiscalité
+    ▼
+[2] Quota 3 atteint  →  modal MEMBER GATE
+    │  "Devenez membre Family Office augmenté"
+    │
+    ├──► Conversion directe (mailto Maxime)
+    │
+    └──► Hésitation
+         │  · explore #tarifs (3 formules)
+         │  · revient plus tard (quota localStorage)
+         ▼
+[3] Adhésion 6 800 €/an  ← contact Maxime + onboarding
+    │
+    ▼
+[4] dashboard-famille-office.html  ← le vrai produit FO
+    │  · patrimoine 360°
+    │  · univers personnels surveillés (alertes Marcel)
+    │  · dénicheur d'offres scoré
+    │  · arbitrages préparés en attente Maxime
+    │  · backtest 12 mois (gains identifiés)
+    │  · services premium (governance · NextGen · cyber · health)
+    │
+    ▼
+[5] Renouvellement / parrainage
+```
+
+### 11.8 Ce qui est livré dans cette PR
+
+- `proposals/family-office-v5-univers.html` — page freemium avec 8 univers + slot premium locké + 3 formules tarifaires + member gate modal
+- `proposals/family-office-univers.js` — render des univers + freemium quota localStorage + appel Marcel avec préambule lifestyle
+- `workers/ikcp-marcel/worker.js` — 8 nouveaux `THEME_CONTEXTS` (voyages, voitures, art_collection, vins, montres, yachts, immo_prestige, chevaux)
+- `proposals/dashboard-data.js` — `univers_perso[]` Famille Dupont (6 univers consolidés 14,9 M€)
+- `proposals/dashboard-famille-office.html` + `dashboard-render.js` — section "Vos univers" avec items + alertes Marcel par univers, clic → modal Marcel personnalisé
+
+### 11.9 Ce qu'il reste à brancher (Phase 2)
+
+| # | Action | Pourquoi |
+|---|---|---|
+| 1 | **Freemium côté Worker** : remplacer le quota `localStorage` par un compteur `KV` indexé sur cookie/fingerprint pour empêcher le contournement. | Production : éviter le clear cache. |
+| 2 | **Vraies API comparateurs** : Hagerty Valuation Tool (USA, payant), Liv-ex (£/an), Chrono24 (scraping accepté), DVF (gratuit déjà câblé). | Aujourd'hui le scoring est dans les mocks. |
+| 3 | **Alertes push par univers** : un cron quotidien qui scrute les marchés des univers personnels, déclenche notification si delta > seuil. | C'est ce qui justifie l'abonnement annuel. |
+| 4 | **Lien funnel → onboarding KYC** : adhésion Augmenté = magic link Resend + KYC Ubble + signature DER Yousign en < 15 min. | Convertir sans friction. |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*

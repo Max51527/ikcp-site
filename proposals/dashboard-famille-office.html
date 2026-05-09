@@ -342,6 +342,31 @@ section.block {
 .partn-name { color: var(--ink); margin-top: 2px; }
 .partn-meta { color: var(--ink-faint); font-size: 10.5px; margin-top: 2px; }
 
+/* ─── UNIVERS PERSO ─── */
+.univers-perso-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.univers-perso-card {
+  padding: 22px 24px 20px; background: var(--bg-2); border: 1px solid var(--line);
+  border-top: 3px solid var(--gold); transition: all 0.25s; cursor: pointer;
+}
+.univers-perso-card:hover { background: rgba(196,162,115,0.04); }
+.up-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.up-icon { font-size: 30px; line-height: 1; }
+.up-label { flex: 1; font-family: 'Playfair Display', serif; font-size: 18px; color: var(--ink); }
+.up-total { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold); }
+.up-items { font-size: 12.5px; line-height: 1.6; }
+.up-item { padding: 6px 0; border-bottom: 1px solid var(--line-faint); }
+.up-item:last-child { border-bottom: none; }
+.up-item-titre { color: var(--ink); }
+.up-item-meta { color: var(--ink-faint); font-size: 11px; font-family: 'JetBrains Mono', monospace; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.up-item-tendance { color: var(--ok); }
+.up-item-tendance.neg { color: var(--bad); }
+.up-item-tendance.flat { color: var(--ink-faint); }
+.up-alerte {
+  margin-top: 12px; padding: 10px 14px; background: rgba(196,162,115,0.04);
+  border-left: 2px solid var(--gold); font-size: 12px; color: var(--ink-mute); line-height: 1.5;
+  font-style: italic; font-family: 'Playfair Display', serif;
+}
+
 /* ─── DÉNICHEUR D'OFFRES ─── */
 .opp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
 .opp-card {
@@ -624,6 +649,7 @@ footer.proto a:hover { border-color: var(--gold); }
     <a href="#echeances">Échéances</a>
     <a href="#arbitrages">Arbitrages</a>
     <a href="#conversations">Marcel</a>
+    <a href="#univers-perso">Univers</a>
     <a href="#documents">Documents</a>
     <a href="#livrables">Livrables</a>
     <a href="#services">Services</a>
@@ -719,6 +745,18 @@ footer.proto a:hover { border-color: var(--gold); }
     <div class="block-meta"><a href="#" id="new-marcel" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);">+ nouvelle question</a></div>
   </div>
   <div class="conv-list" id="conv-list"></div>
+</section>
+
+<!-- ═══ UNIVERS PERSO ═══ -->
+<section class="block" id="univers-perso">
+  <div class="block-head">
+    <div>
+      <div class="block-kicker">— Vos univers</div>
+      <div class="block-h2">Voitures · vins · art · montres · résidences. <em>Surveillés.</em></div>
+    </div>
+    <div class="block-meta">Marcel suit les marchés · alerte sur cote / pré-vente / opportunité</div>
+  </div>
+  <div class="univers-perso-grid" id="univers-perso-grid"></div>
 </section>
 
 <!-- ═══ DOCUMENTS ═══ -->

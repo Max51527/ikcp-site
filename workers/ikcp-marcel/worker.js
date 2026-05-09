@@ -452,6 +452,50 @@ const THEME_CONTEXTS = {
     "FOCUS THÉMATIQUE — CONCIERGERIE & ADMINISTRATIF. Calendrier fiscal du trimestre en cours, " +
     "rappels d'échéances, classement de courrier sensible. Pour la conciergerie (voyage, scolarité), " +
     "indique que IKCP coordonne avec un prestataire white-label — pas d'auto-booking direct.",
+
+  // ─── UNIVERS LIFESTYLE (page family-office-v5-univers freemium) ───
+  voyages:
+    "FOCUS UNIVERS — VOYAGES & VACANCES. Compare options voyage premium : jet privé partagé " +
+    "(NetJets Marquis Card) vs ad hoc (VistaJet, Flexjet) vs first class régulier ; charters " +
+    "yacht (Yatco, Camper & Nicholsons) ; résidences secondaires premium (Sotheby's Realty, " +
+    "Knight Frank). Donne tarifs indicatifs et coût total. Mentionne fiscalité si voyage mixte " +
+    "(refacturation société CGI 39 — déductibilité raisonnable).",
+  voitures:
+    "FOCUS UNIVERS — VOITURES DE COLLECTION. Cote Hagerty Valuation Tool (USA), comparables " +
+    "Artcurial Motorcars (FR/EU), RM Sotheby's. États #1 à #4. Fiscalité : objet de collection " +
+    "(douane > 30 ans), CGI 150 V bis (taxation cession 6,5% prix forfait), TVA si schéma " +
+    "société, sortie d'actif déclenche IS sur PV. Donation : meuble — abattement 100k€/15 ans " +
+    "CGI 779 I applicable.",
+  art_collection:
+    "FOCUS UNIVERS — ŒUVRES D'ART (collection). Comparables Artprice/Artnet, ventes Christie's/" +
+    "Sotheby's, alertes pré-vente. Fiscalité : exclusion IFI (CGI 885 I), taxation forfaitaire " +
+    "6,5% (CGI 150 V bis) ou option PV régime général (exo 22 ans). > 4 M€ : SC familiale ou " +
+    "fondation abritée.",
+  vins:
+    "FOCUS UNIVERS — VINS & SPIRITUEUX. Cotes Liv-ex (référence internationale, USD/€), iDealwine " +
+    "(France), Wine-Searcher. Primeurs Bordeaux campagne en cours. Fiscalité : exclusion IFI, " +
+    "taxation cession 6,5% (CGI 150 V bis). Stockage : entrepôt sous douane (TVA suspendue) " +
+    "recommandé pour bouteilles d'investissement.",
+  montres:
+    "FOCUS UNIVERS — MONTRES. Cotes Chrono24 + WatchCharts (marché secondaire), Phillips/" +
+    "Antiquorum (haute horlogerie vintage). Marché 2024-2026 : correction post-bulle 2022 sur " +
+    "Rolex/Patek/AP, stabilisation depuis Q3 2025. Fiscalité : objet de collection (CGI 150 V " +
+    "bis) ; donation meuble — abattement 100k€/15 ans CGI 779 I.",
+  yachts:
+    "FOCUS UNIVERS — YACHTS. Acquisition vs charter (NCB charter ~12-18% du prix achat/an), TCO " +
+    "complet (équipage 4-12 selon taille, maintenance, port, assurances, carburant). Pavillons : " +
+    "Malte (EU, anglophone, leasing TVA), Caïmans (offshore, > 40m), France (DAFN coûteux). " +
+    "Régime leasing maltais : TVA effective 5,4% sur durée use.",
+  immo_prestige:
+    "FOCUS UNIVERS — IMMOBILIER PRESTIGE. Off-market via réseau notaires + Sotheby's Realty / " +
+    "Knight Frank ; comparables DVF (api.gouv.fr) + BIEN Notaires ; valorisation PriceHubble. " +
+    "Fiscalité : IFI (CGI 964 et suivants), abattement 30% RP, déductibilité intérêts emprunt " +
+    "régime réel (CGI 31), conventions fiscales si bien à l'étranger.",
+  chevaux:
+    "FOCUS UNIVERS — CHEVAUX & SPORT. Vente yearlings Arqana (Deauville août), Goffs France " +
+    "(octobre), Tattersalls (UK). Pension écuries Chantilly/Compiègne 3,2-4,5 k€/mois. Fiscalité : " +
+    "SCEA d'élevage (BIC agricole, déductibilité totale charges + amortissements, micro si CA < " +
+    "91 900 €), ou détention privée (BNC non-pro accessoire).",
 };
 
 function getCurrentContext() {

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Family Office · Vos univers</title>
+<meta name="description" content="Voyages, voitures, art, vins, montres, yachts, immobilier prestige, chevaux. Marcel comparateur. Freemium puis Family Office augmenté.">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- PWA -->
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP Family Office">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --bg-2: #0d100e;
+  --ink: #f4ece1;
+  --ink-mute: #9a9388;
+  --ink-faint: #5e5851;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.16);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --line-faint: rgba(196, 162, 115, 0.06);
+  --warn: #d4a85a;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.88 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events: none; z-index: 0; opacity: 0.5; mix-blend-mode: overlay;
+}
+main { position: relative; z-index: 1; }
+
+/* ─── NAV ─── */
+nav.top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 18px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(10,13,11,0.92), rgba(10,13,11,0));
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; letter-spacing: 0.08em; }
+.brand b { color: var(--gold); font-weight: 500; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 4px; }
+.nav-right { display: flex; gap: 18px; align-items: center; }
+.freemium-counter {
+  font-size: 11px; letter-spacing: 0.06em; color: var(--ink-mute);
+  padding: 7px 14px; border: 1px solid var(--line); border-radius: 1px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.freemium-counter strong { color: var(--gold); font-weight: 500; }
+.cta-nav { padding: 10px 20px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: all 0.3s; }
+.cta-nav:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── HERO ─── */
+section.hero {
+  min-height: 70vh;
+  padding: 140px 32px 60px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+}
+.hero-kicker { font-size: 10.5px; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; display: flex; align-items: center; gap: 18px; }
+.hero-kicker .rule { width: 36px; height: 1px; background: var(--gold); }
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(40px, 6vw, 80px); line-height: 1.05; letter-spacing: -0.022em;
+  max-width: 1000px; margin: 0 auto 24px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede {
+  max-width: 640px; font-size: 16px; color: var(--ink-mute); margin: 0 auto 40px;
+  line-height: 1.7; font-weight: 300;
+}
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.hero-actions { display: inline-flex; gap: 24px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.btn-primary {
+  padding: 16px 36px; background: var(--gold); color: var(--bg); text-decoration: none;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  border: 1px solid var(--gold); transition: all 0.3s;
+}
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-secondary {
+  color: var(--ink-mute); text-decoration: none; font-size: 12.5px; letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--line); padding-bottom: 5px; transition: all 0.3s;
+}
+.btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ─── SECTION HEAD ─── */
+section.block { padding: 80px 32px 50px; max-width: 1320px; margin: 0 auto; }
+.block-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; gap: 24px; flex-wrap: wrap; }
+.block-kicker { font-size: 10.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+.block-h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 36px; line-height: 1.1; letter-spacing: -0.018em; }
+.block-h2 em { font-style: italic; color: var(--gold); }
+.block-meta { font-size: 11.5px; color: var(--ink-faint); letter-spacing: 0.06em; text-align: right; }
+.block-meta strong { color: var(--gold); font-weight: 500; }
+
+/* ─── UNIVERS GRID ─── */
+#univers {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.univers-card {
+  background: var(--bg);
+  padding: 36px 32px 28px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.35s ease;
+  min-height: 280px;
+  display: flex; flex-direction: column;
+  border-top: 3px solid transparent;
+}
+.univers-card:hover { background: rgba(196, 162, 115, 0.04); border-top-color: var(--accent, var(--gold)); }
+.univers-card.open { background: rgba(196, 162, 115, 0.06); border-top-color: var(--accent, var(--gold)); }
+.univers-icon {
+  font-size: 48px; line-height: 1; margin-bottom: 18px;
+  filter: drop-shadow(0 0 20px rgba(196, 162, 115, 0.15));
+}
+.univers-title {
+  font-family: 'Playfair Display', serif; font-weight: 500;
+  font-size: 26px; line-height: 1.15; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.005em;
+}
+.univers-pitch {
+  font-size: 13.5px; color: var(--ink-mute); line-height: 1.6; font-weight: 300;
+  margin-bottom: 20px; flex-grow: 1;
+}
+.univers-apis {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+}
+.api-chip-mini {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.04em;
+  padding: 3px 8px; border: 1px solid var(--line-strong);
+  color: var(--ink-mute); text-transform: uppercase;
+}
+.univers-trigger {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+}
+.univers-trigger .arrow { display: inline-block; transition: transform 0.3s; }
+.univers-card.open .univers-trigger .arrow { transform: rotate(90deg); }
+
+/* Slot premium locké */
+.univers-card.locked {
+  background: linear-gradient(135deg, var(--bg-2) 0%, rgba(196,162,115,0.03) 100%);
+  cursor: pointer;
+  position: relative;
+}
+.univers-card.locked .univers-icon { opacity: 0.5; }
+.univers-card.locked::before {
+  content: ''; position: absolute; top: 12px; right: 12px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(212, 168, 90, 0.12); border: 1px solid var(--warn);
+}
+.univers-card.locked::after {
+  content: '🔒'; position: absolute; top: 12px; right: 18px; font-size: 12px;
+  color: var(--warn);
+}
+.univers-card.locked:hover { background: rgba(212, 168, 90, 0.06); border-top-color: var(--warn); }
+.univers-locked-tag {
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--warn); margin-top: auto;
+}
+
+/* ─── PANEL Marcel comparateur ─── */
+.univers-panel {
+  grid-column: 1 / -1;
+  background: var(--bg-2);
+  border-top: 1px solid var(--gold);
+  padding: 0 36px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.univers-panel.open {
+  max-height: 1400px;
+  padding: 38px 36px 42px;
+  border-bottom: 1px solid var(--gold);
+}
+.panel-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; gap: 20px; flex-wrap: wrap; }
+.panel-univers-line { font-size: 13px; color: var(--ink); margin-bottom: 6px; font-weight: 500; }
+.panel-sub { font-size: 12.5px; color: var(--ink-mute); line-height: 1.5; }
+.panel-close {
+  background: none; border: 1px solid var(--line); color: var(--ink-mute);
+  padding: 6px 14px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+.panel-close:hover { color: var(--gold); border-color: var(--gold); }
+
+.panel-prompts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.prompt-chip {
+  background: rgba(196, 162, 115, 0.06); border: 1px solid var(--line-strong);
+  color: var(--ink); padding: 9px 16px;
+  font-size: 12px; cursor: pointer; transition: all 0.25s;
+  font-family: 'Inter', sans-serif;
+}
+.prompt-chip:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+.panel-input-row { display: flex; gap: 10px; margin-bottom: 22px; }
+.panel-input { flex: 1; background: var(--bg); border: 1px solid var(--line); color: var(--ink); padding: 14px 18px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.panel-input:focus { border-color: var(--gold); }
+.panel-input::placeholder { color: var(--ink-faint); font-style: italic; }
+.panel-send { padding: 0 28px; background: var(--gold); color: var(--bg); border: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.25s; }
+.panel-send:hover { background: var(--gold-bright); }
+.panel-send:disabled { opacity: 0.4; cursor: wait; }
+
+.panel-response {
+  background: var(--bg); border-left: 2px solid var(--gold);
+  padding: 22px 26px; margin-bottom: 18px; min-height: 80px;
+  font-size: 14.5px; line-height: 1.7; color: var(--ink); white-space: pre-wrap;
+  display: none;
+}
+.panel-response.visible { display: block; }
+.panel-response strong { color: var(--gold); font-weight: 500; }
+.panel-response em { font-style: italic; color: var(--ink-mute); }
+
+.panel-loader { display: none; align-items: center; gap: 12px; color: var(--ink-mute); font-size: 13px; margin-bottom: 18px; font-style: italic; font-family: 'Playfair Display', serif; }
+.panel-loader.visible { display: flex; }
+.panel-loader .pulse { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+
+.panel-sources { display: none; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 11px; color: var(--ink-faint); margin-bottom: 22px; }
+.panel-sources.visible { display: flex; }
+.panel-sources-label { letter-spacing: 0.18em; text-transform: uppercase; }
+.source-chip { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 5px 10px; background: rgba(196, 162, 115, 0.08); border: 1px solid var(--line-strong); color: var(--gold); }
+
+.panel-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; border-top: 1px solid var(--line); flex-wrap: wrap; gap: 16px; }
+.panel-footer-note { font-size: 11.5px; color: var(--ink-faint); font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.5; max-width: 560px; }
+.panel-cta-membre {
+  display: inline-block; padding: 10px 22px; background: transparent;
+  color: var(--gold); border: 1px solid var(--gold); text-decoration: none;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  transition: all 0.3s; cursor: pointer;
+}
+.panel-cta-membre:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── FREEMIUM banner sous nav ─── */
+.freemium-banner {
+  background: var(--bg-2); border-bottom: 1px solid var(--line);
+  padding: 12px 32px; text-align: center;
+  font-size: 12px; color: var(--ink-mute); letter-spacing: 0.04em;
+  margin-top: 80px;
+}
+.freemium-banner strong { color: var(--gold); font-weight: 500; }
+.freemium-banner a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; transition: border 0.25s; margin-left: 12px; }
+.freemium-banner a:hover { border-color: var(--gold); }
+
+/* ─── TARIFS ─── */
+section#tarifs { padding: 80px 32px 80px; max-width: 1280px; margin: 0 auto; }
+.tarifs-head { text-align: center; max-width: 720px; margin: 0 auto 48px; }
+.tarifs-head h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 40px; line-height: 1.1; margin-bottom: 14px; letter-spacing: -0.018em; }
+.tarifs-head h2 em { font-style: italic; color: var(--gold); }
+.tarifs-head p { font-size: 14.5px; color: var(--ink-mute); line-height: 1.7; }
+.tarifs-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.tarif-card {
+  padding: 36px 32px 32px;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.tarif-card.featured {
+  background: linear-gradient(180deg, rgba(196,162,115,0.06) 0%, var(--bg-2) 100%);
+  border-top: 2px solid var(--gold);
+  margin-top: -2px;
+}
+.tarif-card.featured::before {
+  content: 'Le plus choisi'; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--bg);
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 14px; font-weight: 600;
+}
+.tarif-tier {
+  font-size: 10.5px; letter-spacing: 0.36em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+}
+.tarif-name {
+  font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 500;
+  margin-bottom: 8px; letter-spacing: -0.005em;
+}
+.tarif-name em { font-style: italic; color: var(--gold); }
+.tarif-price {
+  font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 400;
+  color: var(--ink); margin: 14px 0 4px;
+  letter-spacing: -0.01em;
+}
+.tarif-price em { font-style: italic; color: var(--gold); }
+.tarif-price small { font-size: 13px; color: var(--ink-mute); margin-left: 6px; font-family: 'Inter', sans-serif; font-style: normal; font-weight: 400; }
+.tarif-pitch { font-size: 12.5px; color: var(--ink-mute); margin: 14px 0 22px; line-height: 1.6; min-height: 60px; }
+.tarif-features { list-style: none; padding: 0; margin: 0 0 28px; flex: 1; }
+.tarif-features li {
+  font-size: 13px; color: var(--ink); padding: 8px 0 8px 22px;
+  border-bottom: 1px solid var(--line-faint); position: relative;
+  line-height: 1.5;
+}
+.tarif-features li:last-child { border-bottom: none; }
+.tarif-features li::before { content: '✓'; position: absolute; left: 0; color: var(--gold); font-weight: 600; }
+.tarif-features li.x::before { content: '·'; color: var(--ink-faint); }
+.tarif-features li.x { color: var(--ink-faint); text-decoration: line-through; opacity: 0.6; }
+.tarif-cta {
+  text-align: center; padding: 14px 24px;
+  font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none; transition: all 0.3s; font-weight: 600;
+}
+.tarif-cta.outline { border: 1px solid var(--line-strong); color: var(--ink); }
+.tarif-cta.outline:hover { border-color: var(--gold); color: var(--gold); }
+.tarif-cta.solid { background: var(--gold); color: var(--bg); border: 1px solid var(--gold); }
+.tarif-cta.solid:hover { background: transparent; color: var(--gold); }
+
+/* ─── MEMBER GATE MODAL ─── */
+.member-gate {
+  position: fixed; inset: 0; background: rgba(10,13,11,0.92);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px); padding: 20px;
+}
+.member-gate.show { display: flex; }
+.member-gate-panel {
+  background: var(--bg-2); border: 1px solid var(--gold);
+  width: min(560px, 100%); padding: 40px 36px 32px;
+  text-align: center;
+}
+.member-gate-panel h3 {
+  font-family: 'Playfair Display', serif; font-weight: 400; font-size: 32px;
+  margin-bottom: 14px; letter-spacing: -0.018em;
+}
+.member-gate-panel h3 em { font-style: italic; color: var(--gold); }
+.member-gate-panel p { font-size: 14px; color: var(--ink-mute); line-height: 1.7; margin-bottom: 24px; }
+.member-gate-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.member-gate-cta {
+  padding: 14px 28px; background: var(--gold); color: var(--bg); text-decoration: none;
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+  border: 1px solid var(--gold); transition: all 0.3s;
+}
+.member-gate-cta:hover { background: transparent; color: var(--gold); }
+.member-gate-secondary { color: var(--ink-mute); font-size: 12px; text-decoration: none; padding-top: 16px; display: block; transition: color 0.25s; }
+.member-gate-secondary:hover { color: var(--gold); }
+.member-gate-close {
+  position: absolute; top: 14px; right: 18px;
+  background: none; border: none; color: var(--ink-mute); font-size: 18px;
+  cursor: pointer; padding: 6px 10px;
+}
+.member-gate-close:hover { color: var(--gold); }
+.member-gate-panel { position: relative; }
+
+/* ─── FOOTER ─── */
+footer.proto {
+  padding: 40px 32px 32px; text-align: center;
+  border-top: 1px solid var(--line); margin-top: 40px;
+}
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.8; }
+footer.proto a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; transition: border 0.25s; }
+footer.proto a:hover { border-color: var(--gold); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  #univers { grid-template-columns: repeat(2, 1fr); }
+  .tarifs-grid { grid-template-columns: 1fr; }
+  .tarif-card.featured { margin-top: 0; }
+  .block-head { flex-direction: column; align-items: flex-start; }
+  .block-meta { text-align: left; }
+}
+@media (max-width: 720px) {
+  nav.top { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+  .nav-right { width: 100%; justify-content: space-between; }
+  .freemium-counter { font-size: 10px; padding: 6px 10px; }
+  section.hero { padding: 100px 16px 40px; min-height: 60vh; }
+  section.block { padding: 50px 16px 30px; }
+  .freemium-banner { margin-top: 70px; padding: 10px 16px; font-size: 11px; }
+  #univers { grid-template-columns: 1fr; }
+  .univers-card { min-height: 220px; padding: 28px 24px; }
+  .univers-icon { font-size: 38px; }
+  .univers-title { font-size: 22px; }
+  .univers-panel { padding: 0 18px; }
+  .univers-panel.open { padding: 30px 18px 32px; }
+  .panel-input-row { flex-direction: column; }
+  .panel-send { padding: 14px; }
+  .panel-footer { flex-direction: column; align-items: stretch; gap: 14px; }
+  .panel-cta-membre { text-align: center; }
+  section#tarifs { padding: 50px 16px; }
+  .tarifs-head h2 { font-size: 30px; }
+  .tarif-card { padding: 30px 24px; }
+  .member-gate-panel { padding: 30px 22px 26px; }
+  .member-gate-panel h3 { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="nav-right">
+    <span class="freemium-counter" id="freemium-counter">3 questions gratuites</span>
+    <a href="#tarifs" class="cta-nav">Devenir membre</a>
+  </div>
+</nav>
+
+<!-- Banner freemium -->
+<div class="freemium-banner">
+  <strong>Gratuit pour 3 questions</strong> · puis Family Office augmenté <strong>6 800 €/an</strong> ·
+  <a href="#tarifs">Voir les formules →</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-kicker">
+    <span class="rule"></span>
+    Vos univers · Marcel comparateur
+    <span class="rule"></span>
+  </div>
+  <h1>Vivez. Possédez.<br>Marcel <em>compare</em>.</h1>
+  <p class="lede">
+    Voyages, voitures, art, vins, montres, yachts, immobilier prestige, chevaux. <em>Huit univers</em> où votre patrimoine prend vie.
+    Marcel interroge les comparateurs. Maxime arbitre — quand vous décidez de devenir membre.
+  </p>
+  <div class="hero-actions">
+    <a href="#univers" class="btn-primary">Explorer mes univers</a>
+    <a href="#tarifs" class="btn-secondary">Comprendre les formules →</a>
+  </div>
+</section>
+
+<!-- ═══ UNIVERS ═══ -->
+<section class="block">
+  <div class="block-head">
+    <div>
+      <div class="block-kicker">— Comparateurs Marcel</div>
+      <div class="block-h2">Huit univers, <em>une</em> orchestration.</div>
+    </div>
+    <div class="block-meta">Chaque univers · 4-5 APIs comparateurs<br><strong>Indicatif · sourcé · auditable</strong></div>
+  </div>
+  <div id="univers"></div>
+</section>
+
+<!-- ═══ TARIFS ═══ -->
+<section id="tarifs">
+  <div class="tarifs-head">
+    <div class="block-kicker" style="text-align:center;">— Formules</div>
+    <h2>Trois <em>niveaux</em> d'accompagnement.</h2>
+    <p>Découvrez gratuitement. Devenez membre pour le conseil patrimonial complet et le contact direct avec Maxime. Choisissez Bespoke pour un FO sur-mesure.</p>
+  </div>
+  <div class="tarifs-grid">
+    <div class="tarif-card">
+      <div class="tarif-tier">— Découverte</div>
+      <div class="tarif-name">Freemium</div>
+      <div class="tarif-price"><em>Gratuit</em></div>
+      <div class="tarif-pitch">Explorez les huit univers. Comparateurs Marcel sourcés. Aucun engagement.</div>
+      <ul class="tarif-features">
+        <li>Accès aux 8 univers comparateurs</li>
+        <li>3 questions Marcel par session</li>
+        <li>Sources publiques (Légifrance, DVF, INSEE)</li>
+        <li class="x">Conseil patrimonial premium</li>
+        <li class="x">Contact Maxime direct</li>
+        <li class="x">Dashboard family office</li>
+        <li class="x">Dénicheur d'offres scoré</li>
+      </ul>
+      <a href="#univers" class="tarif-cta outline">Commencer gratuitement</a>
+    </div>
+
+    <div class="tarif-card featured">
+      <div class="tarif-tier">— Augmenté</div>
+      <div class="tarif-name">Family Office <em>augmenté</em></div>
+      <div class="tarif-price">6 800 € <small>/ an</small></div>
+      <div class="tarif-pitch">Le FO complet : Marcel illimité, Maxime, dashboard, dénicheur d'offres, services premium.</div>
+      <ul class="tarif-features">
+        <li>Tout Freemium</li>
+        <li><strong>Conseil patrimonial premium</strong> (10 expertises)</li>
+        <li><strong>Marcel illimité</strong> · mémoire personnalisée</li>
+        <li><strong>Maxime</strong> — réponse 24h, RDV trimestriels</li>
+        <li><strong>Dashboard</strong> family office consolidé</li>
+        <li><strong>Dénicheur d'offres</strong> scoré profil</li>
+        <li>Services premium (governance, NextGen, cyber, audit)</li>
+        <li>Reporting trimestriel + bilans signés</li>
+        <li>Coffre-fort R2 chiffré · 10 ans</li>
+      </ul>
+      <a href="mailto:maxime@ikcp.fr?subject=Adh%C3%A9sion%20Family%20Office%20IKCP%20augment%C3%A9" class="tarif-cta solid">Devenir membre</a>
+    </div>
+
+    <div class="tarif-card">
+      <div class="tarif-tier">— Bespoke</div>
+      <div class="tarif-name">Family Office <em>Bespoke</em></div>
+      <div class="tarif-price"><em>Sur devis</em></div>
+      <div class="tarif-pitch">Pour familles avec gouvernance complexe (multi-juridictions, multi-générations, FRUP).</div>
+      <ul class="tarif-features">
+        <li>Tout Augmenté</li>
+        <li><strong>FRUP</strong> ou fondation abritée création</li>
+        <li><strong>Multi-juridictions</strong> (FR, CH, USA, UK)</li>
+        <li><strong>Réseau global</strong> (Sotheby's, Christie's, banques privées)</li>
+        <li><strong>Conciergerie premium</strong> (John Paul, Ten Lifestyle)</li>
+        <li><strong>Family governance</strong> · charte · conseil de famille</li>
+        <li><strong>Programme NextGen</strong> personnalisé</li>
+        <li>Sécurité dédiée (cyber + K&R)</li>
+        <li>Maxime + équipe dédiée</li>
+      </ul>
+      <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Bespoke%20%E2%80%94%20%C3%A9change%20pr%C3%A9liminaire" class="tarif-cta outline">Échanger avec Maxime</a>
+    </div>
+  </div>
+</section>
+
+<footer class="proto">
+  <p>
+    Prototype freemium v5 · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+    <a href="./family-office-v4-live.html">v4 live (expertises)</a> &nbsp;·&nbsp;
+    <a href="./family-office-v3-hero-minimal.html">v3 minimaliste</a> &nbsp;·&nbsp;
+    <a href="./dashboard-famille-office.html">Dashboard backtest</a> &nbsp;·&nbsp;
+    <a href="../index.html">Site actuel</a>
+    <br>
+    <a href="#" id="reset-freemium" style="font-size:10px; opacity:0.6;">↺ réinitialiser quota freemium (dev)</a>
+  </p>
+</footer>
+
+</main>
+
+<!-- ═══ MEMBER GATE MODAL ═══ -->
+<div class="member-gate" id="member-gate">
+  <div class="member-gate-panel">
+    <button class="member-gate-close" id="member-gate-close" aria-label="Fermer">✕</button>
+    <h3>Continuons <em>ensemble</em>.</h3>
+    <p>
+      Vous avez atteint vos 3 questions gratuites. <em>Devenez membre Family Office augmenté</em>
+      pour Marcel illimité, Maxime en contact direct, votre dashboard consolidé et le dénicheur d'offres scoré.
+    </p>
+    <div class="member-gate-actions">
+      <a href="mailto:maxime@ikcp.fr?subject=Adh%C3%A9sion%20Family%20Office%20IKCP%20augment%C3%A9" class="member-gate-cta">Devenir membre · 6 800 €/an</a>
+    </div>
+    <a href="#tarifs" class="member-gate-secondary">Voir les 3 formules →</a>
+  </div>
+</div>
+
+<script src="./family-office-univers.js" defer></script>
+</body>
+</html>
