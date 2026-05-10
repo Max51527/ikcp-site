@@ -1,0 +1,26 @@
+# IKCP Documents MCP server — premier prototype sub-agent
+#
+# Sub-agent qui classifie + extrait les données structurées des documents
+# patrimoniaux uploadés par les clients (avis IR, K-bis, actes, AV, etc.).
+
+name = "ikcp-documents-mcp-server"
+main = "worker.js"
+compatibility_date = "2026-05-09"
+
+[observability]
+enabled = true
+
+# ─── R2 bucket pour les documents privés clients ─────────────────────────
+# À créer avant déploiement :
+#   wrangler r2 bucket create ikcp-docs-private
+[[r2_buckets]]
+binding = "DOCS_R2"
+bucket_name = "ikcp-docs-private"
+
+# ─── Secrets à configurer ────────────────────────────────────────────────
+# Via : wrangler secret put <name>
+#
+# ANTHROPIC_API_KEY    — clé API Anthropic (pour vision OCR + classification)
+# MCP_SHARED_SECRET    — secret partagé avec ikcp-marcel (pour auth HMAC)
+#                        Générer : openssl rand -hex 32
+#                        À déployer aussi dans ikcp-marcel

@@ -742,6 +742,206 @@ const handleDashboardMe = requireAuth(async (req, env, ctx, user) => {
   });
 });
 
+// POST /api/docs/upload — upload d'un document patrimonial avec
+// classification automatique par documents-mcp-server.
+//
+// Body : { filename: string, mime_type: string, base64: string, hint?: string }
+// Limite : 5 MB après decode base64 (~6.7 MB en base64).
+//
+// Pipeline :
+//   1. Validation taille + mime
+//   2. Hash SHA-256 du contenu
+//   3. Upload R2 : `docs/<user_id>/<sha>.<ext>`
+//   4. Insert D1 documents (status='pending_classification')
+//   5. Appel documents-mcp-server.classify_document via service binding
+//   6. Update D1 avec type + fields + summary + classified_at
+//   7. Audit log
+//
+// RGPD :
+//   · Stockage R2 chiffré at-rest (Cloudflare default)
+//   · Hash SHA-256 dans audit (pas le contenu)
+//   · Anthropic vision appelée uniquement pour OCR/classification
+//     (DPA Anthropic à signer · conservation 30 j max · pas de retraining)
+//   · Suppression possible via DELETE /api/docs/:id
+const handleDocsUpload = requireAuth(async (req, env, ctx, user) => {
+  if (!env.DOCS_R2) {
+    return Response.json({ error: 'docs_storage_unavailable' }, { status: 503 });
+  }
+
+  let body;
+  try { body = await req.json(); }
+  catch { return Response.json({ error: 'invalid_json' }, { status: 400 }); }
+
+  const { filename, mime_type, base64, hint } = body || {};
+  if (!filename || !mime_type || !base64) {
+    return Response.json({ error: 'missing_fields', required: ['filename', 'mime_type', 'base64'] }, { status: 400 });
+  }
+
+  const ALLOWED_MIME = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+  if (!ALLOWED_MIME.includes(mime_type)) {
+    return Response.json({ error: 'unsupported_mime', allowed: ALLOWED_MIME }, { status: 400 });
+  }
+
+  // Decode base64 + validation taille
+  let bytes;
+  try {
+    const binary = atob(base64.replace(/\s/g, ''));
+    bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  } catch {
+    return Response.json({ error: 'invalid_base64' }, { status: 400 });
+  }
+  const MAX_SIZE = 5 * 1024 * 1024;
+  if (bytes.length > MAX_SIZE) {
+    return Response.json({ error: 'file_too_large', max_bytes: MAX_SIZE, got_bytes: bytes.length }, { status: 413 });
+  }
+
+  // Hash SHA-256 — clé R2 + traçabilité audit RGPD
+  const sha = await sha256Hex(bytes.buffer);
+  const ext = filename.split('.').pop().toLowerCase().slice(0, 5).replace(/[^a-z0-9]/g, '') || 'bin';
+  const r2Key = `docs/${user.id}/${sha}.${ext}`;
+
+  // Upload R2
+  await env.DOCS_R2.put(r2Key, bytes, {
+    httpMetadata: { contentType: mime_type },
+    customMetadata: {
+      user_id: user.id,
+      filename: filename.slice(0, 200),
+      uploaded_at: String(now()),
+    },
+  });
+
+  // Insert D1 — status pending
+  const docId = 'doc_' + crypto.randomUUID().slice(0, 12);
+  try {
+    await env.DB.prepare(`
+      INSERT INTO documents (id, user_id, type, label, r2_key, mime_type, size_bytes, sha256, date_recu, created_at)
+      VALUES (?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?)
+    `).bind(docId, user.id, filename.slice(0, 200), r2Key, mime_type, bytes.length, sha, now(), now()).run();
+  } catch (e) {
+    console.error('[docs-upload] D1 insert fail', e);
+    // Continue tout de même — on a R2, on pourra rattraper
+  }
+
+  audit(env, {
+    user_id: user.id, email: user.email,
+    action: 'doc_uploaded',
+    detail: `sha=${sha.slice(0, 16)} · size=${bytes.length} · type=${mime_type}`,
+    ip: req.headers.get('CF-Connecting-IP'),
+  });
+
+  // Classification asynchrone via service binding
+  // Si DOCUMENTS_MCP n'est pas configuré (pas encore déployé), on retourne
+  // simplement le doc uploadé sans classification — le client peut relancer
+  // via un endpoint /api/docs/:id/classify ultérieurement.
+  let classification = null;
+  if (env.DOCUMENTS_MCP && env.MCP_SHARED_SECRET) {
+    try {
+      classification = await callDocumentsMcp('classify_document', { r2_key: r2Key, hint }, env);
+      if (classification && classification.classification) {
+        const c = classification.classification;
+        const tagsJson = JSON.stringify(c.key_fields || {});
+        await env.DB.prepare(`
+          UPDATE documents SET type = ?, label = ?, tags_json = ?, annee = ?, created_at = ?
+          WHERE id = ?
+        `).bind(
+          c.type || 'autre',
+          c.summary ? c.summary.slice(0, 200) : filename,
+          tagsJson,
+          (c.key_fields && (c.key_fields.annee || c.key_fields.annee_revenus)) || null,
+          now(),
+          docId,
+        ).run();
+        audit(env, { user_id: user.id, action: 'doc_classified', detail: `${docId} → ${c.type} (conf ${c.confidence})` });
+      }
+    } catch (e) {
+      console.error('[docs-upload] classification fail', e);
+      audit(env, { user_id: user.id, action: 'doc_classification_failed', detail: e.message });
+    }
+  }
+
+  return Response.json({
+    success: true,
+    document: {
+      id: docId,
+      r2_key: r2Key,
+      sha256: sha,
+      size_bytes: bytes.length,
+      mime_type,
+      filename,
+      uploaded_at: new Date().toISOString(),
+      classification: classification && classification.classification ? classification.classification : null,
+    },
+  });
+});
+
+// DELETE /api/docs/:id — suppression RGPD-compliant
+//   · Supprime de R2
+//   · Marque D1 comme deleted (anonymisation, conservation log audit)
+//   · Audit log
+const handleDocsDelete = requireAuth(async (req, env, ctx, user) => {
+  const url = new URL(req.url);
+  const docId = url.pathname.split('/').pop();
+  if (!docId || !docId.startsWith('doc_')) {
+    return Response.json({ error: 'invalid_doc_id' }, { status: 400 });
+  }
+
+  const doc = await env.DB.prepare(
+    'SELECT * FROM documents WHERE id = ? AND user_id = ?'
+  ).bind(docId, user.id).first();
+  if (!doc) return Response.json({ error: 'not_found' }, { status: 404 });
+
+  // Supprime R2
+  if (env.DOCS_R2 && doc.r2_key) {
+    try { await env.DOCS_R2.delete(doc.r2_key); }
+    catch (e) { console.error('[docs-delete] R2', e); }
+  }
+
+  // Anonymise D1 (on garde la ligne pour l'audit · CNIL accepte)
+  await env.DB.prepare(`
+    UPDATE documents SET label = '[supprimé]', r2_key = '', tags_json = NULL
+    WHERE id = ? AND user_id = ?
+  `).bind(docId, user.id).run();
+
+  audit(env, {
+    user_id: user.id, email: user.email,
+    action: 'doc_deleted',
+    detail: `${docId} · sha=${doc.sha256?.slice(0, 16)}`,
+    ip: req.headers.get('CF-Connecting-IP'),
+  });
+
+  return Response.json({ success: true, deleted: docId });
+});
+
+// Appel sub-agent documents-mcp-server via service binding (latence ~0)
+async function callDocumentsMcp(toolName, args, env) {
+  const body = JSON.stringify({ name: toolName, arguments: args });
+  const sig = await hmacSha256(body, env.MCP_SHARED_SECRET);
+
+  const res = await env.DOCUMENTS_MCP.fetch('https://internal/mcp/call_tool', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-IKCP-Signature': sig },
+    body,
+  });
+  if (!res.ok) throw new Error(`docs-mcp ${res.status}`);
+  const json = await res.json();
+  return json.result;
+}
+
+async function sha256Hex(buffer) {
+  const hash = await crypto.subtle.digest('SHA-256', buffer);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hmacSha256(text, secret) {
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(text));
+  return [...new Uint8Array(sig)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function hashSha256(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -792,6 +992,8 @@ export default {
     if (p === '/dossiers' && m === 'GET') return handleDossiers(req, env, ctx);
     if (p === '/api/export/me' && m === 'GET') return handleExportMe(req, env, ctx);
     if (p === '/api/dashboard/me' && m === 'GET') return handleDashboardMe(req, env, ctx);
+    if (p === '/api/docs/upload' && m === 'POST') return handleDocsUpload(req, env, ctx);
+    if (p.startsWith('/api/docs/') && m === 'DELETE') return handleDocsDelete(req, env, ctx);
 
     return new Response('Not found', { status: 404 });
   }

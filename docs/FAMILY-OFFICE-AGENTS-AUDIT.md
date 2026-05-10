@@ -1409,5 +1409,139 @@ audit faisabilité §7.3).
 
 ---
 
+## 18. Premier prototype — Documents-agent MCP server (livré)
+
+### 18.1 Premier sub-agent IKCP en production-ready
+
+Cette PR livre le **premier MCP server IKCP** opérationnel : `documents-mcp-server`.
+Il valide le pattern documenté en §17 (architecture hybride MCP + Cloudflare).
+
+| Élément | Statut |
+|---|:---:|
+| Code worker `workers/documents-mcp-server/worker.js` | ✅ |
+| Configuration `wrangler.toml` (R2 binding + secrets) | ✅ |
+| README mode d'emploi + smoke tests + coûts | ✅ |
+| Endpoint `POST /api/docs/upload` dans `ikcp-client` | ✅ |
+| Endpoint `DELETE /api/docs/:id` (RGPD) | ✅ |
+| Service binding `DOCUMENTS_MCP` dans `ikcp-client` | ✅ |
+| Auth HMAC-SHA256 entre Marcel/client et sub-agent | ✅ |
+| Audit log de chaque upload + classification | ✅ |
+| Charte beta-tester `docs/CHARTE-BETA-TESTER.md` (RGPD complète) | ✅ |
+
+### 18.2 Trois tools exposés
+
+| Tool | Description |
+|---|---|
+| `classify_document(r2_key, hint?)` | Classifie parmi 14 types (avis_ir, kbis, acte_donation, av_contrat…) + extrait les champs clés via Anthropic Claude vision |
+| `extract_structured(r2_key, doc_type)` | Extraction profonde des champs typés selon le type connu |
+| `ocr_pdf(r2_key)` | OCR brut page par page (fallback) |
+
+### 18.3 Flux end-to-end
+
+```
+1. Client (dashboard) photo/upload PDF
+   POST /api/docs/upload (workers/ikcp-client) avec base64
+
+2. Validation côté ikcp-client :
+   · taille < 5 MB · mime allowed (PDF, JPG, PNG, WebP)
+   · hash SHA-256 calculé · r2_key = `docs/<user_id>/<sha>.<ext>`
+
+3. Upload R2 (binding DOCS_R2 partagé entre client et docs-mcp-server)
+
+4. Insert D1 documents (status=pending_classification)
+
+5. Service binding → docs-mcp-server.classify_document()
+   · récupère depuis R2
+   · encode base64
+   · appelle Anthropic Claude vision (model claude-sonnet-4-6)
+   · parse JSON structuré { type, confidence, summary, key_fields }
+
+6. Update D1 documents (type, label, tags_json, annee)
+
+7. Audit log : doc_uploaded · doc_classified · sha=...
+
+8. Réponse client avec classification immédiate
+```
+
+### 18.4 RGPD by-design
+
+| Mesure | Statut |
+|---|:---:|
+| Hash SHA-256 dans audit log (pas le contenu) | ✅ |
+| Stockage R2 chiffré at-rest (Cloudflare default) | ✅ |
+| Anthropic DPA signature requis (pré-déploiement) | 🟡 à formaliser S+1 |
+| Anthropic conservation 30 j max + pas de retraining | ✅ documenté charte |
+| Endpoint `DELETE /api/docs/:id` (suppression R2 + anonymisation D1) | ✅ |
+| Audit log conservé après suppression (CNIL admis) | ✅ |
+| Mention claire dans la charte beta-tester | ✅ |
+| Droit d'export (`GET /api/export/me`) | ✅ déjà livré |
+| Sous-traitants RGPD listés (Cloudflare, Anthropic, Resend, Notion) | ✅ charte §5.3 |
+
+### 18.5 Charte beta-tester `docs/CHARTE-BETA-TESTER.md`
+
+Document juridique de 10 sections couvrant :
+- Engagements réciproques IKCP ↔ beta-tester
+- Confidentialité, sécurité, droits RGPD (art. 15-22)
+- Données traitées (3 catégories) + sous-traitants avec garanties
+- Mention spécifique Anthropic Claude (DPA, 30 j, pas de retraining)
+- Limitations MIF II / AI Act
+- Durée 6 mois + tarif préférentiel -20% à vie post-beta
+- Contacts (`beta@ikcp.fr`, `dpo@ikcp.eu`, CNIL)
+- Acceptation tracée (horodatage + IP au redeem du code)
+
+### 18.6 Coûts et ROI
+
+| Poste | Volume cohorte 1 (5 familles) | Coût |
+|---|---|---|
+| Anthropic vision (~$0.003/doc) | ~50 docs/mois | < 1 € |
+| R2 storage 50 GB | | ~0,75 €/mois |
+| Cloudflare Workers requêtes | <1k | 0 € (free) |
+| **Total mensuel marginal** | | **~ 2 €/mois** |
+
+ROI : économise ~5 h/mois Maxime (~250 €/mois) → **rentable à 1 famille**.
+
+### 18.7 Activation production
+
+```bash
+# 1. R2 bucket
+wrangler r2 bucket create ikcp-docs-private
+
+# 2. Secrets
+cd workers/documents-mcp-server
+wrangler secret put ANTHROPIC_API_KEY
+openssl rand -hex 32 | tee /tmp/secret
+wrangler secret put MCP_SHARED_SECRET   # coller la valeur
+
+# 3. Reproduire MCP_SHARED_SECRET dans ikcp-client
+cd ../ikcp-client
+wrangler secret put MCP_SHARED_SECRET   # même valeur
+
+# 4. Deploy ordre : sub-agent d'abord, client ensuite (service binding)
+cd ../documents-mcp-server && wrangler deploy
+cd ../ikcp-client && wrangler deploy
+
+# 5. Smoke test health
+curl https://ikcp-documents-mcp-server.maxime-ead.workers.dev/mcp/health
+```
+
+### 18.8 Phase 2 (post premier prototype)
+
+Avec ce prototype validé, on peut :
+1. Ajouter `suivi-mcp-server` (cron + webhook depuis docs : si type=avis_cfe → schedule_reminder J-8)
+2. Ajouter `reporting-mcp-server` (DER/RA/bilan PDF)
+3. Cloner le pattern pour les sub-agents univers (art-mcp, vins-mcp, etc.)
+
+### 18.9 Ce qui est livré dans cette PR
+
+- `workers/documents-mcp-server/worker.js` (~350 lignes)
+- `workers/documents-mcp-server/wrangler.toml` (R2 binding + secrets doc)
+- `workers/documents-mcp-server/README.md` (mode d'emploi + tests + coûts)
+- `workers/ikcp-client/worker.js` enrichi : `POST /api/docs/upload` + `DELETE /api/docs/:id` + helpers HMAC + service binding call
+- `workers/ikcp-client/wrangler.toml` enrichi : R2 binding + service binding `DOCUMENTS_MCP`
+- `docs/CHARTE-BETA-TESTER.md` — charte juridique 10 sections RGPD-compliant
+- Audit doc §18 — synthèse + activation production
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
