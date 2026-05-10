@@ -1543,5 +1543,114 @@ Avec ce prototype validé, on peut :
 
 ---
 
+## 19. Repositionnement « Créateur de FO » + analyse concurrentielle + 2e sub-agent
+
+### 19.1 Repositionnement stratégique
+
+Document fondateur livré : `docs/FO-DEFINITION-MANIFESTO.md` qui acte
+le repositionnement :
+
+> **IKCP n'est pas un Family Office. IKCP est un *créateur* de Family
+> Offices.**
+
+Cette distinction est structurante :
+- Famille dirigeante directe → adhésion à une instance IKCP avec espace
+  propre (TPE 2 400 €/an ou Premium 6 800 €/an)
+- Famille à patrimoine constitué → création FO Bespoke single-tenant à
+  leur marque (dès 36 k€/an + setup 120 k€)
+- Cabinet CGP / notaire / avocat (B2B white-label) → création FO digital
+  à leur identité (dès 65 k€ setup + 24 k€/an)
+
+**Catégorie nouvelle** sur le marché — pas de concurrent direct
+identifié sur ce positionnement croisé "industrialisé + sur-mesure".
+
+### 19.2 Analyse concurrentielle — 26 acteurs scrappés
+
+Document livré : `docs/FO-COMPETITIVE-ANALYSIS.md`. Recherche structurée
+sur 4 segments :
+
+| Segment | Acteurs analysés | Pattern dominant |
+|---|---|---|
+| FO français traditionnels | 9 (Cyrus Herez, Wormser, Equance, ODDO, Natixis WM, Witam, Lazard, Quintet, Edmond Roth.) | Tarif % AUM opaque, ticket > 10-25 M€, maturité digitale 2,2/5 |
+| FO internationaux références | 4 (Bessemer, Northern Trust, Pictet, LO) | NextGen présent mais événementiel uniquement |
+| SaaS B2B back-office | 5 (Addepar, Eton, Masttro, Black Diamond, FOX) | Maturité 4,4/5 mais pas de produit B2C |
+| Fintechs FR | 7 (Ramify, Yomoni, Nalo, Goodvest, Finary, MPP, Stableton) | Transparence tarifaire totale, pas de logique famille |
+| Formation NextGen | 1 (AFFO × EDHEC) | Présentiel certifiant 6 500-7 500 € lancé janvier 2025 |
+
+### 19.3 4 gaps qu'IKCP exploite
+
+1. **Forfait transparent < 10 k€/an pour HNW intermédiaire 1-10 M€** — marché ~50 000 dirigeants français inadressé
+2. **IA conversationnelle client final** — premier produit FR, sourcé Légifrance/BOFIP
+3. **NextGen 100 % digital personnalisé** sur les chiffres réels — aucun acteur ne le fait
+4. **Code à vous, exportable** — endpoint `/api/export/me` JSON SHA-256
+
+### 19.4 3 menaces à surveiller
+
+| # | Menace | Mitigation |
+|---|---|---|
+| **1** | **AFFO × EDHEC NextGen** (6 500-7 500 €, janv. 2025) — risque digitalisation | Vitesse d'exécution + hyper-personnalisation + partenariat possible |
+| **2** | **Finary One** (série B 25 M€ PayPal Ventures sept. 2025) | Segment distinct (particulier vs famille dirigeante) + complémentarité possible |
+| **3** | **White-labelisation Masttro / Eton** (12-24 mois si pivot) | Marcel droit français + souveraineté EU + Maxime CGP humain |
+
+### 19.5 Tableau différenciation final
+
+IKCP coche **13 / 13** critères du tableau différenciation. Le mieux placé
+(AFFO × EDHEC) coche 5 / 13. Profondeur cumulative = barrière à l'entrée.
+
+### 19.6 Recommandations stratégiques
+
+**Court terme (S0 → S+3 avant beta)** :
+- Prendre contact AFFO pour explorer un partenariat (leur certification +
+  notre pédagogie digitale)
+- Communication différenciante sur les 4 gaps
+- Tracking concurrentiel (Google Alerts AFFO/Finary/Masttro)
+
+**Moyen terme (Phase 2-3)** :
+- Adhésion AFFO comme membre actif (~3-5 k€/an)
+- Open-sourcing partiel d'un MCP server (positionnement technique)
+- Continuer à empiler les sub-agents (chaque ajout creuse l'écart)
+
+**Long terme (post-beta)** :
+- Partenariat Finary One envisageable (couche famille/NextGen)
+- Levée 3-5 M€ pour scaling
+
+### 19.7 Deuxième sub-agent MCP livré : `suivi-mcp-server`
+
+Pattern MCP validé sur un deuxième cas d'usage. Code structuré identique
+à `documents-mcp-server` (3 endpoints `/mcp/*` + auth HMAC + whitelist
+tools).
+
+**Tools exposés** :
+- `next_deadline(user_id)` — prochaine échéance fiscale dans l'horizon
+- `check_drift_allocation(user_id)` — détection drift > seuil + propose 1-3 arbitrages
+- `schedule_reminder(user_id, date, label)` — programme rappel J-8
+- `propose_arbitrage(user_id, ...)` — crée entrée file Maxime (MIF II)
+
+**Cron triggers** :
+- Daily 7h UTC : scan échéances J+8 → email Resend → update `rappel_sent_at`
+- Monthly 1er à 9h UTC : scan drift allocation → arbitrages auto si drift > 5 pts
+
+**ROI** : 1 erreur d'échéance évitée/an = 2-5 k€ économisés. 1 arbitrage
+préparé/mois = 30 min Maxime gagnées.
+
+### 19.8 Ce qui est livré dans cette PR
+
+| Artefact | Rôle |
+|---|---|
+| `docs/FO-DEFINITION-MANIFESTO.md` | Document fondateur — IKCP créateur de FO + définition + outil de demain |
+| `docs/FO-COMPETITIVE-ANALYSIS.md` | Carte du marché 26 acteurs + 4 gaps + 3 menaces + recommandations |
+| `workers/suivi-mcp-server/` | Deuxième sub-agent MCP — cron rappels + drift allocation + arbitrages |
+| Audit doc §19 | Synthèse + roadmap |
+
+### 19.9 Phase suivante
+
+Avec 2 sub-agents validant le pattern (Documents + Suivi), et le
+manifesto + comparatif posant le positionnement, IKCP est **prêt pour la
+phase de lancement beta** (cohorte 1 de 5 familles à S+3) sous réserve
+des actions bloquantes documentées en `BETA-READINESS-AUDIT.md` (déploiement
+tech + conformité + opérationnel).
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
