@@ -1314,5 +1314,100 @@ S+26 (07/11/2026) ▶ LANCEMENT COMMERCIAL public
 
 ---
 
+## 17. Intégration Claude Agent SDK — architecture hybride MCP
+
+### 17.1 Trois options évaluées
+
+Document complet : `docs/CLAUDE-AGENT-SDK-INTEGRATION.md`.
+
+| Option | Verdict |
+|---|:---:|
+| (A) Tout migrer Claude Agent SDK Node | ❌ casse l'architecture Cloudflare-first, latence chat dégradée, coût hébergement supplémentaire |
+| (B) Sub-agents manuels sur Workers (sans MCP) | 🟡 court terme OK, ne scale pas > 5 sub-agents |
+| (C) **MCP servers Cloudflare + Marcel inchangé** | ✅ **GO recommandé** |
+
+### 17.2 Architecture cible — hybride
+
+```
+Marcel (Cloudflare Worker · API Anthropic directe)
+   │ tool_use → fetch HTTPS via service binding
+   ▼
+MCP servers (un par sub-agent · tous sur Cloudflare Workers) :
+   · documents-mcp-server  — OCR + classification (Phase 2 P1)
+   · suivi-mcp-server      — cron + alertes échéances (Phase 2 P1)
+   · reporting-mcp-server  — DER/RA/bilan PDF (Phase 2 P2)
+   · juridique-mcp-server  — RAG Légifrance (Phase 3)
+   · sub-agents univers    — art, vins, montres (Phase 2-3)
+```
+
+Marcel reste **inchangé** côté chat temps réel. Les sub-agents sont
+ajoutés progressivement, **un par un**, sans casser l'existant.
+
+### 17.3 Pourquoi MCP plutôt qu'API custom
+
+- **Standard ouvert** (Anthropic + spec stable depuis 2024)
+- **Réutilisable** : un MCP server IKCP peut être consommé par Claude Code, Claude.ai, ou tout client compatible
+- **Boilerplate ~50 lignes** par sub-agent (template fourni dans cette PR)
+- **Auth HMAC bilatérale** (constant-time, secret partagé, rotation trimestrielle)
+- **Sub-agents découplés** : déploiement, test, versioning indépendants
+- **Open-sourçabilité partielle** : un MCP server pourrait être open-sourcé en marketing technique sans toucher Marcel propriétaire
+
+### 17.4 Ce qui est livré dans cette PR
+
+| Artefact | Rôle |
+|---|---|
+| `docs/CLAUDE-AGENT-SDK-INTEGRATION.md` | Guide complet 9 sections : 3 options évaluées, architecture cible, plan de migration en 3 phases, code samples, coûts, risques |
+| `workers/ikcp-subagent-template/worker.js` | Template MCP server Cloudflare Worker (3 endpoints `/mcp/health` `/mcp/list_tools` `/mcp/call_tool` + auth HMAC + whitelist tools) |
+| `workers/ikcp-subagent-template/wrangler.toml` | Config exemple + commentaires sur les bindings selon le sub-agent |
+| `workers/ikcp-subagent-template/README.md` | Mode d'emploi : créer, configurer, déployer, brancher sur Marcel |
+
+### 17.5 Plan de migration en 3 phases
+
+**Phase 1 — Bootstrap MCP convention (1-2 semaines)**
+- Template livré (cette PR)
+- Implémenter Documents-agent comme premier MCP server (3-4 sem · 12 k€)
+- Ajouter à Marcel le tool générique `call_subagent`
+- Auth HMAC + service binding
+
+**Phase 2 — Migration progressive (3-6 mois)**
+- suivi-mcp-server (2 sem · 6 k€)
+- reporting-mcp-server (3-4 sem · 14 k€)
+- Sub-agents univers (2-3 sem chacun · 8-18 k€)
+
+**Phase 3 — Workflows lourds avec Claude Agent SDK natif (12+ mois)**
+- Service Node Fly.io (région EU pour DORA) avec `@anthropic-ai/claude-agent-sdk`
+- Migration juridique-agent vers SDK (RAG + sub-agents internes via `Agent` tool)
+- Évaluation perf reporting-agent
+
+### 17.6 Coût marginal par sub-agent MCP
+
+| Phase | Sub-agents | Coût mensuel marginal | ROI |
+|---|---|---|---|
+| Phase 1 | 1 (Documents) | ~30 €/mois | Économise ~5 h/mois Maxime (~250 €) → ROI immédiat |
+| Phase 2 | 3 (+Suivi+Reporting) | ~150 €/mois | Évite erreurs échéances (~5 k€/an) + économie ~10h/mois (~500 €) |
+| Phase 3 | 8 (+Juridique+univers) | ~580 €/mois | RAG juridique débloque dossiers > 1 M€ |
+
+### 17.7 Bénéfices stratégiques
+
+- **Alignement écosystème Anthropic** : MCP est le standard adopté par Claude Code, Claude.ai
+- **Modularité** : chaque sub-agent testable et déployable indépendamment
+- **Évolutivité** : ajouter un sub-agent ne dégrade pas Marcel
+- **Embauche / sous-traitance** : un développeur externe peut contribuer à un sub-agent sans toucher au cœur (réduction risque IP)
+- **Observabilité** : chaque MCP server a son propre log, monitoring, rate limit
+
+### 17.8 Décision recommandée
+
+**Plan d'action immédiat** :
+1. ✅ Cette PR : template + doc convention MCP livrés
+2. Phase 2 beta (S+5) : Documents-agent comme premier MCP server (validation pattern)
+3. Phase 2 beta (S+8) : Suivi-agent + Reporting-agent (3 MCP servers en production)
+4. Phase 3 (post-beta, S+24) : évaluation Claude Agent SDK Node sur Fly.io pour workflows lourds
+
+**Investissement total à 6 mois** : ~36 k€ + 9 sem dev cumulés (Documents +
+Suivi + Reporting). Couvert par le revenu attendu Phase 2-3 beta (cf.
+audit faisabilité §7.3).
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
