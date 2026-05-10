@@ -1118,5 +1118,100 @@ Switcher Mobile / Tablette / Desktop maintenu — chaque vignette est une iframe
 
 ---
 
+## 15. Audit beta + volet pédagogique partagé
+
+### 15.1 Audit Beta Readiness — synthèse
+
+Document complet `docs/BETA-READINESS-AUDIT.md` créé. Évaluation go/no-go sur 7 dimensions :
+
+| Dimension | Verdict | Bloquant ? |
+|---|:---:|:---:|
+| 1. Tech & infrastructure | 🟡 | déploiement workers + D1 + secrets (1 j) |
+| 2. Contenu & expérience | ✅ | disclaimer "cas types anonymisés" (10 min) |
+| 3. Conformité réglementaire | ⚠️ | mentions légales + CGU + charte beta + cookies (5-7 j) |
+| 4. Opérationnel beta | 🟡 | 50 codes + runbook + templates email (2 sem) |
+| 5. Mesure & retours | 🟡 | analytics + dashboard admin (1 sem) |
+| 6. Marketing & communication | 🟡 | kit pitch + post LinkedIn (3-5 j) |
+| 7. Risques & continuité | ✅ | — |
+
+**Décision recommandée : 🟡 Go partiel** sous 3 conditions bloquantes (tech, conformité, opérationnel) — délai estimé **3 semaines**, lancement sur **cohorte 1 de 5 familles** d'abord puis montée à 50 progressivement (S+5 puis S+8).
+
+### 15.2 Critères de succès à 90 jours (cf. BETA-READINESS-AUDIT §8.4)
+
+| KPI | Seuil minimum | Cible |
+|---|---|---|
+| Codes redeemés | 30 / 50 | 45 / 50 |
+| Activation Marcel | 30 / 50 | 45 / 50 |
+| Modules NextGen complétés | 1,5 / membre | 3 / membre |
+| Visio Maxime tenues | 30+ | 50+ |
+| NPS | > 20 | > 40 |
+| Témoignages publiables | 5+ | 10+ |
+| Conversion en payant | > 20% | > 50% |
+
+### 15.3 Volet pédagogique partagé — `proposals/famille-apprenante.html`
+
+Page dédiée à la dimension **multi-générationnelle** du Family Office IKCP. Quatre mécaniques pédagogiques partagées documentées :
+
+| # | Mécanique | Description |
+|---|---|---|
+| i | **Sub-comptes liés** | Marc + Sophie = vue complète, Emma + Thomas = vue NextGen. Permissions ajustables depuis le dashboard parent. Chaque conversation Marcel d'un enfant est visible par les parents (avec accord). |
+| ii | **Conseil de famille trimestriel** | Visio 1h × 4/an, agenda généré par Marcel à partir des décisions en attente, compte-rendu auto signé par les 4. |
+| iii | **Charte familiale collaborative** | Document fondateur versionné. Chaque membre propose, commente, valide. Devient la règle qui guide les décisions futures (cession, conjoints, emprunts familiaux). |
+| iv | **Annotations partagées sur les actes** | Pacte d'actionnaires, statuts SCI, AV : tous annotables. Marcel répond aux commentaires inline 24/7. |
+
+### 15.4 Cas concret 12 mois Famille Dupont (étendu)
+
+La page détaille un calendrier mois par mois (M1 onboarding → M12 certification + plan 10 ans) montrant **comment se déploie le parcours en famille** :
+
+- **Mois 1** : 4 sub-comptes créés, première visio Maxime à 4
+- **Mois 2** : module 1 vue 360° (Emma + Thomas), première vraie conversation à table
+- **Mois 3-4** : module 2 fiscalité, découverte d'une économie possible de ~70 k€ sur la transmission
+- **Mois 5-6** : module 3 lecture du pacte, refonte clause leaver
+- **Mois 7-8** : module 4, choix Dutreil familial validé collégialement (économie 1,4 M€)
+- **Mois 9-10** : module 5, charte familiale v1 signée par les 4
+- **Mois 11-12** : module 6, plan 10 ans + certification IKCP NextGen
+
+### 15.5 Avant / Après — la dialectique de la pédagogie partagée
+
+La page articule un contraste fort entre :
+- **Avant** : famille silencieuse (chiffres dans le bureau du parent, découverte au décès, pas de charte écrite, conseil de famille au repas de Noël)
+- **Avec IKCP** : famille apprenante (chiffres accessibles aux ayants droit, parcours NextGen 4-8 sem, charte versionnée, conseil trimestriel outillé)
+
+### 15.6 Citations clients — encadrement éthique
+
+Deux citations attribuées à des cas types anonymisés :
+- **Sophie D.** (mère) : *« Avant, on évitait de parler argent en famille. Maintenant, on a un langage commun. »*
+- **Marc D.** (dirigeant) : *« Trois mois sur IKCP, on bâtit la famille qui va la recevoir. »*
+
+**Action critique pré-lancement** : les marquages "cas type anonymisé" sont en place. Avant publication officielle, soit obtenir 2-3 vraies validations beta-testers + droit à l'image, soit conserver l'anonymisation. **NE PAS** prétendre à des témoignages réels avant qu'ils n'existent.
+
+### 15.7 Schéma SVG hub & spoke
+
+La page intègre un schéma original montrant la plate-forme IKCP au centre + 4 satellites (Marc, Sophie, Emma, Thomas) avec leurs vues différenciées et l'anneau partagé (charte, annotations). Visualise la promesse "une plate-forme, plusieurs vues, un seul savoir".
+
+### 15.8 Ce qui est livré dans cette PR
+
+- `docs/BETA-READINESS-AUDIT.md` — audit go/no-go complet, 7 dimensions, calendrier 3 semaines vers lancement, KPIs 90j
+- `proposals/famille-apprenante.html` — page pédagogie multi-générationnelle, 4 mécaniques, cas concret 12 mois, schéma hub & spoke, avant/après, citations
+- Audit doc §15 — synthèse beta-readiness + volet pédagogique partagé
+
+### 15.9 Prochaines actions critiques (S+0 → S+3)
+
+| S | Action | Owner | État |
+|---|---|---|:---:|
+| S0 | Déploiement workers + D1 schema + secrets Resend/Notion | Tech | ❌ |
+| S0 | Génération 50 codes beta + insertion D1 | Tech | ❌ |
+| S0 | Smoke tests complets | Tech | ❌ |
+| S+1 | Mentions légales + CGU + Charte beta-tester | Maxime + juriste | ❌ |
+| S+1 | Banner cookies + page mentions légales | Tech | ❌ |
+| S+1 | Runbook onboarding + 4 templates email | Maxime | ❌ |
+| S+1 | Kit pitch (deck + script + FAQ) | Maxime | ❌ |
+| S+2 | Pré-qualification 60-80 prospects | Maxime | ❌ |
+| S+2 | Sélection finale 50 familles | Maxime | ❌ |
+| S+2 | Analytics + dashboard admin v0 | Tech | ❌ |
+| S+3 | Lancement cohorte 1 (5 familles) | — | — |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*

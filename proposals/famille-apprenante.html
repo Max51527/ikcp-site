@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Famille apprenante · Apprendre, transmettre, ensemble</title>
+<meta name="description" content="Le volet pédagogique partagé du Family Office IKCP. Sub-comptes liés, conseil de famille trimestriel, charte collaborative, annotations partagées. La transmission devient un parcours commun.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.14); --line-strong: rgba(196, 162, 115, 0.32); --line-faint: rgba(196, 162, 115, 0.05);
+  --ok: #7fae7d; --warn: #d4a85a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.7; letter-spacing: -0.003em; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+main { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+
+nav.top { display: flex; justify-content: space-between; align-items: center; padding: 28px 48px; max-width: 1080px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+nav .menu { display: flex; gap: 28px; align-items: center; }
+nav a { color: var(--ink-mute); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.3s; }
+nav a:hover { color: var(--gold); }
+
+section.hero { padding: 90px 0 100px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(36px, 5vw, 64px); line-height: 1.08; letter-spacing: -0.022em; margin-bottom: 32px; max-width: 880px; }
+h1 em { font-style: italic; color: var(--gold); }
+.lede { max-width: 660px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+section.bloc { padding: 90px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 50px; gap: 40px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; }
+.section-titre { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em; max-width: 720px; margin-top: 12px; }
+.section-titre em { font-style: italic; color: var(--gold); }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; max-width: 280px; }
+
+/* SCHEMA HUB & SPOKE */
+.hub-wrap { max-width: 720px; margin: 0 auto 50px; }
+.hub-svg svg { width: 100%; height: auto; }
+.hub-svg svg .stroke-gold { fill: none; stroke: var(--gold); stroke-width: 1.2; }
+.hub-svg svg .stroke-dash { fill: none; stroke: var(--gold); stroke-width: 1; stroke-dasharray: 3 5; }
+.hub-svg svg .fill-gold { fill: var(--gold); }
+.hub-svg svg .label { font-family: 'Inter', sans-serif; fill: var(--ink); font-size: 11px; font-weight: 500; }
+.hub-svg svg .label-italic { font-family: 'Playfair Display', serif; fill: var(--gold); font-style: italic; font-size: 12px; }
+.hub-svg svg .sublabel { font-family: 'Inter', sans-serif; fill: var(--ink-mute); font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* MÉCANIQUES PARTAGÉES */
+.mecaniques {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.meca {
+  background: var(--bg); padding: 36px 32px;
+  display: flex; flex-direction: column;
+}
+.meca-num {
+  font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold);
+  font-size: 16px; margin-bottom: 14px;
+}
+.meca-titre {
+  font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500;
+  margin-bottom: 12px; letter-spacing: -0.005em; line-height: 1.2;
+}
+.meca-titre em { font-style: italic; color: var(--gold); }
+.meca-pitch { font-size: 14px; color: var(--ink-mute); line-height: 1.7; margin-bottom: 18px; }
+.meca-pitch em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.meca-cas {
+  margin-top: auto; padding: 16px 20px;
+  background: rgba(196, 162, 115, 0.04);
+  border-left: 2px solid var(--gold);
+}
+.meca-cas-label {
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.meca-cas-text {
+  font-size: 13px; color: var(--ink); line-height: 1.65;
+  font-family: 'Playfair Display', serif; font-style: italic;
+}
+
+/* CAS CONCRET FAMILLE */
+.cas-famille {
+  background: var(--bg-2); border: 1px solid var(--line);
+  padding: 40px 36px;
+}
+.cas-titre {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 24px; color: var(--gold); margin-bottom: 14px;
+}
+.cas-intro { font-size: 14.5px; color: var(--ink-mute); line-height: 1.75; margin-bottom: 28px; }
+.cas-intro strong { color: var(--ink); font-weight: 500; }
+
+.cas-timeline {
+  display: grid; gap: 0;
+}
+.cas-month {
+  display: grid; grid-template-columns: 130px 1fr;
+  gap: 28px; padding: 22px 0;
+  border-top: 1px solid var(--line-faint);
+}
+.cas-month:first-child { border-top: none; }
+.cas-month-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold);
+  letter-spacing: 0.16em; text-transform: uppercase; padding-top: 4px;
+}
+.cas-month-content h4 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: 17px; color: var(--ink); margin-bottom: 8px;
+}
+.cas-month-content h4 em { font-style: italic; color: var(--gold); }
+.cas-month-content p { font-size: 13.5px; color: var(--ink-mute); line-height: 1.7; }
+.cas-month-content p strong { color: var(--ink); font-weight: 500; }
+
+/* AVANT / APRÈS */
+.avant-apres {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.aa-col { background: var(--bg); padding: 32px 32px; }
+.aa-col.before { background: rgba(0, 0, 0, 0.2); }
+.aa-col.after { background: linear-gradient(135deg, rgba(196,162,115,0.06) 0%, var(--bg-2) 100%); }
+.aa-label { font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; margin-bottom: 14px; }
+.aa-col.before .aa-label { color: var(--ink-faint); }
+.aa-col.after .aa-label { color: var(--gold); }
+.aa-titre { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 18px; line-height: 1.2; }
+.aa-titre em { font-style: italic; color: var(--gold); }
+.aa-list { list-style: none; padding: 0; }
+.aa-list li {
+  padding: 12px 0 12px 22px; position: relative;
+  font-size: 13px; line-height: 1.6;
+  border-bottom: 1px solid var(--line-faint);
+}
+.aa-list li:last-child { border-bottom: none; }
+.aa-list li::before { position: absolute; left: 0; top: 12px; }
+.aa-col.before .aa-list li { color: var(--ink-mute); }
+.aa-col.before .aa-list li::before { content: '·'; color: var(--ink-faint); font-size: 18px; line-height: 1; }
+.aa-col.after .aa-list li { color: var(--ink); }
+.aa-col.after .aa-list li::before { content: '✓'; color: var(--gold); font-weight: 600; font-size: 11px; }
+
+/* CITATION */
+.citation {
+  margin: 50px auto; max-width: 720px;
+  padding: 32px 36px;
+  border-left: 2px solid var(--gold);
+  background: rgba(196, 162, 115, 0.03);
+}
+.citation p {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 19px; line-height: 1.6; color: var(--ink); margin-bottom: 14px;
+}
+.citation-author {
+  font-size: 11px; color: var(--ink-faint); letter-spacing: 0.18em; text-transform: uppercase;
+}
+.citation-author strong { color: var(--gold); font-weight: 500; }
+
+/* CTA */
+section.cta-final { padding: 110px 0 80px; text-align: center; }
+section.cta-final h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15; margin-bottom: 24px; letter-spacing: -0.018em; }
+section.cta-final h2 em { font-style: italic; color: var(--gold); }
+section.cta-final p { font-size: 15px; color: var(--ink-mute); line-height: 1.75; max-width: 580px; margin: 0 auto 36px; }
+.cta-row { display: inline-flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.btn-primary { padding: 16px 36px; background: var(--gold); color: var(--bg); border: 1px solid var(--gold); text-decoration: none; font-weight: 600; font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; transition: all 0.3s; }
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-secondary { color: var(--ink-mute); text-decoration: none; font-size: 12.5px; letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid transparent; transition: all 0.3s; }
+.btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+footer.proto { padding: 36px 48px; text-align: center; border-top: 1px solid var(--line); max-width: 1080px; margin: 0 auto; }
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+
+@media (max-width: 900px) {
+  main, nav.top, footer.proto { padding-left: 24px !important; padding-right: 24px !important; }
+  .mecaniques { grid-template-columns: 1fr; }
+  .avant-apres { grid-template-columns: 1fr; }
+  .cas-month { grid-template-columns: 1fr; gap: 8px; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-meta { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Famille apprenante</div>
+  </div>
+  <div class="menu">
+    <a href="./formation-nextgen.html">Formation NextGen</a>
+    <a href="./espaces-fo.html">Espaces</a>
+    <a href="./landing-beta-dirigeants.html">Beta</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">— Pédagogie partagée · multi-générationnelle</div>
+  <h1>Apprendre <em>ensemble</em>.<br>Se transmettre <em>vraiment</em>.</h1>
+  <p class="lede">
+    Un Family Office digital ne suffit pas. Il faut que <em>les deux générations apprennent ensemble</em>, à leur rythme, avec leurs outils. La plate-forme IKCP organise la pédagogie partagée en famille — sub-comptes liés, conseil de famille trimestriel, charte collaborative, annotations partagées sur vos vrais documents.
+  </p>
+</section>
+
+<!-- SCHÉMA HUB & SPOKE -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 01</div>
+      <h2 class="section-titre">Une plate-forme.<br><em>Plusieurs vues</em>. Un seul savoir.</h2>
+    </div>
+    <div class="section-meta">Sub-comptes liés<br>Permissions différenciées<br>Mémoire commune</div>
+  </div>
+
+  <div class="hub-wrap">
+    <div class="hub-svg">
+      <svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma famille apprenante">
+        <!-- Centre : la plate-forme IKCP -->
+        <circle cx="300" cy="180" r="62" class="stroke-gold"/>
+        <circle cx="300" cy="180" r="50" fill="rgba(196,162,115,0.08)"/>
+        <text x="300" y="172" text-anchor="middle" class="label-italic">IKCP</text>
+        <text x="300" y="190" text-anchor="middle" class="sublabel">Plate-forme</text>
+        <text x="300" y="204" text-anchor="middle" class="sublabel">Marcel · D1 · R2</text>
+
+        <!-- 4 satellites famille -->
+        <!-- Marc (parent dirigeant) -->
+        <circle cx="120" cy="80" r="38" class="stroke-gold"/>
+        <text x="120" y="80" text-anchor="middle" class="label">Marc</text>
+        <text x="120" y="96" text-anchor="middle" class="sublabel">parent dirigeant</text>
+        <text x="120" y="138" text-anchor="middle" class="sublabel">vue complète</text>
+
+        <!-- Sophie (parent co-titulaire) -->
+        <circle cx="480" cy="80" r="38" class="stroke-gold"/>
+        <text x="480" y="80" text-anchor="middle" class="label">Sophie</text>
+        <text x="480" y="96" text-anchor="middle" class="sublabel">co-titulaire</text>
+        <text x="480" y="138" text-anchor="middle" class="sublabel">vue complète</text>
+
+        <!-- Emma (enfant 1) -->
+        <circle cx="120" cy="280" r="38" class="stroke-gold"/>
+        <text x="120" y="280" text-anchor="middle" class="label">Emma</text>
+        <text x="120" y="296" text-anchor="middle" class="sublabel">enfant · 32 ans</text>
+        <text x="120" y="330" text-anchor="middle" class="sublabel">vue NextGen</text>
+
+        <!-- Thomas (enfant 2) -->
+        <circle cx="480" cy="280" r="38" class="stroke-gold"/>
+        <text x="480" y="280" text-anchor="middle" class="label">Thomas</text>
+        <text x="480" y="296" text-anchor="middle" class="sublabel">enfant · 28 ans</text>
+        <text x="480" y="330" text-anchor="middle" class="sublabel">vue NextGen</text>
+
+        <!-- Lignes de connexion -->
+        <line x1="155" y1="100" x2="245" y2="155" class="stroke-dash"/>
+        <line x1="445" y1="100" x2="355" y2="155" class="stroke-dash"/>
+        <line x1="155" y1="260" x2="245" y2="205" class="stroke-dash"/>
+        <line x1="445" y1="260" x2="355" y2="205" class="stroke-dash"/>
+
+        <!-- Anneau partage (entre les 4) -->
+        <circle cx="300" cy="180" r="190" class="stroke-dash" stroke-dasharray="2 8" opacity="0.5"/>
+
+        <!-- Légendes des flux -->
+        <text x="300" y="20" text-anchor="middle" class="sublabel">┌─── conseil de famille trimestriel ───┐</text>
+        <text x="300" y="350" text-anchor="middle" class="sublabel">└── annotations partagées · charte collaborative ──┘</text>
+      </svg>
+    </div>
+  </div>
+
+  <p style="max-width: 720px; margin: 0 auto; font-size: 14px; color: var(--ink-mute); line-height: 1.75; text-align: center;">
+    <em style="font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink);">Quatre comptes liés. Une seule plate-forme.</em>
+    Chaque membre a sa vue, ses modules, ses conversations Marcel — mais tout converge vers <strong style="color: var(--gold);">une mémoire commune</strong> : la charte familiale, les annotations partagées, l'historique des décisions.
+  </p>
+</section>
+
+<!-- 4 MÉCANIQUES PARTAGÉES -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 02</div>
+      <h2 class="section-titre">Quatre <em>mécaniques</em> de partage.<br>Conçues pour la famille, pas pour l'individu.</h2>
+    </div>
+    <div class="section-meta">Sub-comptes liés<br>Visios famille<br>Charte vivante<br>Annotations</div>
+  </div>
+
+  <div class="mecaniques">
+
+    <div class="meca">
+      <div class="meca-num">i.</div>
+      <div class="meca-titre">Sub-comptes <em>liés</em>, vues différenciées.</div>
+      <p class="meca-pitch">
+        Marc et Sophie voient tout. Emma et Thomas voient leurs propres modules NextGen, leurs progrès, et <em>ce que les parents ont choisi de partager</em> : pacte d'actionnaires, statuts SCI, simulation Dutreil. Permissions ajustables à tout moment depuis le dashboard parent.
+      </p>
+      <div class="meca-cas">
+        <div class="meca-cas-label">— Cas concret</div>
+        <div class="meca-cas-text">« Marc partage le mémo Dutreil avec Emma et Thomas. Ils le lisent, l'annotent, posent leurs questions à Marcel. Marc voit toutes leurs questions et leurs réponses. »</div>
+      </div>
+    </div>
+
+    <div class="meca">
+      <div class="meca-num">ii.</div>
+      <div class="meca-titre">Conseil de famille <em>trimestriel</em>, outillé.</div>
+      <p class="meca-pitch">
+        Visio 1 heure, 4 fois par an. Agenda généré par Marcel à partir des décisions en attente, des modules complétés, des arbitrages préparés. Compte-rendu automatique post-visio. <em>Tous les membres signent ce qui a été décidé.</em>
+      </p>
+      <div class="meca-cas">
+        <div class="meca-cas-label">— Cas concret</div>
+        <div class="meca-cas-text">« Q1 2026 — agenda Marcel : (1) validation arbitrage LVMH PEA, (2) lancement module 4 NextGen pour Thomas, (3) point Combloux. Compte-rendu signé en 5 min. »</div>
+      </div>
+    </div>
+
+    <div class="meca">
+      <div class="meca-num">iii.</div>
+      <div class="meca-titre">Charte familiale <em>collaborative</em>.</div>
+      <p class="meca-pitch">
+        Document fondateur écrit ensemble. Chaque membre propose, commente, valide. Versionné comme un document Git. <em>Une fois signée par tous, elle devient la règle qui guide les décisions futures</em> — limites de cession, traitement des conjoints, conditions d'emprunt familial, etc.
+      </p>
+      <div class="meca-cas">
+        <div class="meca-cas-label">— Cas concret</div>
+        <div class="meca-cas-text">« Léa (24 ans) propose un article : "aucune cession de parts en dessous de la valeur calculée par expert externe". Validation famille à la majorité. Article ajouté à la charte v1.2. »</div>
+      </div>
+    </div>
+
+    <div class="meca">
+      <div class="meca-num">iv.</div>
+      <div class="meca-titre">Annotations <em>partagées</em> sur les actes.</div>
+      <p class="meca-pitch">
+        Le pacte d'actionnaires familial, les statuts SCI, l'AV, l'acte de donation : tous les documents importants sont annotables. Chaque commentaire est visible par les autres membres autorisés. Marcel peut répondre à un commentaire — comme un avocat patient, 24/7.
+      </p>
+      <div class="meca-cas">
+        <div class="meca-cas-label">— Cas concret</div>
+        <div class="meca-cas-text">« Thomas, page 7 du pacte : "C'est quoi cette clause de drag-along ?" → Marcel répond inline avec la définition + exemple. Sophie ajoute : "On l'avait demandée pour protéger l'unité familiale en cas de tiers acquéreur." »</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CITATION -->
+<section class="bloc" style="border-bottom: none; padding-bottom: 0;">
+  <div class="citation">
+    <p>« Avant, on évitait de parler argent en famille. Maintenant, on a un langage commun. Les enfants posent des questions précises. <em>On ne se ment plus</em>. »</p>
+    <div class="citation-author"><strong>Sophie D.</strong>, mère de Emma (32) et Thomas (28) · membre beta IKCP · <em>cas type anonymisé</em></div>
+  </div>
+</section>
+
+<!-- AVANT / APRÈS -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 03</div>
+      <h2 class="section-titre"><em>Avant</em> / <em>Après</em>.<br>Le contraste qui dit tout.</h2>
+    </div>
+    <div class="section-meta">Modèle classique<br>vs famille apprenante</div>
+  </div>
+
+  <div class="avant-apres">
+    <div class="aa-col before">
+      <div class="aa-label">— Avant</div>
+      <div class="aa-titre">La famille <em>silencieuse</em>.</div>
+      <ul class="aa-list">
+        <li>Les chiffres restent dans le bureau du parent</li>
+        <li>Les enfants découvrent le patrimoine au décès</li>
+        <li>Le notaire est le seul interlocuteur familier (et il est cher)</li>
+        <li>Aucune charte écrite — les règles sont verbales et changent</li>
+        <li>Les conjoints ne savent pas qui décide quoi</li>
+        <li>Le pacte d'actionnaires est dans un classeur, jamais ouvert</li>
+        <li>Conseil de famille : 1 fois lors du repas de Noël, 5 minutes</li>
+        <li>Si le dirigeant tombe malade, c'est la sidération</li>
+      </ul>
+    </div>
+
+    <div class="aa-col after">
+      <div class="aa-label">— Avec IKCP</div>
+      <div class="aa-titre">La famille <em>apprenante</em>.</div>
+      <ul class="aa-list">
+        <li>Les chiffres sont sur la plate-forme, accessibles aux ayants droit</li>
+        <li>Les enfants suivent le parcours NextGen pendant 4-8 semaines</li>
+        <li>Marcel répond 24/7, avec sources cliquables</li>
+        <li>La charte familiale est versionnée, signée, opposable</li>
+        <li>Chaque conjoint voit son rôle dans le schéma de transmission</li>
+        <li>Le pacte est annoté par tous — 12 questions / 12 réponses</li>
+        <li>Conseil de famille trimestriel, agenda Marcel, CR auto</li>
+        <li>Si le dirigeant tombe malade, le relais est <strong>déjà préparé</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CAS CONCRET FAMILLE DUPONT -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 04</div>
+      <h2 class="section-titre">Famille Dupont · <em>douze mois</em>.<br>Ce que ça change <em>concrètement</em>.</h2>
+    </div>
+    <div class="section-meta">Cas type anonymisé<br>Calendrier réel beta IKCP</div>
+  </div>
+
+  <div class="cas-famille">
+    <div class="cas-titre">Marc (58), Sophie (56), Emma (32), Thomas (28) — entreprise familiale logiciel · 4,8 M€ valorisation.</div>
+    <p class="cas-intro">
+      <strong>Statu quo en mai 2025</strong> : Marc dirige seul. Emma travaille en marketing dans le digital, Thomas finit son master finance. La société les nourrit indirectement. Aucun des deux n'a vu les comptes. Le pacte Dutreil est mentionné par le notaire mais jamais formalisé. Sophie sait qu'elle hérite mais pas comment.
+    </p>
+
+    <div class="cas-timeline">
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 1</div>
+        <div class="cas-month-content">
+          <h4>Onboarding · <em>la première fois qu'ils se voient</em></h4>
+          <p>Marc redeems le code beta. 4 sub-comptes créés (Marc, Sophie, Emma, Thomas). Première visio Maxime à 4 — 1h. Tous découvrent le dashboard ensemble : <strong>4,8 M€ valorisation, 1,6 M€ patrimoine immo, drift modéré sur les actions</strong>. Choc utile.</p>
+        </div>
+      </div>
+
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 2</div>
+        <div class="cas-month-content">
+          <h4>Module 1 NextGen · <em>vue 360°</em></h4>
+          <p>Emma et Thomas font le module 1 (1h30 chacun). Quiz validé. <strong>Première vraie conversation à table sur le patrimoine</strong>. Sophie pose une question qu'elle gardait depuis 10 ans : "et la SCI Roseraie, comment elle est structurée ?" — Marcel répond avec schéma.</p>
+        </div>
+      </div>
+
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 3-4</div>
+        <div class="cas-month-content">
+          <h4>Module 2 · <em>fiscalité de la famille</em></h4>
+          <p>Calculs IR / IFI / DMTG sur les vrais chiffres. Emma découvre qu'une donation 100k€ + don familial 31 865€ + démembrement réduirait les droits de transmission de <strong>~70 k€</strong>. Premier conseil de famille Q1 outillé Marcel.</p>
+        </div>
+      </div>
+
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 5-6</div>
+        <div class="cas-month-content">
+          <h4>Module 3 · <em>lire le pacte</em></h4>
+          <p>Thomas pose 12 annotations sur le pacte d'actionnaires. Marc répond à 8, Marcel à 4. Découverte d'une clause de leaver mal calibrée. <strong>Décision famille</strong> : refonte clause leaver, validée par le notaire de famille en juin.</p>
+        </div>
+      </div>
+
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 7-8</div>
+        <div class="cas-month-content">
+          <h4>Module 4 · <em>4 schémas de transmission</em></h4>
+          <p>Mémo IKCP comparatif chiffré : cession brute / donation-cession / holding apport / Dutreil familial. Écart fiscal entre option A et option D : <strong>1,4 M€</strong>. Famille décide collégialement Dutreil familial. Engagement collectif Marc + Sophie signé.</p>
+        </div>
+      </div>
+
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 9-10</div>
+        <div class="cas-month-content">
+          <h4>Module 5 · <em>charte familiale v1</em></h4>
+          <p>Léa rédige v0 avec Marcel. Thomas ajoute 3 articles, Sophie en retire 2, Marc valide. Charte v1 signée par les 4 le 18 octobre. <strong>10 articles · 6 pages · opposable famille</strong>. Premier conseil de famille tenu sous le régime de la charte en novembre.</p>
+        </div>
+      </div>
+
+      <div class="cas-month">
+        <div class="cas-month-label">— Mois 11-12</div>
+        <div class="cas-month-content">
+          <h4>Module 6 · <em>plan 10 ans + certification</em></h4>
+          <p>Calendrier de transmission 2026-2036 co-écrit. Donation NP 30% à 60 ans, donation NP 30% à 65 ans, Dutreil familial à 68 ans. Certification IKCP NextGen délivrée à Emma et Thomas. <strong>Marc dort mieux</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CITATION 2 -->
+<section class="bloc" style="border-bottom: none;">
+  <div class="citation">
+    <p>« On a passé des années à bâtir l'entreprise. Trois mois sur IKCP, on bâtit la <em>famille qui va la recevoir</em>. C'est le travail le plus utile que j'ai fait depuis longtemps. »</p>
+    <div class="citation-author"><strong>Marc D.</strong>, dirigeant entreprise familiale · membre beta IKCP · <em>cas type anonymisé</em></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-final">
+  <h2>Apprendre <em>ensemble</em> commence par accepter <em>qu'on a tous à apprendre</em>.</h2>
+  <p>
+    Si vous êtes dirigeant(e) d'une entreprise familiale, et que vous lisez ces lignes en pensant à vos enfants — c'est qu'il est temps. Demandez un code beta. 50 familles seulement pour le S2 2026.
+  </p>
+  <div class="cta-row">
+    <a href="./landing-beta-dirigeants.html#beta" class="btn-primary">Demander un code beta</a>
+    <a href="./formation-nextgen.html" class="btn-secondary">Voir le parcours NextGen →</a>
+    <a href="./espaces-fo.html" class="btn-secondary">Comprendre les espaces →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Famille apprenante · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+    Pédagogie partagée multi-générationnelle · cas types anonymisés<br>
+    <a href="./landing-beta-dirigeants.html">Beta</a> &nbsp;·&nbsp;
+    <a href="./formation-nextgen.html">NextGen</a> &nbsp;·&nbsp;
+    <a href="./espaces-fo.html">Espaces</a> &nbsp;·&nbsp;
+    <a href="./conviction-overview.html">Conviction</a>
+  </p>
+</footer>
+
+</body>
+</html>
