@@ -8,13 +8,13 @@ const OUT_DIR = '/home/user/ikcp-site/proposals/screenshots';
 mkdirSync(OUT_DIR, { recursive: true });
 
 const PAGES = [
-  // Public + entrées
+  // Public + entrées (dark)
   { id: '01-site-ikcp-eu',         url: 'http://localhost:8088/index.html' },
   { id: '02-univers-v5-freemium',  url: 'http://localhost:8088/proposals/family-office-v5-univers.html' },
   { id: '03-conviction-overview',  url: 'http://localhost:8088/proposals/conviction-overview.html' },
   { id: '04-espaces-fo-tarifs',    url: 'http://localhost:8088/proposals/espaces-fo.html' },
   { id: '05-sur-mesure-tarif',     url: 'http://localhost:8088/proposals/sur-mesure-tarif.html' },
-  // Beta
+  // Beta (dark)
   { id: '06-landing-beta',         url: 'http://localhost:8088/proposals/landing-beta-dirigeants.html' },
   { id: '07-formation-nextgen',    url: 'http://localhost:8088/proposals/formation-nextgen.html' },
   { id: '08-famille-apprenante',   url: 'http://localhost:8088/proposals/famille-apprenante.html' },
@@ -30,6 +30,9 @@ const PAGES = [
   { id: '15-politique-cookies',    url: 'http://localhost:8088/proposals/legal/politique-cookies.html' },
   // Aperçu
   { id: '00-apercu-ecosysteme',    url: 'http://localhost:8088/proposals/apercu-ecosysteme.html' },
+  // Light theme
+  { id: 'light-01-landing-beta',   url: 'http://localhost:8088/proposals/light/landing-beta-dirigeants.html' },
+  { id: 'light-02-espaces-fo',     url: 'http://localhost:8088/proposals/light/espaces-fo.html' },
 ];
 
 const VIEWPORTS = [
