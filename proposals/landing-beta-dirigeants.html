@@ -273,7 +273,38 @@ footer.proto a:hover { opacity: 0.7; }
     <a href="#beta" class="btn-primary">Demander un code beta</a>
     <a href="#story" class="btn-secondary">Lire l'histoire →</a>
   </div>
+
+  <!-- 4×100% La promesse FO -->
+  <div class="promesse-band">
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Digitalisé</em></div>
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Automatisé</em></div>
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Sur-mesure</em></div>
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Accessible</em></div>
+  </div>
 </section>
+
+<style>
+.promesse-band {
+  margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+}
+.pb-item { padding: 14px 24px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.pb-item:last-child { border-right: none; }
+.pb-num {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+  color: var(--gold); font-size: 26px; line-height: 1; letter-spacing: -0.01em;
+}
+.pb-num i { font-style: normal; font-size: 16px; opacity: 0.7; }
+.pb-item em {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--ink); font-size: 17px;
+}
+@media (max-width: 720px) {
+  .promesse-band { grid-template-columns: repeat(2, 1fr); }
+  .pb-item:nth-child(2) { border-right: none; }
+  .pb-item:nth-child(1), .pb-item:nth-child(2) { border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+}
+</style>
 
 <!-- ═══ STORYTELLING ═══ -->
 <section class="story" id="story">

@@ -84,10 +84,10 @@ section.intro {
 .intro h1 em { font-style: italic; color: var(--gold); }
 .intro p { color: var(--ink-mute); font-size: 14px; line-height: 1.7; max-width: 680px; margin: 0 auto; font-weight: 300; }
 
-/* ─── STAGE — 3 device frames ─── */
+/* ─── STAGE — 6 device frames (2 rangées de 3) ─── */
 section.stage {
   padding: 50px 32px 70px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 32px;
   max-width: 1640px; margin: 0 auto; align-items: start;
 }
 .frame-card {
@@ -254,9 +254,9 @@ footer.proto {
 </header>
 
 <section class="intro">
-  <div class="intro-eyebrow">— Aperçu écosystème</div>
+  <div class="intro-eyebrow">— Aperçu écosystème · 6 destinations</div>
   <h1>L'<em>ensemble</em>, dans le format de votre choix.</h1>
-  <p>Site ikcp.eu, page Family Office, proposition tarifaire — affichés dans des cadres d'appareil réels. Cliquez sur les boutons ci-dessus pour passer de mobile à tablette ou desktop. Chaque vignette est une vraie page interactive : ouvrez-la en plein écran via le lien sous chaque cadre.</p>
+  <p>Site, beta dirigeants, 3 espaces tarifaires, formation NextGen, expertise internationale, dashboard membre. Six pages interactives affichées dans des cadres d'appareil réels — switchez entre mobile, tablette et desktop pour visualiser le responsive. Chaque vignette ouvre la page en plein écran.</p>
 </section>
 
 <section class="stage mode-mobile" id="stage">
@@ -265,71 +265,89 @@ footer.proto {
   <div class="frame-card">
     <div class="frame-label">— 01 · Site</div>
     <div class="frame-name">ikcp.eu</div>
-    <div class="frame-desc">Site principal du cabinet — diagnostic patrimonial, simulateurs, contenu SEO, Marcel chat embarqué.</div>
+    <div class="frame-desc">Site principal du cabinet — diagnostic patrimonial, simulateurs, Marcel chat embarqué.</div>
     <div class="device">
-      <div class="device-bar">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="url">ikcp.eu</div>
-        <div style="width:24px;"></div>
-      </div>
-      <div class="device-frame">
-        <div class="device-screen">
-          <iframe class="scaled-frame" src="../index.html" loading="lazy" title="Site ikcp.eu"></iframe>
-        </div>
-      </div>
+      <div class="device-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">ikcp.eu</div><div style="width:24px;"></div></div>
+      <div class="device-frame"><div class="device-screen"><iframe class="scaled-frame" src="../index.html" loading="lazy" title="Site ikcp.eu"></iframe></div></div>
     </div>
     <div class="frame-foot">
       <a href="../index.html" target="_blank">Ouvrir en plein écran ↗</a>
-      <span class="sep">·</span>
-      <span class="frame-meta">index.html</span>
+      <span class="sep">·</span><span class="frame-meta">index.html</span>
     </div>
   </div>
 
-  <!-- ─── 2. Family Office page ─── -->
+  <!-- ─── 2. Beta — landing dirigeants ─── -->
   <div class="frame-card">
-    <div class="frame-label">— 02 · Family Office</div>
-    <div class="frame-name">Page dédiée</div>
-    <div class="frame-desc">Page Family Office — 8 univers de vie, comparateurs Marcel, freemium 3 questions, tier FO augmenté pour le conseil et Maxime.</div>
+    <div class="frame-label">— 02 · Beta</div>
+    <div class="frame-name">Landing dirigeants</div>
+    <div class="frame-desc">Storytelling « Vos enfants ne sont pas nuls » + form code beta + 4 cas concrets — entrée principale FO.</div>
     <div class="device">
-      <div class="device-bar">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="url">ikcp.eu/family-office</div>
-        <div style="width:24px;"></div>
-      </div>
-      <div class="device-frame">
-        <div class="device-screen">
-          <iframe class="scaled-frame" src="./family-office-v5-univers.html" loading="lazy" title="Page Family Office"></iframe>
-        </div>
-      </div>
+      <div class="device-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">ikcp.eu/beta</div><div style="width:24px;"></div></div>
+      <div class="device-frame"><div class="device-screen"><iframe class="scaled-frame" src="./landing-beta-dirigeants.html" loading="lazy" title="Landing beta"></iframe></div></div>
     </div>
     <div class="frame-foot">
-      <a href="./family-office-v5-univers.html" target="_blank">Ouvrir en plein écran ↗</a>
-      <span class="sep">·</span>
-      <span class="frame-meta">v5 univers freemium</span>
+      <a href="./landing-beta-dirigeants.html" target="_blank">Ouvrir en plein écran ↗</a>
+      <span class="sep">·</span><span class="frame-meta">landing-beta-dirigeants</span>
     </div>
   </div>
 
-  <!-- ─── 3. Offre ─── -->
+  <!-- ─── 3. Espaces FO — 3 niveaux ─── -->
   <div class="frame-card">
-    <div class="frame-label">— 03 · Offre</div>
-    <div class="frame-name">Proposition tarifaire</div>
-    <div class="frame-desc">Création de Family Office Digital sur-mesure — 3 formules, 9 modules à la carte, comparatif TCO 3 ans (~492 k€ d'économies).</div>
+    <div class="frame-label">— 03 · Espaces</div>
+    <div class="frame-name">3 espaces tarifaires</div>
+    <div class="frame-desc">Freemium gratuit · TPE 2 400 €/an · Premium 6 800 €/an · Bespoke sur devis. Méthode 5 phases + application.</div>
     <div class="device">
-      <div class="device-bar">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="url">ikcp.eu/sur-mesure</div>
-        <div style="width:24px;"></div>
-      </div>
-      <div class="device-frame">
-        <div class="device-screen">
-          <iframe class="scaled-frame" src="./sur-mesure-tarif.html" loading="lazy" title="Proposition tarifaire sur-mesure"></iframe>
-        </div>
-      </div>
+      <div class="device-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">ikcp.eu/espaces</div><div style="width:24px;"></div></div>
+      <div class="device-frame"><div class="device-screen"><iframe class="scaled-frame" src="./espaces-fo.html" loading="lazy" title="Espaces FO"></iframe></div></div>
     </div>
     <div class="frame-foot">
-      <a href="./sur-mesure-tarif.html" target="_blank">Ouvrir en plein écran ↗</a>
-      <span class="sep">·</span>
-      <span class="frame-meta">sur-mesure-tarif</span>
+      <a href="./espaces-fo.html" target="_blank">Ouvrir en plein écran ↗</a>
+      <span class="sep">·</span><span class="frame-meta">espaces-fo</span>
+    </div>
+  </div>
+
+  <!-- ─── 4. Formation NextGen ─── -->
+  <div class="frame-card">
+    <div class="frame-label">— 04 · NextGen</div>
+    <div class="frame-name">Formation NextGen</div>
+    <div class="frame-desc">6 modules pédagogiques bâtis sur le patrimoine RÉEL de la famille. Pour les enfants. Certification IKCP.</div>
+    <div class="device">
+      <div class="device-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">ikcp.eu/nextgen</div><div style="width:24px;"></div></div>
+      <div class="device-frame"><div class="device-screen"><iframe class="scaled-frame" src="./formation-nextgen.html" loading="lazy" title="Formation NextGen"></iframe></div></div>
+    </div>
+    <div class="frame-foot">
+      <a href="./formation-nextgen.html" target="_blank">Ouvrir en plein écran ↗</a>
+      <span class="sep">·</span><span class="frame-meta">formation-nextgen</span>
+    </div>
+  </div>
+
+  <!-- ─── 5. Expertise internationale ─── -->
+  <div class="frame-card">
+    <div class="frame-label">— 05 · International</div>
+    <div class="frame-name">Expertise internationale</div>
+    <div class="frame-desc">Droit affaires + sociétés + 5 juridictions (Lux SOPARFI, CH forfait, UK non-dom, USA, OCDE). Membres FO.</div>
+    <div class="device">
+      <div class="device-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">ikcp.eu/international</div><div style="width:24px;"></div></div>
+      <div class="device-frame"><div class="device-screen"><iframe class="scaled-frame" src="./expertise-internationale.html" loading="lazy" title="Expertise internationale"></iframe></div></div>
+    </div>
+    <div class="frame-foot">
+      <a href="./expertise-internationale.html" target="_blank">Ouvrir en plein écran ↗</a>
+      <span class="sep">·</span><span class="frame-meta">expertise-internationale</span>
+    </div>
+  </div>
+
+  <!-- ─── 6. Dashboard membre ─── -->
+  <div class="frame-card">
+    <div class="frame-label">— 06 · Dashboard</div>
+    <div class="frame-name">Espace client</div>
+    <div class="frame-desc">Patrimoine 360°, échéances, arbitrages en attente Maxime, dénicheur d'offres, univers personnels, value scorecard.</div>
+    <div class="device">
+      <div class="device-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">client.ikcp.eu</div><div style="width:24px;"></div></div>
+      <div class="device-frame"><div class="device-screen"><iframe class="scaled-frame" src="./dashboard-famille-office.html" loading="lazy" title="Dashboard membre"></iframe></div></div>
+    </div>
+    <div class="frame-foot">
+      <a href="./dashboard-famille-office.html" target="_blank">Ouvrir en plein écran ↗</a>
+      <span class="sep">·</span><span class="frame-meta">dashboard-famille-office</span>
     </div>
   </div>
 

@@ -983,5 +983,140 @@ Prospect dirigeant entreprise familiale
 
 ---
 
+## 14. Trois espaces tarifaires + promesse 4 × 100 %
+
+### 14.1 La promesse — quatre fois 100 %
+
+Le positionnement IKCP Family Office Digital tient en quatre engagements :
+
+| Engagement | Ce que ça veut dire concrètement |
+|---|---|
+| **100 % Digitalisé** | Web, mobile, ordinateur · PWA installable iOS+Android · auth magic-link · aucun papier · aucun RDV obligatoire pour démarrer |
+| **100 % Automatisé** | Marcel + 6 agents transversaux (Triage, Fiscal, Juridique, Reporting, Suivi, Documents) · cron J−8 · génération auto bilans/DER/RA |
+| **100 % Sur-mesure** | Bâti sur le patrimoine réel de la famille · aucun MOOC · contextes thématiques injectés dans Marcel · dashboard configuré individuellement |
+| **100 % Accessible** | Trois espaces du gratuit (freemium) au sur-mesure (Bespoke) · pas de plancher AUM · porte ouverte à chaque étape |
+
+Cette promesse est affichée en hero de `proposals/espaces-fo.html` (4 colonnes 100×%) et en bandeau condensé sur `proposals/landing-beta-dirigeants.html`.
+
+### 14.2 Les trois espaces tarifaires + Bespoke
+
+| Espace | Cible | Prix | Différenciateur clé |
+|---|---|---|---|
+| **Freemium · Découverte** | Tout visiteur curieux | Gratuit (3 questions/session) | Aucun email requis, 8 univers comparateurs publics |
+| **Family Office Essentiel · TPE** | Dirigeants TPE · CA < 2 M€ · patrimoine < 3 M€ | **2 400 €/an** (200 €/mois) | Marcel illimité + dashboard allégé + 3 modules NextGen + 1 visio Maxime/trimestre |
+| **Family Office Augmenté · ETI/PME** | Dirigeants ETI/PME · patrimoine > 3 M€ · besoin international | **6 800 €/an** (le plus choisi) | Tout TPE + international + dénicheur d'offres + 6 modules NextGen + 1 visio Maxime/mois |
+| **Family Office Bespoke · Sur devis** | Familles complexes · multi-juridictions | dès **36 k€/an + 120 k€ setup** | Multi-juridictions, FRUP, équipe dédiée, branding propre, hébergement single-tenant |
+
+Ce qui change vs la version v5-univers (Freemium + Augmenté + Bespoke) : **introduction du tier TPE à 2 400 €/an**. Cible : dirigeants TPE qui n'ont pas (encore) le budget Augmenté mais qui méritent un FO digital. Ce tier est le **vrai levier de croissance** — bien plus large que ETI.
+
+### 14.3 Détail comparatif des espaces
+
+| Fonctionnalité | Freemium | TPE | Premium | Bespoke |
+|---|:---:|:---:|:---:|:---:|
+| 8 univers comparateurs publics | ✓ | ✓ | ✓ | ✓ |
+| Marcel · questions illimitées | — | ✓ | ✓ | ✓ |
+| Mémoire conversation client | — | ✓ | ✓ | ✓ |
+| Dashboard family office | — | Allégé | Complet | Personnalisé |
+| Formation NextGen modules | — | 3 | 6 + cert | 6 + sur-mesure |
+| Sub-comptes enfants | — | 2 | 4 | illimité |
+| Visio Maxime | — | 1 / trim. | 1 / mois | À la demande |
+| Échéances + arbitrages préparés | — | ✓ | ✓ | ✓ |
+| Dénicheur d'offres scoré | — | — | ✓ | ✓ premium |
+| Expertise internationale | — | — | ✓ | ✓ multi-juridiction |
+| Coffre-fort R2 chiffré | — | 5 GB | 50 GB | illimité |
+| Tarifs négociés | — | Lombard, signature | Banques privées + plateformes PE | Réseau global |
+| Services premium (governance, cyber, audit) | — | — | ✓ | ✓ + family governance dédiée |
+| Equipe dédiée IKCP | — | — | — | ✓ |
+
+### 14.4 Méthode 5 phases — comment se construit un FO digital
+
+Pour la formule Bespoke (et adaptable aux autres en plus léger) :
+
+| Phase | Durée | Livrable |
+|---|---|---|
+| i. Cadrage | Semaine 1 | Note de cadrage chiffrée + roadmap 5-12 sem. |
+| ii. Design | Semaines 2-3 | Figma cliquable · 8-12 écrans à votre image |
+| iii. Build | Semaines 3-8 | Preview hebdomadaire · configuration Marcel + APIs |
+| iv. Tests + onboarding | Semaines 8-10 | Recette signée + comptes famille créés |
+| v. Mise en ligne | Semaines 10-12 | Production live + transfert + 12 mois support |
+
+### 14.5 Application + espace client en ligne
+
+L'espace client repose sur trois piliers techniques :
+
+1. **PWA installable** — `manifest.json` + service worker + `apple-mobile-web-app-*` meta. 1 clic depuis le navigateur, icône dorée sur l'écran d'accueil iOS / Android / desktop.
+2. **Auth magic-link** — `workers/ikcp-client` + Resend. Email saisi → lien envoyé → connecté 30 jours via cookie HS256. Pas de mot de passe.
+3. **Endpoints API typés** — `GET /api/dashboard/me` + `GET /api/export/me` + `POST /auth/beta-redeem`. Données vous appartiennent (export 1 clic JSON SHA-256 horodaté).
+
+Caractéristiques de l'application :
+- **Photo → coffre-fort instantané** (Documents-agent OCR + R2)
+- **Notifications push** (J−8 échéances, opportunités matchées, validation Maxime)
+- **Mode hors-ligne** (FAQ pré-cachées via `sw.js`)
+- **Sub-comptes famille** (parent + enfants avec vues différenciées)
+- **Export RGPD** (JSON complet en 1 clic, horodaté)
+
+### 14.6 Funnel de conversion par cible
+
+```
+DÉCOUVERTE GRATUITE
+  [Freemium] family-office-v5-univers · 3 questions Marcel
+       │
+       │ → 30 % activent par curiosité
+       ▼
+LANDING BETA DIRIGEANTS
+  [landing-beta-dirigeants] storytelling « enfants pas nuls »
+       │
+       │ → demande de code beta
+       ▼
+ATTRIBUTION CODE → ESPACES
+  [espaces-fo] choix Essentiel TPE / Augmenté Premium / Bespoke
+       │
+       ├──► TPE 2 400 €/an   → onboarding rapide, dashboard allégé
+       ├──► Premium 6 800 €/an → onboarding + sub-comptes + NextGen complet
+       └──► Bespoke sur devis → cadrage + 5 phases méthodologie
+       │
+       ▼
+ESPACE CLIENT EN LIGNE
+  [dashboard-famille-office] vie quotidienne du membre
+  · patrimoine 360° · échéances · arbitrages · NextGen progression
+  · dénicheur d'offres (Premium+) · international (Premium+)
+       │
+       ▼
+RENOUVELLEMENT + UPSELL
+  TPE → Premium quand le patrimoine grossit ou besoin international
+  Premium → Bespoke quand multi-juridictions ou FRUP
+```
+
+### 14.7 Aperçu visuel responsive — 6 vignettes
+
+`proposals/apercu-ecosysteme.html` étendu de 3 → 6 vignettes :
+1. **Site ikcp.eu** (index.html)
+2. **Beta dirigeants** (landing-beta-dirigeants.html)
+3. **3 espaces tarifaires** (espaces-fo.html · NEW)
+4. **Formation NextGen** (formation-nextgen.html)
+5. **Expertise internationale** (expertise-internationale.html)
+6. **Dashboard membre** (dashboard-famille-office.html)
+
+Switcher Mobile / Tablette / Desktop maintenu — chaque vignette est une iframe interactive cliquable + ouvrable en plein écran.
+
+### 14.8 Ce qui est livré dans cette PR
+
+- `proposals/espaces-fo.html` — page hub 3 espaces + Bespoke + méthode 5 phases + section application avec mockup phone
+- `proposals/landing-beta-dirigeants.html` — bandeau 4×100% ajouté au hero pour cohérence du discours
+- `proposals/apercu-ecosysteme.html` — étendu à 6 vignettes responsive (incluant les nouvelles pages : beta, espaces, NextGen, international)
+- Audit doc §14 — pivot 3 espaces + 4×100% + comparatif détaillé + funnel par cible
+
+### 14.9 Phase 2 — extensions à venir
+
+| # | Action | Pourquoi |
+|---|---|---|
+| 1 | **Pricing dynamique côté Worker** | Bascule TPE → Premium déclenchée si patrimoine > 3 M€ détecté dans dashboard |
+| 2 | **Stripe checkout pour Essentiel** | Souscription self-service 200 €/mois pour TPE (sans onboarding manuel) |
+| 3 | **Formation NextGen progression D1** | Tracker quiz scoré, certificat auto, badge LinkedIn |
+| 4 | **Comparateur en page d'espaces** | Sliders pour matcher l'utilisateur vers le bon tier |
+| 5 | **Page comparative espaces vs banque privée** | « Vous économisez X €/an vs banque privée » dynamique |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
