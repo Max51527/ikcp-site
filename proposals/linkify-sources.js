@@ -1,4 +1,8 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+ * Code protégé par le Code de la propriété intellectuelle français
+ * (CPI L111-1, L113-9, L122-4). Reproduction interdite sans autorisation.
+ *
  * IKCP — Linkify sources juridiques
  *
  * Convertit les mentions de sources réglementaires (CGI, BOFIP, Code civil,

@@ -1,4 +1,7 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+ * Code protégé · CPI L111-1, L113-9, L122-4
+ *
  * /v1/agents/ask — proxy vers le Worker Marcel (`ikcp-chat`).
  *
  * Contrat front (page family-office v4-live) :

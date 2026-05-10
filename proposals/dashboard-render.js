@@ -1,4 +1,7 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+ * Code protégé · CPI L111-1, L113-9, L122-4
+ *
  * IKCP Dashboard — rendu côté client.
  *
  * Lit `window.IKCP_DASHBOARD` (mock pour la démo, à remplacer par

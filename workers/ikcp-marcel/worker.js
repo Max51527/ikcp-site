@@ -1,4 +1,12 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial
+ * Maxime Juveneton · ORIAS 23001568 · maxime@ikcp.fr
+ *
+ * Ce fichier est la propriété exclusive d'IKCP. Sa reproduction, même
+ * partielle, et son adaptation sont interdites sans autorisation écrite
+ * préalable. Code protégé par le Code de la propriété intellectuelle
+ * français (CPI L111-1, L113-9, L122-4).
+ *
  * IKCP Marcel Worker v2 — Cloudflare Worker
  *
  * Remplace ikcp-chat avec :
@@ -7,9 +15,10 @@
  *  - Exemples few-shot de réponses idéales
  *  - Règles de conformité MIF II renforcées
  *  - Logging anonyme dans KV (TTL 90 jours)
+ *  - Rate limit anti-scraping (30 q/h IP+UA non-auth)
  *
  * Input (format conservé pour compat frontend) :
- *   POST { "message": string, "history": [{role, content}] }
+ *   POST { "message": string, "history": [{role, content}], "theme"?: string }
  *
  * Output :
  *   { "reply": string, "web_search_used": boolean, "season": string }
@@ -17,6 +26,7 @@
  * Bindings requis :
  *   ANTHROPICAPIKEY  (secret)   — clé API Anthropic sk-ant-...
  *   MARCEL_LOGS      (KV binding, optionnel) — logs anonymisés
+ *   RATE_LIMIT       (KV binding, optionnel) — compteurs anti-scraping
  */
 
 const ALLOWED_ORIGINS = [
@@ -574,6 +584,11 @@ function calcForfaitSuisse(loyerOuVL, canton = 'vd') {
   };
 }
 
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 function executeTool(name, input) {
   try {
     if (name === 'calc_impot_revenu') {
@@ -1126,6 +1141,32 @@ export default {
         status: 405,
         headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
       });
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Rate limit anti-scraping — fingerprint IP+UA, fenêtre glissante 1h
+    // 30 requêtes / heure pour les visiteurs non-authentifiés.
+    // Désactivé si binding RATE_LIMIT absent (legacy).
+    // ──────────────────────────────────────────────────────────────
+    if (env.RATE_LIMIT) {
+      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const ua = (request.headers.get('User-Agent') || '').slice(0, 80);
+      const fp = await sha256(ip + '|' + ua);
+      const key = 'rl:' + fp.slice(0, 24);
+      try {
+        const count = +(await env.RATE_LIMIT.get(key) || 0);
+        if (count >= 30) {
+          return new Response(JSON.stringify({
+            error: 'rate_limited',
+            message: 'Trop de requêtes (30/h). Réessayez dans quelques minutes ou devenez membre Family Office.',
+            retry_after: 3600,
+          }), {
+            status: 429,
+            headers: { 'Content-Type': 'application/json', 'Retry-After': '3600', ...corsHeaders(request) },
+          });
+        }
+        await env.RATE_LIMIT.put(key, String(count + 1), { expirationTtl: 3600 });
+      } catch (e) { /* KV indispo : ne pas bloquer */ }
     }
 
     try {

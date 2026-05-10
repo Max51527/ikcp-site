@@ -1,4 +1,7 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+ * Code protégé · CPI L111-1, L113-9, L122-4 · reproduction interdite
+ *
  * IKCP Client Portal — espace client privé family office
  *
  * Auth : magic link passwordless (Resend) + JWT cookie (HS256)

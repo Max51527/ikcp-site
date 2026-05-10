@@ -1,4 +1,7 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+ * Code protégé · CPI L111-1, L113-9, L122-4
+ *
  * IKCP Family Office — agents interactifs (page v4-live).
  *
  * Architecture : la page appelle **directement le Worker Marcel existant**

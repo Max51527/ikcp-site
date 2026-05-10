@@ -1213,5 +1213,106 @@ La page intègre un schéma original montrant la plate-forme IKCP au centre + 4 
 
 ---
 
+## 16. Protection IP + technique + phases d'amélioration beta
+
+### 16.1 Deux documents critiques pré-lancement
+
+Cette PR ajoute deux documents opérationnels :
+
+| Document | Rôle | Pages | État |
+|---|---|---|---|
+| `docs/IP-SECURITY-PROTECTION.md` | Protection juridique + technique + sécurité opérationnelle du code et de la technique | 6 sections | ✅ |
+| `docs/BETA-IMPROVEMENT-PHASES.md` | Structure des 3 phases d'amélioration progressive de la beta avec KPIs, transitions, feedback | 8 sections | ✅ |
+
+### 16.2 Synthèse protection IP + technique
+
+**Trois axes** dans `IP-SECURITY-PROTECTION.md` :
+
+1. **Juridique (IP)** : copyright code (CPI L111-1/L113-9), 3 marques INPI à déposer (`IKCP`, `Family Office Augmenté`, `IKIGAÏ Conseil Patrimonial`), domaines préventifs, droit *sui generis* sur bases de données, NDA bêta-testers.
+2. **Technique (anti-extraction)** : architecture défensive (system prompt + tools + clés API tous côté Worker), minification production, rate limit anti-scraping, signature HMAC requêtes, chiffrement R2 + WORM, audit log extraction.
+3. **Sécurité opérationnelle** : branch protection GitHub, 2FA tous comptes, backup D1 quotidien, plan d'incident.
+
+**Plan 30 jours** chiffré : ~3 200 € budget juridique + ~3 jours effort tech.
+
+**4 items bloquants pour la beta** : NDA + charte beta-tester + mentions légales/CGU + cookies banner.
+
+### 16.3 Mesures techniques implémentées dans cette PR
+
+| Mesure | Fichier | État |
+|---|---|:---:|
+| Copyright headers (notice CPI L111-1) | 9 fichiers source | ✅ |
+| Rate limit anti-scraping Marcel (30 q/h IP+UA) | `workers/ikcp-marcel/worker.js` | ✅ |
+| Helper SHA-256 pour fingerprint | `workers/ikcp-marcel/worker.js` | ✅ |
+| Binding KV `RATE_LIMIT` déclaré (commenté) | `workers/ikcp-marcel/wrangler.toml` | ✅ (à activer post déploiement) |
+
+**Activation du rate limit en production** :
+
+```bash
+cd workers/ikcp-marcel
+wrangler kv:namespace create RATE_LIMIT
+# → copier l'id retourné dans wrangler.toml (décommenter le bloc)
+wrangler deploy
+```
+
+Le rate-limit est rétro-compatible : si le binding est absent (legacy), Marcel fonctionne normalement sans limite.
+
+### 16.4 Synthèse phases d'amélioration beta
+
+`BETA-IMPROVEMENT-PHASES.md` structure la beta en **3 phases** alignées sur les cohortes :
+
+| Phase | Cohorte | Période | Objectif |
+|---|:---:|---|---|
+| **1 · Validation produit** | 5 familles | S+3 → S+5 (2 sem) | Bugs critiques zéro · NPS > 6 · onboarding fluide |
+| **2 · Stabilisation features** | 15 familles | S+5 → S+8 (3 sem) | Features prioritaires livrées · NPS > 25 · 2+ témoignages |
+| **3 · Scaling + monétisation** | 50 familles | S+8 → S+24 (4 mois) | NPS > 30 · 25%+ conversion payant · 10+ témoignages |
+
+**Cycle hebdomadaire en Phase 1 et 2** : Lundi triage retours → Mar/Mer/Jeu dev → Vendredi release + email + form feedback (3 questions, 5 min).
+
+**Process feedback structuré** : form hebdomadaire + form mensuel (10 questions) + interview 1:1 visio Maxime + telemetry passive D1 + panel hebdomadaire (3 beta-testers en rotation) + roadmap publique avec votes.
+
+**Critères de transition** entre phases stricts et publics — pas de scaling tant que les seuils ne sont pas atteints. Si non atteints : extension de la phase + investigation cause.
+
+**Critères fin de beta → bascule commerciale** (S+24, novembre 2026) :
+- ≥ 50 familles ont vécu le produit ≥ 1 mois
+- NPS > 30
+- ≥ 25% conversion payant
+- ≥ 10 témoignages publiables (avec accord et droit à l'image)
+- Conformité juridique complète
+- Coût marginal/client < 60 €/mois
+
+### 16.5 Risques anticipés (BETA-IMPROVEMENT-PHASES §7)
+
+| Risque | Probabilité | Mitigation principale |
+|---|:---:|---|
+| Saturation Maxime | Élevée | Marcel en 1ère ligne · panel hebdo plutôt que 1:1 systématique |
+| Bug critique en prod | Moyenne | Hotfix branch · rollback Cloudflare · plan incident |
+| Demandes contradictoires beta-testers | Élevée | Roadmap publique avec votes · Maxime arbitre selon vision |
+| Plateforme concurrente | Moyenne | Vitesse d'exécution · profondeur cumulative · marque |
+| Coût Anthropic explose | Faible | Prompt caching · monitoring quotidien · alerte budget |
+
+### 16.6 Calendrier complet beta
+
+```
+S+0 (09/05/2026)  Audit livré · décision Go partiel · cette PR
+S+1               Tech (déploiement, codes) + conformité (NDA, charte, mentions)
+S+2               Marketing (kit pitch) + sélection cohortes
+S+3 (30/05/2026)  ▶ PHASE 1 démarre · 5 familles
+S+5 (13/06/2026)  ⏵ Transition 1→2 · +10 familles (15 total)
+S+8 (04/07/2026)  ⏵ Transition 2→3 · +35 familles (50 total)
+S+24 (24/10/2026) ⏵ Fin de beta · décision bascule commerciale
+S+26 (07/11/2026) ▶ LANCEMENT COMMERCIAL public
+```
+
+### 16.7 Ce qui est livré dans cette PR
+
+- `docs/IP-SECURITY-PROTECTION.md` — protection juridique + technique + sécurité opérationnelle, plan 30j, budget ~3,2 k€ + 3 j tech
+- `docs/BETA-IMPROVEMENT-PHASES.md` — 3 phases progressives, KPIs, cycles hebdo, feedback, gouvernance, calendrier complet
+- `workers/ikcp-marcel/worker.js` — rate limit anti-scraping (30 q/h IP+UA) + helper SHA-256 + copyright header
+- `workers/ikcp-marcel/wrangler.toml` — binding KV `RATE_LIMIT` déclaré (commenté, à activer post déploiement)
+- 8 autres fichiers source — copyright headers (CPI L111-1/L113-9/L122-4)
+- Audit doc §16 — synthèse + activation production
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*
