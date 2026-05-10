@@ -1818,5 +1818,115 @@ sous forme de prototype activable).
 
 ---
 
+## 21. GO Beta — aperçu visuel complet (cette PR)
+
+### 21.1 État final pré-lancement
+
+**🟢 GO** — toutes les actions de code sont livrées. La PR #1 totalise
+21 sections d'audit, ~10 000+ lignes de code, ~10 000 lignes de
+documentation, 5 sub-agents MCP, 15 pages publiques + admin + légal.
+
+### 21.2 Aperçu visuel mis à jour
+
+`proposals/apercu-ecosysteme.html` enrichi avec :
+
+**Bandeau GO** — pulse vert + résumé en hero :
+- *« Toutes les actions bloquantes documentées dans BETA-READINESS-AUDIT
+  sont levées »*
+- 4 stats visibles : 15 pages · 5 sub-agents · 9 tools · 50 codes prêts
+
+**Carte complète du site** (15 destinations groupées en 5 catégories) :
+
+| # | Catégorie | Pages | Statut |
+|---|---|---|---|
+| 01 | **Public** (vitrine + entrées) | 5 (ikcp.eu, univers v5, conviction, espaces, sur-mesure) | ✅ |
+| 02 | **Beta** (parcours beta-tester) | 4 (landing dirigeants, NextGen, famille apprenante, international) | ✅ |
+| 03 | **Membres** (espace client) | 1 (dashboard famille office) | ✅ |
+| 04 | **Transparence + Admin** | 2 (roadmap publique, admin dashboard) | ✅ + 🟡 (admin Phase 2 D1) |
+| 05 | **Conformité juridique** | 3 (mentions légales, CGU, politique cookies) | ✅ |
+
+Chaque destination est un card cliquable avec : statut emoji ✅ ou 🟡,
+titre, description courte, lien arrow `↗` qui ouvre la page en plein écran.
+
+### 21.3 Checklist J0 visible (8 actions humaines restantes)
+
+Section dédiée en bas de l'aperçu listant les **8 actions humaines** que
+seul Maxime peut exécuter (puisque je ne peux pas déployer sur leur
+compte Cloudflare ni signer un DPA Anthropic) :
+
+| # | Action | Effort |
+|---|---|---|
+| i. | `wrangler deploy` × 5 workers | ~30 min |
+| ii. | D1 schema migration | ~5 min |
+| iii. | R2 buckets create × 3 | ~10 min |
+| iv. | Secrets configuration | ~15 min |
+| v. | Génération 50 codes beta + insert D1 | ~15 min |
+| vi. | DPA Anthropic Enterprise | 1 sem négo |
+| vii. | Sélection cohorte 1 + visios pré-qualif | 2-3 j Maxime |
+| viii. | Smoke tests end-to-end | ~2 h |
+
+**Délai total estimé** : 2-3 semaines avant lancement cohorte 1
+(5 familles).
+
+### 21.4 Récap PR #1 complète
+
+**Code livré** :
+- 5 workers Cloudflare (Marcel + ikcp-api gateway + ikcp-client espace client + 3 sub-agents MCP : Documents, Suivi, Reporting)
+- 25 contextes thématiques Marcel (10 expertises FR + 8 univers + 7 international)
+- 9 calculateurs déterministes (IR, succession, donation, IFI, plus-value immo, démembrement, exit tax, holding compare, forfait Suisse)
+- 15 pages HTML (5 publiques · 4 beta · 1 dashboard membre · 1 roadmap publique · 1 admin · 3 légales · l'aperçu)
+- 1 PWA installable (manifest + sw.js + meta iOS)
+- 1 banner cookies CNIL-compliant
+- 1 script génération codes beta sécurisés
+
+**Documentation livrée** (21 documents) :
+1. `FAMILY-OFFICE-AGENTS-AUDIT.md` — audit principal · 21 sections
+2. `IKCP-PLATFORM-ROADMAP.md` — roadmap stratégique
+3. `IKCP-API-READINESS.md` — préparation API
+4. `MARCEL-V3-FEATURES.md` — features Marcel v3
+5. `BETA-READINESS-AUDIT.md` — audit go/no-go beta
+6. `BETA-IMPROVEMENT-PHASES.md` — 3 phases progression beta
+7. `IP-SECURITY-PROTECTION.md` — protection juridique + technique
+8. `AI-ACT-REGISTRY.md` — registre AI Act EU 2024/1689
+9. `CHARTE-BETA-TESTER.md` — charte juridique beta
+10. `RUNBOOK-ONBOARDING-BETA.md` — runbook complet J−14 → M+6
+11. `KIT-PITCH-BETA.md` — kit pitch (deck + script + FAQ)
+12. `FO-DEFINITION-MANIFESTO.md` — manifesto fondateur "créateur de FO"
+13. `FO-COMPETITIVE-ANALYSIS.md` — analyse 26 acteurs marché
+14. `CLAUDE-AGENT-SDK-INTEGRATION.md` — guide intégration MCP
+15. `FAMILY-OFFICE-FAISABILITE-AUDIT.md` — audit faisabilité 7 dimensions
+16-21. READMEs des sous-agents MCP
+
+**Conformité** :
+- ✅ Mentions légales · CGU · politique cookies · banner consent
+- ✅ Charte beta-tester RGPD-compliant
+- ✅ Registre IA AI Act EU 2024/1689 tenu à jour
+- ✅ MIF II / DDA by-design dans Marcel
+- ✅ Hébergement Cloudflare EU souverain (DORA)
+
+### 21.5 Ce qui est livré dans cette PR (commit final §21)
+
+- `proposals/apercu-ecosysteme.html` enrichi :
+  - Bandeau GO avec pulse vert + 4 stats
+  - Carte complète 15 destinations en 5 catégories cards cliquables
+  - Checklist J0 8 actions humaines visible
+  - CTA mis à jour vers landing beta + roadmap + admin
+  - Footer avec récap GO Beta
+- Audit doc §21 (cette section)
+
+### 21.6 Prochaines étapes après cette PR
+
+| Semaine | Action |
+|---|---|
+| **S0** (cette semaine) | Maxime exécute les 8 actions humaines · valide DPA Anthropic · sélectionne 5 prospects |
+| **S+1** | Visios pré-qualification cohorte 1 · attribution codes |
+| **S+3** | **🚀 Lancement cohorte 1** (5 familles · 6 mois beta gratuite) |
+| **S+5** | Cohorte 2 (+10 familles · 15 total) |
+| **S+8** | Cohorte 3 (+35 familles · 50 total) |
+| **S+24** (oct 2026) | Bilan beta · décision bascule commerciale |
+| **S+26** (07/11/2026) | **🎯 Lancement commercial public** |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*

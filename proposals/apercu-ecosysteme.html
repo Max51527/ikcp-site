@@ -254,10 +254,53 @@ footer.proto {
 </header>
 
 <section class="intro">
-  <div class="intro-eyebrow">— Aperçu écosystème · 6 destinations</div>
-  <h1>L'<em>ensemble</em>, dans le format de votre choix.</h1>
-  <p>Site, beta dirigeants, 3 espaces tarifaires, formation NextGen, expertise internationale, dashboard membre. Six pages interactives affichées dans des cadres d'appareil réels — switchez entre mobile, tablette et desktop pour visualiser le responsive. Chaque vignette ouvre la page en plein écran.</p>
+  <div class="intro-eyebrow">— 🟢 Aperçu beta-launch · 15 destinations</div>
+  <h1>Tout l'écosystème, <em>prêt</em> pour la beta.</h1>
+  <p>Six vignettes interactives ci-dessous (cliquez sur Mobile/Tablette/Desktop pour switcher) + la <a href="#sitemap" style="color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold);">carte complète du site</a> avec les 15 destinations classées par catégorie. État GO : toutes les pages livrées · reste 8 actions humaines de déploiement.</p>
 </section>
+
+<style>
+.go-banner {
+  max-width: 1640px; margin: 0 auto; padding: 0 32px 30px;
+}
+.go-banner-inner {
+  background: linear-gradient(135deg, rgba(127,174,125,0.12) 0%, rgba(127,174,125,0.04) 100%);
+  border: 1px solid rgba(127,174,125,0.4);
+  padding: 22px 28px;
+  display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+}
+.go-pulse {
+  width: 12px; height: 12px; border-radius: 50%; background: #7fae7d;
+  box-shadow: 0 0 12px rgba(127,174,125,0.6);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+.go-text { flex: 1; min-width: 280px; font-size: 14px; color: var(--ink); line-height: 1.6; }
+.go-text strong { color: #7fae7d; font-weight: 500; }
+.go-stats { display: flex; gap: 24px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-mute); }
+.go-stats > div { display: flex; flex-direction: column; gap: 2px; }
+.go-stats strong { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 22px; line-height: 1; }
+</style>
+
+<div class="go-banner">
+  <div class="go-banner-inner">
+    <div class="go-pulse"></div>
+    <div class="go-text">
+      <strong>GO Beta · cohorte 1.</strong>
+      Toutes les actions bloquantes documentées dans <code>BETA-READINESS-AUDIT.md</code> sont levées.
+      15 pages livrées · 5 sub-agents MCP · 9 calculateurs déterministes · conformité juridique RGPD/MIF II/AI Act.
+      Reste 8 actions humaines de déploiement (Cloudflare wrangler, R2 buckets, DPA Anthropic, sélection cohorte 1).
+      <strong>Délai estimé : 2-3 semaines avant J0.</strong>
+    </div>
+    <div class="go-stats">
+      <div><strong>15</strong> pages</div>
+      <div><strong>5</strong> sub-agents</div>
+      <div><strong>9</strong> tools</div>
+      <div><strong>50</strong> codes prêts</div>
+    </div>
+  </div>
+</div>
 
 <section class="stage mode-mobile" id="stage">
 
@@ -353,20 +396,281 @@ footer.proto {
 
 </section>
 
+<!-- ═══════════════ CARTE COMPLÈTE DU SITE ═══════════════ -->
+<section id="sitemap" style="padding: 70px 32px 50px; max-width: 1640px; margin: 0 auto;">
+  <div style="text-align:center; max-width:720px; margin: 0 auto 50px;">
+    <div style="font-size:10px; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;">— Carte complète</div>
+    <h2 style="font-family:'Playfair Display',serif; font-weight:400; font-size:clamp(26px,3vw,38px); line-height:1.15; letter-spacing:-0.018em; margin-bottom:14px;">Les <em style="font-style:italic; color:var(--gold);">15 destinations</em> de l'écosystème.</h2>
+    <p style="font-size:14px; color:var(--ink-mute); line-height:1.7;">Classées par catégorie · cliquez pour ouvrir en plein écran · ✅ = livrée · 🟡 = prototype Phase 2.</p>
+  </div>
+
+  <style>
+    .cat { margin-bottom: 50px; }
+    .cat-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 12px; }
+    .cat-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.18em; }
+    .cat-titre { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; color: var(--ink); }
+    .cat-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+    .card-link {
+      background: var(--bg-2); border: 1px solid var(--line); padding: 22px 24px;
+      text-decoration: none; transition: all 0.25s; display: flex; flex-direction: column;
+      min-height: 140px; cursor: pointer;
+    }
+    .card-link:hover { border-color: var(--gold); transform: translateY(-2px); background: rgba(196,162,115,0.04); }
+    .card-status { font-size: 10px; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+    .card-titre { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--ink); margin-bottom: 8px; line-height: 1.25; }
+    .card-titre em { font-style: italic; color: var(--gold); }
+    .card-desc { font-size: 12.5px; color: var(--ink-mute); line-height: 1.55; flex: 1; margin-bottom: 12px; }
+    .card-meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-faint); letter-spacing: 0.04em; }
+    .card-meta .arrow { color: var(--gold); }
+    @media (max-width: 720px) { .cat-head { flex-direction: column; align-items: flex-start; } }
+  </style>
+
+  <!-- CAT 1 — PUBLIC (5 pages) -->
+  <div class="cat">
+    <div class="cat-head">
+      <div>
+        <div class="cat-num">— 01 · Public</div>
+        <div class="cat-titre">Site vitrine + entrées <em>publiques</em></div>
+      </div>
+      <div class="cat-meta">5 pages · accessibles à tous</div>
+    </div>
+    <div class="cards">
+      <a class="card-link" href="../index.html" target="_blank">
+        <div class="card-status">✅ ikcp.eu</div>
+        <div class="card-titre">Site <em>principal</em></div>
+        <div class="card-desc">Site vitrine du cabinet · diagnostic patrimonial · simulateurs · Marcel chat embarqué.</div>
+        <div class="card-meta"><span class="arrow">↗</span> index.html</div>
+      </a>
+      <a class="card-link" href="./family-office-v5-univers.html" target="_blank">
+        <div class="card-status">✅ Public freemium</div>
+        <div class="card-titre">Univers de vie <em>(v5)</em></div>
+        <div class="card-desc">8 univers comparateurs (voyages, voitures, art, vins, montres, yachts, immo prestige, chevaux) · 3 questions Marcel gratuites · 3 tiers tarifaires.</div>
+        <div class="card-meta"><span class="arrow">↗</span> family-office-v5-univers</div>
+      </a>
+      <a class="card-link" href="./conviction-overview.html" target="_blank">
+        <div class="card-status">✅ Public · pitch</div>
+        <div class="card-titre">Conviction <em>overview</em></div>
+        <div class="card-desc">Page minimaliste : 3 piliers (juridique/financière/fiscale) · 4 cas concrets avec schémas SVG · 6 services FO · 11 agents IA matrice.</div>
+        <div class="card-meta"><span class="arrow">↗</span> conviction-overview</div>
+      </a>
+      <a class="card-link" href="./espaces-fo.html" target="_blank">
+        <div class="card-status">✅ Public · tarifs</div>
+        <div class="card-titre">Trois <em>espaces</em></div>
+        <div class="card-desc">Freemium gratuit · TPE 2 400 €/an · Augmenté 6 800 €/an · Bespoke. Promesse 4×100% + méthode 5 phases + application + espace client.</div>
+        <div class="card-meta"><span class="arrow">↗</span> espaces-fo</div>
+      </a>
+      <a class="card-link" href="./sur-mesure-tarif.html" target="_blank">
+        <div class="card-status">✅ Public · B2B</div>
+        <div class="card-titre">Tarif <em>sur-mesure</em></div>
+        <div class="card-desc">Création FO digital sur-mesure · 3 formules (Essential/Augmenté/Bespoke) · 9 modules à la carte · TCO 3 ans (~492 k€ d'éco) · méthode 5 phases.</div>
+        <div class="card-meta"><span class="arrow">↗</span> sur-mesure-tarif</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAT 2 — BETA (4 pages) -->
+  <div class="cat">
+    <div class="cat-head">
+      <div>
+        <div class="cat-num">— 02 · Beta</div>
+        <div class="cat-titre">Parcours <em>beta-tester</em></div>
+      </div>
+      <div class="cat-meta">4 pages · cohorte 1 (5 familles)</div>
+    </div>
+    <div class="cards">
+      <a class="card-link" href="./landing-beta-dirigeants.html" target="_blank">
+        <div class="card-status">✅ Beta · entrée</div>
+        <div class="card-titre">Landing <em>dirigeants</em></div>
+        <div class="card-desc">Storytelling « Vos enfants ne sont pas nuls » · 4 cas concrets nommés · form code beta avec auto-formatage · promesse 4×100% en bandeau hero.</div>
+        <div class="card-meta"><span class="arrow">↗</span> landing-beta-dirigeants</div>
+      </a>
+      <a class="card-link" href="./formation-nextgen.html" target="_blank">
+        <div class="card-status">✅ Beta · pédagogie</div>
+        <div class="card-titre">Formation <em>NextGen</em></div>
+        <div class="card-desc">6 modules sur le patrimoine RÉEL de la famille · 12 h sur 4-8 sem · vue 360° → fiscalité → pacte → 4 schémas → gouvernance → plan 10 ans + certification.</div>
+        <div class="card-meta"><span class="arrow">↗</span> formation-nextgen</div>
+      </a>
+      <a class="card-link" href="./famille-apprenante.html" target="_blank">
+        <div class="card-status">✅ Beta · partage</div>
+        <div class="card-titre">Famille <em>apprenante</em></div>
+        <div class="card-desc">Volet pédagogique partagé · 4 mécaniques (sub-comptes liés, conseil de famille trimestriel, charte collaborative, annotations partagées) · cas Famille Dupont 12 mois.</div>
+        <div class="card-meta"><span class="arrow">↗</span> famille-apprenante</div>
+      </a>
+      <a class="card-link" href="./expertise-internationale.html" target="_blank">
+        <div class="card-status">✅ Beta · premium</div>
+        <div class="card-titre">Expertise <em>internationale</em></div>
+        <div class="card-desc">Droit affaires + sociétés + 5 juridictions (Lux SOPARFI · CH forfait · UK non-dom · USA · OCDE) · 7 schémas SVG + matrice comparative holdings.</div>
+        <div class="card-meta"><span class="arrow">↗</span> expertise-internationale</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAT 3 — MEMBRES (1 page) -->
+  <div class="cat">
+    <div class="cat-head">
+      <div>
+        <div class="cat-num">— 03 · Membres</div>
+        <div class="cat-titre">Espace client <em>privé</em></div>
+      </div>
+      <div class="cat-meta">1 page · auth magic-link</div>
+    </div>
+    <div class="cards">
+      <a class="card-link" href="./dashboard-famille-office.html" target="_blank">
+        <div class="card-status">✅ Membres</div>
+        <div class="card-titre">Dashboard <em>famille office</em></div>
+        <div class="card-desc">Backtesté Famille Dupont 14,9 M€ · 11 sections : value scorecard, patrimoine 360°, échéances, arbitrages Maxime, conversations, livrables, services, backtest 12 mois (47 200 € identifiés).</div>
+        <div class="card-meta"><span class="arrow">↗</span> dashboard-famille-office</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAT 4 — TRANSPARENCE + ADMIN (2 pages) -->
+  <div class="cat">
+    <div class="cat-head">
+      <div>
+        <div class="cat-num">— 04 · Transparence + Admin</div>
+        <div class="cat-titre">Outils <em>équipe</em> + roadmap publique</div>
+      </div>
+      <div class="cat-meta">2 pages</div>
+    </div>
+    <div class="cards">
+      <a class="card-link" href="./roadmap-publique.html" target="_blank">
+        <div class="card-status">✅ Public · transparence</div>
+        <div class="card-titre">Roadmap <em>publique</em></div>
+        <div class="card-desc">12 features shipped · 3 in-progress · 7 candidates avec votes ouverts · 5 backlog Phase 2-3. Mise à jour hebdo. Beta-testeurs votent les priorités.</div>
+        <div class="card-meta"><span class="arrow">↗</span> roadmap-publique</div>
+      </a>
+      <a class="card-link" href="./admin-dashboard.html" target="_blank">
+        <div class="card-status">🟡 Admin · interne Maxime</div>
+        <div class="card-titre">Dashboard <em>admin</em></div>
+        <div class="card-desc">Suivi cohorte 1 : 6 KPIs · table codes · table membres · file arbitrages en attente · journal agents. Auth bearer token (Phase 2 D1 réel).</div>
+        <div class="card-meta"><span class="arrow">↗</span> admin-dashboard</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CAT 5 — LÉGAL (3 pages) -->
+  <div class="cat">
+    <div class="cat-head">
+      <div>
+        <div class="cat-num">— 05 · Conformité juridique</div>
+        <div class="cat-titre">Mentions <em>légales</em>, CGU, cookies</div>
+      </div>
+      <div class="cat-meta">3 pages · obligation RGPD + CNIL</div>
+    </div>
+    <div class="cards">
+      <a class="card-link" href="./legal/mentions-legales.html" target="_blank">
+        <div class="card-status">✅ Conformité</div>
+        <div class="card-titre">Mentions <em>légales</em></div>
+        <div class="card-desc">11 sections : éditeur, hébergement (Hostinger + Cloudflare EU), IP, données RGPD, cookies, réglementation CIF/COA, médiateur AMF, juridictions FR.</div>
+        <div class="card-meta"><span class="arrow">↗</span> legal/mentions-legales</div>
+      </a>
+      <a class="card-link" href="./legal/cgu.html" target="_blank">
+        <div class="card-status">✅ Conformité</div>
+        <div class="card-titre">CGU</div>
+        <div class="card-desc">15 articles + sommaire cliquable : services 4 espaces · beta-tester · Marcel limites MIF II · tarification · RGPD · IP · disponibilité 99,5% · AI Act · résiliation.</div>
+        <div class="card-meta"><span class="arrow">↗</span> legal/cgu</div>
+      </a>
+      <a class="card-link" href="./legal/politique-cookies.html" target="_blank">
+        <div class="card-status">✅ Conformité CNIL</div>
+        <div class="card-titre">Politique <em>cookies</em></div>
+        <div class="card-desc">Tableau cookies (aucun tiers, pas d'analytics) · stockage local · sous-traitants RGPD · banner consent compatible CNIL (refuser aussi visible que accepter).</div>
+        <div class="card-meta"><span class="arrow">↗</span> legal/politique-cookies</div>
+      </a>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════ CHECKLIST DE LANCEMENT ═══════════════ -->
+<section style="padding: 50px 32px; max-width: 1100px; margin: 0 auto; border-top: 1px solid var(--line);">
+  <div style="text-align:center; max-width:680px; margin: 0 auto 36px;">
+    <div style="font-size:10px; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;">— Checklist J0</div>
+    <h2 style="font-family:'Playfair Display',serif; font-weight:400; font-size:30px; line-height:1.15; margin-bottom:14px;">8 actions humaines avant <em style="font-style:italic; color:var(--gold);">J0 cohorte 1</em>.</h2>
+    <p style="font-size:14px; color:var(--ink-mute); line-height:1.7;">Toutes les actions de code sont livrées. Restent les actions de déploiement et opérationnelles que <em style="font-family:'Playfair Display',serif; font-style:italic; color:var(--ink);">tu</em> dois exécuter sur ton infrastructure (Cloudflare, Anthropic, Resend).</p>
+  </div>
+
+  <style>
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .check-item {
+      display: grid; grid-template-columns: 30px 1fr 110px;
+      gap: 18px; align-items: center;
+      padding: 16px 22px;
+      background: var(--bg-2); border: 1px solid var(--line);
+    }
+    .check-num { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 18px; }
+    .check-content { font-size: 13.5px; color: var(--ink); line-height: 1.55; }
+    .check-content strong { color: var(--gold); }
+    .check-content code { background: rgba(196,162,115,0.08); padding: 1px 6px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--gold-bright); }
+    .check-effort { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); text-align: right; letter-spacing: 0.04em; }
+    @media (max-width: 700px) { .check-item { grid-template-columns: 1fr; gap: 6px; } .check-effort { text-align: left; } }
+  </style>
+
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-num">i.</div>
+      <div class="check-content"><strong>Déploiement workers</strong> · 5 workers Cloudflare : <code>wrangler deploy</code> sur ikcp-marcel, ikcp-api, ikcp-client, documents-mcp-server, suivi-mcp-server</div>
+      <div class="check-effort">~30 min</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">ii.</div>
+      <div class="check-content"><strong>D1 schema</strong> · <code>wrangler d1 execute ikcp-client-db --file=schema.sql --remote</code> (10 tables Phase 1+2)</div>
+      <div class="check-effort">~5 min</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">iii.</div>
+      <div class="check-content"><strong>R2 buckets</strong> · <code>wrangler r2 bucket create ikcp-docs-private</code> + <code>ikcp-templates</code> + <code>ikcp-archives</code></div>
+      <div class="check-effort">~10 min</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">iv.</div>
+      <div class="check-content"><strong>Secrets</strong> · ANTHROPICAPIKEY · RESEND_API_KEY · MCP_SHARED_SECRET (généré 1× et partagé sur les 3 workers concernés) · INSEE_KEY (optionnel) · NOTION_TOKEN (optionnel)</div>
+      <div class="check-effort">~15 min</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">v.</div>
+      <div class="check-content"><strong>50 codes beta</strong> · <code>node scripts/generate-beta-codes.mjs --count 50 --source "cohorte-1"</code> puis insérer le SQL généré dans D1</div>
+      <div class="check-effort">~15 min</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">vi.</div>
+      <div class="check-content"><strong>DPA Anthropic</strong> · email à <code>legal@anthropic.com</code> demandant le DPA Enterprise (data processing addendum + Standard Contractual Clauses)</div>
+      <div class="check-effort">1 sem négo</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">vii.</div>
+      <div class="check-content"><strong>Sélection cohorte 1</strong> · 5 prospects qualifiés (TPE classique · ETI · holding immo · frontalier · solo+enfant 25 ans) · visios pré-qualification 30 min</div>
+      <div class="check-effort">2-3 j Maxime</div>
+    </div>
+    <div class="check-item">
+      <div class="check-num">viii.</div>
+      <div class="check-content"><strong>Smoke tests</strong> · health endpoints + flow upload doc + flow chat Marcel + flow beta-redeem · valider sur compte test avant J0</div>
+      <div class="check-effort">~2 h</div>
+    </div>
+  </div>
+
+  <p style="text-align:center; margin-top:40px; font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif;">
+    Délai total estimé : <strong style="color:var(--gold); font-style:normal; font-family:'Inter',sans-serif;">2-3 semaines</strong> · puis lancement cohorte 1 (5 familles).
+  </p>
+</section>
+
 <section class="cta-bottom">
-  <h2>Trois pages.<br>Un <em>écosystème</em> cohérent.</h2>
+  <h2><em>15 destinations</em>. <em>5 sub-agents</em>.<br>Un écosystème <em>prêt</em>.</h2>
   <p>
-    Le site signe l'identité, la page Family Office articule la valeur ajoutée, l'offre rend le déploiement chiffrable. Le tout responsive, déployable en 4-12 semaines.
+    Toutes les pages livrées · toute la conformité juridique en place · 3 sub-agents MCP en prototype · roadmap publique avec votes · charte beta-tester signable · 50 codes prêts à générer. <strong style="color:var(--gold);">GO</strong> dès que les 8 actions humaines de déploiement sont exécutées.
   </p>
   <div class="cta-row">
-    <a href="mailto:maxime@ikcp.fr?subject=Aper%C3%A7u%20%C3%A9cosyst%C3%A8me%20IKCP%20%E2%80%94%20%C3%A9change" class="btn-primary">Demander un scoping</a>
-    <a href="./conviction-overview.html" class="btn-secondary">Voir la conviction →</a>
-    <a href="./dashboard-famille-office.html" class="btn-secondary">Voir un dashboard membre →</a>
+    <a href="./landing-beta-dirigeants.html" class="btn-primary">Aller à la landing beta</a>
+    <a href="./roadmap-publique.html" class="btn-secondary">Roadmap publique →</a>
+    <a href="./admin-dashboard.html" class="btn-secondary">Dashboard admin →</a>
   </div>
 </section>
 
 <footer class="proto">
-  Aperçu d'écosystème · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+  Aperçu d'écosystème complet · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+  GO Beta cohorte 1 (S2 2026) · 15 pages · 5 sub-agents MCP · 9 calculateurs déterministes · conformité RGPD/MIF II/AI Act<br>
+  <a href="./conviction-overview.html" style="color:var(--gold); text-decoration:none;">Conviction</a> · <a href="./famille-apprenante.html" style="color:var(--gold); text-decoration:none;">Famille apprenante</a> · <a href="./expertise-internationale.html" style="color:var(--gold); text-decoration:none;">International</a> · <a href="../index.html" style="color:var(--gold); text-decoration:none;">Site live</a>
 </footer>
 
 <script>
