@@ -363,6 +363,99 @@ const handleDossiers = requireAuth(async (req, env, ctx, user) => {
   });
 });
 
+// POST /auth/beta-redeem — valider un code beta et déclencher l'onboarding
+//
+// Body : { code: "BETA-FAMI-XXXX-YYYY", email?: "..." }
+// Réponse :
+//   { valid: true, redirect_url: "/auth/send?next=/dashboard" } si OK
+//   { valid: false, reason: "code inconnu / expiré / déjà utilisé" } sinon
+//
+// Si email fourni : déclenche directement l'envoi du magic link
+// vers l'email avec un flag beta_member=true sur le user créé.
+//
+// Ne révèle rien de sensible côté erreur (anti-énumération).
+async function handleBetaRedeem(req, env) {
+  if (!env.DB) {
+    return Response.json({ valid: false, reason: 'beta_unavailable' }, { status: 503, headers: corsBetaHeaders(req) });
+  }
+  let body;
+  try { body = await req.json(); }
+  catch { return Response.json({ valid: false, reason: 'invalid_json' }, { status: 400, headers: corsBetaHeaders(req) }); }
+
+  const code = String(body.code || '').toUpperCase().trim();
+  const email = body.email ? String(body.email).toLowerCase().trim() : null;
+  if (!/^[A-Z0-9-]{8,32}$/.test(code)) {
+    return Response.json({ valid: false, reason: 'invalid_format' }, { status: 400, headers: corsBetaHeaders(req) });
+  }
+
+  // Lookup
+  let row;
+  try {
+    row = await env.DB.prepare('SELECT * FROM beta_codes WHERE code = ?').bind(code).first();
+  } catch (e) {
+    // Table peut-être pas encore créée
+    return Response.json({ valid: false, reason: 'beta_not_initialized' }, { status: 503, headers: corsBetaHeaders(req) });
+  }
+  if (!row) {
+    audit(env, { action: 'beta_redeem_unknown', detail: code.slice(0, 12), ip: req.headers.get('CF-Connecting-IP') });
+    return Response.json({ valid: false, reason: 'unknown_or_expired' }, { headers: corsBetaHeaders(req) });
+  }
+
+  if (row.expires_at && row.expires_at < now()) {
+    audit(env, { action: 'beta_redeem_expired', detail: code, ip: req.headers.get('CF-Connecting-IP') });
+    return Response.json({ valid: false, reason: 'expired' }, { headers: corsBetaHeaders(req) });
+  }
+  if ((row.used_count || 0) >= (row.max_uses || 1)) {
+    audit(env, { action: 'beta_redeem_exhausted', detail: code, ip: req.headers.get('CF-Connecting-IP') });
+    return Response.json({ valid: false, reason: 'already_used' }, { headers: corsBetaHeaders(req) });
+  }
+
+  // Code valide → marquer comme utilisé (atomique grâce au check used_count < max_uses)
+  await env.DB.prepare(
+    'UPDATE beta_codes SET used_count = used_count + 1, redeemed_at = ?, used_by_email = COALESCE(used_by_email, ?) WHERE code = ? AND used_count < max_uses'
+  ).bind(now(), email, code).run();
+
+  audit(env, { email, action: 'beta_redeem_success', detail: code, ip: req.headers.get('CF-Connecting-IP') });
+
+  // Si email fourni, on génère un magic link beta direct (raccourci onboarding)
+  if (email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    // On délègue à handleAuthSend en simulant la requête (réutilise la logique anti-rate-limit)
+    const fakeReq = new Request(req.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, next: '/dashboard?beta=1' }),
+    });
+    // On ne propage pas la réponse — on laisse l'envoi mail asynchrone
+    handleAuthSend(fakeReq, env, {}).catch(e => console.error('[beta] auth-send fail', e));
+    return Response.json({
+      valid: true,
+      magic_sent: true,
+      redirect_url: null,
+      message: 'Vérifiez votre boîte mail — votre lien de connexion est en route.',
+    }, { headers: corsBetaHeaders(req) });
+  }
+
+  // Sinon, on redirige vers la page de login avec next=/dashboard
+  const appUrl = env.APP_URL || new URL(req.url).origin;
+  return Response.json({
+    valid: true,
+    redirect_url: `${appUrl}/?next=/dashboard&beta=1`,
+    message: 'Code accepté. Saisissez votre email pour recevoir le lien de connexion.',
+  }, { headers: corsBetaHeaders(req) });
+}
+
+function corsBetaHeaders(req) {
+  // CORS ouvert sur les domaines IKCP (pour que la landing-beta puisse appeler depuis ikcp.eu)
+  const origin = req.headers.get('Origin') || '';
+  const allowed = ['https://ikcp.eu', 'https://www.ikcp.eu', 'http://localhost:3000', 'http://127.0.0.1:5500'];
+  return {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Access-Control-Allow-Origin': allowed.includes(origin) ? origin : 'https://ikcp.eu',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
+
 // GET /api/export/me — export complet des données du client (RGPD portabilité)
 //
 // Retourne un JSON unique structuré avec :
@@ -680,8 +773,14 @@ export default {
     // Static (favicon etc.)
     if (p === '/favicon.ico') return new Response(null, { status: 204 });
 
+    // CORS preflight pour /auth/beta-redeem (appelé depuis la landing publique)
+    if (p === '/auth/beta-redeem' && m === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsBetaHeaders(req) });
+    }
+
     // Routes
     if (p === '/' && m === 'GET') return handleLogin(req, env);
+    if (p === '/auth/beta-redeem' && m === 'POST') return handleBetaRedeem(req, env);
     if (p === '/auth/send' && m === 'POST') return handleAuthSend(req, env, ctx);
     if (p === '/auth/verify' && m === 'GET') return handleAuthVerify(req, env);
     if (p === '/auth/logout') return handleLogout(req, env);

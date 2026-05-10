@@ -857,5 +857,131 @@ Toute réponse internationale Marcel inclut :
 
 ---
 
+## 13. Pivot — Dirigeants d'entreprise familiale + formation NextGen + beta
+
+### 13.1 Repositionnement de la cible
+
+Les versions précédentes (v3 / v4 / v5 / international) ciblent implicitement le HNW classique : 2-10 M€ AUM, principal patriarche / matriarche, FO comme service de gestion patrimoniale élargi. Bonne cible mais **trop étroite** et **trop classique**.
+
+Le pivot : cibler **les dirigeants d'entreprise familiale** — peu importe le ticker patrimonial. Ce qui les caractérise :
+- Une société qui représente l'essentiel de leur valeur économique
+- Une transmission qui se prépare ou se prépare *mal*
+- Des enfants entre 18 et 40 ans, souvent intéressés mais jamais outillés
+- Un besoin pédagogique non couvert par le marché (banques privées, MFO, robo-advisors n'enseignent pas)
+
+C'est un marché plus large, plus profond et culturellement différent : les dirigeants d'ETI ou PME familiales ne se sentent pas "Hauts Patrimoines" même quand ils valent 5-15 M€. **IKCP leur parle leur langue**.
+
+### 13.2 Storytelling — « Vos enfants ne sont pas nuls. »
+
+Le storytelling de la beta repose sur un retournement :
+
+> *« On dit souvent que les enfants ne s'intéressent pas. C'est faux. Ils n'ont juste jamais reçu les outils. »*
+
+Trois piliers narratifs :
+1. **Le constat partagé** : 70 % des AUM se dispersent dans les 18 mois post-décès du dirigeant (Morgan Stanley) — pas par incompétence, par défaut de préparation
+2. **Les cas concrets nommés** : Emma 32 ans, Thomas 28 ans, Léa 24 ans, Hugo & Antoine 26/29 ans — quatre familles beta présentées avec citations directes et chiffres
+3. **La promesse opérationnelle** : 6 modules personnalisés sur le patrimoine RÉEL de la famille, pas un MOOC générique
+
+### 13.3 Formation NextGen — 6 modules
+
+Page `proposals/formation-nextgen.html` :
+
+| # | Module | Durée | Niveau | Livrable |
+|---|---|---|---|---|
+| i. | Comprendre votre famille — vue 360° | ~1h30 | Intro | Quiz 8 questions + visio Maxime 30 min |
+| ii. | Les chiffres qui comptent — fiscalité | ~2h30 | Intro+ | Quiz 12 questions + 2 cas chiffrés |
+| iii. | Lire un acte — clauses, pactes | ~2h | Intermédiaire | Annotation guidée + relais notaire |
+| iv. | Choisir une stratégie — démembrement / OBO / Dutreil / holding | ~2h30 | Avancé | Mémo 2 pages signé Maxime + cédant |
+| v. | Diriger — gouvernance et famille | ~3h | Avancé | Charte familiale v0 + 1er conseil de famille |
+| vi. | Le passage de relais — plan 10 ans | ~4h | Expert | **Certificat IKCP NextGen** |
+
+**Total** : ~12 h de parcours réparti sur 4 à 8 semaines au rythme libre. Marcel disponible 24/7 + 1 RDV Maxime visio par module.
+
+**Caractéristique différenciante** : chaque module utilise les **chiffres réels de la famille** — pas un cas "Famille Type". L'enfant apprend en lisant *son* propre patrimoine, le pacte de *sa* SARL, l'AV de *ses* parents.
+
+### 13.4 Système beta — codes + onboarding
+
+**Format de code** : `BETA-FAMI-XXXX-YYYY` (4 segments × 4 chars alphanum) — distinctif, mémorisable, partageable.
+
+**Backend** (`workers/ikcp-client`) :
+- Table D1 `beta_codes` : code (PK), max_uses, used_count, expires_at, notes, source, used_by_email
+- Endpoint **`POST /auth/beta-redeem`** : valide le code, marque comme utilisé, déclenche le magic link si email fourni
+- Anti-énumération : ne révèle pas pourquoi un code est invalide (unknown/expired/exhausted) en clair côté front
+- Audit log : tout appel à beta-redeem (success / unknown / expired / exhausted) loggé pour monitoring abus
+
+**Front** (`proposals/landing-beta-dirigeants.html`) :
+- Champ unique avec auto-formatage (segmente en 4×4 à la frappe)
+- Validation locale + appel `/auth/beta-redeem`
+- Fallback démo (3 codes : `BETA-FAMI-DEMO-2026`, `BETA-FAMI-PIVOT-2026`, `BETA-FAMI-PILOTE-001`)
+- CTA mailto pour demander une invitation à Maxime
+
+**Logique métier** : 50 codes pour le S2 2026, gratuits pendant 6 mois, en échange de retours mensuels. Maxime génère et attribue manuellement (après prise de contact, validation profil).
+
+### 13.5 Différenciation par 5 attributs
+
+| Attribut | Comment IKCP le rend visible |
+|---|---|
+| **Pédagogie incluse** | Module formation NextGen pour la 2e génération, pas un add-on payant |
+| **Hyper-personnalisation** | Le parcours n'est pas pré-écrit ; chaque module se construit sur les données réelles de la famille |
+| **100% digital** | Aucun RDV obligatoire pour démarrer, Marcel 24/7, validation Maxime visio |
+| **Beta sélective** | 50 familles seulement — exclusivité construite, pas marketing creux |
+| **Cible élargie** | Dirigeants d'entreprise familiale, pas que HNW. Discours adapté à un public plus large (ETI, PME, holdings familiaux) |
+
+### 13.6 Funnel de conversion mis à jour
+
+```
+Prospect dirigeant entreprise familiale
+    │
+    ▼
+[1] landing-beta-dirigeants.html ← entrée par storytelling émotionnel
+    │  · lit l'histoire (« vos enfants ne sont pas nuls »)
+    │  · découvre les 4 cas concrets (Emma, Thomas, Léa, Hugo & Antoine)
+    │  · comprend la promesse 3 piliers (perso, NextGen, digital)
+    ▼
+[2] Code beta saisi  →  POST /auth/beta-redeem
+    │  · validation Worker
+    │  · email saisi → magic link envoyé direct
+    │  · sinon redirect /?next=/dashboard&beta=1
+    ▼
+[3] Onboarding rapide
+    │  · création user en D1 (role=client, status=active, beta_member=true)
+    │  · dashboard enrichi disponible
+    ▼
+[4] Activation parcours NextGen
+    │  · les enfants reçoivent leur propre invitation
+    │  · démarrage module 1 personnalisé sur le patrimoine réel
+    ▼
+[5] Validation Maxime à chaque module
+    │  · visio 30 min après quiz
+    │  · construction progressive du dossier
+    ▼
+[6] Certification NextGen module 6
+    │  · plan 10 ans co-signé deux générations
+    │  · transmission préparée
+    ▼
+[7] Renouvellement post-beta (passage payant 6 800 €/an FO Augmenté)
+```
+
+### 13.7 Ce qui est livré dans cette PR
+
+- `proposals/landing-beta-dirigeants.html` — landing storytelling + form code beta + 4 cas concrets nommés + 3 piliers
+- `proposals/formation-nextgen.html` — 6 modules détaillés avec durée / niveau / livrable / cas pratique sur le patrimoine réel
+- `workers/ikcp-client/schema.sql` — table `beta_codes` (code, max_uses, used_count, expires_at, notes, source, used_by_email)
+- `workers/ikcp-client/worker.js` — endpoint `POST /auth/beta-redeem` avec audit log + magic link auto si email fourni + CORS pour appel depuis ikcp.eu
+- Audit doc §13 — pivot stratégique documenté
+
+### 13.8 Phase 2 — extensions à venir
+
+| # | Action | Pourquoi |
+|---|---|---|
+| 1 | **Dashboard admin Maxime pour gérer les codes beta** | Génération en lot, suivi taux conversion, tagging par source |
+| 2 | **Module formation autonome avec progression D1** | Tracker quiz scoré, certificat auto-délivré, badge LinkedIn |
+| 3 | **Sub-comptes parent + enfants liés** (`family_id`) | Vue partagée, permissions différenciées |
+| 4 | **Onboarding pré-rempli depuis SIREN** | Pappers API → autocomplete forme société, dirigeants, K-bis |
+| 5 | **Email automatique post-redeem** (Resend) | Lettre de bienvenue + planning module 1 + lien RDV Maxime Calendly |
+| 6 | **Mesure conversion beta → payant** (KPI dashboard interne) | Identifier les modules les plus engageants, taux de complétion |
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*

@@ -200,3 +200,30 @@ CREATE TABLE IF NOT EXISTS opportunites (
 );
 CREATE INDEX IF NOT EXISTS idx_opportunites_user_status ON opportunites(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_opportunites_deadline ON opportunites(deadline);
+
+-- ════════════════════════════════════════════════════════════════════
+-- BETA CODES — invitation pour la phase de beta test (50 familles S2 2026)
+-- Format des codes : BETA-FAMI-XXXX-YYYY (4 segments × 4 chars alphanum)
+-- Génération : Maxime depuis le dashboard admin (insertion manuelle ou
+-- script seed). Validation côté Worker via /auth/beta-redeem.
+-- ════════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS beta_codes (
+  code TEXT PRIMARY KEY,            -- BETA-FAMI-XXXX-YYYY
+  max_uses INTEGER DEFAULT 1,       -- combien de fois utilisable (1 = personnel, > 1 = lien partageable)
+  used_count INTEGER DEFAULT 0,
+  used_by_email TEXT,               -- premier email qui a redeemé
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER,               -- timestamp · NULL si pas de péremption
+  notes TEXT,                       -- ex : "Famille X · invité par Maxime · entreprise familiale CA 12 M€"
+  redeemed_at INTEGER,
+  source TEXT                       -- "linkedin", "rdv", "salon", "ami", "autre"
+);
+
+CREATE INDEX IF NOT EXISTS idx_beta_codes_expires ON beta_codes(expires_at);
+
+-- Quelques codes de seed (à modifier en production) :
+-- INSERT INTO beta_codes (code, max_uses, created_at, notes) VALUES
+--   ('BETA-FAMI-DEMO-2026', 1, strftime('%s', 'now') * 1000, 'Démo pitch'),
+--   ('BETA-FAMI-PIVOT-2026', 1, strftime('%s', 'now') * 1000, 'Pivot stratégique'),
+--   ('BETA-FAMI-PILOTE-001', 1, strftime('%s', 'now') * 1000, 'Premier pilote');
