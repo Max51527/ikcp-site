@@ -773,5 +773,89 @@ PROSPECT (organique / SEO / réseau)
 
 ---
 
+## 12. Expertise internationale — droit des affaires, droit des sociétés, juridictions
+
+### 12.1 Pourquoi cette extension
+
+Un client à patrimoine constitué (> 2 M€) qui pense « famille office augmenté » pense très vite *international*. Holdings au Luxembourg, résidence fiscale Suisse, succession transatlantique, structure UK pour patrimoine immo, conventions bilatérales à arbitrer.
+
+Les versions précédentes (v3 / v4 / v5) couvrent le **patrimoine domestique**. La page **`expertise-internationale.html`** ouvre la dimension juridique experte — réservée aux membres FO Augmenté.
+
+### 12.2 Sept thématiques ajoutées
+
+| Thématique | Clé Marcel | Couverture |
+|---|---|---|
+| Droit des affaires | `droit_affaires` | Contrats commerciaux, distribution (CGI L134), PI (CPI L113), restructuring (Code de commerce L611+) |
+| Droit des sociétés | `droit_societes` | Constitution, gouvernance, pactes (drag-along, tag-along), opérations capital, M&A, transmission Dutreil |
+| Luxembourg | `international_lux` | SOPARFI · RAIF · SCA · LIR 166 · convention FR-LUX 1958/2018 |
+| Suisse | `international_ch` | Forfait fiscal LFID 2014 · Sàrl/SA · AVS · Pillar 3a · convention FR-CH 1966/2014 |
+| Royaume-Uni | `international_uk` | Non-dom · FIC · trust · IHT · convention FR-UK 2008 |
+| États-Unis | `international_us` | LLC Delaware · FATCA · estate tax · IRC 877A exit tax · convention FR-USA 1994/2018 |
+| Conventions OCDE | `convention_fiscale` | Modèle OCDE · MLI BEPS 2017 · tie-breaker rules · 130+ conventions FR |
+
+### 12.3 Trois nouveaux tools déterministes
+
+Marcel passe de **6 → 9 calculateurs** :
+
+| Tool | Inputs | Sortie |
+|---|---|---|
+| `calc_exit_tax` | Valeur titres + prix acq + pays destination + contrôle majoritaire | PFU 30% (12,8% IR + 17,2% PS) sur PV latente, sursis 6 ans automatique UE/EEE, garantie hors UE |
+| `compare_holding_jurisdictions` | Type d'actif + valeur + résidence actionnaire | Comparatif fiscal France / Lux SOPARFI / CH / Pays-Bas avec recommandation |
+| `calc_forfait_suisse` | Loyer/valeur locative + canton | Base imposable (max 7× loyer ou plancher cantonal 400 k CHF), impôt total estimé, conditions LFID 2016 |
+
+### 12.4 Linkify étendu — 4 nouvelles juridictions
+
+`linkify-sources.js` reconnaît désormais et convertit en liens cliquables :
+- **Luxembourg** : `LIR art. 166` → legilux.public.lu
+- **Suisse** : `LIFD 14`, `LIFD art. 69` → admin.ch/fedlex
+- **OCDE** : `Modèle OCDE art. 4`, `OCDE 13` → oecd.org/fr/fiscalite/conventions
+- **Conventions bilatérales** : `FR-CH 1966`, `FR-LUX 2018`, `FR-USA 2018` → impots.gouv.fr/portail/conventions
+- **BOFIP-INT** : `BOFIP-INT-CVB-LUX` → bofip.impots.gouv.fr
+
+### 12.5 Matrice comparative holdings — synthèse
+
+| Critère | France | Luxembourg SOPARFI | Suisse SA | Pays-Bas BV |
+|---|---|---|---|---|
+| IS dividendes reçus | 0% (CGI 145) | 0% (LIR 166) | 5% (réduction 95%) | 0% (PE) |
+| IS PV cession titres | 0% (long terme + 12% QPF) | 0% (LIR 166) | Exonéré (LIFD 70) | 0% (PE) |
+| Retenue dividendes vers FR | 0% | 5-15% | 35% (récup. 15%) | 15% |
+| Coût constitution | 1-3 k€ | 15-30 k€ | 20-40 k€ | 8-15 k€ |
+| Coût récurrent annuel | 2-5 k€ | 8-15 k€ | 10-20 k€ | 5-12 k€ |
+| Substance économique | Souple | Stricte BEPS/ATAD | Stricte LIFD | Renforcée 2024+ |
+| Cas d'usage | Holding domestique | PE / IP / international | Si actionnaire CH | Sortie EU |
+
+### 12.6 Garde-fous AI Act + MIF II
+
+Toute réponse internationale Marcel inclut :
+1. **Avertissement substance** : *"validation par juriste fiscaliste systématique, audit substance économique (BEPS / ATAD)"*
+2. **Pas de recommandation produit** (cf. règle MIF II)
+3. **Sources opposables** (LIR / LIFD / convention bilatérale citées)
+4. **Alerte tie-breaker** dès qu'une situation de résidence dual est détectée
+
+### 12.7 État de déploiement
+
+| # | Élément | État |
+|---|---|---|
+| 1 | 7 nouveaux `THEME_CONTEXTS` dans Marcel | ✅ commit |
+| 2 | 3 nouveaux tools déterministes (`calc_exit_tax`, `compare_holding_jurisdictions`, `calc_forfait_suisse`) | ✅ commit |
+| 3 | Linkify étendu (Lux, CH, UK, USA, OCDE, bilatérales) | ✅ commit |
+| 4 | Page `expertise-internationale.html` (premium FO) | ✅ commit |
+| 5 | Schémas SVG par juridiction (Lux, CH, UK, USA, OCDE, droit affaires, droit sociétés) | ✅ commit |
+| 6 | Matrice comparative holdings 4 juridictions | ✅ commit |
+| 7 | Mention dans navigation site / dashboard | 🟡 à câbler |
+| 8 | Ajout au menu manifest.json (raccourci PWA) | 🟡 à câbler |
+
+### 12.8 Phase 2 — extensions à venir
+
+- **Belgique** (`international_be`) : holding BE post-déduction notionnelle
+- **Pays-Bas** (`international_nl`) : BV holding détaillé
+- **Italie** (`international_it`) : flat tax 100 k€/an pour résidents revenus étrangers
+- **Portugal** (`international_pt`) : RNH (résidents non habituels) post-2024
+- **Estonie** (`international_ee`) : e-Residency pour entrepreneurs digitaux
+- **Émirats** (`international_ae`) : DIFC, ADGM pour HNW
+- Sub-agent **`juridique-international-agent`** avec RAG sur conventions bilatérales (Phase 3)
+
+---
+
 *Document vivant — à mettre à jour à chaque jalon majeur.*
 *Maxime Juveneton — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · ikcp.eu*

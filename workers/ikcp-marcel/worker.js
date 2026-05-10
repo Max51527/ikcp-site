@@ -110,6 +110,45 @@ const TOOLS_FISCAL = [
       required: ['valeur_pleine_propriete', 'age_usufruitier'],
     },
   },
+  {
+    name: 'calc_exit_tax',
+    description: "Calcule l'exit tax (CGI 167 bis) pour un résident fiscal français qui transfère son domicile à l'étranger. S'applique aux titres détenus > 50% d'une société ou portefeuille > 800 k€ avec PV latente. PFU 30% (12,8% IR + 17,2% PS). Sursis automatique 6 ans si départ vers UE/EEE.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        valeur_titres: { type: 'number', description: 'Valeur des titres au moment du départ (en euros)' },
+        prix_acquisition: { type: 'number', description: "Prix d'acquisition (apport ou achat) — pour calculer la PV latente" },
+        pays_destination: { type: 'string', description: 'Pays de destination (EU/EEE = sursis automatique 6 ans, hors UE = sursis sur garantie)' },
+        controle_majoritaire: { type: 'boolean', description: 'Contrôle > 50% société ? (active CGI 167 bis sans plafond)' },
+      },
+      required: ['valeur_titres', 'prix_acquisition'],
+    },
+  },
+  {
+    name: 'compare_holding_jurisdictions',
+    description: "Compare la fiscalité d'une holding pour détenir des participations selon 4 juridictions : France (SAS/SARL holding), Luxembourg (SOPARFI), Suisse (SA), Pays-Bas (BV). Donne IS effectif sur dividendes reçus, PV cession, et fiscalité de remontée vers actionnaire personne physique française.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        type_actif: { type: 'string', description: 'Type d\'actif détenu : participations_op (sociétés opérationnelles), pe_funds, immo, ip_marques' },
+        valeur_participation: { type: 'number', description: 'Valeur de la participation (en euros)' },
+        actionnaire_resident_fr: { type: 'boolean', description: 'L\'actionnaire ultime est-il résident fiscal français ?' },
+      },
+      required: ['type_actif'],
+    },
+  },
+  {
+    name: 'calc_forfait_suisse',
+    description: "Calcule l'imposition d'après la dépense (forfait fiscal suisse) — réservé aux non-actifs en Suisse, non-résidents pendant 5 ans précédents. Base : 5-7× valeur locative ou loyer payé selon canton, minimum 400 k CHF de dépense imposable depuis 2016 (Vaud, Genève, Valais).",
+    input_schema: {
+      type: 'object',
+      properties: {
+        loyer_ou_valeur_locative: { type: 'number', description: 'Loyer annuel payé ou valeur locative (en CHF)' },
+        canton: { type: 'string', description: 'Canton de résidence (vd, ge, vs, fr, ti — exemples). Détermine le taux cantonal.' },
+      },
+      required: ['loyer_ou_valeur_locative'],
+    },
+  },
 ];
 
 // Barème IR 2026 (LF 2026, revenus 2025)
@@ -375,6 +414,166 @@ function calcDemembrement(valeurPP, ageUsufruitier) {
   };
 }
 
+// ──────────────────────────────────────────────────────────────
+// Exit tax — CGI 167 bis (transfert domicile fiscal hors France)
+// PFU 30% sur PV latente · sursis automatique 6 ans pour UE/EEE
+// ──────────────────────────────────────────────────────────────
+const EU_EEE = ['allemagne','autriche','belgique','bulgarie','chypre','croatie','danemark','espagne','estonie','finlande','grece','hongrie','irlande','italie','lettonie','lituanie','luxembourg','malte','pays-bas','pologne','portugal','republique tcheque','roumanie','slovaquie','slovenie','suede','islande','liechtenstein','norvege'];
+
+function calcExitTax(valeurTitres, prixAcq, paysDest = '', controleMaj = false) {
+  const pv = Math.max(0, valeurTitres - prixAcq);
+  if (pv === 0) {
+    return { exit_tax_due: 0, note: 'Aucune plus-value latente — exit tax non applicable.', sources: 'art. 167 bis CGI' };
+  }
+  const ir = pv * 0.128; // PFU IR
+  const ps = pv * 0.172; // prélèvements sociaux
+  const total = Math.round(ir + ps);
+
+  const paysClean = (paysDest || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+  const sursisUE = EU_EEE.includes(paysClean);
+  const sursis = {
+    automatique: sursisUE,
+    duree: sursisUE ? '6 ans (sursis automatique UE/EEE — CGI 167 bis II.1)' : 'Sursis sur garantie hors UE/EEE (constitution d\'une garantie auprès du Trésor)',
+    extinction: 'PV purgée si conservation des titres > 6 ans après le départ + retour en France (sinon imposition définitive au terme)',
+  };
+
+  const seuilPlafond = 800000;
+  const sousSeuil = !controleMaj && valeurTitres < seuilPlafond;
+
+  return {
+    exit_tax_due: total,
+    plus_value_latente: Math.round(pv),
+    ir_12_8_pct: Math.round(ir),
+    prelevements_sociaux_17_2_pct: Math.round(ps),
+    sursis,
+    sous_seuil_800k: sousSeuil,
+    note: sousSeuil
+      ? 'Patrimoine titres < 800 k€ et pas de contrôle majoritaire → exit tax non applicable (CGI 167 bis I.1).'
+      : 'Exit tax applicable. Sursis recommandé. Obligations déclaratives au départ + chaque année du sursis.',
+    sources: 'art. 167 bis CGI · BOFIP-RPPM-PVBMI-50 · convention bilatérale destination',
+  };
+}
+
+// ──────────────────────────────────────────────────────────────
+// Comparatif holdings — France vs Luxembourg vs Suisse vs Pays-Bas
+// Données indicatives 2026 (à valider par juriste fiscaliste)
+// ──────────────────────────────────────────────────────────────
+function compareHoldingJurisdictions(typeActif = 'participations_op', valeurParticipation = 0, actionnaireFr = true) {
+  const grilles = {
+    france: {
+      label: 'France (SAS/SARL holding)',
+      is_dividendes_recus: '0% (régime mère-fille CGI 145 sous condition 5% + 2 ans, quote-part frais 5%)',
+      is_pv_cession: '0% (long terme, titres de participation > 2 ans, quote-part 12% — CGI 219 I a quinquies)',
+      remontee_actionnaire_fr: 'PFU 30% (12,8% IR + 17,2% PS) sur dividendes versés',
+      cout_setup: '1-3 k€',
+      avantage: 'Aucun droit de douane/TVA, simplicité, conventions FR-130+ pays',
+      inconvenient: 'CSG-CRDS sur PV future à la sortie',
+    },
+    luxembourg: {
+      label: 'Luxembourg SOPARFI',
+      is_dividendes_recus: '0% (régime participation exemption — LIR art. 166, 10% détention ou 1,2 M€ + 1 an)',
+      is_pv_cession: '0% (mêmes conditions que dividendes)',
+      remontee_actionnaire_fr: 'Retenue source 0% à 15% selon convention LUX-FR (5/15% standard) + PFU FR 30% avec crédit d\'impôt',
+      cout_setup: '15-30 k€ (constitution + domiciliation + admin annuelle 8-15 k€)',
+      avantage: 'Régulation fiable, RAIF possible pour structures PE, gouvernance souple SCA',
+      inconvenient: 'Substance économique exigée (real activity test), coûts récurrents, BEPS / ATAD',
+    },
+    suisse: {
+      label: 'Suisse SA / Sàrl holding',
+      is_dividendes_recus: '95% exonération (réduction holding — capital ≥ 100 k CHF + détention ≥ 10%)',
+      is_pv_cession: 'Exonération sur PV de participation (impôt cantonal et fédéral)',
+      remontee_actionnaire_fr: 'Retenue source CH 35% — récupérable via convention CH-FR à 15% + PFU 30%',
+      cout_setup: '20-40 k€ (constitution SA capital 100 k CHF, admin 10-20 k€/an)',
+      avantage: 'Stabilité juridique, secret bancaire dégressif mais gouvernance privée préservée, AVS distincte',
+      inconvenient: 'Coût constitution SA, fiscalité cantonale variable (à choisir : Zoug, Zurich, Genève)',
+    },
+    pays_bas: {
+      label: 'Pays-Bas BV holding',
+      is_dividendes_recus: '0% (participation exemption — détention ≥ 5%)',
+      is_pv_cession: '0% (mêmes conditions)',
+      remontee_actionnaire_fr: 'Retenue source NL 15% conventionnel, récupérable à 15% via crédit FR + PFU 30%',
+      cout_setup: '8-15 k€',
+      avantage: 'Réseau de conventions, holding active flexibility, position sortie EU favorable',
+      inconvenient: 'Substance test renforcé depuis 2024, ATAD III en discussion',
+    },
+  };
+
+  const recommandation = (() => {
+    if (typeActif === 'participations_op' && valeurParticipation > 5000000) {
+      return 'Pour > 5 M€ de participations opérationnelles, privilégier France (simple) ou Luxembourg (si réseau international). Suisse pertinente si actionnaire envisage résidence fiscale CH.';
+    }
+    if (typeActif === 'pe_funds') {
+      return 'Pour PE/VC, Luxembourg RAIF ou SCA est l\'option standard (réservé professionnels, fiscalité 0% IS sous conditions).';
+    }
+    if (typeActif === 'immo') {
+      return 'Pour l\'immobilier, attention : la plupart des juridictions prélèvent dans le pays de situation (lex rei sitae). Holding pertinente surtout pour structurer la gouvernance, moins pour optimiser fiscalement.';
+    }
+    if (typeActif === 'ip_marques') {
+      return 'Pour la propriété intellectuelle, Luxembourg ou Pays-Bas avec leurs régimes IP-box (taux IS effectif réduit ~5-9% sous BEPS 5).';
+    }
+    return 'Recommandation à affiner avec juriste fiscaliste international + audit BEPS/ATAD.';
+  })();
+
+  return {
+    type_actif: typeActif,
+    valeur_participation: valeurParticipation,
+    juridictions: grilles,
+    recommandation,
+    avertissement: 'Comparatif indicatif. Une décision de structuration internationale doit être validée par un juriste fiscaliste, en tenant compte de la substance économique exigée (BEPS, ATAD, convention bilatérale, GAAR).',
+    sources: 'CGI 145, 219 I a quinquies (FR) · LIR 166 (LUX) · LIFD 69 (CH) · Wet Vpb (NL) · Modèle OCDE',
+  };
+}
+
+// ──────────────────────────────────────────────────────────────
+// Forfait fiscal Suisse — imposition d'après la dépense
+// Loi sur l'imposition d'après la dépense (LFID 2014, applicable 2016+)
+// ──────────────────────────────────────────────────────────────
+const CANTONS_FORFAIT = {
+  // Cantons qui acceptent encore le forfait (depuis 2016)
+  vd: { label: 'Vaud', taux_eff_estime: 0.32, dispo: true, min_chf: 415000 },
+  vs: { label: 'Valais', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
+  ge: { label: 'Genève', taux_eff_estime: 0.40, dispo: true, min_chf: 400000 },
+  fr: { label: 'Fribourg', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
+  ti: { label: 'Tessin', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
+  ne: { label: 'Neuchâtel', taux_eff_estime: 0.32, dispo: true, min_chf: 400000 },
+  ju: { label: 'Jura', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
+  be: { label: 'Berne', taux_eff_estime: 0.34, dispo: true, min_chf: 400000 },
+  // Cantons qui ont aboli le forfait
+  zh: { label: 'Zurich', dispo: false, raison: 'Aboli par votation 2009' },
+  bs: { label: 'Bâle-Ville', dispo: false, raison: 'Aboli 2010' },
+  sh: { label: 'Schaffhouse', dispo: false, raison: 'Aboli 2014' },
+  ar: { label: 'Appenzell RE', dispo: false, raison: 'Aboli 2014' },
+};
+
+function calcForfaitSuisse(loyerOuVL, canton = 'vd') {
+  const c = CANTONS_FORFAIT[canton.toLowerCase()];
+  if (!c || !c.dispo) {
+    return {
+      eligible: false,
+      canton: c ? c.label : canton,
+      raison: c ? c.raison : 'Canton inconnu',
+      sources: 'LFID 2014 · Loi sur l\'imposition d\'après la dépense',
+    };
+  }
+
+  // Base imposable : 7× loyer/valeur locative depuis 2016, plancher cantonal
+  const baseFromHousing = loyerOuVL * 7;
+  const baseImposable = Math.max(baseFromHousing, c.min_chf);
+  const impotEstime = Math.round(baseImposable * c.taux_eff_estime);
+
+  return {
+    eligible: true,
+    canton: c.label,
+    base_imposable_chf: Math.round(baseImposable),
+    methode_calcul: `7 × loyer/valeur locative (${Math.round(baseFromHousing).toLocaleString('fr-CH')} CHF) ou plancher cantonal (${c.min_chf.toLocaleString('fr-CH')} CHF) — le plus élevé`,
+    impot_total_estime_chf: impotEstime,
+    taux_effectif_estime_pct: Math.round(c.taux_eff_estime * 100),
+    conditions: 'Non actif en Suisse (pas d\'activité professionnelle CH) · non-résident CH 5 ans précédents · ressortissant non-suisse',
+    note: 'Estimation indicative. Le calcul réel intègre fédéral (taux progressif jusqu\'à 11,5%) + cantonal + communal. Validation par fiscaliste local recommandée.',
+    sources: 'LFID 2014 · LIFD 14 · pratique cantonale ' + c.label,
+  };
+}
+
 function executeTool(name, input) {
   try {
     if (name === 'calc_impot_revenu') {
@@ -394,6 +593,15 @@ function executeTool(name, input) {
     }
     if (name === 'calc_demembrement') {
       return calcDemembrement(+input.valeur_pleine_propriete || 0, +input.age_usufruitier || 0);
+    }
+    if (name === 'calc_exit_tax') {
+      return calcExitTax(+input.valeur_titres || 0, +input.prix_acquisition || 0, input.pays_destination || '', !!input.controle_majoritaire);
+    }
+    if (name === 'compare_holding_jurisdictions') {
+      return compareHoldingJurisdictions(input.type_actif || 'participations_op', +input.valeur_participation || 0, input.actionnaire_resident_fr !== false);
+    }
+    if (name === 'calc_forfait_suisse') {
+      return calcForfaitSuisse(+input.loyer_ou_valeur_locative || 0, input.canton || 'vd');
     }
     return { error: 'Unknown tool: ' + name };
   } catch (e) {
@@ -496,6 +704,57 @@ const THEME_CONTEXTS = {
     "(octobre), Tattersalls (UK). Pension écuries Chantilly/Compiègne 3,2-4,5 k€/mois. Fiscalité : " +
     "SCEA d'élevage (BIC agricole, déductibilité totale charges + amortissements, micro si CA < " +
     "91 900 €), ou détention privée (BNC non-pro accessoire).",
+
+  // ─── DROIT DES AFFAIRES & DROIT DES SOCIÉTÉS ───
+  droit_affaires:
+    "FOCUS DROIT DES AFFAIRES. Tu maîtrises : contrats commerciaux (clauses essentielles, " +
+    "limitation de responsabilité, force majeure), distribution (concession, franchise, agence " +
+    "commerciale CGI L134-1), propriété intellectuelle (marques INPI, brevets, dessins, droit " +
+    "d'auteur logiciel CPI L113-9), restructuring (mandat ad hoc, conciliation, sauvegarde Code " +
+    "de commerce L611 et suivants), procédures collectives. Cite le Code de commerce et le CPI.",
+  droit_societes:
+    "FOCUS DROIT DES SOCIÉTÉS. Tu maîtrises : choix de la forme sociale (SARL / SAS / SA / SCI " +
+    "/ SNC / SCP), constitution (apports en numéraire / nature / industrie, libération du capital), " +
+    "gouvernance (direction, conseil, AG ordinaire/extraordinaire), pactes d'actionnaires (clauses " +
+    "leaver, drag-along, tag-along, anti-dilution, préemption, non-concurrence), opérations sur " +
+    "capital (augmentation, réduction, fusion-absorption, scission, apport partiel), transmission " +
+    "(donation parts/actions, holding apport CGI 150-0 B ter, Dutreil CGI 787 B). Cite le Code de " +
+    "commerce L210 et suivants.",
+
+  // ─── DROIT INTERNATIONAL — JURIDICTIONS ───
+  international_lux:
+    "FOCUS INTERNATIONAL — LUXEMBOURG. Tu maîtrises : SOPARFI (société de participations " +
+    "financières — exonération PV cession + dividendes à 95%/100% sous conditions LIR art. 166), " +
+    "SCA (société en commandite par actions — gouvernance familiale), RAIF (Reserved Alternative " +
+    "Investment Fund — fonds réservé professionnels, 0% IS sous conditions), SICAR, Family Wealth " +
+    "Management. Convention fiscale FR-LUX 1958 modifiée 2018 (élimine résidence Luxembourg passive). " +
+    "Cite legilux.public.lu et la convention bilatérale.",
+  international_ch:
+    "FOCUS INTERNATIONAL — SUISSE. Tu maîtrises : forfait fiscal (résidence fiscale calculée sur " +
+    "5-7× valeur locative ou loyer payé — réservé non-actifs en CH, non-résidents 5 ans précédents, " +
+    "conditions cantonales : Vaud, Valais, Genève via accords), Sàrl + SA suisses (impôt fédéral 8,5% " +
+    "+ cantonal/communal 10-22%), résidence fiscale CH (présence > 90 j sans activité ou 30 j avec), " +
+    "AVS et Pillar 3a, trust-equivalent CH (fondation de famille). Convention fiscale FR-CH 1966 " +
+    "modifiée 2014 — taxation des fonctions à éviter pour les frontaliers. Cite admin.ch/fedlex.",
+  international_uk:
+    "FOCUS INTERNATIONAL — ROYAUME-UNI. Tu maîtrises : non-dom status (résident UK non-domicilié — " +
+    "règle des 15 ans de résidence depuis 2017 puis deemed dom, remittance basis taxation), Family " +
+    "Investment Company (FIC — alternative aux trusts post-Inheritance Tax), trust law UK (resident " +
+    "trustee, beneficiary deemed dom), Brexit (libre circulation des capitaux préservée par convention). " +
+    "Convention fiscale FR-UK 2008. Cite gov.uk/government et HMRC.",
+  international_us:
+    "FOCUS INTERNATIONAL — ÉTATS-UNIS. Tu maîtrises : LLC Delaware vs LLC New York (gouvernance, " +
+    "fiscalité passe-partout pour PE), C-Corp vs S-Corp (residency dependent), FATCA (déclaration " +
+    "comptes USA pour résidents fiscaux français — formulaire 8938), exit tax US (covered expatriate " +
+    "test), conventions FR-USA 1994 modifiée 2009 et 2018 (estate tax, dividendes 5/15%, plus-values), " +
+    "trust US et impact en France (transparence fiscale française). Cite irs.gov et le Treasury.",
+  convention_fiscale:
+    "FOCUS CONVENTIONS FISCALES. Tu maîtrises : modèle OCDE (art. 4 résidence, art. 7 entreprise, " +
+    "art. 10 dividendes, art. 11 intérêts, art. 12 redevances, art. 13 plus-values, art. 21 autres " +
+    "revenus, art. 23 méthodes d'élimination — exemption ou crédit d'impôt), tie-breaker rules (foyer " +
+    "permanent → centre des intérêts économiques → résidence habituelle → nationalité). Convention " +
+    "multilatérale BEPS 2017 (MLI) et impacts. Liste des conventions FR : 130+ pays. Cite OCDE et " +
+    "impots.gouv.fr/portail/conventions-fiscales-internationales.",
 };
 
 function getCurrentContext() {
@@ -553,13 +812,16 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - IFI : seuil 1 300 000€ de patrimoine immobilier net, abattement 30% résidence principale (art. 964 CGI)
 
 OUTILS DE CALCUL — UTILISATION OBLIGATOIRE POUR LES CHIFFRES EXACTS :
-Tu as accès à 6 calculateurs déterministes (résultats exacts, sources juridiques incluses) :
+Tu as accès à 9 calculateurs déterministes (résultats exacts, sources juridiques incluses) :
 - **calc_impot_revenu** : IR 2026 (revenu imposable + parts)
 - **calc_droits_succession** : droits de succession ligne directe (patrimoine + enfants + AV avant 70 ans)
 - **calc_donation** : droits de donation parent → enfant (montant + antériorité 15 ans + don familial 31 865€)
 - **calc_ifi** : IFI 2026 (patrimoine immo brut + RP + dettes immo)
 - **calc_plus_value_immo** : PV immobilière de cession + abattements durée détention + surtaxe PV élevée
 - **calc_demembrement** : valeur usufruit / nue-propriété selon barème art. 669 CGI (âge usufruitier)
+- **calc_exit_tax** : exit tax CGI 167 bis pour transfert domicile fiscal hors France (PFU 30% + sursis UE/EEE 6 ans)
+- **compare_holding_jurisdictions** : comparatif fiscal France / Luxembourg SOPARFI / Suisse SA / Pays-Bas BV pour holdings de participations
+- **calc_forfait_suisse** : imposition d'après la dépense (forfait fiscal CH) selon canton — Vaud, Valais, Genève, Tessin, etc.
 
 UTILISE CES OUTILS SYSTÉMATIQUEMENT dès que :
 - L'utilisateur donne ou demande un calcul chiffré (IR, succession, donation, IFI, PV immo, démembrement)
@@ -980,6 +1242,9 @@ export default {
           'calc_ifi',
           'calc_plus_value_immo',
           'calc_demembrement',
+          'calc_exit_tax',
+          'compare_holding_jurisdictions',
+          'calc_forfait_suisse',
         ]);
         const toolUses = (data.content || []).filter(
           b => b.type === 'tool_use' && CLIENT_TOOLS.has(b.name)

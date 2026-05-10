@@ -86,6 +86,41 @@ const PATTERNS = [
     label: m => `LF ${m[1]}`,
     href: m => `${LEGIFRANCE_BASE}?tab_selection=lawarticledecree&searchField=ALL&query=${encodeURIComponent('loi finances ' + m[1])}&searchType=ALL`,
   },
+  // Luxembourg — "LIR art. 166", "LIR 168bis"
+  {
+    name: 'lux_lir',
+    regex: /\bLIR\s+(?:art\.?\s*|article\s+)?(\d+(?:\s*(?:bis|ter|quater))?)\b/gi,
+    label: m => `LIR Luxembourg art. ${m[1].trim()}`,
+    href: m => `https://legilux.public.lu/eli/etat/leg/code/impot_revenu/jo`,
+  },
+  // Suisse — "LIFD 14", "LIFD art. 69", "LFID 2014"
+  {
+    name: 'ch_lifd',
+    regex: /\bLIFD\s+(?:art\.?\s*|article\s+)?(\d+(?:\s*(?:bis|ter))?)\b/gi,
+    label: m => `LIFD Suisse art. ${m[1].trim()}`,
+    href: m => `https://www.fedlex.admin.ch/eli/cc/1991/1184_1184_1184/fr`,
+  },
+  // OCDE — "modèle OCDE art. 4", "convention OCDE 13"
+  {
+    name: 'ocde',
+    regex: /\b(?:mod[èe]le\s+)?OCDE\s+(?:art\.?\s*|article\s+)?(\d+(?:\s*(?:bis|ter))?)\b/gi,
+    label: m => `Modèle OCDE art. ${m[1].trim()}`,
+    href: m => `https://www.oecd.org/fr/fiscalite/conventions/`,
+  },
+  // Convention bilatérale — "convention FR-CH 1966", "FR-LUX 1958", "FR-USA 1994"
+  {
+    name: 'convention_bilat',
+    regex: /\b(?:convention\s+)?FR-([A-Z]{2,3})\s+(\d{4})\b/g,
+    label: m => `Convention FR-${m[1]} ${m[2]}`,
+    href: m => `https://www.impots.gouv.fr/portail/les-conventions-fiscales-internationales`,
+  },
+  // BOFIP-INT (international) - "BOFIP-INT-CVB-LUX"
+  {
+    name: 'bofip_int',
+    regex: /\bBOFIP[-\s]INT[-\s]([A-Z\d\-]+)\b/gi,
+    label: m => `BOFIP-INT-${m[1].toUpperCase()}`,
+    href: m => `${BOFIP_BASE}/recherche?q=${encodeURIComponent('BOFIP-INT-' + m[1].toUpperCase())}`,
+  },
 ];
 
 /**
