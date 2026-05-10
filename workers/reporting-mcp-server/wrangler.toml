@@ -1,0 +1,32 @@
+# IKCP Reporting MCP server — 3e sub-agent IKCP
+# Génère DER, RA, bilan trimestriel PDF (Phase 2 P2)
+
+name = "ikcp-reporting-mcp-server"
+main = "worker.js"
+compatibility_date = "2026-05-09"
+
+[observability]
+enabled = true
+
+# ─── D1 binding (lecture users + dossiers + patrimoine_snapshot, etc.) ───
+[[d1_databases]]
+binding = "DB"
+database_name = "ikcp-client-db"
+database_id = "REMPLACER_PAR_ID_DB"
+
+# ─── R2 binding pour templates HTML ───
+# Créer : wrangler r2 bucket create ikcp-templates
+# Uploader templates : der.html, ra.html, bilan-trim.html, dipa.html
+[[r2_buckets]]
+binding = "TEMPLATES_R2"
+bucket_name = "ikcp-templates"
+
+# ─── R2 binding pour stockage des PDF générés ───
+[[r2_buckets]]
+binding = "DOCS_R2"
+bucket_name = "ikcp-docs-private"
+
+# ─── Secrets à pousser via wrangler ───
+#   wrangler secret put MCP_SHARED_SECRET   (même valeur que les autres workers)
+#   wrangler secret put DOCRAPTOR_API_KEY   (HTML→PDF · https://docraptor.com)
+#   wrangler secret put YOUSIGN_API_KEY     (signature électronique · Phase 2)
