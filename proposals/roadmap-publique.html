@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Roadmap publique · co-construite avec la beta</title>
+<meta name="theme-color" content="#0a0d0b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c;
+  --line: rgba(196,162,115,0.14); --line-strong: rgba(196,162,115,0.32);
+  --ok: #7fae7d; --warn: #d4a85a; --info: #6b9bd1;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+main { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+nav.top { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; max-width: 1080px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+nav .menu { display: flex; gap: 22px; align-items: center; }
+nav a { color: var(--ink-mute); text-decoration: none; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; transition: color 0.25s; }
+nav a:hover { color: var(--gold); }
+
+section.hero { padding: 70px 0 60px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(34px, 5vw, 54px); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 24px; }
+h1 em { font-style: italic; color: var(--gold); }
+.lede { font-size: 16px; color: var(--ink-mute); max-width: 660px; line-height: 1.75; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+.last-update { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+
+section.bloc { padding: 60px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 30px; gap: 24px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; }
+.section-titre { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 28px; line-height: 1.15; letter-spacing: -0.018em; }
+.section-titre em { font-style: italic; color: var(--gold); }
+.section-titre .count { font-size: 16px; color: var(--ink-mute); margin-left: 12px; font-family: 'JetBrains Mono', monospace; }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; }
+
+.items { display: flex; flex-direction: column; gap: 14px; }
+
+.item {
+  display: grid; grid-template-columns: 36px 1fr auto;
+  gap: 18px; align-items: start;
+  padding: 20px 22px;
+  background: var(--bg-2); border: 1px solid var(--line);
+  transition: border-color 0.25s;
+}
+.item:hover { border-color: var(--line-strong); }
+.item-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; line-height: 1; font-weight: 600; }
+
+.item.shipped .item-icon { background: rgba(127,174,125,0.18); color: var(--ok); border: 1px solid rgba(127,174,125,0.5); }
+.item.shipped .item-icon::before { content: '✓'; }
+.item.in-progress .item-icon { background: rgba(212,168,90,0.18); color: var(--warn); border: 1px solid rgba(212,168,90,0.5); }
+.item.in-progress .item-icon::before { content: '●'; }
+.item.next .item-icon { background: rgba(107,155,209,0.16); color: var(--info); border: 1px solid rgba(107,155,209,0.4); }
+.item.next .item-icon::before { content: '→'; }
+.item.backlog .item-icon { background: rgba(196,162,115,0.06); color: var(--ink-faint); border: 1px solid var(--line); }
+.item.backlog .item-icon::before { content: '·'; font-size: 18px; }
+
+.item-content { min-width: 0; }
+.item-titre { font-size: 15px; color: var(--ink); margin-bottom: 6px; font-weight: 500; }
+.item-titre em { font-style: italic; color: var(--gold); font-weight: 400; }
+.item-desc { font-size: 13px; color: var(--ink-mute); line-height: 1.55; margin-bottom: 8px; }
+.item-meta { font-size: 11px; color: var(--ink-faint); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.item-meta strong { color: var(--gold-bright); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.item-source-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
+  padding: 2px 8px; border: 1px solid var(--line); color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+.item-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.vote-btn {
+  background: transparent; border: 1px solid var(--line);
+  color: var(--ink-mute); padding: 6px 12px;
+  font-size: 11px; cursor: pointer; transition: all 0.2s;
+  font-family: 'Inter', sans-serif; min-width: 70px; text-align: center;
+}
+.vote-btn:hover { border-color: var(--gold); color: var(--gold); }
+.vote-btn.voted { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+.vote-count { font-size: 11px; color: var(--gold); font-family: 'JetBrains Mono', monospace; }
+
+.legend { display: flex; gap: 24px; flex-wrap: wrap; padding: 20px 24px; background: rgba(196,162,115,0.04); border: 1px solid var(--line); margin-bottom: 36px; font-size: 12px; color: var(--ink-mute); }
+.legend > div { display: flex; gap: 8px; align-items: center; }
+.legend .item-icon { width: 18px; height: 18px; font-size: 10px; }
+
+.beta-cta { padding: 32px 28px; background: rgba(196,162,115,0.04); border-left: 2px solid var(--gold); margin: 28px 0; font-size: 14px; line-height: 1.7; color: var(--ink); }
+.beta-cta strong { color: var(--gold); font-weight: 500; }
+.beta-cta a { color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--gold); }
+
+footer { text-align: center; font-size: 11px; color: var(--ink-faint); padding: 32px; border-top: 1px solid var(--line); }
+footer a { color: var(--gold); text-decoration: none; }
+
+@media (max-width: 720px) {
+  main, nav.top { padding-left: 18px !important; padding-right: 18px !important; }
+  .item { grid-template-columns: 28px 1fr; gap: 12px; padding: 16px; }
+  .item-actions { grid-column: 1 / -1; flex-direction: row; justify-content: flex-end; align-items: center; gap: 12px; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand">IKCP<b>.</b></div>
+  <div class="menu">
+    <a href="./espaces-fo.html">Espaces</a>
+    <a href="./landing-beta-dirigeants.html">Beta</a>
+    <a href="mailto:beta@ikcp.fr?subject=Suggestion%20feature%20IKCP">Proposer</a>
+  </div>
+</nav>
+
+<main>
+
+<section class="hero">
+  <div class="eyebrow">— Roadmap publique · transparence beta</div>
+  <h1>Co-construite avec <em>vous</em>.<br>Toujours <em>visible</em>.</h1>
+  <p class="lede">
+    Voici ce qu'on a livré, ce qu'on construit, ce qui arrive ensuite.
+    <em>Sans cachotteries.</em> Cette page est mise à jour chaque vendredi
+    après notre release hebdomadaire. Les beta-testeurs peuvent voter pour
+    prioriser les features candidates.
+  </p>
+  <div class="last-update">
+    <span>Dernière mise à jour : <strong style="color:var(--gold);">9 mai 2026</strong> · prochaine release vendredi 16 mai</span>
+    <a href="mailto:beta@ikcp.fr?subject=Suggestion%20feature" style="color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold);">Proposer une feature →</a>
+  </div>
+</section>
+
+<div style="padding-top: 30px;">
+<div class="legend">
+  <div><span class="item-icon" style="background: rgba(127,174,125,0.18); color: var(--ok); border: 1px solid rgba(127,174,125,0.5);">✓</span> Shipped — en production</div>
+  <div><span class="item-icon" style="background: rgba(212,168,90,0.18); color: var(--warn); border: 1px solid rgba(212,168,90,0.5);">●</span> In progress — cette semaine</div>
+  <div><span class="item-icon" style="background: rgba(107,155,209,0.16); color: var(--info); border: 1px solid rgba(107,155,209,0.4);">→</span> Next — votes ouverts</div>
+  <div><span class="item-icon" style="background: rgba(196,162,115,0.06); color: var(--ink-faint); border: 1px solid var(--line);">·</span> Backlog — Phase 2-3</div>
+</div>
+</div>
+
+<!-- SHIPPED -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— Shipped <span class="count">12 features</span></div>
+      <h2 class="section-titre">En <em>production</em>.</h2>
+    </div>
+    <div class="section-meta">depuis le lancement IKCP v3</div>
+  </div>
+
+  <div class="items">
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Marcel orchestrateur — chat IA patrimonial 24/7</div>
+        <div class="item-desc">Assistant conversationnel · 9 tools déterministes · 25 contextes thématiques · web search natif · prompt caching MIF II</div>
+        <div class="item-meta"><strong>v2 · live</strong> · <span class="item-source-tag">workers/ikcp-marcel</span></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Sources cliquables (CGI / BOFIP / conventions)</div>
+        <div class="item-desc">Toute mention CGI 779 I, BOFIP-ENR-DMTG, LIR 166, LIFD 14, etc. devient un lien direct vers Légifrance, BOFIP ou OCDE</div>
+        <div class="item-meta"><strong>13 patterns reconnus</strong> · <span class="item-source-tag">linkify-sources.js</span></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Calculateur économies vs banque privée</div>
+        <div class="item-desc">3 sliders interactifs (AUM, taux, horizon) → coût plate-forme classique vs IKCP avec économies cumulées</div>
+        <div class="item-meta"><strong>Cas type 4 M€ × 0,75% × 10 ans = 232 k€ d'écon.</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Endpoint export RGPD <em>1 clic</em></div>
+        <div class="item-desc">JSON complet horodaté SHA-256 — toutes vos données téléchargeables en 1 clic depuis le dashboard. Argument anti-friction.</div>
+        <div class="item-meta"><strong>GET /api/export/me</strong> · <span class="item-source-tag">workers/ikcp-client</span></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Espace client magic-link</div>
+        <div class="item-desc">Connexion sans mot de passe via email. Sécurité bancaire, friction zéro. Cookie HS256 30 jours.</div>
+        <div class="item-meta"><strong>workers/ikcp-client/auth/*</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Documents-agent (1er sub-agent MCP)</div>
+        <div class="item-desc">OCR + classification automatique parmi 14 types (avis IR, K-bis, acte, AV, releve PEA, etc.) via Anthropic Claude vision</div>
+        <div class="item-meta"><strong>workers/documents-mcp-server</strong> · 3 tools</div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Suivi-agent (2e sub-agent MCP) — cron rappels J-8</div>
+        <div class="item-desc">Cron daily 7h UTC : scan échéances J+8 → email Resend automatique. Cron monthly : drift allocation → arbitrages préparés Maxime</div>
+        <div class="item-meta"><strong>workers/suivi-mcp-server</strong> · 4 tools</div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Système beta codes + redeem</div>
+        <div class="item-desc">Format BETA-FAMI-XXXX-YYYY · validation HMAC + magic-link automatique · audit log · 50 codes générés</div>
+        <div class="item-meta"><strong>POST /auth/beta-redeem</strong> · table D1 beta_codes</div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">PWA installable iOS + Android + desktop</div>
+        <div class="item-desc">Manifest + service worker + meta apple · banner installation auto avec gestion beforeinstallprompt + iOS</div>
+        <div class="item-meta"><strong>1 clic depuis le navigateur</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Mentions légales + CGU + politique cookies + banner consent</div>
+        <div class="item-desc">RGPD-compliant · cookies banner avec refuser aussi visible que accepter (CNIL) · politique 13 mois</div>
+        <div class="item-meta"><strong>proposals/legal/*</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Charte beta-tester complète RGPD</div>
+        <div class="item-desc">10 sections juridiques · droits art. 15-22 · sous-traitants listés (Cloudflare EU, Anthropic DPA, Resend, Notion) · acceptation tracée</div>
+        <div class="item-meta"><strong>docs/CHARTE-BETA-TESTER.md</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item shipped">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Expertise internationale (Lux, CH, UK, USA, OCDE)</div>
+        <div class="item-desc">7 contextes Marcel · 3 calculateurs internationaux (exit tax, holding compare, forfait suisse) · linkify Lux/CH/OCDE</div>
+        <div class="item-meta"><strong>workers/ikcp-marcel/THEME_CONTEXTS</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+  </div>
+</section>
+
+<!-- IN PROGRESS -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— In progress <span class="count">3 features</span></div>
+      <h2 class="section-titre"><em>Cette semaine</em>.</h2>
+    </div>
+    <div class="section-meta">release vendredi 16 mai</div>
+  </div>
+
+  <div class="items">
+    <div class="item in-progress">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Reporting-agent (3e sub-agent MCP) — DER / RA / bilan PDF auto</div>
+        <div class="item-desc">Génération DER MIF II · Rapport d'Adéquation · bilan trimestriel 18 pages. Templates HTML R2 + DocRaptor + signature Yousign Phase 2</div>
+        <div class="item-meta"><strong>prototype S+1</strong> · <span class="item-source-tag">workers/reporting-mcp-server</span></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item in-progress">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Dashboard admin Maxime · suivi cohorte 1</div>
+        <div class="item-desc">Suivi codes émis/redeemés · KPIs activation · file arbitrages en attente · alertes opérationnelles · journal agents</div>
+        <div class="item-meta"><strong>v0 mock data, Phase 2 D1</strong> · <span class="item-source-tag">proposals/admin-dashboard</span></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item in-progress">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Branchement D1 réel dans le dashboard membre</div>
+        <div class="item-desc">Migration des mocks Famille Dupont vers GET /api/dashboard/me (déjà codé) · onboarding wizard 5 étapes</div>
+        <div class="item-meta"><strong>Schema D1 ready · UI à câbler</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— Next <span class="count">7 candidates · votes ouverts</span></div>
+      <h2 class="section-titre"><em>Votez</em> ce que nous devons prioriser.</h2>
+    </div>
+    <div class="section-meta">les beta-testeurs votent · les votes décident l'ordre</div>
+  </div>
+
+  <div class="items" id="candidates-list">
+    <div class="item next" data-id="cand-1">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Notifications push Web (VAPID)</div>
+        <div class="item-desc">Recevoir les rappels J-8 directement sur votre téléphone (PWA installée) en plus de l'email</div>
+        <div class="item-meta"><strong>2 sem dev</strong> · suggéré par 4 beta-testeurs</div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-1">👍 Voter</button>
+        <span class="vote-count" data-count="cand-1">14 votes</span>
+      </div>
+    </div>
+
+    <div class="item next" data-id="cand-2">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Sub-comptes enfants <em>liés</em> · vues différenciées</div>
+        <div class="item-desc">Emma + Thomas voient leurs propres modules NextGen + ce que les parents ont validé. Permissions ajustables par les parents.</div>
+        <div class="item-meta"><strong>3-4 sem dev</strong> · cœur du parcours NextGen</div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-2">👍 Voter</button>
+        <span class="vote-count" data-count="cand-2">12 votes</span>
+      </div>
+    </div>
+
+    <div class="item next" data-id="cand-3">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Mode collaboratif annotations sur pacte d'actionnaires</div>
+        <div class="item-desc">Annoter le pacte d'associés en famille · commentaires partagés · Marcel répond inline 24/7 · CR conseil de famille auto</div>
+        <div class="item-meta"><strong>4-5 sem dev</strong></div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-3">👍 Voter</button>
+        <span class="vote-count" data-count="cand-3">9 votes</span>
+      </div>
+    </div>
+
+    <div class="item next" data-id="cand-4">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Onboarding pré-rempli depuis SIREN (Pappers)</div>
+        <div class="item-desc">Saisir un SIREN → autocomplete forme société + dirigeants + K-bis + bilans 3 ans · gain de 5-10 min onboarding</div>
+        <div class="item-meta"><strong>1 sem dev</strong> · API Pappers (~99 €/mois)</div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-4">👍 Voter</button>
+        <span class="vote-count" data-count="cand-4">8 votes</span>
+      </div>
+    </div>
+
+    <div class="item next" data-id="cand-5">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Stripe checkout pour TPE 200 €/mois</div>
+        <div class="item-desc">Souscription self-service de la formule Essentiel TPE (sans cadrage Maxime obligatoire) · post-beta</div>
+        <div class="item-meta"><strong>3 j dev</strong></div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-5">👍 Voter</button>
+        <span class="vote-count" data-count="cand-5">7 votes</span>
+      </div>
+    </div>
+
+    <div class="item next" data-id="cand-6">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Sub-agent <em>art-mcp</em> (Artprice + Christie's pré-vente)</div>
+        <div class="item-desc">Estimation d'œuvre · alertes pré-vente · structuration patrimoine art > 1 M€ via SC ou fondation</div>
+        <div class="item-meta"><strong>2-3 sem dev</strong> · API Artprice (premium)</div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-6">👍 Voter</button>
+        <span class="vote-count" data-count="cand-6">5 votes</span>
+      </div>
+    </div>
+
+    <div class="item next" data-id="cand-7">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Multilingue UI (EN/DE/IT) pour clients internationaux</div>
+        <div class="item-desc">Internationalisation de l'interface (Marcel le gère déjà) · cible frontaliers Suisse/Lux + expat</div>
+        <div class="item-meta"><strong>3-4 sem dev</strong> · 18 k€ Phase 2</div>
+      </div>
+      <div class="item-actions">
+        <button class="vote-btn" data-vote="cand-7">👍 Voter</button>
+        <span class="vote-count" data-count="cand-7">4 votes</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BETA CTA -->
+<section style="padding: 40px 0;">
+<div class="beta-cta">
+  <strong>Vous voulez voter ?</strong> Les beta-testeurs ont 1 vote par feature. Vous avez le pouvoir de décider quoi
+  arrive en premier. <a href="./landing-beta-dirigeants.html#beta">Demander un code beta</a> ou écrire à
+  <a href="mailto:beta@ikcp.fr?subject=Suggestion%20feature%20IKCP">beta@ikcp.fr</a> avec votre suggestion. Toute
+  proposition pertinente est ajoutée à la liste avec votre attribution (anonymisée si vous préférez).
+</div>
+</section>
+
+<!-- BACKLOG -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— Backlog <span class="count">Phase 2-3</span></div>
+      <h2 class="section-titre"><em>Plus tard</em>. Mais sur la liste.</h2>
+    </div>
+    <div class="section-meta">post-beta · S+24+</div>
+  </div>
+
+  <div class="items">
+    <div class="item backlog">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Juridique-agent + RAG Légifrance complet</div>
+        <div class="item-desc">Sub-agent avec Vectorize sur corpus juridique français · lecture d'actes · jurisprudence Cass. com.</div>
+        <div class="item-meta"><strong>Phase 2 P3</strong> · 28 k€ + service Node Fly EU</div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item backlog">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Sub-agents univers · vins · voitures · montres · yachts · chevaux</div>
+        <div class="item-desc">Liv-ex · Hagerty · Chrono24 · Yatco · Goffs · alertes pré-vente · estimations en temps réel</div>
+        <div class="item-meta"><strong>2-3 sem chacun · 8-18 k€</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item backlog">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">App mobile native iOS / Android</div>
+        <div class="item-desc">Au-delà PWA installable — apps natives App Store + Play Store · biométrie · push avancées · mode hors-ligne profond</div>
+        <div class="item-meta"><strong>6-8 sem dev · 35 k€</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item backlog">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Connexion banque privée (Open Banking AISP)</div>
+        <div class="item-desc">Agrégation comptes bancaires + AV via Powens / Bridge / Tink · auto-update patrimoine sans saisie</div>
+        <div class="item-meta"><strong>Phase 3</strong> · agrément AISP + Powens ~150 €/mois</div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+    <div class="item backlog">
+      <div class="item-icon"></div>
+      <div class="item-content">
+        <div class="item-titre">Bespoke white-label · création FO marque cabinet partenaire</div>
+        <div class="item-desc">Pour CGP / notaires / avocats : créer leur FO digital à leur identité · dès 65 k€ setup + 24 k€/an</div>
+        <div class="item-meta"><strong>B2B Phase 3</strong></div>
+      </div>
+      <div class="item-actions"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding: 40px 0; text-align: center;">
+<p style="font-size: 12.5px; color: var(--ink-mute); max-width: 660px; margin: 0 auto; line-height: 1.7;">
+  <em style="font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold);">Une feature manquante ?</em>
+  Écrivez-nous · ajout dans la liste sous 48 h · vote ouvert dès le vendredi suivant.
+</p>
+</section>
+
+</main>
+
+<footer>
+Roadmap publique · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+Mise à jour hebdo (vendredi) · transparence beta totale<br>
+<a href="./landing-beta-dirigeants.html">Beta</a> · <a href="./espaces-fo.html">Espaces</a> · <a href="../index.html">Site</a>
+</footer>
+
+<script>
+// Système de votes léger (localStorage en Phase 1, D1 Phase 2)
+const VOTES_KEY = 'ikcp_roadmap_votes_v1';
+function getVotes() { try { return JSON.parse(localStorage.getItem(VOTES_KEY) || '{}'); } catch { return {}; } }
+function setVotes(v) { localStorage.setItem(VOTES_KEY, JSON.stringify(v)); }
+
+document.querySelectorAll('.vote-btn').forEach(btn => {
+  const id = btn.dataset.vote;
+  const votes = getVotes();
+  if (votes[id]) {
+    btn.classList.add('voted');
+    btn.textContent = '✓ Voté';
+  }
+  btn.addEventListener('click', () => {
+    const v = getVotes();
+    v[id] = !v[id];
+    setVotes(v);
+    btn.classList.toggle('voted');
+    btn.textContent = v[id] ? '✓ Voté' : '👍 Voter';
+    // En Phase 2 : POST /api/roadmap/vote (auth requis pour les beta-testeurs)
+  });
+});
+</script>
+
+</body>
+</html>

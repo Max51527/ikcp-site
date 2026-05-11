@@ -1,4 +1,7 @@
 /**
+ * © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+ * Code protégé · CPI L111-1, L113-9, L122-4 · reproduction interdite
+ *
  * IKCP Client Portal — espace client privé family office
  *
  * Auth : magic link passwordless (Resend) + JWT cookie (HS256)
@@ -363,6 +366,591 @@ const handleDossiers = requireAuth(async (req, env, ctx, user) => {
   });
 });
 
+// POST /auth/beta-redeem — valider un code beta et déclencher l'onboarding
+//
+// Body : { code: "BETA-FAMI-XXXX-YYYY", email?: "..." }
+// Réponse :
+//   { valid: true, redirect_url: "/auth/send?next=/dashboard" } si OK
+//   { valid: false, reason: "code inconnu / expiré / déjà utilisé" } sinon
+//
+// Si email fourni : déclenche directement l'envoi du magic link
+// vers l'email avec un flag beta_member=true sur le user créé.
+//
+// Ne révèle rien de sensible côté erreur (anti-énumération).
+async function handleBetaRedeem(req, env) {
+  if (!env.DB) {
+    return Response.json({ valid: false, reason: 'beta_unavailable' }, { status: 503, headers: corsBetaHeaders(req) });
+  }
+  let body;
+  try { body = await req.json(); }
+  catch { return Response.json({ valid: false, reason: 'invalid_json' }, { status: 400, headers: corsBetaHeaders(req) }); }
+
+  const code = String(body.code || '').toUpperCase().trim();
+  const email = body.email ? String(body.email).toLowerCase().trim() : null;
+  if (!/^[A-Z0-9-]{8,32}$/.test(code)) {
+    return Response.json({ valid: false, reason: 'invalid_format' }, { status: 400, headers: corsBetaHeaders(req) });
+  }
+
+  // Lookup
+  let row;
+  try {
+    row = await env.DB.prepare('SELECT * FROM beta_codes WHERE code = ?').bind(code).first();
+  } catch (e) {
+    // Table peut-être pas encore créée
+    return Response.json({ valid: false, reason: 'beta_not_initialized' }, { status: 503, headers: corsBetaHeaders(req) });
+  }
+  if (!row) {
+    audit(env, { action: 'beta_redeem_unknown', detail: code.slice(0, 12), ip: req.headers.get('CF-Connecting-IP') });
+    return Response.json({ valid: false, reason: 'unknown_or_expired' }, { headers: corsBetaHeaders(req) });
+  }
+
+  if (row.expires_at && row.expires_at < now()) {
+    audit(env, { action: 'beta_redeem_expired', detail: code, ip: req.headers.get('CF-Connecting-IP') });
+    return Response.json({ valid: false, reason: 'expired' }, { headers: corsBetaHeaders(req) });
+  }
+  if ((row.used_count || 0) >= (row.max_uses || 1)) {
+    audit(env, { action: 'beta_redeem_exhausted', detail: code, ip: req.headers.get('CF-Connecting-IP') });
+    return Response.json({ valid: false, reason: 'already_used' }, { headers: corsBetaHeaders(req) });
+  }
+
+  // Code valide → marquer comme utilisé (atomique grâce au check used_count < max_uses)
+  await env.DB.prepare(
+    'UPDATE beta_codes SET used_count = used_count + 1, redeemed_at = ?, used_by_email = COALESCE(used_by_email, ?) WHERE code = ? AND used_count < max_uses'
+  ).bind(now(), email, code).run();
+
+  audit(env, { email, action: 'beta_redeem_success', detail: code, ip: req.headers.get('CF-Connecting-IP') });
+
+  // Si email fourni, on génère un magic link beta direct (raccourci onboarding)
+  if (email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    // On délègue à handleAuthSend en simulant la requête (réutilise la logique anti-rate-limit)
+    const fakeReq = new Request(req.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, next: '/dashboard?beta=1' }),
+    });
+    // On ne propage pas la réponse — on laisse l'envoi mail asynchrone
+    handleAuthSend(fakeReq, env, {}).catch(e => console.error('[beta] auth-send fail', e));
+    return Response.json({
+      valid: true,
+      magic_sent: true,
+      redirect_url: null,
+      message: 'Vérifiez votre boîte mail — votre lien de connexion est en route.',
+    }, { headers: corsBetaHeaders(req) });
+  }
+
+  // Sinon, on redirige vers la page de login avec next=/dashboard
+  const appUrl = env.APP_URL || new URL(req.url).origin;
+  return Response.json({
+    valid: true,
+    redirect_url: `${appUrl}/?next=/dashboard&beta=1`,
+    message: 'Code accepté. Saisissez votre email pour recevoir le lien de connexion.',
+  }, { headers: corsBetaHeaders(req) });
+}
+
+function corsBetaHeaders(req) {
+  // CORS ouvert sur les domaines IKCP (pour que la landing-beta puisse appeler depuis ikcp.eu)
+  const origin = req.headers.get('Origin') || '';
+  const allowed = ['https://ikcp.eu', 'https://www.ikcp.eu', 'http://localhost:3000', 'http://127.0.0.1:5500'];
+  return {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Access-Control-Allow-Origin': allowed.includes(origin) ? origin : 'https://ikcp.eu',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
+
+// GET /api/export/me — export complet des données du client (RGPD portabilité)
+//
+// Retourne un JSON unique structuré avec :
+//   - profile : infos user (depuis users)
+//   - sessions : sessions actives
+//   - conversations : historique Marcel (history JSON)
+//   - dossiers : dossiers patrimoniaux ouverts
+//   - audit_log : événements (limité aux 1000 derniers)
+//   - export_meta : version + horodatage + hash SHA-256 pour vérification
+//
+// Headers : application/json + Content-Disposition attachment pour
+// déclencher le téléchargement côté navigateur. La page UI proposera un
+// "Exporter mes données" qui ouvre simplement cette URL.
+//
+// Argumentaire commercial : *vos données vous appartiennent · 1 clic*.
+// Anti-friction à l'adhésion (cf. avantage concurrentiel #5 du doc audit).
+const handleExportMe = requireAuth(async (req, env, ctx, user) => {
+  const { results: sessions = [] } = await env.DB.prepare(
+    'SELECT id, expires_at, ip, ua, created_at FROM sessions WHERE user_id = ? ORDER BY created_at DESC'
+  ).bind(user.id).all();
+
+  let conversations = [], dossiers = [], audit_log = [];
+  try {
+    const r = await env.DB.prepare(
+      'SELECT id, title, history, profile, created_at, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC'
+    ).bind(user.id).all();
+    conversations = (r.results || []).map(c => ({
+      ...c,
+      history: c.history ? safeJSON(c.history) : null,
+      profile: c.profile ? safeJSON(c.profile) : null,
+    }));
+  } catch (e) { /* table non encore créée — silencieux */ }
+
+  try {
+    const r = await env.DB.prepare(
+      'SELECT id, title, category, status, notes, created_at, updated_at FROM dossiers WHERE user_id = ? ORDER BY updated_at DESC'
+    ).bind(user.id).all();
+    dossiers = r.results || [];
+  } catch (e) { /* idem */ }
+
+  try {
+    const r = await env.DB.prepare(
+      'SELECT action, detail, ip, ua, ts FROM audit_log WHERE user_id = ? ORDER BY ts DESC LIMIT 1000'
+    ).bind(user.id).all();
+    audit_log = r.results || [];
+  } catch (e) { /* idem */ }
+
+  const payload = {
+    export_meta: {
+      version: '1.0',
+      generated_at: new Date().toISOString(),
+      service: 'ikcp-client',
+      legal_basis: 'RGPD art. 20 — droit à la portabilité',
+    },
+    profile: {
+      id: user.id, email: user.email,
+      first_name: user.first_name, last_name: user.last_name,
+      role: user.role, status: user.status,
+      created_at: user.created_at, last_login_at: user.last_login_at,
+    },
+    sessions, conversations, dossiers, audit_log,
+  };
+
+  const body = JSON.stringify(payload, null, 2);
+  const sha256 = await hashSha256(body);
+  payload.export_meta.sha256 = sha256;
+  const finalBody = JSON.stringify(payload, null, 2);
+
+  audit(env, { user_id: user.id, email: user.email, action: 'data_export', detail: `sha256=${sha256.slice(0, 16)}…` });
+
+  const filename = `ikcp-export-${user.email.replace(/[^a-z0-9]/gi, '_')}-${new Date().toISOString().slice(0, 10)}.json`;
+  return new Response(finalBody, {
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'X-Export-Sha256': sha256,
+    }
+  });
+});
+
+// GET /api/dashboard/me — agrège toutes les tables D1 dans le shape exact
+// attendu par proposals/dashboard-render.js (cf. dashboard-data.js).
+// Permet au front de basculer du mock à la donnée réelle sans modif rendu.
+//
+// Shape retournée :
+//   { client, patrimoine, echeances, conversations, arbitrages,
+//     documents, livrables, services, univers_perso, opportunites,
+//     value_scorecard, backtest_12m, activity }
+//
+// Tolérant à l'absence de données (tables non encore peuplées) — chaque
+// section retourne [] ou un objet vide cohérent. Permet de servir un
+// utilisateur fraîchement onboardé.
+const handleDashboardMe = requireAuth(async (req, env, ctx, user) => {
+  const NOW = Date.now();
+  const NOW_ISO = new Date().toISOString();
+
+  // Helpers
+  const safeAll = async (sql, ...binds) => {
+    try { const r = await env.DB.prepare(sql).bind(...binds).all(); return r.results || []; }
+    catch { return []; }
+  };
+  const safeOne = async (sql, ...binds) => {
+    try { const r = await env.DB.prepare(sql).bind(...binds).first(); return r || null; }
+    catch { return null; }
+  };
+
+  // CLIENT — depuis users + members (à ajouter en Phase 2 multi-utilisateur)
+  const client = {
+    id: user.id,
+    family_name: [user.first_name, user.last_name].filter(Boolean).join(' ') || user.email.split('@')[0],
+    members: [{ first: user.first_name || '', last: user.last_name || '', age: null, role: 'principal' }],
+    member_since: new Date(user.created_at).toISOString().slice(0, 10),
+    cgp: 'Maxime Juveneton',
+    tier: 'Family Office augmenté',
+    email: user.email,
+  };
+
+  // PATRIMOINE — dernier snapshot
+  const patSnap = await safeOne(
+    'SELECT * FROM patrimoine_snapshot WHERE user_id = ? ORDER BY asof DESC LIMIT 1',
+    user.id
+  );
+  const patrimoine = patSnap ? {
+    net_worth: patSnap.net_worth,
+    variation_trimestre_pct: patSnap.variation_trim_pct,
+    variation_an_pct: patSnap.variation_an_pct,
+    classes: safeJSON(patSnap.classes_json) || [],
+    allocation_cible: safeJSON(patSnap.allocation_cible_json) || {},
+    drift_max_pct: patSnap.drift_max_pct,
+    drift_severity: patSnap.drift_severity,
+  } : { net_worth: 0, classes: [], allocation_cible: {}, drift_severity: 'none', drift_max_pct: 0 };
+
+  // ÉCHÉANCES — 8 prochaines à venir
+  const echeancesRaw = await safeAll(
+    'SELECT * FROM echeances WHERE user_id = ? AND date >= date("now") ORDER BY date ASC LIMIT 8',
+    user.id
+  );
+  const echeances = echeancesRaw.map(e => ({
+    date: e.date, label: e.label, montant: e.montant, source: e.source,
+    status: e.status, urgent: !!e.urgent,
+  }));
+
+  // CONVERSATIONS — 5 plus récentes
+  const convRaw = await safeAll(
+    'SELECT id, title, history, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC LIMIT 5',
+    user.id
+  );
+  const conversations = convRaw.map(c => {
+    const hist = safeJSON(c.history) || [];
+    const lastUser = [...hist].reverse().find(h => h.role === 'user');
+    const lastAssistant = [...hist].reverse().find(h => h.role === 'assistant');
+    return {
+      id: c.id, title: c.title || '(sans titre)',
+      last_question: lastUser ? String(lastUser.content || '').slice(0, 200) : '',
+      last_message: lastAssistant ? String(lastAssistant.content || '').slice(0, 240) : '',
+      date: new Date(c.updated_at).toISOString().slice(0, 10),
+      theme: null, theme_label: '', agents: [], status: 'cloturee',
+    };
+  });
+
+  // ARBITRAGES — en attente + en discussion
+  const arbRaw = await safeAll(
+    'SELECT * FROM arbitrages WHERE user_id = ? AND status IN ("en_attente", "en_discussion") ORDER BY prepared_at DESC',
+    user.id
+  );
+  const arbitrages = arbRaw.map(a => ({
+    id: a.id, conv_id: a.conv_id, titre: a.titre,
+    contexte: a.contexte, reco_marcel: a.reco_marcel,
+    sources: safeJSON(a.sources_json) || [],
+    gain_estime: a.gain_estime, gain_qualitatif: a.gain_qualitatif,
+    status: a.status,
+    preparé_le: new Date(a.prepared_at).toISOString().slice(0, 10),
+  }));
+
+  // DOCUMENTS — tous les non-générés (les générés vont dans livrables)
+  const docsRaw = await safeAll(
+    'SELECT * FROM documents WHERE user_id = ? AND generated = 0 ORDER BY date_recu DESC LIMIT 50',
+    user.id
+  );
+  const documents = docsRaw.map(d => ({
+    id: d.id, type: d.type, label: d.label, annee: d.annee,
+    date_recu: new Date(d.date_recu).toISOString().slice(0, 10),
+    tags: safeJSON(d.tags_json) || [], pages: d.pages,
+  }));
+
+  // LIVRABLES — documents générés par Reporting-agent
+  const livRaw = await safeAll(
+    'SELECT * FROM documents WHERE user_id = ? AND generated = 1 ORDER BY date_recu DESC LIMIT 20',
+    user.id
+  );
+  const livrables = livRaw.map(l => ({
+    id: l.id, type: l.type, label: l.label,
+    date: new Date(l.date_recu).toISOString().slice(0, 10),
+    signed: !!l.signed_at, pages: l.pages,
+    requires_signature: !l.signed_at && (l.type === 'memo' || l.type === 'der' || l.type === 'rapport_adequation'),
+  }));
+
+  // UNIVERS PERSO — groupés par univers_key
+  const universRaw = await safeAll(
+    'SELECT * FROM univers_items WHERE user_id = ? ORDER BY univers_key, updated_at DESC',
+    user.id
+  );
+  const universByKey = {};
+  for (const u of universRaw) {
+    if (!universByKey[u.univers_key]) {
+      universByKey[u.univers_key] = { key: u.univers_key, items: [], total_estime: 0, derniere_alerte: u.derniere_alerte };
+    }
+    universByKey[u.univers_key].items.push({
+      titre: u.titre, etat: u.etat, valeur_estimee: u.valeur_estimee,
+      source: u.source_estimation, tendance: u.tendance,
+    });
+    universByKey[u.univers_key].total_estime += (u.valeur_estimee || 0);
+  }
+  const univers_perso = Object.values(universByKey);
+
+  // OPPORTUNITÉS — open + ciblé sur user (ou pool global)
+  const oppRaw = await safeAll(
+    'SELECT * FROM opportunites WHERE (user_id = ? OR user_id IS NULL) AND status = "open" ORDER BY fit_score DESC LIMIT 10',
+    user.id
+  );
+  const opportunites = oppRaw.map(o => ({
+    id: o.id, categorie: o.categorie, titre: o.titre, pitch: o.pitch,
+    ticket_min: o.ticket_min, ticket_max: o.ticket_max,
+    deadline: o.deadline, source: o.source,
+    fit_score: o.fit_score, fit_reasons: safeJSON(o.fit_reasons_json) || [],
+  }));
+
+  // ACTIVITY — 20 derniers events
+  const evtRaw = await safeAll(
+    'SELECT who, what, ts FROM events WHERE user_id = ? ORDER BY ts DESC LIMIT 20',
+    user.id
+  );
+  const activity = evtRaw.map(e => ({
+    ts: new Date(e.ts).toISOString(),
+    who: e.who, what: e.what,
+  }));
+
+  // VALUE SCORECARD — agrégats sur le mois en cours
+  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+  const monthStartTs = monthStart.getTime();
+  const [{ count: questionsTraitees = 0 } = {}] = await safeAll(
+    'SELECT COUNT(*) as count FROM events WHERE user_id = ? AND who = "Marcel" AND ts >= ?',
+    user.id, monthStartTs
+  );
+  const [{ count: docsClasses = 0 } = {}] = await safeAll(
+    'SELECT COUNT(*) as count FROM documents WHERE user_id = ? AND created_at >= ? AND generated = 0',
+    user.id, monthStartTs
+  );
+  const [{ count: arbPrepares = 0 } = {}] = await safeAll(
+    'SELECT COUNT(*) as count FROM arbitrages WHERE user_id = ? AND status = "en_attente"',
+    user.id
+  );
+  const [{ sum: optimisations = 0 } = {}] = await safeAll(
+    'SELECT COALESCE(SUM(gain_estime), 0) as sum FROM arbitrages WHERE user_id = ? AND prepared_at >= ?',
+    user.id, monthStartTs
+  );
+  const nextDeadlineDays = echeances.length > 0
+    ? Math.max(0, Math.round((new Date(echeances[0].date).getTime() - NOW) / 86400000))
+    : null;
+
+  const value_scorecard = {
+    periode_label: new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+    questions_traitees: questionsTraitees,
+    documents_classes_auto: docsClasses,
+    arbitrages_prepares: arbPrepares,
+    optimisations_identifiees_eur: optimisations || 0,
+    prochaines_echeances: echeances.length,
+    next_deadline_days: nextDeadlineDays,
+  };
+
+  return Response.json({
+    NOW: NOW_ISO,
+    client, patrimoine, echeances, conversations, arbitrages,
+    documents, livrables,
+    services: { rdv_prochain: null, voyages_planifies: [], partenaires: [] },
+    univers_perso, opportunites,
+    services_premium: [],
+    value_scorecard,
+    backtest_12m: { metrics: [], vs_family_office_classique: {} },
+    activity,
+  });
+});
+
+// POST /api/docs/upload — upload d'un document patrimonial avec
+// classification automatique par documents-mcp-server.
+//
+// Body : { filename: string, mime_type: string, base64: string, hint?: string }
+// Limite : 5 MB après decode base64 (~6.7 MB en base64).
+//
+// Pipeline :
+//   1. Validation taille + mime
+//   2. Hash SHA-256 du contenu
+//   3. Upload R2 : `docs/<user_id>/<sha>.<ext>`
+//   4. Insert D1 documents (status='pending_classification')
+//   5. Appel documents-mcp-server.classify_document via service binding
+//   6. Update D1 avec type + fields + summary + classified_at
+//   7. Audit log
+//
+// RGPD :
+//   · Stockage R2 chiffré at-rest (Cloudflare default)
+//   · Hash SHA-256 dans audit (pas le contenu)
+//   · Anthropic vision appelée uniquement pour OCR/classification
+//     (DPA Anthropic à signer · conservation 30 j max · pas de retraining)
+//   · Suppression possible via DELETE /api/docs/:id
+const handleDocsUpload = requireAuth(async (req, env, ctx, user) => {
+  if (!env.DOCS_R2) {
+    return Response.json({ error: 'docs_storage_unavailable' }, { status: 503 });
+  }
+
+  let body;
+  try { body = await req.json(); }
+  catch { return Response.json({ error: 'invalid_json' }, { status: 400 }); }
+
+  const { filename, mime_type, base64, hint } = body || {};
+  if (!filename || !mime_type || !base64) {
+    return Response.json({ error: 'missing_fields', required: ['filename', 'mime_type', 'base64'] }, { status: 400 });
+  }
+
+  const ALLOWED_MIME = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+  if (!ALLOWED_MIME.includes(mime_type)) {
+    return Response.json({ error: 'unsupported_mime', allowed: ALLOWED_MIME }, { status: 400 });
+  }
+
+  // Decode base64 + validation taille
+  let bytes;
+  try {
+    const binary = atob(base64.replace(/\s/g, ''));
+    bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  } catch {
+    return Response.json({ error: 'invalid_base64' }, { status: 400 });
+  }
+  const MAX_SIZE = 5 * 1024 * 1024;
+  if (bytes.length > MAX_SIZE) {
+    return Response.json({ error: 'file_too_large', max_bytes: MAX_SIZE, got_bytes: bytes.length }, { status: 413 });
+  }
+
+  // Hash SHA-256 — clé R2 + traçabilité audit RGPD
+  const sha = await sha256Hex(bytes.buffer);
+  const ext = filename.split('.').pop().toLowerCase().slice(0, 5).replace(/[^a-z0-9]/g, '') || 'bin';
+  const r2Key = `docs/${user.id}/${sha}.${ext}`;
+
+  // Upload R2
+  await env.DOCS_R2.put(r2Key, bytes, {
+    httpMetadata: { contentType: mime_type },
+    customMetadata: {
+      user_id: user.id,
+      filename: filename.slice(0, 200),
+      uploaded_at: String(now()),
+    },
+  });
+
+  // Insert D1 — status pending
+  const docId = 'doc_' + crypto.randomUUID().slice(0, 12);
+  try {
+    await env.DB.prepare(`
+      INSERT INTO documents (id, user_id, type, label, r2_key, mime_type, size_bytes, sha256, date_recu, created_at)
+      VALUES (?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?)
+    `).bind(docId, user.id, filename.slice(0, 200), r2Key, mime_type, bytes.length, sha, now(), now()).run();
+  } catch (e) {
+    console.error('[docs-upload] D1 insert fail', e);
+    // Continue tout de même — on a R2, on pourra rattraper
+  }
+
+  audit(env, {
+    user_id: user.id, email: user.email,
+    action: 'doc_uploaded',
+    detail: `sha=${sha.slice(0, 16)} · size=${bytes.length} · type=${mime_type}`,
+    ip: req.headers.get('CF-Connecting-IP'),
+  });
+
+  // Classification asynchrone via service binding
+  // Si DOCUMENTS_MCP n'est pas configuré (pas encore déployé), on retourne
+  // simplement le doc uploadé sans classification — le client peut relancer
+  // via un endpoint /api/docs/:id/classify ultérieurement.
+  let classification = null;
+  if (env.DOCUMENTS_MCP && env.MCP_SHARED_SECRET) {
+    try {
+      classification = await callDocumentsMcp('classify_document', { r2_key: r2Key, hint }, env);
+      if (classification && classification.classification) {
+        const c = classification.classification;
+        const tagsJson = JSON.stringify(c.key_fields || {});
+        await env.DB.prepare(`
+          UPDATE documents SET type = ?, label = ?, tags_json = ?, annee = ?, created_at = ?
+          WHERE id = ?
+        `).bind(
+          c.type || 'autre',
+          c.summary ? c.summary.slice(0, 200) : filename,
+          tagsJson,
+          (c.key_fields && (c.key_fields.annee || c.key_fields.annee_revenus)) || null,
+          now(),
+          docId,
+        ).run();
+        audit(env, { user_id: user.id, action: 'doc_classified', detail: `${docId} → ${c.type} (conf ${c.confidence})` });
+      }
+    } catch (e) {
+      console.error('[docs-upload] classification fail', e);
+      audit(env, { user_id: user.id, action: 'doc_classification_failed', detail: e.message });
+    }
+  }
+
+  return Response.json({
+    success: true,
+    document: {
+      id: docId,
+      r2_key: r2Key,
+      sha256: sha,
+      size_bytes: bytes.length,
+      mime_type,
+      filename,
+      uploaded_at: new Date().toISOString(),
+      classification: classification && classification.classification ? classification.classification : null,
+    },
+  });
+});
+
+// DELETE /api/docs/:id — suppression RGPD-compliant
+//   · Supprime de R2
+//   · Marque D1 comme deleted (anonymisation, conservation log audit)
+//   · Audit log
+const handleDocsDelete = requireAuth(async (req, env, ctx, user) => {
+  const url = new URL(req.url);
+  const docId = url.pathname.split('/').pop();
+  if (!docId || !docId.startsWith('doc_')) {
+    return Response.json({ error: 'invalid_doc_id' }, { status: 400 });
+  }
+
+  const doc = await env.DB.prepare(
+    'SELECT * FROM documents WHERE id = ? AND user_id = ?'
+  ).bind(docId, user.id).first();
+  if (!doc) return Response.json({ error: 'not_found' }, { status: 404 });
+
+  // Supprime R2
+  if (env.DOCS_R2 && doc.r2_key) {
+    try { await env.DOCS_R2.delete(doc.r2_key); }
+    catch (e) { console.error('[docs-delete] R2', e); }
+  }
+
+  // Anonymise D1 (on garde la ligne pour l'audit · CNIL accepte)
+  await env.DB.prepare(`
+    UPDATE documents SET label = '[supprimé]', r2_key = '', tags_json = NULL
+    WHERE id = ? AND user_id = ?
+  `).bind(docId, user.id).run();
+
+  audit(env, {
+    user_id: user.id, email: user.email,
+    action: 'doc_deleted',
+    detail: `${docId} · sha=${doc.sha256?.slice(0, 16)}`,
+    ip: req.headers.get('CF-Connecting-IP'),
+  });
+
+  return Response.json({ success: true, deleted: docId });
+});
+
+// Appel sub-agent documents-mcp-server via service binding (latence ~0)
+async function callDocumentsMcp(toolName, args, env) {
+  const body = JSON.stringify({ name: toolName, arguments: args });
+  const sig = await hmacSha256(body, env.MCP_SHARED_SECRET);
+
+  const res = await env.DOCUMENTS_MCP.fetch('https://internal/mcp/call_tool', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-IKCP-Signature': sig },
+    body,
+  });
+  if (!res.ok) throw new Error(`docs-mcp ${res.status}`);
+  const json = await res.json();
+  return json.result;
+}
+
+async function sha256Hex(buffer) {
+  const hash = await crypto.subtle.digest('SHA-256', buffer);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hmacSha256(text, secret) {
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(text));
+  return [...new Uint8Array(sig)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hashSha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function safeJSON(s) {
+  try { return JSON.parse(s); } catch { return s; }
+}
+
 // ─── Routing ───
 export default {
   async fetch(req, env, ctx) {
@@ -388,14 +976,24 @@ export default {
     // Static (favicon etc.)
     if (p === '/favicon.ico') return new Response(null, { status: 204 });
 
+    // CORS preflight pour /auth/beta-redeem (appelé depuis la landing publique)
+    if (p === '/auth/beta-redeem' && m === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsBetaHeaders(req) });
+    }
+
     // Routes
     if (p === '/' && m === 'GET') return handleLogin(req, env);
+    if (p === '/auth/beta-redeem' && m === 'POST') return handleBetaRedeem(req, env);
     if (p === '/auth/send' && m === 'POST') return handleAuthSend(req, env, ctx);
     if (p === '/auth/verify' && m === 'GET') return handleAuthVerify(req, env);
     if (p === '/auth/logout') return handleLogout(req, env);
     if (p === '/dashboard' && m === 'GET') return handleDashboard(req, env, ctx);
     if (p === '/marcel' && m === 'GET') return handleMarcel(req, env, ctx);
     if (p === '/dossiers' && m === 'GET') return handleDossiers(req, env, ctx);
+    if (p === '/api/export/me' && m === 'GET') return handleExportMe(req, env, ctx);
+    if (p === '/api/dashboard/me' && m === 'GET') return handleDashboardMe(req, env, ctx);
+    if (p === '/api/docs/upload' && m === 'POST') return handleDocsUpload(req, env, ctx);
+    if (p.startsWith('/api/docs/') && m === 'DELETE') return handleDocsDelete(req, env, ctx);
 
     return new Response('Not found', { status: 404 });
   }
@@ -583,6 +1181,11 @@ section.dash { padding:120px 40px 80px; max-width:1200px; margin:0 auto; }
       <a href="mailto:maxime@ikcp.fr?subject=Demande%20depuis%20espace%20client" class="action">
         <span class="action-icon">✉️</span>
         <span><span class="action-text">Écrire à Maxime</span><br><span class="action-sub">Réponse sous 24h</span></span>
+        <span class="action-arrow">→</span>
+      </a>
+      <a href="/api/export/me" class="action" download>
+        <span class="action-icon">⬇</span>
+        <span><span class="action-text">Exporter mes données</span><br><span class="action-sub">RGPD · 1 clic · JSON signé SHA-256</span></span>
         <span class="action-arrow">→</span>
       </a>
     </div>

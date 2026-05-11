@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Trois espaces · Comment créer votre Family Office Digital</title>
+<meta name="description" content="Freemium · Entreprise familiale TPE · Entreprise familiale ETI/Premium. Plus la méthode 5 phases pour construire un Family Office 100% digital sur-mesure.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP Espaces">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.14); --line-strong: rgba(196, 162, 115, 0.32); --line-faint: rgba(196, 162, 115, 0.05);
+  --warn: #d4a85a; --ok: #7fae7d;
+}
+html, body {
+  background: var(--bg); color: var(--ink);
+  font-family: 'Inter', sans-serif; font-weight: 300;
+  line-height: 1.7; letter-spacing: -0.003em; min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+
+/* NAV */
+nav.top { display: flex; justify-content: space-between; align-items: center; padding: 28px 48px; max-width: 1180px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+nav .menu { display: flex; gap: 28px; align-items: center; }
+nav a { color: var(--ink-mute); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.3s; font-weight: 400; }
+nav a:hover { color: var(--gold); }
+nav .cta-nav { padding: 9px 18px; border: 1px solid var(--gold); color: var(--gold); }
+nav .cta-nav:hover { background: var(--gold); color: var(--bg); }
+
+/* HERO */
+section.hero { padding: 90px 0 100px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(36px, 5vw, 64px); line-height: 1.08; letter-spacing: -0.022em; margin-bottom: 32px; max-width: 880px; }
+h1 em { font-style: italic; color: var(--gold); }
+.lede { max-width: 660px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+/* SECTION HEAD */
+section.bloc { padding: 90px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 50px; gap: 40px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; }
+.section-titre { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em; max-width: 720px; margin-top: 12px; }
+.section-titre em { font-style: italic; color: var(--gold); }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; max-width: 280px; }
+
+/* ─── 3 ESPACES ─── */
+.espaces-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.espace {
+  background: var(--bg); padding: 40px 32px 36px;
+  display: flex; flex-direction: column; position: relative;
+}
+.espace.featured {
+  background: linear-gradient(180deg, rgba(196,162,115,0.06) 0%, var(--bg-2) 100%);
+  border-top: 2px solid var(--gold); margin-top: -2px;
+}
+.espace.featured::before {
+  content: 'Le plus choisi'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--bg);
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 14px; font-weight: 600;
+}
+.espace-tier { font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 400; }
+.espace-name { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 14px; letter-spacing: -0.005em; line-height: 1.15; }
+.espace-name em { font-style: italic; color: var(--gold); }
+.espace-target { font-size: 11.5px; color: var(--ink-mute); padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 22px; line-height: 1.6; font-style: italic; font-family: 'Playfair Display', serif; }
+.espace-target strong { color: var(--ink); font-weight: 500; font-style: normal; font-family: 'Inter', sans-serif; }
+
+.espace-price { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--ink); margin: 6px 0 4px; letter-spacing: -0.01em; font-weight: 400; }
+.espace-price em { font-style: italic; color: var(--gold); }
+.espace-price small { font-size: 13px; color: var(--ink-mute); margin-left: 6px; font-family: 'Inter', sans-serif; font-style: normal; font-weight: 400; }
+.espace-price-note { font-size: 11.5px; color: var(--gold-bright); margin-bottom: 22px; }
+
+.espace-pitch { font-size: 13px; color: var(--ink-mute); margin-bottom: 22px; line-height: 1.6; min-height: 50px; }
+
+.espace-features { list-style: none; padding: 0; margin: 0 0 26px; flex: 1; }
+.espace-features li { font-size: 12.5px; color: var(--ink); padding: 7px 0 7px 18px; position: relative; line-height: 1.5; border-bottom: 1px solid var(--line-faint); }
+.espace-features li:last-child { border-bottom: none; }
+.espace-features li::before { content: '✓'; position: absolute; left: 0; color: var(--gold); font-weight: 600; }
+.espace-features li strong { color: var(--gold-bright); font-weight: 500; }
+.espace-features li.x { color: var(--ink-faint); text-decoration: line-through; opacity: 0.55; }
+.espace-features li.x::before { content: '·'; color: var(--ink-faint); }
+
+.espace-cta { text-align: center; padding: 14px 24px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; font-weight: 600; }
+.espace-cta.outline { border: 1px solid var(--line-strong); color: var(--ink); }
+.espace-cta.outline:hover { border-color: var(--gold); color: var(--gold); }
+.espace-cta.solid { background: var(--gold); color: var(--bg); border: 1px solid var(--gold); }
+.espace-cta.solid:hover { background: transparent; color: var(--gold); }
+
+/* Bespoke band */
+.bespoke-band {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 32px; align-items: center;
+  padding: 28px 36px;
+  background: var(--bg-2); border: 1px solid var(--line); border-top: none;
+}
+.bespoke-tier { font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 8px; }
+.bespoke-name { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 6px; }
+.bespoke-name em { font-style: italic; color: var(--gold); }
+.bespoke-desc { font-size: 13px; color: var(--ink-mute); line-height: 1.6; max-width: 720px; }
+.bespoke-desc strong { color: var(--ink); font-weight: 500; }
+
+/* MÉTHODE 5 PHASES */
+.methode { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.phase { background: var(--bg); padding: 32px 24px; display: flex; flex-direction: column; }
+.phase-num { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 30px; line-height: 1; margin-bottom: 16px; font-weight: 400; }
+.phase-titre { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 8px; letter-spacing: -0.005em; }
+.phase-duree { font-size: 10.5px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; }
+.phase-desc { font-size: 12px; color: var(--ink-mute); line-height: 1.6; flex: 1; }
+.phase-livrable { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-faint); font-size: 10.5px; color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; line-height: 1.55; }
+
+/* APPLICATION & ESPACE CLIENT */
+.app-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+.app-left h3 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 22px; line-height: 1.2; }
+.app-left h3 em { font-style: italic; color: var(--gold); }
+.app-features { list-style: none; padding: 0; }
+.app-features li { padding: 16px 0; border-top: 1px solid var(--line-faint); display: grid; grid-template-columns: 28px 1fr; gap: 16px; align-items: baseline; font-size: 13.5px; color: var(--ink-mute); line-height: 1.65; }
+.app-features li:first-child { border-top: none; }
+.app-features li strong { color: var(--ink); font-weight: 500; }
+.app-features li i { color: var(--gold); font-style: normal; font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1; font-weight: 500; }
+
+.app-right {
+  position: sticky; top: 32px;
+  display: flex; flex-direction: column; gap: 18px;
+  align-items: center;
+}
+.phone-frame {
+  width: 100%; max-width: 280px; aspect-ratio: 9 / 19.5;
+  background: var(--bg-3); border: 1px solid var(--line-strong);
+  border-radius: 32px; padding: 10px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 80px rgba(196,162,115,0.1);
+  position: relative;
+}
+.phone-frame::before { /* notch */
+  content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  width: 90px; height: 22px; background: var(--bg-2); border-radius: 0 0 12px 12px;
+  z-index: 2;
+}
+.phone-screen {
+  width: 100%; height: 100%; background: var(--bg);
+  border-radius: 24px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.phone-status { padding: 28px 16px 12px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ink-faint); display: flex; justify-content: space-between; align-items: center; }
+.phone-content { padding: 12px 16px 16px; flex: 1; overflow: hidden; }
+.phone-h { font-family: 'Playfair Display', serif; font-size: 11px; color: var(--gold); margin-bottom: 4px; }
+.phone-h2 { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.15; margin-bottom: 12px; }
+.phone-h2 em { font-style: italic; color: var(--gold); }
+.phone-card { background: var(--bg-2); border: 1px solid var(--line); padding: 10px 12px; margin-bottom: 8px; border-radius: 2px; }
+.phone-card-tag { font-family: 'JetBrains Mono', monospace; font-size: 7px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+.phone-card-titre { font-size: 10px; color: var(--ink); margin-bottom: 4px; line-height: 1.3; }
+.phone-card-meta { font-size: 8px; color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; }
+.phone-card-meta b { color: var(--gold-bright); }
+.phone-tabbar { padding: 8px 12px; border-top: 1px solid var(--line); display: flex; justify-content: space-around; font-size: 8px; color: var(--ink-faint); font-family: 'Inter', sans-serif; }
+.phone-tabbar > span.active { color: var(--gold); }
+
+.phone-caption { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.18em; text-transform: uppercase; text-align: center; }
+
+/* CTA final */
+section.cta-final { padding: 110px 0 90px; text-align: center; }
+section.cta-final h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15; margin-bottom: 24px; letter-spacing: -0.018em; }
+section.cta-final h2 em { font-style: italic; color: var(--gold); }
+section.cta-final p { font-size: 15px; color: var(--ink-mute); line-height: 1.75; max-width: 580px; margin: 0 auto 36px; }
+.cta-row { display: inline-flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.btn-primary { padding: 16px 36px; background: var(--gold); color: var(--bg); border: 1px solid var(--gold); text-decoration: none; font-weight: 600; font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; transition: all 0.3s; }
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-secondary { color: var(--ink-mute); text-decoration: none; font-size: 12.5px; letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid transparent; transition: all 0.3s; }
+.btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+footer.proto { padding: 36px 48px; text-align: center; border-top: 1px solid var(--line); max-width: 1180px; margin: 0 auto; }
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+
+@media (max-width: 1100px) {
+  main, nav.top, footer.proto { padding-left: 24px !important; padding-right: 24px !important; }
+  .espaces-grid { grid-template-columns: 1fr; }
+  .espace.featured { margin-top: 0; }
+  .methode { grid-template-columns: repeat(2, 1fr); }
+  .app-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .app-right { position: static; }
+  .bespoke-band { grid-template-columns: 1fr; gap: 16px; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-meta { text-align: left; }
+}
+@media (max-width: 720px) {
+  nav.top { padding: 18px 22px; flex-wrap: wrap; gap: 12px; }
+  nav .menu { gap: 16px; }
+  section.hero { padding: 50px 0 60px; }
+  section.bloc { padding: 60px 0; }
+  .methode { grid-template-columns: 1fr; }
+  .phone-frame { max-width: 240px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Trois espaces · une plate-forme</div>
+  </div>
+  <div class="menu">
+    <a href="#espaces">Espaces</a>
+    <a href="#methode">Méthode</a>
+    <a href="#app">Application</a>
+    <a href="./landing-beta-dirigeants.html" class="cta-nav">Beta</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">— Family Office Digital · la promesse</div>
+  <h1>Trois <em>espaces</em>.<br>Une plate-forme.<br>Votre <em>famille</em>.</h1>
+  <p class="lede">
+    Du dirigeant TPE qui découvre, à la famille à patrimoine constitué qui structure sa transmission. Chaque espace a sa <em>profondeur</em>, son <em>tarif</em>, sa <em>promesse</em>. Le passage de l'un à l'autre se fait sans friction. Application installable, espace client en ligne, <em>jamais de RDV obligatoire</em> pour démarrer.
+  </p>
+
+  <!-- 4×100% — La promesse du FO -->
+  <div class="promesse-100">
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Digitalisé</em></div>
+      <div class="p100-desc">Web, mobile, ordinateur. Aucun papier, aucun RDV obligatoire pour démarrer.</div>
+    </div>
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Automatisé</em></div>
+      <div class="p100-desc">Marcel + 6 agents transversaux. Cron, alertes, rapports générés sans intervention.</div>
+    </div>
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Sur-mesure</em></div>
+      <div class="p100-desc">Bâti sur votre patrimoine réel. Aucun MOOC, aucun template figé.</div>
+    </div>
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Accessible</em></div>
+      <div class="p100-desc">Trois espaces, du gratuit au sur-mesure. La porte est ouverte à chaque étape.</div>
+    </div>
+  </div>
+</section>
+
+<style>
+.promesse-100 {
+  margin-top: 64px; padding-top: 36px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+}
+.p100 { padding: 22px 28px; border-right: 1px solid var(--line); }
+.p100:last-child { border-right: none; }
+.p100-num {
+  font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic;
+  color: var(--gold); font-size: 38px; line-height: 1; margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.p100-num span { font-size: 22px; font-style: normal; opacity: 0.7; margin-left: 2px; }
+.p100-label {
+  font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink); margin-bottom: 10px; font-weight: 500;
+}
+.p100-label em { font-style: italic; color: var(--gold); font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 16px; font-family: 'Playfair Display', serif; display: block; }
+.p100-desc { font-size: 12px; color: var(--ink-mute); line-height: 1.6; }
+
+@media (max-width: 1100px) {
+  .promesse-100 { grid-template-columns: repeat(2, 1fr); }
+  .p100:nth-child(2) { border-right: none; }
+  .p100:nth-child(1), .p100:nth-child(2) { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 4px; }
+}
+@media (max-width: 600px) {
+  .promesse-100 { grid-template-columns: 1fr; }
+  .p100 { border-right: none; border-bottom: 1px solid var(--line); padding: 22px 0; }
+  .p100:last-child { border-bottom: none; }
+}
+</style>
+
+<!-- 3 ESPACES + BESPOKE -->
+<section class="bloc" id="espaces">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 01</div>
+      <h2 class="section-titre">Trois <em>portes d'entrée</em>.<br>Trois engagements lisibles.</h2>
+    </div>
+    <div class="section-meta">Tarification annuelle<br>Sans frais cachés · MIF II</div>
+  </div>
+
+  <div class="espaces-grid">
+
+    <!-- FREEMIUM -->
+    <div class="espace">
+      <div class="espace-tier">— Découverte</div>
+      <div class="espace-name">Freemium</div>
+      <div class="espace-target">
+        <strong>Pour qui ?</strong> Tout visiteur curieux. Tester avant de décider, sans engagement, sans email.
+      </div>
+      <div class="espace-price"><em>Gratuit</em></div>
+      <div class="espace-price-note">Aucun email requis · 3 questions / session</div>
+      <div class="espace-pitch">Marcel comparateur sur 8 univers de vie. Sources publiques sourcées. Découverte 100% libre.</div>
+      <ul class="espace-features">
+        <li><strong>8 univers</strong> comparateurs (voyages, voitures, vins, art…)</li>
+        <li>3 questions Marcel par session</li>
+        <li>Sources publiques (Légifrance, DVF, INSEE)</li>
+        <li class="x">Conseil patrimonial premium</li>
+        <li class="x">Formation NextGen</li>
+        <li class="x">Maxime · contact direct</li>
+        <li class="x">Dashboard family office</li>
+      </ul>
+      <a href="./family-office-v5-univers.html" class="espace-cta outline">Découvrir gratuitement →</a>
+    </div>
+
+    <!-- TPE -->
+    <div class="espace">
+      <div class="espace-tier">— TPE / petite famille</div>
+      <div class="espace-name">Family Office <em>Essentiel</em></div>
+      <div class="espace-target">
+        <strong>Pour qui ?</strong> Dirigeants TPE · CA &lt; 2 M€ · patrimoine net &lt; 3 M€ · une famille en construction.
+      </div>
+      <div class="espace-price">2 400 €<small> / an</small></div>
+      <div class="espace-price-note">Soit <strong>200 €/mois</strong> · facturation annuelle</div>
+      <div class="espace-pitch">L'essentiel d'un FO digital pour la TPE familiale. Marcel illimité, dashboard simplifié, formation NextGen 3 modules.</div>
+      <ul class="espace-features">
+        <li>Tout Freemium</li>
+        <li><strong>Marcel illimité</strong> · contexte famille mémorisé</li>
+        <li><strong>Dashboard allégé</strong> (patrimoine, échéances, 2 derniers livrables)</li>
+        <li><strong>Formation NextGen</strong> — 3 modules essentiels</li>
+        <li><strong>Maxime · 1 visio / trimestre</strong></li>
+        <li>2 sous-comptes enfants inclus</li>
+        <li>Coffre-fort R2 chiffré (5 GB)</li>
+        <li>Tarifs négociés (signature, Lombard light)</li>
+        <li class="x">Dénicheur d'offres scoré</li>
+        <li class="x">Expertise internationale</li>
+      </ul>
+      <a href="./landing-beta-dirigeants.html" class="espace-cta outline">Demander un code beta →</a>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="espace featured">
+      <div class="espace-tier">— ETI / PME / patrimoine constitué</div>
+      <div class="espace-name">Family Office <em>Augmenté</em></div>
+      <div class="espace-target">
+        <strong>Pour qui ?</strong> Dirigeants ETI/PME · patrimoine net &gt; 3 M€ · famille à transmettre · besoin international.
+      </div>
+      <div class="espace-price">6 800 €<small> / an</small></div>
+      <div class="espace-price-note">Soit <strong>566 €/mois</strong> · vs 25-40 k€/an plate-forme classique</div>
+      <div class="espace-pitch">Le FO digital complet : Marcel + Maxime + dashboard + dénicheur d'offres + international + formation NextGen complète + services premium.</div>
+      <ul class="espace-features">
+        <li>Tout <strong>Essentiel</strong></li>
+        <li><strong>Conseil patrimonial premium</strong> (10 expertises FR)</li>
+        <li><strong>Expertise internationale</strong> (Lux, CH, UK, USA, OCDE)</li>
+        <li><strong>Maxime · 1 visio / mois</strong> + chat 24h</li>
+        <li><strong>Dashboard complet</strong> (patrimoine 360°, drift, alertes push)</li>
+        <li><strong>Dénicheur d'offres scoré</strong> par profil</li>
+        <li><strong>Formation NextGen 6 modules</strong> + certification</li>
+        <li>4 sous-comptes enfants/co-titulaires</li>
+        <li>Coffre-fort R2 (50 GB) + horodatage eIDAS</li>
+        <li>Services premium : governance · audit assurance · cyber · health</li>
+        <li>Tarifs négociés écosystème complet (banques privées, signature, plateformes PE)</li>
+      </ul>
+      <a href="./landing-beta-dirigeants.html" class="espace-cta solid">Demander un code beta</a>
+    </div>
+
+  </div>
+
+  <!-- BESPOKE -->
+  <div class="bespoke-band">
+    <div>
+      <div class="bespoke-tier">— Bespoke · sur devis</div>
+      <div class="bespoke-name">Family Office <em>Bespoke</em></div>
+      <div class="bespoke-desc">
+        Pour familles avec gouvernance complexe : <strong>multi-juridictions</strong> (FR/CH/USA/UK), <strong>FRUP ou fondation abritée</strong>, <strong>équipe dédiée</strong>, branding propre, hébergement single-tenant. À partir de <strong>36 k€/an</strong> + setup forfaitaire 120 k€.
+      </div>
+    </div>
+    <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Bespoke%20%E2%80%94%20%C3%A9change%20pr%C3%A9liminaire" class="espace-cta outline">Échanger avec Maxime →</a>
+  </div>
+</section>
+
+<!-- MÉTHODE 5 PHASES -->
+<section class="bloc" id="methode">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 02</div>
+      <h2 class="section-titre">Comment <em>se construit</em> votre FO digital.<br>Cinq phases. <em>Quatre à douze semaines</em>.</h2>
+    </div>
+    <div class="section-meta">Livraisons hebdomadaires<br>Code à vous au terme<br>Hébergement EU souverain</div>
+  </div>
+
+  <div class="methode">
+    <div class="phase">
+      <div class="phase-num">i.</div>
+      <div class="phase-titre">Cadrage</div>
+      <div class="phase-duree">Semaine 1</div>
+      <div class="phase-desc">Audit famille + entreprise. Identification des modules pertinents (international, NextGen, dénicheur, services premium). Choix des intégrations (CRM, KYC, signature).</div>
+      <div class="phase-livrable">Livrable : note de cadrage chiffrée + roadmap 5-12 sem.</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">ii.</div>
+      <div class="phase-titre">Design</div>
+      <div class="phase-duree">Semaines 2 - 3</div>
+      <div class="phase-desc">Charte graphique aux couleurs de votre famille / marque. Wireframes des écrans clés (dashboard, formation, conversations Marcel). Validation Figma avec vous.</div>
+      <div class="phase-livrable">Livrable : Figma cliquable · 8-12 écrans</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">iii.</div>
+      <div class="phase-titre">Build</div>
+      <div class="phase-duree">Semaines 3 - 8</div>
+      <div class="phase-desc">Développement itératif sur preview. Configuration Marcel avec vos contextes (famille, société, juridictions). Câblage APIs spécifiques. Génération données initiales (patrimoine, agenda).</div>
+      <div class="phase-livrable">Livrable : preview.votre-domaine.fr · MAJ chaque vendredi</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">iv.</div>
+      <div class="phase-titre">Tests + onboarding</div>
+      <div class="phase-duree">Semaines 8 - 10</div>
+      <div class="phase-desc">Recette utilisateurs (vous + enfants). Tests sécurité, charge, accessibilité, RGPD. Onboarding initial famille, génération codes accès, premiers modules NextGen.</div>
+      <div class="phase-livrable">Livrable : recette signée + comptes famille créés</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">v.</div>
+      <div class="phase-titre">Mise en ligne</div>
+      <div class="phase-duree">Semaine 10 - 12</div>
+      <div class="phase-desc">Déploiement production sur votre domaine. Formation équipe (2 jours). Documentation utilisateurs. Plan de support 12 mois inclus.</div>
+      <div class="phase-livrable">Livrable : production live + transfert + 12 mois support</div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION + ESPACE CLIENT -->
+<section class="bloc" id="app">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 03</div>
+      <h2 class="section-titre">Application installable.<br>Espace client en <em>ligne</em>.</h2>
+    </div>
+    <div class="section-meta">PWA iOS + Android + desktop<br>Aucun téléchargement App Store<br>Mode hors-ligne (FAQ)</div>
+  </div>
+
+  <div class="app-wrap">
+    <div class="app-left">
+      <h3>Tout ce que vous avez besoin <em>dans la poche</em>.</h3>
+      <ul class="app-features">
+        <li>
+          <i>i.</i>
+          <div><strong>Installation 1 clic</strong> · iPhone, Android, ordinateur. Banner « Installer IKCP » au premier passage. Icône dorée sur l'écran d'accueil. Pas d'App Store, pas de téléchargement à valider.</div>
+        </li>
+        <li>
+          <i>ii.</i>
+          <div><strong>Espace client connecté magic-link</strong> · pas de mot de passe. Vous saisissez votre email, vous recevez un lien, vous êtes connecté pour 30 jours. Sécurité bancaire, friction zéro.</div>
+        </li>
+        <li>
+          <i>iii.</i>
+          <div><strong>Dashboard 360°</strong> · patrimoine consolidé, allocation, drift, échéances fiscales J-8, arbitrages préparés en attente, conversations Marcel par thème, livrables PDF signés.</div>
+        </li>
+        <li>
+          <i>iv.</i>
+          <div><strong>Notifications push</strong> · échéance fiscale dans 8 jours, opportunité matchée à votre profil, validation Maxime requise, document classé automatiquement.</div>
+        </li>
+        <li>
+          <i>v.</i>
+          <div><strong>Photo → coffre-fort instantané</strong> · vous recevez un courrier RAR DGFiP : photo depuis le téléphone, upload R2, classement automatique par Documents-agent, rappel programmé par Suivi-agent.</div>
+        </li>
+        <li>
+          <i>vi.</i>
+          <div><strong>Mode hors-ligne</strong> · 4 réponses ultra-fréquentes (donation, IFI, AV, barème IR) accessibles sans réseau. Service worker cache les routes essentielles.</div>
+        </li>
+        <li>
+          <i>vii.</i>
+          <div><strong>Export RGPD 1 clic</strong> · vos données vous appartiennent. Bouton « Exporter mes données » dans le dashboard → JSON complet horodaté SHA-256, téléchargé instantanément.</div>
+        </li>
+        <li>
+          <i>viii.</i>
+          <div><strong>Sub-comptes famille</strong> · les enfants ont leur propre vue, leurs propres modules NextGen, leurs propres conversations. Vous voyez leurs progrès en temps réel.</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="app-right">
+      <!-- Mockup phone -->
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-status"><span>9:41</span><span>● ● ●</span></div>
+          <div class="phone-content">
+            <div class="phone-h">— TABLEAU DE BORD</div>
+            <div class="phone-h2">Bonjour <em>Marc</em></div>
+            <div class="phone-card">
+              <div class="phone-card-tag">— Échéance</div>
+              <div class="phone-card-titre">Déclaration 2042 — J-6</div>
+              <div class="phone-card-meta"><b>Préparée par Marcel</b> · à valider</div>
+            </div>
+            <div class="phone-card">
+              <div class="phone-card-tag">— Arbitrage</div>
+              <div class="phone-card-titre">Donation Thomas 31 865 €</div>
+              <div class="phone-card-meta"><b>Gain</b> 6 373 € · attente Maxime</div>
+            </div>
+            <div class="phone-card">
+              <div class="phone-card-tag">— Opportunité</div>
+              <div class="phone-card-titre">Maison Combloux 4,8 M€</div>
+              <div class="phone-card-meta"><b>Fit 78/100</b> · pré-MEM 4 sem.</div>
+            </div>
+            <div class="phone-card">
+              <div class="phone-card-tag">— Marcel · NextGen</div>
+              <div class="phone-card-titre">Module 4 — Choisir une stratégie</div>
+              <div class="phone-card-meta">Emma a complété · à valider</div>
+            </div>
+          </div>
+          <div class="phone-tabbar">
+            <span class="active">Accueil</span>
+            <span>Marcel</span>
+            <span>Famille</span>
+            <span>Coffre</span>
+          </div>
+        </div>
+      </div>
+      <div class="phone-caption">— Aperçu mobile · PWA installée</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-final">
+  <h2>Choisissez votre <em>porte d'entrée</em>.<br>Commencez par <em>tester</em>, décidez ensuite.</h2>
+  <p>
+    Découvrez Marcel gratuitement avec les 3 questions du Freemium. Si vous voulez aller plus loin, demandez un code beta — 50 familles seulement pour le S2 2026.
+  </p>
+  <div class="cta-row">
+    <a href="./family-office-v5-univers.html" class="btn-secondary">Tester gratuitement →</a>
+    <a href="./landing-beta-dirigeants.html" class="btn-primary">Demander un code beta</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Bespoke%20%E2%80%94%20%C3%A9change" class="btn-secondary">Bespoke / sur-mesure →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Trois espaces · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine<br>
+    Tarifs en € HT · révision annuelle · valable 90 jours<br>
+    <a href="./landing-beta-dirigeants.html">Beta dirigeants</a> &nbsp;·&nbsp;
+    <a href="./formation-nextgen.html">Formation NextGen</a> &nbsp;·&nbsp;
+    <a href="./expertise-internationale.html">International</a> &nbsp;·&nbsp;
+    <a href="./apercu-ecosysteme.html">Aperçu écosystème</a> &nbsp;·&nbsp;
+    <a href="./conviction-overview.html">Conviction</a>
+  </p>
+</footer>
+
+</body>
+</html>

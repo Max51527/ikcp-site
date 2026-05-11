@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Conviction · Aperçu</title>
+<meta name="description" content="Notre conviction patrimoniale : valeur ajoutée juridique, financière et fiscale. Cas concrets, schémas, agents IA déployables.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --ink: #f4ece1;
+  --ink-mute: #8c857a;
+  --ink-faint: #524d47;
+  --gold: #c4a273;
+  --line: rgba(196, 162, 115, 0.14);
+  --line-faint: rgba(196, 162, 115, 0.05);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+main { max-width: 1080px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 1; }
+
+/* ─── NAV minimal ─── */
+nav.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 36px 48px;
+  max-width: 1080px; margin: 0 auto;
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; color: var(--ink); }
+.brand b { color: var(--gold); font-weight: 400; }
+nav .menu { display: flex; gap: 36px; align-items: center; }
+nav a {
+  color: var(--ink-mute); text-decoration: none; font-size: 11px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  transition: color 0.3s; font-weight: 400;
+}
+nav a:hover { color: var(--gold); }
+
+/* ─── HERO ─── */
+section.hero {
+  padding: 100px 0 140px;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow {
+  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 36px; font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(36px, 5vw, 64px); line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 36px; max-width: 820px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede {
+  max-width: 620px; font-size: 17px; color: var(--ink-mute); line-height: 1.75;
+  font-weight: 300;
+}
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+/* Trois piliers */
+.piliers {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin-top: 90px; gap: 0;
+  border-top: 1px solid var(--line);
+}
+.pilier { padding: 36px 32px 0; border-right: 1px solid var(--line); }
+.pilier:last-child { border-right: none; }
+.pilier-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--gold); font-size: 14px; margin-bottom: 14px;
+}
+.pilier-titre {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  margin-bottom: 14px; letter-spacing: -0.005em;
+}
+.pilier-desc { font-size: 13.5px; color: var(--ink-mute); line-height: 1.7; font-weight: 300; }
+
+/* ─── SECTION ─── */
+section.bloc { padding: 110px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 64px; gap: 40px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; }
+.section-titre {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em;
+  max-width: 640px;
+}
+.section-titre em { font-style: italic; color: var(--gold); }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; max-width: 280px; }
+
+/* ─── CAS CONCRETS ─── */
+.cas {
+  padding: 56px 0;
+  border-top: 1px solid var(--line-faint);
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 56px; align-items: start;
+}
+.cas:first-of-type { border-top: none; padding-top: 0; }
+.cas-meta { padding-right: 12px; }
+.cas-numeral {
+  font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold);
+  font-size: 14px; margin-bottom: 14px; letter-spacing: 0.04em;
+}
+.cas-categorie {
+  font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.24em;
+  text-transform: uppercase; margin-bottom: 18px;
+}
+.cas-titre {
+  font-family: 'Playfair Display', serif; font-size: 26px; line-height: 1.2;
+  margin-bottom: 22px; letter-spacing: -0.005em;
+}
+.cas-question {
+  font-style: italic; font-family: 'Playfair Display', serif;
+  color: var(--gold); font-size: 14.5px; line-height: 1.5;
+  padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  margin: 22px 0;
+}
+.cas-meta-list { font-size: 12.5px; color: var(--ink-mute); line-height: 1.7; }
+.cas-meta-list b { color: var(--ink); font-weight: 500; }
+.cas-meta-list dt { color: var(--ink-faint); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 16px; margin-bottom: 4px; }
+.cas-meta-list dd { color: var(--ink); }
+
+.cas-schema {
+  background: rgba(196, 162, 115, 0.02);
+  border: 1px solid var(--line);
+  padding: 32px 28px;
+  position: relative;
+}
+.cas-schema svg { width: 100%; height: auto; max-height: 360px; }
+.cas-schema-legend {
+  margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line);
+  font-size: 11.5px; color: var(--ink-mute); line-height: 1.7;
+}
+.cas-schema-legend strong { color: var(--gold); font-weight: 400; }
+
+.cas-resultat {
+  margin-top: 24px;
+  padding: 18px 22px;
+  border-left: 2px solid var(--gold);
+  background: rgba(196, 162, 115, 0.03);
+}
+.cas-resultat-label {
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.cas-resultat-text {
+  font-size: 14px; color: var(--ink); line-height: 1.6;
+}
+.cas-resultat-text strong { color: var(--gold); font-weight: 500; }
+
+/* ─── WORKFLOW ─── */
+.workflow {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.wf-step {
+  background: var(--bg); padding: 36px 28px;
+  display: flex; flex-direction: column;
+}
+.wf-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--gold); letter-spacing: 0.2em; margin-bottom: 18px;
+}
+.wf-titre {
+  font-family: 'Playfair Display', serif; font-size: 18px;
+  margin-bottom: 10px; letter-spacing: -0.005em;
+}
+.wf-desc { font-size: 12.5px; color: var(--ink-mute); line-height: 1.65; flex: 1; }
+.wf-detail {
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line-faint);
+  font-size: 11px; color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; line-height: 1.6;
+}
+
+/* ─── SERVICES FO ─── */
+.services-list {
+  border-top: 1px solid var(--line);
+}
+.service-row {
+  display: grid; grid-template-columns: 80px 1fr 240px;
+  gap: 32px; align-items: baseline;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line-faint);
+}
+.service-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--gold); font-size: 16px;
+}
+.service-content h4 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: 19px; margin-bottom: 6px; letter-spacing: -0.005em;
+}
+.service-content p { font-size: 13px; color: var(--ink-mute); line-height: 1.65; }
+.service-tag {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-faint); text-align: right; line-height: 1.6;
+}
+.service-tag strong { color: var(--gold); font-weight: 500; }
+
+/* ─── AGENTS ─── */
+.agents-list {
+  border-top: 1px solid var(--line);
+}
+.agent-row {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line-faint);
+  display: grid; grid-template-columns: 24px 200px 1fr 110px;
+  gap: 28px; align-items: baseline;
+}
+.agent-status {
+  width: 8px; height: 8px; border-radius: 50%; margin-top: 7px;
+}
+.agent-status.deployed   { background: var(--gold); box-shadow: 0 0 8px rgba(196,162,115,0.6); }
+.agent-status.designed   { background: rgba(196,162,115,0.4); }
+.agent-status.planned    { background: transparent; border: 1px solid var(--ink-faint); }
+.agent-name {
+  font-family: 'Playfair Display', serif; font-size: 17px;
+}
+.agent-name small {
+  display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--ink-faint); margin-top: 4px; letter-spacing: 0.04em;
+}
+.agent-desc { font-size: 13px; color: var(--ink-mute); line-height: 1.65; }
+.agent-desc dt { color: var(--ink-faint); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 8px; margin-bottom: 2px; }
+.agent-desc dd { color: var(--ink); font-size: 12.5px; line-height: 1.55; }
+.agent-status-label {
+  font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  text-align: right; color: var(--ink-faint);
+}
+.agent-status-label.deployed { color: var(--gold); }
+
+.agents-legend {
+  margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line);
+  display: flex; gap: 36px; flex-wrap: wrap;
+  font-size: 11px; color: var(--ink-mute); letter-spacing: 0.04em;
+}
+.agents-legend > div { display: flex; align-items: center; gap: 10px; }
+.agents-legend .agent-status { margin-top: 0; }
+
+/* ─── CTA final ─── */
+section.cta-final {
+  padding: 130px 0 110px;
+  text-align: center;
+}
+section.cta-final h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15;
+  margin-bottom: 24px; letter-spacing: -0.018em;
+}
+section.cta-final h2 em { font-style: italic; color: var(--gold); }
+section.cta-final p {
+  font-size: 15px; color: var(--ink-mute); line-height: 1.75; max-width: 540px;
+  margin: 0 auto 44px; font-weight: 300;
+}
+.cta-row {
+  display: inline-flex; gap: 32px; align-items: center; flex-wrap: wrap; justify-content: center;
+}
+.cta-primary {
+  padding: 16px 36px; background: transparent; color: var(--gold);
+  border: 1px solid var(--gold); text-decoration: none;
+  font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  transition: all 0.3s;
+}
+.cta-primary:hover { background: var(--gold); color: var(--bg); }
+.cta-secondary {
+  color: var(--ink-mute); text-decoration: none; font-size: 12.5px;
+  letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid transparent;
+  transition: all 0.3s;
+}
+.cta-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ─── FOOTER ─── */
+footer.proto {
+  padding: 56px 48px 40px; text-align: center;
+  border-top: 1px solid var(--line); max-width: 1080px; margin: 0 auto;
+}
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+footer.proto a:hover { opacity: 0.7; }
+
+/* ─── SVG defaults ─── */
+.cas-schema svg text { font-family: 'Inter', sans-serif; fill: var(--ink); }
+.cas-schema svg .gold { fill: var(--gold); stroke: var(--gold); }
+.cas-schema svg .ink { fill: var(--ink); stroke: var(--ink); }
+.cas-schema svg .mute { fill: var(--ink-mute); stroke: var(--ink-mute); }
+.cas-schema svg .label { font-size: 11px; font-weight: 500; }
+.cas-schema svg .sublabel { font-size: 9px; fill: var(--ink-mute); letter-spacing: 0.05em; text-transform: uppercase; }
+.cas-schema svg .stroke-line { fill: none; stroke: var(--gold); stroke-width: 1; stroke-dasharray: 3 4; }
+.cas-schema svg .stroke-solid { fill: none; stroke: var(--gold); stroke-width: 1.2; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  main { padding: 0 28px; }
+  nav.top { padding: 24px 28px; flex-wrap: wrap; gap: 12px; }
+  nav .menu { gap: 22px; }
+  .piliers { grid-template-columns: 1fr; }
+  .pilier { border-right: none; border-bottom: 1px solid var(--line); padding: 28px 0; }
+  .pilier:last-child { border-bottom: none; }
+  .cas { grid-template-columns: 1fr; gap: 28px; }
+  .workflow { grid-template-columns: 1fr; }
+  .service-row { grid-template-columns: 1fr; gap: 8px; }
+  .service-tag { text-align: left; }
+  .agent-row { grid-template-columns: 14px 1fr; gap: 14px; }
+  .agent-row > .agent-desc, .agent-row > .agent-status-label { grid-column: 2; }
+  .agent-status-label { text-align: left; }
+  section.bloc { padding: 70px 0; }
+  section.hero { padding: 60px 0 80px; }
+  .section-head { margin-bottom: 40px; }
+  .section-meta { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand">IKCP<b>.</b></div>
+  <div class="menu">
+    <a href="#conviction">Conviction</a>
+    <a href="#cas">Cas concrets</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#services">Services</a>
+    <a href="#agents">Agents IA</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="conviction">
+  <div class="eyebrow">— Conviction</div>
+  <h1>Apporter une <em>valeur ajoutée</em> juridique, financière, fiscale.<br>Sans dispersion.</h1>
+  <p class="lede">
+    Notre métier n'est pas de vendre des produits. C'est de poser <em>la bonne question</em>, d'<em>analyser</em> avec rigueur,
+    de <em>structurer</em> avec sobriété — pour que chaque décision patrimoniale soit comprise, sourcée et arbitrée.
+  </p>
+
+  <div class="piliers">
+    <div class="pilier">
+      <div class="pilier-num">i.</div>
+      <div class="pilier-titre">Juridique</div>
+      <div class="pilier-desc">Lecture d'actes, clauses, pactes. Anticipation des conflits. Coordination notaire / avocat.</div>
+    </div>
+    <div class="pilier">
+      <div class="pilier-num">ii.</div>
+      <div class="pilier-titre">Financière</div>
+      <div class="pilier-desc">Allocation, sélection, rebalance, financement. Mise en concurrence systématique des partenaires.</div>
+    </div>
+    <div class="pilier">
+      <div class="pilier-num">iii.</div>
+      <div class="pilier-titre">Fiscale</div>
+      <div class="pilier-desc">Optimisation IR / IFI / DMTG, transmission, territorialité. Article CGI cité, millésime à jour.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAS CONCRETS ═══ -->
+<section class="bloc" id="cas">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 02</div>
+      <h2 class="section-titre">Concrètement.<br><em>Quels investissements,</em> quelle structuration.</h2>
+    </div>
+    <div class="section-meta">Quatre archétypes<br>chiffrés et schématisés</div>
+  </div>
+
+  <!-- ─── Cas i. SCI à l'IS ─── -->
+  <div class="cas">
+    <div class="cas-meta">
+      <div class="cas-numeral">i.</div>
+      <div class="cas-categorie">Investissement immobilier locatif</div>
+      <div class="cas-titre">SCI à l'IS pour patrimoine locatif &gt; 600 k€</div>
+      <div class="cas-question">« Quand bascule-t-on du foncier au régime société ? »</div>
+      <dl class="cas-meta-list">
+        <dt>Profil cible</dt>
+        <dd>Patrimoine locatif générant &gt; 30 k€ de loyers · TMI 41 % ou 45 %</dd>
+        <dt>Levier</dt>
+        <dd>Amortissement de l'immeuble (2-3 %/an) · déductibilité totale charges</dd>
+        <dt>Contrepartie</dt>
+        <dd>Sortie d'actif coûteuse (PV professionnelles) · décision long terme</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="cas-schema">
+        <svg viewBox="0 0 460 320" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma SCI à l'IS">
+          <!-- Personne -->
+          <circle cx="80" cy="60" r="22" class="stroke-solid" fill="none"/>
+          <text x="80" y="64" text-anchor="middle" class="label">Vous</text>
+          <text x="80" y="100" text-anchor="middle" class="sublabel">100 % parts</text>
+
+          <!-- SCI à l'IS -->
+          <rect x="180" y="120" width="180" height="80" class="stroke-solid" fill="rgba(196,162,115,0.04)"/>
+          <text x="270" y="148" text-anchor="middle" class="label gold">SCI à l'IS</text>
+          <text x="270" y="166" text-anchor="middle" class="sublabel">15 % &lt; 42 500 € · 25 % au-delà</text>
+          <text x="270" y="184" text-anchor="middle" class="sublabel">Amortissement déductible</text>
+
+          <!-- Flèche personne → SCI -->
+          <path d="M 100 75 Q 180 100 200 130" class="stroke-line"/>
+          <text x="148" y="100" class="sublabel">apport / acquisition</text>
+
+          <!-- 3 immeubles -->
+          <g>
+            <rect x="50" y="240" width="80" height="50" class="stroke-solid" fill="none"/>
+            <text x="90" y="262" text-anchor="middle" class="label">Bien 1</text>
+            <text x="90" y="276" text-anchor="middle" class="sublabel">locatif</text>
+          </g>
+          <g>
+            <rect x="190" y="240" width="80" height="50" class="stroke-solid" fill="none"/>
+            <text x="230" y="262" text-anchor="middle" class="label">Bien 2</text>
+            <text x="230" y="276" text-anchor="middle" class="sublabel">locatif</text>
+          </g>
+          <g>
+            <rect x="330" y="240" width="80" height="50" class="stroke-solid" fill="none"/>
+            <text x="370" y="262" text-anchor="middle" class="label">Bien 3</text>
+            <text x="370" y="276" text-anchor="middle" class="sublabel">SCPI / parts</text>
+          </g>
+          <path d="M 220 200 L 90 240" class="stroke-line"/>
+          <path d="M 270 200 L 230 240" class="stroke-line"/>
+          <path d="M 320 200 L 370 240" class="stroke-line"/>
+
+          <!-- IS Trésorerie -->
+          <text x="420" y="160" text-anchor="end" class="sublabel">→ trésorerie thésaurisée</text>
+          <text x="420" y="174" text-anchor="end" class="sublabel">→ réinvestissement</text>
+        </svg>
+        <div class="cas-schema-legend">
+          La SCI à l'IS <strong>amortit</strong> les immeubles, <strong>déduit</strong> les travaux et intérêts d'emprunt, et <strong>thésaurise</strong> les loyers à 15-25 % d'IS — bien moins que la TMI personnelle.
+        </div>
+      </div>
+      <div class="cas-resultat">
+        <div class="cas-resultat-label">Effet sur 10 ans · simulation type</div>
+        <div class="cas-resultat-text">Pour 30 k€ de loyers annuels, TMI 41 %, immeubles 600 k€ : l'écart cumulé IR vs IS dépasse <strong>~95 k€</strong> sur 10 ans. À pondérer par la fiscalité de sortie.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Cas ii. Démembrement viager ─── -->
+  <div class="cas">
+    <div class="cas-meta">
+      <div class="cas-numeral">ii.</div>
+      <div class="cas-categorie">Transmission anticipée</div>
+      <div class="cas-titre">Donation en nue-propriété avec usufruit conservé</div>
+      <div class="cas-question">« Comment transmettre sans perdre l'usage ni les revenus ? »</div>
+      <dl class="cas-meta-list">
+        <dt>Profil cible</dt>
+        <dd>Parents 60-69 ans · enfants majeurs · patrimoine 1-5 M€</dd>
+        <dt>Levier</dt>
+        <dd>Barème CGI 669 — à 60-69 ans, NP = 60 % de la pleine propriété</dd>
+        <dt>Effet décès</dt>
+        <dd>Extinction usufruit gratuite (CGI 1133) · NP devient PP sans droits</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="cas-schema">
+        <svg viewBox="0 0 460 320" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma démembrement">
+          <!-- Pleine propriété initiale -->
+          <rect x="40" y="40" width="160" height="60" class="stroke-solid" fill="rgba(196,162,115,0.04)"/>
+          <text x="120" y="68" text-anchor="middle" class="label">Bien · 1 000 k€</text>
+          <text x="120" y="86" text-anchor="middle" class="sublabel">Pleine propriété</text>
+
+          <!-- Démembrement → 2 cases -->
+          <path d="M 120 100 L 120 130" class="stroke-line"/>
+          <text x="135" y="120" class="sublabel">démembrement</text>
+
+          <rect x="20" y="140" width="180" height="50" class="stroke-solid" fill="none"/>
+          <text x="110" y="162" text-anchor="middle" class="label gold">Usufruit · 40 %</text>
+          <text x="110" y="178" text-anchor="middle" class="sublabel">parents conservent</text>
+
+          <rect x="20" y="200" width="180" height="50" class="stroke-solid" fill="none"/>
+          <text x="110" y="222" text-anchor="middle" class="label">Nue-propriété · 60 %</text>
+          <text x="110" y="238" text-anchor="middle" class="sublabel">donnée enfants</text>
+
+          <!-- Personnes droite -->
+          <circle cx="350" cy="160" r="20" class="stroke-solid" fill="none"/>
+          <text x="350" y="164" text-anchor="middle" class="label">Parents</text>
+          <text x="350" y="195" text-anchor="middle" class="sublabel">jouissance · revenus</text>
+
+          <circle cx="350" cy="225" r="20" class="stroke-solid" fill="none"/>
+          <text x="350" y="229" text-anchor="middle" class="label">Enfants</text>
+          <text x="350" y="260" text-anchor="middle" class="sublabel">titularité différée</text>
+
+          <path d="M 200 165 L 330 160" class="stroke-line"/>
+          <path d="M 200 225 L 330 225" class="stroke-line"/>
+
+          <!-- Effet décès -->
+          <text x="120" y="290" text-anchor="middle" class="sublabel">au décès des parents · CGI 1133</text>
+          <text x="120" y="304" text-anchor="middle" class="label gold">→ Pleine propriété sans droits</text>
+        </svg>
+        <div class="cas-schema-legend">
+          Bien valorisé 1 000 k€ : seule la <strong>NP (600 k€)</strong> est taxée à la donation. Avec abattement 100 k€/parent/enfant, sur 2 enfants, le couple transmet 400 k€ <strong>sans droits</strong>.
+        </div>
+      </div>
+      <div class="cas-resultat">
+        <div class="cas-resultat-label">Économie DMTG · couple, 2 enfants</div>
+        <div class="cas-resultat-text">Vs donation en pleine propriété : <strong>~73 k€ de droits évités</strong>, et au décès, l'usufruit s'éteint gratuitement (CGI 1133).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Cas iii. OBO ─── -->
+  <div class="cas">
+    <div class="cas-meta">
+      <div class="cas-numeral">iii.</div>
+      <div class="cas-categorie">Sortie partielle dirigeant</div>
+      <div class="cas-titre">OBO — récupérer du cash sans céder le contrôle</div>
+      <div class="cas-question">« Comment monétiser sans vendre la société ? »</div>
+      <dl class="cas-meta-list">
+        <dt>Profil cible</dt>
+        <dd>Dirigeant 50-65 ans · société 2-15 M€ · génère &gt; 200 k€ de résultat</dd>
+        <dt>Levier</dt>
+        <dd>Effet de levier banque · abattement durée détention sur la PV de cession</dd>
+        <dt>Contrepartie</dt>
+        <dd>Engagement de remontée de dividendes 7-10 ans</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="cas-schema">
+        <svg viewBox="0 0 460 320" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma OBO">
+          <!-- Cédant -->
+          <circle cx="80" cy="50" r="22" class="stroke-solid" fill="none"/>
+          <text x="80" y="54" text-anchor="middle" class="label">Cédant</text>
+          <text x="80" y="90" text-anchor="middle" class="sublabel">+ cash</text>
+
+          <!-- Holding NewCo -->
+          <rect x="180" y="40" width="160" height="80" class="stroke-solid" fill="rgba(196,162,115,0.04)"/>
+          <text x="260" y="68" text-anchor="middle" class="label gold">Holding NewCo</text>
+          <text x="260" y="86" text-anchor="middle" class="sublabel">Apport titres + emprunt</text>
+          <text x="260" y="102" text-anchor="middle" class="sublabel">CGI 150-0 B ter</text>
+
+          <!-- Banque -->
+          <rect x="370" y="40" width="80" height="50" class="stroke-solid" fill="none"/>
+          <text x="410" y="62" text-anchor="middle" class="label">Banque</text>
+          <text x="410" y="78" text-anchor="middle" class="sublabel">prêt</text>
+
+          <!-- Société cible -->
+          <rect x="180" y="200" width="160" height="80" class="stroke-solid" fill="rgba(196,162,115,0.04)"/>
+          <text x="260" y="226" text-anchor="middle" class="label">Société (cible)</text>
+          <text x="260" y="244" text-anchor="middle" class="sublabel">activité opérationnelle</text>
+          <text x="260" y="262" text-anchor="middle" class="sublabel">résultat &gt; 200 k€</text>
+
+          <!-- Flèches -->
+          <path d="M 100 60 L 175 70" class="stroke-line"/>
+          <text x="135" y="50" class="sublabel">apport</text>
+
+          <path d="M 370 70 L 345 70" class="stroke-line"/>
+          <text x="370" y="125" text-anchor="middle" class="sublabel">remboursement</text>
+          <path d="M 410 90 Q 410 200 370 240" class="stroke-line"/>
+
+          <path d="M 260 200 L 260 130" class="stroke-line"/>
+          <text x="278" y="170" class="sublabel gold">remontée dividendes</text>
+
+          <!-- Légende -->
+          <text x="80" y="180" text-anchor="middle" class="sublabel">conserve</text>
+          <text x="80" y="194" text-anchor="middle" class="label">contrôle holding</text>
+        </svg>
+        <div class="cas-schema-legend">
+          Le cédant <strong>apporte ses titres</strong> à la holding (report de PV — CGI 150-0 B ter), la holding <strong>emprunte</strong> et rachète une partie des titres → cash au cédant. Les <strong>dividendes</strong> de la société remontent et remboursent la dette.
+        </div>
+      </div>
+      <div class="cas-resultat">
+        <div class="cas-resultat-label">Effet ciblé · société 8 M€</div>
+        <div class="cas-resultat-text">Sortie de <strong>~3-4 M€ de cash</strong> au cédant tout en conservant 100 % du contrôle holding. Conditions : société rentable, banques rassurées, pacte d'engagement.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Cas iv. Sortie Pinel + réinvestissement ─── -->
+  <div class="cas">
+    <div class="cas-meta">
+      <div class="cas-numeral">iv.</div>
+      <div class="cas-categorie">Recyclage défiscalisation</div>
+      <div class="cas-titre">Sortie Pinel à terme + nue-propriété temporaire</div>
+      <div class="cas-question">« Que faire quand mon Pinel arrive à échéance ? »</div>
+      <dl class="cas-meta-list">
+        <dt>Profil cible</dt>
+        <dd>Investisseur Pinel arrivant aux 9 ou 12 ans · TMI 30-41 %</dd>
+        <dt>Option A</dt>
+        <dd>Vente · PV faible (avantage fiscal déjà capté) · réinvestissement</dd>
+        <dt>Option B</dt>
+        <dd>Conservation locative au régime réel · sortie échelonnée</dd>
+      </dl>
+    </div>
+    <div>
+      <div class="cas-schema">
+        <svg viewBox="0 0 460 340" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma sortie Pinel">
+          <!-- Timeline -->
+          <line x1="40" y1="60" x2="420" y2="60" class="stroke-solid"/>
+          <circle cx="40" cy="60" r="4" class="gold"/>
+          <circle cx="230" cy="60" r="6" class="gold"/>
+          <circle cx="420" cy="60" r="4" class="gold"/>
+          <text x="40" y="42" text-anchor="middle" class="sublabel">An 0</text>
+          <text x="40" y="80" text-anchor="middle" class="label">Achat Pinel</text>
+          <text x="230" y="42" text-anchor="middle" class="sublabel">An 9 / 12</text>
+          <text x="230" y="80" text-anchor="middle" class="label gold">Sortie Pinel</text>
+          <text x="420" y="42" text-anchor="middle" class="sublabel">An 14 / 17</text>
+          <text x="420" y="80" text-anchor="middle" class="label">Plus-value optimale</text>
+
+          <!-- 2 branches -->
+          <text x="230" y="130" text-anchor="middle" class="sublabel">→ deux trajectoires</text>
+
+          <rect x="30" y="160" width="180" height="100" class="stroke-solid" fill="none"/>
+          <text x="120" y="184" text-anchor="middle" class="label gold">Option A · vente</text>
+          <text x="120" y="206" text-anchor="middle" class="sublabel">PV faible — avantage fiscal capté</text>
+          <text x="120" y="222" text-anchor="middle" class="sublabel">→ réinvestissement</text>
+          <text x="120" y="240" text-anchor="middle" class="sublabel">NP temporaire 7-10 ans</text>
+          <text x="120" y="252" text-anchor="middle" class="sublabel">décote 30-40 %, sans gestion</text>
+
+          <rect x="250" y="160" width="180" height="100" class="stroke-solid" fill="none"/>
+          <text x="340" y="184" text-anchor="middle" class="label">Option B · conservation</text>
+          <text x="340" y="206" text-anchor="middle" class="sublabel">Régime réel</text>
+          <text x="340" y="222" text-anchor="middle" class="sublabel">déductions intérêts/travaux</text>
+          <text x="340" y="240" text-anchor="middle" class="sublabel">→ sortie progressive</text>
+          <text x="340" y="252" text-anchor="middle" class="sublabel">PV étalée selon durée</text>
+
+          <text x="230" y="300" text-anchor="middle" class="sublabel">Marcel calcule l'option optimale selon votre TMI, AUM, horizon</text>
+        </svg>
+        <div class="cas-schema-legend">
+          La <strong>NP temporaire</strong> (option A) achète l'immeuble avec une <strong>décote 30-40 %</strong> et restitue la pleine propriété au terme — sans loyers à gérer, sans IFI.
+        </div>
+      </div>
+      <div class="cas-resultat">
+        <div class="cas-resultat-label">Choix selon profil · à arbitrer</div>
+        <div class="cas-resultat-text">Marcel chiffre les deux options sur votre TMI, durée de détention, situation patrimoniale globale — Maxime arbitre le choix final.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WORKFLOW ═══ -->
+<section class="bloc" id="workflow">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 03</div>
+      <h2 class="section-titre">Comment Marcel travaille.<br><em>Quatre temps,</em> aucune boîte noire.</h2>
+    </div>
+    <div class="section-meta">Question → agent → données → schéma sourcé</div>
+  </div>
+
+  <div class="workflow">
+    <div class="wf-step">
+      <div class="wf-num">i. Question</div>
+      <div class="wf-titre">Vous demandez</div>
+      <div class="wf-desc">Une phrase, un cas, un dilemme. Marcel détecte l'expertise concernée.</div>
+      <div class="wf-detail">Ex : « SCI familiale 720 k€ locatif — IR ou IS ? »</div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">ii. Agent</div>
+      <div class="wf-titre">Marcel route</div>
+      <div class="wf-desc">L'agent transversal compétent prend le relais. Tools déterministes appelés sans hallucination.</div>
+      <div class="wf-detail">→ Fiscal-agent + tools calc_ir, calc_ifi · sources CGI cités</div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">iii. Données</div>
+      <div class="wf-titre">Vous renseignez</div>
+      <div class="wf-desc">Mini-formulaire ciblé : seules les données nécessaires sont demandées. Localement, jamais transmises sans consentement.</div>
+      <div class="wf-detail">TMI · loyers annuels · valeur immeubles · capacité d'épargne</div>
+    </div>
+    <div class="wf-step">
+      <div class="wf-num">iv. Schéma</div>
+      <div class="wf-titre">Marcel restitue</div>
+      <div class="wf-desc">Réponse + schéma SVG dessiné + sources juridiques + chiffrage. Action proposée, validation Maxime.</div>
+      <div class="wf-detail">Output : analyse + diagram + sources[] + next_action</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES FAMILY OFFICE ═══ -->
+<section class="bloc" id="services">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 04</div>
+      <h2 class="section-titre">Family office.<br><em>Services possibles.</em></h2>
+    </div>
+    <div class="section-meta">Listés · sourcés · activables à la demande</div>
+  </div>
+
+  <div class="services-list">
+    <div class="service-row">
+      <div class="service-num">i.</div>
+      <div class="service-content">
+        <h4>Bilan patrimonial annuel sourcé</h4>
+        <p>État consolidé du patrimoine, allocation, drift, dettes. PDF horodaté eIDAS, opposable banque.</p>
+      </div>
+      <div class="service-tag"><strong>Inclus</strong><br>Family Office augmenté</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">ii.</div>
+      <div class="service-content">
+        <h4>Diagnostic transmission 360°</h4>
+        <p>Comparatif de 4 schémas (cession, donation-cession, holding apport, Dutreil familial) chiffré sur votre situation.</p>
+      </div>
+      <div class="service-tag"><strong>Inclus</strong><br>Family Office augmenté</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">iii.</div>
+      <div class="service-content">
+        <h4>Veille fiscale active</h4>
+        <p>Suivi LF, jurisprudence Cass. com., circulaires DGFiP. Alerte sur impact réel pour votre situation.</p>
+      </div>
+      <div class="service-tag"><strong>Inclus</strong><br>Family Office augmenté</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">iv.</div>
+      <div class="service-content">
+        <h4>Dénicheur d'offres scoré</h4>
+        <p>Off-market immo, co-invest PE, fenêtres fiscales, art en pré-vente. Scoring profil 0-100 par opportunité.</p>
+      </div>
+      <div class="service-tag"><strong>Inclus</strong><br>Family Office augmenté</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">v.</div>
+      <div class="service-content">
+        <h4>Coordination écosystème</h4>
+        <p>Notaire, avocat, expert-comptable, gestionnaire locatif. IKCP brieffe, suit, archive — sans frais cachés.</p>
+      </div>
+      <div class="service-tag"><strong>Inclus</strong><br>Family Office augmenté</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">vi.</div>
+      <div class="service-content">
+        <h4>Family governance</h4>
+        <p>Charte familiale, conseil de famille, règles de transmission. Document fondateur 4-6 mois.</p>
+      </div>
+      <div class="service-tag"><strong>À l'unité</strong><br>2 - 4 k€ / an</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">vii.</div>
+      <div class="service-content">
+        <h4>Programme NextGen</h4>
+        <p>Modules pédagogiques pour la génération suivante : fiscalité, succession, gouvernance.</p>
+      </div>
+      <div class="service-tag"><strong>À l'unité</strong><br>800 - 1 500 € / module</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">viii.</div>
+      <div class="service-content">
+        <h4>Audit assurances complet</h4>
+        <p>RC vie privée, cyber, K&amp;R, responsabilité dirigeants, invalidité TNS. Identification des lacunes.</p>
+      </div>
+      <div class="service-tag"><strong>Annuel</strong><br>commission courtage</div>
+    </div>
+    <div class="service-row">
+      <div class="service-num">ix.</div>
+      <div class="service-content">
+        <h4>Création de FRUP / fondation abritée</h4>
+        <p>Structuration philanthropique, statuts, agrément, conventions de reversement.</p>
+      </div>
+      <div class="service-tag"><strong>Bespoke</strong><br>sur devis</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AGENTS DÉPLOYABLES ═══ -->
+<section class="bloc" id="agents">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 05</div>
+      <h2 class="section-titre">Agents IA déployables.<br><em>État réel,</em> sans esbroufe.</h2>
+    </div>
+    <div class="section-meta">Marcel · 6 transversaux · sub-agents par expertise</div>
+  </div>
+
+  <div class="agents-list">
+    <div class="agent-row">
+      <div class="agent-status deployed"></div>
+      <div class="agent-name">Marcel orchestrateur<small>workers/ikcp-marcel · claude-sonnet-4</small></div>
+      <div class="agent-desc">
+        Reçoit toute requête, route vers l'expertise, agrège la réponse. Web search natif Anthropic, prompt caching MIF II.
+        <dl><dt>Données entrées</dt><dd>message · history · theme · profile</dd>
+        <dt>Sortie</dt><dd>reply · sources · follow-ups · season</dd></dl>
+      </div>
+      <div class="agent-status-label deployed">En production</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status deployed"></div>
+      <div class="agent-name">Tools fiscaux<small>6 calculateurs déterministes</small></div>
+      <div class="agent-desc">
+        IR · droits succession · donation · IFI · plus-value immo · démembrement (CGI 669). Aucune hallucination, sources juridiques incluses dans le résultat.
+        <dl><dt>Couverture</dt><dd>CGI 779 · 990 I · 777 · 964 · 977 · 150 U · 1609 nonies G · 669</dd></dl>
+      </div>
+      <div class="agent-status-label deployed">En production</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status deployed"></div>
+      <div class="agent-name">Triage thématique<small>18 contextes injectés</small></div>
+      <div class="agent-desc">
+        10 expertises (fiscal, juridique, immo, transmission, PE, financement, philanthropie, art, marchés, admin) + 8 univers lifestyle (voyages, voitures, vins, montres, yachts, immo prestige, chevaux, art collection).
+        <dl><dt>Mécanisme</dt><dd>THEME_CONTEXTS dans Marcel · prompt préfixé selon thème</dd></dl>
+      </div>
+      <div class="agent-status-label deployed">En production</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status designed"></div>
+      <div class="agent-name">Gateway /v1/agents/ask<small>workers/ikcp-api · service binding</small></div>
+      <div class="agent-desc">
+        Endpoint canonique api.ikcp.eu, proxy vers Marcel. Extraction de sources heuristique (CGI / BOFIP / APIs). Prêt à déployer.
+      </div>
+      <div class="agent-status-label">Prêt</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status designed"></div>
+      <div class="agent-name">Documents-agent<small>OCR · classement · indexation</small></div>
+      <div class="agent-desc">
+        Reçoit PDF / image / email entrant, classifie (avis IR, K-bis, acte, AV…), OCR via Anthropic vision, stocke R2 chiffré, indexe D1.
+        <dl><dt>Modèle cible</dt><dd>Haiku 4.5 (volume + latence)</dd></dl>
+      </div>
+      <div class="agent-status-label">Conçu</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status designed"></div>
+      <div class="agent-name">Suivi-agent<small>Cron · alertes · arbitrages</small></div>
+      <div class="agent-desc">
+        Cron quotidien : échéances fiscales J-8, drift portefeuille, news Légifrance impactantes, propose arbitrages pour file Maxime.
+        <dl><dt>Triggers</dt><dd>Cloudflare Cron · Queues · KV state</dd></dl>
+      </div>
+      <div class="agent-status-label">Conçu</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status designed"></div>
+      <div class="agent-name">Reporting-agent<small>DER · RA · bilan trimestriel</small></div>
+      <div class="agent-desc">
+        Génère les livrables réglementaires (templates R2) avec données client D1, output PDF horodaté Universign, file de signature Yousign.
+      </div>
+      <div class="agent-status-label">Conçu</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status planned"></div>
+      <div class="agent-name">Juridique-agent<small>OCR + RAG Légifrance</small></div>
+      <div class="agent-desc">
+        Lit actes notariés et statuts, extrait clauses, croise avec Légifrance + jurisprudence Cass. com., signale risques avec citation pinpoint.
+        <dl><dt>Phase</dt><dd>2 (POC Q3 2026)</dd></dl>
+      </div>
+      <div class="agent-status-label">Phase 2</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status planned"></div>
+      <div class="agent-name">Sub-agents univers<small>1 par univers lifestyle</small></div>
+      <div class="agent-desc">
+        Art-agent (Artprice + Artnet), Voitures-agent (Hagerty + Artcurial), Vins-agent (Liv-ex + iDealwine), Montres-agent (Chrono24), etc.
+        Chacun avec ses tools de cotation / comparables.
+      </div>
+      <div class="agent-status-label">Phase 2</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status planned"></div>
+      <div class="agent-name">Recommendation-agent<small>catalogue produits Nortia / Alpheys</small></div>
+      <div class="agent-desc">
+        RAG sur catalogue produits CGP partenaires, matche profil ↔ solution. Output marqué "PROPOSITION" — validation Maxime obligatoire MIF II.
+        <dl><dt>Phase</dt><dd>2 (après partenariat grossiste signé)</dd></dl>
+      </div>
+      <div class="agent-status-label">Phase 2</div>
+    </div>
+
+    <div class="agent-row">
+      <div class="agent-status planned"></div>
+      <div class="agent-name">Exécution-agent<small>Yousign + Ubble + Nortia</small></div>
+      <div class="agent-desc">
+        Orchestration souscription : KYC fort (Ubble PVID), signature (Yousign / Universign QES), souscription API grossiste, archivage NF Z42-013.
+      </div>
+      <div class="agent-status-label">Phase 3</div>
+    </div>
+  </div>
+
+  <div class="agents-legend">
+    <div><span class="agent-status deployed"></span> En production — utilisable maintenant</div>
+    <div><span class="agent-status designed"></span> Conçu — code prêt, à déployer</div>
+    <div><span class="agent-status planned"></span> Planifié — Phase 2 ou 3</div>
+  </div>
+</section>
+
+<!-- ═══ CTA final ═══ -->
+<section class="cta-final">
+  <h2>Une <em>conviction</em>.<br>Beaucoup de <em>discipline</em>.</h2>
+  <p>
+    Si la valeur que nous décrivons rejoint la vôtre, nous proposons une heure d'échange — pour comprendre votre situation, pas pour vendre.
+  </p>
+  <div class="cta-row">
+    <a href="mailto:maxime@ikcp.fr?subject=IKCP%20%E2%80%94%20%C3%A9change%20pr%C3%A9liminaire" class="cta-primary">Demander un rendez-vous</a>
+    <a href="./family-office-v5-univers.html" class="cta-secondary">Explorer mes univers →</a>
+    <a href="./dashboard-famille-office.html" class="cta-secondary">Voir un dashboard membre →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Aperçu conviction · IKCP — IKIGAÏ Conseil Patrimonial · Maxime Juveneton<br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
+    <a href="./family-office-v3-hero-minimal.html">v3 minimaliste</a> &nbsp;·&nbsp;
+    <a href="./family-office-v4-live.html">v4 live (expertises)</a> &nbsp;·&nbsp;
+    <a href="./family-office-v5-univers.html">v5 univers (freemium)</a> &nbsp;·&nbsp;
+    <a href="./dashboard-famille-office.html">dashboard backtest</a>
+  </p>
+</footer>
+
+</body>
+</html>

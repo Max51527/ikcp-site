@@ -20,6 +20,21 @@ database_id = "REMPLACER_PAR_ID_DB"
 binding = "TOKENS"
 id = "REMPLACER_PAR_ID_KV"
 
+# ─── R2 bucket pour les documents privés clients ───
+# Créer avant déploiement :
+#   wrangler r2 bucket create ikcp-docs-private
+[[r2_buckets]]
+binding = "DOCS_R2"
+bucket_name = "ikcp-docs-private"
+
+# ─── Service binding vers documents-mcp-server (premier sub-agent IKCP) ───
+# Permet à /api/docs/upload de classifier automatiquement le doc uploadé.
+# Latence quasi-zéro (intra-Cloudflare). Activer après déploiement du sub-agent :
+#   cd workers/documents-mcp-server && wrangler deploy
+[[services]]
+binding = "DOCUMENTS_MCP"
+service = "ikcp-documents-mcp-server"
+
 # ─── Variables (texte plain) ───
 [vars]
 RESEND_FROM = "IKCP <maxime@ikcp.eu>"
@@ -33,5 +48,7 @@ ADMIN_EMAILS = "maxime@ikcp.fr,maxime@ikcp.eu"
 #   3. Mettre à jour APP_URL ci-dessus → https://client.ikcp.eu
 
 # ─── Secrets à pousser via wrangler (jamais dans ce fichier !) ───
-#   npx wrangler secret put JWT_SECRET       (générer 64 chars random)
-#   npx wrangler secret put RESEND_API_KEY   (re_xxx... depuis resend.com)
+#   npx wrangler secret put JWT_SECRET          (générer 64 chars random)
+#   npx wrangler secret put RESEND_API_KEY      (re_xxx... depuis resend.com)
+#   npx wrangler secret put MCP_SHARED_SECRET   (partagé avec documents-mcp-server)
+#                                                (générer : openssl rand -hex 32)

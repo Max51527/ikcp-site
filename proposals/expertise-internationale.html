@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Expertise internationale · Droit des affaires, sociétés, juridictions</title>
+<meta name="description" content="Droit des affaires, droit des sociétés, juridictions internationales : Luxembourg SOPARFI, Suisse forfait, UK non-dom, USA, OCDE. Marcel comparateur premium.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --bg-2: #0d100e;
+  --ink: #f4ece1;
+  --ink-mute: #8c857a;
+  --ink-faint: #524d47;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.14);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --line-faint: rgba(196, 162, 115, 0.05);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 1180px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 1; }
+
+/* ─── NAV ─── */
+nav.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 32px 48px;
+  max-width: 1180px; margin: 0 auto;
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+nav .menu { display: flex; gap: 28px; align-items: center; }
+nav a { color: var(--ink-mute); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.3s; font-weight: 400; }
+nav a:hover { color: var(--gold); }
+nav .premium-badge { padding: 5px 12px; border: 1px solid var(--gold); color: var(--gold); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+
+/* ─── HERO ─── */
+section.hero { padding: 80px 0 100px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; font-weight: 400; }
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(36px, 5vw, 64px); line-height: 1.08; letter-spacing: -0.022em;
+  margin-bottom: 32px; max-width: 880px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede { max-width: 700px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; font-weight: 300; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+.hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 64px; padding-top: 36px; border-top: 1px solid var(--line); gap: 0; }
+.hero-stat { padding: 20px 24px 0; border-right: 1px solid var(--line); }
+.hero-stat:last-child { border-right: none; }
+.hero-stat-num { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 30px; line-height: 1; margin-bottom: 8px; font-weight: 400; }
+.hero-stat-label { font-size: 11px; color: var(--ink-mute); letter-spacing: 0.06em; line-height: 1.5; }
+
+/* ─── SECTION ─── */
+section.bloc { padding: 100px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 50px; gap: 40px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; }
+.section-titre {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em;
+  max-width: 700px; margin-top: 12px;
+}
+.section-titre em { font-style: italic; color: var(--gold); }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; max-width: 280px; }
+
+/* ─── GRID 7 cartes ─── */
+.expert-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.expert-card {
+  background: var(--bg); padding: 36px 32px 32px;
+  display: flex; flex-direction: column; cursor: pointer;
+  transition: background 0.3s ease;
+  border-top: 3px solid transparent;
+  position: relative;
+}
+.expert-card:hover { background: rgba(196, 162, 115, 0.04); border-top-color: var(--gold); }
+.expert-card.open { background: rgba(196, 162, 115, 0.06); border-top-color: var(--gold); }
+.expert-card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; gap: 16px; }
+.expert-flag { font-size: 28px; line-height: 1; filter: grayscale(0.1); }
+.expert-cat {
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--gold); padding: 4px 10px; border: 1px solid rgba(196,162,115,0.3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.expert-titre {
+  font-family: 'Playfair Display', serif; font-weight: 500;
+  font-size: 22px; line-height: 1.2; letter-spacing: -0.005em;
+  margin-bottom: 14px;
+}
+.expert-titre em { font-style: italic; color: var(--gold); }
+.expert-pitch {
+  font-size: 13.5px; color: var(--ink-mute); line-height: 1.7;
+  margin-bottom: 18px; flex: 1;
+}
+.expert-vehicles {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+}
+.veh-chip {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
+  padding: 4px 10px; background: rgba(196, 162, 115, 0.05);
+  border: 1px solid var(--line-strong); color: var(--gold-bright);
+  letter-spacing: 0.04em;
+}
+.expert-trigger {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+}
+.expert-trigger .arrow { transition: transform 0.3s; }
+.expert-card.open .expert-trigger .arrow { transform: rotate(90deg); }
+
+/* ─── PANEL ─── */
+.expert-panel {
+  grid-column: 1 / -1;
+  background: var(--bg-2);
+  border-top: 1px solid var(--gold);
+  padding: 0 36px;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.expert-panel.open {
+  max-height: 1600px;
+  padding: 38px 36px 42px;
+  border-bottom: 1px solid var(--gold);
+}
+.panel-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; gap: 20px; flex-wrap: wrap; }
+.panel-titre { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; }
+.panel-titre em { color: var(--gold); }
+.panel-sub { font-size: 12.5px; color: var(--ink-mute); line-height: 1.6; max-width: 600px; margin-top: 6px; }
+.panel-close { background: none; border: 1px solid var(--line); color: var(--ink-mute); padding: 6px 14px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; }
+.panel-close:hover { color: var(--gold); border-color: var(--gold); }
+
+.panel-prompts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.prompt-chip { background: rgba(196, 162, 115, 0.06); border: 1px solid var(--line-strong); color: var(--ink); padding: 9px 16px; font-size: 12px; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; }
+.prompt-chip:hover { background: var(--gold); color: var(--bg); }
+
+.panel-input-row { display: flex; gap: 10px; margin-bottom: 18px; }
+.panel-input { flex: 1; background: var(--bg); border: 1px solid var(--line); color: var(--ink); padding: 14px 18px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.panel-input:focus { border-color: var(--gold); }
+.panel-send { padding: 0 28px; background: var(--gold); color: var(--bg); border: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; font-family: 'Inter', sans-serif; }
+.panel-send:disabled { opacity: 0.4; cursor: wait; }
+
+.panel-loader { display: none; align-items: center; gap: 12px; color: var(--ink-mute); font-size: 13px; margin-bottom: 18px; font-style: italic; font-family: 'Playfair Display', serif; }
+.panel-loader.visible { display: flex; }
+.panel-loader .pulse { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+
+.panel-response { background: var(--bg); border-left: 2px solid var(--gold); padding: 22px 26px; margin-bottom: 18px; min-height: 80px; font-size: 14.5px; line-height: 1.7; color: var(--ink); white-space: pre-wrap; display: none; }
+.panel-response.visible { display: block; }
+.panel-response strong { color: var(--gold); font-weight: 500; }
+.panel-response em { font-style: italic; color: var(--ink-mute); }
+.panel-response a.src-link { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(196,162,115,0.4); padding-bottom: 1px; transition: all 0.2s; }
+.panel-response a.src-link:hover { background: rgba(196,162,115,0.08); border-bottom-style: solid; }
+
+.panel-schema {
+  background: rgba(196,162,115,0.02); border: 1px solid var(--line);
+  padding: 28px 32px; margin-bottom: 22px;
+}
+.panel-schema svg { width: 100%; height: auto; max-height: 280px; }
+.panel-schema-legend { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--ink-mute); line-height: 1.7; font-family: 'Playfair Display', serif; font-style: italic; }
+
+.panel-footer { padding-top: 18px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--ink-faint); font-style: italic; font-family: 'Playfair Display', serif; line-height: 1.6; }
+
+/* ─── MATRICE COMPARATIVE ─── */
+.matrice {
+  border: 1px solid var(--line); background: var(--bg-2);
+  overflow-x: auto;
+}
+.matrice table { width: 100%; border-collapse: collapse; min-width: 720px; }
+.matrice th, .matrice td { padding: 16px 22px; text-align: left; border-bottom: 1px solid var(--line-faint); font-size: 13px; }
+.matrice tr:last-child td { border-bottom: none; }
+.matrice th { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid var(--line); }
+.matrice td.label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink-mute); width: 200px; }
+.matrice td.val { color: var(--ink); }
+.matrice td.val em { color: var(--gold); font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.matrice tr:hover { background: rgba(196,162,115,0.02); }
+
+/* ─── CTA final ─── */
+section.cta-final { padding: 110px 0 90px; text-align: center; }
+section.cta-final h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15; margin-bottom: 24px; letter-spacing: -0.018em; }
+section.cta-final h2 em { font-style: italic; color: var(--gold); }
+section.cta-final p { font-size: 15px; color: var(--ink-mute); line-height: 1.75; max-width: 580px; margin: 0 auto 36px; font-weight: 300; }
+.cta-row { display: inline-flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.cta-primary {
+  padding: 16px 36px; background: transparent; color: var(--gold);
+  border: 1px solid var(--gold); text-decoration: none;
+  font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  transition: all 0.3s;
+}
+.cta-primary:hover { background: var(--gold); color: var(--bg); }
+.cta-secondary { color: var(--ink-mute); text-decoration: none; font-size: 12.5px; letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid transparent; transition: all 0.3s; }
+.cta-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+footer.proto { padding: 48px; text-align: center; border-top: 1px solid var(--line); max-width: 1180px; margin: 0 auto; }
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+footer.proto a:hover { opacity: 0.7; }
+
+/* SVG */
+.panel-schema svg .gold-stroke { stroke: var(--gold); stroke-width: 1.2; fill: none; }
+.panel-schema svg .gold-dash { stroke: var(--gold); stroke-width: 1; fill: none; stroke-dasharray: 3 4; }
+.panel-schema svg .gold-fill { fill: var(--gold); }
+.panel-schema svg text { font-family: 'Inter', sans-serif; fill: var(--ink); font-size: 11px; }
+.panel-schema svg .label { font-weight: 500; }
+.panel-schema svg .sublabel { font-size: 9px; fill: var(--ink-mute); letter-spacing: 0.05em; text-transform: uppercase; }
+
+@media (max-width: 900px) {
+  main, nav.top, footer.proto { padding-left: 24px !important; padding-right: 24px !important; }
+  .expert-grid { grid-template-columns: 1fr; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .hero-stat:nth-child(2) { border-right: none; }
+  .hero-stat:nth-child(1), .hero-stat:nth-child(2) { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 22px; }
+  .panel-input-row { flex-direction: column; }
+  .panel-send { padding: 14px; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-meta { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand">IKCP<b>.</b></div>
+  <div class="menu">
+    <span class="premium-badge">Membres FO</span>
+    <a href="#droit">Droit</a>
+    <a href="#international">Juridictions</a>
+    <a href="#matrice">Matrice</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Expertise%20internationale%20%E2%80%94%20%C3%A9change">Échanger</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">— Expertise internationale</div>
+  <h1>Droit des affaires, sociétés, <em>juridictions</em>.<br>L'exhaustivité au service du <em>sur-mesure</em>.</h1>
+  <p class="lede">
+    Marcel comparateur déploie maintenant la dimension <em>internationale</em> du conseil patrimonial : Luxembourg, Suisse, Royaume-Uni, États-Unis, plus le droit des affaires et le droit des sociétés français. Sept thématiques, neuf calculateurs déterministes (dont exit tax, comparatif holdings, forfait suisse). Sources opposables.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">7</div>
+      <div class="hero-stat-label">Thématiques expertes ajoutées</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">5</div>
+      <div class="hero-stat-label">Juridictions couvertes (FR, LUX, CH, UK, USA)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">9</div>
+      <div class="hero-stat-label">Calculateurs déterministes</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">130+</div>
+      <div class="hero-stat-label">Conventions fiscales accessibles</div>
+    </div>
+  </div>
+</section>
+
+<!-- DROIT FRANÇAIS -->
+<section class="bloc" id="droit">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 01</div>
+      <h2 class="section-titre">Droit des <em>affaires</em>.<br>Droit des <em>sociétés</em>.</h2>
+    </div>
+    <div class="section-meta">Code de commerce<br>Code civil · CPI<br>BOFIP-INT · jurisprudence</div>
+  </div>
+
+  <div class="expert-grid" id="grid-droit">
+    <!-- 2 cartes : droit_affaires, droit_societes -->
+  </div>
+</section>
+
+<!-- INTERNATIONAL -->
+<section class="bloc" id="international">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 02</div>
+      <h2 class="section-titre">Cinq juridictions, <em>une</em> coordination.<br>Conventions OCDE en filigrane.</h2>
+    </div>
+    <div class="section-meta">Lux · CH · UK · USA · OCDE<br>Substance · BEPS · ATAD<br>Tie-breaker rules</div>
+  </div>
+
+  <div class="expert-grid" id="grid-international">
+    <!-- 5 cartes : international_lux, _ch, _uk, _us, convention_fiscale -->
+  </div>
+</section>
+
+<!-- MATRICE COMPARATIVE -->
+<section class="bloc" id="matrice">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 03</div>
+      <h2 class="section-titre">Matrice <em>comparative</em>.<br>Holdings · 4 juridictions.</h2>
+    </div>
+    <div class="section-meta">Indicatif 2026<br>Source : tool compare_holding_jurisdictions</div>
+  </div>
+
+  <div class="matrice">
+    <table>
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th>France SAS / SARL</th>
+          <th>Luxembourg SOPARFI</th>
+          <th>Suisse SA / Sàrl</th>
+          <th>Pays-Bas BV</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label">IS sur dividendes reçus</td>
+          <td class="val">0% <em>CGI 145 mère-fille</em></td>
+          <td class="val">0% <em>LIR 166</em></td>
+          <td class="val">5% <em>réduction holding 95%</em></td>
+          <td class="val">0% <em>participation exemption</em></td>
+        </tr>
+        <tr>
+          <td class="label">IS sur PV cession titres</td>
+          <td class="val">0% (long terme + 12% QPF) <em>CGI 219 I a quinquies</em></td>
+          <td class="val">0% <em>LIR 166</em></td>
+          <td class="val">Exonération <em>art. 70 LIFD</em></td>
+          <td class="val">0% <em>participation exemption</em></td>
+        </tr>
+        <tr>
+          <td class="label">Retenue à la source dividendes</td>
+          <td class="val">0% <em>actionnaire FR</em></td>
+          <td class="val">5-15% <em>convention LUX-FR</em></td>
+          <td class="val">35% — récupérable 15% <em>convention CH-FR</em></td>
+          <td class="val">15% <em>convention NL-FR</em></td>
+        </tr>
+        <tr>
+          <td class="label">Coût de constitution</td>
+          <td class="val">1 - 3 k€</td>
+          <td class="val">15 - 30 k€</td>
+          <td class="val">20 - 40 k€</td>
+          <td class="val">8 - 15 k€</td>
+        </tr>
+        <tr>
+          <td class="label">Coût récurrent annuel</td>
+          <td class="val">2 - 5 k€</td>
+          <td class="val">8 - 15 k€</td>
+          <td class="val">10 - 20 k€</td>
+          <td class="val">5 - 12 k€</td>
+        </tr>
+        <tr>
+          <td class="label">Substance économique</td>
+          <td class="val">Souple</td>
+          <td class="val">Stricte (BEPS / ATAD)</td>
+          <td class="val">Stricte (LIFD)</td>
+          <td class="val">Renforcée 2024+</td>
+        </tr>
+        <tr>
+          <td class="label">Cas d'usage privilégié</td>
+          <td class="val em">Holding domestique simple</td>
+          <td class="val em">PE / IP / international</td>
+          <td class="val em">Si actionnaire envisage CH</td>
+          <td class="val em">Sortie EU / réseau</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top: 24px; font-size: 12px; color: var(--ink-faint); font-style: italic; line-height: 1.7; font-family: 'Playfair Display', serif;">
+    Comparatif indicatif 2026. Toute structuration internationale doit être validée par un juriste fiscaliste, en tenant compte de la substance économique exigée (BEPS, ATAD, convention bilatérale, GAAR), du profil de l'actionnaire ultime et de la stratégie patrimoniale globale.
+  </p>
+</section>
+
+<!-- CTA -->
+<section class="cta-final">
+  <h2>L'<em>international</em> ne s'improvise pas.<br>Il se <em>structure</em>.</h2>
+  <p>
+    Cette page est ouverte aux membres Family Office. Pour explorer un cas international concret avec Marcel + Maxime, demandez un échange de cadrage.
+  </p>
+  <div class="cta-row">
+    <a href="mailto:maxime@ikcp.fr?subject=Expertise%20internationale%20%E2%80%94%20cadrage" class="cta-primary">Demander un cadrage</a>
+    <a href="./conviction-overview.html" class="cta-secondary">Voir la conviction →</a>
+    <a href="./sur-mesure-tarif.html" class="cta-secondary">Tarification sur-mesure →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Expertise internationale · IKCP — IKIGAÏ Conseil Patrimonial<br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
+    Tarifs et structurations indicatifs · validation par juriste fiscaliste systématique<br>
+    <a href="./conviction-overview.html">Conviction</a> &nbsp;·&nbsp;
+    <a href="./family-office-v5-univers.html">Univers</a> &nbsp;·&nbsp;
+    <a href="./sur-mesure-tarif.html">Tarif sur-mesure</a> &nbsp;·&nbsp;
+    <a href="./apercu-ecosysteme.html">Aperçu écosystème</a>
+  </p>
+</footer>
+
+<script src="./linkify-sources.js" defer></script>
+<script>
+const MARCEL_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
+
+const EXPERTISES = {
+  droit_affaires: {
+    flag: '⚖', cat: 'Droit des affaires',
+    titre: "Contrats, distribution, IP, restructuring",
+    pitch: "Clauses essentielles, propriété intellectuelle (INPI, brevets, droit d'auteur), agence commerciale (CGI L134), restructuring (mandat ad hoc, conciliation, sauvegarde, redressement).",
+    vehicles: ['Code de commerce L611+', 'CPI L113-9', 'INPI', 'CGI L134-1'],
+    prompts: [
+      "Clause de non-concurrence dans un pacte d'associés — limites jurisprudentielles",
+      "Procédure collective : choisir entre mandat ad hoc et conciliation",
+      "Cession de marque vs licence exclusive — impact fiscal",
+    ],
+    schema_id: 'schema-droit-affaires',
+    group: 'droit',
+  },
+  droit_societes: {
+    flag: '🏛', cat: 'Droit des sociétés',
+    titre: "Constitution, gouvernance, pactes, M&A",
+    pitch: "Choix forme sociale, constitution, gouvernance, pactes d'actionnaires (drag-along, tag-along, anti-dilution), opérations sur capital, fusion-absorption, scission, transmission.",
+    vehicles: ['Code commerce L210+', 'Pacte Dutreil', 'CGI 150-0 B ter', 'SAS / SARL / SA / SCI'],
+    prompts: [
+      "SAS vs SARL pour activité de conseil 250 k€ CA — pour et contre",
+      "Pacte d'actionnaires : clauses essentielles avant entrée d'un VC",
+      "Fusion-absorption simplifiée mère-fille : conditions et timing",
+    ],
+    schema_id: 'schema-droit-societes',
+    group: 'droit',
+  },
+  international_lux: {
+    flag: '🇱🇺', cat: 'Luxembourg',
+    titre: "SOPARFI · RAIF · SCA · Family Office",
+    pitch: "Société de participations financières (SOPARFI — exonération PV + dividendes 95-100%), RAIF pour PE, SCA pour gouvernance familiale, Wealth Management. Convention FR-LUX 1958/2018.",
+    vehicles: ['SOPARFI', 'RAIF', 'SCA', 'SICAR', 'LIR 166'],
+    prompts: [
+      "SOPARFI vs holding française — comparatif 5 M€ de participations PE",
+      "RAIF pour structurer un fonds 30 M€ family + amis",
+      "Substance économique exigée par ATAD — checklist Luxembourg",
+    ],
+    schema_id: 'schema-lux',
+    group: 'international',
+  },
+  international_ch: {
+    flag: '🇨🇭', cat: 'Suisse',
+    titre: "Forfait fiscal · SA / Sàrl · Pillar 3",
+    pitch: "Imposition d'après la dépense (LFID 2014), résidence fiscale CH, sociétés holding, AVS et Pillar 3a, fondation de famille (substitut trust). Convention FR-CH 1966/2014.",
+    vehicles: ['Forfait fiscal', 'LIFD 14, 69', 'SA/Sàrl', 'AVS', 'Pillar 3a'],
+    prompts: [
+      "Forfait fiscal Vaud vs Valais — comparaison 2026",
+      "Devenir résident fiscal suisse à 60 ans : checklist 12 mois",
+      "Conditions LFID 2016 : minimum 400 k CHF dépense imposable",
+    ],
+    schema_id: 'schema-ch',
+    group: 'international',
+  },
+  international_uk: {
+    flag: '🇬🇧', cat: 'Royaume-Uni',
+    titre: "Non-dom · FIC · Trust · IHT",
+    pitch: "Non-dom status (résident UK non-domicilié, deemed dom à 15 ans), Family Investment Company (alternative trust post-IHT), trust UK et impacts. Convention FR-UK 2008.",
+    vehicles: ['Non-dom', 'FIC', 'Trust', 'Remittance basis', 'IHT'],
+    prompts: [
+      "Non-dom vs FIC pour patrimoine 8 M€ — analyse 2026",
+      "Trust UK et résident fiscal français — transparence applicable",
+      "Brexit et libre circulation des capitaux : impact pratique",
+    ],
+    schema_id: 'schema-uk',
+    group: 'international',
+  },
+  international_us: {
+    flag: '🇺🇸', cat: 'États-Unis',
+    titre: "LLC Delaware · FATCA · Estate tax",
+    pitch: "LLC Delaware (gouvernance, fiscalité passe-partout), C-Corp vs S-Corp, FATCA (form 8938), estate tax (40% au-delà 60 k$ pour non-résident), exit tax US. Convention FR-USA 1994/2018.",
+    vehicles: ['LLC Delaware', 'C-Corp', 'FATCA', 'IRC 877A', 'Estate tax'],
+    prompts: [
+      "LLC Delaware pour détenir un investissement immo USA 2 M$ — fiscalité",
+      "FATCA : obligations déclaratives résident français avec compte US",
+      "Estate tax pour résidents non-USA détenant immo US : seuil 60 k$",
+    ],
+    schema_id: 'schema-us',
+    group: 'international',
+  },
+  convention_fiscale: {
+    flag: '🌐', cat: 'Conventions fiscales',
+    titre: "Modèle OCDE · MLI · Tie-breaker",
+    pitch: "Modèle OCDE (art. 4, 7, 10, 11, 12, 13, 23), tie-breaker rules pour résidence dual, MLI 2017 (BEPS), 130+ conventions FR accessibles. Crédit d'impôt vs exemption.",
+    vehicles: ['Modèle OCDE', 'MLI BEPS', 'Tie-breaker', '130+ conventions FR'],
+    prompts: [
+      "Tie-breaker FR-CH : conditions de résidence fiscale dual",
+      "Crédit d'impôt vs exemption — quand chaque méthode s'applique",
+      "MLI BEPS : impact sur les holdings européennes 2026",
+    ],
+    schema_id: 'schema-ocde',
+    group: 'international',
+  },
+};
+
+const SCHEMAS = {
+  'schema-lux': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="100" r="22" class="gold-stroke"/>
+    <text x="60" y="104" text-anchor="middle" class="label">Vous</text>
+    <text x="60" y="138" text-anchor="middle" class="sublabel">résident FR</text>
+    <rect x="180" y="60" width="160" height="80" class="gold-stroke"/>
+    <text x="260" y="88" text-anchor="middle" class="label" fill="#c4a273">SOPARFI · LUX</text>
+    <text x="260" y="106" text-anchor="middle" class="sublabel">Exo dividendes 95-100%</text>
+    <text x="260" y="120" text-anchor="middle" class="sublabel">LIR 166 · BEPS / ATAD</text>
+    <rect x="380" y="60" width="80" height="50" class="gold-stroke"/>
+    <text x="420" y="84" text-anchor="middle" class="label">Cibles</text>
+    <text x="420" y="100" text-anchor="middle" class="sublabel">PE / IP / op</text>
+    <path d="M 82 90 L 175 80" class="gold-dash"/>
+    <path d="M 340 90 L 380 90" class="gold-dash"/>
+    <text x="135" y="65" class="sublabel">apport titres</text>
+    <text x="350" y="60" class="sublabel">détention</text>
+    <text x="260" y="170" text-anchor="middle" class="sublabel">Convention FR-LUX 1958 — modifiée 2018 · retenue 5-15% dividendes</text>
+  </svg>`,
+  'schema-ch': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="100" r="22" class="gold-stroke"/>
+    <text x="60" y="104" text-anchor="middle" class="label">Vous</text>
+    <text x="60" y="138" text-anchor="middle" class="sublabel">non-actif</text>
+    <rect x="180" y="40" width="200" height="120" class="gold-stroke"/>
+    <text x="280" y="68" text-anchor="middle" class="label" fill="#c4a273">Forfait fiscal CH</text>
+    <text x="280" y="88" text-anchor="middle" class="sublabel">7 × loyer / val. locative</text>
+    <text x="280" y="104" text-anchor="middle" class="sublabel">min 400 k CHF base imposable</text>
+    <text x="280" y="124" text-anchor="middle" class="sublabel">LFID 2014 · LIFD 14</text>
+    <text x="280" y="142" text-anchor="middle" class="sublabel">Vaud, Valais, Genève, Tessin</text>
+    <path d="M 82 95 L 175 80" class="gold-dash"/>
+    <text x="115" y="75" class="sublabel">domicile</text>
+    <text x="280" y="180" text-anchor="middle" class="sublabel">Convention FR-CH 1966/2014 · pas d'activité salariée CH</text>
+  </svg>`,
+  'schema-droit-societes': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="100" r="22" class="gold-stroke"/>
+    <text x="60" y="104" text-anchor="middle" class="label">Cédant</text>
+    <rect x="180" y="40" width="160" height="80" class="gold-stroke"/>
+    <text x="260" y="68" text-anchor="middle" class="label" fill="#c4a273">Holding NewCo</text>
+    <text x="260" y="86" text-anchor="middle" class="sublabel">CGI 150-0 B ter</text>
+    <text x="260" y="104" text-anchor="middle" class="sublabel">Pacte Dutreil 787 B</text>
+    <rect x="180" y="140" width="160" height="48" class="gold-stroke"/>
+    <text x="260" y="166" text-anchor="middle" class="label">Société cible</text>
+    <text x="260" y="180" text-anchor="middle" class="sublabel">opérationnelle</text>
+    <path d="M 82 95 L 175 70" class="gold-dash"/>
+    <text x="120" y="68" class="sublabel">apport titres</text>
+    <path d="M 260 140 L 260 120" class="gold-stroke"/>
+    <text x="280" y="135" class="sublabel">div remontés</text>
+  </svg>`,
+  'schema-droit-affaires': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <rect x="40" y="40" width="120" height="60" class="gold-stroke"/>
+    <text x="100" y="62" text-anchor="middle" class="label">Concédant</text>
+    <text x="100" y="80" text-anchor="middle" class="sublabel">marque / brevet</text>
+    <rect x="200" y="40" width="120" height="60" class="gold-stroke"/>
+    <text x="260" y="62" text-anchor="middle" class="label" fill="#c4a273">Contrat</text>
+    <text x="260" y="80" text-anchor="middle" class="sublabel">CPI L113 · L134</text>
+    <rect x="360" y="40" width="120" height="60" class="gold-stroke"/>
+    <text x="420" y="62" text-anchor="middle" class="label">Distributeur</text>
+    <text x="420" y="80" text-anchor="middle" class="sublabel">agence / franchise</text>
+    <path d="M 160 70 L 200 70" class="gold-dash"/>
+    <path d="M 320 70 L 360 70" class="gold-dash"/>
+    <text x="100" y="140" class="sublabel">→ exclusivité · territoire · durée · royalties · clauses sortie</text>
+    <text x="100" y="160" class="sublabel">→ INPI dépôt · CPI L113-9 (logiciel) · CGI L134 agence</text>
+  </svg>`,
+  'schema-uk': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="100" r="22" class="gold-stroke"/>
+    <text x="60" y="104" text-anchor="middle" class="label">Vous</text>
+    <text x="60" y="138" text-anchor="middle" class="sublabel">non-dom</text>
+    <rect x="180" y="40" width="180" height="56" class="gold-stroke"/>
+    <text x="270" y="64" text-anchor="middle" class="label" fill="#c4a273">Family Investment Co</text>
+    <text x="270" y="80" text-anchor="middle" class="sublabel">Ltd UK · alternative trust</text>
+    <rect x="180" y="120" width="180" height="56" class="gold-stroke"/>
+    <text x="270" y="144" text-anchor="middle" class="label">Trust UK</text>
+    <text x="270" y="160" text-anchor="middle" class="sublabel">remittance basis</text>
+    <path d="M 82 90 L 175 65" class="gold-dash"/>
+    <path d="M 82 110 L 175 145" class="gold-dash"/>
+    <text x="270" y="195" text-anchor="middle" class="sublabel">Deemed dom à 15 ans · Convention FR-UK 2008</text>
+  </svg>`,
+  'schema-us': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="100" r="22" class="gold-stroke"/>
+    <text x="60" y="104" text-anchor="middle" class="label">Vous</text>
+    <text x="60" y="138" text-anchor="middle" class="sublabel">résident FR</text>
+    <rect x="180" y="40" width="180" height="56" class="gold-stroke"/>
+    <text x="270" y="64" text-anchor="middle" class="label" fill="#c4a273">LLC Delaware</text>
+    <text x="270" y="80" text-anchor="middle" class="sublabel">passe-partout fiscal</text>
+    <rect x="180" y="120" width="180" height="56" class="gold-stroke"/>
+    <text x="270" y="144" text-anchor="middle" class="label">Investissement</text>
+    <text x="270" y="160" text-anchor="middle" class="sublabel">immo · PE · participation</text>
+    <path d="M 82 90 L 175 65" class="gold-dash"/>
+    <path d="M 270 96 L 270 120" class="gold-stroke"/>
+    <text x="270" y="195" text-anchor="middle" class="sublabel">FATCA form 8938 · convention FR-USA 2018</text>
+  </svg>`,
+  'schema-ocde': `<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+    <text x="240" y="32" text-anchor="middle" class="label" fill="#c4a273">Tie-breaker · Modèle OCDE art. 4</text>
+    <rect x="20" y="50" width="100" height="50" class="gold-stroke"/>
+    <text x="70" y="72" text-anchor="middle" class="label">i. Foyer</text>
+    <text x="70" y="88" text-anchor="middle" class="sublabel">permanent</text>
+    <rect x="140" y="50" width="100" height="50" class="gold-stroke"/>
+    <text x="190" y="72" text-anchor="middle" class="label">ii. Centre</text>
+    <text x="190" y="88" text-anchor="middle" class="sublabel">intérêts éco</text>
+    <rect x="260" y="50" width="100" height="50" class="gold-stroke"/>
+    <text x="310" y="72" text-anchor="middle" class="label">iii. Séjour</text>
+    <text x="310" y="88" text-anchor="middle" class="sublabel">habituel</text>
+    <rect x="380" y="50" width="80" height="50" class="gold-stroke"/>
+    <text x="420" y="72" text-anchor="middle" class="label">iv. Nationalité</text>
+    <path d="M 120 75 L 140 75" class="gold-dash"/>
+    <path d="M 240 75 L 260 75" class="gold-dash"/>
+    <path d="M 360 75 L 380 75" class="gold-dash"/>
+    <text x="240" y="135" text-anchor="middle" class="sublabel">Application séquentielle · MLI BEPS 2017 · 130+ conventions FR</text>
+  </svg>`,
+};
+
+// Préambules → injectés en tête du message vers Marcel
+const PREAMBLES = {
+  droit_affaires: "[Expertise · Droit des affaires] Tu réponds avec : (1) cadre juridique applicable (Code de commerce + CPI), (2) clauses recommandées + jurisprudence récente, (3) implications fiscales si pertinentes (CGI). Sources opposables.",
+  droit_societes: "[Expertise · Droit des sociétés] Tu réponds avec : (1) forme sociale + gouvernance pertinente, (2) clauses du pacte d'actionnaires applicables, (3) impact fiscal CGI 150-0 B ter / 787 B Dutreil.",
+  international_lux: "[Expertise · Luxembourg] Tu réponds en cadrant : (1) véhicule pertinent (SOPARFI / RAIF / SCA), (2) règles substance économique BEPS / ATAD, (3) impact convention FR-LUX 1958/2018, (4) coût réel constitution + récurrent.",
+  international_ch: "[Expertise · Suisse] Tu réponds en cadrant : (1) si forfait fiscal applicable (canton + conditions LFID 2016), (2) base imposable estimée, (3) implications convention FR-CH 1966/2014, (4) AVS / Pillar 3a si pertinent.",
+  international_uk: "[Expertise · Royaume-Uni] Tu réponds en cadrant : (1) statut non-dom et durée résidence, (2) FIC vs trust selon objectif, (3) IHT et remittance basis, (4) convention FR-UK 2008.",
+  international_us: "[Expertise · USA] Tu réponds en cadrant : (1) véhicule pertinent (LLC Delaware / C-Corp), (2) FATCA et obligations déclaratives FR, (3) estate tax USA si applicable (seuil 60 k$ non-résident), (4) convention FR-USA 1994/2018.",
+  convention_fiscale: "[Expertise · Conventions fiscales] Tu réponds en cadrant : (1) convention bilatérale applicable, (2) tie-breaker OCDE art. 4 si résidence dual, (3) méthode d'élimination (crédit d'impôt vs exemption), (4) impact MLI BEPS 2017.",
+};
+
+function escapeAttr(s) { return String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+function renderCards() {
+  const groups = { droit: document.getElementById('grid-droit'), international: document.getElementById('grid-international') };
+  Object.entries(EXPERTISES).forEach(([key, e]) => {
+    const card = document.createElement('div');
+    card.className = 'expert-card';
+    card.dataset.key = key;
+    card.innerHTML = `
+      <div class="expert-card-head">
+        <span class="expert-flag">${e.flag}</span>
+        <span class="expert-cat">${e.cat}</span>
+      </div>
+      <div class="expert-titre">${e.titre}</div>
+      <div class="expert-pitch">${e.pitch}</div>
+      <div class="expert-vehicles">${e.vehicles.map(v => `<span class="veh-chip">${v}</span>`).join('')}</div>
+      <div class="expert-trigger"><span>Demander à Marcel</span><span class="arrow">→</span></div>
+    `;
+    card.addEventListener('click', () => togglePanel(key));
+    groups[e.group].appendChild(card);
+
+    const panel = document.createElement('div');
+    panel.className = 'expert-panel';
+    panel.dataset.panel = key;
+    panel.innerHTML = `
+      <div class="panel-head">
+        <div>
+          <div class="panel-titre"><em>${e.cat}</em> · ${e.titre}</div>
+          <div class="panel-sub">Marcel mobilise les agents Fiscal + Juridique + Reporting, croise CGI / Code de commerce / convention bilatérale, restitue avec sources cliquables.</div>
+        </div>
+        <button class="panel-close" data-close="${key}">Fermer ✕</button>
+      </div>
+      ${SCHEMAS[e.schema_id] ? `<div class="panel-schema">${SCHEMAS[e.schema_id]}<div class="panel-schema-legend">Schéma indicatif. Toute structuration validée par juriste fiscaliste avant exécution.</div></div>` : ''}
+      <div class="panel-prompts">
+        ${e.prompts.map(p => `<button class="prompt-chip" data-prompt="${escapeAttr(p)}">${p}</button>`).join('')}
+      </div>
+      <div class="panel-input-row">
+        <input class="panel-input" type="text" placeholder="Votre question…" data-input="${key}">
+        <button class="panel-send" data-send="${key}">Envoyer</button>
+      </div>
+      <div class="panel-loader" data-loader="${key}"><span class="pulse"></span><span>Marcel orchestre les agents…</span></div>
+      <div class="panel-response" data-response="${key}"></div>
+      <div class="panel-footer">
+        Cette réponse est <em>une préparation</em>, validation Maxime systématique avant action. Toute structuration internationale doit faire l'objet d'un audit substance économique (BEPS / ATAD) par un juriste fiscaliste.
+      </div>
+    `;
+    groups[e.group].appendChild(panel);
+  });
+
+  // Bind interactions
+  Object.keys(EXPERTISES).forEach(key => {
+    const panel = document.querySelector(`.expert-panel[data-panel="${key}"]`);
+    panel.querySelector(`[data-close="${key}"]`).addEventListener('click', ev => { ev.stopPropagation(); togglePanel(key); });
+    panel.querySelectorAll('.prompt-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        panel.querySelector('input.panel-input').value = chip.dataset.prompt;
+        submit(key);
+      });
+    });
+    panel.querySelector(`[data-send="${key}"]`).addEventListener('click', () => submit(key));
+    panel.querySelector(`[data-input="${key}"]`).addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') submit(key);
+    });
+  });
+}
+
+function togglePanel(key) {
+  const card = document.querySelector(`.expert-card[data-key="${key}"]`);
+  const panel = document.querySelector(`.expert-panel[data-panel="${key}"]`);
+  if (!card || !panel) return;
+  const wasOpen = panel.classList.contains('open');
+  document.querySelectorAll('.expert-card.open').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.expert-panel.open').forEach(p => p.classList.remove('open'));
+  if (!wasOpen) {
+    card.classList.add('open');
+    panel.classList.add('open');
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    setTimeout(() => panel.querySelector('input.panel-input')?.focus(), 350);
+  }
+}
+
+async function submit(key) {
+  const e = EXPERTISES[key];
+  const panel = document.querySelector(`.expert-panel[data-panel="${key}"]`);
+  const input = panel.querySelector('input.panel-input');
+  const sendBtn = panel.querySelector(`[data-send="${key}"]`);
+  const loader = panel.querySelector(`[data-loader="${key}"]`);
+  const responseEl = panel.querySelector(`[data-response="${key}"]`);
+  const q = input.value.trim();
+  if (!q) { input.focus(); return; }
+
+  sendBtn.disabled = true;
+  loader.classList.add('visible');
+  responseEl.classList.remove('visible');
+  responseEl.textContent = '';
+
+  let reply = '';
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 28000);
+    const res = await fetch(MARCEL_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `${PREAMBLES[key]}\n\nQuestion : ${q}`, history: [], theme: key }),
+      signal: ctrl.signal,
+    });
+    clearTimeout(t);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    reply = json.reply || '';
+  } catch (err) {
+    console.warn('[IKCP] Marcel KO', err);
+    reply = `*Mode démo — Marcel inatteignable.*\n\nVotre question : ${q}\n\nUne fois Marcel déployé avec les nouveaux contextes (${key}), la réponse couvrira : cadre juridique applicable, sources cliquables (CGI / BOFIP / convention bilatérale), exemples chiffrés, et alerte sur la nécessité de valider avec un juriste fiscaliste.`;
+  }
+
+  loader.classList.remove('visible');
+  sendBtn.disabled = false;
+  responseEl.classList.add('visible');
+  responseEl.innerHTML = mdLite(reply);
+}
+
+function mdLite(text) {
+  const html = String(text)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>')
+    .replace(/<!--[\s\S]*?-->/g, '');
+  return (typeof window !== 'undefined' && window.IKCP_linkify) ? window.IKCP_linkify(html) : html;
+}
+
+document.addEventListener('DOMContentLoaded', renderCards);
+</script>
+
+</body>
+</html>

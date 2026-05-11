@@ -1,0 +1,46 @@
+# Sub-agent MCP server template (IKCP)
+#
+# CRÉATION D'UN NOUVEAU SUB-AGENT
+# ────────────────────────────────
+#   1. cp -r workers/ikcp-subagent-template workers/<nom>-mcp-server
+#   2. Renommer name = "<nom>-mcp-server"
+#   3. Adapter worker.js (TOOLS + callTool)
+#   4. wrangler secret put MCP_SHARED_SECRET (généré aléatoirement, partagé avec ikcp-marcel)
+#   5. wrangler deploy
+#   6. Ajouter le service binding dans workers/ikcp-marcel/wrangler.toml :
+#         [[services]]
+#         binding = "<NOM>_MCP"
+#         service = "<nom>-mcp-server"
+#   7. Adapter Marcel pour appeler ce sub-agent via env.<NOM>_MCP.fetch(...)
+
+name = "ikcp-subagent-template"
+main = "worker.js"
+compatibility_date = "2026-05-09"
+
+[observability]
+enabled = true
+
+# ─── Bindings éventuels (selon le sub-agent) ───────────────────────────
+#
+# Pour documents-mcp-server :
+# [[r2_buckets]]
+# binding = "DOCS_R2"
+# bucket_name = "ikcp-docs-private"
+#
+# Pour suivi-mcp-server :
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "ikcp-client-db"
+# database_id = "<id>"
+# [triggers]
+# crons = ["0 8 * * *"]   # quotidien 8h
+#
+# Pour reporting-mcp-server :
+# [[r2_buckets]]
+# binding = "TEMPLATES_R2"
+# bucket_name = "ikcp-templates"
+
+# ─── Secrets à configurer (Cloudflare Dashboard ou wrangler secret put) ──
+#
+# MCP_SHARED_SECRET    — partagé avec ikcp-marcel pour auth HMAC
+# ANTHROPIC_API_KEY    — si le sub-agent appelle l'API Anthropic (ex : OCR)

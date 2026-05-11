@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Dashboard admin Maxime (interne)</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0d0b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c;
+  --line: rgba(196,162,115,0.14); --line-strong: rgba(196,162,115,0.32);
+  --ok: #7fae7d; --warn: #d4a85a; --bad: #c97a6a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+nav.top { position: sticky; top: 0; z-index: 50; padding: 14px 24px; background: rgba(10,13,11,0.96); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
+.brand { font-family: 'Playfair Display', serif; font-size: 16px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.admin-tag { padding: 5px 12px; border: 1px solid var(--warn); color: var(--warn); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+.refresh-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 7px 14px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; }
+.refresh-btn:hover { background: var(--gold); color: var(--bg); }
+
+main { max-width: 1400px; margin: 0 auto; padding: 30px 24px 60px; }
+
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin-bottom: 28px; letter-spacing: -0.018em; }
+h1 em { font-style: italic; color: var(--gold); }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 36px; }
+.kpi { background: var(--bg-2); padding: 22px 18px; }
+.kpi-num { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+.kpi-num em { font-style: normal; font-size: 12px; color: var(--ink-mute); margin-left: 4px; }
+.kpi-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mute); }
+
+section.bloc { margin-bottom: 36px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.section-titre { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 20px; letter-spacing: -0.005em; }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; }
+
+.table-wrap { background: var(--bg-2); border: 1px solid var(--line); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 700px; }
+th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+th { background: rgba(196,162,115,0.04); color: var(--gold); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+td { color: var(--ink); }
+td.mono { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--gold-bright); letter-spacing: 0.04em; }
+td.mute { color: var(--ink-mute); }
+td.num { text-align: right; font-family: 'JetBrains Mono', monospace; }
+tr:hover td { background: rgba(196,162,115,0.025); }
+
+.tag { display: inline-block; padding: 2px 8px; border-radius: 1px; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid; font-family: 'Inter', sans-serif; }
+.tag.actif { color: var(--ok); border-color: rgba(127,174,125,0.4); background: rgba(127,174,125,0.06); }
+.tag.attente { color: var(--warn); border-color: rgba(212,168,90,0.4); background: rgba(212,168,90,0.06); }
+.tag.expire { color: var(--bad); border-color: rgba(201,122,106,0.4); background: rgba(201,122,106,0.06); }
+.tag.non_redeem { color: var(--ink-faint); border-color: var(--line); }
+
+.alert { padding: 14px 20px; background: rgba(212,168,90,0.06); border-left: 2px solid var(--warn); margin-bottom: 14px; font-size: 13px; color: var(--ink); }
+.alert.bad { background: rgba(201,122,106,0.06); border-color: var(--bad); }
+.alert.ok { background: rgba(127,174,125,0.06); border-color: var(--ok); }
+
+.actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-action { padding: 8px 16px; background: transparent; color: var(--gold); border: 1px solid var(--gold); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; text-decoration: none; }
+.btn-action:hover { background: var(--gold); color: var(--bg); }
+
+.auth-form { max-width: 460px; margin: 80px auto; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--line); }
+.auth-form h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 26px; margin-bottom: 18px; }
+.auth-form p { font-size: 13px; color: var(--ink-mute); margin-bottom: 22px; }
+.auth-form input { width: 100%; background: var(--bg); border: 1px solid var(--line); color: var(--ink); padding: 13px 16px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 14px; }
+.auth-form input:focus { border-color: var(--gold); }
+.auth-form button { width: 100%; padding: 14px; background: var(--gold); color: var(--bg); border: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+@media (max-width: 1100px) { .kpi-strip { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 700px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Admin · interne · Maxime</div>
+  </div>
+  <div style="display:flex; gap:14px; align-items:center;">
+    <span class="admin-tag">Auth bearer requis</span>
+    <button class="refresh-btn" id="refresh-btn">↻ Rafraîchir</button>
+  </div>
+</nav>
+
+<main>
+
+<div id="auth-screen" style="display:none;">
+  <div class="auth-form">
+    <h2>Authentification admin</h2>
+    <p>Saisissez le bearer token admin (cf. secret <code>ADMIN_TOKEN</code> Cloudflare). Le token n'est jamais loggé côté client.</p>
+    <input type="password" id="admin-token-input" placeholder="Bearer token..." autocomplete="off">
+    <button id="auth-submit">Se connecter</button>
+    <div id="auth-error" style="margin-top:12px; color: var(--bad); font-size: 12.5px; display:none;"></div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <div class="eyebrow">— Suivi beta cohorte 1 (S2 2026)</div>
+  <h1>Dashboard <em>admin</em></h1>
+
+  <!-- Alertes -->
+  <section class="bloc" id="alerts-section">
+    <h3 class="section-titre" style="margin-bottom: 12px;">Alertes</h3>
+    <div id="alerts-container">
+      <div class="alert">Chargement…</div>
+    </div>
+  </section>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip" id="kpi-strip">
+    <div class="kpi"><div class="kpi-num">—</div><div class="kpi-label">Codes émis</div></div>
+    <div class="kpi"><div class="kpi-num">—</div><div class="kpi-label">Redeemés</div></div>
+    <div class="kpi"><div class="kpi-num">—</div><div class="kpi-label">Familles actives</div></div>
+    <div class="kpi"><div class="kpi-num">—</div><div class="kpi-label">Marcel · q ce mois</div></div>
+    <div class="kpi"><div class="kpi-num">—</div><div class="kpi-label">Arbitrages en attente</div></div>
+    <div class="kpi"><div class="kpi-num">—</div><div class="kpi-label">NPS moyen</div></div>
+  </div>
+
+  <!-- Codes beta -->
+  <section class="bloc">
+    <div class="section-head">
+      <h3 class="section-titre">Codes beta · suivi</h3>
+      <span class="section-meta">cible cohorte 1 = 5 redeemés · cohorte finale = 50</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th><th>Émis</th><th>Source</th><th>Notes</th>
+            <th>Status</th><th>Email</th><th>Redeemed at</th>
+          </tr>
+        </thead>
+        <tbody id="codes-tbody">
+          <tr><td colspan="7" class="mute">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Membres beta -->
+  <section class="bloc">
+    <div class="section-head">
+      <h3 class="section-titre">Membres beta · activité</h3>
+      <span class="section-meta">7 derniers jours</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Famille</th><th>Email</th><th>Statut</th>
+            <th>Dern. login</th><th>Marcel q (7j)</th>
+            <th>Modules NextGen</th><th>NPS</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="members-tbody">
+          <tr><td colspan="8" class="mute">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- File arbitrages -->
+  <section class="bloc">
+    <div class="section-head">
+      <h3 class="section-titre">File arbitrages · attente Maxime</h3>
+      <span class="section-meta">MIF II · validation humaine systématique</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Famille</th><th>Titre</th>
+            <th>Préparé</th><th>Gain estimé</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="arbitrages-tbody">
+          <tr><td colspan="7" class="mute">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Activité agents -->
+  <section class="bloc">
+    <div class="section-head">
+      <h3 class="section-titre">Activité agents · logs récents</h3>
+      <span class="section-meta">20 derniers events D1</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Horodatage</th><th>Agent</th><th>Action</th><th>Famille</th></tr></thead>
+        <tbody id="activity-tbody">
+          <tr><td colspan="4" class="mute">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<script>
+// Convention : ce dashboard appelle GET /api/admin/* du worker ikcp-client
+// avec un header Authorization: Bearer <ADMIN_TOKEN>
+// Les endpoints à implémenter Phase 2 dans ikcp-client/worker.js :
+//   · GET /api/admin/kpis     → KPIs synthétiques
+//   · GET /api/admin/codes    → liste beta_codes
+//   · GET /api/admin/members  → liste users + activité 7j
+//   · GET /api/admin/arbitrages → file en_attente
+//   · GET /api/admin/activity → 20 derniers events
+//   · GET /api/admin/alerts   → alertes (codes expirés, erreurs, etc.)
+//
+// En l'absence de ces endpoints (Phase 1), on charge des données mock pour démo.
+
+const API_BASE = window.IKCP_CLIENT_URL || 'https://client.ikcp.eu';
+const TOKEN_KEY = 'ikcp_admin_token';
+
+function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
+function setToken(t) { sessionStorage.setItem(TOKEN_KEY, t); }
+function clearToken() { sessionStorage.removeItem(TOKEN_KEY); }
+
+async function apiGet(path) {
+  const token = getToken();
+  if (!token) throw new Error('no_token');
+  try {
+    const res = await fetch(API_BASE + path, {
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    if (res.status === 401) { clearToken(); showAuthScreen(); throw new Error('unauthorized'); }
+    if (!res.ok) throw new Error('http_' + res.status);
+    return await res.json();
+  } catch (e) {
+    console.warn('[admin]', path, e);
+    return null;
+  }
+}
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').style.display = 'block';
+  document.getElementById('dashboard').style.display = 'none';
+}
+function hideAuthScreen() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+}
+
+// ─── Mock data pour démo (Phase 1 sans backend) ──────────────────────
+const MOCK = {
+  kpis: { codes_emis: 50, redeemed: 4, actives: 3, marcel_q_month: 47, arb_attente: 5, nps: 8.2 },
+  alerts: [
+    { type: 'ok', text: '4 / 5 codes cohorte 1 redeemés (80%)' },
+    { type: 'warn', text: 'Famille F5 (Hugo M.) sans activité depuis 9 jours · email relance recommandé' },
+    { type: 'warn', text: '1 arbitrage > 14 j en attente (Famille F2 · Dutreil DupSoft)' },
+    { type: 'ok', text: 'Aucune erreur 5xx Marcel sur 7 derniers jours' },
+  ],
+  codes: [
+    { code: 'BETA-FAMI-DEMO-2026', created: '2026-04-28', source: 'pitch maxime', notes: 'Démo · Famille F1', status: 'redeemed', email: 'm.dupont@example.com', redeemed: '2026-05-02' },
+    { code: 'BETA-FAMI-PIVOT-2026', created: '2026-04-28', source: 'rdv', notes: 'Famille F2 ETI', status: 'redeemed', email: 's.martin@example.com', redeemed: '2026-05-04' },
+    { code: 'BETA-FAMI-A1B2-C3D4', created: '2026-05-01', source: 'rdv', notes: 'Famille F3 holding immo', status: 'redeemed', email: 'l.bernard@example.com', redeemed: '2026-05-06' },
+    { code: 'BETA-FAMI-K9L0-M1N2', created: '2026-05-03', source: 'recommandation', notes: 'Famille F4 frontalière', status: 'redeemed', email: 'h.lefevre@example.com', redeemed: '2026-05-08' },
+    { code: 'BETA-FAMI-X9Y8-Z7W6', created: '2026-05-03', source: 'pitch maxime', notes: 'Famille F5 dirigeant solo', status: 'non_redeem', email: '', redeemed: '' },
+  ],
+  members: [
+    { fam: 'F1 · Dupont', email: 'm.dupont@example.com', status: 'actif', last_login: 'il y a 2 h', marcel_q: 12, modules: '2/6', nps: 9 },
+    { fam: 'F2 · Martin', email: 's.martin@example.com', status: 'actif', last_login: 'il y a 1 j', marcel_q: 18, modules: '3/6', nps: 9 },
+    { fam: 'F3 · Bernard', email: 'l.bernard@example.com', status: 'actif', last_login: 'il y a 3 h', marcel_q: 6, modules: '1/6', nps: 7 },
+    { fam: 'F4 · Lefèvre', email: 'h.lefevre@example.com', status: 'actif', last_login: 'il y a 4 j', marcel_q: 11, modules: '2/6', nps: 8 },
+    { fam: 'F5 · Lambert', email: '—', status: 'attente', last_login: '—', marcel_q: 0, modules: '0/6', nps: '—' },
+  ],
+  arbitrages: [
+    { id: 'arb_001', fam: 'F2 · Martin', titre: 'Donation-cession SARL DupSoft (Schéma D Dutreil)', prep: 'il y a 14 j', gain: '1 400 000 €', status: 'attente' },
+    { id: 'arb_002', fam: 'F1 · Dupont', titre: 'Allègement LVMH dans PEA Marc', prep: 'il y a 6 j', gain: 'qualitatif', status: 'attente' },
+    { id: 'arb_003', fam: 'F3 · Bernard', titre: 'Don familial 31 865 €', prep: 'il y a 4 j', gain: '6 373 €', status: 'attente' },
+    { id: 'arb_004', fam: 'F4 · Lefèvre', titre: 'Optimisation forfait fiscal Suisse · Vaud', prep: 'il y a 2 j', gain: 'à chiffrer', status: 'attente' },
+    { id: 'arb_005', fam: 'F1 · Dupont', titre: 'Estimation Soulages 1959 + structuration SC', prep: 'il y a 1 j', gain: 'qualitatif', status: 'attente' },
+  ],
+  activity: [
+    { ts: 'il y a 8 min', who: 'Documents-agent', what: 'Classement avis CFE 2026 (Famille F2)', fam: 'F2 · Martin' },
+    { ts: 'il y a 23 min', who: 'Marcel', what: 'Question fiscale donation à Emma', fam: 'F1 · Dupont' },
+    { ts: 'il y a 1 h', who: 'Suivi-agent', what: 'Rappel J-8 envoyé : déclaration 2042', fam: 'F1, F2, F3' },
+    { ts: 'il y a 2 h', who: 'Marcel', what: 'Question internationale (forfait CH)', fam: 'F4 · Lefèvre' },
+    { ts: 'il y a 4 h', who: 'Marcel', what: 'Calcul IFI 2026', fam: 'F2 · Martin' },
+    { ts: 'il y a 5 h', who: 'Reporting-agent', what: 'Bilan Q1 généré (18 p)', fam: 'F1 · Dupont' },
+    { ts: 'il y a 8 h', who: 'Triage-agent', what: 'Question routée vers Juridique', fam: 'F3 · Bernard' },
+    { ts: 'il y a 10 h', who: 'Suivi-agent', what: 'Drift modéré détecté · arbitrage préparé', fam: 'F1 · Dupont' },
+  ],
+};
+
+function fmtNum(n) { return typeof n === 'number' ? n.toLocaleString('fr-FR') : n; }
+
+function renderKpis(data) {
+  const k = data || MOCK.kpis;
+  const cells = [
+    [k.codes_emis, 'Codes émis'],
+    [`${k.redeemed} <em>/ ${k.codes_emis}</em>`, 'Redeemés'],
+    [k.actives, 'Familles actives'],
+    [k.marcel_q_month, 'Marcel · q ce mois'],
+    [k.arb_attente, 'Arbitrages en attente'],
+    [k.nps, 'NPS moyen'],
+  ];
+  document.getElementById('kpi-strip').innerHTML = cells.map(([num, label]) =>
+    `<div class="kpi"><div class="kpi-num">${num}</div><div class="kpi-label">${label}</div></div>`
+  ).join('');
+}
+
+function renderAlerts(alerts) {
+  const list = alerts || MOCK.alerts;
+  document.getElementById('alerts-container').innerHTML = list.map(a =>
+    `<div class="alert ${a.type === 'warn' ? '' : a.type}">${a.text}</div>`
+  ).join('');
+}
+
+function renderCodes(data) {
+  const codes = data || MOCK.codes;
+  document.getElementById('codes-tbody').innerHTML = codes.map(c => `
+    <tr>
+      <td class="mono">${c.code}</td>
+      <td class="mute">${c.created}</td>
+      <td class="mute">${c.source}</td>
+      <td>${c.notes}</td>
+      <td><span class="tag ${c.status}">${c.status === 'redeemed' ? 'Redeemed' : c.status === 'expire' ? 'Expiré' : 'Non utilisé'}</span></td>
+      <td class="mute">${c.email || '—'}</td>
+      <td class="mute">${c.redeemed || '—'}</td>
+    </tr>
+  `).join('');
+}
+
+function renderMembers(data) {
+  const ms = data || MOCK.members;
+  document.getElementById('members-tbody').innerHTML = ms.map(m => `
+    <tr>
+      <td><strong>${m.fam}</strong></td>
+      <td class="mute">${m.email}</td>
+      <td><span class="tag ${m.status}">${m.status === 'actif' ? 'Actif' : 'Attente'}</span></td>
+      <td class="mute">${m.last_login}</td>
+      <td class="num">${m.marcel_q}</td>
+      <td class="mute">${m.modules}</td>
+      <td class="num"><strong style="color:var(--gold-bright);">${m.nps}</strong></td>
+      <td><a class="btn-action" href="mailto:${m.email}">Email</a></td>
+    </tr>
+  `).join('');
+}
+
+function renderArbitrages(data) {
+  const arbs = data || MOCK.arbitrages;
+  document.getElementById('arbitrages-tbody').innerHTML = arbs.map(a => `
+    <tr>
+      <td class="mono">${a.id}</td>
+      <td><strong>${a.fam}</strong></td>
+      <td>${a.titre}</td>
+      <td class="mute">${a.prep}</td>
+      <td class="num"><strong style="color:var(--gold-bright);">${a.gain}</strong></td>
+      <td><span class="tag attente">${a.status === 'attente' ? 'En attente' : a.status}</span></td>
+      <td><div class="actions-row"><button class="btn-action" onclick="alert('À implémenter Phase 2 : action validation')">Valider</button></div></td>
+    </tr>
+  `).join('');
+}
+
+function renderActivity(data) {
+  const acts = data || MOCK.activity;
+  document.getElementById('activity-tbody').innerHTML = acts.map(a => `
+    <tr>
+      <td class="mute mono">${a.ts}</td>
+      <td><strong style="color:var(--gold);">${a.who}</strong></td>
+      <td>${a.what}</td>
+      <td class="mute">${a.fam}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadAll() {
+  // En Phase 1, fallback mock. En Phase 2 réelle :
+  // const [kpis, alerts, codes, members, arbs, activity] = await Promise.all([
+  //   apiGet('/api/admin/kpis'), apiGet('/api/admin/alerts'),
+  //   apiGet('/api/admin/codes'), apiGet('/api/admin/members'),
+  //   apiGet('/api/admin/arbitrages'), apiGet('/api/admin/activity'),
+  // ]);
+  renderKpis(); renderAlerts(); renderCodes();
+  renderMembers(); renderArbitrages(); renderActivity();
+}
+
+document.getElementById('refresh-btn').addEventListener('click', loadAll);
+document.getElementById('auth-submit').addEventListener('click', () => {
+  const t = document.getElementById('admin-token-input').value.trim();
+  if (!t) return;
+  setToken(t);
+  hideAuthScreen();
+  loadAll();
+});
+document.getElementById('admin-token-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('auth-submit').click();
+});
+
+// Init
+if (!getToken()) {
+  // En Phase 1, on autorise sans token pour la démo (fallback mock).
+  // En Phase 2, décommenter showAuthScreen() pour forcer l'auth.
+  // showAuthScreen();
+}
+loadAll();
+</script>
+
+</body>
+</html>
