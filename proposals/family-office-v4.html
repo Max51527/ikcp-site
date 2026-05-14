@@ -272,6 +272,33 @@ section.claims{
 @media(max-width:760px){.claims-grid{grid-template-columns:1fr;gap:32px}}
 
 /* ════════════════════════════════════════════════════════════════ */
+/* ═══ MÉTHODE — 6 piliers Family Office ═══════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.method{padding:140px 48px 120px; background:var(--paper-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); position:relative}
+.method-inner{max-width:1240px; margin:0 auto}
+.method-head{text-align:center; margin-bottom:64px}
+.method-head h2{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144,"SOFT" 90; font-size:clamp(34px,4.4vw,56px); font-weight:400; color:var(--ink); line-height:1.05; letter-spacing:-0.026em; margin-bottom:18px; max-width:880px; margin-left:auto; margin-right:auto}
+.method-head h2 em{font-style:italic; color:var(--terra-deep); font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1}
+.method-head p{font-family:'Fraunces',serif; font-style:italic; font-size:18.5px; color:var(--ink-mute); max-width:720px; margin:0 auto; line-height:1.55}
+.method-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px}
+@media(max-width:980px){.method-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.method-grid{grid-template-columns:1fr}}
+.pilier{
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:18px;
+  padding:32px 28px 26px; position:relative; transition:all 0.6s var(--ease-luxe);
+  display:flex; flex-direction:column; min-height:280px;
+}
+.pilier:hover{transform:translateY(-6px); border-color:var(--terra); box-shadow:0 26px 56px -12px rgba(45,37,32,0.14)}
+.pilier-num{font-family:'Fraunces',serif; font-style:italic; font-size:52px; color:var(--terra); line-height:1; font-weight:500; margin-bottom:8px; opacity:0.32}
+.pilier-num small{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--ink-faint); font-style:normal; font-weight:700; text-transform:uppercase; margin-left:10px; vertical-align:8px}
+.pilier h3{font-family:'Fraunces',serif; font-size:22px; font-weight:500; color:var(--ink); letter-spacing:-0.012em; line-height:1.18; margin-bottom:10px}
+.pilier h3 em{font-style:italic; color:var(--terra-deep)}
+.pilier p{font-size:13.5px; color:var(--ink-mute); line-height:1.65; flex:1; margin-bottom:14px}
+.pilier ul{list-style:none; margin-top:auto}
+.pilier ul li{font-size:12.5px; padding:4px 0 4px 16px; position:relative; color:var(--ink); line-height:1.55}
+.pilier ul li::before{content:'◆'; position:absolute; left:0; top:5px; color:var(--terra); font-size:8px}
+
+/* ════════════════════════════════════════════════════════════════ */
 /* ═══ DÉFINITION FO AUGMENTÉ ══════════════════════════════════════ */
 /* ════════════════════════════════════════════════════════════════ */
 section.definition{padding:140px 48px 120px; background:var(--paper); border-top:1px solid var(--line)}
@@ -442,6 +469,24 @@ section.passions{padding:120px 48px; background:linear-gradient(180deg,var(--pap
 .pcard-btn.ghost{background:rgba(255,255,255,0.16); color:#fff}
 
 @media(max-width:900px){.phone{width:100vw; max-width:340px; border-radius:30px}.phone-screen{height:620px} .app-body{height:calc(620px - 92px)}}
+
+/* — App body : scroll auto animé (defile en boucle pour montrer la dynamique) — */
+.app-body-scroller{
+  display:flex; flex-direction:column; gap:12px;
+  animation:appScroll 22s linear infinite;
+  will-change:transform;
+}
+.phone:hover .app-body-scroller{ animation-play-state:paused }
+@keyframes appScroll{
+  0%   { transform:translateY(0) }
+  45%  { transform:translateY(calc(-50% + 60px)) }
+  50%  { transform:translateY(calc(-50% + 60px)) }
+  95%  { transform:translateY(0) }
+  100% { transform:translateY(0) }
+}
+@media(prefers-reduced-motion:reduce){
+  .app-body-scroller{ animation:none }
+}
 
 /* ════════════════════════════════════════════════════════════════ */
 /* ═══ FUNNEL SIREN — Marcel cartographie 30 sec ═══════════════════ */
@@ -893,6 +938,7 @@ section.funnel::before, section.heritage::before, section.beta::before{
     <a href="#univers">Vos univers</a>
     <a href="#passions">Passions</a>
     <a href="#definition">Le FO augmenté</a>
+    <a href="#methode">Méthode</a>
     <a href="#orchestre">Marcel orchestre</a>
     <a href="#funnel">Cartographie 30 sec</a>
     <a href="#beta">Bêta</a>
@@ -1096,6 +1142,94 @@ section.funnel::before, section.heritage::before, section.beta::before{
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ MÉTHODE — 6 piliers Family Office ═══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="method" id="methode">
+  <div class="method-inner">
+    <div class="method-head section-head">
+      <div class="section-eyebrow">◆ La méthode · Six piliers</div>
+      <h2>Un Family Office, c'est <em>six dimensions</em>.<br>Marcel les orchestre toutes.</h2>
+      <p>Le métier de Family Office repose sur une grille référencée internationalement. IKCP la déploie intégralement — et y ajoute la dimension digitale et automatisée qui change tout pour les familles 1 à 30 M€.</p>
+    </div>
+
+    <div class="method-grid">
+      <article class="pilier">
+        <div class="pilier-num">I<small>Gouvernance</small></div>
+        <h3>Gouvernance familiale &amp; <em>d'entreprise</em></h3>
+        <p>Structurer le pouvoir, anticiper les conflits, formaliser les règles du jeu entre générations et entre actionnaires.</p>
+        <ul>
+          <li>Conseil de famille animé · charte familiale</li>
+          <li>Pacte d'actionnaires · holdings de tête</li>
+          <li>Mandat philanthropique &amp; mécénat</li>
+          <li>Gouvernance multi-générationnelle</li>
+        </ul>
+      </article>
+
+      <article class="pilier">
+        <div class="pilier-num">II<small>ADN familial</small></div>
+        <h3>ADN familial, profils &amp; <em>transmission de valeurs</em></h3>
+        <p>Comprendre les personnalités, prévenir les blocages, transmettre l'esprit de famille au-delà des chiffres.</p>
+        <ul>
+          <li>Cartographie des profils familiaux</li>
+          <li>Prévention &amp; résolution des conflits</li>
+          <li>Récit familial · histoire patrimoniale</li>
+          <li>Préparation NextGen (éducation héritiers)</li>
+        </ul>
+      </article>
+
+      <article class="pilier">
+        <div class="pilier-num">III<small>Allocation</small></div>
+        <h3>Allocation patrimoniale <em>alignée</em></h3>
+        <p>Concilier l'allocation d'actifs avec les valeurs et le projet de la famille — pas seulement avec le rendement.</p>
+        <ul>
+          <li>Immobilier patrimonial &amp; foncier</li>
+          <li>Private equity &amp; club deals</li>
+          <li>Crypto &amp; actifs numériques</li>
+          <li>Actifs naturels (forêts, vignobles, terres)</li>
+        </ul>
+      </article>
+
+      <article class="pilier">
+        <div class="pilier-num">IV<small>Pérennisation</small></div>
+        <h3>Pérennisation &amp; <em>transmission</em></h3>
+        <p>Protéger ce que vous avez bâti — pour vous d'abord, pour ceux qui viennent ensuite, dans toutes les configurations de vie.</p>
+        <ul>
+          <li>Régimes matrimoniaux · conjugalité</li>
+          <li>Transmission civile &amp; fiscale optimisée</li>
+          <li>Pacte Dutreil · démembrement · OBO</li>
+          <li>Incapacité, mandat de protection future</li>
+        </ul>
+      </article>
+
+      <article class="pilier">
+        <div class="pilier-num">V<small>Services</small></div>
+        <h3>Cellule de services &amp; <em>partenaires</em></h3>
+        <p>Coordonner les meilleurs spécialistes du marché — IKCP les agrège, les négocie, les intègre dans votre tableau de bord.</p>
+        <ul>
+          <li>Notaires référents · études partenaires</li>
+          <li>Avocats fiscalistes · family lawyers</li>
+          <li>Experts-comptables · audit M&amp;A</li>
+          <li>Art advisors · conciergerie premium</li>
+        </ul>
+      </article>
+
+      <article class="pilier">
+        <div class="pilier-num">VI<small>Augmentation IA</small></div>
+        <h3>Augmentation par <em>intelligence souveraine</em></h3>
+        <p>La sixième dimension est notre signature. Marcel et ses 11 spécialistes IA orchestrent les cinq autres, en continu, 24/7, sans démarche commerciale.</p>
+        <ul>
+          <li>Cartographie temps réel des 12 univers</li>
+          <li>Alertes ciblées · veille marchés &amp; passions</li>
+          <li>Synthèses sourcées CGI · BOFIP · LF 2026</li>
+          <li>Application mobile iOS · Android · PWA</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- ═══ DÉFINITION FO AUGMENTÉ ════════════════════════════════ -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <section class="definition" id="definition">
@@ -1237,29 +1371,61 @@ section.funnel::before, section.heritage::before, section.beta::before{
           <div class="app-sub">12 mai 2026 · 3 nouveautés cette semaine</div>
         </div>
         <div class="app-body">
-          <div class="pcard" style="background:var(--p-wine)">
-            <span class="pcard-tag">CAVE · PÉTRUS</span>
-            <h5>Domaine <em>2018</em></h5>
-            <p>3 caisses Pétrus 2018 (12 bts) disponibles via Idealwine. Valorisation IFI 9 200 €/bt.</p>
-            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Saison 2026</a></div>
-          </div>
-          <div class="pcard" style="background:var(--p-golf)">
-            <span class="pcard-tag">SPORT</span>
-            <h5>Golf <em>premium</em></h5>
-            <p>Sunningdale, Cypress Point, Augusta National (invitations). Adhésions, voyages golf, tournois privés.</p>
-            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Mes clubs · 3</a></div>
-          </div>
-          <div class="pcard" style="background:var(--p-arts)">
-            <span class="pcard-tag">MÉCÉNAT</span>
-            <h5>Mécénat <em>& arts</em></h5>
-            <p>Opéra Garnier, Comédie-Française, musées. Sièges nominatifs, fondations, déductibilité IR/IFI optimisée.</p>
-            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Saison · 8 dates</a></div>
-          </div>
-          <div class="pcard" style="background:var(--p-yacht)">
-            <span class="pcard-tag">YACHT</span>
-            <h5>Méditerranée <em>juillet</em></h5>
-            <p>3 yachts 24m correspondent à votre cahier des charges. Cabotage Corse · Sardaigne · 12 jours.</p>
-            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Devis · 3</a></div>
+          <div class="app-body-scroller">
+            <div class="pcard" style="background:var(--p-wine)">
+              <span class="pcard-tag">CAVE · PÉTRUS</span>
+              <h5>Domaine <em>2018</em></h5>
+              <p>3 caisses Pétrus 2018 (12 bts) disponibles via Idealwine. Valorisation IFI 9 200 €/bt.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Saison 2026</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-golf)">
+              <span class="pcard-tag">SPORT</span>
+              <h5>Golf <em>premium</em></h5>
+              <p>Sunningdale, Cypress Point, Augusta National. Adhésions, voyages golf, tournois privés.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Mes clubs · 3</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-arts)">
+              <span class="pcard-tag">MÉCÉNAT</span>
+              <h5>Mécénat <em>&amp; arts</em></h5>
+              <p>Opéra Garnier, Comédie-Française. Sièges nominatifs, fondations, IR/IFI optimisée.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Saison · 8 dates</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-yacht)">
+              <span class="pcard-tag">YACHT</span>
+              <h5>Méditerranée <em>juillet</em></h5>
+              <p>3 yachts 24m correspondent à votre cahier. Cabotage Corse · Sardaigne · 12 jours.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Devis · 3</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-watch)">
+              <span class="pcard-tag">MONTRES · ALERTE</span>
+              <h5>Patek <em>Nautilus 5711A</em></h5>
+              <p>1 pièce passe sous votre cible 90 k€ chez Chrono24 — papiers/box 2021.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Voir l'offre</a><a class="pcard-btn ghost">Mes alertes · 4</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-auto)">
+              <span class="pcard-tag">COLLECTION · AUTO</span>
+              <h5>Porsche <em>964 RS</em></h5>
+              <p>2 pièces matching numbers, RM Sotheby's Paris novembre. Cote 360-420 k€.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Calendrier</a><a class="pcard-btn ghost">Veille · 6</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-travel)">
+              <span class="pcard-tag">VOYAGE · MEGÈVE</span>
+              <h5>Chalets <em>décembre</em></h5>
+              <p>3 chalets pré-réservés famille de 6, semaines 51-52. Conciergerie complète.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Voir</a><a class="pcard-btn ghost">Vos séjours · 2</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-gastro)">
+              <span class="pcard-tag">GASTRONOMIE</span>
+              <h5>Pic <em>Valence</em></h5>
+              <p>Table 6 personnes 22 nov · menu signature 12 services · sommellerie réservée.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Confirmer</a><a class="pcard-btn ghost">Préférences</a></div>
+            </div>
+            <div class="pcard" style="background:var(--p-horse)">
+              <span class="pcard-tag">PHILANTHROPIE</span>
+              <h5>Fondation <em>famille 2027</em></h5>
+              <p>Structure fonds de dotation prête. Estimation IR/IFI : économie nette 38 k€/an.</p>
+              <div class="pcard-actions"><a class="pcard-btn solid">Étapes</a><a class="pcard-btn ghost">Simulateur</a></div>
+            </div>
           </div>
         </div>
       </div>
