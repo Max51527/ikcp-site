@@ -1,0 +1,21 @@
+# Wrangler config pour ikcp-hermes — Sub-agent Transmission Opus 4.7
+#
+# ─── DÉPLOIEMENT ───
+#   cd workers/ikcp-hermes
+#   npx wrangler secret put ANTHROPICAPIKEY    # 1ère fois
+#   npx wrangler deploy
+#
+# URL : https://ikcp-hermes.maxime-ead.workers.dev
+#
+# ─── TEST ───
+#   curl https://ikcp-hermes.maxime-ead.workers.dev/health
+#   curl -X POST https://ikcp-hermes.maxime-ead.workers.dev/ \
+#        -H "Content-Type: application/json" \
+#        -d '{"question":"Patrimoine 8M EUR avec societe Dutreil-eligible et 3 enfants : strategie en 3 etapes pour minimiser les droits ?"}'
+
+name = "ikcp-hermes"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+
+[observability]
+enabled = true
