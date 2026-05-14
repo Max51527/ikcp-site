@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP · Family Office augmenté — 12 univers, Marcel orchestre</title>
+<meta name="description" content="Le Family Office augmenté par IA souveraine. Douze univers branchés sur APIs réelles, orchestrés par Marcel. Cabinet IKCP — bêta 50 familles fondatrices.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FAF6EE">
+<link rel="canonical" href="https://ikcp.eu/family-office">
+
+<meta property="og:title" content="IKCP · Family Office augmenté — 12 univers, Marcel orchestre">
+<meta property="og:description" content="Plus une promesse. Une réalité quotidienne. Douze univers branchés sur APIs réelles. Cabinet IKCP — bêta 50 familles fondatrices.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  IKCP FAMILY OFFICE V4 — UNIFIED VISUAL SYSTEM                ║
+   ║  Hero orbite + 12 univers + Passions + SIREN + Montgolfier    ║
+   ║  Palette : paper/terra/gold/navy/ink                          ║
+   ║  Typo    : Fraunces (display) + Playfair + Outfit + JBMono   ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  /* PAPIER & ENCRE */
+  --paper:#FAF6EE;
+  --paper-2:#F4ECDF;
+  --paper-3:#EDDFC8;
+  --paper-warm:#E8DBBF;
+  --cream:#FAFAF8;
+  --ink:#2D2520;
+  --ink-mute:#6B5D52;
+  --ink-faint:#9B8B7C;
+
+  /* TERRACOTTA — accent hero */
+  --terra:#D97757;
+  --terra-deep:#B85A3E;
+  --terra-light:#E8AB8E;
+  --terra-glow:#F2C5A3;
+
+  /* OR */
+  --gold:#C9A96E;
+  --gold-deep:#8B6F3F;
+  --gold-bright:#E2C896;
+
+  /* NAVY — sections contrast */
+  --navy:#1B2A4A;
+  --navy-2:#2A3B5F;
+  --navy-deep:#0E1729;
+
+  /* LIGNES */
+  --line:#E0D4BE;
+  --line-strong:#C9B89E;
+
+  /* STATUTS */
+  --ok:#3F7A3F;
+  --warn:#B8801F;
+  --bad:#B91C1C;
+
+  /* GRADIENTS CARDS PASSIONS */
+  --p-yacht:linear-gradient(135deg,#0c4a6e 0%,#075985 100%);
+  --p-golf:linear-gradient(135deg,#14532d 0%,#166534 100%);
+  --p-arts:linear-gradient(135deg,#581c87 0%,#6b21a8 100%);
+  --p-wine:linear-gradient(135deg,#4a1421 0%,#7a1f2e 100%);
+  --p-auto:linear-gradient(135deg,#2c1810 0%,#5c2818 100%);
+  --p-watch:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+  --p-horse:linear-gradient(135deg,#3d2817 0%,#5d3a1f 100%);
+  --p-travel:linear-gradient(135deg,#0f766e 0%,#115e59 100%);
+  --p-gastro:linear-gradient(135deg,#92400e 0%,#b45309 100%);
+}
+
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:400; line-height:1.55; letter-spacing:-0.005em;
+  overflow-x:hidden; min-height:100vh;
+  text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+html{scroll-behavior:smooth}
+
+/* Texture papier discrète sur tout le site */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0 0.10 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:multiply; opacity:0.5;
+}
+main{position:relative; z-index:1}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseRing{
+  0%{transform:scale(0.95);opacity:0.5}
+  100%{transform:scale(1.15);opacity:0}
+}
+@keyframes pulseNew{
+  0%,100%{transform:scale(1);box-shadow:0 4px 12px rgba(217,119,87,0.30)}
+  50%{transform:scale(1.06);box-shadow:0 6px 20px rgba(217,119,87,0.45)}
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ NAV ═════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+nav.top{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:18px 48px;
+  background:rgba(250,246,238,0.92);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; font-weight:600; color:var(--ink); line-height:1; letter-spacing:0.005em}
+.brand b{color:var(--terra); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.30em; color:var(--terra-deep); text-transform:uppercase; margin-top:4px; font-weight:600}
+nav.top .menu{display:flex; align-items:center; gap:24px}
+nav.top .menu a{color:var(--ink-mute); text-decoration:none; font-size:13px; font-weight:500; transition:color 0.25s}
+nav.top .menu a:hover{color:var(--terra)}
+nav.top .beta-pill{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; padding:5px 10px; border:1px solid var(--terra); border-radius:30px; background:rgba(217,119,87,0.06)}
+nav.top .cta{padding:10px 20px; background:var(--ink); color:var(--paper); font-size:12px; border-radius:30px; font-weight:500; text-decoration:none; transition:all 0.3s; letter-spacing:0.02em}
+nav.top .cta:hover{background:var(--terra)}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ HERO — CONSTELLATION ORBITE (pièce maîtresse) ═══════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.hero{
+  min-height:100vh; padding:140px 32px 80px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; position:relative;
+}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px; letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--terra); margin-bottom:24px; font-weight:600;
+  display:inline-flex; align-items:center; gap:14px;
+  opacity:0; animation:fadeIn 1.2s 0.2s forwards;
+}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:36px;height:1px;background:var(--terra)}
+.hero h1{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:clamp(40px,5.4vw,76px); line-height:1.04;
+  font-weight:400; letter-spacing:-0.025em; color:var(--ink);
+  margin-bottom:18px;
+  opacity:0; animation:fadeUp 1.1s 0.4s forwards;
+}
+.hero h1 em{font-style:italic; color:var(--terra-deep)}
+.hero-tagline{
+  font-family:'Fraunces',serif; font-style:italic;
+  font-size:clamp(15px,1.6vw,19px); color:var(--ink-mute); max-width:620px;
+  margin-bottom:36px; line-height:1.6;
+  opacity:0; animation:fadeUp 1.1s 0.7s forwards;
+}
+.hero-stats{
+  display:flex; gap:36px; flex-wrap:wrap; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink-faint); font-weight:600;
+  margin-bottom:24px;
+  opacity:0; animation:fadeUp 1.1s 1s forwards;
+}
+.hero-stats span b{color:var(--terra-deep); font-weight:700}
+
+/* CONSTELLATION */
+.constellation{
+  position:relative;
+  width:min(820px,92vw); height:min(820px,92vw);
+  margin:30px auto 50px;
+  opacity:0; animation:fadeIn 1.5s 1.1s forwards;
+}
+.constellation svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+.constellation .center{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--terra-glow) 0%,var(--terra) 40%,var(--terra-deep) 80%,#6E2E1A 100%);
+  box-shadow:0 0 0 1px var(--terra-light),0 0 50px rgba(217,119,87,0.4),0 0 100px rgba(217,119,87,0.2),inset 0 4px 24px rgba(255,255,255,0.25);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:14px; z-index:5;
+}
+.constellation .center::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--terra);opacity:0.3;animation:pulseRing 3s ease-out infinite}
+.constellation .center::after{content:'';position:absolute;inset:-20px;border-radius:50%;border:1px solid var(--terra);opacity:0.2;animation:pulseRing 3s 1.5s ease-out infinite}
+.center-mark{font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.32em; text-transform:uppercase; opacity:0.85; margin-bottom:6px; font-weight:600; color:var(--paper)}
+.center-name{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:42px; font-weight:500; line-height:1; color:var(--paper)}
+.center-role{font-family:'Fraunces',serif; font-style:italic; font-size:13px; margin-top:6px; color:var(--paper); opacity:0.9}
+.agent-node{
+  position:absolute; width:130px; height:130px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--paper); border:1.5px solid var(--line-strong); border-radius:50%;
+  transition:all 0.35s cubic-bezier(0.4,0,0.2,1);
+  text-decoration:none; color:var(--ink);
+  box-shadow:0 6px 20px rgba(45,37,32,0.06);
+  transform:translate(-50%,-50%); z-index:3;
+}
+.agent-node::before{content:'';position:absolute;inset:-6px;border-radius:50%;background:transparent;border:1px solid var(--terra);opacity:0;transition:opacity 0.3s;pointer-events:none}
+.agent-node:hover{transform:translate(-50%,-50%) scale(1.12);border-color:var(--terra);background:var(--paper-2);box-shadow:0 12px 32px rgba(217,119,87,0.25);z-index:6}
+.agent-node:hover::before{opacity:0.4}
+.agent-icon{font-size:28px; margin-bottom:4px; line-height:1}
+.agent-name{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:15px; font-weight:500; color:var(--ink); letter-spacing:-0.005em}
+.agent-domain{font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--terra-deep); letter-spacing:0.18em; text-transform:uppercase; margin-top:3px; font-weight:600; text-align:center; padding:0 4px}
+.badge-live{position:absolute;top:-4px;right:-4px;background:var(--ok);color:#fff;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;letter-spacing:0.15em;padding:2px 6px;border-radius:30px;text-transform:uppercase}
+
+/* Hendécagone — 12 positions (Marcel + 11 agents) */
+.agent-1{top:9%;left:50%}
+.agent-2{top:15.6%;left:72.1%}
+.agent-3{top:32.9%;left:87.2%}
+.agent-4{top:55.8%;left:90.6%}
+.agent-5{top:76.8%;left:81%}
+.agent-6{top:89.3%;left:61.5%}
+.agent-7{top:89.3%;left:38.5%}
+.agent-8{top:76.8%;left:19%}
+.agent-9{top:55.8%;left:9.4%}
+.agent-10{top:32.9%;left:12.8%}
+.agent-11{top:15.6%;left:27.9%}
+
+.hero-actions{display:flex; align-items:center; gap:20px; flex-wrap:wrap; justify-content:center;opacity:0;animation:fadeUp 1.1s 1.3s forwards}
+.btn{display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border-radius:30px; font-family:'Outfit',sans-serif; font-weight:500; font-size:14px; text-decoration:none; transition:all 0.3s; letter-spacing:0.01em; cursor:pointer; border:none}
+.btn-primary{background:var(--ink); color:var(--paper)}
+.btn-primary:hover{background:var(--terra); transform:translateY(-2px); box-shadow:0 12px 28px rgba(217,119,87,0.25)}
+.btn-ghost{background:transparent; color:var(--ink); border:1px solid var(--line-strong)}
+.btn-ghost:hover{background:var(--paper-2); border-color:var(--terra); color:var(--terra-deep)}
+
+@media (max-width:760px){
+  .constellation .center{width:130px; height:130px}
+  .center-name{font-size:26px}
+  .center-role{font-size:10px}
+  .agent-node{width:84px; height:84px}
+  .agent-icon{font-size:18px}
+  .agent-name{font-size:11px}
+  .agent-domain{display:none}
+  nav.top{padding:14px 20px}
+  nav.top .menu{display:none}
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ CLAIMS — 3 lignes éditoriales ═══════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.claims{
+  padding:80px 32px; background:var(--paper-2);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.claims-grid{
+  max-width:1100px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:48px;
+}
+.claim{text-align:center; padding:0 12px}
+.claim-mark{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.32em; color:var(--terra); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.claim h3{font-family:'Fraunces',serif; font-size:26px; font-weight:400; color:var(--ink); letter-spacing:-0.015em; line-height:1.2; margin-bottom:8px}
+.claim h3 em{font-style:italic; color:var(--terra-deep)}
+.claim p{font-size:14px; color:var(--ink-mute); line-height:1.7}
+@media(max-width:760px){.claims-grid{grid-template-columns:1fr;gap:32px}}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ 12 UNIVERS — grille cards LIVE/DÉMO ═════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.universes{padding:120px 48px 80px; background:var(--paper)}
+.section-head{max-width:900px; margin:0 auto 56px; text-align:center}
+.section-eyebrow{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.4em; color:var(--terra); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.section-head h2{font-family:'Fraunces',serif; font-size:clamp(32px,4vw,52px); font-weight:400; color:var(--ink); letter-spacing:-0.02em; line-height:1.08; margin-bottom:14px}
+.section-head h2 em{font-style:italic; color:var(--terra-deep)}
+.section-head p{font-family:'Fraunces',serif; font-style:italic; font-size:18px; color:var(--ink-mute); line-height:1.55; max-width:680px; margin:0 auto}
+
+.universes-grid{max-width:1240px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:18px}
+@media(max-width:1100px){.universes-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.universes-grid{grid-template-columns:repeat(2,1fr)}}
+
+.univ{
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
+  padding:22px 20px 18px; position:relative; transition:all 0.3s;
+  display:flex; flex-direction:column; gap:8px; min-height:160px;
+}
+.univ:hover{border-color:var(--terra); transform:translateY(-2px); box-shadow:0 14px 32px rgba(45,37,32,0.08)}
+.univ-icon{font-size:24px; line-height:1}
+.univ-name{font-family:'Playfair Display',serif; font-size:19px; font-weight:600; color:var(--ink); line-height:1.15}
+.univ-name em{font-style:italic; color:var(--terra-deep); font-weight:500}
+.univ-desc{font-size:12.5px; color:var(--ink-mute); line-height:1.55; flex:1}
+.univ-status{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.20em; font-weight:700; text-transform:uppercase;
+  margin-top:6px;
+}
+.univ-status.live{color:var(--ok)}
+.univ-status.demo{color:var(--ink-faint)}
+.univ-status .dot{width:6px;height:6px;border-radius:50%}
+.univ-status.live .dot{background:var(--ok); box-shadow:0 0 0 3px rgba(63,122,63,0.18)}
+.univ-status.demo .dot{background:var(--line-strong)}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ PASSIONS — éditorial + mockup mobile ════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.passions{padding:120px 48px; background:linear-gradient(180deg,var(--paper-2) 0%,var(--paper-3) 100%); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.passions-frame{display:flex; gap:64px; max-width:1240px; margin:0 auto; align-items:center; flex-wrap:wrap; justify-content:center}
+.passions-info{flex:1; min-width:300px; max-width:520px}
+.passions-info .mark{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-bottom:16px}
+.passions-info .mark::before{content:'◆ ';color:var(--terra)}
+.passions-info h2{font-family:'Playfair Display',serif; font-size:42px; color:var(--navy); font-weight:500; letter-spacing:-0.02em; line-height:1.1; margin-bottom:18px}
+.passions-info h2 em{color:var(--gold-deep); font-style:italic}
+.passions-info p{font-size:15px; color:var(--ink-mute); margin-bottom:18px; line-height:1.75}
+.passions-info p em{color:var(--navy); font-style:italic; font-family:'Playfair Display',serif; font-weight:500}
+.passions-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:24px; padding-top:24px; border-top:1px dashed var(--line)}
+.passions-stat{padding:14px 16px; background:var(--cream); border-radius:10px; border:1px solid var(--line)}
+.passions-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:24px; color:var(--gold-deep); font-weight:500; line-height:1}
+.passions-stat-l{font-size:10.5px; color:var(--ink-faint); margin-top:4px; letter-spacing:0.10em; text-transform:uppercase; font-weight:600}
+.passions-install{margin-top:26px; padding:18px 22px; background:var(--navy); color:var(--cream); border-radius:14px}
+.passions-install h4{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:8px}
+.passions-install p{font-size:13.5px; color:rgba(250,250,248,0.85); line-height:1.6; margin:0}
+.passions-install b{color:var(--gold-bright); font-weight:600}
+
+/* Phone */
+.phone{
+  width:380px; flex-shrink:0;
+  background:var(--navy-deep); border-radius:48px; padding:14px;
+  box-shadow:0 30px 80px rgba(45,37,32,0.30),0 12px 32px rgba(45,37,32,0.18);
+}
+.phone-screen{
+  width:100%; height:760px; background:var(--cream);
+  border-radius:36px; overflow:hidden; position:relative;
+  border:1px solid #000;
+}
+.phone-notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:120px; height:24px; background:var(--navy-deep); border-radius:0 0 16px 16px; z-index:50}
+.app-top{padding:36px 20px 14px; border-bottom:1px solid var(--line); background:var(--cream)}
+.app-top-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px}
+.app-greet{font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:var(--gold-deep); font-weight:500}
+.app-avatar{width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-deep)); display:flex; align-items:center; justify-content:center; color:var(--navy); font-family:'Playfair Display',serif; font-weight:600; font-style:italic; font-size:15px}
+.app-title{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; letter-spacing:-0.015em}
+.app-title em{color:var(--gold-deep); font-style:italic}
+.app-sub{font-size:11.5px; color:var(--ink-faint); margin-top:4px; font-style:italic; font-family:'Playfair Display',serif}
+.app-body{padding:14px 16px 30px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; height:calc(760px - 92px)}
+.app-body::-webkit-scrollbar{display:none}
+
+.pcard{border-radius:18px; padding:18px 18px 14px; color:#fff; position:relative; overflow:hidden}
+.pcard-tag{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.22em; font-weight:700; background:rgba(255,255,255,0.16); padding:3px 8px; border-radius:30px; margin-bottom:10px}
+.pcard h5{font-family:'Playfair Display',serif; font-weight:600; font-size:19px; line-height:1.15; margin-bottom:6px}
+.pcard h5 em{font-style:italic; color:var(--gold-bright)}
+.pcard p{font-size:12px; line-height:1.55; opacity:0.92; margin-bottom:12px}
+.pcard-actions{display:flex; gap:8px; flex-wrap:wrap}
+.pcard-btn{display:inline-flex; align-items:center; padding:7px 14px; font-size:11.5px; font-weight:600; border-radius:30px; text-decoration:none}
+.pcard-btn.solid{background:var(--gold); color:var(--navy)}
+.pcard-btn.ghost{background:rgba(255,255,255,0.16); color:#fff}
+
+@media(max-width:900px){.phone{width:100vw; max-width:340px; border-radius:30px}.phone-screen{height:620px} .app-body{height:calc(620px - 92px)}}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ FUNNEL SIREN — Marcel cartographie 30 sec ═══════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.funnel{padding:120px 48px; background:var(--paper); text-align:center}
+.funnel-inner{max-width:760px; margin:0 auto}
+.funnel-eyebrow{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.4em; color:var(--terra); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.funnel h2{font-family:'Fraunces',serif; font-size:clamp(34px,4vw,52px); font-weight:400; color:var(--ink); line-height:1.08; margin-bottom:16px; letter-spacing:-0.02em}
+.funnel h2 em{font-style:italic; color:var(--terra-deep)}
+.funnel-sub{font-family:'Fraunces',serif; font-style:italic; font-size:17px; color:var(--ink-mute); margin-bottom:36px; line-height:1.55}
+.funnel-form{display:flex; max-width:560px; margin:0 auto; gap:0; background:var(--paper); border:1.5px solid var(--line-strong); border-radius:60px; padding:6px 6px 6px 24px; box-shadow:0 12px 32px rgba(45,37,32,0.06); transition:all 0.3s}
+.funnel-form:focus-within{border-color:var(--terra); box-shadow:0 16px 40px rgba(217,119,87,0.20)}
+.funnel-form input{flex:1; border:none; outline:none; background:transparent; font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--ink); letter-spacing:0.12em; font-weight:500}
+.funnel-form input::placeholder{color:var(--ink-faint); letter-spacing:0.08em}
+.funnel-form button{padding:14px 28px; background:var(--terra); color:#fff; border:none; border-radius:50px; font-family:'Outfit',sans-serif; font-weight:600; font-size:14px; cursor:pointer; transition:all 0.3s}
+.funnel-form button:hover{background:var(--terra-deep); transform:scale(1.02)}
+.funnel-note{font-size:12px; color:var(--ink-faint); margin-top:14px; font-family:'JetBrains Mono',monospace; letter-spacing:0.18em; text-transform:uppercase; font-weight:600}
+.funnel-result{margin-top:30px; padding:24px; background:var(--paper-2); border-radius:14px; text-align:left; display:none; border:1px solid var(--line)}
+.funnel-result.show{display:block}
+.funnel-result pre{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink); white-space:pre-wrap; line-height:1.6}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ HÉRITAGE MONTGOLFIER (sans Ardèche) ═════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.heritage{padding:120px 48px; background:linear-gradient(180deg,var(--paper-2) 0%,var(--paper-warm) 100%); position:relative; overflow:hidden}
+.heritage-inner{max-width:1100px; margin:0 auto; display:grid; grid-template-columns:200px 1fr; gap:64px; align-items:center}
+.heritage-date{font-family:'Fraunces',serif; font-style:italic; font-size:96px; color:var(--terra-deep); line-height:1; font-weight:500}
+.heritage-date small{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.32em; color:var(--ink-faint); text-transform:uppercase; font-style:normal; font-weight:700; margin-top:8px; line-height:1.4}
+.heritage-text h3{font-family:'Fraunces',serif; font-size:36px; font-weight:400; color:var(--ink); line-height:1.15; margin-bottom:18px; letter-spacing:-0.015em}
+.heritage-text h3 em{font-style:italic; color:var(--terra-deep)}
+.heritage-text p{font-size:15.5px; color:var(--ink-mute); line-height:1.75}
+.heritage-text p strong{color:var(--ink); font-weight:600}
+@media(max-width:760px){.heritage-inner{grid-template-columns:1fr;gap:32px;text-align:center} .heritage-date{font-size:64px}}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ BÊTA 50 FAMILLES + TROIS PORTES D'ENTRÉE ════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.beta{padding:120px 48px; background:var(--paper); text-align:center}
+.beta-eyebrow{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.4em; color:var(--terra); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.beta h2{font-family:'Fraunces',serif; font-size:clamp(32px,4vw,48px); font-weight:400; color:var(--ink); line-height:1.08; margin-bottom:14px; letter-spacing:-0.02em}
+.beta h2 em{font-style:italic; color:var(--terra-deep)}
+.beta-sub{font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink-mute); max-width:680px; margin:0 auto 56px; line-height:1.55}
+.portes-grid{max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:24px; text-align:left}
+@media(max-width:900px){.portes-grid{grid-template-columns:1fr}}
+.porte{padding:32px 28px; background:var(--paper-2); border:1px solid var(--line); border-radius:18px; position:relative; transition:all 0.3s}
+.porte.featured{background:var(--navy); color:var(--cream); border-color:var(--navy)}
+.porte:hover{transform:translateY(-4px); box-shadow:0 18px 36px rgba(45,37,32,0.10)}
+.porte-mark{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.28em; color:var(--terra); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.porte.featured .porte-mark{color:var(--gold-bright)}
+.porte h4{font-family:'Fraunces',serif; font-size:26px; font-weight:500; line-height:1.1; margin-bottom:10px; color:inherit}
+.porte h4 em{font-style:italic}
+.porte .price{font-family:'Playfair Display',serif; font-size:18px; font-style:italic; color:var(--terra-deep); margin-bottom:14px; font-weight:500}
+.porte.featured .price{color:var(--gold-bright)}
+.porte p{font-size:13.5px; line-height:1.7; margin-bottom:20px; opacity:0.85}
+.porte ul{list-style:none; margin-bottom:24px}
+.porte ul li{font-size:13px; padding:4px 0 4px 22px; position:relative; line-height:1.5}
+.porte ul li::before{content:'◆'; position:absolute; left:0; top:4px; color:var(--terra); font-size:9px}
+.porte.featured ul li::before{color:var(--gold-bright)}
+.porte-cta{display:inline-block; padding:11px 22px; border-radius:30px; font-size:13px; font-weight:600; text-decoration:none; transition:all 0.3s}
+.porte:not(.featured) .porte-cta{background:var(--ink); color:var(--paper)}
+.porte.featured .porte-cta{background:var(--gold-bright); color:var(--navy)}
+.porte-cta:hover{transform:scale(1.03)}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ CONFORMITÉ MIF II ═══════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.compliance{padding:60px 48px; background:var(--paper-2); border-top:1px solid var(--line)}
+.compliance-inner{max-width:920px; margin:0 auto; text-align:center}
+.compliance-mark{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.32em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-bottom:16px}
+.compliance p{font-size:13px; color:var(--ink-mute); line-height:1.75; max-width:780px; margin:0 auto}
+.compliance p strong{color:var(--ink); font-weight:600}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ CTA FINAL ═══════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.cta-final{padding:120px 48px; background:var(--navy); color:var(--cream); text-align:center}
+.cta-final h2{font-family:'Fraunces',serif; font-size:clamp(34px,4vw,56px); font-weight:400; line-height:1.05; letter-spacing:-0.02em; margin-bottom:18px}
+.cta-final h2 em{font-style:italic; color:var(--gold-bright)}
+.cta-final p{font-family:'Fraunces',serif; font-style:italic; font-size:18px; color:rgba(250,246,238,0.78); max-width:600px; margin:0 auto 38px; line-height:1.55}
+.cta-final .btns{display:flex; gap:18px; flex-wrap:wrap; justify-content:center}
+.cta-final .btn-primary{background:var(--gold-bright); color:var(--navy)}
+.cta-final .btn-primary:hover{background:#F0DAB0}
+.cta-final .btn-ghost{color:var(--cream); border-color:rgba(250,246,238,0.30)}
+.cta-final .btn-ghost:hover{border-color:var(--gold-bright); color:var(--gold-bright); background:transparent}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* ═══ FOOTER ══════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+footer{padding:40px 48px; background:var(--navy-deep); color:rgba(250,246,238,0.65); font-size:12px; text-align:center; line-height:1.7; font-family:'JetBrains Mono',monospace; letter-spacing:0.04em}
+footer b{color:var(--gold-bright); font-weight:600}
+footer a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid rgba(201,169,110,0.4)}
+footer .legal{margin-top:10px; font-size:10.5px; color:rgba(250,246,238,0.45); letter-spacing:0.08em; text-transform:uppercase}
+</style>
+</head>
+<body>
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<nav class="top">
+  <div class="brand">IKCP<b>.</b><span class="brand-sub">FAMILY OFFICE AUGMENTÉ</span></div>
+  <div class="menu">
+    <a href="#univers">12 univers</a>
+    <a href="#passions">Passions</a>
+    <a href="#funnel">Cartographie 30 sec</a>
+    <a href="#beta">Bêta</a>
+    <span class="beta-pill">● Bêta privée</span>
+    <a href="#contact" class="cta">Demander mon accès →</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ HERO — CONSTELLATION ═════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <span class="hero-eyebrow">Family Office augmenté · Sur invitation</span>
+  <h1>Une porte. Une équipe.<br>Votre patrimoine <em>en orbite.</em></h1>
+  <p class="hero-tagline">Le cabinet IKCP orchestre douze univers patrimoniaux branchés sur intelligence souveraine. Application mobile iOS · Android · PWA. 100 % France.</p>
+  <div class="hero-stats">
+    <span><b>11</b> · agents spécialistes</span>
+    <span><b>12</b> · univers patrimoniaux</span>
+    <span><b>50</b> · familles fondatrices</span>
+    <span><b>100 %</b> · souverain FR</span>
+  </div>
+
+  <div class="constellation" id="constellation">
+    <!-- SVG lignes orbitales injecté en JS -->
+    <svg id="orbit-lines" viewBox="0 0 820 820" aria-hidden="true"></svg>
+
+    <div class="center" role="img" aria-label="Marcel, chef d'orchestre">
+      <div class="center-mark">★ Chef d'orchestre</div>
+      <div class="center-name">Marcel</div>
+      <div class="center-role">Clarifie · Oriente · Arbitre</div>
+    </div>
+
+    <a class="agent-node agent-1" href="#patrimoine"><span class="agent-icon">🏛️</span><span class="agent-name">Bâtisseur</span><span class="agent-domain">Patrimoine · Pappers</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-2" href="#immobilier"><span class="agent-icon">🏠</span><span class="agent-name">Architecte</span><span class="agent-domain">Immobilier · DVF</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-3" href="#fiscalite"><span class="agent-icon">📜</span><span class="agent-name">Codex</span><span class="agent-domain">Fiscalité 2026</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-4" href="#marches"><span class="agent-icon">📊</span><span class="agent-name">Stratège</span><span class="agent-domain">Marchés</span></a>
+    <a class="agent-node agent-5" href="#art"><span class="agent-icon">🎨</span><span class="agent-name">Curateur</span><span class="agent-domain">Art</span></a>
+    <a class="agent-node agent-6" href="#voyage"><span class="agent-icon">✈️</span><span class="agent-name">Conciergerie</span><span class="agent-domain">Voyage</span></a>
+    <a class="agent-node agent-7" href="#pe"><span class="agent-icon">💎</span><span class="agent-name">Capital</span><span class="agent-domain">Private Equity</span></a>
+    <a class="agent-node agent-8" href="#transmission"><span class="agent-icon">🌳</span><span class="agent-name">Hermès</span><span class="agent-domain">Transmission</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-9" href="#philanthropie"><span class="agent-icon">🌱</span><span class="agent-name">Mécène</span><span class="agent-domain">Philanthropie</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-10" href="#formation"><span class="agent-icon">🎓</span><span class="agent-name">Pédagogue</span><span class="agent-domain">Formation</span></a>
+    <a class="agent-node agent-11" href="#admin"><span class="agent-icon">📁</span><span class="agent-name">Camille</span><span class="agent-domain">Administration</span></a>
+  </div>
+
+  <div class="hero-actions">
+    <a href="#funnel" class="btn btn-primary">Activer Marcel · Cartographie en 30 sec →</a>
+    <a href="#univers" class="btn btn-ghost">Découvrir les 12 univers</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ CLAIMS ═════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="claims">
+  <div class="claims-grid">
+    <div class="claim">
+      <div class="claim-mark">◆ Engagement</div>
+      <h3>Plus une promesse.<br><em>Une réalité quotidienne.</em></h3>
+      <p>Quatre univers déjà LIVE, calculs réels en temps réel sur APIs officielles. Tout ce qui s'affiche existe fonctionnellement.</p>
+    </div>
+    <div class="claim">
+      <div class="claim-mark">◆ Promesse UX</div>
+      <h3>Une question.<br>Un univers. <em>Une réponse exécutée.</em></h3>
+      <p>Marcel comprend, route vers le bon agent spécialiste, et synthétise une réponse sourcée (CGI, Loi de Finances 2026, BOFiP).</p>
+    </div>
+    <div class="claim">
+      <div class="claim-mark">◆ Mécanique</div>
+      <h3>Marcel orchestre.<br><em>Les spécialistes exécutent.</em></h3>
+      <p>Onze agents IA souverains branchés sur les APIs officielles : Pappers, DVF, marchés boursiers, BOFiP, INPI, BODACC.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ 12 UNIVERS ═════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="universes" id="univers">
+  <div class="section-head">
+    <div class="section-eyebrow">◆ Douze univers · Une interface</div>
+    <h2>Une seule interface.<br><em>Douze univers</em> branchés sur APIs réelles.</h2>
+    <p>Plus de jargon, plus de noms d'agents. <em>Vous demandez, l'IA exécute</em>. Patrimoine, immobilier, fiscalité, marchés, voyage, transmission — chaque univers est branché sur les données en temps réel.</p>
+  </div>
+
+  <div class="universes-grid">
+    <div class="univ" id="patrimoine"><div class="univ-icon">🏛️</div><div class="univ-name">Patrimoine</div><div class="univ-desc">Cartographie d'entreprise via Pappers — INSEE, INPI, BODACC. Identifie le point d'attention en 30 secondes.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ" id="immobilier"><div class="univ-icon">🏠</div><div class="univ-name">Immobilier</div><div class="univ-desc">Prix au m² par code postal · DVF temps réel · cartographie du parc, LMNP, SCI, déficit foncier.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ" id="fiscalite"><div class="univ-icon">📜</div><div class="univ-name">Fiscalité</div><div class="univ-desc">IR · IFI · barème <em>2026</em> · arbitrages · simulateurs CGI à jour Loi de Finances 2026.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ" id="marches"><div class="univ-icon">📊</div><div class="univ-name">Marchés</div><div class="univ-desc">CAC 40 · indices · taux · arbitrage d'allocation, profil ESMA, lecture macro souveraine.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ" id="art"><div class="univ-icon">🎨</div><div class="univ-name">Art</div><div class="univ-desc">Cote d'artiste · enchères · authentification · fiscalité spécifique œuvres d'art.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ" id="voyage"><div class="univ-icon">✈️</div><div class="univ-name">Voyage <em>& conciergerie</em></div><div class="univ-desc">Hôtels & chalets premium · jet privé · expériences sur-mesure · ouverture privative.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ" id="pe"><div class="univ-icon">💎</div><div class="univ-name">Private Equity</div><div class="univ-desc">Deal flow · co-investissement · scoring · accès club deals partenaires.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ" id="transmission"><div class="univ-icon">🌳</div><div class="univ-name">Transmission</div><div class="univ-desc">Dutreil · donation · succession · simulateur droits, réserve héréditaire, quotité disponible.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ" id="philanthropie"><div class="univ-icon">🌱</div><div class="univ-name">Philanthropie</div><div class="univ-desc">Don défiscalisé IR/IFI · fondation · mécénat · alignement sens et fiscalité.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ" id="formation"><div class="univ-icon">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-desc">Six modules sur vos chiffres réels · pédagogie héritiers · transmission de valeurs.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ" id="admin"><div class="univ-icon">📁</div><div class="univ-name">Administration</div><div class="univ-desc">Secrétariat patrimonial · archivage eIDAS · gestion des courriers, factures, agenda fiscal.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ" id="reporting"><div class="univ-icon">📈</div><div class="univ-name">Reporting</div><div class="univ-desc">Synthèse trimestrielle · KPIs · alertes intelligents · tableau multigénérationnel.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ PASSIONS — éditorial + mockup mobile ═════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="passions" id="passions">
+  <div class="passions-frame">
+    <div class="passions-info">
+      <div class="mark">Application mobile · iOS & Android · PWA</div>
+      <h2>Le Family Office <em>n'est pas qu'une affaire de chiffres.</em></h2>
+      <p>Quand on a construit ce que vous avez construit, on veut aussi <em>se faire plaisir intelligemment</em>. Collections, voyages, mécénat, gastronomie — autant de passions qui méritent d'être structurées, financées, partagées entre membres de la famille.</p>
+      <p>L'app IKCP transforme vos plaisirs en <em>projets cohérents</em> : un yacht qui devient une SCI fiscalisée, une cave Pétrus qui devient un actif IFI déclaré, une fondation d'art qui devient un levier de transmission.</p>
+      <div class="passions-stats">
+        <div class="passions-stat"><div class="passions-stat-v">9</div><div class="passions-stat-l">Univers passions</div></div>
+        <div class="passions-stat"><div class="passions-stat-v">4</div><div class="passions-stat-l">Évènements/an</div></div>
+        <div class="passions-stat"><div class="passions-stat-v">24/7</div><div class="passions-stat-l">Conciergerie</div></div>
+      </div>
+      <div class="passions-install">
+        <h4>▣ Installer comme application</h4>
+        <p>L'app fonctionne hors ligne, s'installe en <b>1 tap</b> sur l'écran d'accueil de votre iPhone ou Android — pas de passage par l'App Store, <b>100 % souverain</b>. Manifest PWA + Service Worker EU.</p>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-notch"></div>
+        <div class="app-top">
+          <div class="app-top-row">
+            <span class="app-greet">Bonjour Joséphine.</span>
+            <div class="app-avatar">D</div>
+          </div>
+          <div class="app-title">Vos <em>passions.</em></div>
+          <div class="app-sub">12 mai 2026 · 3 nouveautés cette semaine</div>
+        </div>
+        <div class="app-body">
+          <div class="pcard" style="background:var(--p-wine)">
+            <span class="pcard-tag">CAVE · PÉTRUS</span>
+            <h5>Domaine <em>2018</em></h5>
+            <p>3 caisses Pétrus 2018 (12 bts) disponibles via Idealwine. Valorisation IFI 9 200 €/bt.</p>
+            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Saison 2026</a></div>
+          </div>
+          <div class="pcard" style="background:var(--p-golf)">
+            <span class="pcard-tag">SPORT</span>
+            <h5>Golf <em>premium</em></h5>
+            <p>Sunningdale, Cypress Point, Augusta National (invitations). Adhésions, voyages golf, tournois privés.</p>
+            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Mes clubs · 3</a></div>
+          </div>
+          <div class="pcard" style="background:var(--p-arts)">
+            <span class="pcard-tag">MÉCÉNAT</span>
+            <h5>Mécénat <em>& arts</em></h5>
+            <p>Opéra Garnier, Comédie-Française, musées. Sièges nominatifs, fondations, déductibilité IR/IFI optimisée.</p>
+            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Saison · 8 dates</a></div>
+          </div>
+          <div class="pcard" style="background:var(--p-yacht)">
+            <span class="pcard-tag">YACHT</span>
+            <h5>Méditerranée <em>juillet</em></h5>
+            <p>3 yachts 24m correspondent à votre cahier des charges. Cabotage Corse · Sardaigne · 12 jours.</p>
+            <div class="pcard-actions"><a class="pcard-btn solid">Découvrir</a><a class="pcard-btn ghost">Devis · 3</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ FUNNEL SIREN — Marcel cartographie 30 sec ═══════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="funnel" id="funnel">
+  <div class="funnel-inner">
+    <div class="funnel-eyebrow">◆ Démonstration sans engagement · 3 rouages visibles sur 12</div>
+    <h2>Votre cartographie <em>en 30 secondes.</em></h2>
+    <p class="funnel-sub">Saisissez le SIREN de votre société. Marcel vous montre ce que la plateforme verrait et identifie un point d'attention patrimonial. Sur sources officielles françaises uniquement.</p>
+    <form class="funnel-form" id="sirenForm" onsubmit="return runSiren(event)">
+      <input id="sirenInput" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN (ex. 947 972 436)" autocomplete="off">
+      <button type="submit">Activer Marcel →</button>
+    </form>
+    <div class="funnel-note">Sources : Pappers · INSEE · INPI · BODACC · 100 % France · RGPD souverain</div>
+    <div class="funnel-result" id="sirenResult">
+      <pre id="sirenOutput"></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ HÉRITAGE MONTGOLFIER — clin d'œil élévation ═════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="heritage">
+  <div class="heritage-inner">
+    <div class="heritage-date">1783<small>L'humanité<br>s'élève</small></div>
+    <div class="heritage-text">
+      <h3>L'humanité s'est <em>élevée pour la première fois</em>.<br>Aujourd'hui, c'est votre patrimoine.</h3>
+      <p>Les frères Montgolfier ont prouvé qu'on pouvait élever l'humain par la technologie <strong>sans jamais oublier l'humain dans la nacelle</strong>. C'est notre conviction patrimoniale. L'IA prépare, calcule, source. Maxime décide, accompagne, transmet. <strong>Le pilote reste humain.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ BÊTA — 3 PORTES D'ENTRÉE ═════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="beta" id="beta">
+  <div class="beta-eyebrow">◆ Phase bêta · sur invitation</div>
+  <h2>Trois <em>portes d'entrée.</em></h2>
+  <p class="beta-sub">Du test gratuit à l'accompagnement sur-mesure. Pendant la bêta, le tier mensuel est offert aux 50 familles fondatrices.</p>
+  <div class="portes-grid">
+    <div class="porte">
+      <div class="porte-mark">◆ Découverte</div>
+      <h4>Cartographie <em>30 sec</em></h4>
+      <div class="price">Gratuit · sans engagement</div>
+      <p>Démonstration immédiate à partir de votre SIREN. Marcel rend visible 3 rouages sur 12. Sources officielles uniquement.</p>
+      <ul>
+        <li>Activation immédiate via SIREN</li>
+        <li>1 point d'attention patrimonial identifié</li>
+        <li>3 univers sur 12 visibles</li>
+        <li>0 inscription, 0 carte bancaire</li>
+      </ul>
+      <a href="#funnel" class="porte-cta">Activer Marcel →</a>
+    </div>
+
+    <div class="porte featured">
+      <div class="porte-mark">◆ Bêta · 50 familles fondatrices</div>
+      <h4>Family Office <em>complet</em></h4>
+      <div class="price">Tier mensuel offert pendant la bêta</div>
+      <p>Accès aux 12 univers, application mobile iOS/Android, agents Marcel + 11 spécialistes, conciergerie 24/7, événements privés.</p>
+      <ul>
+        <li>12 univers actifs · APIs réelles</li>
+        <li>Marcel + 11 agents · Opus 4.7 + Sonnet 4.6</li>
+        <li>App mobile + PWA souveraine FR</li>
+        <li>Lettre de mission Family Office signée</li>
+        <li>4 événements privés/an</li>
+      </ul>
+      <a href="#contact" class="porte-cta">Demander mon accès →</a>
+    </div>
+
+    <div class="porte">
+      <div class="porte-mark">◆ Sur-mesure</div>
+      <h4>Accompagnement <em>premium</em></h4>
+      <div class="price">Honoraires sur devis</div>
+      <p>Cellule pluridisciplinaire : notaire référent, fiscaliste, family lawyer, art advisor. Charte familiale, gouvernance, transmission multigénérationnelle.</p>
+      <ul>
+        <li>Cellule dédiée · 5 experts</li>
+        <li>Conseil de famille animé</li>
+        <li>Charte familiale rédigée</li>
+        <li>Reporting trimestriel structuré</li>
+      </ul>
+      <a href="#contact" class="porte-cta">Échanger avec Maxime →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ COMPLIANCE MIF II ═════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="compliance">
+  <div class="compliance-inner">
+    <div class="compliance-mark">◆ Conformité réglementaire</div>
+    <p><strong>Marcel et ses 11 spécialistes fournissent une information patrimoniale générale, sourcée (CGI, BOFiP, Loi de Finances 2026, Pappers, DVF).</strong> Ils n'émettent <strong>jamais</strong> de recommandation produit personnalisée. Toute préconisation d'investissement requiert au préalable un Document d'Entrée en Relation et une Lettre de Mission signés (art. 325-3 du RGAMF · art. L.521-2 du Code des Assurances). Cabinet IKCP — ORIAS 23001568 — CIF contrôlé par une association agréée AMF. Hébergement France — RGPD souverain — aucune donnée patrimoniale ne quitte l'Union européenne.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ CTA FINAL ═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="cta-final" id="contact">
+  <h2>Votre patrimoine mérite plus qu'un conseil. <em>Un cap.</em></h2>
+  <p>Échangez 60 minutes avec Maxime pour cadrer vos enjeux et explorer la pertinence d'un accompagnement Family Office.</p>
+  <div class="btns">
+    <a href="https://calendly.com/ikcp-maxime" class="btn btn-primary">Échanger avec Maxime →</a>
+    <a href="#funnel" class="btn btn-ghost">Tester d'abord la cartographie</a>
+  </div>
+</section>
+
+<footer>
+  <b>IKCP</b> — IKIGAÏ Conseil Patrimonial · Cabinet indépendant CIF<br>
+  ORIAS <b>23001568</b> · SIREN <b>947 972 436</b> · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>
+  <div class="legal">Lyon · Annonay · Megève — Mentions légales · RGPD · Conformité MIF II</div>
+</footer>
+
+</main>
+
+<script>
+/* ─── Constellation : lignes radiales discrètes ─── */
+(function drawOrbits(){
+  var svg = document.getElementById('orbit-lines');
+  if(!svg) return;
+  var cx = 410, cy = 410;
+  // 11 agents — angles équivalents aux positions CSS
+  var positions = [
+    [0.50,0.09],[0.721,0.156],[0.872,0.329],[0.906,0.558],[0.81,0.768],
+    [0.615,0.893],[0.385,0.893],[0.19,0.768],[0.094,0.558],[0.128,0.329],[0.279,0.156]
+  ];
+  var ns = 'http://www.w3.org/2000/svg';
+  positions.forEach(function(p){
+    var line = document.createElementNS(ns,'line');
+    line.setAttribute('x1',cx); line.setAttribute('y1',cy);
+    line.setAttribute('x2',p[0]*820); line.setAttribute('y2',p[1]*820);
+    line.setAttribute('stroke','#C9B89E'); line.setAttribute('stroke-width','1');
+    line.setAttribute('stroke-dasharray','3,5'); line.setAttribute('opacity','0.45');
+    svg.appendChild(line);
+  });
+  // Cercle d'orbite
+  var ring = document.createElementNS(ns,'circle');
+  ring.setAttribute('cx',cx); ring.setAttribute('cy',cy); ring.setAttribute('r',335);
+  ring.setAttribute('fill','none'); ring.setAttribute('stroke','#C9B89E');
+  ring.setAttribute('stroke-width','1'); ring.setAttribute('opacity','0.3');
+  ring.setAttribute('stroke-dasharray','2,8');
+  svg.appendChild(ring);
+})();
+
+/* ─── Funnel SIREN — branchement worker ikcp-pappers ─── */
+async function runSiren(e){
+  e.preventDefault();
+  var input = document.getElementById('sirenInput');
+  var box = document.getElementById('sirenResult');
+  var out = document.getElementById('sirenOutput');
+  var siren = (input.value||'').replace(/\s+/g,'');
+  if(!/^\d{9}$/.test(siren)){
+    box.classList.add('show');
+    out.textContent = '⚠ SIREN invalide. Format attendu : 9 chiffres.';
+    return false;
+  }
+  box.classList.add('show');
+  out.textContent = '◆ Marcel interroge Pappers (INSEE · INPI · BODACC)...';
+  try{
+    // Worker ikcp-pappers LIVE (cf. CLAUDE.md projet)
+    var r = await fetch('https://ikcp-pappers.maxime-juveneton.workers.dev/?siren=' + siren, {headers:{'Accept':'application/json'}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var data = await r.json();
+    var nom = data.nom_entreprise || data.denomination || data.nom || '—';
+    var siege = (data.siege && data.siege.code_postal) ? data.siege.code_postal + ' ' + (data.siege.ville||'') : '—';
+    var forme = data.forme_juridique || '—';
+    var capital = data.capital ? (Number(data.capital).toLocaleString('fr-FR')+' €') : '—';
+    var creation = data.date_creation || '—';
+    var activite = data.libelle_code_naf || data.activite || '—';
+    out.textContent =
+      '◆ Société identifiée\n' +
+      '  Nom        : ' + nom + '\n' +
+      '  SIREN      : ' + siren + '\n' +
+      '  Forme      : ' + forme + '\n' +
+      '  Capital    : ' + capital + '\n' +
+      '  Création   : ' + creation + '\n' +
+      '  Siège      : ' + siege + '\n' +
+      '  Activité   : ' + activite + '\n\n' +
+      '◆ Marcel a cartographié 3 rouages sur 12.\n' +
+      '◆ Pour les 9 autres univers : demandez votre accès à la bêta.';
+  }catch(err){
+    out.textContent = '⚠ Marcel n\'a pas pu contacter Pappers.\nVérifiez votre connexion ou demandez votre accès bêta.\n\nDétail technique : ' + err.message;
+  }
+  return false;
+}
+</script>
+</body>
+</html>
