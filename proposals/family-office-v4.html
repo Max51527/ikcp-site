@@ -272,6 +272,50 @@ section.claims{
 @media(max-width:760px){.claims-grid{grid-template-columns:1fr;gap:32px}}
 
 /* ════════════════════════════════════════════════════════════════ */
+/* ═══ DÉFINITION FO AUGMENTÉ ══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.definition{padding:140px 48px 120px; background:var(--paper); border-top:1px solid var(--line)}
+.def-inner{max-width:1100px; margin:0 auto}
+.def-head{text-align:center; margin-bottom:64px}
+.def-head h2{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144,"SOFT" 90; font-size:clamp(34px,4.4vw,56px); font-weight:400; color:var(--ink); line-height:1.05; letter-spacing:-0.026em; margin-bottom:18px; max-width:880px; margin-left:auto; margin-right:auto}
+.def-head h2 em{font-style:italic; color:var(--terra-deep); font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1}
+.def-head p{font-family:'Fraunces',serif; font-style:italic; font-size:18.5px; color:var(--ink-mute); max-width:720px; margin:0 auto; line-height:1.55}
+.def-grid{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line-strong); border-radius:18px; overflow:hidden; background:var(--paper)}
+@media(max-width:760px){.def-grid{grid-template-columns:1fr}}
+.def-col{padding:42px 38px; position:relative}
+.def-col:first-child{background:var(--paper-2); border-right:1px solid var(--line-strong)}
+@media(max-width:760px){.def-col:first-child{border-right:none; border-bottom:1px solid var(--line-strong)}}
+.def-col h3{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.36em; color:var(--ink-faint); text-transform:uppercase; font-weight:700; margin-bottom:18px}
+.def-col h3 b{color:var(--terra-deep)}
+.def-col ul{list-style:none}
+.def-col li{padding:10px 0 10px 26px; position:relative; font-size:14.5px; line-height:1.6; color:var(--ink); border-bottom:1px dashed var(--line)}
+.def-col li:last-child{border-bottom:none}
+.def-col li::before{position:absolute; left:0; top:11px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700}
+.def-col.classique li::before{content:'×'; color:var(--ink-faint); font-size:14px; top:10px}
+.def-col.classique li{color:var(--ink-mute)}
+.def-col.augmente li::before{content:'◆'; color:var(--terra)}
+.def-col.augmente li b{font-family:'Fraunces',serif; font-style:italic; color:var(--terra-deep); font-weight:500}
+
+/* — Bandeau "cerise" Maxime — */
+.maxime-cherry{
+  margin:48px auto 0; max-width:920px;
+  padding:36px 44px;
+  background:linear-gradient(135deg, var(--ink) 0%, #1A1612 100%);
+  border-radius:18px; color:var(--paper);
+  display:flex; align-items:center; gap:28px; flex-wrap:wrap;
+  box-shadow:0 32px 80px -16px rgba(45,37,32,0.32);
+  position:relative; overflow:hidden;
+}
+.maxime-cherry::before{
+  content:'•'; position:absolute; left:-8px; top:-32px; font-size:140px; color:var(--terra); font-family:'Fraunces',serif; line-height:1; opacity:0.85;
+}
+.maxime-cherry-text{flex:1; min-width:280px; padding-left:32px}
+.maxime-cherry-mark{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.32em; color:var(--terra-light); text-transform:uppercase; font-weight:700; margin-bottom:12px}
+.maxime-cherry h4{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1; font-style:italic; font-size:28px; font-weight:500; color:var(--paper); line-height:1.15; letter-spacing:-0.018em; margin-bottom:10px}
+.maxime-cherry h4 b{color:var(--terra-light); font-style:italic}
+.maxime-cherry p{font-size:14px; color:rgba(250,246,238,0.78); line-height:1.7; max-width:580px}
+
+/* ════════════════════════════════════════════════════════════════ */
 /* ═══ MARCEL ORCHESTRE — mécanique de pilotage ═══════════════════ */
 /* ════════════════════════════════════════════════════════════════ */
 section.orchestrate{padding:120px 48px; background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%); border-top:1px solid var(--line); border-bottom:1px solid var(--line); position:relative; overflow:hidden}
@@ -718,9 +762,9 @@ section.funnel::before, section.heritage::before, section.beta::before{
   <div class="menu">
     <a href="#univers">Vos univers</a>
     <a href="#passions">Passions</a>
+    <a href="#definition">Le FO augmenté</a>
     <a href="#orchestre">Marcel orchestre</a>
     <a href="#funnel">Cartographie 30 sec</a>
-    <a href="#tester">Tester Marcel</a>
     <a href="#beta">Bêta</a>
     <span class="beta-pill">● Bêta privée</span>
     <a href="#contact" class="cta">Demander mon accès →</a>
@@ -793,6 +837,55 @@ section.funnel::before, section.heritage::before, section.beta::before{
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ DÉFINITION FO AUGMENTÉ ════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="definition" id="definition">
+  <div class="def-inner">
+    <div class="def-head">
+      <div class="section-eyebrow">◆ Définition · Family Office augmenté</div>
+      <h2>Le <em>Family Office</em>, longtemps réservé aux familles à 50 M€,<br><em>vous est désormais accessible.</em></h2>
+      <p>Un cabinet entier — patrimoine, fiscalité, art de vivre, conciergerie — disponible 24/7 à un coût trente fois inférieur. C'est ce qu'on appelle un Family Office <em>augmenté</em> : la rigueur d'un Single Family Office, la souplesse d'une plateforme digitale.</p>
+    </div>
+
+    <div class="def-grid">
+      <div class="def-col classique">
+        <h3>Family Office <b>classique</b></h3>
+        <ul>
+          <li>Réservé aux familles 50 M€+</li>
+          <li>Honoraires : 0,8–1,2 % des actifs (250 k€/an minimum)</li>
+          <li>Cellule humaine de 4–8 personnes — RDV physiques uniquement</li>
+          <li>Délai de réponse : 48–96 h</li>
+          <li>Reporting trimestriel papier + PDF</li>
+          <li>Couvre principalement le patrimoine financier</li>
+          <li>Discrétion absolue — mais peu de visibilité côté client</li>
+        </ul>
+      </div>
+      <div class="def-col augmente">
+        <h3>Family Office <b>augmenté</b></h3>
+        <ul>
+          <li>Accessible dès <b>1 M€</b> de patrimoine global</li>
+          <li>Forfait mensuel transparent, sans pourcentage caché</li>
+          <li><b>Marcel et son équipe</b> à votre service 24/7, sans rendez-vous</li>
+          <li>Réponse <b>en quelques secondes</b>, instruite et sourcée</li>
+          <li>Application mobile · cartographie temps réel · alertes intelligentes</li>
+          <li>Couvre <b>douze univers</b> : patrimoine, passions, art de vivre, famille</li>
+          <li>Vous gardez la main — Maxime intervient sur votre demande</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="maxime-cherry">
+      <div class="maxime-cherry-text">
+        <div class="maxime-cherry-mark">◆ La cerise sur le gâteau</div>
+        <h4>L'outil tourne <b>seul</b>.<br>Maxime intervient quand <b>vous</b> le décidez.</h4>
+        <p>Le Family Office augmenté fonctionne 100 % en autonomie. Maxime n'est pas votre commercial ni votre opérateur : il est la cerise sur le gâteau — il améliore l'outil au fil de vos usages, négocie l'intégration de vos partenaires (notaire, fiscaliste, family lawyer, art advisor) et vous accompagne sur les arbitrages stratégiques. <strong>Sur votre demande. Quand vous le voulez. Pas avant.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- ═══ MARCEL ORCHESTRE — mécanique de pilotage ═══════════════ -->
@@ -932,43 +1025,6 @@ section.funnel::before, section.heritage::before, section.beta::before{
     <div class="funnel-note">Sources officielles françaises · 100 % France · RGPD souverain · sans inscription</div>
     <div class="funnel-result" id="sirenResult">
       <pre id="sirenOutput"></pre>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!-- ═══ TESTER MARCEL — Chat live freemium ═════════════════════ -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<section class="tester" id="tester">
-  <div class="tester-inner">
-    <div class="tester-head">
-      <div class="section-eyebrow">◆ Testez Marcel · 3 questions gratuites</div>
-      <h2 style="font-family:'Fraunces',serif; font-size:clamp(32px,4vw,48px); font-weight:400; color:var(--ink); letter-spacing:-0.02em; line-height:1.08; margin-bottom:14px">Posez vos questions à <em style="font-style:italic; color:var(--terra-deep)">Marcel.</em></h2>
-      <p style="font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink-mute); max-width:640px; margin:0 auto 24px; line-height:1.55">Démonstration en direct. Marcel comprend, oriente, et mobilise le bon spécialiste. Aucune inscription. Anonyme. <strong style="color:var(--terra-deep); font-weight:600">Vous décidez quand et quoi demander.</strong></p>
-      <div class="tester-tabs">
-        <button class="tester-tab active" data-mode="freemium">Découverte <span class="price-pill">GRATUIT</span></button>
-        <button class="tester-tab" data-mode="premium">Premium <span class="price-pill">29 €/MOIS</span></button>
-      </div>
-      <div class="tester-quota">Questions restantes : <b id="quotaCount">3</b> / 3 · session anonyme</div>
-    </div>
-
-    <div class="chat-box" id="chatBox">
-      <div class="chat-suggest">
-        <span class="chat-chip" data-q="Quels droits de succession si je transmets 800 000 € à mon enfant ?">🏛️ Droits succession 800 k€</span>
-        <span class="chat-chip" data-q="Pacte Dutreil : comment réduire les droits de transmission de mon entreprise ?">💎 Pacte Dutreil</span>
-        <span class="chat-chip" data-q="Apport-cession 150-0 B ter : quels sont les pièges en 2026 ?">🏢 Apport-cession 150-0 B ter</span>
-        <span class="chat-chip" data-q="Quel impact IFI 2026 sur ma SCI familiale détenant 3 immeubles ?">🏠 IFI 2026 SCI familiale</span>
-      </div>
-      <div class="chat-thread" id="chatThread" aria-live="polite">
-        <div class="chat-msg marcel">Bonjour. Je suis Marcel, chef d'orchestre du Family Office IKCP. Posez-moi votre question patrimoniale — je clarifierai, je sourcerai, et je vous orienterai. Sans recommandation produit personnalisée (MIF II).</div>
-      </div>
-      <form class="chat-form" id="chatForm" onsubmit="return askMarcel(event)">
-        <input id="chatInput" type="text" placeholder="Votre question patrimoniale…" autocomplete="off" maxlength="400">
-        <button id="chatSend" type="submit">Demander à Marcel →</button>
-      </form>
-      <div class="chat-note">
-        Conforme MIF II · sources françaises officielles · hébergement <strong>100 % France</strong> · aucune donnée patrimoniale stockée en clair.
-      </div>
     </div>
   </div>
 </section>
