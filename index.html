@@ -1577,6 +1577,61 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
         /* Animation de rotation des questions — fade staggered, doux */
         #marcel-questions { min-height: 220px; }
+
+        /* ─── BOUTON MINIMIZE Marcel ─── */
+        .marcel-talk-actions {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+        .marcel-talk-minimize {
+          background: transparent;
+          border: 1px solid #d8d0c4;
+          color: #907b65;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          cursor: pointer;
+          font-size: 18px;
+          line-height: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+          flex-shrink: 0;
+          padding: 0;
+        }
+        .marcel-talk-minimize:hover {
+          border-color: #b8956e;
+          color: #1f1a16;
+          background: #f9f6f0;
+        }
+        .marcel-talk-minimize .minimize-icon {
+          display: inline-block;
+          transition: transform 0.3s;
+        }
+        /* État réduit : pivote l'icône en + et masque le contenu */
+        .marcel-talk-card.minimized .marcel-talk-collapsible {
+          max-height: 0;
+          opacity: 0;
+          overflow: hidden;
+          pointer-events: none;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+        }
+        .marcel-talk-card.minimized .marcel-talk-minimize .minimize-icon {
+          transform: rotate(45deg);
+        }
+        .marcel-talk-card.minimized {
+          padding-bottom: 14px !important;
+        }
+        .marcel-talk-collapsible {
+          transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+          max-height: 800px;
+          opacity: 1;
+        }
         .marcel-q {
           animation: qFadeIn 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both;
           will-change: opacity, transform;
@@ -2352,25 +2407,52 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           </div>
 
           <!-- LA CARTE INTERACTIVE Marcel — questions cliquables qui ouvrent le chat -->
-          <div class="marcel-talk-card">
+          <div class="marcel-talk-card" id="marcel-talk-card">
 
             <div class="marcel-talk-header">
               <div class="marcel-talk-title">
                 <span class="marcel-pretitle">⚡ AGENT IA PATRIMONIAL</span>
                 <span class="marcel-mainttitle">Posez votre question à Marcel</span>
               </div>
-              <span class="marcel-talk-badge">Réponses sourcées CGI · LF 2026</span>
+              <div class="marcel-talk-actions">
+                <span class="marcel-talk-badge">Réponses sourcées CGI · LF 2026</span>
+                <button type="button" class="marcel-talk-minimize" onclick="toggleMarcelCard()" aria-label="Réduire / agrandir Marcel" title="Réduire / agrandir">
+                  <span class="minimize-icon">−</span>
+                </button>
+              </div>
             </div>
 
-            <div class="marcel-talk-questions" id="marcel-questions">
-              <!-- Les 4 questions affichées sont injectées par JS et rotent toutes les 10s -->
-            </div>
+            <div class="marcel-talk-collapsible">
+              <div class="marcel-talk-questions" id="marcel-questions">
+                <!-- Fallback statique si JS n'a pas chargé · le JS rotateQuestions le remplace dès DOMContentLoaded -->
+                <button class="marcel-q" onclick="askMarcel('Le PER (plan d&apos;épargne retraite) : combien je peux déduire de mes impôts cette année ?')">
+                  <span class="q-icon">🎯</span>
+                  <span class="q-text">PER : combien je peux déduire cette année ?</span>
+                  <span class="q-arrow">→</span>
+                </button>
+                <button class="marcel-q" onclick="askMarcel('Quels sont les leviers principaux pour réduire mon impôt sur le revenu cette année ?')">
+                  <span class="q-icon">💰</span>
+                  <span class="q-text">Comment réduire mon impôt sur le revenu ?</span>
+                  <span class="q-arrow">→</span>
+                </button>
+                <button class="marcel-q" onclick="askMarcel('Comment fonctionne le plafond global des niches fiscales (10 000 €) ?')">
+                  <span class="q-icon">📊</span>
+                  <span class="q-text">Plafond des niches fiscales : comment ça marche ?</span>
+                  <span class="q-arrow">→</span>
+                </button>
+                <button class="marcel-q" onclick="askMarcel('Suis-je concerné par l&apos;impôt sur la fortune immobilière (IFI) ? Quels biens compter ?')">
+                  <span class="q-icon">🏠</span>
+                  <span class="q-text">Suis-je concerné par l'IFI ?</span>
+                  <span class="q-arrow">→</span>
+                </button>
+              </div>
 
-            <div class="marcel-talk-footer">
-              <button class="marcel-talk-cta" onclick="openMarcelChat()">
-                <span>Ou tapez votre propre question</span>
-                <span class="marcel-talk-cta-icon">💬</span>
-              </button>
+              <div class="marcel-talk-footer">
+                <button class="marcel-talk-cta" onclick="openMarcelChat()">
+                  <span>Ou tapez votre propre question</span>
+                  <span class="marcel-talk-cta-icon">💬</span>
+                </button>
+              </div>
             </div>
 
           </div>
@@ -3593,7 +3675,21 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     document.addEventListener('DOMContentLoaded', () => {
       renderQuestions();
       setInterval(rotateQuestions, 12000);
+      // Restaurer l'état minimisé si l'utilisateur l'a déjà choisi
+      try {
+        if (localStorage.getItem('ikcp-marcel-minimized') === '1') {
+          document.getElementById('marcel-talk-card')?.classList.add('minimized');
+        }
+      } catch(_) {}
     });
+
+    // Toggle minimize/expand de la carte Marcel · état persistant via localStorage
+    function toggleMarcelCard() {
+      const card = document.getElementById('marcel-talk-card');
+      if (!card) return;
+      const minimized = card.classList.toggle('minimized');
+      try { localStorage.setItem('ikcp-marcel-minimized', minimized ? '1' : '0'); } catch(_) {}
+    }
 
     function askMarcel(question){
       // Ouvre le widget Marcel et soumet la question
