@@ -205,7 +205,7 @@ export default {
         },
         body: JSON.stringify({
           model: 'claude-opus-4-7',
-          max_tokens: 3000,
+          max_tokens: 5000, // augmente pour laisser place au thinking
           system: [
             {
               type: 'text',
@@ -213,6 +213,12 @@ export default {
               cache_control: { type: 'ephemeral' }, // -80% cout des le 2e appel
             },
           ],
+          // Extended thinking : Opus reflechit avant de repondre sur les croisements
+          // multi-dispositifs (Dutreil + donation + apport-cession). Budget 2k tokens.
+          thinking: {
+            type: 'enabled',
+            budget_tokens: 2000,
+          },
           messages: [{ role: 'user', content: userContent }],
         }),
       });
@@ -232,8 +238,14 @@ export default {
     }
 
     const data = await anthropicResp.json();
+    // Avec extended thinking, le premier block est 'thinking'.
+    // On extrait uniquement les blocks de type 'text' pour le reply.
+    const reply = (data.content || [])
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('\n\n') || '';
     return Response.json({
-      reply: data.content?.[0]?.text || '',
+      reply,
       agent: 'Hermès',
       agent_id: 'hermes',
       role: 'Transmission Patrimoniale',

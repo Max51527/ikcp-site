@@ -308,7 +308,7 @@ export default {
         },
         body: JSON.stringify({
           model: 'claude-opus-4-7',
-          max_tokens: 2048,
+          max_tokens: 4500, // augmente pour laisser place au thinking
           // ─── PROMPT CACHING ACTIVÉ ───
           // Le system prompt (~3500 tokens) est mis en cache 5 min
           // 1ère req : prix normal · req suivantes : -90% sur le system
@@ -320,6 +320,15 @@ export default {
               cache_control: { type: 'ephemeral' },
             },
           ],
+          // ─── EXTENDED THINKING ACTIVÉ ───
+          // Opus 4.7 réfléchit explicitement avant de répondre sur les
+          // croisements multi-articles CGI + jurisprudence. Qualité ++ sur
+          // questions complexes (apport-cession + Dutreil + holding animatrice).
+          // Budget 2000 tokens de raisonnement interne.
+          thinking: {
+            type: 'enabled',
+            budget_tokens: 2000,
+          },
           messages: [{ role: 'user', content: userContent }],
         }),
       });
@@ -333,7 +342,12 @@ export default {
       }
 
       const data = await apiResponse.json();
-      const reply = data.content?.[0]?.text || '';
+      // Avec extended thinking, le premier block est type 'thinking'.
+      // Le contenu de la reponse est dans le(s) block(s) de type 'text'.
+      const reply = (data.content || [])
+        .filter(b => b.type === 'text')
+        .map(b => b.text)
+        .join('\n\n') || '';
 
       return Response.json(
         {
