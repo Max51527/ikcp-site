@@ -56,6 +56,32 @@ const SPECIALISTS_REGISTRY = {
 };
 const SPECIALISTS_IDS = Object.keys(SPECIALISTS_REGISTRY);
 
+// ──────────────────────────────────────────────────────────────
+// COLLECTOR API — profil collectionneur perso (montres, voitures, lego...)
+// ──────────────────────────────────────────────────────────────
+const COLLECTOR_URL = 'https://ikcp-collector.maxime-ead.workers.dev';
+
+async function collectorFetch(env, path, method = 'GET', body = null) {
+  if (!env.COLLECTOR_ADMIN_TOKEN) {
+    return { error: 'COLLECTOR_ADMIN_TOKEN non configure sur Marcel' };
+  }
+  try {
+    const opts = {
+      method,
+      headers: {
+        'Authorization': `Bearer ${env.COLLECTOR_ADMIN_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(`${COLLECTOR_URL}${path}`, opts);
+    if (!r.ok) return { error: `Collector HTTP ${r.status}`, detail: (await r.text()).slice(0, 200) };
+    return await r.json();
+  } catch (e) {
+    return { error: `Collector reseau : ${e.message}` };
+  }
+}
+
 async function delegateToSpecialist(agentId, question, context) {
   const spec = SPECIALISTS_REGISTRY[agentId];
   if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS.join(', ')}` };
@@ -111,6 +137,56 @@ const TOOLS_FISCAL = [
         assurance_vie: { type: 'number', description: "Montant d'assurance-vie versée avant 70 ans (0 si aucune)" },
       },
       required: ['patrimoine_net', 'nb_enfants'],
+    },
+  },
+  {
+    name: 'get_user_profile',
+    description: "Lit le profil collectionneur de l'utilisateur (montres détenues, voitures wishlist, Lego, vins, art, voyages, sport, NextGen). Utilise ce tool dès qu'une question touche aux PASSIONS PERSONNELLES de l'utilisateur ou pour personnaliser une réponse selon ses goûts.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_user_watches',
+    description: "Liste les items que l'utilisateur surveille sur les marchés collectionneurs (montres, voitures, Lego, vins, art, sneakers, yachts). Filtre optionnel par marché.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+        market: { type: 'string', description: "Filtrer par marché (chrono24, classic, bricklink, idealwine, stockx, etc.)" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_user_alerts',
+    description: "Liste les alertes générées par l'agent collecteur (opportunités, baisses de prix, nouvelles listings, enchères imminentes). Filtre optionnel sur les non-lues.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+        unread: { type: 'boolean', description: "Si true, ne renvoie que les alertes non encore vues" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'add_user_watch',
+    description: "Ajoute un nouvel item à surveiller pour l'utilisateur. Le collecteur scrutera ce marché chaque jour 7h Paris et alertera si correspondance. Utilise ce tool quand l'utilisateur exprime un souhait d'acquisition ou demande à suivre un item.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+        market: { type: 'string', description: "Marché : chrono24, classic, bricklink, idealwine, stockx, artprice, yachtworld, histovec, etc." },
+        category: { type: 'string', description: "Catégorie : montre, voiture, lego, vin, art, sneaker, yacht, etc." },
+        query: { type: 'string', description: "Recherche précise (ex: 'Patek 5711A', 'Porsche 964 RS', '10497-1')" },
+        target_price: { type: 'number', description: "Prix cible en EUR — alerte si listing < target_price" },
+      },
+      required: ['market', 'category', 'query'],
     },
   },
   {
@@ -308,6 +384,20 @@ Tu n'es PAS seul. Tu peux mobiliser dix sub-agents Family Office en parallèle q
 | helene     | Mode, Beauté & Bien-être            | Sonnet 4.6| Sur-mesure, Lanserhof, longévité, programmes NextGen wellness |
 | olympe     | Philanthropie & NextGen             | Sonnet 4.6| Fondation/fonds de dotation/FRUP, dons IR-IFI, Family Council, NextGen |
 | auguste    | Vins & Gastronomie                  | Sonnet 4.6| Cave fine wine, valorisation IFI, restaurants 3★, transmission cave |
+
+COLLECTOR PERSONNEL — TOOLS get_user_profile / get_user_watches / get_user_alerts / add_user_watch :
+L'utilisateur peut avoir un PROFIL COLLECTIONNEUR enregistré (montres, voitures, sneakers, Lego, jeux, vins, art, voyage, sport, yachts, NextGen). Un agent collecteur scrute chaque jour les marchés correspondants et génère des alertes.
+
+QUAND UTILISER CES TOOLS :
+- **get_user_profile** : dès qu'une question touche aux PASSIONS PERSONNELLES ("ma collection de montres", "mes voitures", "mes Lego", "quel chalet à Megève cette année"). Permet de personnaliser sans demander.
+- **get_user_watches** : si l'utilisateur demande "qu'est-ce que je surveille en ce moment ?", ou pour citer ses recherches en cours.
+- **get_user_alerts** : si l'utilisateur demande "quoi de neuf sur mes marchés ?" / "des opportunités cette semaine ?". Filtrer unread=true par défaut.
+- **add_user_watch** : si l'utilisateur dit "j'aimerais une Patek 5711", "je cherche un Porsche 964 RS sous 250 k€", "alerte-moi sur le Lego UCS Galaxy Explorer si baisse". Confirme TOUJOURS avant d'ajouter ("Je vais ajouter X à votre veille — c'est bien cela ?").
+
+RÈGLES :
+- Ne propose JAMAIS de "lire ton profil" si la question est purement pédagogique (ex : "c'est quoi le PER ?"). Réserve ces tools aux questions personnelles.
+- Si un tool collector retourne une erreur (collecteur indisponible, token manquant), informe poliment sans mentionner la mécanique technique.
+- Le profil est PRIVÉ et SOUVERAIN FR (D1 Paris). Tu peux le rassurer si questionné.
 
 RÈGLES DE DÉLÉGATION :
 1. Tu PEUX déléguer en parallèle (ex : question "transmettre ma cave Pétrus" → délègue à hermes ET auguste ET codex en un seul tour).
@@ -723,6 +813,10 @@ export default {
           'calc_impot_revenu',
           'calc_droits_succession',
           'delegate_to_specialist',
+          'get_user_profile',
+          'get_user_watches',
+          'get_user_alerts',
+          'add_user_watch',
         ]);
         const toolUses = (data.content || []).filter(
           b => b.type === 'tool_use' && CLIENT_TOOLS.has(b.name)
@@ -734,14 +828,29 @@ export default {
         workingMessages.push({ role: 'assistant', content: data.content });
 
         // Exécute chaque tool — en PARALLELE (Promise.all) pour latence min
-        // Les delegations vers les specialistes peuvent tourner en parallele
         const toolResults = await Promise.all(toolUses.map(async tu => {
           let result;
+          const i = tu.input || {};
           if (tu.name === 'delegate_to_specialist') {
-            const { agent, question, context: ctxText } = tu.input || {};
-            result = await delegateToSpecialist(agent, question, ctxText);
+            result = await delegateToSpecialist(i.agent, i.question, i.context);
+          } else if (tu.name === 'get_user_profile') {
+            result = await collectorFetch(env, `/profile?user_id=${encodeURIComponent(i.user_id || 'max')}`);
+          } else if (tu.name === 'get_user_watches') {
+            const q = `?user_id=${encodeURIComponent(i.user_id || 'max')}${i.market ? `&market=${encodeURIComponent(i.market)}` : ''}`;
+            result = await collectorFetch(env, `/watches${q}`);
+          } else if (tu.name === 'get_user_alerts') {
+            const q = `?user_id=${encodeURIComponent(i.user_id || 'max')}${i.unread ? '&unread=1' : ''}`;
+            result = await collectorFetch(env, `/alerts${q}`);
+          } else if (tu.name === 'add_user_watch') {
+            result = await collectorFetch(env, '/watches', 'POST', {
+              user_id: i.user_id || 'max',
+              market: i.market,
+              category: i.category,
+              query: i.query,
+              target_price: i.target_price,
+            });
           } else {
-            result = executeTool(tu.name, tu.input || {});
+            result = executeTool(tu.name, i);
           }
           return {
             type: 'tool_result',
