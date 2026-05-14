@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — SaaS Family Office · Vue d'ensemble</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A;
+  --navy-2:#2A3B5F;
+  --navy-deep:#0E1729;
+  --cream:#FAFAF8;
+  --cream-2:#F4EFE7;
+  --cream-3:#EBE3D4;
+  --gold:#C9A96E;
+  --gold-deep:#8B6F3F;
+  --gold-bright:#E2C896;
+  --ink:#2C2418;
+  --ink-mute:#6B5D52;
+  --ink-faint:#9B8F80;
+  --line:#E5DBC9;
+  --line-strong:#CFC3AB;
+  --ok:#3F7A3F;
+  --warn:#C9913A;
+  --bad:#B53A3A;
+}
+html,body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Outfit',sans-serif; font-weight:400;
+  line-height:1.65; letter-spacing:-0.005em;
+  -webkit-font-smoothing:antialiased;
+}
+main{max-width:1280px; margin:0 auto; padding:48px 32px 80px}
+
+/* ─── HEADER ─── */
+.head{
+  display:flex; justify-content:space-between; align-items:flex-end;
+  padding-bottom:32px; margin-bottom:48px; border-bottom:2px solid var(--navy);
+}
+.brand{font-family:'Playfair Display',serif; font-size:32px; font-weight:600; color:var(--navy); line-height:1}
+.brand .dot{color:var(--gold)}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.3em; color:var(--gold-deep); margin-top:6px; font-weight:600; text-transform:uppercase}
+.head-meta{text-align:right; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-faint); letter-spacing:0.1em; line-height:1.85}
+.head-meta strong{color:var(--navy); font-weight:600}
+
+/* ─── HERO ─── */
+.hero-intro{margin-bottom:60px; max-width:880px}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep);
+  margin-bottom:18px; font-weight:600;
+}
+.hero-intro h1{
+  font-family:'Playfair Display',serif; font-size:clamp(34px, 4.8vw, 56px); line-height:1.05;
+  color:var(--navy); font-weight:500; letter-spacing:-0.022em; margin-bottom:22px;
+}
+.hero-intro h1 em{font-style:italic; color:var(--gold-deep)}
+.hero-intro p{font-size:16.5px; color:var(--ink-mute); line-height:1.75; max-width:720px}
+.hero-intro p em{font-style:italic; color:var(--ink); font-weight:500}
+
+/* ─── SECTION COMMON ─── */
+section{margin-bottom:80px}
+.section-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:16px; font-weight:600}
+.section-mark::before{content:'§ '; opacity:0.5}
+.section-h{font-family:'Playfair Display',serif; font-size:clamp(26px, 3.4vw, 38px); line-height:1.1; color:var(--navy); font-weight:500; letter-spacing:-0.018em; margin-bottom:14px}
+.section-h em{color:var(--gold-deep); font-style:italic}
+.section-deck{color:var(--ink-mute); font-size:15px; line-height:1.7; max-width:720px; margin-bottom:40px}
+.section-deck em{font-style:italic; color:var(--ink)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ §1 PARCOURS UTILISATEUR ═══════════════ */
+/* ════════════════════════════════════════════════════════ */
+.parcours{display:grid; grid-template-columns:repeat(6, 1fr); gap:0; border:1px solid var(--line-strong); border-radius:14px; overflow:hidden; background:var(--cream)}
+@media (max-width:960px){.parcours{grid-template-columns:repeat(3, 1fr)}}
+@media (max-width:580px){.parcours{grid-template-columns:repeat(2, 1fr)}}
+
+.step{padding:22px 18px; border-right:1px solid var(--line); position:relative; min-height:200px}
+.step:last-child{border-right:none}
+.step::before{
+  content:''; position:absolute; top:0; left:0; width:0; height:3px;
+  background:var(--gold); transition:width 0.4s;
+}
+.step:hover::before{width:100%}
+.step-num{font-family:'Playfair Display',serif; font-style:italic; font-size:36px; color:var(--gold); line-height:1; opacity:0.65; font-weight:500; margin-bottom:14px}
+.step-tag{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; color:var(--ink-faint); text-transform:uppercase; margin-bottom:8px; font-weight:600}
+.step-h{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:10px}
+.step-h em{font-style:italic; color:var(--gold-deep)}
+.step-p{font-size:12.5px; color:var(--ink-mute); line-height:1.55}
+.step-where{margin-top:14px; padding-top:10px; border-top:1px dashed var(--line); font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--gold-deep); letter-spacing:0.06em}
+.step-where::before{content:'→ '; opacity:0.5}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ §2 ÉCRANS DU SAAS — GALERIE ═════════════ */
+/* ════════════════════════════════════════════════════════ */
+.screens{display:grid; grid-template-columns:repeat(3, 1fr); gap:20px}
+@media (max-width:880px){.screens{grid-template-columns:repeat(2, 1fr)}}
+@media (max-width:580px){.screens{grid-template-columns:1fr}}
+
+.screen{
+  background:var(--cream); border:1px solid var(--line-strong); border-radius:14px;
+  overflow:hidden; transition:all 0.3s; cursor:pointer;
+}
+.screen:hover{transform:translateY(-4px); box-shadow:0 16px 40px rgba(27,42,74,0.10); border-color:var(--gold)}
+.screen-thumb{
+  height:160px; background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden; border-bottom:1px solid var(--line);
+}
+.screen-thumb::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 60%, rgba(27,42,74,0.06) 100%);
+  pointer-events:none;
+}
+.screen-thumb-icon{font-size:50px; opacity:0.85; line-height:1; z-index:1; position:relative}
+.screen-status{
+  position:absolute; top:12px; right:12px;
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.14em;
+  padding:4px 9px; border-radius:30px; font-weight:700; text-transform:uppercase; z-index:2;
+}
+.status-prod{background:rgba(63,122,63,0.15); color:var(--ok); border:1px solid var(--ok)}
+.status-mockup{background:rgba(201,145,58,0.12); color:var(--warn); border:1px solid var(--warn)}
+.status-todo{background:rgba(181,58,58,0.10); color:var(--bad); border:1px solid var(--bad)}
+
+.screen-body{padding:18px 22px}
+.screen-name{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:4px; letter-spacing:-0.005em}
+.screen-name em{font-style:italic; color:var(--gold-deep)}
+.screen-path{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--gold-deep); letter-spacing:0.04em; margin-bottom:10px}
+.screen-desc{font-size:12.5px; color:var(--ink-mute); line-height:1.55}
+.screen-link{margin-top:12px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--navy); letter-spacing:0.12em; text-transform:uppercase; font-weight:600}
+.screen-link::after{content:' →'; color:var(--gold)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ §3 ARCHITECTURE TECHNIQUE ═════════════ */
+/* ════════════════════════════════════════════════════════ */
+.archi{
+  background:var(--navy); color:var(--cream); border-radius:18px;
+  padding:48px 40px; position:relative; overflow:hidden;
+}
+.archi::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold));
+}
+.archi h2{color:var(--cream); margin-bottom:12px; font-family:'Playfair Display',serif; font-size:28px; font-weight:500; letter-spacing:-0.015em}
+.archi h2 em{color:var(--gold-bright); font-style:italic}
+.archi .deck{color:rgba(250,250,248,0.78); font-size:14.5px; line-height:1.65; max-width:680px; margin-bottom:36px}
+.archi-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:rgba(226,200,150,0.18); border:1px solid rgba(226,200,150,0.18); border-radius:12px; overflow:hidden}
+@media (max-width:880px){.archi-grid{grid-template-columns:1fr}}
+
+.layer{background:var(--navy); padding:24px 26px}
+.layer-tag{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.24em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.layer-h{font-family:'Playfair Display',serif; font-size:20px; color:var(--cream); font-weight:600; margin-bottom:14px; letter-spacing:-0.005em}
+.layer-h em{font-style:italic; color:var(--gold-bright)}
+.layer-list{display:flex; flex-direction:column; gap:0; margin-top:10px}
+.layer-row{
+  padding:10px 0; font-size:13px; color:rgba(250,250,248,0.75); line-height:1.5;
+  border-bottom:1px dashed rgba(226,200,150,0.12); display:flex; gap:10px; align-items:flex-start;
+}
+.layer-row:last-child{border-bottom:none}
+.layer-row b{color:var(--cream); font-weight:600}
+.layer-row .where{font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--gold-bright); letter-spacing:0.05em; text-transform:uppercase; flex-shrink:0; min-width:60px}
+.layer-row .state-ok{color:var(--ok)}
+.layer-row .state-todo{color:var(--gold-bright)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ §4 ADMIN MAXIME ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+.admin{
+  background:var(--cream-2); border:1px solid var(--line-strong); border-radius:18px;
+  padding:36px 38px; box-shadow:0 12px 36px rgba(27,42,74,0.05);
+}
+.admin-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid var(--gold)}
+.admin-title{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1.1; letter-spacing:-0.01em}
+.admin-title em{font-style:italic; color:var(--gold-deep)}
+.admin-user{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-mute); letter-spacing:0.1em; text-align:right}
+.admin-user b{color:var(--navy); font-weight:700}
+
+.admin-kpis{display:grid; grid-template-columns:repeat(5, 1fr); gap:14px; margin-bottom:28px}
+@media (max-width:880px){.admin-kpis{grid-template-columns:repeat(2, 1fr)}}
+.kpi{background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:16px 18px}
+.kpi-label{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:8px}
+.kpi-val{font-family:'Playfair Display',serif; font-size:26px; color:var(--navy); font-weight:600; line-height:1; letter-spacing:-0.015em}
+.kpi-val em{font-style:italic; color:var(--gold-deep)}
+.kpi-trend{font-size:10.5px; color:var(--ok); margin-top:5px; font-weight:600}
+.kpi-trend.warn{color:var(--warn)}
+
+.admin-grid-2{display:grid; grid-template-columns:1.4fr 1fr; gap:18px}
+@media (max-width:880px){.admin-grid-2{grid-template-columns:1fr}}
+.admin-block{background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:22px 24px}
+.admin-block h4{font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); font-weight:600; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--gold)}
+.activity-row{padding:8px 0; font-size:12.5px; color:var(--ink-mute); line-height:1.5; display:flex; gap:10px; border-bottom:1px dashed var(--line); align-items:flex-start}
+.activity-row:last-child{border-bottom:none}
+.activity-row .who{font-family:'Playfair Display',serif; font-style:italic; color:var(--gold-deep); font-weight:500; min-width:90px; font-size:13px}
+.activity-row .ts{color:var(--ink-faint); font-size:10.5px; margin-left:auto; white-space:nowrap; font-family:'JetBrains Mono',monospace}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ §5 ÉTAT RÉEL — ROADMAP CHECKLIST ═════════════ */
+/* ════════════════════════════════════════════════════════ */
+.roadmap{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:880px){.roadmap{grid-template-columns:1fr}}
+.sprint{background:var(--cream); border:1px solid var(--line-strong); border-radius:14px; padding:26px 28px}
+.sprint-tag{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.24em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:12px}
+.sprint-h{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:6px; letter-spacing:-0.01em}
+.sprint-h em{font-style:italic; color:var(--gold-deep)}
+.sprint-goal{font-style:italic; color:var(--ink-mute); font-size:13px; margin-bottom:18px; line-height:1.5; font-family:'Playfair Display',serif}
+
+.check-list{display:flex; flex-direction:column; gap:0; margin-bottom:14px}
+.check{padding:9px 0; font-size:13.5px; line-height:1.5; display:flex; gap:11px; align-items:flex-start; border-bottom:1px dotted var(--line)}
+.check:last-child{border-bottom:none}
+.check-box{
+  flex-shrink:0; width:20px; height:20px; border-radius:5px;
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;
+  margin-top:1px;
+}
+.check-box.done{background:var(--ok); color:white}
+.check-box.wip{background:var(--gold); color:var(--navy)}
+.check-box.todo{background:var(--cream-3); color:var(--ink-faint); border:1px solid var(--line-strong)}
+.check b{color:var(--navy); font-weight:600}
+.check.done{color:var(--ink-faint); text-decoration:line-through; opacity:0.65}
+.check em{font-style:italic; color:var(--gold-deep); font-family:'Playfair Display',serif; font-size:13px}
+.sprint-livraison{
+  margin-top:18px; padding:14px 16px;
+  background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color:var(--gold-bright); border-radius:10px;
+  font-family:'Playfair Display',serif; font-style:italic; font-size:13.5px; line-height:1.5;
+}
+.sprint-livraison b{color:var(--cream); font-weight:600; font-style:normal; font-family:'Outfit',sans-serif; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; display:block; margin-bottom:6px}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ §6 — TIMELINE GLOBALE ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+.timeline{
+  background:var(--navy-deep); color:var(--cream); border-radius:18px;
+  padding:40px 36px; position:relative; overflow:hidden;
+}
+.timeline::before{
+  content:''; position:absolute; top:0; left:32px; right:32px; height:2px;
+  background:linear-gradient(90deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+}
+.timeline h2{color:var(--cream); margin-bottom:8px; font-family:'Playfair Display',serif; font-size:24px; font-weight:500}
+.timeline h2 em{color:var(--gold-bright); font-style:italic}
+.timeline p.deck{color:rgba(250,250,248,0.7); font-size:13.5px; margin-bottom:32px; max-width:680px; line-height:1.6; font-style:italic; font-family:'Playfair Display',serif}
+
+.tl-bar{display:grid; grid-template-columns:repeat(8, 1fr); gap:6px; margin-top:24px}
+@media (max-width:760px){.tl-bar{grid-template-columns:repeat(4, 1fr)}}
+.tl-week{
+  padding:18px 14px; background:rgba(226,200,150,0.05);
+  border:1px solid rgba(226,200,150,0.15); border-radius:8px;
+  text-align:center; transition:all 0.2s;
+}
+.tl-week.active{background:rgba(226,200,150,0.18); border-color:var(--gold-bright)}
+.tl-week.future{opacity:0.5}
+.tl-week-num{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.16em; color:var(--gold-bright); margin-bottom:6px; font-weight:700}
+.tl-week-label{font-size:11.5px; color:var(--cream); line-height:1.3; font-weight:500}
+.tl-week.milestone{background:linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%); color:var(--navy)}
+.tl-week.milestone .tl-week-num,.tl-week.milestone .tl-week-label{color:var(--navy); font-weight:700}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ CTA FINAL ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+.cta-final{
+  background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%);
+  border:1px solid var(--gold); border-radius:18px;
+  padding:48px 44px; margin-top:40px;
+}
+.cta-final h2{font-family:'Playfair Display',serif; font-size:28px; color:var(--navy); font-weight:500; letter-spacing:-0.015em; margin-bottom:14px; line-height:1.2}
+.cta-final h2 em{font-style:italic; color:var(--gold-deep)}
+.cta-final p{color:var(--ink-mute); font-size:15px; line-height:1.7; max-width:660px; margin-bottom:28px}
+.cta-final p em{font-style:italic; color:var(--ink); font-weight:500}
+
+.cta-actions{display:flex; align-items:center; gap:24px; flex-wrap:wrap}
+.btn-go{
+  padding:15px 32px; background:var(--navy); color:var(--cream);
+  text-decoration:none; font-size:12.5px; font-weight:600; letter-spacing:0.08em;
+  border-radius:6px; transition:all 0.25s;
+  box-shadow:0 8px 22px rgba(27,42,74,0.18);
+}
+.btn-go:hover{background:var(--navy-deep); transform:translateY(-2px)}
+.btn-pause{
+  color:var(--navy); text-decoration:none; font-size:12.5px; font-weight:600;
+  letter-spacing:0.04em; padding:13px 22px;
+  border:1.5px solid var(--gold-deep); border-radius:6px;
+  transition:all 0.25s;
+}
+.btn-pause:hover{background:var(--gold-deep); color:var(--cream)}
+
+/* ─── FOOTER ─── */
+footer{
+  margin-top:60px; padding-top:24px; border-top:1px solid var(--line);
+  text-align:center; font-size:11px; color:var(--ink-faint); line-height:1.85;
+  font-family:'JetBrains Mono',monospace; letter-spacing:0.06em;
+}
+footer a{color:var(--gold-deep); text-decoration:none}
+
+@media (max-width:760px){
+  main{padding:32px 20px 60px}
+  .head{flex-direction:column; align-items:flex-start; gap:14px}
+  .head-meta{text-align:left}
+  .step{min-height:auto}
+}
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- ─── HEADER ─── -->
+<header class="head">
+  <div>
+    <div class="brand">IKCP<span class="dot">.</span></div>
+    <div class="brand-sub">SaaS Family Office · vue d'ensemble</div>
+  </div>
+  <div class="head-meta">
+    <strong>Statut</strong> : J0 · pré-Sprint 1<br>
+    <strong>Cible</strong> : 1<sup>er</sup> paiement test · M+2<br>
+    <strong>Document</strong> · 2026-05-11 · v1
+  </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section class="hero-intro">
+  <div class="eyebrow">— Ce que vous obtenez au bout du Sprint 1+2</div>
+  <h1>À quoi ressemblera le <em>SaaS opérationnel</em><br>dans 4 semaines.</h1>
+  <p>
+    Un parcours <em>de bout en bout</em>, du visiteur curieux au client Premium payant, de la candidature beta à votre tableau de bord Maxime. Avec en dessous la stack technique réelle : <em>4 workers Cloudflare</em>, une base D1 souveraine, Stripe live, Resend, et Marcel orchestrant 11 agents. <em>Ce document est une boussole, pas un wireframe.</em>
+  </p>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- §1 PARCOURS UTILISATEUR ════════════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section>
+  <div class="section-mark">Parcours client</div>
+  <h2 class="section-h">Six étapes. De <em>découverte</em> à <em>Premium payant</em>.</h2>
+  <p class="section-deck">Le visiteur découvre ikcp.eu, candidate à la bêta, accède gratuitement 6 mois, puis bascule en Premium ou Family Office. Tout transite par une seule porte d'entrée.</p>
+
+  <div class="parcours">
+    <div class="step">
+      <div class="step-num">i</div>
+      <div class="step-tag">Découverte</div>
+      <div class="step-h">Le visiteur arrive</div>
+      <p class="step-p">Cherche un CGP, atterrit sur ikcp.eu. Voit l'onglet <em>Family Office · Bêta</em>.</p>
+      <div class="step-where">ikcp.eu</div>
+    </div>
+    <div class="step">
+      <div class="step-num">ii</div>
+      <div class="step-tag">Candidature</div>
+      <div class="step-h">Il demande un code</div>
+      <p class="step-p">Formulaire 5 min, email à Maxime, sélection sous 7j.</p>
+      <div class="step-where">/beta</div>
+    </div>
+    <div class="step">
+      <div class="step-num">iii</div>
+      <div class="step-tag">Onboarding</div>
+      <div class="step-h">Code reçu, magic link</div>
+      <p class="step-p">Saisit <code style="font-size:10px">BETA-FAMI-XXXX</code>, email magic, compte créé.</p>
+      <div class="step-where">/beta-redeem</div>
+    </div>
+    <div class="step">
+      <div class="step-num">iv</div>
+      <div class="step-tag">Usage</div>
+      <div class="step-h">Salon membre</div>
+      <p class="step-p">Demande à Marcel, explore les 12 univers, voit sa cartographie patrimoniale.</p>
+      <div class="step-where">client.ikcp.eu/salon</div>
+    </div>
+    <div class="step">
+      <div class="step-num">v</div>
+      <div class="step-tag">Conversion</div>
+      <div class="step-h">Bascule Premium</div>
+      <p class="step-p">À J+180 (fin bêta), paye 290 €/mois via Stripe Checkout.</p>
+      <div class="step-where">/abonnement</div>
+    </div>
+    <div class="step">
+      <div class="step-num">vi</div>
+      <div class="step-tag">Fidélité</div>
+      <div class="step-h">Vers Sur-mesure</div>
+      <p class="step-p">Après 6-12 mois Premium, candidate au Family Office sur-mesure.</p>
+      <div class="step-where">RDV Maxime</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- §2 ÉCRANS DU SAAS ═══════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section>
+  <div class="section-mark">Écrans clés</div>
+  <h2 class="section-h">Les <em>six pages</em> qui composent le SaaS.</h2>
+  <p class="section-deck">Trois statuts : <strong style="color:var(--ok)">PROD</strong> (en ligne) · <strong style="color:var(--warn)">MOCKUP</strong> (visuel validé, à coder dynamique) · <strong style="color:var(--bad)">TODO</strong> (à créer).</p>
+
+  <div class="screens">
+
+    <a href="ikcp-eu-onglet-family-office.html" class="screen">
+      <div class="screen-thumb">
+        <span class="screen-thumb-icon">🏛</span>
+        <span class="screen-status status-mockup">Mockup</span>
+      </div>
+      <div class="screen-body">
+        <div class="screen-name">Onglet <em>Family Office</em></div>
+        <div class="screen-path">ikcp.eu/family-office</div>
+        <p class="screen-desc">L'entrée publique : nav avec badge "NEW · Bêta", hero, 3 tiers, formulaire code.</p>
+        <div class="screen-link">Voir le mockup</div>
+      </div>
+    </a>
+
+    <a href="beta-familles-dirigeantes.html" class="screen">
+      <div class="screen-thumb">
+        <span class="screen-thumb-icon">📜</span>
+        <span class="screen-status status-mockup">Mockup</span>
+      </div>
+      <div class="screen-body">
+        <div class="screen-name">Landing <em>Bêta</em></div>
+        <div class="screen-path">/landing-beta-dirigeants</div>
+        <p class="screen-desc">Page acquisition longue : storytelling 70 % Morgan Stanley, cas Emma/Thomas/Léa, formulaire code.</p>
+        <div class="screen-link">Voir le mockup</div>
+      </div>
+    </a>
+
+    <a href="#" class="screen">
+      <div class="screen-thumb">
+        <span class="screen-thumb-icon">🔑</span>
+        <span class="screen-status status-todo">À coder</span>
+      </div>
+      <div class="screen-body">
+        <div class="screen-name"><em>Login</em> · magic link</div>
+        <div class="screen-path">client.ikcp.eu/</div>
+        <p class="screen-desc">Saisie email → envoi magic link → clic mail → session 30j. JWT cookie HttpOnly.</p>
+        <div class="screen-link">À créer · J3 Sprint 1</div>
+      </div>
+    </a>
+
+    <a href="membre-preview.html" class="screen">
+      <div class="screen-thumb">
+        <span class="screen-thumb-icon">🪐</span>
+        <span class="screen-status status-mockup">Mockup</span>
+      </div>
+      <div class="screen-body">
+        <div class="screen-name">Salon <em>membre</em></div>
+        <div class="screen-path">client.ikcp.eu/salon</div>
+        <p class="screen-desc">Dashboard freemium : constellation 11 agents, quotas, Pappers, Marcel chat, activité.</p>
+        <div class="screen-link">Voir le mockup</div>
+      </div>
+    </a>
+
+    <a href="#" class="screen">
+      <div class="screen-thumb">
+        <span class="screen-thumb-icon">💳</span>
+        <span class="screen-status status-todo">À coder</span>
+      </div>
+      <div class="screen-body">
+        <div class="screen-name"><em>Abonnement</em> · Stripe</div>
+        <div class="screen-path">client.ikcp.eu/abonnement</div>
+        <p class="screen-desc">3 tiers, Stripe Checkout, Customer Portal pour gérer son abo.</p>
+        <div class="screen-link">À créer · Sprint 2</div>
+      </div>
+    </a>
+
+    <a href="#admin-section" class="screen">
+      <div class="screen-thumb">
+        <span class="screen-thumb-icon">🎯</span>
+        <span class="screen-status status-todo">À coder</span>
+      </div>
+      <div class="screen-body">
+        <div class="screen-name"><em>Admin Maxime</em></div>
+        <div class="screen-path">client.ikcp.eu/admin</div>
+        <p class="screen-desc">Tableau de bord interne : KPI temps réel, liste des bêta-testeurs, activité, codes à envoyer.</p>
+        <div class="screen-link">Voir mockup ↓</div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- §3 ARCHITECTURE TECHNIQUE ═════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section>
+  <div class="section-mark">Architecture</div>
+  <div class="archi">
+    <h2>Trois couches. <em>100 % France.</em></h2>
+    <p class="deck">Tout transite par Cloudflare Workers EU sovereign (edge) + D1 (SQLite UE) + Stripe + Resend (Anthropic via DPA). Aucune donnée nominative ne traverse les calculateurs.</p>
+
+    <div class="archi-grid">
+
+      <div class="layer">
+        <div class="layer-tag">i — Frontend</div>
+        <h3 class="layer-h">Pages <em>HTML</em> vanilla</h3>
+        <div class="layer-list">
+          <div class="layer-row"><span class="where">site</span><span><b>ikcp.eu</b> · Hostinger · landing publique</span></div>
+          <div class="layer-row"><span class="where">membre</span><span><b>client.ikcp.eu</b> · Cloudflare · espace privé</span></div>
+          <div class="layer-row"><span class="where">UI</span><span>HTML + Outfit + Playfair · zero build</span></div>
+          <div class="layer-row"><span class="where">JS</span><span>vanilla · fetch API workers · zero framework</span></div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-tag">ii — Workers Cloudflare</div>
+        <h3 class="layer-h">Logique <em>edge</em></h3>
+        <div class="layer-list">
+          <div class="layer-row"><span class="where state-ok">prod</span><span><b>ikcp-chat</b> · Marcel + tools fiscaux</span></div>
+          <div class="layer-row"><span class="where state-ok">prod</span><span><b>ikcp-prospect</b> · pipeline leads → Notion</span></div>
+          <div class="layer-row"><span class="where state-todo">Sprint 1</span><span><b>ikcp-client</b> · auth + tier + Stripe + Pappers proxy</span></div>
+          <div class="layer-row"><span class="where state-todo">Sprint 1</span><span><b>ikcp-pappers</b> · lookup SIREN + KV cache 1h</span></div>
+          <div class="layer-row"><span class="where">future</span><span><b>documents-mcp-server</b> · OCR + classification</span></div>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-tag">iii — Data & paiement</div>
+        <h3 class="layer-h">Stockage <em>souverain</em></h3>
+        <div class="layer-list">
+          <div class="layer-row"><span class="where state-todo">D1</span><span><b>ikcp-client-db</b> · users · sessions · usage · audit</span></div>
+          <div class="layer-row"><span class="where state-todo">KV</span><span><b>CLIENT_KV</b> · magic tokens · rate limit · cache</span></div>
+          <div class="layer-row"><span class="where state-todo">R2</span><span><b>ikcp-docs</b> · archivage eIDAS 10 ans</span></div>
+          <div class="layer-row"><span class="where state-todo">Sprint 2</span><span><b>Stripe</b> · checkout + webhook signé HMAC</span></div>
+          <div class="layer-row"><span class="where state-todo">Sprint 1</span><span><b>Resend</b> · magic link + transactionnels</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- §4 ADMIN MAXIME ═════════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="admin-section">
+  <div class="section-mark">Tableau de bord Maxime</div>
+  <h2 class="section-h">Votre back-office. <em>Sobre. Lisible. Souverain.</em></h2>
+  <p class="section-deck">Aperçu de ce que vous voyez à <code>client.ikcp.eu/admin?token=&lt;ADMIN_TOKEN&gt;</code> — KPI temps réel, liste des bêta-testeurs, activité, codes à distribuer.</p>
+
+  <div class="admin">
+    <div class="admin-head">
+      <div>
+        <div class="admin-title"><em>Admin</em> · IKCP Family Office</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-mute); letter-spacing:0.06em; margin-top:4px">État au 11 mai 2026 · projection M+3</div>
+      </div>
+      <div class="admin-user">
+        <b>Maxime Juveneton</b><br>
+        <span style="font-style:italic; color:var(--gold-deep); font-family:'Playfair Display',serif">FM #001 · admin</span>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="admin-kpis">
+      <div class="kpi">
+        <div class="kpi-label">Bêta-testeurs</div>
+        <div class="kpi-val">23<em style="font-size:18px"> / 50</em></div>
+        <div class="kpi-trend">+5 cette semaine</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Premium actifs</div>
+        <div class="kpi-val">3</div>
+        <div class="kpi-trend">+2 ce mois</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">MRR</div>
+        <div class="kpi-val"><em>870 €</em></div>
+        <div class="kpi-trend">+580 € / mois</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Pappers</div>
+        <div class="kpi-val">142</div>
+        <div class="kpi-trend">cache hit 64 %</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Marcel msgs</div>
+        <div class="kpi-val">1 847</div>
+        <div class="kpi-trend warn">Anthropic ~38 €</div>
+      </div>
+    </div>
+
+    <div class="admin-grid-2">
+
+      <div class="admin-block">
+        <h4>🔔 Activité des dernières 24 heures</h4>
+        <div class="activity-row"><span class="who">Joséphine D.</span><span>a souscrit Premium · 290 €/mois</span><span class="ts">14:32</span></div>
+        <div class="activity-row"><span class="who">Thomas R.</span><span>a complété 3 modules NextGen sur 6</span><span class="ts">11:18</span></div>
+        <div class="activity-row"><span class="who">FAMI-DEMO-0027</span><span>a redeemé son code (Léa B., 24 ans)</span><span class="ts">10:04</span></div>
+        <div class="activity-row"><span class="who">🏛 Fiscalité</span><span>a traité 47 demandes IR/IFI/Dutreil</span><span class="ts">aujourd'hui</span></div>
+        <div class="activity-row"><span class="who">📊 Reporting</span><span>a livré 12 synthèses trimestrielles</span><span class="ts">hier</span></div>
+        <div class="activity-row"><span class="who">🤝 Liaison externe</span><span>a contacté 4 notaires pour bêta-testeurs</span><span class="ts">hier</span></div>
+      </div>
+
+      <div class="admin-block">
+        <h4>📨 Codes à envoyer</h4>
+        <div class="activity-row"><span class="who" style="min-width:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--navy)">BETA-FAMI-A4F2-9XK1</span><span style="font-size:11.5px;color:var(--ink-mute)">Famille R. (recommandation S.)</span></div>
+        <div class="activity-row"><span class="who" style="min-width:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--navy)">BETA-FAMI-B72C-5MK0</span><span style="font-size:11.5px;color:var(--ink-mute)">Famille V. (LinkedIn)</span></div>
+        <div class="activity-row"><span class="who" style="min-width:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--navy)">BETA-FAMI-C9D3-2PL7</span><span style="font-size:11.5px;color:var(--ink-mute)">Famille M. (newsletter)</span></div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-mute); font-style:italic">27 codes restants à distribuer · sélection en cours</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- §5 ÉTAT RÉEL ROADMAP ═════════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section>
+  <div class="section-mark">Roadmap</div>
+  <h2 class="section-h">Sprint 1 + Sprint 2. <em>4 semaines.</em></h2>
+  <p class="section-deck">Checklist concrète. <strong style="color:var(--ok)">Vert</strong> = fait. <strong style="color:var(--gold-deep)">Or</strong> = en cours. <strong style="color:var(--ink-faint)">Gris</strong> = à venir.</p>
+
+  <div class="roadmap">
+
+    <div class="sprint">
+      <div class="sprint-tag">Sprint 1 · sem. 1-2</div>
+      <h3 class="sprint-h">Infrastructure <em>technique</em></h3>
+      <p class="sprint-goal">Tout le code en prod, accessible mais sans paiement réel. Les premiers testeurs internes peuvent s'inscrire et utiliser Marcel + Pappers.</p>
+      <div class="check-list">
+        <div class="check"><span class="check-box todo">○</span><span>Fusion Git (Option D) · base de travail propre</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Compte Resend + DNS <b>ikcp.eu</b> vérifié</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>D1 <b>ikcp-client-db</b> créée + schema appliqué</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Worker <b>ikcp-client</b> déployé · magic link OK</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Worker <b>ikcp-pappers</b> déployé · KV cache 1h</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>DNS <b>client.ikcp.eu</b> → worker</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Pages <b>/login</b> · <b>/salon</b> codées et live</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Tests E2E : signup → magic → dashboard → lookup</span></div>
+      </div>
+      <div class="sprint-livraison">
+        <b>Livraison J+10</b>
+        Cinq utilisateurs internes peuvent s'inscrire, parler à Marcel, faire un lookup Pappers. <em>Pas encore de paiement.</em>
+      </div>
+    </div>
+
+    <div class="sprint">
+      <div class="sprint-tag">Sprint 2 · sem. 3-4</div>
+      <h3 class="sprint-h">Paiement <em>test live</em> + Bêta</h3>
+      <p class="sprint-goal">Stripe en mode live encaisse le premier euro réel. 50 codes bêta distribués aux familles sélectionnées.</p>
+      <div class="check-list">
+        <div class="check"><span class="check-box todo">○</span><span>Stripe activé (KYC validé) · produits live</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Stripe Checkout intégré sur <b>/abonnement</b></span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Webhook signé HMAC + idempotency</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Stripe Customer Portal · gestion abo</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>50 codes <em>BETA-FAMI-XXXX-YYYY</em> générés</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Page <b>/beta-redeem</b> codée et live</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Templates email Resend · welcome + premium</span></div>
+        <div class="check"><span class="check-box todo">○</span><span>Tableau de bord admin Maxime · KPI live</span></div>
+        <div class="check"><span class="check-box todo">○</span><span><b>Premier paiement test</b> (toi-même, 290 € CB perso)</span></div>
+      </div>
+      <div class="sprint-livraison">
+        <b>Livraison J+20</b>
+        Stripe live opérationnel. <em>Premier euro encaissé.</em> 50 familles bêta démarrent en parallèle.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- §6 TIMELINE GLOBALE ═════════════════ -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section>
+  <div class="section-mark">Timeline</div>
+  <div class="timeline">
+    <h2>Aujourd'hui → <em>premier euro</em>.</h2>
+    <p class="deck">Quatre semaines · cinq dépendances humaines (KYC Stripe, DNS Resend, etc.) en parallèle de huit jours-homme de dev.</p>
+
+    <div class="tl-bar">
+      <div class="tl-week active">
+        <div class="tl-week-num">S1</div>
+        <div class="tl-week-label">Fusion Git<br>Comptes</div>
+      </div>
+      <div class="tl-week">
+        <div class="tl-week-num">S2</div>
+        <div class="tl-week-label">Workers<br>déployés</div>
+      </div>
+      <div class="tl-week">
+        <div class="tl-week-num">S3</div>
+        <div class="tl-week-label">Frontend<br>pages live</div>
+      </div>
+      <div class="tl-week milestone">
+        <div class="tl-week-num">J+10</div>
+        <div class="tl-week-label">★ Livraison<br>Sprint 1</div>
+      </div>
+      <div class="tl-week future">
+        <div class="tl-week-num">S5</div>
+        <div class="tl-week-label">Stripe<br>checkout</div>
+      </div>
+      <div class="tl-week future">
+        <div class="tl-week-num">S6</div>
+        <div class="tl-week-label">Codes bêta<br>distribués</div>
+      </div>
+      <div class="tl-week future">
+        <div class="tl-week-num">S7</div>
+        <div class="tl-week-label">Bêta<br>active</div>
+      </div>
+      <div class="tl-week milestone future">
+        <div class="tl-week-num">J+20</div>
+        <div class="tl-week-label">🎉 1<sup>er</sup> €<br>encaissé</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ─── -->
+<section class="cta-final">
+  <h2>Prêt à <em>lancer le Sprint 1</em> ?</h2>
+  <p>
+    Avant de coder la première ligne, deux choses doivent partir <em>aujourd'hui</em> : le KYC Stripe (3-5j d'attente) et la fusion Git pour avoir une seule base de travail. Le reste, je l'enchaîne en 4 semaines, jour par jour.
+  </p>
+  <div class="cta-actions">
+    <a href="#" class="btn-go" onclick="alert('Mock — déclenche le commit local + checkout branche + cherry-pick (3 commandes git)')">▶ Lancer la fusion Git maintenant</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Lancer%20Sprint%201%20IKCP%20Family%20Office" class="btn-pause">Lancer le KYC Stripe en parallèle</a>
+  </div>
+</section>
+
+<footer>
+  IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+  <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+</footer>
+
+</main>
+
+<!-- ─── PROTECTION COPIE ─── -->
+<script>
+(function(){
+  let clientIP = 'inconnue';
+  fetch('https://api.ipify.org?format=json',{cache:'no-store'}).then(r=>r.json()).then(d=>{clientIP=d.ip||'inconnue'}).catch(()=>{});
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nIP: ' + clientIP + ' · ' + new Date().toLocaleString('fr-FR') + '\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+  console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+})();
+</script>
+
+</body>
+</html>

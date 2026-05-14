@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Manuscrit</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --parchment:#F5EDD8;
+  --parchment-2:#EFE4CB;
+  --parchment-3:#E5D6B5;
+  --ink:#231C14;
+  --ink-2:#3D3025;
+  --ink-mute:#6F5C45;
+  --ink-faint:#9D8A6F;
+  --sepia:#8B5A2B;
+  --sepia-deep:#6B3F18;
+  --sepia-light:#C4A57C;
+  --gold:#A88B5A;
+  --line:#D8C8A4;
+  --line-strong:#BEA882;
+}
+
+html,body{
+  background:var(--parchment); color:var(--ink);
+  font-family:'EB Garamond',Georgia,serif;
+  font-weight:400; line-height:1.65; letter-spacing:-0.003em;
+  overflow-x:hidden; min-height:100vh;
+  text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+
+/* Texture parchemin + tâches subtiles */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(139,90,43,0.04), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(107,63,24,0.03), transparent 50%);
+  pointer-events:none;
+}
+body::after{
+  content:''; position:fixed; inset:0; z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.13 0 0 0 0 0.07 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events:none; mix-blend-mode:multiply; opacity:0.5;
+}
+
+main{position:relative; z-index:1}
+
+/* Pliure verticale type livre relié */
+.book-fold{
+  position:fixed; top:0; bottom:0; left:50%; width:1px;
+  background:linear-gradient(180deg, transparent, rgba(0,0,0,0.04) 20%, rgba(0,0,0,0.04) 80%, transparent);
+  z-index:1; pointer-events:none;
+  display:none;
+}
+@media (min-width:1100px){.book-fold{display:block}}
+
+/* ─── EN-TÊTE TYPE LIVRE ─── */
+nav.top{
+  padding:32px 56px;
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--line-strong);
+}
+.brand{font-family:'EB Garamond',serif; font-size:32px; font-weight:500; color:var(--ink); letter-spacing:0.005em; line-height:1; font-style:italic}
+.brand b{color:var(--sepia-deep); font-weight:600; font-style:normal}
+.brand-sub{display:block; font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.36em; color:var(--sepia); text-transform:uppercase; margin-top:6px; font-weight:600; font-style:normal}
+nav .menu{display:flex; align-items:center; gap:32px; font-family:'EB Garamond',serif; font-style:italic}
+nav .menu a{color:var(--ink-mute); text-decoration:none; font-size:15px; transition:color 0.25s}
+nav .menu a:hover{color:var(--sepia-deep)}
+nav .cta{padding:9px 20px; background:var(--ink); color:var(--parchment); font-size:12px; letter-spacing:0.06em; font-style:normal; font-family:'Inter',sans-serif; font-weight:500; border-radius:0}
+nav .cta:hover{background:var(--sepia-deep)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ HERO — CHAPITRE PREMIER ════════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.hero{
+  padding:80px 56px 100px; max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1.3fr 0.7fr; gap:80px;
+}
+@media (max-width:980px){section.hero{grid-template-columns:1fr; padding:60px 28px}}
+
+.folio{
+  display:inline-flex; align-items:baseline; gap:16px;
+  font-family:'EB Garamond',serif; font-style:italic;
+  margin-bottom:36px;
+}
+.folio-num{
+  font-size:54px; font-weight:500; color:var(--sepia-deep); line-height:1;
+}
+.folio-rule{flex:1; height:1px; background:var(--line-strong); align-self:center; margin-top:18px; max-width:160px}
+.folio-meta{font-size:14px; color:var(--ink-mute); letter-spacing:0.04em}
+.folio-meta::before{content:'§ '; opacity:0.7}
+
+.chapter-title{
+  font-family:'EB Garamond',serif;
+  font-style:italic; font-size:14px; letter-spacing:0.4em;
+  color:var(--sepia); text-transform:uppercase; margin-bottom:32px; font-weight:500;
+}
+
+.hero h1{
+  font-family:'EB Garamond',serif;
+  font-size:clamp(48px, 6.6vw, 88px); line-height:1.04;
+  font-weight:500; letter-spacing:-0.02em; color:var(--ink);
+  margin-bottom:48px; position:relative;
+}
+.hero h1 em{font-style:italic; color:var(--sepia-deep)}
+.hero h1 .ornament{
+  display:block; width:80px; height:1px;
+  background:var(--sepia); margin:24px 0;
+  position:relative;
+}
+.hero h1 .ornament::before{
+  content:'❦'; position:absolute; left:34px; top:-13px;
+  background:var(--parchment); padding:0 8px;
+  font-size:18px; color:var(--sepia);
+  font-style:normal;
+}
+
+.hero-deck{font-size:19px; line-height:1.7; color:var(--ink-mute); max-width:580px; margin-bottom:36px}
+.hero-deck .dropcap{
+  font-family:'EB Garamond',serif; float:left; font-size:90px; line-height:0.85;
+  padding:8px 12px 0 0; color:var(--sepia-deep); font-weight:500; font-style:italic;
+}
+
+.hero-sig{
+  font-family:'EB Garamond',serif; font-style:italic; font-size:17px;
+  color:var(--ink-mute); margin-top:36px; padding-top:24px; border-top:1px solid var(--line);
+  display:flex; align-items:center; gap:14px;
+}
+.hero-sig::before{content:'— '; color:var(--sepia)}
+.hero-sig b{color:var(--ink); font-weight:500; font-style:normal}
+
+/* Hero illustration : portrait-frame avec montgolfière */
+.hero-frame{
+  background:var(--parchment-2); border:1px solid var(--ink);
+  padding:24px; position:relative; aspect-ratio:0.74/1;
+}
+.hero-frame::before{
+  content:''; position:absolute; top:8px; left:8px; right:8px; bottom:8px;
+  border:1px solid rgba(35,28,20,0.3);
+  pointer-events:none;
+}
+.hero-balloon{
+  width:100%; height:80%; display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.hero-balloon svg{width:65%; max-width:240px; animation:floatY 7s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+
+.hero-frame-cap{
+  text-align:center; padding-top:12px; border-top:1px solid var(--line-strong); margin-top:16px;
+  font-family:'EB Garamond',serif; font-style:italic; font-size:13px;
+  color:var(--ink-mute); letter-spacing:0.04em;
+}
+.hero-frame-cap em{color:var(--sepia-deep)}
+
+/* ─── §I L'ÉQUIPAGE ─── */
+section.equipage{padding:100px 56px; max-width:1200px; margin:0 auto; border-top:1px solid var(--line-strong); border-bottom:1px solid var(--line-strong)}
+.section-head{display:grid; grid-template-columns:1.3fr 0.7fr; gap:40px; align-items:end; margin-bottom:54px}
+@media (max-width:880px){.section-head{grid-template-columns:1fr; text-align:left}}
+.sect-folio{font-family:'EB Garamond',serif; font-style:italic; font-size:48px; color:var(--sepia-deep); line-height:1; margin-bottom:8px; opacity:0.7}
+.sect-folio::before{content:'§ '; opacity:0.6}
+.sect-h{
+  font-family:'EB Garamond',serif; font-size:clamp(36px, 4.6vw, 60px); line-height:1.06;
+  color:var(--ink); font-weight:500; letter-spacing:-0.02em;
+}
+.sect-h em{color:var(--sepia-deep); font-style:italic}
+.sect-deck{font-family:'EB Garamond',serif; font-size:18px; font-style:italic; color:var(--ink-mute); line-height:1.7; max-width:680px}
+
+/* Equipage présenté comme "dramatis personae" — table des personnages */
+.dramatis{margin-top:60px}
+.dramatis-row{
+  display:grid; grid-template-columns:60px 200px 1fr;
+  gap:32px; align-items:baseline;
+  padding:22px 0; border-bottom:1px dotted var(--line-strong);
+  transition:background 0.25s;
+}
+.dramatis-row:hover{background:rgba(168,139,90,0.06)}
+.dramatis-num{font-family:'EB Garamond',serif; font-style:italic; font-size:22px; color:var(--sepia); opacity:0.7}
+.dramatis-name{font-family:'EB Garamond',serif; font-size:32px; color:var(--ink); font-weight:500; line-height:1; letter-spacing:-0.015em}
+.dramatis-name .ico{font-size:22px; margin-right:10px; vertical-align:0px}
+.dramatis-domain{
+  display:block; font-family:'Inter',sans-serif; font-size:10px;
+  letter-spacing:0.32em; color:var(--sepia-deep); text-transform:uppercase;
+  font-weight:600; margin-top:6px;
+}
+.dramatis-desc{font-family:'EB Garamond',serif; font-size:16px; line-height:1.6; color:var(--ink-mute); font-style:italic}
+
+@media (max-width:760px){
+  .dramatis-row{grid-template-columns:40px 1fr; gap:14px}
+  .dramatis-desc{grid-column:1/-1; padding-top:8px; padding-left:54px}
+  .dramatis-name{font-size:24px}
+}
+
+/* ─── §II SALON PRIVÉ ─── */
+section.salon{padding:100px 56px; max-width:1200px; margin:0 auto; border-bottom:1px solid var(--line-strong)}
+
+.salon-paper{
+  margin-top:54px; background:var(--parchment); border:1px solid var(--ink);
+  display:grid; grid-template-columns:240px 1fr; min-height:480px;
+  box-shadow:8px 8px 0 var(--line-strong);
+}
+@media (max-width:760px){.salon-paper{grid-template-columns:1fr}}
+
+.salon-side{background:var(--ink); color:var(--parchment); padding:28px 22px}
+.salon-side-brand{font-family:'EB Garamond',serif; font-size:24px; color:var(--sepia-light); border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:14px; margin-bottom:18px; font-style:italic}
+.salon-side-brand b{color:var(--parchment); font-weight:500; font-style:normal}
+.salon-side-section{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--sepia-light); margin:18px 0 10px; opacity:0.7; font-weight:700}
+.salon-side-item{padding:9px 12px; font-size:13.5px; color:var(--parchment); display:flex; align-items:center; gap:10px; transition:all 0.25s; font-family:'EB Garamond',serif}
+.salon-side-item:hover{color:var(--sepia-light)}
+.salon-side-item.active{background:rgba(196,165,124,0.15); color:var(--sepia-light); border-left:2px solid var(--sepia-light); font-style:italic}
+
+.salon-content{padding:36px 40px}
+.salon-greet{font-family:'EB Garamond',serif; font-size:36px; color:var(--ink); margin-bottom:6px; font-weight:500; letter-spacing:-0.02em}
+.salon-greet em{color:var(--sepia-deep); font-style:italic}
+.salon-sub{font-family:'EB Garamond',serif; font-size:14px; color:var(--ink-mute); margin-bottom:30px; font-style:italic}
+
+.salon-tiles{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--ink); border:1px solid var(--ink); margin-bottom:32px}
+@media (max-width:760px){.salon-tiles{grid-template-columns:repeat(2, 1fr)}}
+.salon-tile{padding:18px 16px; background:var(--parchment); border-right:1px solid var(--line)}
+.salon-tile:last-child{border-right:none}
+.salon-tile-l{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--sepia-deep); font-weight:700; margin-bottom:8px}
+.salon-tile-v{font-family:'EB Garamond',serif; font-size:30px; color:var(--ink); font-weight:600; line-height:1; letter-spacing:-0.02em}
+.salon-tile-m{font-family:'EB Garamond',serif; font-size:11px; color:var(--ink-faint); margin-top:4px; font-style:italic}
+
+.salon-feed{background:var(--parchment-2); padding:22px 24px; border:1px solid var(--line)}
+.salon-feed h4{font-family:'EB Garamond',serif; font-size:18px; color:var(--ink); margin-bottom:14px; font-weight:600; padding-bottom:8px; border-bottom:1px solid var(--sepia)}
+.salon-feed-row{padding:10px 0; font-size:14px; color:var(--ink); line-height:1.5; display:flex; gap:12px; border-bottom:1px dotted var(--line-strong); align-items:flex-start; font-family:'EB Garamond',serif}
+.salon-feed-row:last-child{border-bottom:none}
+.salon-feed-row .who{font-family:'EB Garamond',serif; color:var(--sepia-deep); font-style:italic; font-weight:500; min-width:80px}
+.salon-feed-row .ts{color:var(--ink-faint); font-size:11px; margin-left:auto; white-space:nowrap; font-style:italic}
+
+/* ─── §III INTÉGRATIONS ─── */
+section.integ{padding:100px 56px; max-width:1200px; margin:0 auto; border-bottom:1px solid var(--line-strong)}
+.integ-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--line-strong); border:1px solid var(--ink); margin-top:54px}
+@media (max-width:760px){.integ-grid{grid-template-columns:repeat(2, 1fr)}}
+.integ-cell{background:var(--parchment); padding:24px 20px}
+.integ-cell.high{background:var(--parchment-3)}
+.integ-cat{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--sepia-deep); font-weight:700; margin-bottom:10px}
+.integ-name{font-family:'EB Garamond',serif; font-size:24px; color:var(--ink); font-weight:500; letter-spacing:-0.015em; line-height:1}
+.integ-name em{font-style:italic}
+.integ-mini{font-family:'EB Garamond',serif; font-size:12px; color:var(--ink-faint); margin-top:6px; font-style:italic}
+
+/* ─── §IV SOUVERAINETÉ ─── */
+section.souv{padding:100px 56px; max-width:1200px; margin:0 auto; border-bottom:1px solid var(--line-strong)}
+.souv-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; margin-top:54px}
+@media (max-width:900px){.souv-grid{grid-template-columns:1fr; gap:40px}}
+.souv-body{font-family:'EB Garamond',serif; font-size:18px; color:var(--ink-mute); line-height:1.7; margin-bottom:18px; font-style:italic}
+.souv-body strong{color:var(--ink); font-weight:600; font-style:normal}
+.souv-stack{background:var(--parchment-2); border:1px solid var(--ink); padding:0}
+.souv-row{
+  display:grid; grid-template-columns:auto 110px 1fr; gap:16px; align-items:center;
+  padding:18px 22px; border-bottom:1px solid var(--line);
+  font-family:'Inter',sans-serif; font-size:13px; line-height:1.5;
+}
+.souv-row:last-child{border-bottom:none}
+.souv-row .flag{font-size:20px}
+.souv-row .label{font-family:'EB Garamond',serif; font-style:italic; font-size:15px; color:var(--sepia-deep); font-weight:500}
+.souv-row .val{color:var(--ink-mute); font-size:13px}
+.souv-row .val b{color:var(--ink); font-weight:600}
+
+/* ─── COLOPHON FINAL ─── */
+section.colophon{
+  padding:120px 56px; text-align:center; background:var(--ink); color:var(--parchment);
+}
+.colophon-h{font-family:'EB Garamond',serif; font-size:clamp(40px, 5.4vw, 70px); line-height:1.05; color:var(--parchment); font-weight:500; letter-spacing:-0.025em; max-width:880px; margin:0 auto 24px}
+.colophon-h em{color:var(--sepia-light); font-style:italic}
+.colophon-sub{font-family:'EB Garamond',serif; font-style:italic; font-size:18px; color:var(--sepia-light); max-width:540px; margin:0 auto 44px}
+.btn-paper{display:inline-block; padding:18px 42px; background:var(--parchment); color:var(--ink); text-decoration:none; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase}
+.btn-paper:hover{background:var(--sepia-light); color:var(--ink)}
+.btn-out{color:var(--sepia-light); text-decoration:none; font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:0.05em; border-bottom:1px solid var(--sepia-light); padding-bottom:5px; margin-left:24px}
+.btn-out:hover{color:var(--parchment); border-color:var(--parchment)}
+
+footer.proto{padding:48px 32px 36px; text-align:center; background:var(--ink); border-top:1px solid rgba(255,255,255,0.1)}
+footer.proto p{font-family:'EB Garamond',serif; font-size:12.5px; color:rgba(245,237,216,0.6); line-height:1.85; font-style:italic}
+footer.proto a{color:var(--sepia-light); text-decoration:none; border-bottom:1px solid transparent; font-style:normal}
+footer.proto a:hover{border-color:var(--sepia-light)}
+
+@media (max-width:760px){
+  nav.top{padding:18px 22px; flex-wrap:wrap}
+  nav .menu{gap:14px}
+  nav .menu a:not(.cta){display:none}
+  section{padding-left:22px !important; padding-right:22px !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+<div class="book-fold"></div>
+<main>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté · Manuscrit</div>
+  </div>
+  <div class="menu">
+    <a href="#equipage">Équipage</a>
+    <a href="#salon">Salon</a>
+    <a href="#integ">Intégrations</a>
+    <a href="#souv">Souveraineté</a>
+    <a href="mailto:maxime@ikcp.fr" class="cta">Échanger</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO — CHAPITRE PREMIER ═══ -->
+<section class="hero">
+  <div>
+    <div class="folio">
+      <div class="folio-num">01</div>
+      <div class="folio-rule"></div>
+      <div class="folio-meta">automne 2026</div>
+    </div>
+    <div class="chapter-title">Chapitre premier</div>
+
+    <h1>L'art de tenir<br><em>ses promesses.</em><span class="ornament"></span>Une porte. Une équipe.<br>Neuf agents <em>en orbite.</em></h1>
+
+    <p class="hero-deck">
+      <span class="dropcap">P</span>our les familles dont le patrimoine ne s'improvise plus, IKCP propose un Family Office augmenté. Marcel, agent IA chef d'orchestre, écoute votre demande puis convoque parmi neuf spécialistes — Auguste, Léon, Joséphine, Émile, Hélène, Augustin, Camille, Iris et Olympe — ceux dont l'expertise éclaire votre situation. Maxime arbitre. Vous décidez.
+    </p>
+
+    <p class="hero-sig">Au plaisir de vous lire, <b>Maxime Juveneton</b></p>
+  </div>
+
+  <div class="hero-frame">
+    <div class="hero-balloon">
+      <svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="bcm"><ellipse cx="65" cy="55" rx="48" ry="56"/></clipPath></defs>
+        <g clip-path="url(#bcm)">
+          <rect x="17" y="-1" width="32" height="112" fill="#0055A4"/>
+          <rect x="49" y="-1" width="32" height="112" fill="#FFFFFF"/>
+          <rect x="81" y="-1" width="32" height="112" fill="#EF4135"/>
+        </g>
+        <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="#231C14" stroke-width="1.3"/>
+        <line x1="35" y1="105" x2="50" y2="125" stroke="#231C14" stroke-width="1.3"/>
+        <line x1="95" y1="105" x2="80" y2="125" stroke="#231C14" stroke-width="1.3"/>
+        <rect x="50" y="125" width="30" height="20" rx="2" fill="#6B3F18"/>
+        <ellipse cx="65" cy="115" rx="6" ry="3" fill="#C4A57C"/>
+      </svg>
+    </div>
+    <div class="hero-frame-cap"><em>Marcel</em>, vol au-dessus<br>de la France</div>
+  </div>
+</section>
+
+<!-- ═══ §I L'ÉQUIPAGE — DRAMATIS PERSONAE ═══ -->
+<section class="equipage" id="equipage">
+  <div class="section-head">
+    <div>
+      <div class="sect-folio">i</div>
+      <h2 class="sect-h">Dramatis <em>personae</em>.<br>L'équipage de Marcel.</h2>
+    </div>
+    <div class="sect-deck">Chaque agent porte un nom, un domaine, une voix. Tous écoutent Marcel. Aucun ne se substitue à votre cabinet — ils l'amplifient.</div>
+  </div>
+
+  <div class="dramatis">
+    <div class="dramatis-row">
+      <div class="dramatis-num">i.</div>
+      <div class="dramatis-name"><span class="ico">🎯</span><em>Marcel</em><span class="dramatis-domain">★ Chef d'orchestre</span></div>
+      <div class="dramatis-desc">Le point de contact unique. Il écoute, qualifie, oriente, agrège.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">ii.</div>
+      <div class="dramatis-name"><span class="ico">🏛</span>Auguste<span class="dramatis-domain">Juridique &amp; fiscal</span></div>
+      <div class="dramatis-desc">Veille temps réel, optimisation IR/IFI/Dutreil, structuration successorale.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">iii.</div>
+      <div class="dramatis-name"><span class="ico">📊</span>Léon<span class="dramatis-domain">Marchés financiers</span></div>
+      <div class="dramatis-desc">Allocation cible vs réelle, alertes, news macro, propositions d'arbitrages.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">iv.</div>
+      <div class="dramatis-name"><span class="ico">💎</span>Joséphine<span class="dramatis-domain">Conciergerie</span></div>
+      <div class="dramatis-desc">Hôtels Relais &amp; Châteaux, jets privés, restaurants étoilés, scolarité internationale.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">v.</div>
+      <div class="dramatis-name"><span class="ico">🎨</span>Émile<span class="dramatis-domain">Art &amp; collections</span></div>
+      <div class="dramatis-desc">Curation, valorisation, ventes Sotheby's-Christie's-Drouot, assurance.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">vi.</div>
+      <div class="dramatis-name"><span class="ico">🏠</span>Hélène<span class="dramatis-domain">Immobilier</span></div>
+      <div class="dramatis-desc">Acquisition, gestion locative, valorisation DVF, cession.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">vii.</div>
+      <div class="dramatis-name"><span class="ico">🌱</span>Augustin<span class="dramatis-domain">Private Equity</span></div>
+      <div class="dramatis-desc">Sourcing deals, due diligence, dette privée, club deals.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">viii.</div>
+      <div class="dramatis-name"><span class="ico">📋</span>Camille<span class="dramatis-domain">Family Secretary</span></div>
+      <div class="dramatis-desc">Échéances, paiements, courriers, archivage eIDAS, scolarité, factures.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">ix.</div>
+      <div class="dramatis-name"><span class="ico">🤲</span>Iris<span class="dramatis-domain">Philanthropie</span></div>
+      <div class="dramatis-desc">Structuration de fondation, sélection causes, mesure d'impact.</div>
+    </div>
+    <div class="dramatis-row">
+      <div class="dramatis-num">x.</div>
+      <div class="dramatis-name"><span class="ico">📑</span>Olympe<span class="dramatis-domain">Reporting</span></div>
+      <div class="dramatis-desc">Consolide chaque trimestre les analyses des huit autres agents en synthèse claire — performance, allocations, échéances, risques.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §II SALON PRIVÉ ═══ -->
+<section class="salon" id="salon">
+  <div class="section-head">
+    <div>
+      <div class="sect-folio">ii</div>
+      <h2 class="sect-h">Le <em>salon</em><br>privé.</h2>
+    </div>
+    <div class="sect-deck">Une seule URL, un magic-link à votre nom. Vous y retrouvez Marcel, l'équipage, vos dossiers, vos échéances. Connecté à votre logiciel patrimonial.</div>
+  </div>
+
+  <div class="salon-paper">
+    <aside class="salon-side">
+      <div class="salon-side-brand">IKCP<b>.</b></div>
+      <div class="salon-side-section">Famille</div>
+      <div class="salon-side-item active">📊 Tableau de bord</div>
+      <div class="salon-side-item">🎯 Marcel</div>
+      <div class="salon-side-item">📁 Dossiers</div>
+      <div class="salon-side-item">📅 Échéances</div>
+      <div class="salon-side-section">Équipage</div>
+      <div class="salon-side-item">🏛 Auguste</div>
+      <div class="salon-side-item">📑 Olympe</div>
+      <div class="salon-side-item">+ 7 autres</div>
+      <div class="salon-side-section">Compte</div>
+      <div class="salon-side-item">⚙ Préférences</div>
+      <div class="salon-side-item">🔓 Déconnexion</div>
+    </aside>
+
+    <div class="salon-content">
+      <div class="salon-greet">Bonjour <em>Joséphine</em>.</div>
+      <div class="salon-sub">Marcel a 3 informations pour vous · dernière visite hier 18 h 47.</div>
+
+      <div class="salon-tiles">
+        <div class="salon-tile"><div class="salon-tile-l">Patrimoine</div><div class="salon-tile-v">14,2 M€</div><div class="salon-tile-m">+ 1,8 % ce trimestre</div></div>
+        <div class="salon-tile"><div class="salon-tile-l">Liquidités</div><div class="salon-tile-v">2,1 M€</div><div class="salon-tile-m">12 mois de train de vie</div></div>
+        <div class="salon-tile"><div class="salon-tile-l">Dossiers</div><div class="salon-tile-v">4</div><div class="salon-tile-m">2 à valider</div></div>
+        <div class="salon-tile"><div class="salon-tile-l">Échéance</div><div class="salon-tile-v">14 j</div><div class="salon-tile-m">Acompte IFI 2026</div></div>
+      </div>
+
+      <div class="salon-feed">
+        <h4>Dernières inscriptions de l'équipage</h4>
+        <div class="salon-feed-row"><span class="who">Auguste</span><span>note Dutreil pour cession holding · à valider</span><span class="ts">2 h</span></div>
+        <div class="salon-feed-row"><span class="who">Léon</span><span>drawdown -6,2 % actions US · arbitrage proposé</span><span class="ts">5 h</span></div>
+        <div class="salon-feed-row"><span class="who">Olympe</span><span>synthèse Q1 prête · 4 pages reliées</span><span class="ts">hier</span></div>
+        <div class="salon-feed-row"><span class="who">Émile</span><span>cote collection +4,1 % · IFI ajusté</span><span class="ts">hier</span></div>
+        <div class="salon-feed-row"><span class="who">Camille</span><span>acte notarié archivé eIDAS · 10 ans</span><span class="ts">2 j</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §III INTÉGRATIONS ═══ -->
+<section class="integ" id="integ">
+  <div class="section-head">
+    <div>
+      <div class="sect-folio">iii</div>
+      <h2 class="sect-h">Tout <em>parle</em><br>à tout le monde.</h2>
+    </div>
+    <div class="sect-deck">L'équipage parle à vos outils. Signature, identité, comptes bancaires, agenda, notaire, expert-comptable, votre logiciel cabinet.</div>
+  </div>
+
+  <div class="integ-grid">
+    <div class="integ-cell"><div class="integ-cat">Signature</div><div class="integ-name">Yousign<em>.</em></div><div class="integ-mini">eIDAS AdES</div></div>
+    <div class="integ-cell"><div class="integ-cat">Signature qualifiée</div><div class="integ-name">Universign<em>.</em></div><div class="integ-mini">eIDAS QES</div></div>
+    <div class="integ-cell"><div class="integ-cat">Identité</div><div class="integ-name">Ubble<em>.</em></div><div class="integ-mini">PVID ANSSI</div></div>
+    <div class="integ-cell"><div class="integ-cat">Bancaire</div><div class="integ-name">Powens<em>.</em></div><div class="integ-mini">DSP2</div></div>
+    <div class="integ-cell"><div class="integ-cat">CRM</div><div class="integ-name">Notion<em>.</em></div><div class="integ-mini">Hub central</div></div>
+    <div class="integ-cell"><div class="integ-cat">Agenda</div><div class="integ-name">Calendly<em>.</em></div><div class="integ-mini">RDV cabinet</div></div>
+    <div class="integ-cell"><div class="integ-cat">Honoraires</div><div class="integ-name">Stripe<em>.</em></div><div class="integ-mini">Encaissement</div></div>
+    <div class="integ-cell"><div class="integ-cat">Email</div><div class="integ-name">Resend<em>.</em></div><div class="integ-mini">Transactionnel</div></div>
+    <div class="integ-cell"><div class="integ-cat">Workflows</div><div class="integ-name">Make<em>.</em></div><div class="integ-mini">Automation</div></div>
+    <div class="integ-cell"><div class="integ-cat">Veille</div><div class="integ-name">Légifrance<em>.</em></div><div class="integ-mini">Sources légales</div></div>
+    <div class="integ-cell high"><div class="integ-cat">Cabinet local</div><div class="integ-name">Logiciel-GP<em>.</em></div><div class="integ-mini">Synchro bidirectionnelle</div></div>
+    <div class="integ-cell high"><div class="integ-cat">Agents IA</div><div class="integ-name">Claude Agent SDK<em>.</em></div><div class="integ-mini">Anthropic · DPA + SCC</div></div>
+  </div>
+</section>
+
+<!-- ═══ §IV SOUVERAINETÉ ═══ -->
+<section class="souv" id="souv">
+  <div class="section-head">
+    <div>
+      <div class="sect-folio">iv</div>
+      <h2 class="sect-h">Vos données ne <em>quittent</em><br>pas la France.</h2>
+    </div>
+    <div class="sect-deck">L'écosystème entier est hébergé en France ou propulsé par des partenaires européens conformes RGPD. Aucune donnée personnelle ne transite hors UE sans encadrement.</div>
+  </div>
+
+  <div class="souv-grid">
+    <div>
+      <p class="souv-body">Marcel et les neuf agents reposent sur le <strong>Claude Agent SDK</strong> d'Anthropic. Tous les <strong>calculs fiscaux</strong> passent par <strong>ikcp-mcp</strong>, notre serveur propriétaire hébergé à Paris.</p>
+      <p class="souv-body">Les <strong>documents réglementaires</strong> sont archivés en France avec horodatage qualifié eIDAS. La validation humaine de Maxime est <strong>systématique</strong> sur tout livrable.</p>
+    </div>
+    <div class="souv-stack">
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Edge</span><span class="val"><b>Cloudflare Workers</b> · ISO 27001 · DPA UE</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Calculs</span><span class="val"><b>Scaleway fr-par</b> · Paris · ikcp-mcp</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Données</span><span class="val"><b>Cloudflare D1 · R2 · KV</b> · UE · chiffré</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Signature</span><span class="val"><b>Yousign · Universign</b> · eIDAS QES</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Identité</span><span class="val"><b>Ubble</b> · PVID ANSSI</span></div>
+      <div class="souv-row"><span class="flag">🇪🇺</span><span class="label">Agents IA</span><span class="val"><b>Anthropic Claude Agent SDK</b> · DPA + SCC</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COLOPHON ═══ -->
+<section class="colophon">
+  <h2 class="colophon-h">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+  <p class="colophon-sub">Sur recommandation. Familles à patrimoine constitué.</p>
+  <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office" class="btn-paper">Demander une recommandation</a>
+  <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" class="btn-out" target="_blank">Calendly →</a>
+</section>
+
+<footer class="proto">
+  <p>
+    <em>Imprimé à Annonay · automne 2026</em><br>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

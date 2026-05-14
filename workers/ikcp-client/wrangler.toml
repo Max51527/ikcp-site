@@ -1,37 +1,65 @@
+# Wrangler config — IKCP Client Portal v2 (espace membre freemium)
+#
+# Setup en 8 étapes (~15 min) :
+#
+#  1. npx wrangler login
+#
+#  2. npx wrangler d1 create ikcp-client-db
+#     → copier l'ID dans [[d1_databases]] ci-dessous
+#
+#  3. npx wrangler kv namespace create CLIENT_KV
+#     → copier l'ID dans [[kv_namespaces]] ci-dessous
+#
+#  4. npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
+#
+#  5. Pousser les secrets (un par un) :
+#     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" | npx wrangler secret put JWT_SECRET
+#     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" | npx wrangler secret put CABINET_TOKEN
+#     npx wrangler secret put RESEND_API_KEY          # depuis resend.com/api-keys
+#     npx wrangler secret put STRIPE_SECRET_KEY       # sk_test_... ou sk_live_...
+#     npx wrangler secret put STRIPE_WEBHOOK_SECRET   # whsec_... (après création webhook côté Stripe)
+#
+#  6. Créer Stripe products :
+#       - "IKCP Premium Mensuel" 29€/mois → copier price_xxx
+#       - "IKCP Premium Annuel" 290€/an  → copier price_xxx
+#     puis remplir [vars] ci-dessous
+#
+#  7. npx wrangler deploy
+#
+#  8. Côté Stripe Dashboard, créer le webhook :
+#     URL: https://ikcp-client.<sous-domaine>.workers.dev/stripe/webhook
+#     Events: checkout.session.completed · customer.subscription.deleted · invoice.payment_failed
+#     → récupérer le whsec_... et le pousser à l'étape 5
+
 name = "ikcp-client"
 main = "worker.js"
-compatibility_date = "2026-04-25"
+compatibility_date = "2026-05-01"
+
+[[d1_databases]]
+binding = "D1"
+database_name = "ikcp-client-db"
+database_id = "REPLACE_AFTER_d1_create"
+
+[[kv_namespaces]]
+binding = "CLIENT_KV"
+id = "REPLACE_AFTER_kv_create"
+
+[vars]
+APP_URL = "https://client.ikcp.eu"
+IKCP_PAPPERS_URL = "https://ikcp-pappers.maxime-ead.workers.dev"
+STRIPE_PRICE_PREMIUM_MONTHLY = "price_REPLACE_monthly"
+STRIPE_PRICE_PREMIUM_YEARLY = "price_REPLACE_yearly"
+
+# Secrets (push via `wrangler secret put`) :
+#   JWT_SECRET            HS256 signing 32+ chars
+#   RESEND_API_KEY        re_xxx
+#   STRIPE_SECRET_KEY     sk_test_... ou sk_live_...
+#   STRIPE_WEBHOOK_SECRET whsec_...
+#   CABINET_TOKEN         32+ chars random — utilisé par logiciel-gp pour polling
 
 [observability]
 enabled = true
 
-# ─── D1 database ───
-# 1. Créer la DB :  npx wrangler d1 create ikcp-client-db
-# 2. Coller l'ID retourné ci-dessous
-# 3. Migrer le schéma : npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
-[[d1_databases]]
-binding = "DB"
-database_name = "ikcp-client-db"
-database_id = "REMPLACER_PAR_ID_DB"
-
-# ─── KV namespace pour magic tokens ───
-# Créer : npx wrangler kv namespace create CLIENT_TOKENS
-[[kv_namespaces]]
-binding = "TOKENS"
-id = "REMPLACER_PAR_ID_KV"
-
-# ─── Variables (texte plain) ───
-[vars]
-RESEND_FROM = "IKCP <maxime@ikcp.eu>"
-APP_URL = "https://ikcp-client.maxime-ead.workers.dev"
-ADMIN_EMAILS = "maxime@ikcp.fr,maxime@ikcp.eu"
-
-# ─── Domaine custom (optionnel) ───
-# Pour exposer en https://client.ikcp.eu :
-#   1. Cloudflare DNS → ajouter CNAME 'client' → 'ikcp-client.maxime-ead.workers.dev' (proxy ON)
-#   2. Worker → Domains and Routes → Add Custom Domain → 'client.ikcp.eu'
-#   3. Mettre à jour APP_URL ci-dessus → https://client.ikcp.eu
-
-# ─── Secrets à pousser via wrangler (jamais dans ce fichier !) ───
-#   npx wrangler secret put JWT_SECRET       (générer 64 chars random)
-#   npx wrangler secret put RESEND_API_KEY   (re_xxx... depuis resend.com)
+# Domaine custom (recommandé) :
+# Cloudflare Dashboard → Workers → ikcp-client → Domains → Add → client.ikcp.eu
+# Puis DNS → CNAME `client` → `ikcp-client.<sous-domaine>.workers.dev`

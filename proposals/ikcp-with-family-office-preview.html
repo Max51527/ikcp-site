@@ -626,14 +626,15 @@ h1.hero-h1 em {
     <div class="balloon-illu">
       <svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <radialGradient id="b1" cx="50%" cy="40%">
-            <stop offset="0%" stop-color="#2c4a8a"/>
-            <stop offset="100%" stop-color="#234c9e"/>
-          </radialGradient>
+          <clipPath id="balloonClip">
+            <ellipse cx="65" cy="55" rx="48" ry="56"/>
+          </clipPath>
         </defs>
-        <ellipse cx="65" cy="55" rx="48" ry="56" fill="#fff"/>
-        <path d="M 17 55 A 48 56 0 0 1 113 55 L 65 55 Z" fill="#234c9e" transform="rotate(-90 65 55)"/>
-        <path d="M 17 55 A 48 56 0 0 0 113 55 L 65 55 Z" fill="#c8263c" transform="rotate(90 65 55)"/>
+        <g clip-path="url(#balloonClip)">
+          <rect x="17" y="-1" width="32" height="112" fill="#0055A4"/>
+          <rect x="49" y="-1" width="32" height="112" fill="#FFFFFF"/>
+          <rect x="81" y="-1" width="32" height="112" fill="#EF4135"/>
+        </g>
         <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="rgba(160,130,90,0.5)" stroke-width="1.5"/>
         <line x1="35" y1="105" x2="50" y2="125" stroke="#3c322a" stroke-width="1.5"/>
         <line x1="95" y1="105" x2="80" y2="125" stroke="#3c322a" stroke-width="1.5"/>

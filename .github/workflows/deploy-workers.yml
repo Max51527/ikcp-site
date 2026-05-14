@@ -21,16 +21,9 @@ jobs:
           wranglerVersion: '3'
           command: deploy index.js --name ikcp-prospect --compatibility-date 2024-01-01
 
-  deploy-ikcp-marcel:
-    name: Deploy ikcp-marcel
-    runs-on: ubuntu-latest
-    if: contains(github.event.commits[0].modified, 'worker/marcel-proxy.js') || contains(github.event.commits[0].added, 'worker/marcel-proxy.js')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          workingDirectory: worker
-          wranglerVersion: '3'
-          command: deploy marcel-proxy.js --name ikcp-marcel --compatibility-date 2024-01-01
+  # NOTE 2026-05-07 : job retiré.
+  # Le Worker `ikcp-marcel` (worker/marcel-proxy.js) a été archivé dans _archive/.
+  # Le Marcel canonical est `ikcp-chat` déployé depuis workers/ikcp-marcel/worker.js
+  # via `npx wrangler deploy` manuel (cf workers/ikcp-marcel/README.md).
+  # Action côté Cloudflare : `npx wrangler delete --name ikcp-marcel` à exécuter
+  # une fois confirmé que plus aucun client n'appelle l'ancienne URL.

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Family Office digital pour dirigeants d'entreprise familiale · Beta</title>
+<meta name="description" content="Le family office digital qui prépare la transmission. Pour dirigeants d'entreprise familiale et leurs enfants. Hyper-personnalisé, formation incluse. Beta sur invitation.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0d0b">
+
+<!--
+  ───────────────────────────────────────────────────────────────────
+  IKCP — Landing Beta « Dirigeants d'entreprise familiale »
+  Version standalone (autonome, sans dépendance au repo ikcp-site)
+  À ouvrir directement dans un navigateur — aucun serveur requis.
+  ───────────────────────────────────────────────────────────────────
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --bg-2: #0d100e;
+  --bg-3: #131815;
+  --ink: #f4ece1;
+  --ink-mute: #8c857a;
+  --ink-faint: #524d47;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.14);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --line-faint: rgba(196, 162, 115, 0.05);
+  --warn: #d4a85a;
+  --ok: #7fae7d;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+
+nav.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 48px;
+  max-width: 1080px; margin: 0 auto;
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; font-family: 'Inter', sans-serif; }
+.beta-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 6px 12px; border: 1px solid var(--gold); color: var(--gold);
+}
+.beta-tag::before { content: '●'; color: var(--gold); animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+section.hero {
+  padding: 100px 0 120px;
+  border-bottom: 1px solid var(--line);
+}
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 36px; font-weight: 400; }
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(38px, 5.4vw, 70px); line-height: 1.05; letter-spacing: -0.022em;
+  margin-bottom: 36px; max-width: 880px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede {
+  max-width: 660px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; font-weight: 300;
+  margin-bottom: 40px;
+}
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.hero-actions { display: inline-flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 16px 36px; background: var(--gold); color: var(--bg);
+  border: 1px solid var(--gold); text-decoration: none; font-weight: 600;
+  font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  transition: all 0.3s; cursor: pointer; font-family: 'Inter', sans-serif;
+}
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-secondary {
+  color: var(--ink-mute); text-decoration: none; font-size: 12.5px;
+  letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid var(--line);
+  transition: all 0.3s;
+}
+.btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+.promesse-band {
+  margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+}
+.pb-item { padding: 14px 24px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.pb-item:last-child { border-right: none; }
+.pb-num {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+  color: var(--gold); font-size: 26px; line-height: 1; letter-spacing: -0.01em;
+}
+.pb-num i { font-style: normal; font-size: 16px; opacity: 0.7; }
+.pb-item em {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: var(--ink); font-size: 17px;
+}
+@media (max-width: 720px) {
+  .promesse-band { grid-template-columns: repeat(2, 1fr); }
+  .pb-item:nth-child(2) { border-right: none; }
+  .pb-item:nth-child(1), .pb-item:nth-child(2) { border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+}
+
+section.story { padding: 90px 0; border-bottom: 1px solid var(--line); }
+.story-block { max-width: 780px; }
+.story-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 16px; }
+.story-h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15; letter-spacing: -0.018em;
+  margin-bottom: 28px;
+}
+.story-h2 em { font-style: italic; color: var(--gold); }
+.story-p { font-size: 16px; color: var(--ink-mute); line-height: 1.85; margin-bottom: 22px; max-width: 680px; }
+.story-p em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.story-p strong { color: var(--gold); font-weight: 500; }
+
+.quote-block {
+  margin: 40px 0; padding: 28px 36px;
+  border-left: 2px solid var(--gold);
+  background: rgba(196, 162, 115, 0.03);
+}
+.quote-block p {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 19px; line-height: 1.6; color: var(--ink); margin-bottom: 12px;
+}
+.quote-author {
+  font-size: 11px; color: var(--ink-faint); letter-spacing: 0.18em; text-transform: uppercase;
+}
+.quote-author strong { color: var(--gold); font-weight: 500; }
+
+.cas-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--line);
+  border: 1px solid var(--line); margin-top: 50px;
+}
+.cas-card { background: var(--bg); padding: 32px 30px; }
+.cas-name {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 22px; color: var(--gold); margin-bottom: 4px;
+}
+.cas-meta {
+  font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.cas-quote {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 16px; line-height: 1.6; color: var(--ink); margin-bottom: 16px;
+}
+.cas-context { font-size: 13px; color: var(--ink-mute); line-height: 1.65; }
+
+section.promesse { padding: 90px 0; border-bottom: 1px solid var(--line); }
+.promesse-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin-top: 50px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.pillier {
+  padding: 36px 32px;
+  border-right: 1px solid var(--line);
+}
+.pillier:last-child { border-right: none; }
+.pillier-icon { font-size: 28px; margin-bottom: 18px; line-height: 1; }
+.pillier-titre {
+  font-family: 'Playfair Display', serif; font-size: 20px;
+  margin-bottom: 12px; letter-spacing: -0.005em;
+}
+.pillier-titre em { font-style: italic; color: var(--gold); }
+.pillier-desc { font-size: 13.5px; color: var(--ink-mute); line-height: 1.65; }
+
+section.beta { padding: 100px 0; border-bottom: 1px solid var(--line); }
+.beta-wrap {
+  max-width: 720px; margin: 0 auto;
+  text-align: center;
+}
+.beta-eyebrow { color: var(--gold); font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 24px; }
+.beta-h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em;
+  margin-bottom: 22px;
+}
+.beta-h2 em { font-style: italic; color: var(--gold); }
+.beta-p { font-size: 15px; color: var(--ink-mute); line-height: 1.75; margin-bottom: 36px; max-width: 580px; margin-left: auto; margin-right: auto; }
+
+.beta-form {
+  background: var(--bg-2); border: 1px solid var(--line);
+  padding: 40px 36px;
+  display: flex; flex-direction: column; gap: 18px;
+  max-width: 540px; margin: 0 auto;
+}
+.beta-form-label {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-mute); text-align: left;
+}
+.beta-form-input {
+  background: var(--bg); border: 1px solid var(--line);
+  color: var(--gold-bright); padding: 16px 22px;
+  font-family: 'JetBrains Mono', monospace; font-size: 16px; letter-spacing: 0.06em;
+  text-align: center; text-transform: uppercase;
+  outline: none; transition: border-color 0.25s;
+}
+.beta-form-input:focus { border-color: var(--gold); }
+.beta-form-input::placeholder { color: var(--ink-faint); letter-spacing: 0.12em; }
+.beta-submit {
+  padding: 16px 32px; background: var(--gold); color: var(--bg);
+  border: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+.beta-submit:hover { background: var(--gold-bright); }
+.beta-submit:disabled { opacity: 0.5; cursor: wait; }
+.beta-feedback {
+  text-align: left; font-size: 13px; padding: 12px 18px;
+  border-left: 2px solid; min-height: 20px; display: none;
+  font-style: italic; font-family: 'Playfair Display', serif;
+}
+.beta-feedback.show { display: block; }
+.beta-feedback.error { color: var(--warn); border-color: var(--warn); background: rgba(212,168,90,0.06); }
+.beta-feedback.success { color: var(--ok); border-color: var(--ok); background: rgba(127,174,125,0.06); }
+
+.beta-note {
+  margin-top: 28px;
+  font-size: 11.5px; color: var(--ink-faint); font-style: italic;
+  font-family: 'Playfair Display', serif; line-height: 1.7;
+}
+.beta-note a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; transition: border 0.25s; }
+.beta-note a:hover { border-color: var(--gold); }
+
+footer.proto {
+  padding: 48px; text-align: center;
+  max-width: 1080px; margin: 0 auto;
+}
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+footer.proto a:hover { opacity: 0.7; }
+
+@media (max-width: 900px) {
+  main, nav.top, footer.proto { padding-left: 22px !important; padding-right: 22px !important; }
+  nav.top { flex-wrap: wrap; gap: 14px; padding: 18px 22px; }
+  section.hero { padding: 60px 0 70px; }
+  section.story, section.promesse, section.beta { padding: 60px 0; }
+  .cas-grid { grid-template-columns: 1fr; }
+  .promesse-grid { grid-template-columns: 1fr; }
+  .pillier { border-right: none; border-bottom: 1px solid var(--line); }
+  .pillier:last-child { border-bottom: none; }
+  .quote-block { padding: 22px 24px; }
+  .beta-form { padding: 28px 22px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="beta-tag">Beta · sur invitation</div>
+</nav>
+
+<main>
+
+<section class="hero">
+  <div class="eyebrow">— Pour dirigeants d'entreprise familiale</div>
+  <h1>Vos enfants <em>sont prêts</em>.<br>Préparez-les.</h1>
+  <p class="lede">
+    Le family office digital qui prend au sérieux ce que vous avez bâti. <em>Et qui prend au sérieux celles et ceux à qui vous le transmettrez.</em> Sans discours, avec des outils, des cas concrets, et un parcours de formation taillé pour <em>votre</em> famille — pas pour une famille moyenne.
+  </p>
+  <div class="hero-actions">
+    <a href="#beta" class="btn-primary">Demander un code beta</a>
+    <a href="#story" class="btn-secondary">Lire l'histoire →</a>
+  </div>
+
+  <div class="promesse-band">
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Digitalisé</em></div>
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Automatisé</em></div>
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Sur-mesure</em></div>
+    <div class="pb-item"><span class="pb-num">100<i>%</i></span> <em>Accessible</em></div>
+  </div>
+</section>
+
+<section class="story" id="story">
+  <div class="story-block">
+    <div class="story-num">— 01</div>
+    <h2 class="story-h2">Ce qu'on dit en bas, ce qu'on pense en haut.</h2>
+    <p class="story-p">
+      <em>« Les enfants ne s'intéressent pas. »</em> On l'entend en consultation, en cocktail, en CA familial. Une phrase qu'on prononce sans vraiment y croire, parce qu'elle <strong>excuse de ne pas avoir préparé la suite</strong>.
+    </p>
+    <p class="story-p">
+      Sur 10 ans d'accompagnement de familles de dirigeants, voici ce qu'on observe : <em>les enfants s'intéressent</em>. Mais on ne leur a pas donné les outils. On ne leur a pas montré les vrais chiffres. On ne leur a pas appris à lire un pacte, à arbitrer un Dutreil, à évaluer une SCI. <strong>On les a tenus à distance, par pudeur ou par habitude — puis on s'est étonné qu'ils ne soient pas prêts</strong>.
+    </p>
+
+    <div class="quote-block">
+      <p>« Mon père m'a fait visiter l'usine à 8 ans. Mais il a fallu attendre 32 ans, et un cabinet, pour qu'il me montre <em>les comptes</em>. Et là, j'ai compris. »</p>
+      <div class="quote-author"><strong>Emma D.</strong>, 32 ans · NextGen IKCP · entreprise familiale 11 M€ CA</div>
+    </div>
+
+    <p class="story-p">
+      Les statistiques sont implacables : selon Morgan Stanley, <strong>70 % des AUM se dispersent dans les 18 mois suivant le décès du principal dirigeant</strong>. Pas parce que les héritiers sont incompétents. Parce qu'ils ont reçu un patrimoine qu'ils n'avaient jamais vu, jamais touché, jamais compris.
+    </p>
+  </div>
+</section>
+
+<section class="story">
+  <div class="story-block">
+    <div class="story-num">— 02</div>
+    <h2 class="story-h2">Ils <em>ne sont pas nuls</em>.<br>Vous le savez. Eux aussi.</h2>
+    <p class="story-p">
+      Voici trois familles que nous accompagnons en beta. Les noms ont été modifiés, les chiffres pas.
+    </p>
+  </div>
+
+  <div class="cas-grid">
+    <div class="cas-card">
+      <div class="cas-name">Emma D.</div>
+      <div class="cas-meta">— 32 ans · entreprise familiale (Logiciel)</div>
+      <p class="cas-quote">« En 4 mois, je suis passée de "je ne comprends rien" à "j'ai validé le mémo Dutreil avec Maxime, le notaire et papa". »</p>
+      <p class="cas-context">
+        Module suivi : <em>Lire un pacte d'actionnaires</em>. Cas pratique sur le pacte Dutreil de la SARL familiale. Première intervention en CA en mars 2026.
+      </p>
+    </div>
+    <div class="cas-card">
+      <div class="cas-name">Thomas D.</div>
+      <div class="cas-meta">— 28 ans · même famille</div>
+      <p class="cas-quote">« Le module fiscalité, je l'ai fait dans le train. C'est devenu un jeu. Mon père me pose maintenant des questions techniques. »</p>
+      <p class="cas-context">
+        Module suivi : <em>Holding apport-cession</em>. A piloté la simulation des 4 schémas de transmission de DupSoft (cession brute, donation-cession, holding apport, Dutreil familial).
+      </p>
+    </div>
+    <div class="cas-card">
+      <div class="cas-name">Léa B.</div>
+      <div class="cas-meta">— 24 ans · entreprise familiale (Distribution)</div>
+      <p class="cas-quote">« On m'avait dit que le droit des sociétés c'était pour les avocats. C'est pour les héritières aussi. »</p>
+      <p class="cas-context">
+        Module : <em>Gouvernance et conseil de famille</em>. A rédigé la première mouture de la charte familiale, validée par sa mère en avril 2026.
+      </p>
+    </div>
+    <div class="cas-card">
+      <div class="cas-name">Hugo & Antoine M.</div>
+      <div class="cas-meta">— 26 et 29 ans · holding immobilier 18 M€</div>
+      <p class="cas-quote">« On a appris à lire DVF. On voit maintenant ce que coûte chaque arbitrage. C'est moins de l'ennui. C'est de l'autorité. »</p>
+      <p class="cas-context">
+        Modules suivis : <em>Vue 360° patrimoine</em> et <em>Évaluer un actif immobilier</em>. Pilotent désormais la SCI familiale en binôme.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="promesse">
+  <div class="story-block">
+    <div class="story-num">— 03</div>
+    <h2 class="story-h2">Comment ça marche.<br><em>Trois piliers.</em> Aucun cours générique.</h2>
+    <p class="story-p">
+      L'IKCP Family Office augmenté n'est pas un MOOC. C'est un parcours qui s'écrit <em>autour de votre patrimoine réel</em> — pas autour d'une famille théorique. Vos enfants apprennent en lisant <em>vos</em> chiffres, <em>vos</em> contrats, <em>votre</em> situation.
+    </p>
+  </div>
+
+  <div class="promesse-grid">
+    <div class="pillier">
+      <div class="pillier-icon">📊</div>
+      <div class="pillier-titre">Hyper-<em>personnalisation</em></div>
+      <div class="pillier-desc">
+        Le parcours est généré à partir de votre patrimoine réel : votre société, vos biens, vos AV, vos pactes. Marcel adapte chaque module aux chiffres qui sont les vôtres.
+      </div>
+    </div>
+    <div class="pillier">
+      <div class="pillier-icon">🎓</div>
+      <div class="pillier-titre">Formation <em>NextGen</em></div>
+      <div class="pillier-desc">
+        Six modules conçus pour la génération suivante : patrimoine 360°, fiscalité de la famille, lire un acte, choisir une stratégie, gouvernance, transmission. Quiz, exercices, validation Maxime.
+      </div>
+    </div>
+    <div class="pillier">
+      <div class="pillier-icon">🤝</div>
+      <div class="pillier-titre">100% <em>digital</em>, jamais seul</div>
+      <div class="pillier-desc">
+        Marcel répond 24/7. Maxime valide les arbitrages. Vos partenaires (notaire, avocat, expert-comptable) sont coordonnés depuis la même plate-forme. Sans rendez-vous obligatoire.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="beta" id="beta">
+  <div class="beta-wrap">
+    <div class="beta-eyebrow">— Beta sur invitation</div>
+    <h2 class="beta-h2">Cinquante familles. <em>Pas une de plus.</em></h2>
+    <p class="beta-p">
+      Nous ouvrons la beta à <strong>50 familles dirigeantes</strong> sélectionnées sur le S2 2026. Accès complet au Family Office augmenté pendant 6 mois, gratuit, en échange de votre retour mensuel. Saisissez votre code d'invitation ci-dessous.
+    </p>
+
+    <form class="beta-form" id="beta-form" autocomplete="off">
+      <label class="beta-form-label" for="beta-code">Votre code d'invitation</label>
+      <input class="beta-form-input" id="beta-code" type="text" placeholder="BETA-FAMI-XXXX-YYYY" maxlength="19" required>
+      <button type="submit" class="beta-submit" id="beta-submit">Accéder à la beta</button>
+      <div class="beta-feedback" id="beta-feedback"></div>
+    </form>
+
+    <p class="beta-note">
+      Pas encore de code ? <a href="mailto:maxime@ikcp.fr?subject=Beta%20IKCP%20Family%20Office%20%E2%80%94%20demande%20d%27invitation">Demandez votre invitation à Maxime →</a><br>
+      Réponse personnelle sous 48 heures · sans engagement.<br>
+      <em>Codes de démo pour test offline : <strong style="color:var(--gold);">BETA-FAMI-DEMO-2026</strong> · <strong style="color:var(--gold);">BETA-FAMI-PIVOT-2026</strong> · <strong style="color:var(--gold);">BETA-FAMI-PILOTE-001</strong></em>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Beta IKCP Family Office augmenté · IKIGAÏ Conseil Patrimonial<br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
+    Pour dirigeants d'entreprise familiale et leurs enfants · 50 codes pour le S2 2026
+  </p>
+</footer>
+
+<script>
+(function () {
+  const form = document.getElementById('beta-form');
+  const input = document.getElementById('beta-code');
+  const submit = document.getElementById('beta-submit');
+  const feedback = document.getElementById('beta-feedback');
+
+  input.addEventListener('input', e => {
+    let v = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    const clean = v.replace(/-/g, '');
+    const segs = [];
+    for (let i = 0; i < clean.length && i < 16; i += 4) segs.push(clean.slice(i, i + 4));
+    e.target.value = segs.join('-');
+  });
+
+  function showFeedback(msg, type) {
+    feedback.textContent = msg;
+    feedback.className = 'beta-feedback show ' + type;
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const code = input.value.trim();
+    if (!code || code.length < 8) {
+      showFeedback('Code incomplet. Format attendu : BETA-FAMI-XXXX-YYYY.', 'error');
+      return;
+    }
+    submit.disabled = true;
+    feedback.className = 'beta-feedback';
+
+    const DEMO = ['BETA-FAMI-DEMO-2026', 'BETA-FAMI-PIVOT-2026', 'BETA-FAMI-PILOTE-001'];
+    if (DEMO.includes(code)) {
+      showFeedback('Code valide (mode démo aperçu). En production, redirection vers l\'espace client après onboarding.', 'success');
+    } else {
+      showFeedback('Code non reconnu ou déjà utilisé. Demandez une invitation à Maxime.', 'error');
+    }
+    submit.disabled = false;
+  });
+})();
+</script>
+
+</body>
+</html>

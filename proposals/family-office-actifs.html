@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP Family Office — Tableau de bord centralisé · 8 classes d'actifs · École NextGen</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+}
+html,body{background:var(--cream); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.6; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased}
+
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+/* ─── HEADER ─── */
+header.fo{background:var(--cream); border-bottom:1px solid var(--line); padding:16px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:32px; z-index:100; backdrop-filter:blur(8px)}
+.brand{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1}
+.brand b{color:var(--gold); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.32em; color:var(--gold-deep); margin-top:5px; font-weight:600; text-transform:uppercase}
+
+.fo-actions{display:flex; align-items:center; gap:16px}
+.ccy-switch{display:flex; align-items:center; gap:8px; padding:6px 12px; background:var(--cream-2); border:1px solid var(--line-strong); border-radius:30px}
+.ccy-switch label{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-deep); text-transform:uppercase; font-weight:700}
+.ccy-switch select{background:transparent; border:none; color:var(--navy); font-weight:600; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.08em; cursor:pointer; outline:none}
+.user-pill{display:flex; align-items:center; gap:12px; background:var(--cream-2); border:1px solid var(--line-strong); padding:6px 8px 6px 16px; border-radius:30px}
+.user-pill .name{font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); font-weight:500}
+.user-pill .tier{padding:4px 10px; background:var(--navy); color:var(--cream); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; font-weight:700}
+
+main{max-width:1480px; margin:0 auto; padding:36px 32px 80px}
+
+/* ─── HERO ─── */
+.head-block{display:grid; grid-template-columns:1.4fr 1fr; gap:36px; align-items:center; margin-bottom:48px}
+@media (max-width:980px){.head-block{grid-template-columns:1fr; gap:24px}}
+.head-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:14px; font-weight:700}
+.head-mark::before{content:'★ '; color:var(--gold)}
+.head-block h1{font-family:'Playfair Display',serif; font-size:clamp(34px,4.4vw,52px); color:var(--navy); font-weight:500; letter-spacing:-0.02em; line-height:1.06; margin-bottom:16px}
+.head-block h1 em{color:var(--gold-deep); font-style:italic}
+.head-block p{font-size:16px; color:var(--ink-mute); line-height:1.7; max-width:560px}
+.head-block p em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+
+/* ─── TOTAL CARD ─── */
+.total-card{background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:20px; padding:28px 32px; color:var(--cream); position:relative; overflow:hidden; box-shadow:0 20px 50px rgba(27,42,74,0.18)}
+.total-card::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.total-label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.24em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:10px}
+.total-value{font-family:'Playfair Display',serif; font-style:italic; font-size:48px; line-height:1; color:var(--cream); font-weight:500; letter-spacing:-0.018em; margin-bottom:8px}
+.total-value-sub{font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:rgba(250,250,248,0.65); margin-bottom:14px}
+.total-deltas{display:flex; gap:10px; flex-wrap:wrap}
+.delta-pill{padding:4px 10px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:0.04em}
+.delta-pill.up{background:rgba(63,122,63,0.20); color:#9bd197}
+.delta-pill.down{background:rgba(185,28,28,0.18); color:#e9a4a4}
+.delta-pill.neutral{background:rgba(255,255,255,0.06); color:var(--gold-bright)}
+.total-meta{margin-top:18px; padding-top:18px; border-top:1px dashed rgba(226,200,150,0.20); display:grid; grid-template-columns:repeat(3,1fr); gap:12px; font-size:11px; color:rgba(250,250,248,0.65)}
+.total-meta-v{font-family:'Playfair Display',serif; font-style:italic; font-size:18px; color:var(--gold-bright); font-weight:500; line-height:1}
+.total-meta-l{margin-top:3px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; font-size:9.5px}
+
+/* ─── 8 CLASSES ─── */
+.classes-section{margin-bottom:60px}
+.sect-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:14px; font-weight:700}
+.sect-mark::before{content:'§ '; opacity:0.5}
+.sect h2{font-family:'Playfair Display',serif; font-size:clamp(26px,3.6vw,38px); color:var(--navy); font-weight:500; letter-spacing:-0.018em; line-height:1.1; margin-bottom:12px}
+.sect h2 em{color:var(--gold-deep); font-style:italic}
+.sect-deck{font-size:15.5px; color:var(--ink-mute); line-height:1.7; max-width:780px; margin-bottom:34px}
+.sect-deck em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+
+.classes-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:8px}
+@media (max-width:1180px){.classes-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:880px){.classes-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.classes-grid{grid-template-columns:1fr}}
+
+.class-card{background:var(--cream); border:1px solid var(--line-strong); border-radius:14px; padding:18px 20px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden}
+.class-card::before{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--gold-bright)); opacity:0; transition:opacity 0.25s}
+.class-card:hover{transform:translateY(-3px); box-shadow:0 14px 32px rgba(27,42,74,0.10); border-color:var(--gold)}
+.class-card:hover::before{opacity:1}
+.class-card.active::before{opacity:1}
+.class-card.active{border-color:var(--gold); box-shadow:0 8px 24px rgba(201,169,110,0.15)}
+.class-head{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.class-ico{font-size:22px; line-height:1}
+.class-name{font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); font-weight:600; flex:1; line-height:1.15}
+.class-count{font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--gold-deep); letter-spacing:0.12em; font-weight:700; background:rgba(201,169,110,0.10); padding:3px 7px; border-radius:30px}
+.class-value{font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:var(--navy); font-weight:600; line-height:1; margin-bottom:6px}
+.class-pct{font-size:11.5px; color:var(--ink-faint); margin-bottom:10px; font-family:'JetBrains Mono',monospace; letter-spacing:0.06em}
+.class-delta{display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.04em}
+.class-delta.up{background:rgba(63,122,63,0.10); color:var(--ok)}
+.class-delta.down{background:rgba(185,28,28,0.08); color:var(--bad)}
+.class-delta.neutral{background:rgba(155,143,128,0.10); color:var(--ink-faint)}
+
+/* Mini bar repartition */
+.alloc-bar{display:flex; height:14px; border-radius:5px; overflow:hidden; gap:1px; background:var(--cream-3); margin:30px 0 8px}
+.alloc-seg{transition:all 0.3s}
+.alloc-legend{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; font-size:10.5px}
+@media (max-width:680px){.alloc-legend{grid-template-columns:repeat(2,1fr)}}
+.alloc-leg{display:flex; align-items:center; gap:6px; color:var(--ink-mute)}
+.alloc-leg-dot{width:10px; height:10px; border-radius:2px; flex-shrink:0}
+
+/* ─── DETAIL TABLE ─── */
+.detail-section{background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:28px 30px; margin-top:24px; box-shadow:0 4px 14px rgba(27,42,74,0.04)}
+.detail-head{display:flex; justify-content:space-between; align-items:flex-start; gap:18px; padding-bottom:18px; border-bottom:1px solid var(--line); margin-bottom:20px; flex-wrap:wrap}
+.detail-title{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600}
+.detail-title em{color:var(--gold-deep); font-style:italic}
+.detail-meta{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--gold-deep); letter-spacing:0.12em; text-align:right; line-height:1.7; font-weight:600}
+
+.tbl{width:100%; border-collapse:collapse; font-size:13.5px}
+.tbl th{text-align:left; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; border-bottom:1px solid var(--line); background:var(--cream-2)}
+.tbl th.r{text-align:right}
+.tbl td{padding:13px 12px; border-bottom:1px dashed var(--line); color:var(--ink); vertical-align:middle}
+.tbl td.r{text-align:right; font-variant-numeric:tabular-nums}
+.tbl tr:hover td{background:var(--cream-2)}
+.tbl .pname{font-family:'Playfair Display',serif; font-size:14.5px; color:var(--navy); font-weight:600; line-height:1.2}
+.tbl .pmeta{font-size:11px; color:var(--ink-faint); margin-top:2px; font-style:italic; font-family:'Playfair Display',serif}
+.tbl .pval{font-family:'Playfair Display',serif; font-style:italic; font-size:15px; color:var(--navy); font-weight:600}
+.tbl .pdelta{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; padding:2px 7px; border-radius:30px}
+.tbl .pdelta.up{background:rgba(63,122,63,0.10); color:var(--ok)}
+.tbl .pdelta.down{background:rgba(185,28,28,0.08); color:var(--bad)}
+.tbl .live-dot{display:inline-block; width:7px; height:7px; background:#7fae7d; border-radius:50%; margin-right:6px; animation:livePulse 1.4s infinite; vertical-align:middle}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.tbl .mock-dot{display:inline-block; width:7px; height:7px; background:var(--warn); border-radius:50%; margin-right:6px; vertical-align:middle}
+
+/* ─── ÉCOLE NEXTGEN ─── */
+.school-section{margin-top:80px; padding:80px 36px; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:24px; color:var(--cream); position:relative; overflow:hidden}
+.school-section::before{content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.school-section .sect-mark{color:var(--gold-bright)}
+.school-section h2{color:var(--cream)}
+.school-section h2 em{color:var(--gold-bright)}
+.school-section .sect-deck{color:rgba(250,250,248,0.78)}
+.school-section .sect-deck em{color:var(--gold-bright); font-style:italic; font-weight:500}
+
+.school-stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:30px 0 40px; padding:24px 28px; background:rgba(255,255,255,0.04); border:1px solid rgba(226,200,150,0.18); border-radius:14px}
+@media (max-width:760px){.school-stat-row{grid-template-columns:repeat(2,1fr); gap:18px}}
+.school-stat{text-align:center}
+.school-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:30px; color:var(--gold-bright); font-weight:500; line-height:1; margin-bottom:4px}
+.school-stat-l{font-size:10.5px; color:rgba(250,250,248,0.65); letter-spacing:0.14em; text-transform:uppercase; font-weight:600}
+
+.modules-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media (max-width:980px){.modules-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.modules-grid{grid-template-columns:1fr}}
+.module-card{background:rgba(255,255,255,0.04); border:1px solid rgba(226,200,150,0.18); border-radius:14px; padding:22px 24px; transition:all 0.25s; cursor:pointer; position:relative; overflow:hidden}
+.module-card:hover{background:rgba(255,255,255,0.07); border-color:var(--gold); transform:translateY(-3px)}
+.module-num{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.22em; color:var(--gold-bright); font-weight:700; margin-bottom:8px}
+.module-h{font-family:'Playfair Display',serif; font-size:18px; color:var(--cream); font-weight:600; margin-bottom:8px; line-height:1.2}
+.module-h em{color:var(--gold-bright); font-style:italic}
+.module-p{font-size:13px; color:rgba(250,250,248,0.72); line-height:1.55; margin-bottom:14px}
+.module-progress{display:flex; align-items:center; gap:10px}
+.progress-bar{flex:1; height:5px; background:rgba(255,255,255,0.08); border-radius:5px; overflow:hidden}
+.progress-fill{height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-bright)); border-radius:5px; transition:width 0.6s}
+.progress-pct{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gold-bright); font-weight:700; letter-spacing:0.08em; min-width:34px; text-align:right}
+.module-status{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; font-weight:700; text-transform:uppercase; margin-top:10px}
+.module-status.done{background:rgba(63,122,63,0.20); color:#9bd197}
+.module-status.live{background:rgba(226,200,150,0.18); color:var(--gold-bright)}
+.module-status.todo{background:rgba(255,255,255,0.06); color:rgba(250,250,248,0.55)}
+
+/* ─── BIBLIO + MENTORAT ─── */
+.school-extras{display:grid; grid-template-columns:1.4fr 1fr; gap:18px; margin-top:32px}
+@media (max-width:880px){.school-extras{grid-template-columns:1fr}}
+.biblio, .mentor-block{background:rgba(255,255,255,0.04); border:1px solid rgba(226,200,150,0.18); border-radius:14px; padding:24px 26px}
+.biblio-h, .mentor-h{font-family:'Playfair Display',serif; font-size:18px; color:var(--cream); font-weight:600; margin-bottom:6px}
+.biblio-h em, .mentor-h em{color:var(--gold-bright); font-style:italic}
+.biblio-sub, .mentor-sub{font-family:'Playfair Display',serif; font-style:italic; font-size:13px; color:rgba(250,250,248,0.65); margin-bottom:16px}
+.biblio-row{display:flex; align-items:center; gap:14px; padding:10px 14px; background:rgba(255,255,255,0.03); border:1px solid rgba(226,200,150,0.10); border-radius:10px; margin-bottom:8px; transition:all 0.2s; cursor:pointer}
+.biblio-row:hover{border-color:var(--gold); background:rgba(255,255,255,0.06)}
+.biblio-ico{font-size:18px; flex-shrink:0}
+.biblio-info{flex:1; min-width:0}
+.biblio-title{font-family:'Playfair Display',serif; font-size:13.5px; color:var(--cream); font-weight:600}
+.biblio-meta{font-size:11px; color:rgba(250,250,248,0.55); margin-top:2px}
+.biblio-fmt{font-family:'JetBrains Mono',monospace; font-size:9.5px; padding:3px 8px; border-radius:30px; letter-spacing:0.14em; font-weight:700}
+.biblio-fmt.video{background:rgba(184,128,31,0.18); color:var(--warn)}
+.biblio-fmt.podcast{background:rgba(226,200,150,0.16); color:var(--gold-bright)}
+.biblio-fmt.livre{background:rgba(63,122,63,0.16); color:#9bd197}
+.biblio-fmt.article{background:rgba(255,255,255,0.06); color:rgba(250,250,248,0.65)}
+
+.mentor-block{display:flex; flex-direction:column; align-items:center; text-align:center}
+.mentor-photo{width:84px; height:84px; border-radius:50%; background:linear-gradient(135deg, var(--gold-deep), var(--gold-bright)); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:34px; color:var(--navy-deep); font-weight:600; font-style:italic; margin-bottom:14px; box-shadow:0 0 0 4px rgba(226,200,150,0.20)}
+.mentor-name{font-family:'Playfair Display',serif; font-size:18px; color:var(--cream); font-weight:600; margin-bottom:3px}
+.mentor-role{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.2em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.mentor-quote{font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:rgba(250,250,248,0.85); line-height:1.55; margin-bottom:18px; padding:0 8px}
+.mentor-btn{padding:11px 24px; background:var(--gold); color:var(--navy); border:none; border-radius:8px; font-size:11.5px; font-weight:700; letter-spacing:0.08em; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s}
+.mentor-btn:hover{background:var(--gold-bright)}
+
+/* ─── FAMILY SALON ─── */
+.salon-fam{margin-top:18px; padding:18px 22px; background:rgba(255,255,255,0.03); border:1px dashed rgba(226,200,150,0.18); border-radius:12px}
+.salon-fam-h{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:10px}
+.salon-fam-msg{font-size:13px; color:rgba(250,250,248,0.85); margin-bottom:6px; line-height:1.5}
+.salon-fam-msg b{color:var(--gold-bright); font-weight:600}
+.salon-fam-msg em{font-family:'Playfair Display',serif; font-style:italic; color:rgba(250,250,248,0.6)}
+
+/* ─── VALUE PROP CENTRALISATION ─── */
+.value-section{margin-top:80px; padding:60px 36px; background:var(--cream-2); border-radius:24px}
+.value-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:32px}
+@media (max-width:980px){.value-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.value-grid{grid-template-columns:1fr}}
+.value-card{background:var(--cream); border:1px solid var(--line-strong); border-radius:14px; padding:24px 22px; transition:all 0.25s}
+.value-card:hover{transform:translateY(-3px); border-color:var(--gold); box-shadow:0 12px 28px rgba(27,42,74,0.08)}
+.value-num{font-family:'Playfair Display',serif; font-style:italic; font-size:32px; color:var(--gold-deep); font-weight:500; line-height:1; margin-bottom:10px}
+.value-h{font-family:'Playfair Display',serif; font-size:17px; color:var(--navy); font-weight:600; margin-bottom:8px; line-height:1.25}
+.value-p{font-size:13px; color:var(--ink-mute); line-height:1.6}
+.value-p b{color:var(--navy); font-weight:600}
+
+footer{margin-top:60px; padding:40px 32px; background:var(--navy-deep); color:rgba(250,250,248,0.7); text-align:center}
+footer p{font-size:11.5px; line-height:1.9}
+footer a{color:var(--gold-bright); text-decoration:none}
+footer .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · Family Office augmenté — tableau de bord centralisé + École NextGen</span>
+  <span><a href="ikcp-eu-onglet-family-office.html">← retour Family Office</a></span>
+</div>
+
+<header class="fo">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office · client.ikcp.eu</div>
+  </div>
+  <div class="fo-actions">
+    <div class="ccy-switch">
+      <label>Devise</label>
+      <select id="ccy-select" onchange="changeCcy(this.value)">
+        <option value="EUR">EUR €</option>
+        <option value="USD">USD $</option>
+        <option value="GBP">GBP £</option>
+        <option value="CHF">CHF Fr</option>
+        <option value="JPY">JPY ¥</option>
+      </select>
+    </div>
+    <div class="user-pill">
+      <span class="name">Famille Dupont</span>
+      <span class="tier">Sur-mesure</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ HERO + TOTAL ═══ -->
+<section class="head-block">
+  <div>
+    <div class="head-mark">Tableau de bord centralisé · live</div>
+    <h1>Tout votre patrimoine.<br><em>Un seul écran.</em></h1>
+    <p>
+      Actions, obligations, fonds, liquidités, immobilier, private equity, art, métaux. <em>Huit classes d'actifs agrégées automatiquement</em>, valorisées en temps réel dans la devise de votre choix. Plus de tableurs éparpillés, plus de relances à votre banquier.
+    </p>
+  </div>
+
+  <div class="total-card">
+    <div class="total-label">Patrimoine consolidé</div>
+    <div class="total-value" id="total-value">14 217 320 €</div>
+    <div class="total-value-sub">au 12/05/2026 · 47 lignes agrégées</div>
+    <div class="total-deltas">
+      <span class="delta-pill up" id="delta-jour">↑ +0,42 % aujourd'hui</span>
+      <span class="delta-pill up">↑ +1,8 % trimestre</span>
+      <span class="delta-pill up">↑ +12,4 % 12 mois</span>
+    </div>
+    <div class="total-meta">
+      <div><div class="total-meta-v">8</div><div class="total-meta-l">Classes</div></div>
+      <div><div class="total-meta-v">47</div><div class="total-meta-l">Lignes</div></div>
+      <div><div class="total-meta-v">3</div><div class="total-meta-l">Entités</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ALLOCATION VISUELLE ═══ -->
+<section class="classes-section">
+  <div class="sect-mark">Répartition · 8 classes d'actifs</div>
+  <h2>Votre allocation, <em>en un coup d'œil.</em></h2>
+  <p class="sect-deck">Cliquez une classe pour voir le détail ligne à ligne. <em>Données live</em> pour la crypto et le forex (CoinGecko, BCE). Pour les actions et obligations cotées : <em>branchement Sprint 1</em> via worker souverain.</p>
+
+  <div class="alloc-bar">
+    <div class="alloc-seg" style="width:38%; background:#C9A96E" title="Immobilier 38%"></div>
+    <div class="alloc-seg" style="width:18%; background:#1B2A4A" title="Actions 18%"></div>
+    <div class="alloc-seg" style="width:14%; background:#8B6F3F" title="Obligations 14%"></div>
+    <div class="alloc-seg" style="width:11%; background:#2A3B5F" title="Fonds 11%"></div>
+    <div class="alloc-seg" style="width:8%; background:#3F7A3F" title="PE 8%"></div>
+    <div class="alloc-seg" style="width:5%; background:#9B8F80" title="Liquidités 5%"></div>
+    <div class="alloc-seg" style="width:4%; background:#B8801F" title="Art 4%"></div>
+    <div class="alloc-seg" style="width:2%; background:#E2C896" title="Métaux 2%"></div>
+  </div>
+
+  <div class="alloc-legend">
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#C9A96E"></span>Immobilier 38%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#1B2A4A"></span>Actions 18%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#8B6F3F"></span>Obligations 14%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#2A3B5F"></span>Fonds 11%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#3F7A3F"></span>PE 8%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#9B8F80"></span>Liquidités 5%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#B8801F"></span>Art 4%</div>
+    <div class="alloc-leg"><span class="alloc-leg-dot" style="background:#E2C896"></span>Métaux 2%</div>
+  </div>
+
+  <!-- 8 cartes classes -->
+  <div class="classes-grid" style="margin-top:34px">
+
+    <div class="class-card active" onclick="showDetail('actions')">
+      <div class="class-head"><span class="class-ico">📈</span><span class="class-name">Actions cotées</span><span class="class-count">8</span></div>
+      <div class="class-value" data-eur="2559117">2 559 117 €</div>
+      <div class="class-pct">18,0 % · valeurs live</div>
+      <span class="class-delta up">↑ +0,82 %</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('obligations')">
+      <div class="class-head"><span class="class-ico">📜</span><span class="class-name">Obligations</span><span class="class-count">4</span></div>
+      <div class="class-value" data-eur="1990425">1 990 425 €</div>
+      <div class="class-pct">14,0 % · OAT + corp.</div>
+      <span class="class-delta down">↓ -0,12 %</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('fonds')">
+      <div class="class-head"><span class="class-ico">📊</span><span class="class-name">Fonds &amp; ETF</span><span class="class-count">7</span></div>
+      <div class="class-value" data-eur="1563905">1 563 905 €</div>
+      <div class="class-pct">11,0 % · PEA · AV · PER</div>
+      <span class="class-delta up">↑ +0,34 %</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('liquidites')">
+      <div class="class-head"><span class="class-ico">💵</span><span class="class-name">Liquidités</span><span class="class-count">5</span></div>
+      <div class="class-value" data-eur="710866">710 866 €</div>
+      <div class="class-pct">5,0 % · comptes &amp; livrets</div>
+      <span class="class-delta neutral">→ stable</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('immobilier')">
+      <div class="class-head"><span class="class-ico">🏠</span><span class="class-name">Immobilier</span><span class="class-count">6</span></div>
+      <div class="class-value" data-eur="5402582">5 402 582 €</div>
+      <div class="class-pct">38,0 % · direct + SCPI</div>
+      <span class="class-delta up">↑ +0,15 %</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('pe')">
+      <div class="class-head"><span class="class-ico">🪴</span><span class="class-name">Private Equity</span><span class="class-count">3</span></div>
+      <div class="class-value" data-eur="1137385">1 137 385 €</div>
+      <div class="class-pct">8,0 % · fonds + Dutreil</div>
+      <span class="class-delta up">↑ +2,40 %</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('art')">
+      <div class="class-head"><span class="class-ico">🎨</span><span class="class-name">Art &amp; Collections</span><span class="class-count">9</span></div>
+      <div class="class-value" data-eur="568693">568 693 €</div>
+      <div class="class-pct">4,0 % · œuvres valorisées</div>
+      <span class="class-delta neutral">→ stable</span>
+    </div>
+
+    <div class="class-card" onclick="showDetail('metaux')">
+      <div class="class-head"><span class="class-ico">🥇</span><span class="class-name">Métaux précieux</span><span class="class-count">5</span></div>
+      <div class="class-value" data-eur="284346">284 346 €</div>
+      <div class="class-pct">2,0 % · OR + argent</div>
+      <span class="class-delta up">↑ +0,42 %</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ DETAIL TABLE — Actions cotées ═══ -->
+<section class="detail-section" id="detail-actions">
+  <div class="detail-head">
+    <div>
+      <div class="detail-title">📈 Actions cotées — <em>8 lignes</em></div>
+      <div style="font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px">Valorisation temps réel · branchement Sprint 1 via worker souverain</div>
+    </div>
+    <div class="detail-meta">
+      <strong>LIVE</strong><br>
+      Refresh 60 s · devise <span id="ccy-detail-actions">EUR €</span>
+    </div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th class="r">Quantité</th>
+        <th class="r">Prix unitaire</th>
+        <th class="r">Valorisation</th>
+        <th class="r">Jour</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-actions">
+      <tr data-px="142.50" data-qty="2400" data-pct="1.28">
+        <td><div class="pname">LVMH Moët Hennessy</div><div class="pmeta">FR0000121014 · CAC 40 · luxe</div></td>
+        <td class="r">2 400</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="178.90" data-qty="1200" data-pct="-0.45">
+        <td><div class="pname">Air Liquide</div><div class="pmeta">FR0000120073 · CAC 40 · industrie</div></td>
+        <td class="r">1 200</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="62.80" data-qty="3500" data-pct="0.72">
+        <td><div class="pname">TotalEnergies</div><div class="pmeta">FR0000120271 · CAC 40 · énergie</div></td>
+        <td class="r">3 500</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="71.40" data-qty="2100" data-pct="2.15">
+        <td><div class="pname">BNP Paribas</div><div class="pmeta">FR0000131104 · CAC 40 · banque</div></td>
+        <td class="r">2 100</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="248.30" data-qty="800" data-pct="-1.20">
+        <td><div class="pname">Schneider Electric</div><div class="pmeta">FR0000121972 · CAC 40 · tech</div></td>
+        <td class="r">800</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="195.00" data-qty="350" data-pct="0.85" data-ccy="USD">
+        <td><div class="pname">Apple Inc.</div><div class="pmeta">US0378331005 · NASDAQ · tech</div></td>
+        <td class="r">350</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="412.00" data-qty="240" data-pct="-0.34" data-ccy="USD">
+        <td><div class="pname">Microsoft</div><div class="pmeta">US5949181045 · NASDAQ · tech</div></td>
+        <td class="r">240</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+      <tr data-px="118.50" data-qty="180" data-pct="3.42" data-ccy="USD">
+        <td><div class="pname">NVIDIA</div><div class="pmeta">US67066G1040 · NASDAQ · semi-conducteurs</div></td>
+        <td class="r">180</td>
+        <td class="r"><span class="live-dot"></span><span class="px"></span></td>
+        <td class="r"><span class="pval val"></span></td>
+        <td class="r"><span class="pdelta delta"></span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ DETAIL TABLE — Obligations ═══ -->
+<section class="detail-section">
+  <div class="detail-head">
+    <div>
+      <div class="detail-title">📜 Obligations — <em>4 lignes</em></div>
+      <div style="font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px">Souveraines (FR · US) + corporate Investment Grade</div>
+    </div>
+    <div class="detail-meta"><strong>LIVE</strong><br>Refresh 60 s · YTM actualisé</div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Émetteur · échéance</th>
+        <th class="r">Nominal</th>
+        <th class="r">Coupon</th>
+        <th class="r">YTM</th>
+        <th class="r">Valo</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-obligations">
+      <tr data-eur="652000">
+        <td><div class="pname">OAT 10 ans · 2035</div><div class="pmeta">FR0014008NL5 · Trésor France · IG</div></td>
+        <td class="r">600 000 €</td>
+        <td class="r">3,25 %</td>
+        <td class="r"><span class="live-dot"></span>2,98 %</td>
+        <td class="r"><span class="pval">652 000 €</span></td>
+      </tr>
+      <tr data-eur="412800">
+        <td><div class="pname">Schneider · 2030</div><div class="pmeta">FR00140043Z8 · corporate IG</div></td>
+        <td class="r">400 000 €</td>
+        <td class="r">2,95 %</td>
+        <td class="r"><span class="live-dot"></span>3,12 %</td>
+        <td class="r"><span class="pval">412 800 €</span></td>
+      </tr>
+      <tr data-eur="528625" data-ccy="USD">
+        <td><div class="pname">US Treasury · 2034</div><div class="pmeta">US T-Note 10y · USD · AAA</div></td>
+        <td class="r">550 000 $</td>
+        <td class="r">4,25 %</td>
+        <td class="r"><span class="live-dot"></span>4,42 %</td>
+        <td class="r"><span class="pval">528 625 €</span></td>
+      </tr>
+      <tr data-eur="397000">
+        <td><div class="pname">LVMH · 2028</div><div class="pmeta">FR00140067P9 · corporate IG · luxe</div></td>
+        <td class="r">380 000 €</td>
+        <td class="r">3,10 %</td>
+        <td class="r"><span class="live-dot"></span>2,85 %</td>
+        <td class="r"><span class="pval">397 000 €</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ DETAIL TABLE — Fonds & ETF ═══ -->
+<section class="detail-section">
+  <div class="detail-head">
+    <div>
+      <div class="detail-title">📊 Fonds &amp; ETF — <em>7 lignes</em></div>
+      <div style="font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px">Enveloppes fiscales : PEA, AV, PER, fonds dédié</div>
+    </div>
+    <div class="detail-meta"><strong>LIVE</strong><br>NAV actualisée quotidiennement</div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Fonds / ETF</th>
+        <th class="r">Enveloppe</th>
+        <th class="r">Frais</th>
+        <th class="r">Perf 1 an</th>
+        <th class="r">Valo</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-fonds">
+      <tr data-eur="380000">
+        <td><div class="pname">Lyxor ETF CAC 40</div><div class="pmeta">FR0007052782 · indiciel large cap FR</div></td>
+        <td class="r">PEA</td>
+        <td class="r">0,25 %</td>
+        <td class="r"><span class="pdelta up">↑ +14,2 %</span></td>
+        <td class="r"><span class="pval">380 000 €</span></td>
+      </tr>
+      <tr data-eur="290000">
+        <td><div class="pname">iShares MSCI World</div><div class="pmeta">IE00B4L5Y983 · indiciel monde dév.</div></td>
+        <td class="r">AV</td>
+        <td class="r">0,20 %</td>
+        <td class="r"><span class="pdelta up">↑ +18,7 %</span></td>
+        <td class="r"><span class="pval">290 000 €</span></td>
+      </tr>
+      <tr data-eur="245000">
+        <td><div class="pname">Carmignac Investissement</div><div class="pmeta">FR0010148981 · actions internationales</div></td>
+        <td class="r">AV</td>
+        <td class="r">1,50 %</td>
+        <td class="r"><span class="pdelta up">↑ +9,4 %</span></td>
+        <td class="r"><span class="pval">245 000 €</span></td>
+      </tr>
+      <tr data-eur="210000">
+        <td><div class="pname">Edmond de Rothschild Tricolore</div><div class="pmeta">FR0010172767 · small &amp; mid caps FR</div></td>
+        <td class="r">PEA</td>
+        <td class="r">1,75 %</td>
+        <td class="r"><span class="pdelta down">↓ -2,1 %</span></td>
+        <td class="r"><span class="pval">210 000 €</span></td>
+      </tr>
+      <tr data-eur="180000">
+        <td><div class="pname">Sycomore Sélection PME</div><div class="pmeta">FR0010111233 · PME-ETI fr · éligible PER</div></td>
+        <td class="r">PER</td>
+        <td class="r">1,60 %</td>
+        <td class="r"><span class="pdelta up">↑ +6,8 %</span></td>
+        <td class="r"><span class="pval">180 000 €</span></td>
+      </tr>
+      <tr data-eur="145000">
+        <td><div class="pname">DNCA Invest Eurose</div><div class="pmeta">LU0284394235 · diversifié patrimonial</div></td>
+        <td class="r">AV</td>
+        <td class="r">1,40 %</td>
+        <td class="r"><span class="pdelta up">↑ +4,2 %</span></td>
+        <td class="r"><span class="pval">145 000 €</span></td>
+      </tr>
+      <tr data-eur="113905">
+        <td><div class="pname">Fonds dédié IKCP "Bâtisseurs"</div><div class="pmeta">Mandat de gestion sur-mesure · multi-actifs</div></td>
+        <td class="r">FCP dédié</td>
+        <td class="r">1,20 %</td>
+        <td class="r"><span class="pdelta up">↑ +11,8 %</span></td>
+        <td class="r"><span class="pval">113 905 €</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ DETAIL — Immobilier (résumé) ═══ -->
+<section class="detail-section">
+  <div class="detail-head">
+    <div>
+      <div class="detail-title">🏠 Immobilier — <em>6 biens</em></div>
+      <div style="font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px">Estimation DVF live · cadastre · loyers nets</div>
+    </div>
+    <div class="detail-meta"><strong>LIVE</strong><br>Réévalué chaque trimestre</div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Bien</th>
+        <th class="r">Surface</th>
+        <th class="r">Prix m² (DVF)</th>
+        <th class="r">Loyer net/an</th>
+        <th class="r">Valo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="pname">RP · Lyon 6<sup>e</sup></div><div class="pmeta">Avenue Maréchal Foch · pleine propriété</div></td><td class="r">180 m²</td><td class="r"><span class="live-dot"></span>8 920 €</td><td class="r">—</td><td class="r"><span class="pval">1 605 600 €</span></td></tr>
+      <tr><td><div class="pname">SCI VILLA AURA · Cap-Ferret</div><div class="pmeta">33950 · secondaire · démembrement</div></td><td class="r">240 m²</td><td class="r"><span class="live-dot"></span>11 240 €</td><td class="r">—</td><td class="r"><span class="pval">2 697 600 €</span></td></tr>
+      <tr><td><div class="pname">SCI MEGEVE · chalet</div><div class="pmeta">74120 · résidence locative saisonnière</div></td><td class="r">160 m²</td><td class="r"><span class="live-dot"></span>8 100 €</td><td class="r">84 000 €</td><td class="r"><span class="pval">1 296 000 €</span></td></tr>
+      <tr><td><div class="pname">Locatif Annonay</div><div class="pmeta">07100 · T3 · loi Pinel</div></td><td class="r">68 m²</td><td class="r"><span class="live-dot"></span>2 480 €</td><td class="r">9 600 €</td><td class="r"><span class="pval">168 640 €</span></td></tr>
+      <tr><td><div class="pname">SCPI Primovie</div><div class="pmeta">Diversifiée santé · 240 parts</div></td><td class="r">—</td><td class="r">—</td><td class="r">7 920 €</td><td class="r"><span class="pval">150 000 €</span></td></tr>
+      <tr><td><div class="pname">SCPI Sofidy Europe Invest</div><div class="pmeta">Bureaux EU · 120 parts</div></td><td class="r">—</td><td class="r">—</td><td class="r">4 320 €</td><td class="r"><span class="pval">82 800 €</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ DETAIL — Private Equity ═══ -->
+<section class="detail-section">
+  <div class="detail-head">
+    <div>
+      <div class="detail-title">🪴 Private Equity — <em>3 lignes</em></div>
+      <div style="font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px">Fonds engagés + holding Dutreil éligible</div>
+    </div>
+    <div class="detail-meta"><strong>LIVE</strong><br>NAV trimestrielle</div>
+  </div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th>Investissement</th>
+        <th class="r">Engagement</th>
+        <th class="r">Versé</th>
+        <th class="r">TRI net</th>
+        <th class="r">NAV</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="pname">Eurazeo PME IV</div><div class="pmeta">Buyout mid-cap FR · vintage 2022</div></td><td class="r">500 000 €</td><td class="r">380 000 €</td><td class="r"><span class="pdelta up">↑ 14,2 %</span></td><td class="r"><span class="pval">432 000 €</span></td></tr>
+      <tr><td><div class="pname">Ardian Co-Investment</div><div class="pmeta">Deal Series B SaaS · 2024</div></td><td class="r">200 000 €</td><td class="r">200 000 €</td><td class="r"><span class="pdelta up">↑ 8,4 %</span></td><td class="r"><span class="pval">216 800 €</span></td></tr>
+      <tr><td><div class="pname">DUPONT HOLDING · Dutreil</div><div class="pmeta">Holding pure · pacte 02/2026 · 75 % abattement</div></td><td class="r">—</td><td class="r">—</td><td class="r"><span class="pdelta neutral">—</span></td><td class="r"><span class="pval">488 585 €</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ ÉCOLE NEXTGEN ═══ -->
+<section class="school-section">
+  <div class="sect-mark">École NextGen · génération suivante</div>
+  <h2>Préparer ceux qui <em>vont prendre la suite</em>.</h2>
+  <p class="sect-deck">
+    Le patrimoine ne se transmet pas — il se <em>prépare</em>. Six modules construits sur vos chiffres réels (pas un cas fictif), suivis personnellement par Maxime, dans un espace privé partagé avec votre famille. <em>Les enfants travaillent sur l'entreprise familiale, pas sur un exercice théorique.</em>
+  </p>
+
+  <div class="school-stat-row">
+    <div class="school-stat"><div class="school-stat-v">6</div><div class="school-stat-l">Modules</div></div>
+    <div class="school-stat"><div class="school-stat-v">46 h</div><div class="school-stat-l">Curriculum</div></div>
+    <div class="school-stat"><div class="school-stat-v">3</div><div class="school-stat-l">RDV mentor</div></div>
+    <div class="school-stat"><div class="school-stat-v">1</div><div class="school-stat-l">Apprenante · Emma</div></div>
+  </div>
+
+  <div class="modules-grid">
+
+    <div class="module-card">
+      <div class="module-num">Module 01 · 8 h</div>
+      <div class="module-h">Patrimoine <em>360°</em></div>
+      <p class="module-p">Cartographier toutes les entités familiales, comprendre les liens. Vocabulaire CGP, lecture d'un bilan, d'un Kbis, d'un pacte.</p>
+      <div class="module-progress"><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div><span class="progress-pct">100 %</span></div>
+      <span class="module-status done">✓ Terminé</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-num">Module 02 · 10 h</div>
+      <div class="module-h">Fiscalité de la <em>famille</em></div>
+      <p class="module-p">IR, IFI, prélèvements sociaux, succession, plus-value mobilière, niches fiscales. Sur vos vrais chiffres.</p>
+      <div class="module-progress"><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div><span class="progress-pct">100 %</span></div>
+      <span class="module-status done">✓ Terminé</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-num">Module 03 · 6 h</div>
+      <div class="module-h">Lire un <em>acte / pacte</em></div>
+      <p class="module-p">Statuts, pacte Dutreil, donation, démembrement. Comprendre ce que signent vos parents, et pourquoi.</p>
+      <div class="module-progress"><div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div><span class="progress-pct">65 %</span></div>
+      <span class="module-status live">● En cours</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-num">Module 04 · 8 h</div>
+      <div class="module-h">Choisir une <em>stratégie</em></div>
+      <p class="module-p">4 schémas comparés : donation simple, démembrement, holding, fondation. Trade-offs réels sur votre situation.</p>
+      <div class="module-progress"><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-pct">0 %</span></div>
+      <span class="module-status todo">À venir</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-num">Module 05 · 8 h</div>
+      <div class="module-h">Gouvernance <em>familiale</em></div>
+      <p class="module-p">Charte familiale, conseil de famille, règlement intérieur, gestion des conflits, place des conjoints.</p>
+      <div class="module-progress"><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-pct">0 %</span></div>
+      <span class="module-status todo">À venir</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-num">Module 06 · 6 h</div>
+      <div class="module-h">Transmission <em>humaine</em></div>
+      <p class="module-p">Au-delà de l'argent : valeurs, histoire familiale, mission, lieux. Plan personnel, RDV famille, lettre aux enfants.</p>
+      <div class="module-progress"><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div><span class="progress-pct">0 %</span></div>
+      <span class="module-status todo">À venir</span>
+    </div>
+
+  </div>
+
+  <!-- Biblio + Mentor + Salon famille -->
+  <div class="school-extras">
+
+    <div class="biblio">
+      <div class="biblio-h">Bibliothèque <em>NextGen</em></div>
+      <div class="biblio-sub">Sélection vidéos, podcasts, livres, articles — curée par Maxime.</div>
+
+      <div class="biblio-row">
+        <span class="biblio-ico">🎥</span>
+        <div class="biblio-info">
+          <div class="biblio-title">Comprendre le pacte Dutreil en 12 minutes</div>
+          <div class="biblio-meta">Vidéo · 12:34 · niveau intermédiaire</div>
+        </div>
+        <span class="biblio-fmt video">Vidéo</span>
+      </div>
+
+      <div class="biblio-row">
+        <span class="biblio-ico">🎙</span>
+        <div class="biblio-info">
+          <div class="biblio-title">Reprendre l'entreprise familiale — 6 témoignages</div>
+          <div class="biblio-meta">Podcast · 1 h 04 · histoires vraies anonymisées</div>
+        </div>
+        <span class="biblio-fmt podcast">Podcast</span>
+      </div>
+
+      <div class="biblio-row">
+        <span class="biblio-ico">📖</span>
+        <div class="biblio-info">
+          <div class="biblio-title">La gouvernance familiale — D. Lansberg</div>
+          <div class="biblio-meta">Livre · réf. transmission · 280 pages · synthèse 8 p.</div>
+        </div>
+        <span class="biblio-fmt livre">Livre</span>
+      </div>
+
+      <div class="biblio-row">
+        <span class="biblio-ico">📰</span>
+        <div class="biblio-info">
+          <div class="biblio-title">LF 2026 : ce qui change pour les holdings patrimoniales</div>
+          <div class="biblio-meta">Article · UPPERCUT PATRIMOINE · 7 min de lecture</div>
+        </div>
+        <span class="biblio-fmt article">Article</span>
+      </div>
+
+      <div class="biblio-row">
+        <span class="biblio-ico">🎥</span>
+        <div class="biblio-info">
+          <div class="biblio-title">Démembrement RP : avantages et pièges</div>
+          <div class="biblio-meta">Vidéo · 18:42 · cas d'école</div>
+        </div>
+        <span class="biblio-fmt video">Vidéo</span>
+      </div>
+    </div>
+
+    <div class="mentor-block">
+      <div class="mentor-photo">M</div>
+      <div class="mentor-name">Maxime Juveneton</div>
+      <div class="mentor-role">Mentor NextGen</div>
+      <p class="mentor-quote">« On ne transmet pas un patrimoine, on transmet l'élan d'en prendre soin. Mon rôle : que vos enfants comprennent le pourquoi avant le comment. »</p>
+      <button class="mentor-btn">📅 Programmer un RDV mentor</button>
+
+      <div class="salon-fam">
+        <div class="salon-fam-h">Salon famille · privé E2E</div>
+        <div class="salon-fam-msg"><b>Emma</b> · 14:32 — <em>"J'ai fini le module 3, papa. Le pacte Dutreil c'est costaud."</em></div>
+        <div class="salon-fam-msg"><b>Jean-Marc</b> · 15:08 — <em>"Bravo. On en parle dimanche midi ?"</em></div>
+        <div class="salon-fam-msg"><b>Maxime</b> · 15:12 — <em>"Si vous voulez, je peux vous rejoindre 30 min."</em></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ VALEUR — pourquoi centraliser ═══ -->
+<section class="value-section">
+  <div class="sect-mark">La centralisation, <em>c'est ça la vraie valeur</em></div>
+  <h2 style="font-family:'Playfair Display',serif; font-size:clamp(28px,3.6vw,40px); color:var(--navy); font-weight:500; letter-spacing:-0.018em; line-height:1.1; margin-bottom:12px">Quatre piliers qu'aucune banque ne réunit.</h2>
+  <p class="sect-deck">Votre banquier privé voit ce qui est chez lui. Votre courtier d'assurance voit l'AV. Votre notaire voit l'immo. <em>Personne ne voit l'ensemble. Sauf vous, ici.</em></p>
+
+  <div class="value-grid">
+    <div class="value-card">
+      <div class="value-num">01</div>
+      <div class="value-h">Agrégation auto</div>
+      <p class="value-p">Connexion sécurisée à <b>vos banques, courtiers, notaires, conservateurs d'art</b>. Aucune saisie manuelle.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-num">02</div>
+      <div class="value-h">Live multi-devises</div>
+      <p class="value-p">Valorisation actualisée <b>chaque minute</b> dans la devise de votre choix. Sources souveraines.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-num">03</div>
+      <div class="value-h">Reporting trimestriel</div>
+      <p class="value-p">Synthèse <b>4 pages PDF</b> auto-générée J+1 du trimestre. Allocation, perf, drift, opportunités identifiées.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-num">04</div>
+      <div class="value-h">Transmission préparée</div>
+      <p class="value-p">L'École NextGen prépare vos enfants <b>sur vos chiffres réels</b>. Plus de "papa, c'est quoi un Dutreil ?".</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA · SIREN 947 972 436<br>
+    <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+  <p class="legal">Tableau de bord réservé aux membres Family Office Augmenté &amp; Sur-mesure · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)</p>
+</footer>
+
+<script>
+// ─── Currency state ───
+let currentCcy = localStorage.getItem('ikcp-ccy') || 'EUR';
+const CCY_SYMBOL = { EUR:'€', USD:'$', GBP:'£', CHF:'Fr', JPY:'¥' };
+let fxRates = { EUR:1, USD:1.083, GBP:0.847, CHF:0.962, JPY:171.4 }; // fallback BCE approximative
+
+document.getElementById('ccy-select').value = currentCcy;
+
+const fmtCcy = (n, ccy) => {
+  if (n == null || isNaN(n)) return '—';
+  const opts = ccy === 'JPY' ? {maximumFractionDigits:0} : {maximumFractionDigits:0};
+  return new Intl.NumberFormat('fr-FR', opts).format(n) + ' ' + CCY_SYMBOL[ccy];
+};
+
+async function fetchRates(){
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF,JPY', {cache:'no-store'});
+    if (r.ok) {
+      const d = await r.json();
+      fxRates = { EUR:1, USD:d.rates.USD, GBP:d.rates.GBP, CHF:d.rates.CHF, JPY:d.rates.JPY };
+    }
+  } catch(e){}
+}
+
+function changeCcy(ccy){
+  currentCcy = ccy;
+  localStorage.setItem('ikcp-ccy', ccy);
+  renderValues();
+}
+
+function renderValues(){
+  const sym = CCY_SYMBOL[currentCcy];
+  const rate = fxRates[currentCcy] || 1;
+
+  // Total
+  const totalEur = 14217320;
+  document.getElementById('total-value').textContent = fmtCcy(totalEur * rate, currentCcy);
+
+  // Class cards
+  document.querySelectorAll('.class-value[data-eur]').forEach(el=>{
+    const eur = parseFloat(el.dataset.eur);
+    el.textContent = fmtCcy(eur * rate, currentCcy);
+  });
+
+  // Action table prices (data-px stocké en EUR, ou USD pour US stocks)
+  document.querySelectorAll('#tbody-actions tr').forEach(tr=>{
+    const pxBase = parseFloat(tr.dataset.px);
+    const qty = parseInt(tr.dataset.qty);
+    const pct = parseFloat(tr.dataset.pct);
+    const baseCcy = tr.dataset.ccy || 'EUR';
+    // Prix dans la devise de cotation, valo convertie
+    const pxEur = baseCcy === 'EUR' ? pxBase : pxBase / fxRates.USD;
+    const pxDisplay = pxBase * (currentCcy === baseCcy ? 1 : (rate / (fxRates[baseCcy] || 1)));
+    const valoEur = pxEur * qty;
+    const valoDisplay = valoEur * rate;
+
+    tr.querySelector('.px').textContent = fmtCcy(pxDisplay, currentCcy);
+    tr.querySelector('.val').textContent = fmtCcy(valoDisplay, currentCcy);
+    const dEl = tr.querySelector('.delta');
+    dEl.textContent = (pct>=0?'↑ +':'↓ ')+pct.toFixed(2)+' %';
+    dEl.className = 'pdelta delta ' + (pct>=0 ? 'up' : 'down');
+  });
+
+  // Obligations + autres tables : convertir les .pval data-eur
+  document.querySelectorAll('.tbl tr[data-eur]').forEach(tr=>{
+    const eur = parseFloat(tr.dataset.eur);
+    const valoEl = tr.querySelector('.pval');
+    if (valoEl && !tr.closest('#tbody-actions')) valoEl.textContent = fmtCcy(eur * rate, currentCcy);
+  });
+
+  // Label devise dans le header detail
+  document.getElementById('ccy-detail-actions').textContent = currentCcy + ' ' + sym;
+}
+
+function showDetail(id){
+  document.querySelectorAll('.class-card').forEach(c=>c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const target = document.getElementById('detail-'+id);
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Init
+(async ()=>{
+  await fetchRates();
+  renderValues();
+})();
+setInterval(renderValues, 60000);
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

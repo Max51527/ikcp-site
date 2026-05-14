@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Founding Members — beta privée</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#FAF6EE; --paper-2:#F4ECDF; --paper-3:#EDDFC8;
+  --ink:#2D2520; --ink-mute:#6B5D52; --ink-faint:#9B8B7C;
+  --terra:#D97757; --terra-deep:#B85A3E; --terra-light:#E8AB8E;
+  --gold:#C9A96E; --gold-deep:#8e7345; --gold-bright:#E8C896;
+  --line:#E0D4BE; --line-strong:#C9B89E;
+}
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter',sans-serif; font-weight:400; line-height:1.6;
+  min-height:100vh; -webkit-font-smoothing:antialiased;
+}
+main{position:relative; z-index:1}
+
+/* ─── NAV ─── */
+nav.top{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:18px 32px; background:rgba(45,37,32,0.55);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.brand{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; font-weight:600; line-height:1; color:#FAF6EE}
+.brand b{color:var(--gold-bright); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.32em; color:var(--gold-bright); margin-top:5px; font-weight:600; text-transform:uppercase}
+.back{color:rgba(250,246,238,0.75); text-decoration:none; font-size:13px; transition:color 0.2s}
+.back:hover{color:var(--gold-bright)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ HERO — VIDÉO BACKGROUND + OVERLAY ═══════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.hero{
+  position:relative; min-height:100vh; padding:140px 32px 80px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; overflow:hidden; color:#FAF6EE;
+}
+.hero-video{
+  position:absolute; inset:0; z-index:0;
+  width:100%; height:100%; object-fit:cover;
+  pointer-events:none;
+}
+.hero-video-overlay{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(ellipse at center, rgba(45,37,32,0.45) 0%, rgba(26,18,12,0.85) 100%),
+    linear-gradient(180deg, rgba(45,37,32,0.4) 0%, rgba(26,18,12,0.6) 60%, rgba(26,18,12,0.95) 100%);
+}
+.hero-video-fallback{
+  position:absolute; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(217,119,87,0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 70%, rgba(201,169,110,0.15) 0%, transparent 50%),
+    linear-gradient(180deg, #1a120c 0%, #2d2520 100%);
+}
+.hero-content{position:relative; z-index:2; max-width:920px; margin:0 auto}
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:14px;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--gold-bright); margin-bottom:32px; font-weight:600;
+  opacity:0; animation:fadeIn 1.2s 0.3s forwards;
+}
+.eyebrow::before, .eyebrow::after{content:''; width:36px; height:1px; background:var(--gold-bright)}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.hero h1{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:clamp(48px, 7.4vw, 100px); line-height:1.02;
+  font-weight:300; letter-spacing:-0.035em; color:#FAF6EE;
+  margin-bottom:30px;
+  opacity:0; animation:fadeUp 1.2s 0.5s forwards;
+}
+.hero h1 em{color:var(--gold-bright); font-style:italic; font-weight:400}
+
+.hero-deck{
+  font-family:'Fraunces',serif; font-style:italic;
+  font-size:clamp(17px, 1.8vw, 22px); color:rgba(250,246,238,0.85);
+  max-width:680px; margin:0 auto 42px; line-height:1.55;
+  opacity:0; animation:fadeUp 1.2s 0.8s forwards;
+}
+.hero-deck em{color:var(--gold-bright); font-style:italic}
+
+.hero-actions{display:inline-flex; gap:24px; flex-wrap:wrap; justify-content:center; opacity:0; animation:fadeUp 1.1s 1.1s forwards}
+.btn{padding:16px 32px; border-radius:32px; text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.05em; transition:all 0.3s; display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:'Inter',sans-serif}
+.btn-primary{background:var(--gold-bright); color:var(--ink); box-shadow:0 8px 24px rgba(232,200,150,0.3)}
+.btn-primary:hover{background:#fff; transform:translateY(-2px); box-shadow:0 14px 36px rgba(232,200,150,0.45)}
+.btn-ghost{color:#FAF6EE; border:1.5px solid rgba(250,246,238,0.4); background:transparent}
+.btn-ghost:hover{border-color:var(--gold-bright); color:var(--gold-bright)}
+
+.hero-scarcity{
+  margin-top:50px; padding:14px 28px;
+  background:rgba(0,0,0,0.4); border:1px solid var(--gold-bright);
+  border-radius:30px; display:inline-block;
+  font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.18em;
+  color:var(--gold-bright); text-transform:uppercase; font-weight:600;
+  opacity:0; animation:fadeUp 1.1s 1.4s forwards;
+}
+.hero-scarcity .live{color:#a8e6c9; margin-right:8px}
+.hero-scarcity .live::before{content:'●'; animation:pulse 1.5s infinite; margin-right:4px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION : BÉNÉFICES ═══════════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.benefits{padding:120px 32px; max-width:1200px; margin:0 auto}
+.section-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--terra); margin-bottom:20px; font-weight:600}
+.section-mark::before{content:'§ — '; opacity:0.6}
+.section-h{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:clamp(36px, 5vw, 64px); line-height:1.05;
+  color:var(--ink); font-weight:500; letter-spacing:-0.025em; margin-bottom:24px;
+}
+.section-h em{color:var(--terra-deep); font-style:italic}
+.section-deck{font-size:17px; color:var(--ink-mute); line-height:1.7; max-width:680px; margin-bottom:60px}
+.section-deck em{color:var(--ink); font-style:italic}
+
+.benefits-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:18px}
+@media (max-width:760px){.benefits-grid{grid-template-columns:1fr}}
+.benefit-card{
+  background:linear-gradient(135deg, var(--paper-2) 0%, var(--paper-3) 100%);
+  border:1px solid var(--line-strong); border-radius:20px;
+  padding:32px 30px; position:relative; transition:all 0.3s;
+}
+.benefit-card:hover{transform:translateY(-4px); border-color:var(--gold); box-shadow:0 16px 40px rgba(201,169,110,0.18)}
+.benefit-card.highlight{background:linear-gradient(135deg, var(--ink) 0%, #14110d 100%); color:var(--paper); border-color:var(--gold-bright)}
+.benefit-num{font-family:'Fraunces',serif; font-style:italic; font-size:48px; color:var(--gold-deep); line-height:1; opacity:0.5; font-weight:500; margin-bottom:14px}
+.benefit-card.highlight .benefit-num{color:var(--gold-bright); opacity:0.6}
+.benefit-h{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; color:var(--ink); margin-bottom:12px; font-weight:500; letter-spacing:-0.015em; line-height:1.2}
+.benefit-card.highlight .benefit-h{color:var(--paper)}
+.benefit-h em{color:var(--terra-deep); font-style:italic}
+.benefit-card.highlight .benefit-h em{color:var(--gold-bright)}
+.benefit-p{font-size:14.5px; color:var(--ink-mute); line-height:1.65}
+.benefit-card.highlight .benefit-p{color:rgba(250,246,238,0.8)}
+.benefit-tag{display:inline-block; padding:5px 12px; background:rgba(201,169,110,0.15); border:1px solid var(--gold); color:var(--gold-deep); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; font-weight:700; margin-top:14px}
+.benefit-card.highlight .benefit-tag{background:rgba(232,200,150,0.18); color:var(--gold-bright); border-color:var(--gold-bright)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION : COMMENT ÇA MARCHE ═══════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.process{padding:120px 32px; max-width:1200px; margin:0 auto; border-top:1px solid var(--line)}
+.steps{display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; margin-top:50px; position:relative}
+@media (max-width:880px){.steps{grid-template-columns:1fr}}
+.step{
+  background:var(--paper); border:1px solid var(--line);
+  border-radius:18px; padding:26px 24px; position:relative;
+}
+.step-num{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.18em; color:var(--terra); font-weight:700; text-transform:uppercase;
+  margin-bottom:12px;
+}
+.step-h{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:20px; color:var(--ink); font-weight:500; line-height:1.2; margin-bottom:10px; letter-spacing:-0.01em}
+.step-p{font-size:13px; color:var(--ink-mute); line-height:1.6}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION : CHARTE ═══════════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.charte{padding:120px 32px; max-width:1080px; margin:0 auto; border-top:1px solid var(--line)}
+.charte-block{
+  background:linear-gradient(135deg, var(--ink) 0%, #14110d 100%); color:var(--paper);
+  border-radius:22px; padding:48px 44px; margin-top:40px;
+  border:1px solid var(--gold);
+  box-shadow:0 24px 64px rgba(45,37,32,0.18);
+}
+@media (max-width:760px){.charte-block{padding:32px 26px}}
+
+.charte-mark{
+  font-family:'Fraunces',serif; font-style:italic; font-size:62px;
+  color:var(--gold-bright); line-height:1; opacity:0.45; margin-bottom:24px;
+}
+.charte-h{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:28px; color:var(--paper); font-weight:500; letter-spacing:-0.015em; margin-bottom:30px; line-height:1.25}
+.charte-h em{color:var(--gold-bright); font-style:italic}
+
+.charte-grid{display:grid; grid-template-columns:1fr 1fr; gap:36px}
+@media (max-width:760px){.charte-grid{grid-template-columns:1fr; gap:24px}}
+.charte-side h4{font-family:'Fraunces',serif; font-style:italic; font-size:18px; color:var(--gold-bright); margin-bottom:14px; font-weight:500}
+.charte-side ul{list-style:none; padding:0}
+.charte-side li{padding:8px 0 8px 26px; font-size:14px; line-height:1.6; color:rgba(250,246,238,0.85); position:relative}
+.charte-side li::before{content:'✦'; position:absolute; left:0; color:var(--gold-bright); font-size:14px}
+.charte-side li b{color:var(--paper); font-weight:500}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION : CANDIDATURE ═══════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.apply{padding:120px 32px; max-width:780px; margin:0 auto; border-top:1px solid var(--line)}
+.apply-form{
+  background:var(--paper); border:1.5px solid var(--line-strong);
+  border-radius:22px; padding:36px 38px;
+  margin-top:40px; box-shadow:0 16px 48px rgba(45,37,32,0.06);
+}
+.field{margin-bottom:20px}
+.field label{display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; color:var(--terra-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px}
+.field input, .field textarea, .field select{
+  width:100%; padding:14px 18px; background:var(--paper-2);
+  border:1.5px solid var(--line); border-radius:12px;
+  font-family:'Inter',sans-serif; font-size:14.5px; color:var(--ink);
+  transition:all 0.2s;
+}
+.field input:focus, .field textarea:focus, .field select:focus{
+  outline:none; border-color:var(--terra);
+  box-shadow:0 0 0 3px rgba(217,119,87,0.12); background:var(--paper);
+}
+.field textarea{min-height:110px; resize:vertical; font-family:'Inter',sans-serif}
+.field-hint{font-size:11.5px; color:var(--ink-faint); margin-top:6px; font-style:italic}
+.field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:560px){.field-row{grid-template-columns:1fr}}
+
+.apply-cta{margin-top:28px; padding-top:22px; border-top:1px dashed var(--line)}
+.apply-submit{width:100%; padding:16px 32px; background:var(--terra); color:var(--paper); border:none; border-radius:32px; font-size:14px; font-weight:600; letter-spacing:0.04em; cursor:pointer; transition:all 0.25s; box-shadow:0 8px 24px rgba(217,119,87,0.25)}
+.apply-submit:hover{background:var(--terra-deep); transform:translateY(-1px)}
+
+.apply-note{margin-top:16px; font-size:12px; color:var(--ink-faint); font-style:italic; text-align:center; line-height:1.6}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION : FAQ ═══════════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.faq{padding:120px 32px; max-width:880px; margin:0 auto; border-top:1px solid var(--line)}
+.faq-list{margin-top:40px}
+.faq-item{padding:22px 0; border-bottom:1px solid var(--line); cursor:pointer}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:18px; color:var(--ink); font-weight:500; line-height:1.4; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px}
+.faq-q em{color:var(--terra-deep); font-style:italic}
+.faq-q::after{content:'+'; color:var(--terra); font-family:'Fraunces',serif; font-style:italic; font-size:24px; line-height:1; flex-shrink:0; transition:transform 0.25s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{font-size:14.5px; color:var(--ink-mute); line-height:1.7; margin-top:0; max-height:0; overflow:hidden; transition:all 0.3s ease}
+.faq-item.open .faq-a{max-height:300px; margin-top:12px}
+.faq-a em{font-style:italic; color:var(--ink)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ FOOTER ═══════════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+footer.proto{padding:50px 32px 40px; text-align:center; border-top:1px solid var(--line); background:var(--paper-2)}
+footer.proto p{font-size:11.5px; color:var(--ink-faint); letter-spacing:0.06em; line-height:1.85}
+footer.proto a{color:var(--terra-deep); text-decoration:none}
+
+@media (max-width:760px){
+  nav.top{padding:14px 22px}
+  section.hero{padding:120px 22px 60px; min-height:auto}
+  section.benefits, section.process, section.charte, section.apply, section.faq{padding:80px 22px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+  .hero-video{display:none}
+}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Founding Members · beta privée</div>
+  </div>
+  <a href="family-office-orbite.html" class="back">← Retour Family Office</a>
+</nav>
+
+<!-- ═══ HERO — VIDÉO BACKGROUND ═══ -->
+<section class="hero">
+  <div class="hero-video-fallback"></div>
+  <video class="hero-video" autoplay muted loop playsinline preload="metadata"
+         poster="../icons/icon-512.png"
+         onerror="this.style.display='none'">
+    <source src="../videos/hero.mp4" type="video/mp4" media="(min-width: 768px)">
+    <source src="../videos/hero-sd.mp4" type="video/mp4">
+  </video>
+  <div class="hero-video-overlay"></div>
+
+  <div class="hero-content">
+    <div class="eyebrow">★ Founding Members · sur invitation seulement</div>
+    <h1>Soyez parmi les <em>30 premiers</em><br>à co-construire IKCP.</h1>
+    <p class="hero-deck">Une beta privée — limitée à <em>30 founding members</em> — pour tester, façonner et signer la première version du Family Office augmenté. <em>Maxime est le testeur n°1.</em> À vous le 002.</p>
+
+    <div class="hero-actions">
+      <a href="#candidature" class="btn btn-primary">Candidater · Founding Member</a>
+      <a href="#charte" class="btn btn-ghost">Lire la charte</a>
+    </div>
+
+    <div class="hero-scarcity">
+      <span class="live">Beta ouverte</span> · 003 / 030 places attribuées · clôture juin 2026
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BÉNÉFICES ═══ -->
+<section class="benefits" id="benefices">
+  <div class="section-mark">Vos avantages</div>
+  <h2 class="section-h">Quatre <em>privilèges</em><br>réservés aux founding members.</h2>
+  <p class="section-deck">Vous nous donnez votre temps et votre franchise — nous vous donnons un statut <em>permanent et exclusif</em>, indépendant des évolutions futures du produit.</p>
+
+  <div class="benefits-grid">
+
+    <article class="benefit-card highlight">
+      <div class="benefit-num">i.</div>
+      <h3 class="benefit-h">6 mois <em>gratuits</em>,<br>tous accès illimités.</h3>
+      <p class="benefit-p">Pendant la beta : tier équivalent Family Office sans carte bancaire. Lookups Pappers illimités · les 11 agents activés · espace dossiers · validation Maxime. Aucune restriction.</p>
+      <span class="benefit-tag">Valeur ≥ 1 800 €</span>
+    </article>
+
+    <article class="benefit-card">
+      <div class="benefit-num">ii.</div>
+      <h3 class="benefit-h">Tarif Founder <em>à vie</em>.</h3>
+      <p class="benefit-p">À l'issue de la beta : <strong>-50 % à vie</strong> sur le tier que vous choisissez (Premium ou Family Office). Verrouillé contractuellement, transmissible aux ayants-droit.</p>
+      <span class="benefit-tag">Engagement contractuel</span>
+    </article>
+
+    <article class="benefit-card">
+      <div class="benefit-num">iii.</div>
+      <h3 class="benefit-h">Accès <em>direct</em><br>à Maxime.</h3>
+      <p class="benefit-p">Salon Signal/Telegram privé entre les 30 founding members + Maxime. RDV mensuel garanti · feedback intégré dans la roadmap publique. Vous écrivez le produit avec nous.</p>
+      <span class="benefit-tag">Cercle de 30</span>
+    </article>
+
+    <article class="benefit-card">
+      <div class="benefit-num">iv.</div>
+      <h3 class="benefit-h">Badge <em>FM</em> numéroté<br>+ votre nom dans la pierre.</h3>
+      <p class="benefit-p">Badge "Founding Member · #00X" dans votre profil à vie. Page publique des FM (avec votre accord). Crédit en footer du site IKCP. Trace permanente.</p>
+      <span class="benefit-tag">Numérotation 002 → 030</span>
+    </article>
+
+  </div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
+<section class="process">
+  <div class="section-mark">Comment ça marche</div>
+  <h2 class="section-h">Quatre étapes<br>· <em>quatre semaines.</em></h2>
+  <p class="section-deck">De votre candidature à votre numéro de Founding Member.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">étape 01</div>
+      <div class="step-h">Vous candidatez</div>
+      <p class="step-p">Formulaire ci-dessous · 4 questions · 5 minutes. Vous expliquez ce que vous attendez d'IKCP, votre patrimoine indicatif, votre disponibilité pour 1 RDV/mois.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">étape 02</div>
+      <div class="step-h">Maxime sélectionne</div>
+      <p class="step-p">Sous 7 jours. Critères : profil patrimonial, capacité de feedback, fit relationnel. Pas un concours — une cohorte qui doit fonctionner ensemble.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">étape 03</div>
+      <div class="step-h">Onboarding</div>
+      <p class="step-p">Si retenu : RDV de bienvenue avec Maxime (45 min) + signature de la charte FM + remise de votre numéro (002, 003, …) + invitation au salon privé.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">étape 04</div>
+      <div class="step-h">Vous testez</div>
+      <p class="step-p">Accès complet pendant 6 mois. Engagement réciproque : 1 RDV mensuel · feedback structuré · participation à la roadmap. Liberté de quitter à tout moment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHARTE ═══ -->
+<section class="charte" id="charte">
+  <div class="section-mark">La charte</div>
+  <h2 class="section-h">Un engagement <em>réciproque</em>.</h2>
+  <p class="section-deck">La beta n'est pas un cadeau. C'est un <em>contrat tacite</em> entre vous et Maxime. Voici ce que chacun s'engage à faire.</p>
+
+  <div class="charte-block">
+    <div class="charte-mark">"</div>
+    <h3 class="charte-h">Vous nous donnez votre temps. Nous vous donnons<br><em>tout ce que nous savons faire,</em> et le droit de le façonner avec nous.</h3>
+
+    <div class="charte-grid">
+      <div class="charte-side">
+        <h4>Ce que nous vous offrons</h4>
+        <ul>
+          <li><b>Accès illimité</b> aux 11 agents pendant 6 mois</li>
+          <li><b>RDV mensuel</b> de 45 min avec Maxime — garanti</li>
+          <li><b>Salon privé</b> Signal entre founding members</li>
+          <li><b>Tarif Founder -50% à vie</b> contractuel</li>
+          <li><b>Badge FM #00X</b> permanent, transmissible</li>
+          <li><b>Crédit</b> dans le footer du site IKCP</li>
+          <li><b>Roadmap publique</b> où vos idées sont identifiées</li>
+        </ul>
+      </div>
+      <div class="charte-side">
+        <h4>Ce que nous vous demandons</h4>
+        <ul>
+          <li><b>Honnêteté</b> · vos retours bruts, sans politesse</li>
+          <li><b>1 RDV mensuel</b> de 45 min, présence garantie</li>
+          <li><b>1 retour structuré</b> par mois (form 10 min)</li>
+          <li><b>Tester</b> au moins 3 agents par mois</li>
+          <li><b>Confidentialité</b> sur les fonctionnalités non publiées</li>
+          <li><b>Discrétion</b> sur l'identité des autres FM</li>
+          <li><b>Liberté</b> · vous pouvez sortir à tout moment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CANDIDATURE ═══ -->
+<section class="apply" id="candidature">
+  <div class="section-mark">Candidature</div>
+  <h2 class="section-h">Postulez en <em>5 minutes</em>.</h2>
+  <p class="section-deck">Maxime lit chaque candidature personnellement. Réponse sous 7 jours · sélection sur fit, pas sur patrimoine.</p>
+
+  <form class="apply-form" onsubmit="event.preventDefault(); alert('Mock — branchera sur POST client.ikcp.eu/api/v1/beta/apply');">
+
+    <div class="field-row">
+      <div class="field">
+        <label>Prénom</label>
+        <input type="text" required placeholder="Joséphine">
+      </div>
+      <div class="field">
+        <label>Nom</label>
+        <input type="text" required placeholder="Dupont">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" required placeholder="josephine@example.com">
+      </div>
+      <div class="field">
+        <label>Téléphone</label>
+        <input type="tel" placeholder="06 XX XX XX XX">
+        <div class="field-hint">Pour vous joindre rapidement si retenu</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Patrimoine indicatif (fourchette)</label>
+      <select required>
+        <option value="">— sélectionner —</option>
+        <option>500 k€ — 1 M€</option>
+        <option>1 M€ — 3 M€</option>
+        <option>3 M€ — 5 M€</option>
+        <option>5 M€ — 10 M€</option>
+        <option>≥ 10 M€</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Statut professionnel</label>
+      <select required>
+        <option value="">— sélectionner —</option>
+        <option>Dirigeant · TNS</option>
+        <option>Profession libérale</option>
+        <option>Salarié cadre</option>
+        <option>Retraité</option>
+        <option>Investisseur · multi-business</option>
+        <option>Autre</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Pourquoi voulez-vous être Founding Member ?</label>
+      <textarea required placeholder="3-5 lignes. Ce qui vous attire dans IKCP, ce que vous attendez du Family Office, ce que vous pourriez apporter en feedback…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Disponibilité — RDV mensuel 45 min ?</label>
+      <select required>
+        <option value="">— sélectionner —</option>
+        <option>Oui, je m'engage</option>
+        <option>Oui, mais préfère visio</option>
+        <option>Préfère format async (mail/messages)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Comment avez-vous connu IKCP ?</label>
+      <input type="text" placeholder="Recommandation Maxime, newsletter, LinkedIn, autre…">
+    </div>
+
+    <div class="apply-cta">
+      <button type="submit" class="apply-submit">Envoyer ma candidature →</button>
+      <p class="apply-note">Réponse sous 7 jours · 003 / 030 places attribuées · maxime@ikcp.fr pour toute question.<br>Vos données restent en France · RGPD by design · jamais transmises à un tiers.</p>
+    </div>
+  </form>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq">
+  <div class="section-mark">Questions fréquentes</div>
+  <h2 class="section-h">Tout ce que <em>vous voulez savoir</em>.</h2>
+
+  <div class="faq-list">
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Pourquoi <em>30 places seulement</em> ?</div>
+      <p class="faq-a">Au-delà de 30, on ne peut plus garantir le RDV mensuel personnalisé avec Maxime ni la qualité de la cohorte. Nous préférons <em>moins de monde, mieux servi</em>. Une 2e cohorte FM2 (numéros 031-060) sera ouverte début 2027 si la beta est concluante.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Le tarif <em>-50 % à vie</em>, c'est sérieux ?</div>
+      <p class="faq-a">Oui, contractualisé. À l'issue de la beta (~décembre 2026), vous choisissez Premium (29 € → <em>14,50 €/mois</em>) ou Family Office (sur devis → <em>-50 %</em> permanent). Verrouillé dans la base et le contrat. Transmissible à votre conjoint. Tant que vous restez actif.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Mes <em>données patrimoniales</em> sont-elles en sécurité ?</div>
+      <p class="faq-a">Hébergement <em>100 % France</em> (Cloudflare edge UE + Scaleway fr-par). RGPD by design : aucune donnée nominative ne traverse les calculateurs. Anti-PII strict. Audit log complet. DPA signés avec tous les sous-traitants. Vous restez propriétaire de vos données et pouvez les exporter ou supprimer à tout moment.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Et si je veux <em>arrêter</em> la beta avant la fin ?</div>
+      <p class="faq-a">Liberté totale. Un email à Maxime suffit. Aucune pénalité, aucune relance. Vous gardez votre badge FM #00X et le tarif Founder -50 % si vous reprenez plus tard. La charte est un <em>engagement moral</em>, pas un contrat de servitude.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Suis-je <em>cobaye</em> ou <em>co-créateur</em> ?</div>
+      <p class="faq-a"><em>Co-créateur.</em> Pas un focus group sondé. Vous testez en conditions réelles · vos retours sont identifiés (pas anonymisés sauf demande) dans la roadmap publique · vous proposez des features · vous voyez ce qui est livré grâce à vous. Si une feature majeure naît de votre idée, votre nom y est associé pour toujours.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Mon <em>patrimoine est confidentiel</em> · Maxime y aura-t-il accès ?</div>
+      <p class="faq-a">Oui, comme avec tout CGP. Maxime est tenu au <em>secret professionnel CIF</em> (art. L.541-1 et s. du CMF). Il signe avec vous une lettre de mission classique. Les agents IA voient uniquement les données anonymisées (montants, sans noms). Maxime voit les noms, dans le cadre légal du conseil patrimonial.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Y a-t-il une <em>liste publique</em> des FM ?</div>
+      <p class="faq-a">Optionnelle. À votre choix : (1) anonyme — votre numéro seul figure ("FM #007"), (2) public — votre prénom + initiale ("Joséphine D., FM #007"), (3) complet — votre nom complet + bio courte. Pas de chiffre patrimonial publié. Vous changez d'avis quand vous voulez.</p>
+    </div>
+
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Et après <em>FM #001</em> ?</div>
+      <p class="faq-a">Maxime est FM #001 — il est le testeur principal et le premier à valider chaque évolution sur lui-même. Vous, en tant que FM #002 à #030, testez avec lui mais sur votre propre patrimoine. Vous êtes une <em>cohorte de pairs</em>, avec accès au même salon privé.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="proto">
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a><br>
+    <span style="opacity:0.7; margin-top:8px; display:inline-block">Site créé par Maxime Juveneton · Tous droits réservés (art. L.111-1, L.122-4, L.335-2 CPI)</span>
+  </p>
+</footer>
+
+</main>
+
+<!-- ═══ PROTECTION COPIE ═══ -->
+<script>
+(function(){
+  let clientIP = 'inconnue';
+  fetch('https://api.ipify.org?format=json',{cache:'no-store'}).then(r=>r.json()).then(d=>{clientIP=d.ip||'inconnue'}).catch(()=>{});
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nIP: ' + clientIP + ' · ' + new Date().toLocaleString('fr-FR') + '\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+  console.log('%c© Maxime Juveneton — IKCP', 'color:#D97757;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Wrangler config — IKCP Codex (sub-agent fiscal Opus 4.7)
+#
+# Déploiement :
+#   cd workers/ikcp-codex
+#   npx wrangler secret put ANTHROPICAPIKEY  # même clé que Marcel
+#   npx wrangler deploy
+
+name = "ikcp-codex"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+
+[placement]
+mode = "smart"
+
+[observability]
+enabled = true

@@ -1,0 +1,32 @@
+# Wrangler config — Worker IKCP Témoin (audit log)
+#
+# Déploiement :
+#   cd workers/ikcp-temoin
+#   npx wrangler login                        # une fois
+#   npx wrangler d1 create ikcp_temoin_db --location weur  # crée la base D1 à Paris
+#   # copie l'ID renvoyé dans le bloc [[d1_databases]] ci-dessous
+#   npx wrangler r2 bucket create ikcp-temoin --location eu  # bucket EU
+#   npx wrangler secret put IKCP_ADMIN_TOKEN  # token admin maxime (gen via openssl rand -hex 32)
+#   # Crée la table D1 (voir schema.sql)
+#   npx wrangler d1 execute ikcp_temoin_db --file=schema.sql
+#   npx wrangler deploy
+
+name = "ikcp-temoin"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+
+[placement]
+mode = "smart"
+
+[[d1_databases]]
+binding = "IKCP_TEMOIN_DB"
+database_name = "ikcp_temoin_db"
+database_id = "1205cae0-659e-4dfd-9846-06053ef3b0cb"
+
+# [[r2_buckets]]
+# binding = "IKCP_TEMOIN_R2"
+# bucket_name = "ikcp-temoin"
+# (R2 à activer plus tard via Dashboard Cloudflare → Storage → R2)
+
+[observability]
+enabled = true

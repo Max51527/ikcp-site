@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Salon membre — aperçu freemium</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#FAF6EE; --paper-2:#F4ECDF; --paper-3:#EDDFC8;
+  --ink:#2D2520; --ink-mute:#6B5D52; --ink-faint:#9B8B7C;
+  --terra:#D97757; --terra-deep:#B85A3E; --terra-light:#E8AB8E; --terra-glow:#F2C5A3;
+  --gold:#C9A96E;
+  --green:#15803d; --green-light:#dcfce7;
+  --red:#b91c1c;
+  --line:#E0D4BE; --line-strong:#C9B89E;
+}
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter',sans-serif; font-weight:400; line-height:1.55;
+  min-height:100vh;
+}
+
+/* ─── HERO CONSTELLATION (mini) ─── */
+.hero-constellation{
+  position:relative; width:min(540px, 92vw); height:min(540px, 92vw);
+  margin:24px auto 32px;
+}
+.hero-constellation svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+.hero-constellation .center{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:138px; height:138px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--terra-glow) 0%, var(--terra) 40%, var(--terra-deep) 80%, #6E2E1A 100%);
+  box-shadow:0 0 50px rgba(217,119,87,0.4), inset 0 4px 18px rgba(255,255,255,0.22);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; color:var(--paper); padding:10px; z-index:5;
+}
+.hero-constellation .center::before{
+  content:''; position:absolute; inset:-7px; border-radius:50%;
+  border:1px solid var(--terra); opacity:0.3;
+  animation:pulseRingMini 3s ease-out infinite;
+}
+@keyframes pulseRingMini{0%{transform:scale(0.95);opacity:0.5}100%{transform:scale(1.15);opacity:0}}
+.hero-constellation .center-mark{font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.28em; opacity:0.85; font-weight:600; margin-bottom:3px}
+.hero-constellation .center-name{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:26px; font-weight:500; line-height:1}
+.hero-constellation .center-role{font-family:'Fraunces',serif; font-style:italic; font-size:9.5px; margin-top:3px; opacity:0.9}
+
+.hero-constellation .agent-node{
+  position:absolute; width:78px; height:78px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:50%;
+  transition:all 0.3s ease; text-decoration:none; color:var(--ink);
+  box-shadow:0 4px 12px rgba(45,37,32,0.06);
+  transform:translate(-50%, -50%); cursor:pointer;
+}
+.hero-constellation .agent-node:hover{
+  transform:translate(-50%, -50%) scale(1.15);
+  border-color:var(--terra); background:var(--paper-2);
+  box-shadow:0 8px 24px rgba(217,119,87,0.25); z-index:6;
+}
+.hero-constellation .agent-icon{font-size:18px; margin-bottom:1px; line-height:1}
+.hero-constellation .agent-name{font-family:'Fraunces',serif; font-size:11px; font-weight:500; color:var(--ink); letter-spacing:-0.005em; line-height:1.1}
+
+/* 12 univers — dodécagone */
+.hero-constellation .agent-1{top:9%; left:50%}
+.hero-constellation .agent-2{top:14.6%; left:70.6%}
+.hero-constellation .agent-3{top:29.6%; left:85.4%}
+.hero-constellation .agent-4{top:50%; left:91%}
+.hero-constellation .agent-5{top:70.6%; left:85.4%}
+.hero-constellation .agent-6{top:85.4%; left:70.6%}
+.hero-constellation .agent-7{top:91%; left:50%}
+.hero-constellation .agent-8{top:85.4%; left:29.6%}
+.hero-constellation .agent-9{top:70.6%; left:14.6%}
+.hero-constellation .agent-10{top:50%; left:9%}
+.hero-constellation .agent-11{top:29.6%; left:14.6%}
+.hero-constellation .agent-12{top:14.6%; left:29.6%}
+
+@media (max-width:760px){
+  .hero-constellation{width:96vw; height:96vw; margin:16px auto 24px}
+  .hero-constellation .center{width:96px; height:96px}
+  .hero-constellation .center-name{font-size:18px}
+  .hero-constellation .center-role{font-size:8px}
+  .hero-constellation .agent-node{width:54px; height:54px}
+  .hero-constellation .agent-icon{font-size:14px}
+  .hero-constellation .agent-name{font-size:8.5px}
+}
+
+/* ─── BLOC AUTOMATISATIONS ─── */
+.auto-block{
+  background:linear-gradient(135deg, var(--paper-2) 0%, var(--paper-3) 100%);
+  border:1px solid var(--line-strong); border-radius:16px;
+  padding:20px 24px; margin-bottom:32px;
+}
+.auto-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
+.auto-head h3{font-family:'Fraunces',serif; font-size:17px; color:var(--ink); font-weight:600; display:flex; align-items:center; gap:10px}
+.auto-head .live{display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; color:var(--green); text-transform:uppercase; font-weight:700}
+.auto-head .live::before{content:''; width:7px; height:7px; background:var(--green); border-radius:50%; animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.auto-list{display:grid; grid-template-columns:repeat(2, 1fr); gap:10px}
+@media (max-width:760px){.auto-list{grid-template-columns:1fr}}
+.auto-row{
+  display:flex; align-items:flex-start; gap:12px;
+  padding:11px 14px; background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  font-size:13px; color:var(--ink); line-height:1.5;
+}
+.auto-row .who{font-family:'Fraunces',serif; font-style:italic; color:var(--terra-deep); font-weight:500; min-width:118px; font-size:12.5px}
+.auto-row .what{flex:1}
+.auto-row .what b{color:var(--ink); font-weight:500}
+
+/* ─── HEADER ─── */
+header.salon{
+  position:sticky; top:0; z-index:100;
+  background:rgba(250,246,238,0.92);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:18px 32px; display:flex; justify-content:space-between; align-items:center;
+}
+.brand{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; font-weight:600; line-height:1}
+.brand b{color:var(--terra); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.32em; color:var(--terra-deep); text-transform:uppercase; margin-top:5px; font-weight:600}
+
+.user-pill{display:flex; align-items:center; gap:14px; background:var(--paper-2); border:1px solid var(--line-strong); padding:7px 8px 7px 16px; border-radius:30px}
+.user-pill .name{font-family:'Fraunces',serif; font-size:14px; color:var(--ink); font-weight:500}
+.user-pill .email{font-size:11px; color:var(--ink-faint); margin-top:2px}
+.user-pill .tier{padding:5px 12px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; font-weight:700; text-transform:uppercase}
+.tier-free{background:var(--paper-3); color:var(--ink-mute)}
+.tier-premium{background:linear-gradient(135deg, var(--terra) 0%, var(--terra-deep) 100%); color:var(--paper)}
+.tier-fo{background:linear-gradient(135deg, var(--gold) 0%, #8e7345 100%); color:var(--paper)}
+.user-pill .menu{font-size:18px; color:var(--ink-faint); cursor:pointer; padding:0 8px}
+
+/* ─── MAIN ─── */
+main{max-width:1280px; margin:0 auto; padding:48px 32px 80px}
+
+.greet{margin-bottom:36px}
+.greet h1{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:42px; line-height:1.04; color:var(--ink); font-weight:500; letter-spacing:-0.02em; margin-bottom:8px}
+.greet h1 em{color:var(--terra-deep); font-style:italic}
+.greet .sub{font-family:'Fraunces',serif; font-style:italic; color:var(--ink-mute); font-size:16px}
+
+/* ─── TIER BANNER ─── */
+.tier-banner{
+  background:linear-gradient(135deg, var(--paper-2) 0%, var(--paper-3) 100%);
+  border:1px solid var(--line-strong); border-radius:18px;
+  padding:22px 28px; margin-bottom:32px;
+  display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center;
+}
+.tier-banner-mode-premium{background:linear-gradient(135deg, rgba(217,119,87,0.12) 0%, rgba(184,90,62,0.08) 100%); border-color:var(--terra-light)}
+.tier-banner h3{font-family:'Fraunces',serif; font-size:20px; color:var(--ink); margin-bottom:4px; font-weight:600}
+.tier-banner p{font-size:13.5px; color:var(--ink-mute); line-height:1.55}
+.tier-banner .actions{display:flex; gap:10px; flex-wrap:wrap}
+
+/* ─── QUOTAS ─── */
+.quotas{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:32px}
+@media (max-width:760px){.quotas{grid-template-columns:1fr}}
+.quota{
+  background:var(--paper-2); border:1px solid var(--line);
+  border-radius:14px; padding:20px 22px; transition:all 0.25s;
+}
+.quota:hover{transform:translateY(-2px); border-color:var(--terra-light)}
+.quota-label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--terra-deep); font-weight:700; text-transform:uppercase; margin-bottom:10px}
+.quota-val{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:32px; color:var(--ink); font-weight:500; line-height:1; margin-bottom:8px}
+.quota-val .total{color:var(--ink-faint); font-size:18px; font-weight:400}
+.quota-bar{height:6px; background:var(--paper-3); border-radius:6px; overflow:hidden; margin-bottom:8px}
+.quota-bar-fill{height:100%; background:linear-gradient(90deg, var(--terra), var(--terra-deep)); border-radius:6px; transition:width 0.6s ease}
+.quota-info{font-size:11.5px; color:var(--ink-faint); font-style:italic}
+.quota-info b{color:var(--ink-mute); font-style:normal; font-weight:500}
+
+/* ─── 2-COL LAYOUT ─── */
+.cols{display:grid; grid-template-columns:1.4fr 1fr; gap:28px}
+@media (max-width:980px){.cols{grid-template-columns:1fr}}
+
+/* ─── PAPPERS BLOCK ─── */
+.block{
+  background:var(--paper); border:1px solid var(--line); border-radius:18px;
+  overflow:hidden; box-shadow:0 8px 24px rgba(45,37,32,0.04);
+}
+.block-head{
+  padding:20px 26px; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between; background:var(--paper-2);
+}
+.block-head h3{font-family:'Fraunces',serif; font-size:19px; color:var(--ink); font-weight:600; display:flex; align-items:center; gap:10px}
+.block-head h3 .ico{font-size:22px}
+.block-head .badge{padding:4px 10px; background:var(--paper-3); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.16em; color:var(--terra-deep); font-weight:600}
+.block-body{padding:24px 26px}
+
+.pappers-form{display:flex; gap:8px; margin-bottom:18px}
+.pappers-form input{
+  flex:1; padding:14px 18px; background:var(--paper); border:1.5px solid var(--line-strong);
+  border-radius:12px; font-size:14.5px; color:var(--ink); font-family:'Inter',sans-serif;
+}
+.pappers-form input:focus{outline:none; border-color:var(--terra); box-shadow:0 0 0 3px rgba(217,119,87,0.12)}
+.pappers-form button{padding:14px 26px; background:var(--terra); color:var(--paper); border:none; font-size:13px; font-weight:600; letter-spacing:0.04em; border-radius:12px; cursor:pointer; transition:all 0.2s}
+.pappers-form button:hover{background:var(--terra-deep); transform:translateY(-1px)}
+.pappers-form button:disabled{opacity:0.5; cursor:not-allowed}
+.pappers-hint{font-size:11.5px; color:var(--ink-faint); font-style:italic; margin-bottom:18px}
+
+.pappers-history{display:flex; flex-direction:column; gap:8px}
+.pappers-row{
+  display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;
+  padding:12px 16px; background:var(--paper-2); border:1px solid var(--line); border-radius:10px;
+  cursor:pointer; transition:all 0.2s;
+}
+.pappers-row:hover{background:var(--paper-3); border-color:var(--terra-light)}
+.pappers-row .nom{font-family:'Fraunces',serif; font-size:15px; font-weight:500; line-height:1.2; color:var(--ink)}
+.pappers-row .meta{font-size:11.5px; color:var(--ink-faint); margin-top:2px; font-style:italic}
+.pappers-row .siren{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--terra-deep); font-weight:600}
+
+/* ─── MARCEL CHAT BLOCK ─── */
+.marcel-chat{display:flex; flex-direction:column; gap:10px; max-height:340px; overflow-y:auto; padding-right:4px}
+.msg-user{align-self:flex-end; max-width:88%; background:var(--ink); color:var(--paper); padding:11px 16px; border-radius:18px 18px 4px 18px; font-size:13.5px; line-height:1.45}
+.msg-marcel{align-self:flex-start; max-width:90%; background:var(--paper-2); padding:11px 16px; border-radius:4px 18px 18px 18px; font-size:13.5px; color:var(--ink); line-height:1.5}
+.msg-marcel-head{font-family:'Fraunces',serif; font-style:italic; font-size:11.5px; color:var(--terra-deep); margin-bottom:4px; font-weight:500}
+.msg-input{margin-top:14px; display:flex; gap:8px}
+.msg-input input{flex:1; padding:11px 16px; background:var(--paper-2); border:1px solid var(--line); border-radius:24px; font-size:13.5px; color:var(--ink); font-family:'Inter',sans-serif}
+.msg-input input:focus{outline:none; border-color:var(--terra)}
+.msg-input button{width:38px; height:38px; border-radius:50%; background:var(--terra); color:var(--paper); border:none; cursor:pointer; font-size:14px}
+
+/* ─── UPGRADE BLOCK ─── */
+.upgrade{
+  background:linear-gradient(135deg, var(--ink) 0%, #14110d 100%); color:var(--paper);
+  border-radius:18px; padding:30px 32px; margin-top:28px;
+  display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center;
+}
+@media (max-width:760px){.upgrade{grid-template-columns:1fr}}
+.upgrade h3{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:28px; color:var(--paper); font-weight:500; letter-spacing:-0.015em; margin-bottom:6px; line-height:1.1}
+.upgrade h3 em{color:var(--terra-light); font-style:italic}
+.upgrade p{font-size:14px; color:rgba(250,246,238,0.7); line-height:1.55}
+
+/* ─── BUTTONS ─── */
+.btn{padding:12px 22px; border-radius:30px; text-decoration:none; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:0.04em; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; border:none; font-family:'Inter',sans-serif; white-space:nowrap}
+.btn-primary{background:var(--terra); color:var(--paper)}
+.btn-primary:hover{background:var(--terra-deep)}
+.btn-paper{background:var(--paper); color:var(--ink)}
+.btn-paper:hover{background:var(--terra-light); color:var(--ink)}
+.btn-ghost{background:transparent; color:var(--ink); border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--terra)}
+.btn-ghost-paper{background:transparent; color:var(--terra-light); border:1px solid var(--terra-light)}
+.btn-ghost-paper:hover{background:var(--terra-light); color:var(--ink)}
+
+/* ─── PRICING SECTION ─── */
+.pricing{margin-top:60px; padding-top:40px; border-top:1px solid var(--line)}
+.pricing h2{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:36px; color:var(--ink); font-weight:500; letter-spacing:-0.02em; margin-bottom:8px; text-align:center}
+.pricing h2 em{color:var(--terra-deep); font-style:italic}
+.pricing p.intro{font-family:'Fraunces',serif; font-style:italic; font-size:15px; color:var(--ink-mute); text-align:center; margin-bottom:36px}
+
+.tiers{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px}
+@media (max-width:880px){.tiers{grid-template-columns:1fr}}
+.tier-card{
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:20px;
+  padding:30px 28px; transition:all 0.3s; position:relative;
+}
+.tier-card.recommended{background:linear-gradient(135deg, var(--paper-2) 0%, var(--paper-3) 100%); border:2px solid var(--terra); transform:scale(1.02)}
+.tier-card.recommended::before{content:'★ Recommandé'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--terra); color:var(--paper); padding:4px 14px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.16em; font-weight:700}
+.tier-card.fo{background:linear-gradient(135deg, var(--ink) 0%, #14110d 100%); color:var(--paper); border-color:var(--gold)}
+.tier-card.fo .tier-name, .tier-card.fo .tier-price-num, .tier-card.fo .tier-feat-row b{color:var(--paper)}
+.tier-card.fo .tier-feat-row{color:rgba(250,246,238,0.75); border-color:rgba(255,255,255,0.1)}
+.tier-card.fo .tier-tagline{color:var(--gold)}
+.tier-card.fo .tier-feat-icon{background:var(--gold); color:var(--ink)}
+
+.tier-name{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; color:var(--ink); font-weight:600; margin-bottom:4px}
+.tier-tagline{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--terra-deep); text-transform:uppercase; font-weight:600; margin-bottom:18px}
+
+.tier-price{margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid var(--line)}
+.tier-card.fo .tier-price{border-color:rgba(255,255,255,0.1)}
+.tier-price-num{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:42px; color:var(--ink); font-weight:500; line-height:1; letter-spacing:-0.025em}
+.tier-price-num em{font-style:italic; font-size:36px; color:var(--terra-deep)}
+.tier-price .per{font-size:13px; color:var(--ink-faint); font-style:italic; margin-top:4px}
+.tier-price-yearly{font-size:11.5px; color:var(--terra-deep); margin-top:6px; font-weight:500}
+
+.tier-feats{display:flex; flex-direction:column; gap:0; margin-bottom:24px}
+.tier-feat-row{padding:10px 0; font-size:13.5px; color:var(--ink-mute); line-height:1.5; display:flex; gap:10px; align-items:flex-start; border-bottom:1px dotted var(--line)}
+.tier-feat-row:last-child{border-bottom:none}
+.tier-feat-row b{color:var(--ink); font-weight:500}
+.tier-feat-icon{flex-shrink:0; width:18px; height:18px; border-radius:50%; background:var(--terra-light); color:var(--ink); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px}
+
+/* ─── FOOTER ─── */
+footer.salon{padding:40px 32px; text-align:center; color:var(--ink-faint); font-size:11.5px; border-top:1px solid var(--line); margin-top:60px; background:var(--paper-2)}
+footer.salon a{color:var(--terra-deep); text-decoration:none}
+
+@media (max-width:760px){
+  header.salon{padding:14px 20px}
+  main{padding:32px 20px 60px}
+  .greet h1{font-size:32px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="salon">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Salon membre · client.ikcp.eu</div>
+  </div>
+  <div class="user-pill">
+    <div>
+      <div class="name">Joséphine Dupont</div>
+      <div class="email">josephine@example.com</div>
+    </div>
+    <span class="tier tier-premium">Premium</span>
+    <span class="menu">⋯</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ GREETING ═══ -->
+<section class="greet">
+  <h1>Bonjour <em>Joséphine</em>. <span style="font-size:0.55em; color:var(--ink-faint); font-style:italic">Demandez-moi.</span></h1>
+  <p class="sub">Marcel a 2 informations pour vous · dernière visite hier 22 h 14</p>
+</section>
+
+<!-- ═══ HERO CONSTELLATION — vos 12 univers en orbite ═══ -->
+<section class="hero-constellation" aria-label="Marcel et 12 univers en orbite — Family Office IKCP">
+  <svg viewBox="0 0 720 720" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <circle cx="360" cy="360" r="295" stroke="rgba(217,119,87,0.10)" stroke-width="1" fill="none" stroke-dasharray="2 6"/>
+    <circle cx="360" cy="360" r="220" stroke="rgba(217,119,87,0.06)" stroke-width="0.6" fill="none"/>
+    <circle cx="360" cy="360" r="145" stroke="rgba(217,119,87,0.04)" stroke-width="0.5" fill="none"/>
+
+    <g stroke="rgba(184,90,62,0.28)" stroke-width="1" stroke-dasharray="3 5" fill="none">
+      <line x1="360" y1="360" x2="360" y2="65"/>
+      <line x1="360" y1="360" x2="508" y2="105"/>
+      <line x1="360" y1="360" x2="615" y2="213"/>
+      <line x1="360" y1="360" x2="655" y2="360"/>
+      <line x1="360" y1="360" x2="615" y2="508"/>
+      <line x1="360" y1="360" x2="508" y2="615"/>
+      <line x1="360" y1="360" x2="360" y2="655"/>
+      <line x1="360" y1="360" x2="213" y2="615"/>
+      <line x1="360" y1="360" x2="105" y2="508"/>
+      <line x1="360" y1="360" x2="65" y2="360"/>
+      <line x1="360" y1="360" x2="105" y2="213"/>
+      <line x1="360" y1="360" x2="213" y2="105"/>
+    </g>
+
+    <g fill="#D97757">
+      <circle r="3.5"><animateMotion dur="6s" repeatCount="indefinite" path="M 360 360 L 360 65"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="0.5s" repeatCount="indefinite" path="M 360 360 L 508 105"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M 360 360 L 615 213"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="1.5s" repeatCount="indefinite" path="M 360 360 L 655 360"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="2s" repeatCount="indefinite" path="M 360 360 L 615 508"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="2.5s" repeatCount="indefinite" path="M 360 360 L 508 615"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="3s" repeatCount="indefinite" path="M 360 360 L 360 655"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="3.5s" repeatCount="indefinite" path="M 360 360 L 213 615"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="4s" repeatCount="indefinite" path="M 360 360 L 105 508"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="4.5s" repeatCount="indefinite" path="M 360 360 L 65 360"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="5s" repeatCount="indefinite" path="M 360 360 L 105 213"/></circle>
+      <circle r="3.5"><animateMotion dur="6s" begin="5.5s" repeatCount="indefinite" path="M 360 360 L 213 105"/></circle>
+    </g>
+
+    <g fill="#C9A96E" opacity="0.55">
+      <circle r="2.5"><animateMotion dur="6s" begin="3s" repeatCount="indefinite" path="M 360 65 L 360 360"/></circle>
+      <circle r="2.5"><animateMotion dur="6s" begin="3.5s" repeatCount="indefinite" path="M 615 213 L 360 360"/></circle>
+      <circle r="2.5"><animateMotion dur="6s" begin="4s" repeatCount="indefinite" path="M 615 508 L 360 360"/></circle>
+      <circle r="2.5"><animateMotion dur="6s" begin="4.5s" repeatCount="indefinite" path="M 360 655 L 360 360"/></circle>
+      <circle r="2.5"><animateMotion dur="6s" begin="5s" repeatCount="indefinite" path="M 105 508 L 360 360"/></circle>
+      <circle r="2.5"><animateMotion dur="6s" begin="5.5s" repeatCount="indefinite" path="M 105 213 L 360 360"/></circle>
+    </g>
+  </svg>
+
+  <div class="center">
+    <div class="center-mark">★ DEMANDEZ-MOI</div>
+    <div class="center-name">Marcel</div>
+    <div class="center-role">12 univers</div>
+  </div>
+
+  <a href="univers-demandez-moi.html#u-patrimoine" class="agent-node agent-1" title="Bilan, cartographie, Pappers"><div class="agent-icon">💼</div><div class="agent-name">Patrimoine</div></a>
+  <a href="univers-demandez-moi.html#u-immobilier" class="agent-node agent-2" title="DVF live · prix m² · cartographie"><div class="agent-icon">🏠</div><div class="agent-name">Immobilier</div></a>
+  <a href="univers-demandez-moi.html#u-fiscalite" class="agent-node agent-3" title="IR, IFI, barème 2026"><div class="agent-icon">🏛</div><div class="agent-name">Fiscalité</div></a>
+  <a href="univers-demandez-moi.html#u-marches" class="agent-node agent-4" title="CAC, indices, allocation"><div class="agent-icon">📈</div><div class="agent-name">Marchés</div></a>
+  <a href="univers-demandez-moi.html#u-art" class="agent-node agent-5" title="Côte d'artiste · enchères"><div class="agent-icon">🎨</div><div class="agent-name">Art</div></a>
+  <a href="univers-demandez-moi.html#u-voyage" class="agent-node agent-6" title="Conciergerie · hôtels · jet"><div class="agent-icon">💎</div><div class="agent-name">Voyage</div></a>
+  <a href="univers-demandez-moi.html#u-pe" class="agent-node agent-7" title="Deal flow · co-investissement"><div class="agent-icon">🪴</div><div class="agent-name">Private Equity</div></a>
+  <a href="univers-demandez-moi.html#u-transmission" class="agent-node agent-8" title="Dutreil, donation, succession"><div class="agent-icon">🌱</div><div class="agent-name">Transmission</div></a>
+  <a href="univers-demandez-moi.html#u-philanthropie" class="agent-node agent-9" title="Don défiscalisé IR/IFI"><div class="agent-icon">🤲</div><div class="agent-name">Philanthropie</div></a>
+  <a href="univers-demandez-moi.html#u-formation" class="agent-node agent-10" title="NextGen · 6 modules AFFO"><div class="agent-icon">🎓</div><div class="agent-name">Formation</div></a>
+  <a href="univers-demandez-moi.html#u-admin" class="agent-node agent-11" title="Secrétariat · archivage eIDAS"><div class="agent-icon">📋</div><div class="agent-name">Administration</div></a>
+  <a href="univers-demandez-moi.html#u-reporting" class="agent-node agent-12" title="Synthèse trimestrielle · KPIs"><div class="agent-icon">📊</div><div class="agent-name">Reporting</div></a>
+</section>
+
+<!-- ═══ AUTOMATISATIONS ACTIVES ═══ -->
+<section class="auto-block">
+  <div class="auto-head">
+    <h3>🤖 Automatisations en cours</h3>
+    <span class="live">en direct</span>
+  </div>
+  <div class="auto-list">
+    <div class="auto-row"><span class="who">💼 Patrimoine</span><span class="what">Met à jour la <b>cartographie 360°</b> chaque nuit · 3 entités synchronisées</span></div>
+    <div class="auto-row"><span class="who">📊 Reporting</span><span class="what">Synthèse <b>trimestrielle Q2</b> programmée pour le 30 juin · 0 action requise</span></div>
+    <div class="auto-row"><span class="who">📋 Administration</span><span class="what">Échéance <b>IFI 2026</b> dans 14 j · rappel automatique J-7 et J-1</span></div>
+    <div class="auto-row"><span class="who">📈 Marchés</span><span class="what">Surveille <b>4 alertes seuil</b> (drawdown, allocation drift) · 24h/24</span></div>
+    <div class="auto-row"><span class="who">🏛 Fiscalité</span><span class="what">Veille <b>Légifrance</b> active sur 7 mots-clés patrimoniaux · alerte si LF impacte</span></div>
+    <div class="auto-row"><span class="who">🏠 Immobilier</span><span class="what">Estimation DVF live mise à jour · 2 biens · cartographie auto</span></div>
+  </div>
+</section>
+
+<!-- ═══ TIER BANNER ═══ -->
+<div class="tier-banner tier-banner-mode-premium">
+  <div>
+    <h3>Family Office Augmenté · actif</h3>
+    <p>Renouvellement le <b>7 juin 2026</b> · 290 €/mois · Prochaine facture sur Stripe.</p>
+  </div>
+  <div class="actions">
+    <button class="btn btn-ghost" onclick="alert('Mock — bascule vers Stripe Customer Portal')">Gérer l'abonnement</button>
+    <button class="btn btn-primary" onclick="alert('Mock — Calendly Maxime priorité')">📅 RDV avec Maxime</button>
+  </div>
+</div>
+
+<!-- ═══ QUOTAS ═══ -->
+<section class="quotas">
+  <div class="quota">
+    <div class="quota-label">Pappers ce mois</div>
+    <div class="quota-val">7<span class="total"> / 10</span></div>
+    <div class="quota-bar"><div class="quota-bar-fill" style="width:70%"></div></div>
+    <div class="quota-info">3 lookups restants · reset le <b>1<sup>er</sup> juin</b></div>
+  </div>
+  <div class="quota">
+    <div class="quota-label">Marcel — messages</div>
+    <div class="quota-val">∞</div>
+    <div class="quota-bar"><div class="quota-bar-fill" style="width:100%; background:linear-gradient(90deg, var(--green), #166534)"></div></div>
+    <div class="quota-info">Illimité avec mémoire <b>90 jours</b></div>
+  </div>
+  <div class="quota">
+    <div class="quota-label">Univers Patrimoine</div>
+    <div class="quota-val">3<span class="total"> entités</span></div>
+    <div class="quota-bar"><div class="quota-bar-fill" style="width:100%"></div></div>
+    <div class="quota-info">Mise à jour automatique <b>chaque nuit</b></div>
+  </div>
+</section>
+
+<!-- ═══ COLS ═══ -->
+<section class="cols">
+
+  <!-- ─── PATRIMOINE BLOCK ─── -->
+  <div class="block">
+    <div class="block-head">
+      <h3><span class="ico">💼</span>Univers Patrimoine · Cartographier une entreprise</h3>
+      <span class="badge">PAPPERS</span>
+    </div>
+    <div class="block-body">
+      <form class="pappers-form" onsubmit="event.preventDefault(); alert('Mock — déclencherait POST /api/v1/pappers/lookup')">
+        <input type="text" placeholder="SIREN (9 chiffres) ou nom de société" autocomplete="off">
+        <button type="submit">Cartographier →</button>
+      </form>
+      <div class="pappers-hint">Saisissez votre holding, vos SCI, vos sociétés cibles. L'univers Patrimoine les ajoute à votre carte 360°.</div>
+
+      <div class="pappers-history">
+        <div class="pappers-row" onclick="alert('Mock — afficher fiche complète')">
+          <div>
+            <div class="nom">DUPONT HOLDING</div>
+            <div class="meta">SAS · capital 50 000 € · Lyon · cap. ce mois +3 dirigeants</div>
+          </div>
+          <div class="siren">812 345 678</div>
+        </div>
+        <div class="pappers-row" onclick="alert('Mock — afficher fiche complète')">
+          <div>
+            <div class="nom">SCI VILLA AURA</div>
+            <div class="meta">SCI · capital 1 000 € · Cap-Ferret · co-gérance</div>
+          </div>
+          <div class="siren">895 432 109</div>
+        </div>
+        <div class="pappers-row" onclick="alert('Mock — afficher fiche complète')">
+          <div>
+            <div class="nom">DUPONT &amp; FILS — SAS</div>
+            <div class="meta">SAS · CA 4,2 M€ · Lyon · 28 salariés</div>
+          </div>
+          <div class="siren">752 134 980</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MARCEL — Demandez-moi ─── -->
+  <div class="block">
+    <div class="block-head">
+      <h3><span class="ico">🎼</span>Demandez-moi</h3>
+      <span class="badge" style="background:rgba(21,128,61,0.1); color:var(--green)">● en ligne</span>
+    </div>
+    <div class="block-body">
+      <div class="marcel-chat">
+        <div class="msg-user">Réduire mes droits de succession pour mes 3 enfants ?</div>
+        <div class="msg-marcel">
+          <div class="msg-marcel-head">Marcel</div>
+          J'active les univers <b>🌱 Transmission</b> et <b>🤲 Philanthropie</b> pour préparer 3 stratégies (Dutreil, donation, fondation). 30 secondes.
+        </div>
+        <div class="msg-user">Et l'achat de la villa de Cap-Ferret ?</div>
+        <div class="msg-marcel">
+          <div class="msg-marcel-head">Marcel</div>
+          L'univers <b>🏠 Immobilier</b> sort une estimation DVF en direct. L'univers <b>📈 Marchés</b> regarde un crédit Lombard à la place. Synthèse dans 1 minute.
+        </div>
+      </div>
+      <div class="msg-input">
+        <input type="text" placeholder="Posez votre question — l'univers répond…" autocomplete="off">
+        <button>→</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ UPGRADE FAMILY OFFICE ═══ -->
+<div class="upgrade">
+  <div>
+    <h3>Le Family Office vous attend.<br><em>Sur recommandation.</em></h3>
+    <p>Vous êtes Premium depuis 8 mois · 47 conversations Marcel · 12 cartographies. Maxime serait honoré d'évaluer si une formule Family Office pourrait vous convenir.</p>
+  </div>
+  <div style="display:flex; gap:10px; flex-wrap:wrap">
+    <button class="btn btn-paper">📅 RDV de candidature</button>
+    <button class="btn btn-ghost-paper">En savoir plus</button>
+  </div>
+</div>
+
+<!-- ═══ PRICING ═══ -->
+<section class="pricing" id="abonnement">
+  <h2>Trois <em>portes d'entrée</em>.</h2>
+  <p class="intro">Du test gratuit à la formule Family Office.</p>
+
+  <div class="tiers">
+
+    <!-- DÉCOUVERTE -->
+    <div class="tier-card">
+      <div class="tier-name">Découverte</div>
+      <div class="tier-tagline">Test gratuit</div>
+
+      <div class="tier-price">
+        <div class="tier-price-num"><em>0 €</em></div>
+        <div class="per">— sans engagement</div>
+      </div>
+
+      <div class="tier-feats">
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span><b>3 univers</b> ouverts : Patrimoine, Marchés, Fiscalité</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span><b>Demandez-moi</b> · 30 questions / mois</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Cartographie <b>manuelle</b></span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Accès aux <b>simulateurs</b> ikcp.eu</span></div>
+        <div class="tier-feat-row" style="opacity:0.4"><span class="tier-feat-icon" style="background:var(--line)">—</span><span>Mémoire de profil</span></div>
+        <div class="tier-feat-row" style="opacity:0.4"><span class="tier-feat-icon" style="background:var(--line)">—</span><span>Immobilier · Reporting · Transmission · Formation AFFO</span></div>
+      </div>
+
+      <button class="btn btn-ghost" style="width:100%; justify-content:center">Commencer · gratuit</button>
+    </div>
+
+    <!-- AUGMENTÉ (recommandé) -->
+    <div class="tier-card recommended">
+      <div class="tier-name">Family Office <em>Augmenté</em></div>
+      <div class="tier-tagline">Dirigeant · TNS · famille entrepreneuriale</div>
+
+      <div class="tier-price">
+        <div class="tier-price-num"><em>290 €</em></div>
+        <div class="per">/ mois — résiliable à tout moment</div>
+        <div class="tier-price-yearly">★ Bêta : 6 mois offerts aux 50 familles fondatrices</div>
+      </div>
+
+      <div class="tier-feats">
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span><b>12 univers ouverts</b> · APIs réelles temps réel</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span><b>Demandez-moi</b> illimité · mémoire 90 jours</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Univers <b>Patrimoine</b> · cartographie auto</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Univers <b>Reporting</b> · synthèse trimestrielle</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Univers <b>Formation AFFO</b> · NextGen 6 modules</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Mail prioritaire à Maxime</span></div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="alert('Mock — ouvre Stripe Checkout')">Souscrire Augmenté →</button>
+    </div>
+
+    <!-- FAMILY OFFICE -->
+    <div class="tier-card fo">
+      <div class="tier-name">Family Office</div>
+      <div class="tier-tagline">Sur recommandation</div>
+
+      <div class="tier-price">
+        <div class="tier-price-num"><em>Sur devis</em></div>
+        <div class="per">— familles ≥ 5 M€</div>
+      </div>
+
+      <div class="tier-feats">
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Tous les univers <b>illimités</b></span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Univers <b>Liaison externe</b> · notaires, avocats, banquiers</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span><b>Espace dossiers</b> chiffré · archivage eIDAS</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Validation <b>Maxime</b> systématique</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span><b>RDV mensuel</b> · Calendly prioritaire</span></div>
+        <div class="tier-feat-row"><span class="tier-feat-icon">✓</span><span>Conciergerie ad-hoc · multi-entités · international</span></div>
+      </div>
+
+      <button class="btn btn-ghost-paper" style="width:100%; justify-content:center" onclick="alert('Mock — formulaire de candidature + recommandation')">Candidater</button>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="salon">
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+<!-- ═══ PROTECTION COPIE ═══ -->
+<script>
+(function(){
+  const ATTRIBUTION = '\n\n────────────────────────────────────────\n' +
+    '© Site créé par Maxime JUVENETON — IKCP · IKIGAÏ Conseil Patrimonial\n' +
+    'ORIAS 23001568 · https://ikcp.eu\n' +
+    'Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n' +
+    '────────────────────────────────────────';
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try { e.clipboardData.setData('text/plain', sel + ATTRIBUTION); e.preventDefault(); } catch(_){}
+    }
+  });
+  console.log('%c© Maxime Juveneton — IKCP', 'color:#D97757;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+})();
+</script>
+
+</body>
+</html>

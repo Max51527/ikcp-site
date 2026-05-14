@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aperçu IKCP Plateforme v2 — Family Office · API · Marcel & Agents IA</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  /* Light — IKCP standard (existant) */
+  --cream:#f9f6f0; --cream-2:#f4ecdf;
+  --ink:#1f1a16; --ink-mute:#6d5c4a; --ink-faint:#9e9080;
+  --gold:#b8956e; --gold-dark:#a07b54;
+  --line-light:#e5ded2;
+  /* Dark — Family Office premium */
+  --bg-dark:#0c0f0d; --bg-dark-2:#11171300;
+  --gold-bright:#c4a273; --gold-glow:#e3c08c;
+  --ink-pale:#f4ece1; --ink-pale-mute:#9a9388; --ink-pale-faint:#5e5851;
+  --line-dark:rgba(196,162,115,0.18); --line-dark-strong:rgba(196,162,115,0.32);
+  --grid-dark:rgba(255,255,255,0.025);
+}
+
+html,body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:400; line-height:1.55; letter-spacing:-0.005em;
+  overflow-x:hidden; text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── PREVIEW BAR ─── */
+.preview-bar{
+  background:var(--ink); color:var(--cream);
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+  padding:10px 24px; display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:0; z-index:200;
+}
+.preview-bar b{color:var(--gold-bright); font-weight:500}
+.preview-bar a{color:var(--cream); text-decoration:none; border-bottom:1px solid var(--gold-bright); padding-bottom:1px}
+.preview-bar .version{background:var(--gold-bright); color:var(--ink); padding:3px 10px; border-radius:2px; letter-spacing:0.12em}
+
+/* ─── NAV ─── */
+nav.site{
+  background:rgba(249,246,240,0.95);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  padding:18px 40px; display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:36px; z-index:100;
+  border-bottom:1px solid var(--line-light);
+}
+.brand-block{line-height:1.1}
+.brand{font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--ink); letter-spacing:0.02em}
+.brand .dot{color:var(--gold)}
+.brand-sub{display:block; font-size:10px; color:var(--gold); letter-spacing:0.06em; margin-top:2px; text-transform:uppercase; font-weight:600}
+nav.site .menu{display:flex; align-items:center; gap:24px}
+nav.site .menu a{
+  color:var(--ink-mute); text-decoration:none;
+  font-size:13px; font-weight:500; letter-spacing:0.02em;
+  transition:color 0.25s; position:relative;
+}
+nav.site .menu a:hover{color:var(--gold)}
+nav.site .menu a.fo{
+  background:linear-gradient(135deg,var(--ink) 0%,#2a221c 100%);
+  color:var(--cream); padding:8px 14px; border-radius:2px;
+  letter-spacing:0.06em; font-size:12.5px;
+}
+nav.site .menu a.fo::before{content:'⬢ '; color:var(--gold-bright); margin-right:2px}
+nav.site .menu a.agents{
+  color:var(--ink); border:1px solid var(--gold);
+  padding:7px 14px; border-radius:2px; font-size:12.5px;
+}
+nav.site .menu a.agents::before{content:'✦ '; color:var(--gold)}
+nav.site .menu a.api{
+  color:var(--ink-mute); font-family:'JetBrains Mono',monospace;
+  font-size:11.5px; letter-spacing:0.05em;
+  border:1px dashed var(--line-light); padding:6px 12px; border-radius:2px;
+}
+nav.site .menu a.api:hover{border-color:var(--gold); color:var(--gold)}
+nav.site .menu .cta-echange{
+  background:var(--gold); color:var(--ink); padding:10px 22px;
+  border-radius:2px; font-weight:600; font-size:12.5px;
+  letter-spacing:0.04em;
+}
+nav.site .menu .cta-echange:hover{background:var(--gold-dark); color:var(--cream)}
+
+/* ─── HERO LIGHT (préservé) ─── */
+section.hero{
+  padding:68px 40px 80px; max-width:1320px; margin:0 auto;
+  display:grid; grid-template-columns:1.05fr 0.95fr; gap:60px; align-items:center;
+}
+.hero-kicker{font-size:11px; color:var(--gold); letter-spacing:0.32em; text-transform:uppercase; font-weight:600; margin-bottom:18px}
+.numbers-bar{display:flex; align-items:center; gap:18px; margin-bottom:24px; font-family:'Playfair Display',serif}
+.numbers-bar .num{font-size:20px; font-weight:600; color:var(--ink)}
+.numbers-bar .lbl{font-size:13px; color:var(--ink-mute)}
+.numbers-bar .sep{display:inline-block; width:24px; height:1px; background:var(--gold)}
+.hero-h1{
+  font-family:'Playfair Display',serif; font-size:54px; line-height:1.05;
+  font-weight:500; letter-spacing:-0.015em; color:var(--ink); margin-bottom:24px;
+}
+.hero-h1 em{font-style:italic; color:var(--gold)}
+.hero-sub{font-size:17px; color:var(--ink-mute); line-height:1.65; margin-bottom:32px; max-width:540px}
+.segments{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px}
+.segment{
+  background:white; border:1px solid var(--line-light);
+  padding:8px 14px; border-radius:30px;
+  font-size:12.5px; color:var(--ink-mute); font-weight:500;
+}
+.cta-bilan{
+  display:inline-flex; flex-direction:column;
+  background:var(--ink); color:var(--cream);
+  padding:14px 28px; border-radius:6px;
+  text-decoration:none; transition:all 0.25s;
+}
+.cta-bilan:hover{background:var(--gold-dark)}
+.cta-bilan-mini{font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--gold-bright); letter-spacing:0.18em; text-transform:uppercase; margin-bottom:4px}
+.cta-bilan-text{font-size:15px; font-weight:600; font-family:'Playfair Display',serif}
+
+/* Hero right — sky block avec montgolfière BBR + carte Marcel */
+.sky-block{
+  position:relative; height:520px;
+  background:linear-gradient(180deg,#dbe9f5 0%,#f0e6d4 70%,#f9f6f0 100%);
+  border-radius:18px; overflow:hidden;
+  box-shadow:0 18px 40px rgba(31,26,22,0.10);
+}
+.marcel-pill{
+  position:absolute; top:18px; left:18px;
+  background:rgba(31,26,22,0.85); color:var(--gold-bright);
+  font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500;
+  padding:6px 12px; border-radius:14px; letter-spacing:0.1em;
+}
+.marcel-pill::before{content:'●'; color:#22c55e; margin-right:5px; animation:pulse-dot 1.6s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+.balloon-illu{position:absolute; top:38px; right:30px; width:130px; height:160px; animation:floatBalloon 6s ease-in-out infinite}
+@keyframes floatBalloon{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+.marcel-card{
+  position:absolute; bottom:22px; left:22px; right:22px;
+  background:white; border:1px solid var(--line-light); border-radius:14px;
+  padding:18px 20px; box-shadow:0 6px 20px rgba(31,26,22,0.05);
+}
+.marcel-card-kicker{font-size:10px; color:var(--gold); letter-spacing:0.18em; text-transform:uppercase; font-weight:700; margin-bottom:8px}
+.marcel-card-title{font-family:'Playfair Display',serif; font-size:15px; color:var(--ink); margin-bottom:12px; font-weight:500}
+.marcel-q-row{
+  background:var(--cream); padding:10px 14px; border-radius:8px;
+  font-size:13px; color:var(--ink-mute); margin-top:6px; cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:8px;
+}
+.marcel-q-row:hover{background:var(--cream-2); color:var(--ink); padding-left:18px}
+
+/* ─── BANDEAU TRANSITION ─── */
+.fo-banner{
+  background:linear-gradient(90deg,var(--cream-2),var(--cream),var(--cream-2));
+  border-top:1px solid var(--line-light); border-bottom:1px solid var(--line-light);
+  padding:20px 40px; text-align:center;
+  font-family:'Playfair Display',serif; font-size:16px; color:var(--ink); font-style:italic;
+}
+.fo-banner strong{font-style:normal; color:var(--gold-dark); font-weight:600}
+.fo-banner a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--gold); margin-left:8px; padding-bottom:1px; font-style:normal}
+.fo-banner a:hover{color:var(--gold)}
+
+/* ════════════════════════════════════════════════════════════ */
+/* ════ DARK SECTIONS (Family Office · Agents · API) ════════ */
+/* ════════════════════════════════════════════════════════════ */
+
+.dark-zone{
+  background:var(--bg-dark); color:var(--ink-pale); position:relative;
+}
+.dark-zone::before{
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(var(--grid-dark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-dark) 1px, transparent 1px);
+  background-size:96px 96px; pointer-events:none;
+}
+.dark-zone > *{position:relative; z-index:1}
+
+/* ─── FO SECTION ─── */
+.fo-section{padding:120px 56px 100px; max-width:1280px; margin:0 auto}
+.fo-kicker{
+  font-size:10.5px; letter-spacing:0.4em; text-transform:uppercase;
+  color:var(--gold-bright); margin-bottom:18px; display:inline-flex; align-items:center; gap:14px;
+}
+.fo-kicker .rule{width:36px; height:1px; background:var(--gold-bright)}
+.fo-h2{
+  font-family:'Playfair Display',serif;
+  font-size:64px; line-height:1.04; font-weight:500;
+  color:var(--ink-pale); letter-spacing:-0.02em; margin-bottom:24px;
+}
+.fo-h2 em{font-style:italic; color:var(--gold-bright)}
+.fo-lede{
+  font-size:18px; color:var(--ink-pale-mute); line-height:1.7;
+  max-width:680px; margin-bottom:50px;
+}
+.fo-lede em{font-style:italic; color:var(--ink-pale)}
+
+.fo-stats{display:flex; gap:48px; padding:32px 0; border-top:1px solid var(--line-dark); border-bottom:1px solid var(--line-dark)}
+.fo-stat-num{font-family:'Playfair Display',serif; font-size:48px; color:var(--gold-bright); font-weight:500; line-height:1}
+.fo-stat-num em{font-style:italic}
+.fo-stat-lbl{font-size:11px; color:var(--ink-pale-faint); letter-spacing:0.18em; text-transform:uppercase; margin-top:6px}
+
+/* ════════════════════════════════════════════════════════ */
+/* ════ AGENTS — CONSTELLATION + GRILLE ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+
+.agents-section{padding:120px 40px 120px; max-width:1280px; margin:0 auto}
+.section-head{display:grid; grid-template-columns:1.5fr 1fr; gap:40px; align-items:end; margin-bottom:80px}
+.section-head h2{font-family:'Playfair Display',serif; font-size:54px; line-height:1.06; color:var(--ink-pale); font-weight:500; letter-spacing:-0.015em}
+.section-head h2 em{font-style:italic; color:var(--gold-bright)}
+.section-head .meta{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-pale-faint); letter-spacing:0.1em; line-height:1.7; text-align:right}
+.section-head .meta strong{color:var(--gold-bright); font-weight:500}
+
+/* Constellation diagram */
+.constellation{
+  position:relative; width:min(720px, 90vw); height:min(720px, 90vw);
+  margin:60px auto 80px;
+}
+.constellation svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+.constellation .center{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:170px; height:170px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright) 0%, var(--gold-dark) 60%, #5a4628 100%);
+  box-shadow:0 0 60px rgba(196,162,115,0.45), inset 0 4px 20px rgba(255,255,255,0.15);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; color:var(--bg-dark); padding:14px;
+}
+.constellation .center-mark{font-size:8.5px; letter-spacing:0.28em; text-transform:uppercase; opacity:0.7; margin-bottom:6px; font-weight:600}
+.constellation .center-name{font-family:'Playfair Display',serif; font-size:32px; font-weight:600; line-height:1}
+.constellation .center-role{font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; margin-top:4px; font-weight:500; opacity:0.85}
+
+.agent-node{
+  position:absolute; width:114px; height:114px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--bg-dark); border:1px solid var(--line-dark-strong);
+  border-radius:50%; transition:all 0.3s ease; cursor:pointer;
+  text-decoration:none;
+}
+.agent-node:hover{transform:scale(1.08); border-color:var(--gold-bright); box-shadow:0 0 30px rgba(196,162,115,0.3)}
+.agent-icon{font-size:28px; margin-bottom:4px; filter:grayscale(0.2)}
+.agent-name{font-family:'Playfair Display',serif; font-size:14px; font-weight:500; color:var(--ink-pale); letter-spacing:0.02em}
+.agent-domain{font-size:8.5px; color:var(--ink-pale-faint); letter-spacing:0.12em; text-transform:uppercase; margin-top:2px}
+
+/* Position des 8 agents — octogone régulier (45° d'écart) — sur cercle r ≈ 38% du conteneur */
+.agent-1{top:-2%; left:50%; transform:translateX(-50%)}                    /* haut */
+.agent-2{top:13%; left:84%; transform:translateX(-50%)}                    /* NE */
+.agent-3{top:50%; left:99%; transform:translate(-100%,-50%)}                /* droite */
+.agent-4{top:87%; left:84%; transform:translate(-50%,-100%)}                /* SE */
+.agent-5{top:99%; left:50%; transform:translate(-50%,-100%)}                /* bas */
+.agent-6{top:87%; left:16%; transform:translate(-50%,-100%)}                /* SO */
+.agent-7{top:50%; left:1%; transform:translateY(-50%)}                      /* gauche */
+.agent-8{top:13%; left:16%; transform:translateX(-50%)}                     /* NO */
+
+@media (max-width:760px){
+  .constellation{width:96vw; height:96vw}
+  .constellation .center{width:120px; height:120px}
+  .constellation .center-name{font-size:22px}
+  .agent-node{width:80px; height:80px}
+  .agent-icon{font-size:18px}
+  .agent-name{font-size:11px}
+  .agent-domain{display:none}
+}
+
+/* Cards grid */
+.agents-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+  gap:1px; background:var(--line-dark); border:1px solid var(--line-dark);
+  margin-top:60px;
+}
+.agent-card{
+  background:var(--bg-dark); padding:32px 28px; transition:background 0.3s;
+}
+.agent-card:hover{background:var(--bg-dark-2)}
+.agent-card-head{display:flex; align-items:center; gap:14px; margin-bottom:18px}
+.agent-card-icon{
+  width:46px; height:46px; border-radius:50%;
+  background:rgba(196,162,115,0.12); border:1px solid var(--line-dark-strong);
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.agent-card-name{font-family:'Playfair Display',serif; font-size:22px; color:var(--ink-pale); font-weight:500; letter-spacing:0.005em}
+.agent-card-role{font-size:10.5px; letter-spacing:0.18em; color:var(--gold-bright); text-transform:uppercase; font-weight:600; margin-top:2px}
+.agent-card-desc{font-size:13.5px; color:var(--ink-pale-mute); line-height:1.7; margin-bottom:16px}
+.agent-card-tools{margin-top:12px; padding-top:14px; border-top:1px dashed var(--line-dark)}
+.agent-card-tools-label{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gold-bright); letter-spacing:0.12em; margin-bottom:8px}
+.agent-card-tools-list{font-size:12px; color:var(--ink-pale-faint); line-height:1.7}
+.agent-card-tools-list span{display:inline-block; background:rgba(196,162,115,0.08); padding:2px 8px; border-radius:3px; margin:2px 4px 2px 0; font-family:'JetBrains Mono',monospace; font-size:10.5px}
+
+/* ════════════════════════════════════════════════════════ */
+/* ════ API & INTÉGRATIONS ════════════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+
+.api-section{padding:120px 40px 120px; max-width:1280px; margin:0 auto}
+.api-grid{display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start}
+
+.api-text-kicker{font-size:11px; letter-spacing:0.4em; color:var(--gold-bright); text-transform:uppercase; margin-bottom:16px; font-weight:600}
+.api-text-h2{
+  font-family:'Playfair Display',serif; font-size:46px; line-height:1.08;
+  color:var(--ink-pale); margin-bottom:22px; font-weight:500; letter-spacing:-0.015em;
+}
+.api-text-h2 em{font-style:italic; color:var(--gold-bright)}
+.api-text-body{font-size:15.5px; color:var(--ink-pale-mute); line-height:1.75; margin-bottom:18px}
+.api-text-body strong{color:var(--ink-pale); font-weight:500}
+
+.api-partners{display:flex; flex-wrap:wrap; gap:8px; margin-top:24px}
+.api-partner{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  background:rgba(196,162,115,0.06); border:1px solid var(--line-dark);
+  color:var(--ink-pale-mute); padding:6px 12px; border-radius:2px;
+  letter-spacing:0.04em;
+}
+
+.terminal{
+  background:#080a09; border:1px solid var(--line-dark);
+  border-radius:8px; overflow:hidden;
+  font-family:'JetBrains Mono',monospace;
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+}
+.terminal-head{
+  background:rgba(255,255,255,0.04); padding:10px 14px;
+  border-bottom:1px solid var(--line-dark);
+  display:flex; align-items:center; gap:8px;
+  font-size:10.5px; color:var(--ink-pale-faint); letter-spacing:0.1em;
+}
+.terminal-dot{width:11px; height:11px; border-radius:50%; background:#3a3530}
+.terminal-head .url{margin-left:auto; color:var(--gold-bright); font-weight:500}
+.terminal-body{padding:20px 22px; font-size:12.5px; line-height:1.85; color:var(--ink-pale-mute)}
+.terminal-body .com{color:#5e5851; font-style:italic}
+.terminal-body .verb{color:#e3c08c; font-weight:500}
+.terminal-body .path{color:var(--ink-pale)}
+.terminal-body .key{color:#7eb1d8}
+.terminal-body .str{color:#a8c98a}
+.terminal-body .num{color:#e3a86a}
+.terminal-body .punct{color:var(--ink-pale-faint)}
+.terminal-body .ok{color:#4ade80}
+
+.endpoints{margin-top:32px}
+.endpoints h4{
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  color:var(--gold-bright); letter-spacing:0.18em; text-transform:uppercase;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--line-dark);
+}
+.endpoint-row{
+  display:grid; grid-template-columns:60px 1fr 2fr; gap:16px;
+  padding:9px 0; border-bottom:1px solid rgba(196,162,115,0.06);
+  font-family:'JetBrains Mono',monospace; font-size:11.5px; align-items:center;
+}
+.endpoint-row .method{
+  background:rgba(196,162,115,0.15); color:var(--gold-bright);
+  padding:3px 6px; border-radius:2px; text-align:center; font-weight:600; font-size:10px; letter-spacing:0.04em;
+}
+.endpoint-row .method.post{background:rgba(126,177,216,0.15); color:#9bc4e2}
+.endpoint-row .path{color:var(--ink-pale); font-weight:500}
+.endpoint-row .desc{color:var(--ink-pale-faint); font-size:11px; font-family:'Inter',sans-serif}
+
+/* ─── CTA FINAL ─── */
+.cta-final{
+  background:linear-gradient(180deg, var(--bg-dark), #050807);
+  padding:120px 40px; text-align:center; border-top:1px solid var(--line-dark);
+}
+.cta-final-h{font-family:'Playfair Display',serif; font-size:54px; line-height:1.05; color:var(--ink-pale); font-weight:500; max-width:780px; margin:0 auto 24px; letter-spacing:-0.02em}
+.cta-final-h em{font-style:italic; color:var(--gold-bright)}
+.cta-final-sub{font-size:16px; color:var(--ink-pale-mute); max-width:520px; margin:0 auto 40px; line-height:1.7}
+.cta-final-row{display:inline-flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center}
+.cta-primary{
+  display:inline-block; padding:18px 44px;
+  background:var(--gold-bright); color:var(--bg-dark);
+  text-decoration:none; font-size:12px; font-weight:600;
+  letter-spacing:0.18em; text-transform:uppercase; border-radius:2px;
+  transition:all 0.3s ease; border:1px solid var(--gold-bright);
+}
+.cta-primary:hover{background:transparent; color:var(--gold-bright)}
+.cta-secondary{
+  color:var(--ink-pale-mute); text-decoration:none; font-size:12.5px;
+  letter-spacing:0.05em; border-bottom:1px solid var(--line-dark); padding-bottom:5px;
+}
+.cta-secondary:hover{color:var(--gold-bright); border-color:var(--gold-bright)}
+.cta-note{font-size:11.5px; font-style:italic; font-family:'Playfair Display',serif; color:var(--ink-pale-faint); margin-top:30px; letter-spacing:0.02em}
+
+/* ─── FOOTER ─── */
+footer.proto{
+  padding:38px 32px 28px; text-align:center;
+  background:#050807; border-top:1px solid var(--line-dark);
+}
+footer.proto p{font-size:11px; color:var(--ink-pale-faint); letter-spacing:0.06em; line-height:1.85}
+footer.proto a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid transparent; transition:border 0.25s}
+footer.proto a:hover{border-color:var(--gold-bright)}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width:1100px){
+  .section-head{grid-template-columns:1fr; text-align:left}
+  .section-head .meta{text-align:left}
+  .api-grid{grid-template-columns:1fr; gap:50px}
+}
+@media (max-width:760px){
+  nav.site{padding:14px 20px; flex-wrap:wrap; gap:12px}
+  nav.site .menu{gap:10px}
+  nav.site .menu a:not(.fo):not(.cta-echange){display:none}
+  section.hero{grid-template-columns:1fr; padding:40px 22px 60px; gap:40px}
+  .hero-h1{font-size:38px}
+  .sky-block{height:380px}
+  .fo-section{padding:80px 22px 60px}
+  .fo-h2{font-size:42px}
+  .agents-section{padding:80px 22px}
+  .section-head h2{font-size:36px}
+  .api-section{padding:80px 22px}
+  .api-text-h2{font-size:34px}
+  .cta-final{padding:80px 22px}
+  .cta-final-h{font-size:36px}
+  .fo-stats{flex-direction:column; gap:24px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+
+<!-- ═══ PREVIEW BAR ═══ -->
+<div class="preview-bar">
+  <span><b>APERÇU</b> · ikcp.eu Plateforme — Family Office · API · Marcel & Agents IA</span>
+  <span><span class="version">V2 PREVIEW</span> · <a href="https://ikcp.eu/" target="_blank">site actuel ↗</a></span>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="site">
+  <div class="brand-block">
+    <div class="brand">IKCP<span class="dot">.</span></div>
+    <div class="brand-sub">Cabinet · Plateforme · Family Office</div>
+  </div>
+  <div class="menu">
+    <a href="#diag">Diagnostic</a>
+    <a href="#cas">Cas concrets</a>
+    <a href="#sp">⭐ Sélection Privée</a>
+    <a href="#fo" class="fo">Family Office</a>
+    <a href="#agents" class="agents">Marcel &amp; Agents</a>
+    <a href="#api" class="api">api.ikcp.eu</a>
+    <a href="mailto:maxime@ikcp.fr" class="cta-echange">Échanger →</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO LIGHT ═══ -->
+<section class="hero">
+  <div>
+    <div class="hero-kicker">IKCP · Conseil patrimonial indépendant</div>
+    <div class="numbers-bar">
+      <div><span class="num">10</span> <span class="lbl">ans</span></div>
+      <span class="sep"></span>
+      <div><span class="num">100%</span> <span class="lbl">indépendant</span></div>
+      <span class="sep"></span>
+      <div><span class="num">8</span> <span class="lbl">agents IA</span></div>
+    </div>
+    <h1 class="hero-h1">Protéger ce que vous êtes<br><em>en train de bâtir.</em></h1>
+    <p class="hero-sub">
+      Un accompagnement sur-mesure — juridique, fiscal et financier.
+      <strong style="color:var(--ink);">Protéger, valoriser, transmettre</strong> — augmenté par une équipe d'agents IA spécialisés.
+    </p>
+    <div class="segments">
+      <div class="segment">👨‍👩‍👧 Parents &amp; jeunes parents</div>
+      <div class="segment">💼 Entrepreneurs &amp; TNS</div>
+      <div class="segment">🏛 Transmission</div>
+      <div class="segment">🏠 Investisseurs immobiliers</div>
+      <div class="segment" style="background:var(--ink); color:var(--cream); border-color:var(--ink)">⬢ Familles &gt; 5 M€</div>
+    </div>
+    <a href="#bilan" class="cta-bilan">
+      <span class="cta-bilan-mini">EN LIGNE · 5 ÉTAPES · 2 MINUTES</span>
+      <span class="cta-bilan-text">Faire mon bilan patrimonial &nbsp;→</span>
+    </a>
+  </div>
+
+  <div class="sky-block">
+    <div class="marcel-pill">Marcel · En ligne · 8 agents</div>
+    <div class="balloon-illu">
+      <svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="balloonClip">
+            <ellipse cx="65" cy="55" rx="48" ry="56"/>
+          </clipPath>
+        </defs>
+        <g clip-path="url(#balloonClip)">
+          <rect x="17" y="-1" width="32" height="112" fill="#0055A4"/>
+          <rect x="49" y="-1" width="32" height="112" fill="#FFFFFF"/>
+          <rect x="81" y="-1" width="32" height="112" fill="#EF4135"/>
+        </g>
+        <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="rgba(160,130,90,0.5)" stroke-width="1.5"/>
+        <line x1="35" y1="105" x2="50" y2="125" stroke="#3c322a" stroke-width="1.5"/>
+        <line x1="95" y1="105" x2="80" y2="125" stroke="#3c322a" stroke-width="1.5"/>
+        <rect x="50" y="125" width="30" height="20" rx="3" fill="#7a5438"/>
+        <ellipse cx="65" cy="115" rx="6" ry="3" fill="#d4af82"/>
+      </svg>
+    </div>
+    <div class="marcel-card">
+      <div class="marcel-card-kicker">⚡ Agent IA Patrimonial</div>
+      <div class="marcel-card-title">Posez votre question à Marcel</div>
+      <div class="marcel-q-row">🏛 Réduire les droits de succession</div>
+      <div class="marcel-q-row">💎 Donation au-delà de 100 000 €</div>
+      <div class="marcel-q-row">⚖ Testament ou donation au dernier vivant</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRANSITION VERS FO ═══ -->
+<div class="fo-banner">
+  Pour les familles à patrimoine constitué, IKCP propose un accompagnement <strong>Family Office augmenté</strong> — Marcel orchestre <strong>8 agents IA spécialisés</strong> pour couvrir l'ensemble de vos sujets.
+  <a href="#fo">Découvrir →</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══ DARK ZONE — FO + AGENTS + API ═══════════════ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="dark-zone">
+
+  <!-- ─── FAMILY OFFICE ─── -->
+  <section class="fo-section" id="fo">
+    <div class="fo-kicker"><span class="rule"></span>Nouveau · Family Office augmenté<span class="rule"></span></div>
+    <h1 class="fo-h2">Une porte d'entrée.<br><em>Marcel</em> à la baguette.<br>Huit agents au service<br>de votre famille.</h1>
+    <p class="fo-lede">
+      Pour les familles dont le patrimoine ne <em>s'improvise</em> plus.<br>
+      Vous gardez le pilotage. Maxime arbitre. Marcel orchestre. Huit agents IA spécialisés exécutent —
+      <em>juridique, financier, voyage, art, immobilier, private equity, philanthropie, secrétariat.</em>
+    </p>
+
+    <div class="fo-stats">
+      <div>
+        <div class="fo-stat-num">9</div>
+        <div class="fo-stat-lbl">Expertises</div>
+      </div>
+      <div>
+        <div class="fo-stat-num">8</div>
+        <div class="fo-stat-lbl">Agents IA</div>
+      </div>
+      <div>
+        <div class="fo-stat-num">∞</div>
+        <div class="fo-stat-lbl">Sources croisées</div>
+      </div>
+      <div>
+        <div class="fo-stat-num"><em>1</em></div>
+        <div class="fo-stat-lbl">Chef d'orchestre</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── AGENTS — CONSTELLATION + GRILLE ─── -->
+  <section class="agents-section" id="agents">
+
+    <div class="section-head">
+      <h2>Marcel et son <em>équipage</em>.<br>Huit agents au service de votre famille.</h2>
+      <div class="meta">
+        Architecture <strong>Claude Agent SDK</strong><br>
+        Orchestration <strong>multi-agents</strong><br>
+        Validation humaine <strong>Maxime</strong> systématique<br>
+        Traçabilité <strong>AI Act</strong> by design
+      </div>
+    </div>
+
+    <!-- Constellation -->
+    <div class="constellation" aria-label="Constellation : Marcel au centre, 8 agents en orbite">
+      <svg viewBox="0 0 720 720" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- Cercles concentriques -->
+        <circle cx="360" cy="360" r="250" stroke="rgba(196,162,115,0.10)" stroke-width="1" fill="none" stroke-dasharray="2 8"/>
+        <circle cx="360" cy="360" r="180" stroke="rgba(196,162,115,0.05)" stroke-width="0.6" fill="none"/>
+
+        <!-- 8 lignes radiales -->
+        <g stroke="rgba(196,162,115,0.22)" stroke-width="1" stroke-dasharray="3 5" fill="none">
+          <line x1="360" y1="360" x2="360" y2="65"/>
+          <line x1="360" y1="360" x2="569" y2="151"/>
+          <line x1="360" y1="360" x2="660" y2="360"/>
+          <line x1="360" y1="360" x2="569" y2="569"/>
+          <line x1="360" y1="360" x2="360" y2="660"/>
+          <line x1="360" y1="360" x2="151" y2="569"/>
+          <line x1="360" y1="360" x2="60" y2="360"/>
+          <line x1="360" y1="360" x2="151" y2="151"/>
+        </g>
+
+        <!-- Pulses dorés circulant centre → agents -->
+        <g fill="#c4a273">
+          <circle r="3.5"><animateMotion dur="5s" repeatCount="indefinite" path="M 360 360 L 360 65"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="0.6s" repeatCount="indefinite" path="M 360 360 L 569 151"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="1.2s" repeatCount="indefinite" path="M 360 360 L 660 360"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="1.8s" repeatCount="indefinite" path="M 360 360 L 569 569"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="2.4s" repeatCount="indefinite" path="M 360 360 L 360 660"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="3.0s" repeatCount="indefinite" path="M 360 360 L 151 569"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="3.6s" repeatCount="indefinite" path="M 360 360 L 60 360"/></circle>
+          <circle r="3.5"><animateMotion dur="5s" begin="4.2s" repeatCount="indefinite" path="M 360 360 L 151 151"/></circle>
+        </g>
+      </svg>
+
+      <!-- Centre : Marcel -->
+      <div class="center">
+        <div class="center-mark">★ Chef d'orchestre</div>
+        <div class="center-name">Marcel</div>
+        <div class="center-role">Arbitre · décide</div>
+      </div>
+
+      <!-- 8 agents -->
+      <a href="#card-josephine" class="agent-node agent-1">
+        <div class="agent-icon">💎</div>
+        <div class="agent-name">Joséphine</div>
+        <div class="agent-domain">Voyage</div>
+      </a>
+      <a href="#card-emile" class="agent-node agent-2">
+        <div class="agent-icon">🎨</div>
+        <div class="agent-name">Émile</div>
+        <div class="agent-domain">Art</div>
+      </a>
+      <a href="#card-leon" class="agent-node agent-3">
+        <div class="agent-icon">📊</div>
+        <div class="agent-name">Léon</div>
+        <div class="agent-domain">Marchés</div>
+      </a>
+      <a href="#card-augustin" class="agent-node agent-4">
+        <div class="agent-icon">🌱</div>
+        <div class="agent-name">Augustin</div>
+        <div class="agent-domain">Private Equity</div>
+      </a>
+      <a href="#card-helene" class="agent-node agent-5">
+        <div class="agent-icon">🏠</div>
+        <div class="agent-name">Hélène</div>
+        <div class="agent-domain">Immobilier</div>
+      </a>
+      <a href="#card-auguste" class="agent-node agent-6">
+        <div class="agent-icon">🏛</div>
+        <div class="agent-name">Auguste</div>
+        <div class="agent-domain">Juridique</div>
+      </a>
+      <a href="#card-camille" class="agent-node agent-7">
+        <div class="agent-icon">📋</div>
+        <div class="agent-name">Camille</div>
+        <div class="agent-domain">Secrétariat</div>
+      </a>
+      <a href="#card-iris" class="agent-node agent-8">
+        <div class="agent-icon">🤲</div>
+        <div class="agent-name">Iris</div>
+        <div class="agent-domain">Philanthropie</div>
+      </a>
+    </div>
+
+    <!-- ─── Cards détaillées ─── -->
+    <div class="agents-grid">
+
+      <article class="agent-card" id="card-marcel" style="grid-column:1/-1; background:linear-gradient(135deg, var(--bg-dark) 0%, #14110d 100%); border:1px solid var(--gold-bright)">
+        <div class="agent-card-head">
+          <div class="agent-card-icon" style="background:rgba(196,162,115,0.25); border-color:var(--gold-bright)">🎯</div>
+          <div>
+            <div class="agent-card-name">Marcel <span style="color:var(--gold-bright); font-size:13px; letter-spacing:0.08em; margin-left:8px">★ CHEF D'ORCHESTRE</span></div>
+            <div class="agent-card-role">Orchestrateur · Anthropic Claude Agent SDK</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">
+          Marcel est l'unique point de contact. Il <strong>écoute</strong>, <strong>qualifie</strong> votre demande, <strong>route</strong> vers le bon spécialiste et <strong>agrège</strong> les réponses. Il connaît votre famille, votre patrimoine, vos préférences. Il pose les bonnes questions, jamais de recommandation directe — la décision reste à Maxime, qui valide tout livrable réglementaire.
+        </p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">CAPACITÉS</div>
+          <div class="agent-card-tools-list">
+            <span>session_memory</span> <span>routing</span> <span>tool_calling</span> <span>web_search</span> <span>multilingue</span> <span>document_pdf</span> <span>follow_ups</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-auguste">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">🏛</div>
+          <div>
+            <div class="agent-card-name">Auguste</div>
+            <div class="agent-card-role">Juridique &amp; Fiscal</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Veille fiscale en temps réel, optimisation IR/IFI/PV/Dutreil, structuration successorale. Sources Légifrance + BOFIP. Aucun chiffre sans citation CGI.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>calc_ir_2026</span> <span>calc_ifi_2026</span> <span>calc_pv_immo</span> <span>calc_succession</span> <span>calc_dutreil</span> <span>calc_150_0_b_ter</span> <span>legifrance</span> <span>bofip</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-leon">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">📊</div>
+          <div>
+            <div class="agent-card-name">Léon</div>
+            <div class="agent-card-role">Marchés financiers</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Allocation cible vs réelle, alertes drawdown, news macro filtrées par positions, propositions d'arbitrages soumises à Maxime. Pas d'exécution sans validation.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>portfolio_state</span> <span>market_news</span> <span>quote_isin</span> <span>rebalancing_plan</span> <span>drawdown_alert</span> <span>fund_lookup</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-josephine">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">💎</div>
+          <div>
+            <div class="agent-card-name">Joséphine</div>
+            <div class="agent-card-role">Conciergerie &amp; voyages</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Hôtels Relais &amp; Châteaux, jets privés, restaurants étoilés, événements privés, scolarité internationale, réservations sécurisées. Discrétion absolue.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>hotel_search</span> <span>flight_charter</span> <span>restaurant_book</span> <span>event_calendar</span> <span>preferences_memory</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-emile">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">🎨</div>
+          <div>
+            <div class="agent-card-name">Émile</div>
+            <div class="agent-card-role">Art &amp; collections</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Curation, valorisation, suivi de cotes, ventes Sotheby's/Christie's/Drouot, assurance d'œuvres, déclarations IFI. Réseau d'experts indépendants.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>artprice_lookup</span> <span>auction_watch</span> <span>insurance_quote</span> <span>provenance_check</span> <span>ifi_art_value</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-helene">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">🏠</div>
+          <div>
+            <div class="agent-card-name">Hélène</div>
+            <div class="agent-card-role">Immobilier</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Recherche d'acquisition, gestion locative, travaux, valorisation DVF, cession. Données de marché en temps réel + agents prescripteurs.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>dvf_lookup</span> <span>price_estimate</span> <span>rental_yield</span> <span>property_search</span> <span>cadastre</span> <span>energy_audit</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-augustin">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">🌱</div>
+          <div>
+            <div class="agent-card-name">Augustin</div>
+            <div class="agent-card-role">Private Equity</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Sourcing deals seed/Series A, due diligence, dette privée, club deals, suivi performance. Sélection rigoureuse, alignement d'intérêts.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>deal_pipeline</span> <span>fund_screener</span> <span>nav_tracker</span> <span>capital_call</span> <span>tri_irr_calc</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-camille">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">📋</div>
+          <div>
+            <div class="agent-card-name">Camille</div>
+            <div class="agent-card-role">Family Secretary</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Échéances fiscales, paiements récurrents, courriers sensibles, archivage eIDAS, scolarité, factures, RDV famille. La mémoire administrative qui ne dort jamais.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>calendar_sync</span> <span>email_dispatch</span> <span>doc_archive</span> <span>signature_yousign</span> <span>kyc_ubble</span> <span>reminder_engine</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="agent-card" id="card-iris">
+        <div class="agent-card-head">
+          <div class="agent-card-icon">🤲</div>
+          <div>
+            <div class="agent-card-name">Iris</div>
+            <div class="agent-card-role">Philanthropie &amp; Impact</div>
+          </div>
+        </div>
+        <p class="agent-card-desc">Structuration de fondation, sélection de causes, dons défiscalisables, mesure d'impact, reporting trimestriel. Au croisement de la transmission de valeurs et de l'optimisation fiscale.</p>
+        <div class="agent-card-tools">
+          <div class="agent-card-tools-label">TOOLS</div>
+          <div class="agent-card-tools-list">
+            <span>foundation_setup</span> <span>cause_match</span> <span>tax_deduction_calc</span> <span>impact_metrics</span> <span>donor_reporting</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── API & INTÉGRATIONS ─── -->
+  <section class="api-section" id="api">
+
+    <div class="section-head" style="margin-bottom:60px">
+      <h2>Une plateforme <em>ouverte</em>.<br>Pilotable par API.</h2>
+      <div class="meta">
+        <strong>api.ikcp.eu</strong> · v1<br>
+        Auth <strong>Bearer + HMAC</strong><br>
+        <strong>Cloudflare Workers</strong> · edge<br>
+        Conforme <strong>DORA · RGPD · MIF II</strong>
+      </div>
+    </div>
+
+    <div class="api-grid">
+      <div>
+        <div class="api-text-kicker">Architecture</div>
+        <h2 class="api-text-h2">L'écosystème IKCP <em>parle</em><br>à votre écosystème.</h2>
+        <p class="api-text-body">
+          Une seule donnée saisie, réutilisée partout. Marcel et les agents disposent de la même couche d'API que vos partenaires existants — <strong>signature électronique, KYC fort, agrégation bancaire, signalement, reporting</strong>.
+        </p>
+        <p class="api-text-body">
+          Toutes les données fiscales transitent par <strong>ikcp-mcp</strong>, notre serveur de calcul propriétaire hébergé à Paris (Scaleway fr-par), <strong>RGPD-safe by design</strong>. Aucune donnée nominative n'entre dans une fonction de calcul.
+        </p>
+
+        <div class="api-partners">
+          <span class="api-partner">Yousign</span>
+          <span class="api-partner">Universign</span>
+          <span class="api-partner">Ubble</span>
+          <span class="api-partner">Notion</span>
+          <span class="api-partner">Stripe</span>
+          <span class="api-partner">Make</span>
+          <span class="api-partner">Powens</span>
+          <span class="api-partner">Bridge</span>
+          <span class="api-partner">Calendly</span>
+          <span class="api-partner">Resend</span>
+          <span class="api-partner">Beehiiv</span>
+          <span class="api-partner">Légifrance</span>
+        </div>
+
+        <div class="endpoints">
+          <h4>Endpoints publics — v1</h4>
+          <div class="endpoint-row">
+            <div class="method post">POST</div>
+            <div class="path">/v1/marcel</div>
+            <div class="desc">Conversation Marcel + tool calling</div>
+          </div>
+          <div class="endpoint-row">
+            <div class="method post">POST</div>
+            <div class="path">/v1/agents/&lt;name&gt;</div>
+            <div class="desc">Appel direct à un agent (auguste, leon…)</div>
+          </div>
+          <div class="endpoint-row">
+            <div class="method">GET</div>
+            <div class="path">/v1/calc/&lt;tool&gt;</div>
+            <div class="desc">7 calculs fiscaux déterministes (ikcp-mcp)</div>
+          </div>
+          <div class="endpoint-row">
+            <div class="method post">POST</div>
+            <div class="path">/v1/recueil</div>
+            <div class="desc">Recueil patrimonial — sync localStorage ↔ Notion</div>
+          </div>
+          <div class="endpoint-row">
+            <div class="method post">POST</div>
+            <div class="path">/v1/sign</div>
+            <div class="desc">Signature électronique embarquée (Yousign)</div>
+          </div>
+          <div class="endpoint-row">
+            <div class="method post">POST</div>
+            <div class="path">/v1/kyc</div>
+            <div class="desc">Vérification d'identité forte (Ubble · PVID ANSSI)</div>
+          </div>
+          <div class="endpoint-row">
+            <div class="method post">POST</div>
+            <div class="path">/v1/webhooks/&lt;src&gt;</div>
+            <div class="desc">Events entrants signés HMAC</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terminal -->
+      <div>
+        <div class="terminal">
+          <div class="terminal-head">
+            <span class="terminal-dot" style="background:#ff5f56"></span>
+            <span class="terminal-dot" style="background:#ffbd2e"></span>
+            <span class="terminal-dot" style="background:#27c93f"></span>
+            <span class="url">curl · api.ikcp.eu/v1/marcel</span>
+          </div>
+          <div class="terminal-body">
+<span class="com"># Marcel route vers Auguste pour un calcul Dutreil</span><br>
+<span class="verb">curl</span> <span class="path">https://api.ikcp.eu/v1/marcel</span> \<br>
+&nbsp;&nbsp;-H <span class="str">"Authorization: Bearer ikcp_live_..."</span> \<br>
+&nbsp;&nbsp;-H <span class="str">"Content-Type: application/json"</span> \<br>
+&nbsp;&nbsp;-d <span class="str">'{"message":"Dutreil sur 60% de</span><br>
+&nbsp;&nbsp;<span class="str">parts d'une SAS à 8M€, 2 enfants"}'</span><br>
+<br>
+<span class="com"># Réponse — orchestration multi-agents</span><br>
+<span class="punct">{</span><br>
+&nbsp;&nbsp;<span class="key">"reply"</span><span class="punct">:</span> <span class="str">"Dutreil exonère 75 % de la valeur..."</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"agent_chain"</span><span class="punct">:</span> <span class="punct">[</span><span class="str">"marcel"</span><span class="punct">,</span> <span class="str">"auguste"</span><span class="punct">],</span><br>
+&nbsp;&nbsp;<span class="key">"tool_calls"</span><span class="punct">:</span> <span class="punct">[{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"name"</span><span class="punct">:</span> <span class="str">"calc_dutreil"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"input"</span><span class="punct">:</span> <span class="punct">{</span><span class="key">"valeur_titres"</span><span class="punct">:</span> <span class="num">8000000</span><span class="punct">,</span> <span class="key">"part_eligible_pct"</span><span class="punct">:</span> <span class="num">60</span><span class="punct">},</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"output"</span><span class="punct">:</span> <span class="punct">{</span><span class="key">"droits_du"</span><span class="punct">:</span> <span class="num">235800</span><span class="punct">,</span> <span class="key">"economie"</span><span class="punct">:</span> <span class="num">1480000</span><span class="punct">}</span><br>
+&nbsp;&nbsp;<span class="punct">}],</span><br>
+&nbsp;&nbsp;<span class="key">"sources"</span><span class="punct">:</span> <span class="str">"art. 787 B CGI · LF 2026"</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"requires_human_validation"</span><span class="punct">:</span> <span class="ok">true</span><span class="punct">,</span><br>
+&nbsp;&nbsp;<span class="key">"trace_id"</span><span class="punct">:</span> <span class="str">"8f4c-3a1b-..."</span><br>
+<span class="punct">}</span>
+          </div>
+        </div>
+
+        <div class="terminal" style="margin-top:24px">
+          <div class="terminal-head">
+            <span class="terminal-dot" style="background:#ff5f56"></span>
+            <span class="terminal-dot" style="background:#ffbd2e"></span>
+            <span class="terminal-dot" style="background:#27c93f"></span>
+            <span class="url">curl · api.ikcp.eu/v1/agents/josephine</span>
+          </div>
+          <div class="terminal-body">
+<span class="com"># Appel direct à Joséphine (conciergerie)</span><br>
+<span class="verb">curl</span> <span class="path">.../v1/agents/josephine</span> \<br>
+&nbsp;&nbsp;-d <span class="str">'{"task":"3 nuits Megève fév 2027,</span><br>
+&nbsp;&nbsp;<span class="str">famille 4, suite spa"}'</span><br>
+<br>
+<span class="punct">{</span><br>
+&nbsp;&nbsp;<span class="key">"proposals"</span><span class="punct">:</span> <span class="punct">[</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="punct">{</span><span class="key">"hotel"</span><span class="punct">:</span> <span class="str">"Les Fermes de Marie"</span><span class="punct">,</span> <span class="key">"score"</span><span class="punct">:</span> <span class="num">0.94</span><span class="punct">},</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="punct">{</span><span class="key">"hotel"</span><span class="punct">:</span> <span class="str">"Four Seasons Megève"</span><span class="punct">,</span> <span class="key">"score"</span><span class="punct">:</span> <span class="num">0.91</span><span class="punct">}</span><br>
+&nbsp;&nbsp;<span class="punct">],</span><br>
+&nbsp;&nbsp;<span class="key">"awaiting_validation"</span><span class="punct">:</span> <span class="ok">true</span><br>
+<span class="punct">}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─── CTA FINAL ─── -->
+  <section class="cta-final">
+    <h2 class="cta-final-h">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+    <p class="cta-final-sub">
+      Family Office augmenté. Marcel à la baguette. Huit agents IA. Une équipe humaine derrière chaque décision réglementaire.
+    </p>
+    <div class="cta-final-row">
+      <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office%20%E2%80%94%20IKCP" class="cta-primary">Demander une recommandation</a>
+      <a href="#agents" class="cta-secondary">Découvrir l'équipage →</a>
+    </div>
+    <div class="cta-note">Sur recommandation · Familles à patrimoine constitué (&gt; 5 M€) · ORIAS 23001568</div>
+  </section>
+
+</div>
+<!-- /.dark-zone -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="proto">
+  <p>
+    Aperçu visuel — IKCP Plateforme v2 · Family Office · API · Marcel &amp; 8 Agents IA<br>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    <span style="opacity:0.6">Les noms d'agents sont conceptuels. L'implémentation suit le Claude Agent SDK et la roadmap IKCP-PLATFORM.</span><br>
+    <a href="../index.html">← Retour site actuel</a> · <a href="ikcp-with-family-office-preview.html">Aperçu v1</a>
+  </p>
+</footer>
+
+</body>
+</html>

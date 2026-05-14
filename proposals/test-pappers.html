@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Pappers — interface de test</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --paper:#FAF6EE; --paper-2:#F4ECDF; --paper-3:#EDDFC8;
+  --ink:#2D2520; --ink-mute:#6B5D52; --ink-faint:#9B8B7C;
+  --terra:#D97757; --terra-deep:#B85A3E; --terra-light:#E8AB8E;
+  --gold:#C9A96E;
+  --line:#E0D4BE; --line-strong:#C9B89E;
+  --green:#15803d; --red:#b91c1c;
+}
+
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter',sans-serif; font-weight:400; line-height:1.55;
+  min-height:100vh;
+}
+
+main{max-width:1100px; margin:0 auto; padding:60px 32px}
+
+/* ─── HEADER ─── */
+.head{display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:24px; border-bottom:1px solid var(--line); margin-bottom:48px}
+.brand{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:32px; font-weight:600; color:var(--ink); line-height:1}
+.brand b{color:var(--terra); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.32em; color:var(--terra-deep); text-transform:uppercase; margin-top:6px; font-weight:600}
+.back{color:var(--ink-mute); text-decoration:none; font-size:13px; transition:color 0.2s}
+.back:hover{color:var(--terra)}
+
+/* ─── INTRO ─── */
+.intro{margin-bottom:36px}
+.intro h1{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:38px; line-height:1.1; color:var(--ink); font-weight:500; margin-bottom:14px; letter-spacing:-0.02em}
+.intro h1 em{color:var(--terra-deep); font-style:italic}
+.intro p{color:var(--ink-mute); font-size:15px; line-height:1.7; max-width:680px}
+.intro p strong{color:var(--ink); font-weight:500}
+
+/* ─── CONFIG BLOC ─── */
+.config{
+  background:var(--paper-2); border:1px solid var(--line-strong);
+  border-radius:14px; padding:24px 28px; margin-bottom:32px;
+}
+.config h3{font-family:'Fraunces',serif; font-size:18px; color:var(--ink); margin-bottom:6px; font-weight:600}
+.config-sub{font-size:13px; color:var(--ink-mute); margin-bottom:18px; line-height:1.5}
+.config-sub a{color:var(--terra-deep); border-bottom:1px solid var(--line-strong)}
+.config-row{display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; padding:8px 0}
+.config-row label{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--terra-deep); letter-spacing:0.1em; min-width:130px; font-weight:600}
+.config-row input{
+  flex:1; padding:10px 14px; background:var(--paper); border:1px solid var(--line);
+  border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--ink);
+}
+.config-row input:focus{outline:none; border-color:var(--terra)}
+.config-row .clear{background:none; border:none; color:var(--ink-faint); font-size:11px; cursor:pointer; padding:6px 10px; transition:color 0.2s}
+.config-row .clear:hover{color:var(--terra-deep)}
+.config-mode{display:flex; gap:8px; margin-bottom:18px; padding:4px; background:var(--paper); border-radius:10px; border:1px solid var(--line)}
+.config-mode label{flex:1; padding:8px 12px; text-align:center; font-size:12.5px; cursor:pointer; border-radius:8px; transition:all 0.2s; font-weight:500; color:var(--ink-mute)}
+.config-mode label:has(input:checked){background:var(--terra); color:var(--paper)}
+.config-mode input{display:none}
+
+/* ─── SEARCH BLOC ─── */
+.search{margin-bottom:32px}
+.search-form{display:flex; gap:10px; margin-bottom:8px}
+.search-form input{
+  flex:1; padding:18px 22px; background:var(--paper); border:1.5px solid var(--line-strong);
+  border-radius:14px; font-size:16px; color:var(--ink); font-family:'Inter',sans-serif;
+}
+.search-form input:focus{outline:none; border-color:var(--terra); box-shadow:0 0 0 3px rgba(217,119,87,0.12)}
+.search-form button{
+  padding:18px 36px; background:var(--terra); color:var(--paper); border:none;
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:600; letter-spacing:0.04em;
+  border-radius:14px; cursor:pointer; transition:all 0.2s;
+}
+.search-form button:hover:not(:disabled){background:var(--terra-deep); transform:translateY(-1px)}
+.search-form button:disabled{opacity:0.6; cursor:not-allowed}
+.search-hint{font-size:12px; color:var(--ink-faint); font-style:italic; margin-top:6px}
+
+/* ─── STATUS ─── */
+.status{
+  padding:14px 18px; border-radius:10px; margin-bottom:24px;
+  font-family:'JetBrains Mono',monospace; font-size:12.5px;
+  display:none;
+}
+.status.show{display:block}
+.status.ok{background:rgba(21,128,61,0.08); color:var(--green); border:1px solid rgba(21,128,61,0.2)}
+.status.err{background:rgba(185,28,28,0.08); color:var(--red); border:1px solid rgba(185,28,28,0.2)}
+.status.loading{background:var(--paper-2); color:var(--ink-mute); border:1px solid var(--line)}
+
+/* ─── RESULTS ─── */
+.results{display:none}
+.results.show{display:block}
+
+.entreprise-card{
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:18px;
+  overflow:hidden; box-shadow:0 12px 40px rgba(45,37,32,0.06);
+  margin-bottom:24px;
+}
+.ent-header{padding:32px 36px; background:linear-gradient(135deg, var(--paper-2), var(--paper-3))}
+.ent-name{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:34px; color:var(--ink); font-weight:500; line-height:1.1; letter-spacing:-0.025em; margin-bottom:8px}
+.ent-name em{font-style:italic; color:var(--terra-deep)}
+.ent-meta{display:flex; gap:20px; flex-wrap:wrap; font-size:13px; color:var(--ink-mute); align-items:center}
+.ent-meta .pill{background:var(--paper); padding:4px 12px; border-radius:30px; border:1px solid var(--line); font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.04em; color:var(--ink)}
+.ent-meta .pill.green{background:rgba(21,128,61,0.1); color:var(--green); border-color:rgba(21,128,61,0.2)}
+
+.ent-body{padding:28px 36px}
+.ent-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:28px}
+@media (max-width:760px){.ent-grid{grid-template-columns:repeat(2, 1fr)}}
+.ent-tile{padding:18px 20px; border-right:1px solid var(--line); background:var(--paper-2)}
+.ent-tile:last-child{border-right:none}
+.ent-tile-l{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; color:var(--terra-deep); font-weight:700; margin-bottom:8px}
+.ent-tile-v{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; color:var(--ink); font-weight:500; line-height:1; letter-spacing:-0.02em}
+.ent-tile-m{font-size:11px; color:var(--ink-faint); margin-top:5px; font-style:italic}
+
+.ent-section{margin-top:24px}
+.ent-section h4{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:18px; color:var(--ink); font-weight:600; margin-bottom:12px; padding-bottom:8px; border-bottom:1.5px solid var(--terra)}
+.ent-list{display:flex; flex-direction:column; gap:8px}
+.ent-list-row{
+  display:grid; grid-template-columns:1fr auto auto; gap:18px; align-items:center;
+  padding:12px 16px; background:var(--paper-2); border-radius:10px;
+  font-size:13.5px;
+}
+.ent-list-row .who{font-family:'Fraunces',serif; font-style:italic; color:var(--ink); font-weight:500; font-size:15px}
+.ent-list-row .role{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.1em; color:var(--terra-deep); font-weight:600; text-transform:uppercase}
+.ent-list-row .pct{font-family:'Fraunces',serif; font-size:16px; color:var(--terra-deep); font-weight:600}
+.ent-list-row .since{font-size:11.5px; color:var(--ink-faint); font-style:italic}
+
+.ent-finances{margin-top:24px}
+.fin-grid{display:grid; grid-template-columns:auto 1fr 1fr 1fr; gap:0; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+.fin-cell{padding:12px 16px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--paper)}
+.fin-cell:nth-child(4n){border-right:none}
+.fin-cell.head{background:var(--paper-3); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; color:var(--terra-deep); font-weight:700; text-transform:uppercase}
+.fin-cell .val{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:16px; color:var(--ink); font-weight:500}
+.fin-cell .yr{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-mute)}
+
+/* Actions */
+.actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:32px; padding-top:28px; border-top:1px solid var(--line)}
+.btn{
+  padding:14px 26px; border-radius:30px; text-decoration:none; cursor:pointer;
+  font-size:13px; font-weight:600; letter-spacing:0.04em; transition:all 0.25s;
+  display:inline-flex; align-items:center; gap:8px; border:none; font-family:'Inter',sans-serif;
+}
+.btn-primary{background:var(--ink); color:var(--paper)}
+.btn-primary:hover{background:var(--terra)}
+.btn-secondary{background:var(--paper-2); color:var(--ink); border:1px solid var(--line-strong)}
+.btn-secondary:hover{background:var(--paper-3)}
+
+/* Search results list */
+.search-results{display:flex; flex-direction:column; gap:10px; margin-top:20px}
+.search-row{
+  background:var(--paper); border:1px solid var(--line); border-radius:12px;
+  padding:18px 22px; cursor:pointer; transition:all 0.2s;
+  display:grid; grid-template-columns:1fr auto auto; gap:18px; align-items:center;
+}
+.search-row:hover{background:var(--paper-2); border-color:var(--terra-light); transform:translateY(-1px)}
+.search-row .nom{font-family:'Fraunces',serif; font-size:18px; color:var(--ink); font-weight:500; line-height:1.2}
+.search-row .meta{font-size:12px; color:var(--ink-faint); margin-top:4px; display:flex; gap:10px; flex-wrap:wrap}
+.search-row .meta span{display:inline-block}
+.search-row .meta b{color:var(--ink-mute); font-weight:500}
+.search-row .siren{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--terra-deep); font-weight:600; letter-spacing:0.04em}
+.search-row .arrow{color:var(--ink-faint); font-size:18px; transition:all 0.2s}
+.search-row:hover .arrow{color:var(--terra); transform:translateX(4px)}
+
+.raw{
+  margin-top:32px; background:#1a1612; color:#E8AB8E;
+  padding:20px 24px; border-radius:12px;
+  font-family:'JetBrains Mono',monospace; font-size:11.5px; line-height:1.6;
+  overflow-x:auto; max-height:400px; overflow-y:auto;
+}
+.raw .key{color:#7eb1d8}
+.raw .str{color:#a8c98a}
+.raw .num{color:#e3a86a}
+.raw-toggle{font-size:12px; color:var(--ink-faint); cursor:pointer; margin-top:12px; user-select:none}
+.raw-toggle:hover{color:var(--terra)}
+
+/* Footer */
+footer{padding:48px 32px; text-align:center; color:var(--ink-faint); font-size:11.5px; border-top:1px solid var(--line); margin-top:60px}
+footer a{color:var(--terra-deep); text-decoration:none; border-bottom:1px solid transparent}
+footer a:hover{border-color:var(--terra-deep)}
+
+@media (max-width:760px){
+  main{padding:40px 22px}
+  .head{flex-direction:column; align-items:flex-start; gap:12px}
+  .intro h1{font-size:30px}
+  .ent-name{font-size:26px}
+  .config-row{grid-template-columns:1fr}
+  .config-row label{min-width:auto}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="head">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Pappers · Interface de test</div>
+  </div>
+  <a href="family-office-orbite.html" class="back">← Retour Family Office</a>
+</header>
+
+<section class="intro">
+  <h1>Pappers — entry point<br>de <em>Théodore</em>.</h1>
+  <p>Saisissez un <strong>SIREN</strong> ou un nom d'entreprise pour récupérer la fiche complète : forme juridique, capital, dirigeants, bénéficiaires effectifs, finances. Les données alimentent ensuite Théodore (Architecte 360°) pour bâtir la cartographie patrimoniale.</p>
+</section>
+
+<!-- ─── CONFIG ─── -->
+<div class="config">
+  <h3>Configuration</h3>
+  <p class="config-sub">
+    <strong>Mode direct</strong> : appelle Pappers depuis votre navigateur (test rapide, clé visible localement).<br>
+    <strong>Mode worker</strong> : passe par <code>ikcp-pappers</code> (clé côté serveur, prod).
+    Pas de clé Pappers ? <a href="https://www.pappers.fr/api/inscription" target="_blank" rel="noopener">Inscription gratuite (100 req/mois)</a>.
+  </p>
+
+  <div class="config-mode">
+    <label><input type="radio" name="mode" value="direct" checked>🔓 Direct (clé locale)</label>
+    <label><input type="radio" name="mode" value="worker">🛡️ Via Worker (prod)</label>
+  </div>
+
+  <div id="config-direct">
+    <div class="config-row">
+      <label>PAPPERS_API_KEY</label>
+      <input type="password" id="apiKey" placeholder="Coller votre clé Pappers (ex: abc123...)" autocomplete="off">
+      <button class="clear" onclick="clearKey()">Effacer</button>
+    </div>
+  </div>
+
+  <div id="config-worker" style="display:none">
+    <div class="config-row">
+      <label>WORKER_URL</label>
+      <input type="text" id="workerUrl" placeholder="https://ikcp-pappers.<sous-domaine>.workers.dev" autocomplete="off">
+      <button class="clear" onclick="clearUrl()">Effacer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SEARCH ─── -->
+<section class="search">
+  <form class="search-form" onsubmit="event.preventDefault(); doSearch()">
+    <input type="text" id="query" placeholder="SIREN (9 chiffres) ou nom d'entreprise" autocomplete="off">
+    <button type="submit" id="searchBtn">Rechercher</button>
+  </form>
+  <div class="search-hint">Exemples : <code>947972436</code> (IKCP) · <code>552032534</code> (Hermès International) · <code>LVMH</code> · <code>Total Energies</code></div>
+</section>
+
+<!-- ─── STATUS ─── -->
+<div class="status" id="status"></div>
+
+<!-- ─── SEARCH RESULTS LIST ─── -->
+<div class="results" id="searchResults"></div>
+
+<!-- ─── ENTREPRISE DETAIL ─── -->
+<div class="results" id="entrepriseDetail"></div>
+
+<footer>
+  IKCP · ORIAS 23001568 · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · Test interface — non publiée
+</footer>
+
+</main>
+
+<script>
+// ─── State & persistence ─────────────────────────────────
+const STORAGE_KEY = 'ikcp_pappers_test_v1';
+let mode = 'direct';
+let apiKey = '';
+let workerUrl = '';
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    mode = s.mode || 'direct';
+    apiKey = s.apiKey || '';
+    workerUrl = s.workerUrl || '';
+  } catch (e) {}
+  document.querySelector(`input[name="mode"][value="${mode}"]`).checked = true;
+  document.getElementById('apiKey').value = apiKey;
+  document.getElementById('workerUrl').value = workerUrl;
+  toggleMode();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ mode, apiKey, workerUrl }));
+  } catch (e) {}
+}
+
+function toggleMode() {
+  document.getElementById('config-direct').style.display = mode === 'direct' ? '' : 'none';
+  document.getElementById('config-worker').style.display = mode === 'worker' ? '' : 'none';
+}
+
+document.querySelectorAll('input[name="mode"]').forEach(r => {
+  r.addEventListener('change', e => { mode = e.target.value; saveState(); toggleMode(); });
+});
+document.getElementById('apiKey').addEventListener('input', e => { apiKey = e.target.value.trim(); saveState(); });
+document.getElementById('workerUrl').addEventListener('input', e => { workerUrl = e.target.value.trim().replace(/\/$/, ''); saveState(); });
+
+function clearKey() { document.getElementById('apiKey').value = ''; apiKey = ''; saveState(); }
+function clearUrl() { document.getElementById('workerUrl').value = ''; workerUrl = ''; saveState(); }
+
+// ─── UI helpers ───────────────────────────────────────
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = `status show ${type}`;
+}
+function hideStatus() { document.getElementById('status').className = 'status'; }
+function showResults(id, html) {
+  document.getElementById(id).innerHTML = html;
+  document.getElementById(id).className = 'results show';
+}
+function hideResults(id) { document.getElementById(id).className = 'results'; }
+function fmt(n) { return n != null ? new Intl.NumberFormat('fr-FR').format(n) : '—'; }
+function fmtEur(n) { return n != null ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n) : '—'; }
+function fmtDate(s) { if (!s) return '—'; try { return new Date(s).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }); } catch (e) { return s; } }
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[c])); }
+
+// ─── API calls ────────────────────────────────────────
+async function callPappers(endpoint, params = {}) {
+  if (mode === 'direct') {
+    if (!apiKey) throw new Error('Clé Pappers manquante (saisis-la en haut)');
+    const url = new URL(`https://api.pappers.fr/v2/${endpoint}`);
+    url.searchParams.set('api_token', apiKey);
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    const res = await fetch(url);
+    if (!res.ok) {
+      let msg = `Pappers ${res.status}`;
+      try { const e = await res.json(); msg += ` — ${e.message || e.erreur || JSON.stringify(e)}`; } catch (_) {}
+      throw new Error(msg);
+    }
+    return res.json();
+  } else {
+    if (!workerUrl) throw new Error('Worker URL manquante (saisis-la en haut)');
+    let path;
+    if (endpoint === 'recherche') path = `/search?q=${encodeURIComponent(params.q)}`;
+    else if (endpoint === 'entreprise') path = `/entreprise/${params.siren}`;
+    else throw new Error('Endpoint non géré');
+    const res = await fetch(workerUrl + path);
+    if (!res.ok) {
+      let msg = `Worker ${res.status}`;
+      try { const e = await res.json(); msg += ` — ${e.error || JSON.stringify(e)}`; } catch (_) {}
+      throw new Error(msg);
+    }
+    return res.json();
+  }
+}
+
+// ─── Main search ──────────────────────────────────────
+async function doSearch() {
+  const q = document.getElementById('query').value.trim();
+  if (!q) return;
+
+  hideResults('searchResults');
+  hideResults('entrepriseDetail');
+  showStatus('Recherche en cours…', 'loading');
+  document.getElementById('searchBtn').disabled = true;
+
+  try {
+    // Si SIREN (9 chiffres) → fetch direct entreprise
+    if (/^\d{9}$/.test(q.replace(/\s/g, ''))) {
+      const siren = q.replace(/\s/g, '');
+      const data = mode === 'direct'
+        ? await callPappers('entreprise', { siren })
+        : await callPappers('entreprise', { siren });
+      hideStatus();
+      renderEntreprise(data);
+    } else {
+      // Sinon → recherche par nom
+      const data = mode === 'direct'
+        ? await callPappers('recherche', { q, par_page: 10 })
+        : await callPappers('recherche', { q });
+      hideStatus();
+      renderSearchResults(data);
+    }
+  } catch (e) {
+    showStatus(`✗ ${e.message}`, 'err');
+  } finally {
+    document.getElementById('searchBtn').disabled = false;
+  }
+}
+
+// ─── Render search results ────────────────────────────
+function renderSearchResults(data) {
+  const results = data.resultats || data.results || [];
+  if (!results.length) {
+    showStatus('Aucun résultat', 'err');
+    return;
+  }
+  let html = `<h3 style="font-family:'Fraunces',serif; font-size:22px; margin-bottom:16px; color:var(--ink); font-weight:500">${data.total || results.length} résultat(s)</h3>`;
+  html += `<div class="search-results">`;
+  results.forEach(r => {
+    const nom = r.nom_entreprise || r.denomination || r.nom || '—';
+    const ville = r.siege?.ville || '';
+    const fj = r.forme_juridique || '';
+    const cap = r.capital ? `cap. ${fmtEur(r.capital)}` : '';
+    const dirig = r.dirigeant_principal?.nom_complet || r.dirigeant_principal || '';
+    html += `
+      <div class="search-row" onclick="loadEntreprise('${r.siren}')">
+        <div>
+          <div class="nom">${escapeHtml(nom)}</div>
+          <div class="meta">
+            ${fj ? `<span><b>${escapeHtml(fj)}</b></span>` : ''}
+            ${ville ? `<span>📍 ${escapeHtml(ville)}</span>` : ''}
+            ${cap ? `<span>💼 ${escapeHtml(cap)}</span>` : ''}
+            ${dirig ? `<span>👤 ${escapeHtml(dirig)}</span>` : ''}
+          </div>
+        </div>
+        <div class="siren">${r.siren}</div>
+        <div class="arrow">→</div>
+      </div>`;
+  });
+  html += `</div>`;
+  showResults('searchResults', html);
+}
+
+async function loadEntreprise(siren) {
+  hideResults('searchResults');
+  showStatus(`Chargement SIREN ${siren}…`, 'loading');
+  try {
+    const data = await callPappers('entreprise', { siren });
+    hideStatus();
+    renderEntreprise(data);
+    window.scrollTo({ top: document.getElementById('entrepriseDetail').offsetTop - 60, behavior: 'smooth' });
+  } catch (e) {
+    showStatus(`✗ ${e.message}`, 'err');
+  }
+}
+
+// ─── Render entreprise ────────────────────────────────
+function renderEntreprise(d) {
+  const nom = d.nom_entreprise || d.nom || '—';
+  const fj = d.forme_juridique || '';
+  const siren = d.siren || '—';
+  const etat = d.etat_administratif || (d.actif ? 'Active' : null);
+
+  const dirigeants = d.representants || d.dirigeants || [];
+  const benefs = d.beneficiaires_effectifs || [];
+  const finances = (d.finances || []).slice(0, 4);
+
+  let html = `
+    <div class="entreprise-card">
+      <div class="ent-header">
+        <h2 class="ent-name">${escapeHtml(nom)}</h2>
+        <div class="ent-meta">
+          ${fj ? `<span class="pill">${escapeHtml(fj)}</span>` : ''}
+          <span class="pill">SIREN ${escapeHtml(siren)}</span>
+          ${etat ? `<span class="pill ${etat === 'Active' || etat === 'A' ? 'green' : ''}">${escapeHtml(etat === 'A' ? 'Active' : etat)}</span>` : ''}
+          ${d.date_creation ? `<span>créée le ${fmtDate(d.date_creation)}</span>` : ''}
+        </div>
+      </div>
+
+      <div class="ent-body">
+        <div class="ent-grid">
+          <div class="ent-tile">
+            <div class="ent-tile-l">Capital</div>
+            <div class="ent-tile-v">${fmtEur(d.capital)}</div>
+            ${d.devise_capital && d.devise_capital !== 'EUR' ? `<div class="ent-tile-m">${d.devise_capital}</div>` : ''}
+          </div>
+          <div class="ent-tile">
+            <div class="ent-tile-l">Effectif</div>
+            <div class="ent-tile-v">${escapeHtml(d.tranche_effectif || d.effectif || '—')}</div>
+          </div>
+          <div class="ent-tile">
+            <div class="ent-tile-l">CA dernier ex.</div>
+            <div class="ent-tile-v">${d.chiffre_affaires ? fmtEur(d.chiffre_affaires) : '—'}</div>
+          </div>
+          <div class="ent-tile">
+            <div class="ent-tile-l">Résultat</div>
+            <div class="ent-tile-v" style="color:${d.resultat >= 0 ? 'var(--green)' : 'var(--red)'}">${d.resultat != null ? fmtEur(d.resultat) : '—'}</div>
+          </div>
+        </div>`;
+
+  // Identité
+  html += `<div class="ent-section">
+    <h4>Identité &amp; siège</h4>
+    <div style="font-size:14px; color:var(--ink); line-height:1.7">`;
+  if (d.siege) {
+    html += `${escapeHtml(d.siege.adresse_ligne_1 || '')}<br>${escapeHtml(d.siege.code_postal || '')} ${escapeHtml(d.siege.ville || '')}<br>`;
+  }
+  if (d.code_naf) html += `<span style="color:var(--ink-mute)">NAF ${escapeHtml(d.code_naf)} — ${escapeHtml(d.libelle_code_naf || '')}</span>`;
+  html += `</div></div>`;
+
+  // Dirigeants
+  if (dirigeants.length) {
+    html += `<div class="ent-section">
+      <h4>Dirigeants &amp; représentants (${dirigeants.length})</h4>
+      <div class="ent-list">`;
+    dirigeants.slice(0, 10).forEach(r => {
+      const n = r.nom_complet || `${r.prenom || ''} ${r.nom || ''}`.trim() || '—';
+      html += `
+        <div class="ent-list-row">
+          <div>
+            <div class="who">${escapeHtml(n)}</div>
+            ${r.date_de_naissance ? `<div class="since">né le ${fmtDate(r.date_de_naissance)}</div>` : ''}
+          </div>
+          <div class="role">${escapeHtml(r.qualite || '—')}</div>
+          <div class="since">${r.date_prise_de_poste ? `depuis ${fmtDate(r.date_prise_de_poste)}` : ''}</div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // Bénéficiaires
+  if (benefs.length) {
+    html += `<div class="ent-section">
+      <h4>Bénéficiaires effectifs (${benefs.length})</h4>
+      <div class="ent-list">`;
+    benefs.forEach(b => {
+      const n = b.nom_complet || `${b.prenom || ''} ${b.nom || ''}`.trim() || '—';
+      html += `
+        <div class="ent-list-row">
+          <div class="who">${escapeHtml(n)}</div>
+          <div class="role">${b.pourcentage_votes ? `${b.pourcentage_votes}% votes` : 'B.E.'}</div>
+          <div class="pct">${b.pourcentage_parts ? `${b.pourcentage_parts}%` : '—'}</div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // Finances
+  if (finances.length) {
+    html += `<div class="ent-section ent-finances">
+      <h4>Finances — derniers exercices</h4>
+      <div class="fin-grid">
+        <div class="fin-cell head">Année</div>
+        <div class="fin-cell head">Chiffre d'affaires</div>
+        <div class="fin-cell head">Résultat</div>
+        <div class="fin-cell head">Effectif</div>`;
+    finances.forEach(f => {
+      html += `
+        <div class="fin-cell"><span class="yr">${f.annee || '—'}</span></div>
+        <div class="fin-cell"><span class="val">${fmtEur(f.chiffre_affaires)}</span></div>
+        <div class="fin-cell"><span class="val" style="color:${f.resultat >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtEur(f.resultat)}</span></div>
+        <div class="fin-cell"><span class="val">${f.effectif != null ? fmt(f.effectif) : '—'}</span></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // Actions
+  html += `
+    <div class="actions">
+      <button class="btn btn-primary" onclick="alert('Mock — branchera sur Marcel + Théodore quand le worker ikcp-chat sera mis à jour avec le tool pappers_lookup')">📐 Envoyer à Théodore (Architecte)</button>
+      <button class="btn btn-secondary" onclick="toggleRaw()">🔍 Voir le JSON brut</button>
+      <button class="btn btn-secondary" onclick="copyJson()">📋 Copier le JSON</button>
+    </div>
+    <div class="raw-toggle"><span id="rawHint" style="display:none">↓ JSON brut affiché ci-dessous</span></div>
+    <pre class="raw" id="rawJson" style="display:none">${escapeHtml(JSON.stringify(d, null, 2))}</pre>`;
+
+  html += `</div></div>`;
+  showResults('entrepriseDetail', html);
+}
+
+function toggleRaw() {
+  const el = document.getElementById('rawJson');
+  const hint = document.getElementById('rawHint');
+  const visible = el.style.display !== 'none';
+  el.style.display = visible ? 'none' : 'block';
+  hint.style.display = visible ? 'none' : 'block';
+}
+
+async function copyJson() {
+  const el = document.getElementById('rawJson');
+  try {
+    await navigator.clipboard.writeText(el.textContent);
+    showStatus('✓ JSON copié dans le presse-papier', 'ok');
+    setTimeout(hideStatus, 2000);
+  } catch (e) {
+    showStatus('✗ ' + e.message, 'err');
+  }
+}
+
+// Init
+loadState();
+</script>
+
+</body>
+</html>

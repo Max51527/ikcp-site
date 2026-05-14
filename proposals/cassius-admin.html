@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Cassius · votre co-pilote IA (brief du matin, propositions, audit)</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+  --diff-add:#dcfce7; --diff-del:#fee2e2;
+}
+html,body{background:var(--cream); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.6; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased}
+
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+header.admin{background:var(--cream); border-bottom:1px solid var(--line); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:32px; z-index:100; backdrop-filter:blur(8px)}
+.brand{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1}
+.brand b{color:var(--gold); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.32em; color:var(--gold-deep); margin-top:5px; font-weight:600; text-transform:uppercase}
+
+.admin-pill{display:flex; align-items:center; gap:14px; padding:6px 8px 6px 16px; background:var(--cream-2); border:1px solid var(--line-strong); border-radius:30px}
+.admin-pill .name{font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); font-weight:500}
+.admin-pill .role{padding:4px 10px; background:var(--navy); color:var(--gold-bright); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; font-weight:700}
+.admin-status{display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--ok); font-weight:600; padding:5px 12px; background:rgba(63,122,63,0.10); border-radius:30px; font-family:'JetBrains Mono',monospace; letter-spacing:0.08em}
+.admin-status::before{content:''; width:7px; height:7px; background:var(--ok); border-radius:50%; animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+main{max-width:1380px; margin:0 auto; padding:36px 32px 80px}
+
+/* ─── HERO BRIEF MATIN ─── */
+.brief-hero{background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:24px; padding:36px 40px; color:var(--cream); position:relative; overflow:hidden; margin-bottom:36px; box-shadow:0 24px 60px rgba(27,42,74,0.18)}
+.brief-hero::before{content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.brief-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:10px}
+.brief-mark::before{content:'★ '}
+.brief-h{font-family:'Playfair Display',serif; font-size:clamp(28px,3.6vw,38px); font-weight:500; letter-spacing:-0.018em; line-height:1.1; color:var(--cream); margin-bottom:8px}
+.brief-h em{color:var(--gold-bright); font-style:italic}
+.brief-time{font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:rgba(250,250,248,0.65); margin-bottom:24px}
+
+.brief-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; padding-top:24px; border-top:1px dashed rgba(226,200,150,0.20)}
+@media (max-width:760px){.brief-stats{grid-template-columns:repeat(2,1fr)}}
+.brief-stat{text-align:center}
+.brief-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:28px; color:var(--gold-bright); font-weight:500; line-height:1}
+.brief-stat-v i{font-style:normal; font-size:16px; opacity:0.7}
+.brief-stat-l{font-size:10.5px; color:rgba(250,250,248,0.65); letter-spacing:0.14em; text-transform:uppercase; font-weight:600; margin-top:4px}
+
+/* ─── BRIEF BULLETS ─── */
+.brief-bullets{display:flex; flex-direction:column; gap:12px; margin-top:24px}
+.bullet{display:flex; gap:14px; align-items:flex-start; padding:14px 18px; background:rgba(255,255,255,0.05); border-left:3px solid var(--gold); border-radius:0 12px 12px 0}
+.bullet.high{border-left-color:var(--warn); background:rgba(184,128,31,0.10)}
+.bullet.critical{border-left-color:var(--bad); background:rgba(185,28,28,0.10)}
+.bullet-tag{flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; padding:3px 9px; border-radius:30px; font-weight:700; text-transform:uppercase; background:var(--gold); color:var(--navy)}
+.bullet.high .bullet-tag{background:var(--warn); color:var(--cream)}
+.bullet.critical .bullet-tag{background:var(--bad); color:var(--cream)}
+.bullet-text{font-size:13.5px; color:rgba(250,250,248,0.9); line-height:1.65}
+.bullet-text b{color:var(--cream); font-weight:600}
+.bullet-text em{color:var(--gold-bright); font-style:italic; font-family:'Playfair Display',serif; font-weight:500}
+.bullet-source{display:block; margin-top:6px; font-size:10.5px; color:rgba(250,250,248,0.55); font-family:'JetBrains Mono',monospace; letter-spacing:0.04em}
+
+/* ─── LAYOUT 2 COL ─── */
+.cols{display:grid; grid-template-columns:1.4fr 1fr; gap:24px; margin-top:24px}
+@media (max-width:1080px){.cols{grid-template-columns:1fr}}
+
+.panel{background:var(--cream); border:1px solid var(--line); border-radius:18px; padding:28px 30px; box-shadow:0 4px 14px rgba(27,42,74,0.04); margin-bottom:24px}
+.panel-h{display:flex; justify-content:space-between; align-items:flex-start; gap:18px; padding-bottom:18px; border-bottom:1px solid var(--line); margin-bottom:20px; flex-wrap:wrap}
+.panel-h-l h2{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:3px}
+.panel-h-l h2 em{color:var(--gold-deep); font-style:italic}
+.panel-h-l p{font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif}
+.panel-h-r{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--gold-deep); letter-spacing:0.14em; text-align:right; line-height:1.7; font-weight:600}
+.panel-h-r b{color:var(--navy); font-weight:700}
+
+/* ─── PROPOSITIONS MAJ ─── */
+.prop-card{border:1px solid var(--line-strong); border-radius:14px; overflow:hidden; margin-bottom:14px; transition:all 0.25s}
+.prop-card:hover{box-shadow:0 8px 24px rgba(27,42,74,0.06); border-color:var(--gold)}
+.prop-head{padding:14px 18px; background:var(--cream-2); display:flex; justify-content:space-between; align-items:center; gap:14px; cursor:pointer; flex-wrap:wrap}
+.prop-h-l{flex:1; min-width:200px}
+.prop-h-title{font-family:'Playfair Display',serif; font-size:15.5px; color:var(--navy); font-weight:600; line-height:1.25}
+.prop-h-meta{font-size:11.5px; color:var(--ink-mute); margin-top:3px; font-style:italic; font-family:'Playfair Display',serif}
+.prop-impact{padding:4px 11px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; font-weight:700; text-transform:uppercase; white-space:nowrap}
+.prop-impact.low{background:rgba(63,122,63,0.10); color:var(--ok)}
+.prop-impact.med{background:rgba(184,128,31,0.12); color:var(--warn)}
+.prop-impact.high{background:rgba(185,28,28,0.10); color:var(--bad)}
+
+.prop-body{padding:18px 22px; background:var(--cream); border-top:1px dashed var(--line); display:none}
+.prop-body.open{display:block}
+.prop-rationale{font-size:13.5px; color:var(--ink); line-height:1.65; margin-bottom:14px}
+.prop-rationale b{color:var(--navy); font-weight:600}
+.prop-rationale em{color:var(--gold-deep); font-style:italic; font-family:'Playfair Display',serif}
+
+.diff{background:var(--navy-deep); border-radius:10px; padding:14px 18px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.7; color:var(--cream); overflow-x:auto; white-space:pre; margin-bottom:14px}
+.diff .del{background:rgba(185,28,28,0.25); color:#fda4a4; display:block; padding:0 6px; margin:0 -6px}
+.diff .add{background:rgba(63,122,63,0.20); color:#bff5be; display:block; padding:0 6px; margin:0 -6px}
+.diff .ctx{color:rgba(250,250,248,0.5); display:block; padding:0 6px; margin:0 -6px}
+.diff .file{color:var(--gold-bright); display:block; padding:0 6px; margin:0 -6px 8px; font-weight:700}
+
+.prop-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.btn-act{padding:9px 16px; border-radius:8px; border:none; cursor:pointer; font-size:11.5px; font-weight:600; letter-spacing:0.06em; transition:all 0.2s; font-family:'Outfit',sans-serif}
+.btn-act-ok{background:var(--ok); color:var(--cream)}
+.btn-act-ok:hover{background:#2d5a2d}
+.btn-act-edit{background:transparent; color:var(--navy); border:1px solid var(--navy)}
+.btn-act-edit:hover{background:var(--navy); color:var(--cream)}
+.btn-act-no{background:transparent; color:var(--bad); border:1px solid var(--bad)}
+.btn-act-no:hover{background:var(--bad); color:var(--cream)}
+.btn-act-ghost{background:transparent; color:var(--gold-deep); border:1px solid var(--line-strong)}
+.btn-act-ghost:hover{border-color:var(--gold)}
+
+/* ─── AUDIT LOG (sidebar) ─── */
+.audit-list{display:flex; flex-direction:column; gap:8px; max-height:560px; overflow-y:auto; padding-right:4px}
+.audit-row{padding:11px 14px; background:var(--cream-2); border:1px solid var(--line); border-radius:10px; font-size:12.5px; line-height:1.55; transition:all 0.2s; cursor:pointer}
+.audit-row:hover{border-color:var(--gold); background:var(--cream-3)}
+.audit-meta{font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--gold-deep); letter-spacing:0.08em; margin-bottom:4px; font-weight:700; display:flex; justify-content:space-between; gap:8px}
+.audit-meta b{color:var(--navy); text-transform:uppercase; letter-spacing:0.14em}
+.audit-q{color:var(--ink); font-weight:500; margin-bottom:4px}
+.audit-a{color:var(--ink-mute); font-size:11.5px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.5}
+.audit-tag{display:inline-block; padding:2px 7px; background:var(--cream); border:1px solid var(--line); border-radius:30px; font-size:9px; letter-spacing:0.1em; color:var(--gold-deep); font-weight:700; font-family:'JetBrains Mono',monospace; margin-top:5px; text-transform:uppercase}
+
+/* ─── VEILLE SOURCES PANEL ─── */
+.veille-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:18px}
+@media (max-width:680px){.veille-grid{grid-template-columns:1fr}}
+.veille-src{background:var(--cream-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:flex; align-items:center; gap:12px; transition:all 0.2s}
+.veille-src.changed{border-color:var(--gold); background:linear-gradient(135deg, rgba(201,169,110,0.08) 0%, rgba(226,200,150,0.04) 100%)}
+.veille-src-ico{width:36px; height:36px; border-radius:50%; background:var(--cream); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0}
+.veille-src-info{flex:1; min-width:0}
+.veille-src-name{font-family:'Playfair Display',serif; font-size:13.5px; color:var(--navy); font-weight:600; line-height:1.2}
+.veille-src-meta{font-size:11px; color:var(--ink-faint); font-style:italic; font-family:'Playfair Display',serif; margin-top:2px}
+.veille-src-dot{flex-shrink:0; padding:3px 8px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; font-weight:700; background:rgba(63,122,63,0.10); color:var(--ok)}
+.veille-src.changed .veille-src-dot{background:rgba(184,128,31,0.15); color:var(--warn)}
+
+/* ─── AGENTS STATUS ─── */
+.agents-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+@media (max-width:760px){.agents-row{grid-template-columns:1fr}}
+.agent-card{background:var(--cream-2); border:1px solid var(--line); border-radius:10px; padding:14px 16px; transition:all 0.2s}
+.agent-card:hover{border-color:var(--gold)}
+.agent-head{display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px}
+.agent-name{font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); font-weight:600; line-height:1.2}
+.agent-model{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; color:var(--gold-deep); font-weight:700; text-transform:uppercase}
+.agent-desc{font-size:11.5px; color:var(--ink-mute); line-height:1.5; margin-bottom:8px; font-style:italic; font-family:'Playfair Display',serif}
+.agent-status{display:inline-flex; align-items:center; gap:5px; font-size:10px; padding:2px 8px; border-radius:30px; font-family:'JetBrains Mono',monospace; letter-spacing:0.12em; font-weight:700}
+.agent-status.run{background:rgba(63,122,63,0.10); color:var(--ok)}
+.agent-status.run::before{content:''; width:6px; height:6px; background:var(--ok); border-radius:50%; animation:pulse 1.4s infinite}
+.agent-status.idle{background:rgba(155,143,128,0.10); color:var(--ink-faint)}
+.agent-status.idle::before{content:'○'}
+.agent-cost{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gold-deep); margin-top:6px; letter-spacing:0.04em}
+
+/* ─── ARCHIVE PANEL ─── */
+.snapshot-row{display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--cream-2); border:1px solid var(--line); border-radius:8px; margin-bottom:6px; font-size:12.5px}
+.snapshot-tag{font-family:'JetBrains Mono',monospace; font-size:10px; padding:3px 8px; background:var(--cream); border:1px solid var(--line-strong); border-radius:30px; color:var(--gold-deep); letter-spacing:0.06em; font-weight:700}
+.snapshot-msg{flex:1; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif}
+.snapshot-msg b{color:var(--navy); font-style:normal; font-weight:600; font-family:'Outfit',sans-serif}
+.snapshot-act{font-size:10.5px; color:var(--gold-deep); cursor:pointer; font-weight:600; text-decoration:underline}
+.snapshot-act:hover{color:var(--navy)}
+
+footer{margin-top:60px; padding:36px 32px; background:var(--navy-deep); color:rgba(250,250,248,0.7); text-align:center}
+footer p{font-size:11.5px; line-height:1.9}
+footer a{color:var(--gold-bright); text-decoration:none}
+footer .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · Cassius — co-pilote admin Maxime · brief matin + propositions + audit</span>
+  <span><a href="studio-sur-mesure.html">→ Studio Sur-mesure</a></span>
+</div>
+
+<header class="admin">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Admin Cassius · admin.ikcp.eu</div>
+  </div>
+  <div style="display:flex; align-items:center; gap:14px">
+    <span class="admin-status">Cassius · en ligne</span>
+    <div class="admin-pill">
+      <span class="name">Maxime Juveneton</span>
+      <span class="role">Admin</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ BRIEF DU MATIN ═══ -->
+<section class="brief-hero">
+  <div class="brief-mark">Brief du matin · livré chaque jour à 07:30</div>
+  <h1 class="brief-h">Bonjour Maxime. <em>3 points pour aujourd'hui.</em></h1>
+  <p class="brief-time">Mardi 12 mai 2026 · 07:32 · synthèse veille nocturne (4 agents) · 14 sources interrogées</p>
+
+  <div class="brief-bullets">
+    <div class="bullet critical">
+      <span class="bullet-tag">Critique</span>
+      <div class="bullet-text">
+        <b>Réforme IFI annoncée</b> — le projet de loi finances rectificative 2026 inclurait un retour partiel à l'<em>ISF sur les actifs financiers</em> (volet à 0,5 % au-delà de 5 M€). <b>3 de vos bêta-testeurs concernés</b> (Dupont, Mercier, Beaumont) — il faut préparer une note d'arbitrage avant les vacances.
+        <span class="bullet-source">Sources : Légifrance Project · BOFIP 2026-05-11 · décision Conseil constitutionnel à venir</span>
+      </div>
+    </div>
+
+    <div class="bullet high">
+      <span class="bullet-tag">Important</span>
+      <div class="bullet-text">
+        <b>Mise à jour Dutreil pour holdings animatrices</b> — l'<em>arrêt Cass. com. 7 mai 2026</em> précise le critère d'animation effective : présence du dirigeant aux 4 AG de filiale par an minimum. <b>Module 03 NextGen à actualiser</b> (Pacte Dutreil) et simulateur Transmission à patcher.
+        <span class="bullet-source">Source : Cass. com. n° 24-12.345 du 07/05/2026 · publié au bulletin</span>
+      </div>
+    </div>
+
+    <div class="bullet">
+      <span class="bullet-tag">Info</span>
+      <div class="bullet-text">
+        <b>Marchés : volatilité dollar</b> — la Fed maintient ses taux mais signale une <em>baisse possible en juillet</em>. Vos clients exposés actions US devraient lire la prochaine UPPERCUT — j'ai préparé un brouillon pour vous (cf. panel "Drafts UPPERCUT" ci-dessous).
+        <span class="bullet-source">Sources : Reuters · AFP · FOMC minutes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="brief-stats">
+    <div class="brief-stat"><div class="brief-stat-v">3</div><div class="brief-stat-l">Points clés</div></div>
+    <div class="brief-stat"><div class="brief-stat-v">5</div><div class="brief-stat-l">Propositions MAJ</div></div>
+    <div class="brief-stat"><div class="brief-stat-v">47</div><div class="brief-stat-l">Interactions clients</div></div>
+    <div class="brief-stat"><div class="brief-stat-v">2,18 <i>€</i></div><div class="brief-stat-l">Coût API · 24 h</div></div>
+  </div>
+</section>
+
+<!-- ═══ COLS : Propositions + Audit ═══ -->
+<div class="cols">
+
+  <div>
+    <!-- ─── PROPOSITIONS DE MISE À JOUR ─── -->
+    <section class="panel">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>Propositions de <em>mise à jour</em></h2>
+          <p>5 modifications suggérées · validez d'un clic, le code est généré et déployé.</p>
+        </div>
+        <div class="panel-h-r"><strong>5</strong> en attente<br>0 rejetées</div>
+      </div>
+
+      <!-- Prop 1 -->
+      <div class="prop-card">
+        <div class="prop-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div class="prop-h-l">
+            <div class="prop-h-title">Mettre à jour le simulateur Dutreil — critère animation effective</div>
+            <div class="prop-h-meta">univers Transmission · /proposals/univers-demandez-moi.html · suite arrêt Cass. 07/05/2026</div>
+          </div>
+          <span class="prop-impact high">Impact haut</span>
+        </div>
+        <div class="prop-body">
+          <p class="prop-rationale"><b>Pourquoi :</b> la Cour de cassation a clarifié le critère d'animation effective d'une holding pour l'application Dutreil. <em>3 de vos bêta-testeurs (Dupont, Mercier, Beaumont) sont concernés</em> — leur dossier doit prouver 4 AG/an.</p>
+
+<div class="diff"><span class="file">📄 proposals/univers-demandez-moi.html · ligne ~1264</span><span class="ctx">  function demoTransmission(){</span><span class="ctx">    const pat = parseInt(...);</span><span class="del">-    const eco = droitsTotal - droitsAvecTotal;</span><span class="add">+    const eco = droitsTotal - droitsAvecTotal;</span><span class="add">+    const dutreilAnimEffective = checkAnim4AG(); // Cass. 07/05/2026</span><span class="ctx">    return showResult(...)</span><span class="ctx">  }</span></div>
+
+          <div class="prop-actions">
+            <button class="btn-act btn-act-ok" onclick="alert('Mock — création PR claude/update-2026-05-12 + déploiement staging')">✓ Valider</button>
+            <button class="btn-act btn-act-edit">✎ Éditer avant validation</button>
+            <button class="btn-act btn-act-no">✗ Rejeter</button>
+            <button class="btn-act btn-act-ghost">📖 Voir la source</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prop 2 -->
+      <div class="prop-card">
+        <div class="prop-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div class="prop-h-l">
+            <div class="prop-h-title">Patcher Module 03 NextGen (Pacte Dutreil)</div>
+            <div class="prop-h-meta">École NextGen · ajout d'un sous-chapitre "Animation effective" · 20 min de contenu</div>
+          </div>
+          <span class="prop-impact high">Impact haut</span>
+        </div>
+        <div class="prop-body">
+          <p class="prop-rationale"><b>Pourquoi :</b> alignement pédagogique avec la prop précédente. <em>Emma Dupont</em> est actuellement à 65 % du module 03 — il faut intégrer la nouveauté avant qu'elle ne termine.</p>
+          <div class="diff"><span class="file">📄 nextgen/module-03-pacte-dutreil.md</span><span class="add">+ ## L'animation effective — la nouveauté 2026</span><span class="add">+ </span><span class="add">+ La Cour de cassation (07/05/2026) précise désormais : pour qu'une holding</span><span class="add">+ soit considérée comme animatrice, le dirigeant doit assister à <b>au moins</b></span><span class="add">+ <b>4 assemblées générales de filiale par an</b>.</span></div>
+          <div class="prop-actions">
+            <button class="btn-act btn-act-ok">✓ Valider</button>
+            <button class="btn-act btn-act-edit">✎ Éditer</button>
+            <button class="btn-act btn-act-no">✗ Rejeter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prop 3 -->
+      <div class="prop-card">
+        <div class="prop-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div class="prop-h-l">
+            <div class="prop-h-title">Brouillon UPPERCUT S20 — "Fed, dollar et clients exposés US"</div>
+            <div class="prop-h-meta">Newsletter · 5 sections complètes · ton UPPERCUT respecté · prêt à publier après votre relecture</div>
+          </div>
+          <span class="prop-impact med">Impact moyen</span>
+        </div>
+        <div class="prop-body">
+          <p class="prop-rationale"><b>Pourquoi :</b> les minutes FOMC sortent demain, et 47 % de vos abonnés UPPERCUT ont des actions US. Un brouillon est prêt sous votre format charté (5 sections : Gong / Décryptage / Corner / Cas pratique / Coin IKCP).</p>
+          <div class="prop-actions">
+            <button class="btn-act btn-act-ok">✓ Publier après relecture</button>
+            <button class="btn-act btn-act-edit">✎ Ouvrir dans l'éditeur</button>
+            <button class="btn-act btn-act-no">✗ Rejeter</button>
+            <button class="btn-act btn-act-ghost">📨 Voir le brouillon</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prop 4 -->
+      <div class="prop-card">
+        <div class="prop-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div class="prop-h-l">
+            <div class="prop-h-title">Mettre à jour le barème IR/IFI dans le tableau de bord centralisé</div>
+            <div class="prop-h-meta">family-office-actifs.html · pas de réforme votée encore, mais préparation</div>
+          </div>
+          <span class="prop-impact low">Impact bas</span>
+        </div>
+        <div class="prop-body">
+          <p class="prop-rationale"><b>Pourquoi :</b> en cas de vote PLFR 2026 (probabilité 60 % d'après les indicateurs parlementaires), le seuil ISF financier serait 5 M€. <em>Prudent de préparer la mise à jour sans la déployer.</em></p>
+          <div class="prop-actions">
+            <button class="btn-act btn-act-ok">✓ Préparer (sans déployer)</button>
+            <button class="btn-act btn-act-no">✗ Attendre le vote</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prop 5 -->
+      <div class="prop-card">
+        <div class="prop-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div class="prop-h-l">
+            <div class="prop-h-title">Alertes 3 bêta-testeurs concernés par la réforme</div>
+            <div class="prop-h-meta">Pré-rédaction de 3 emails personnalisés · à votre signature</div>
+          </div>
+          <span class="prop-impact high">Impact haut</span>
+        </div>
+        <div class="prop-body">
+          <p class="prop-rationale"><b>Pourquoi :</b> meilleur signal de service possible — vous prévenez 3 clients avant qu'ils ne lisent la presse. <em>Brouillons prêts, à votre signature, contextualisés sur leur situation.</em></p>
+          <div class="prop-actions">
+            <button class="btn-act btn-act-ok">✓ Envoyer (1 clic les 3)</button>
+            <button class="btn-act btn-act-edit">✎ Relire chacun</button>
+            <button class="btn-act btn-act-no">✗ Reporter</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── AGENTS STATUS ─── -->
+    <section class="panel">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>Vos <em>6 agents</em> Claude</h2>
+          <p>Statut temps réel · coût mensuel projeté 184 €</p>
+        </div>
+        <div class="panel-h-r">5/6 actifs<br><strong>2,18 €</strong> ces 24 h</div>
+      </div>
+
+      <div class="agents-row">
+        <div class="agent-card">
+          <div class="agent-head"><div class="agent-name">veille-fiscal</div><div class="agent-model">Opus 4.7</div></div>
+          <div class="agent-desc">Crawl Légifrance, BOFIP, jurisprudence — détecte impact sur univers Fiscalité/Transmission/Philanthropie.</div>
+          <span class="agent-status idle">Idle · prochain run 02:00</span>
+          <div class="agent-cost">Coût 24 h : 0,42 €</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-head"><div class="agent-name">veille-marches</div><div class="agent-model">Sonnet 4.6</div></div>
+          <div class="agent-desc">AMF, ESMA, indices · alerte si réforme PEA/AV/PER ou volatilité &gt; seuil.</div>
+          <span class="agent-status idle">Idle · prochain run 02:30</span>
+          <div class="agent-cost">Coût 24 h : 0,18 €</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-head"><div class="agent-name">veille-immo</div><div class="agent-model">Sonnet 4.6</div></div>
+          <div class="agent-desc">DVF, Notaires de France · réévaluation hebdo des biens immobiliers clients.</div>
+          <span class="agent-status idle">Idle · prochain run lundi 02:00</span>
+          <div class="agent-cost">Coût 7 j : 0,12 €</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-head"><div class="agent-name">veille-art</div><div class="agent-model">Haiku 4.5</div></div>
+          <div class="agent-desc">Adjudications Christie's/Sotheby's · ajustement côtes des œuvres clients.</div>
+          <span class="agent-status idle">Idle · prochain run lundi 02:30</span>
+          <div class="agent-cost">Coût 7 j : 0,04 €</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-head"><div class="agent-name">cassius</div><div class="agent-model">Opus 4.7</div></div>
+          <div class="agent-desc">Votre co-pilote · synthèse veille + propositions MAJ + drafts UPPERCUT.</div>
+          <span class="agent-status run">Actif · brief envoyé 07:32</span>
+          <div class="agent-cost">Coût 24 h : 0,86 €</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-head"><div class="agent-name">temoin</div><div class="agent-model">Haiku 4.5</div></div>
+          <div class="agent-desc">Audit permanent · log immutable de chaque interaction client (SHA-256 + eIDAS).</div>
+          <span class="agent-status run">Actif · 24/7</span>
+          <div class="agent-cost">Coût 24 h : 0,56 €</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── SIDEBAR : Veille + Audit + Snapshots ─── -->
+  <div>
+
+    <!-- Veille sources -->
+    <section class="panel">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>Sources <em>de veille</em></h2>
+          <p>14 sources surveillées · 3 changements détectés ces 24h.</p>
+        </div>
+      </div>
+
+      <div class="veille-grid">
+        <div class="veille-src changed">
+          <div class="veille-src-ico">⚖</div>
+          <div class="veille-src-info"><div class="veille-src-name">Légifrance</div><div class="veille-src-meta">PLFR 2026 publié 11/05</div></div>
+          <div class="veille-src-dot">↑</div>
+        </div>
+        <div class="veille-src changed">
+          <div class="veille-src-ico">📜</div>
+          <div class="veille-src-info"><div class="veille-src-name">Cour de cassation</div><div class="veille-src-meta">Arrêt Dutreil 07/05</div></div>
+          <div class="veille-src-dot">↑</div>
+        </div>
+        <div class="veille-src changed">
+          <div class="veille-src-ico">🏛</div>
+          <div class="veille-src-info"><div class="veille-src-name">BOFIP</div><div class="veille-src-meta">BOI-PAT-IFI 12/05</div></div>
+          <div class="veille-src-dot">↑</div>
+        </div>
+        <div class="veille-src">
+          <div class="veille-src-ico">📰</div>
+          <div class="veille-src-info"><div class="veille-src-name">AMF</div><div class="veille-src-meta">Aucun changement</div></div>
+          <div class="veille-src-dot">OK</div>
+        </div>
+        <div class="veille-src">
+          <div class="veille-src-ico">🏦</div>
+          <div class="veille-src-info"><div class="veille-src-name">ACPR</div><div class="veille-src-meta">Aucun changement</div></div>
+          <div class="veille-src-dot">OK</div>
+        </div>
+        <div class="veille-src">
+          <div class="veille-src-ico">🇪🇺</div>
+          <div class="veille-src-info"><div class="veille-src-name">ESMA</div><div class="veille-src-meta">Aucun changement</div></div>
+          <div class="veille-src-dot">OK</div>
+        </div>
+      </div>
+
+      <div style="font-size:11.5px; color:var(--ink-faint); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6">+ 8 sources marchés / immobilier / fiscalité internationale interrogées chaque nuit.</div>
+    </section>
+
+    <!-- Audit log -->
+    <section class="panel">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>Audit <em>permanent</em></h2>
+          <p>Chaque interaction loggée · hash SHA-256 + eIDAS · R2 souverain UE.</p>
+        </div>
+        <div class="panel-h-r"><strong>47</strong> ces 24 h<br>0 anomalies</div>
+      </div>
+
+      <div class="audit-list">
+        <div class="audit-row">
+          <div class="audit-meta"><b>06:48</b><span>SHA · a4f3…28f7</span></div>
+          <div class="audit-q">Emma Dupont → "Module 3 pacte Dutreil, je bloque sur l'animation"</div>
+          <div class="audit-a">Marcel : routé univers Formation · source citée : art. 787 B CGI</div>
+          <span class="audit-tag">eIDAS · archivé R2</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-meta"><b>06:32</b><span>SHA · b8e1…44a2</span></div>
+          <div class="audit-q">Famille Mercier → "Quel impact si réforme IFI ?"</div>
+          <div class="audit-a">Marcel : routé univers Fiscalité · projection 32 k€/an supplémentaire</div>
+          <span class="audit-tag">eIDAS · archivé R2</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-meta"><b>05:14</b><span>SHA · 3c7d…91b6</span></div>
+          <div class="audit-q">Jean-Marc Dupont → "Prix m² Cap-Ferret ?"</div>
+          <div class="audit-a">Marcel : univers Immobilier · DVF live 11 240 €/m²</div>
+          <span class="audit-tag">eIDAS · archivé R2</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-meta"><b>04:55</b><span>SHA · e0a5…7b88</span></div>
+          <div class="audit-q">Beaumont → "Don défiscalisé 50 k€ vs 75 k€ ?"</div>
+          <div class="audit-a">Marcel : univers Philanthropie · plafond 50 k€ IFI conseillé</div>
+          <span class="audit-tag">eIDAS · archivé R2</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-meta"><b>03:21</b><span>SHA · 1f9e…d4c3</span></div>
+          <div class="audit-q">Mercier → "Quand vendre les LVMH ?"</div>
+          <div class="audit-a">Marcel : refus de recommandation MIF II · suggestion RDV Maxime</div>
+          <span class="audit-tag">MIF II conforme</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-meta"><b>02:58</b><span>SHA · 6b2c…f17d</span></div>
+          <div class="audit-q">Emma Dupont → "Module 2 fiscalité, quiz validé"</div>
+          <div class="audit-a">École NextGen : progression 100 % module 2 enregistrée</div>
+          <span class="audit-tag">eIDAS · archivé R2</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Snapshots versioning -->
+    <section class="panel">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>Snapshots <em>versionnés</em></h2>
+          <p>Chaque mise à jour validée crée un point de retour. Rollback en 30 s.</p>
+        </div>
+      </div>
+
+      <div class="snapshot-row">
+        <span class="snapshot-tag">v2026.05.11</span>
+        <span class="snapshot-msg"><b>Production actuelle</b> · barèmes LF 2026 · 12 univers · 11 bêta-testeurs actifs</span>
+        <span class="snapshot-act">Pinned</span>
+      </div>
+      <div class="snapshot-row">
+        <span class="snapshot-tag">v2026.05.07</span>
+        <span class="snapshot-msg">Ajout univers Liaison externe · partenaire notaire Lambert intégré</span>
+        <span class="snapshot-act">Restaurer</span>
+      </div>
+      <div class="snapshot-row">
+        <span class="snapshot-tag">v2026.05.01</span>
+        <span class="snapshot-msg">Refonte palette cream cabinet · pivot widget Marcel en FAB</span>
+        <span class="snapshot-act">Restaurer</span>
+      </div>
+      <div class="snapshot-row">
+        <span class="snapshot-tag">v2026.04.22</span>
+        <span class="snapshot-msg">Première version publique Bêta · 50 codes générés</span>
+        <span class="snapshot-act">Restaurer</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p>
+    <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+  <p class="legal">Cassius admin réservé · agents Claude Opus 4.7 + Sonnet 4.6 + Haiku 4.5 · hébergement souverain UE Cloudflare · audit eIDAS qualifié 10 ans</p>
+</footer>
+
+<script>
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

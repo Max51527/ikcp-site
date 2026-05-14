@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Cercle Fondateurs · co-construire le Family Office avec vous</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+}
+html,body{background:var(--cream); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.65; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased}
+
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+header.cc{background:rgba(250,250,248,0.96); border-bottom:1px solid var(--line); padding:16px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:32px; z-index:100; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px)}
+.brand{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1}
+.brand b{color:var(--gold); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.32em; color:var(--gold-deep); margin-top:5px; font-weight:600; text-transform:uppercase}
+.back{color:var(--ink-mute); text-decoration:none; font-size:13px; font-weight:500}
+.back:hover{color:var(--gold-deep)}
+
+main{max-width:1100px; margin:0 auto; padding:48px 32px 80px}
+
+/* ─── HERO ─── */
+.hero{text-align:center; margin-bottom:50px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold-deep); font-weight:700; margin-bottom:20px; display:inline-flex; align-items:center; gap:14px}
+.hero-eyebrow::before, .hero-eyebrow::after{content:''; width:38px; height:1px; background:var(--gold)}
+.hero h1{font-family:'Playfair Display',serif; font-size:clamp(36px,5vw,60px); color:var(--navy); font-weight:500; letter-spacing:-0.022em; line-height:1.05; margin-bottom:18px; max-width:880px; margin-left:auto; margin-right:auto}
+.hero h1 em{color:var(--gold-deep); font-style:italic}
+.hero-deck{font-size:17px; color:var(--ink-mute); max-width:720px; margin:0 auto 14px; line-height:1.7}
+.hero-deck em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+.hero-status{display:inline-flex; align-items:center; gap:8px; padding:7px 16px; background:rgba(63,122,63,0.10); color:var(--ok); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.16em; font-weight:700; margin-top:14px; text-transform:uppercase}
+.hero-status::before{content:''; width:8px; height:8px; background:var(--ok); border-radius:50%; animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ─── PROMESSE ─── */
+.promise-block{background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); border-radius:24px; padding:38px 44px; margin-bottom:48px; position:relative; overflow:hidden}
+.promise-block::before{content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.promise-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:14px; text-align:center}
+.promise-mark::before{content:'★ '}
+.promise-h{font-family:'Playfair Display',serif; font-size:clamp(26px,3.4vw,36px); color:var(--cream); font-weight:500; letter-spacing:-0.018em; line-height:1.1; text-align:center; margin-bottom:22px}
+.promise-h em{color:var(--gold-bright); font-style:italic}
+
+.promise-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:24px}
+@media (max-width:760px){.promise-grid{grid-template-columns:1fr}}
+.pr-card{background:rgba(255,255,255,0.04); border:1px solid rgba(226,200,150,0.18); border-radius:14px; padding:22px 24px}
+.pr-num{font-family:'Playfair Display',serif; font-style:italic; font-size:28px; color:var(--gold-bright); font-weight:500; line-height:1; margin-bottom:10px}
+.pr-h{font-family:'Playfair Display',serif; font-size:17px; color:var(--cream); font-weight:600; margin-bottom:8px; line-height:1.2}
+.pr-p{font-size:13.5px; color:rgba(250,250,248,0.82); line-height:1.6}
+.pr-p b{color:var(--gold-bright); font-weight:600}
+
+/* ─── FORMULAIRE ─── */
+.form-section{background:var(--cream); border:1px solid var(--line); border-radius:20px; padding:36px 40px; box-shadow:0 8px 24px rgba(27,42,74,0.05); margin-bottom:24px}
+.form-head{padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:24px}
+.form-mark{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.24em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:8px}
+.form-mark::before{content:'§ '; opacity:0.5}
+.form-h{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:6px}
+.form-h em{color:var(--gold-deep); font-style:italic}
+.form-sub{font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:var(--ink-mute); line-height:1.55}
+
+.input-grp{margin-bottom:22px}
+.input-grp label{display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.2em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:8px}
+.input-grp label .req{color:var(--bad); margin-left:4px}
+.input-grp label .opt{color:var(--ink-faint); font-weight:500; text-transform:none; letter-spacing:0.02em; font-style:italic; font-family:'Playfair Display',serif; margin-left:6px}
+.input-grp input, .input-grp textarea, .input-grp select{
+  width:100%; padding:13px 16px; background:var(--cream-2); border:1.5px solid var(--line-strong);
+  border-radius:10px; font-size:14.5px; color:var(--navy); font-family:'Outfit',sans-serif;
+  outline:none; transition:border-color 0.2s; font-weight:500;
+}
+.input-grp textarea{resize:vertical; min-height:90px; font-family:'Outfit',sans-serif}
+.input-grp input:focus, .input-grp textarea:focus, .input-grp select:focus{border-color:var(--gold); background:var(--cream)}
+.input-grp input::placeholder, .input-grp textarea::placeholder{color:var(--ink-faint); font-style:italic; font-family:'Playfair Display',serif; font-weight:400}
+.input-help{font-size:12px; color:var(--ink-faint); margin-top:6px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.5}
+
+.input-row{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:680px){.input-row{grid-template-columns:1fr}}
+
+/* ─── PASSIONS PICKER ─── */
+.passions-picker{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+.pp-chip{padding:9px 14px; background:var(--cream-2); border:1.5px solid var(--line-strong); border-radius:30px; cursor:pointer; font-size:13px; color:var(--ink-mute); font-weight:600; transition:all 0.2s; user-select:none; font-family:'Outfit',sans-serif; display:inline-flex; align-items:center; gap:6px}
+.pp-chip:hover{border-color:var(--gold); color:var(--navy)}
+.pp-chip.on{background:var(--navy); color:var(--cream); border-color:var(--navy)}
+.pp-chip.on::before{content:'✓ '; color:var(--gold-bright)}
+.pp-chip-new{background:transparent; border-style:dashed; color:var(--gold-deep)}
+.pp-chip-new::before{content:'+ '; font-weight:700}
+
+/* ─── ADRESSE CARDS ─── */
+.address-card{background:var(--cream-2); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:12px; position:relative}
+.address-row{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:12px}
+@media (max-width:680px){.address-row{grid-template-columns:1fr}}
+.ac-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
+.ac-num{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; color:var(--gold-deep); font-weight:700; text-transform:uppercase}
+.ac-num::before{content:'★ Adresse '}
+.ac-remove{background:transparent; border:none; color:var(--ink-faint); cursor:pointer; font-size:13px; padding:4px 10px; border-radius:6px}
+.ac-remove:hover{background:rgba(185,28,28,0.08); color:var(--bad)}
+.add-address-btn{margin-top:6px; padding:12px 20px; background:transparent; border:1.5px dashed var(--gold-deep); border-radius:10px; cursor:pointer; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; color:var(--gold-deep); width:100%; transition:all 0.2s}
+.add-address-btn:hover{border-style:solid; background:var(--cream-2); color:var(--navy)}
+.add-address-btn::before{content:'+ '; font-weight:700}
+
+/* ─── INTRO CHECKBOX ─── */
+.intro-box{padding:18px 22px; background:linear-gradient(135deg, rgba(201,169,110,0.10) 0%, rgba(226,200,150,0.06) 100%); border:1.5px solid var(--gold); border-radius:14px; margin-top:16px}
+.intro-check{display:flex; align-items:flex-start; gap:14px; cursor:pointer}
+.intro-check input[type="checkbox"]{flex-shrink:0; margin-top:3px; width:20px; height:20px; accent-color:var(--gold-deep); cursor:pointer}
+.intro-text{flex:1; font-size:13.5px; color:var(--ink); line-height:1.6}
+.intro-text b{color:var(--navy); font-weight:600}
+.intro-text em{font-style:italic; color:var(--gold-deep); font-family:'Playfair Display',serif; font-weight:500}
+
+/* ─── SUBMIT ZONE ─── */
+.submit-zone{background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); border-radius:20px; padding:30px 36px; margin-top:28px; text-align:center; position:relative; overflow:hidden}
+.submit-zone::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.submit-h{font-family:'Playfair Display',serif; font-size:22px; color:var(--cream); font-weight:600; margin-bottom:8px}
+.submit-h em{color:var(--gold-bright); font-style:italic}
+.submit-p{font-size:14px; color:rgba(250,250,248,0.82); margin-bottom:20px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.55}
+.submit-p b{color:var(--gold-bright); font-weight:600; font-style:normal; font-family:'Outfit',sans-serif}
+.submit-btn{padding:16px 42px; background:var(--gold); color:var(--navy); border:none; border-radius:10px; font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s; box-shadow:0 8px 22px rgba(201,169,110,0.30)}
+.submit-btn:hover{background:var(--gold-bright); transform:translateY(-2px); box-shadow:0 12px 28px rgba(226,200,150,0.40)}
+
+.result-zone{display:none; margin-top:24px; padding:24px 28px; background:rgba(63,122,63,0.08); border:1.5px solid var(--ok); border-radius:14px; color:var(--ok); font-size:14px; line-height:1.65; text-align:center; font-family:'Playfair Display',serif}
+.result-zone.show{display:block}
+.result-zone b{color:var(--ok); font-family:'Outfit',sans-serif; font-weight:700}
+
+/* ─── REWARD / VALORISATION ─── */
+.reward-box{background:var(--cream-2); border:1px dashed var(--gold-deep); border-radius:14px; padding:22px 26px; margin-top:24px; display:flex; gap:18px; align-items:center}
+@media (max-width:680px){.reward-box{flex-direction:column; text-align:center}}
+.reward-ico{flex-shrink:0; width:56px; height:56px; border-radius:50%; background:var(--gold); color:var(--navy); display:flex; align-items:center; justify-content:center; font-size:22px; font-family:'Playfair Display',serif; font-style:italic; font-weight:600}
+.reward-c h3{font-family:'Playfair Display',serif; font-size:17px; color:var(--navy); font-weight:600; margin-bottom:5px; line-height:1.2}
+.reward-c h3 em{color:var(--gold-deep); font-style:italic}
+.reward-c p{font-size:13px; color:var(--ink-mute); line-height:1.55; font-style:italic; font-family:'Playfair Display',serif}
+.reward-c p b{color:var(--navy); font-style:normal; font-family:'Outfit',sans-serif; font-weight:600}
+
+footer{margin-top:40px; padding:36px 32px; background:var(--navy-deep); color:rgba(250,250,248,0.7); text-align:center}
+footer p{font-size:11.5px; line-height:1.9}
+footer a{color:var(--gold-bright); text-decoration:none}
+footer .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · Cercle Fondateurs — co-créer le Family Office avec les bêta-testeurs</span>
+  <span><a href="ikcp-eu-onglet-family-office.html">← Family Office</a></span>
+</div>
+
+<header class="cc">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Cercle Fondateurs · co-création</div>
+  </div>
+  <a href="ikcp-eu-onglet-family-office.html" class="back">← Retour cabinet</a>
+</header>
+
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-eyebrow">Réservé aux 50 fondateurs/fondatrices</div>
+  <h1>Le Family Office <em>se construit avec vous.</em></h1>
+  <p class="hero-deck">
+    Vous êtes parmi les 50 dirigeant(e)s qui ouvrent la voie. Votre regard, vos passions, vos meilleures adresses <em>façonnent l'outil que nous bâtissons ensemble.</em>
+  </p>
+  <div class="hero-status">Cercle privé · 12/50 inscrit(e)s</div>
+</section>
+
+<!-- ═══ PROMESSE ═══ -->
+<section class="promise-block">
+  <div class="promise-mark">Notre promesse réciproque</div>
+  <h2 class="promise-h">Vous nous donnez votre œil, <em>nous vous offrons l'outil.</em></h2>
+
+  <div class="promise-grid">
+    <div class="pr-card">
+      <div class="pr-num">①</div>
+      <div class="pr-h">Vous proposez</div>
+      <div class="pr-p">Des passions à intégrer (œnologie, art, équestre, gastronomie…), des <b>univers que nous n'avons pas vu</b>.</div>
+    </div>
+    <div class="pr-card">
+      <div class="pr-num">②</div>
+      <div class="pr-h">Vous partagez</div>
+      <div class="pr-p">Vos <b>meilleures adresses</b> : hôtels, restaurants, conciergeries, professionnels, artisans rares.</div>
+    </div>
+    <div class="pr-card">
+      <div class="pr-num">③</div>
+      <div class="pr-h">Nous intégrons</div>
+      <div class="pr-p">Maxime entre <em>personnellement</em> en relation avec vos meilleures adresses pour les <b>intégrer à l'outil</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FORMULAIRE PRINCIPAL ═══ -->
+<form id="cc-form" onsubmit="submitCC(event)">
+
+  <!-- Section 1 — Identité -->
+  <section class="form-section">
+    <div class="form-head">
+      <div class="form-mark">Étape 1 sur 4</div>
+      <div class="form-h">Vous <em>en quelques mots.</em></div>
+      <div class="form-sub">Pour adresser personnellement les éventuelles mises en relation.</div>
+    </div>
+
+    <div class="input-row">
+      <div class="input-grp">
+        <label>Civilité <span class="req">*</span></label>
+        <select required>
+          <option value="">—</option>
+          <option>Madame</option>
+          <option>Monsieur</option>
+          <option>Non précisée</option>
+        </select>
+      </div>
+      <div class="input-grp">
+        <label>Prénom &amp; nom <span class="req">*</span></label>
+        <input type="text" required placeholder="Ex : Élisabeth Dupont">
+      </div>
+    </div>
+
+    <div class="input-row">
+      <div class="input-grp">
+        <label>Email <span class="req">*</span></label>
+        <input type="email" required placeholder="elisabeth.dupont@exemple.fr">
+      </div>
+      <div class="input-grp">
+        <label>Téléphone <span class="opt">(facultatif)</span></label>
+        <input type="tel" placeholder="06 12 34 56 78">
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2 — Univers à enrichir -->
+  <section class="form-section">
+    <div class="form-head">
+      <div class="form-mark">Étape 2 sur 4</div>
+      <div class="form-h">Vos <em>passions</em>.</div>
+      <div class="form-sub">Cochez les passions qui structurent votre quotidien. Vous pouvez en proposer de nouvelles si nous les avons oubliées.</div>
+    </div>
+
+    <div class="input-grp">
+      <label>Passions actuellement dans l'outil — sélectionnez celles qui vous concernent</label>
+      <div class="passions-picker">
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>🚗</span>Automobiles de collection</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>⌚</span>Horlogerie</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>🍷</span>Cave &amp; vins rares</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>⛵</span>Yachting &amp; voile</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>🐎</span>Équestre &amp; chasse</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>⛳</span>Golf</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>🎭</span>Mécénat &amp; arts</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>🌍</span>Voyages exclusifs</div>
+        <div class="pp-chip" onclick="this.classList.toggle('on')"><span>🍽</span>Gastronomie</div>
+      </div>
+    </div>
+
+    <div class="input-grp">
+      <label>Passions à ajouter — ce qui manque selon vous</label>
+      <textarea placeholder="Ex : Aviation privée, cigares premium, design contemporain, chasse à courre, photographie d'art, jardinage paysager, théâtre privé, expéditions polaires…"></textarea>
+      <div class="input-help">Soyez large — chaque passion proposée par 3 fondateurs/fondatrices devient un univers à part entière.</div>
+    </div>
+  </section>
+
+  <!-- Section 3 — Meilleures adresses -->
+  <section class="form-section">
+    <div class="form-head">
+      <div class="form-mark">Étape 3 sur 4</div>
+      <div class="form-h">Vos <em>meilleures adresses.</em></div>
+      <div class="form-sub">Restaurants, hôtels, artisans, conciergeries, professionnels rares — partagez celles qui vous tiennent à cœur. Nous les contacterons pour les intégrer à votre conciergerie IKCP.</div>
+    </div>
+
+    <div id="addresses-list">
+      <div class="address-card">
+        <div class="ac-head">
+          <div class="ac-num">1</div>
+        </div>
+        <div class="address-row">
+          <div class="input-grp">
+            <label>Type</label>
+            <select>
+              <option>Hôtel</option>
+              <option>Restaurant</option>
+              <option>Cave / caviste</option>
+              <option>Concierge / conciergerie</option>
+              <option>Artisan / artiste</option>
+              <option>Galerie / marchand</option>
+              <option>Maison d'enchères</option>
+              <option>Avocat / notaire / expert</option>
+              <option>Chef privé</option>
+              <option>Skipper / pilote</option>
+              <option>Coach / mentor</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="input-grp">
+            <label>Nom de l'établissement</label>
+            <input type="text" placeholder="Ex : Les Fermes de Marie">
+          </div>
+        </div>
+        <div class="address-row">
+          <div class="input-grp">
+            <label>Ville · pays</label>
+            <input type="text" placeholder="Megève · France">
+          </div>
+          <div class="input-grp">
+            <label>Site / contact <span class="opt">(facultatif)</span></label>
+            <input type="text" placeholder="fermesdemarie.com">
+          </div>
+        </div>
+        <div class="input-grp">
+          <label>Pourquoi cette adresse ? <span class="opt">(2 phrases suffisent)</span></label>
+          <textarea placeholder="Ex : Service irréprochable, suite Mont-Joly avec spa privé, chef Aimé Gérard. On y vient en famille depuis 8 ans."></textarea>
+        </div>
+
+        <div class="intro-box">
+          <label class="intro-check">
+            <input type="checkbox">
+            <span class="intro-text">
+              <b>Je souhaite mettre Maxime en relation</b> avec cet établissement, afin qu'il puisse négocier une <em>intégration partenaire</em> dans IKCP Family Office (accès privilégié, tarifs préférentiels, réservation directe via l'app).
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="add-address-btn" onclick="addAddress()">Ajouter une autre adresse</button>
+  </section>
+
+  <!-- Section 4 — Retour qualitatif -->
+  <section class="form-section">
+    <div class="form-head">
+      <div class="form-mark">Étape 4 sur 4</div>
+      <div class="form-h">Votre <em>regard</em>.</div>
+      <div class="form-sub">Ce qui vous plaît dans la version actuelle, ce qui manque, ce qui pourrait nous distinguer encore plus.</div>
+    </div>
+
+    <div class="input-grp">
+      <label>Ce qui m'a séduit(e) jusqu'ici <span class="opt">(facultatif)</span></label>
+      <textarea placeholder="Ex : L'interface app mobile soignée, la cartographie 360°, l'École NextGen…"></textarea>
+    </div>
+
+    <div class="input-grp">
+      <label>Ce qui pourrait être amélioré <span class="opt">(facultatif)</span></label>
+      <textarea placeholder="Ex : Plus d'évènements physiques entre membres, une section finance comportementale…"></textarea>
+    </div>
+
+    <div class="input-grp">
+      <label>Une chose que vous n'avez vue nulle part ailleurs et qui devrait exister</label>
+      <textarea placeholder="Votre idée signature — ce qui ferait de IKCP votre Family Office préféré pour les 20 prochaines années."></textarea>
+      <div class="input-help">Les meilleures idées sont intégrées à la roadmap publique et créditées à leur auteur(e) si vous le souhaitez.</div>
+    </div>
+  </section>
+
+  <!-- Récompense / valorisation -->
+  <div class="reward-box">
+    <div class="reward-ico">★</div>
+    <div class="reward-c">
+      <h3>Vous êtes <em>co-bâtisseur(se) de l'écosystème.</em></h3>
+      <p>Pour chaque partenaire intégré grâce à vous, vous recevez <b>3 mois supplémentaires gratuits</b> sur votre formule Premium. Au-delà de 5 partenaires intégrés : <b>statut Membre Honorifique à vie</b> (accès Sur-mesure inclus).</p>
+    </div>
+  </div>
+
+  <!-- Submit zone -->
+  <div class="submit-zone">
+    <div class="submit-h">Prêt(e) à <em>contribuer ?</em></div>
+    <p class="submit-p">Maxime traite personnellement chaque contribution sous <b>72 heures</b>. Si une mise en relation est lancée, vous êtes systématiquement copié(e) sur le premier échange.</p>
+    <button type="submit" class="submit-btn">Envoyer ma contribution →</button>
+  </div>
+
+  <div class="result-zone" id="result-zone">
+    <strong>✓ Contribution reçue.</strong> Merci infiniment de bâtir IKCP avec nous. Maxime vous répond personnellement sous 72 heures avec un résumé des mises en relation lancées.
+  </div>
+</form>
+
+</main>
+
+<footer>
+  <p>
+    <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>
+  </p>
+  <p class="legal">Cercle Fondateurs réservé aux bêta-testeurs/testeuses · vos contributions restent confidentielles · vos adresses ne sont jamais transmises à des tiers sans votre accord explicite (case à cocher dédiée).</p>
+</footer>
+
+<script>
+let addressCount = 1;
+
+function addAddress(){
+  addressCount++;
+  const list = document.getElementById('addresses-list');
+  const card = document.createElement('div');
+  card.className = 'address-card';
+  card.innerHTML = `
+    <div class="ac-head">
+      <div class="ac-num">${addressCount}</div>
+      <button type="button" class="ac-remove" onclick="this.closest('.address-card').remove()">✕ Retirer</button>
+    </div>
+    <div class="address-row">
+      <div class="input-grp">
+        <label>Type</label>
+        <select>
+          <option>Hôtel</option><option>Restaurant</option><option>Cave / caviste</option>
+          <option>Concierge / conciergerie</option><option>Artisan / artiste</option>
+          <option>Galerie / marchand</option><option>Maison d'enchères</option>
+          <option>Avocat / notaire / expert</option><option>Chef privé</option>
+          <option>Skipper / pilote</option><option>Coach / mentor</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="input-grp"><label>Nom de l'établissement</label><input type="text" placeholder="Nom de l'adresse"></div>
+    </div>
+    <div class="address-row">
+      <div class="input-grp"><label>Ville · pays</label><input type="text" placeholder="Ville · pays"></div>
+      <div class="input-grp"><label>Site / contact <span class="opt">(facultatif)</span></label><input type="text" placeholder="exemple.com"></div>
+    </div>
+    <div class="input-grp">
+      <label>Pourquoi cette adresse ? <span class="opt">(2 phrases suffisent)</span></label>
+      <textarea placeholder="Pourquoi vous l'aimez…"></textarea>
+    </div>
+    <div class="intro-box">
+      <label class="intro-check">
+        <input type="checkbox">
+        <span class="intro-text">
+          <b>Je souhaite mettre Maxime en relation</b> avec cet établissement, afin qu'il puisse négocier une <em>intégration partenaire</em> dans IKCP Family Office.
+        </span>
+      </label>
+    </div>
+  `;
+  list.appendChild(card);
+}
+
+function submitCC(e){
+  e.preventDefault();
+  document.getElementById('result-zone').classList.add('show');
+  document.getElementById('result-zone').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>
