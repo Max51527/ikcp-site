@@ -37,6 +37,54 @@ const ALLOWED_ORIGINS = [
 ];
 
 // ──────────────────────────────────────────────────────────────
+// SPECIALISTS REGISTRY — workers vers lesquels Marcel delegue
+// ──────────────────────────────────────────────────────────────
+const SPECIALISTS_REGISTRY = {
+  // Worker dedie Opus 4.7 - expertise fiscale critique
+  codex: { url: 'https://ikcp-codex.maxime-ead.workers.dev/', role: 'Fiscalité experte', model: 'opus-4-7' },
+  // Worker dedie Opus 4.7 - transmission critique
+  hermes: { url: 'https://ikcp-hermes.maxime-ead.workers.dev/', role: 'Transmission patrimoniale', model: 'opus-4-7' },
+  // Worker mutualise Sonnet 4.6 - 8 lifestyle / passions / immobilier
+  iris:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voyage & Conciergerie',           model: 'sonnet-4-6', mutualisé: true },
+  emile:     { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Art & Collections',               model: 'sonnet-4-6', mutualisé: true },
+  leon:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voitures, Yachts & Aviation',     model: 'sonnet-4-6', mutualisé: true },
+  josephine: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Montres & Joaillerie',            model: 'sonnet-4-6', mutualisé: true },
+  helene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Mode, Beauté & Bien-être',        model: 'sonnet-4-6', mutualisé: true },
+  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Philanthropie & NextGen',         model: 'sonnet-4-6', mutualisé: true },
+  auguste:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Vins & Gastronomie',              model: 'sonnet-4-6', mutualisé: true },
+  augustin:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Immobilier & Foncier',            model: 'sonnet-4-6', mutualisé: true },
+};
+const SPECIALISTS_IDS = Object.keys(SPECIALISTS_REGISTRY);
+
+async function delegateToSpecialist(agentId, question, context) {
+  const spec = SPECIALISTS_REGISTRY[agentId];
+  if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS.join(', ')}` };
+  try {
+    const body = spec.mutualisé
+      ? { agent: agentId, question, context }
+      : { question, context };
+    const r = await fetch(spec.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!r.ok) {
+      const errTxt = await r.text().catch(() => '');
+      return { error: `Specialiste ${agentId} indisponible (${r.status})`, detail: errTxt.slice(0, 200) };
+    }
+    const data = await r.json();
+    return {
+      specialiste: data.agent || agentId,
+      role: data.role || spec.role,
+      reponse: data.reply || '',
+      model: data.model,
+    };
+  } catch (e) {
+    return { error: `Erreur reseau vers ${agentId}: ${e.message}` };
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
 // TOOL DEFINITIONS — calculs déterministes (pas de hallucination LLM)
 // ──────────────────────────────────────────────────────────────
 const TOOLS_FISCAL = [
@@ -63,6 +111,23 @@ const TOOLS_FISCAL = [
         assurance_vie: { type: 'number', description: "Montant d'assurance-vie versée avant 70 ans (0 si aucune)" },
       },
       required: ['patrimoine_net', 'nb_enfants'],
+    },
+  },
+  {
+    name: 'delegate_to_specialist',
+    description: "Délègue à un sub-agent spécialiste quand la question dépasse tes compétences générales. Utilise cet outil dès que la question touche : transmission complexe (hermes), fiscalité experte multi-articles CGI (codex), immobilier/foncier (augustin), voyage/conciergerie (iris), art/collections (emile), voitures/yachts/aviation (leon), montres/joaillerie (josephine), mode/beauté/bien-être (helene), philanthropie/mécénat/NextGen (olympe), vins/gastronomie (auguste). Tu peux déléguer à PLUSIEURS spécialistes en parallèle dans un seul tour. Le spécialiste te répond, et tu synthétises pour le client. NE délègue PAS pour les questions générales que tu peux traiter avec tes calculs déterministes (IR, succession simple, IFI).",
+    input_schema: {
+      type: 'object',
+      properties: {
+        agent: {
+          type: 'string',
+          enum: ['hermes','codex','iris','emile','leon','josephine','helene','olympe','auguste','augustin'],
+          description: 'Identifiant du spécialiste à mobiliser',
+        },
+        question: { type: 'string', description: 'Question précise à transmettre au spécialiste' },
+        context: { type: 'string', description: "Contexte utile (cartographie Pappers, situation famille, déjà calculé...)" },
+      },
+      required: ['agent', 'question'],
     },
   },
 ];
@@ -227,6 +292,30 @@ UTILISE CES OUTILS SYSTÉMATIQUEMENT dès que :
 N'utilise JAMAIS ton propre calcul mental pour ces chiffres — utilise toujours le tool. Les résultats du tool sont exacts et incluent les sources juridiques. Présente le résultat dans ta réponse avec ses chiffres ET ses sources.
 
 Si l'utilisateur ne précise pas les paramètres (ex: parts, enfants), pose UNE question pour les obtenir, puis utilise le tool.
+
+ÉQUIPE DE SPÉCIALISTES — TOOL delegate_to_specialist :
+Tu n'es PAS seul. Tu peux mobiliser dix sub-agents Family Office en parallèle quand la question dépasse tes compétences générales :
+
+| agent_id   | Spécialité                          | Modèle    | Quand l'appeler |
+|------------|-------------------------------------|-----------|-----------------|
+| hermes     | Transmission patrimoniale           | Opus 4.7  | Pacte Dutreil multi-étapes, donation-partage avec démembrement, OBO, apport-cession, transmission entreprise |
+| codex      | Fiscalité experte multi-articles CGI| Opus 4.7  | Question fiscale qui croise 3+ articles CGI, jurisprudence Cass/CE, requalification |
+| augustin   | Immobilier & Foncier                | Sonnet 4.6| LMNP, SCI, démembrement immo, déficit foncier, DPE/passoires, plus-values immo |
+| iris       | Voyage & Conciergerie               | Sonnet 4.6| Itinéraires premium, chalets Megève, jets privés, conciergerie internationale |
+| emile      | Art & Collections                   | Sonnet 4.6| Cote artiste, fiscalité œuvres (art. 885 H), mécénat (loi Aillagon), maisons de ventes |
+| leon       | Voitures, Yachts & Aviation         | Sonnet 4.6| Classic cars, yachts pavillon, jets privés, fiscalité véhicule collection (Histovec) |
+| josephine  | Montres & Joaillerie                | Sonnet 4.6| Patek/AP/Richard Mille, joaillerie haute, valorisation IFI montres |
+| helene     | Mode, Beauté & Bien-être            | Sonnet 4.6| Sur-mesure, Lanserhof, longévité, programmes NextGen wellness |
+| olympe     | Philanthropie & NextGen             | Sonnet 4.6| Fondation/fonds de dotation/FRUP, dons IR-IFI, Family Council, NextGen |
+| auguste    | Vins & Gastronomie                  | Sonnet 4.6| Cave fine wine, valorisation IFI, restaurants 3★, transmission cave |
+
+RÈGLES DE DÉLÉGATION :
+1. Tu PEUX déléguer en parallèle (ex : question "transmettre ma cave Pétrus" → délègue à hermes ET auguste ET codex en un seul tour).
+2. Tu ne délègues QUE si la question dépasse tes compétences (sinon tu réponds directement avec tes calculs déterministes).
+3. Tu peux passer du CONTEXTE au spécialiste (param "context") : composition famille, données Pappers déjà obtenues, situation client.
+4. Tu SYNTHÉTISES la réponse des spécialistes pour le client (pas du copier-coller). Si plusieurs spécialistes répondent, tu articules leurs apports respectifs.
+5. Tu n'évoques JAMAIS la mécanique technique au client ("je délègue à Hermès") — tu présentes ta réponse comme la tienne, sourcée par ton équipe. Naturel.
+6. Si un spécialiste retourne une erreur, tu informes poliment et tu proposes une approche alternative.
 
 RECHERCHE WEB :
 Tu as un outil de recherche web. UTILISE-LE quand :
@@ -626,10 +715,17 @@ export default {
 
         data = await anthropicRes.json();
 
-        // Gérer les tool_use calls côté client (calc_impot_revenu, calc_droits_succession)
+        // Gérer les tool_use calls côté client :
+        //  - calc_impot_revenu, calc_droits_succession (sync, déterministe local)
+        //  - delegate_to_specialist (async, fetch worker spécialiste)
         // Web search est server-side : Anthropic le gère, pas nous
+        const CLIENT_TOOLS = new Set([
+          'calc_impot_revenu',
+          'calc_droits_succession',
+          'delegate_to_specialist',
+        ]);
         const toolUses = (data.content || []).filter(
-          b => b.type === 'tool_use' && (b.name === 'calc_impot_revenu' || b.name === 'calc_droits_succession')
+          b => b.type === 'tool_use' && CLIENT_TOOLS.has(b.name)
         );
 
         if (toolUses.length === 0 || data.stop_reason !== 'tool_use') break;
@@ -637,11 +733,21 @@ export default {
         // Ajoute la réponse de l'assistant avec tool_use à l'historique
         workingMessages.push({ role: 'assistant', content: data.content });
 
-        // Exécute chaque tool et ajoute les résultats
-        const toolResults = toolUses.map(tu => ({
-          type: 'tool_result',
-          tool_use_id: tu.id,
-          content: JSON.stringify(executeTool(tu.name, tu.input || {})),
+        // Exécute chaque tool — en PARALLELE (Promise.all) pour latence min
+        // Les delegations vers les specialistes peuvent tourner en parallele
+        const toolResults = await Promise.all(toolUses.map(async tu => {
+          let result;
+          if (tu.name === 'delegate_to_specialist') {
+            const { agent, question, context: ctxText } = tu.input || {};
+            result = await delegateToSpecialist(agent, question, ctxText);
+          } else {
+            result = executeTool(tu.name, tu.input || {});
+          }
+          return {
+            type: 'tool_result',
+            tool_use_id: tu.id,
+            content: JSON.stringify(result),
+          };
         }));
         workingMessages.push({ role: 'user', content: toolResults });
       }
