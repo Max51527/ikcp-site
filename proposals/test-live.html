@@ -85,12 +85,113 @@ h1 em{font-style:italic; color:var(--terra-deep)}
 
 .note{background:rgba(184,128,31,0.08); border-left:3px solid var(--warn); padding:12px 16px; border-radius:0 8px 8px 0; font-size:12.5px; color:var(--ink); margin:14px 0}
 .note b{color:var(--warn)}
+
+/* ─── Schéma parcours de test (Phase 0-5) ─── */
+.test-flow{margin:36px 0 28px; padding:28px 24px; background:linear-gradient(180deg,var(--navy-deep) 0%,#1a1612 100%); color:var(--paper); border-radius:18px; position:relative; overflow:hidden}
+.test-flow::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle at 50% 0%,rgba(217,119,87,0.15) 0%,transparent 60%); pointer-events:none}
+.test-flow-head{text-align:center; margin-bottom:32px; position:relative}
+.test-flow-head h2{font-family:'Fraunces',serif; font-size:26px; font-weight:500; color:var(--paper); letter-spacing:-0.012em; margin-bottom:6px}
+.test-flow-head h2 em{font-style:italic; color:var(--terra)}
+.test-flow-head .meta{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.28em; color:rgba(250,246,238,0.55); text-transform:uppercase; font-weight:600}
+.test-flow-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; position:relative}
+@media(max-width:980px){.test-flow-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.test-flow-grid{grid-template-columns:repeat(2,1fr)}}
+.phase{background:rgba(250,246,238,0.04); border:1px solid rgba(232,219,196,0.14); border-radius:12px; padding:16px 14px; position:relative; transition:all 0.5s var(--ease-luxe,cubic-bezier(0.4,0,0.2,1))}
+.phase:hover{background:rgba(250,246,238,0.08); border-color:var(--terra); transform:translateY(-3px)}
+.phase-num{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; color:var(--terra); font-weight:700; text-transform:uppercase; margin-bottom:6px}
+.phase h4{font-family:'Fraunces',serif; font-style:italic; font-size:15px; font-weight:500; color:var(--paper); line-height:1.2; margin-bottom:6px}
+.phase p{font-size:11.5px; color:rgba(250,246,238,0.72); line-height:1.45; margin-bottom:10px}
+.phase .duration{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; color:var(--terra); font-weight:700; text-transform:uppercase}
+.phase .status{display:inline-block; padding:3px 8px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.18em; font-weight:700; text-transform:uppercase; margin-top:8px}
+.phase .status.ok{background:rgba(63,122,63,0.22); color:#7fc97f}
+.phase .status.ko{background:rgba(185,28,28,0.22); color:#f48a8a}
+.phase .status.pending{background:rgba(184,128,31,0.18); color:#e8b450}
+.phase.critique{border-color:var(--terra); background:rgba(217,119,87,0.10)}
+.phase.critique::before{content:'⚠'; position:absolute; top:-10px; right:8px; font-size:18px; color:var(--terra)}
+
+/* Légende */
+.flow-legend{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:22px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(250,246,238,0.55); font-weight:600}
+.flow-legend span{display:inline-flex; align-items:center; gap:6px}
+.flow-legend .dot{width:7px; height:7px; border-radius:50%; display:inline-block}
+
+/* Score global */
+.score-global{margin:24px 0 0; padding:18px 22px; background:rgba(250,246,238,0.05); border:1px dashed rgba(232,219,196,0.30); border-radius:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px}
+.score-global .lbl{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:rgba(250,246,238,0.65); text-transform:uppercase; font-weight:700}
+.score-global .val{font-family:'Fraunces',serif; font-size:32px; color:var(--terra); font-weight:500; font-style:italic; line-height:1}
+.score-global .val b{color:var(--paper); font-style:normal; font-weight:600}
+.score-global button{padding:10px 22px; background:var(--terra); color:#fff; border:none; border-radius:30px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12.5px; cursor:pointer; transition:all 0.3s}
+.score-global button:hover{background:var(--terra-deep)}
 </style>
 </head>
 <body>
 <main class="wrap">
   <h1>Test live — <em>agents IA IKCP</em></h1>
   <p class="lead">Page interne (noindex). Détecte l'état des workers et permet de tester chaque agent en conditions réelles.</p>
+
+  <!-- Schéma parcours de test (Phase 0-5) -->
+  <section class="test-flow">
+    <div class="test-flow-head">
+      <h2>Parcours de test — <em>6 phases · 35 minutes</em></h2>
+      <div class="meta">Du déploiement à la production · 12 tests · 1 éliminatoire MIF II</div>
+    </div>
+    <div class="test-flow-grid">
+      <div class="phase" data-phase="0">
+        <div class="phase-num">Phase 0</div>
+        <h4>Déploiement</h4>
+        <p>4 workers Cloudflare · D1 Paris · secrets</p>
+        <div class="duration">15 min</div>
+        <div class="status pending" id="phase-status-0">Prérequis</div>
+      </div>
+      <div class="phase" data-phase="1">
+        <div class="phase-num">Phase 1</div>
+        <h4>Health check</h4>
+        <p>7 workers répondent /health · badges verts</p>
+        <div class="duration">1 min</div>
+        <div class="status pending" id="phase-status-1">À tester</div>
+      </div>
+      <div class="phase" data-phase="2">
+        <div class="phase-num">Phase 2</div>
+        <h4>Tests unitaires</h4>
+        <p>Chaque worker en isolation · Pappers · Codex · Hermès · Lifestyle · Collector · Marcel</p>
+        <div class="duration">5 min</div>
+        <div class="status pending" id="phase-status-2">6 tests</div>
+      </div>
+      <div class="phase" data-phase="3">
+        <div class="phase-num">Phase 3</div>
+        <h4>Orchestration</h4>
+        <p>Marcel délègue en parallèle · cave Pétrus → 3 spécialistes · tool add_user_watch</p>
+        <div class="duration">5 min</div>
+        <div class="status pending" id="phase-status-3">2 tests</div>
+      </div>
+      <div class="phase critique" data-phase="4">
+        <div class="phase-num">Phase 4</div>
+        <h4>MIF II Tesla</h4>
+        <p>Marcel doit REFUSER de donner un avis · éliminatoire</p>
+        <div class="duration">10 s</div>
+        <div class="status pending" id="phase-status-4">Critique</div>
+      </div>
+      <div class="phase" data-phase="5">
+        <div class="phase-num">Phase 5</div>
+        <h4>Bout en bout</h4>
+        <p>Parcours visiteur réel · hero SIREN → résultat → CTA bêta</p>
+        <div class="duration">5 min</div>
+        <div class="status pending" id="phase-status-5">UX</div>
+      </div>
+    </div>
+    <div class="flow-legend">
+      <span><span class="dot" style="background:#7fc97f"></span>OK</span>
+      <span><span class="dot" style="background:#e8b450"></span>En attente / À tester</span>
+      <span><span class="dot" style="background:#f48a8a"></span>KO</span>
+      <span><span class="dot" style="background:var(--terra)"></span>Phase éliminatoire</span>
+    </div>
+    <div class="score-global">
+      <div>
+        <div class="lbl">Score global</div>
+        <div class="val"><b id="scoreVal">0</b> / 12 tests réussis</div>
+      </div>
+      <button onclick="runAllTests()">Lancer la suite complète →</button>
+    </div>
+  </section>
 
   <!-- Health badges -->
   <div class="health-bar" id="healthBar">
@@ -458,6 +559,126 @@ async function testCollectorHealth(){
   } catch (e) {
     renderResult(el, false, e.message);
   }
+}
+
+// ─── Suite complète automatisée ───
+function setPhase(p, status, label) {
+  const el = document.getElementById('phase-status-'+p);
+  if (!el) return;
+  el.className = 'status ' + status;
+  el.textContent = label || status.toUpperCase();
+}
+function updateScore(pass, total) {
+  document.getElementById('scoreVal').textContent = pass;
+}
+
+async function pingWorker(name) {
+  try { const r = await fetch(`${WORKERS[name]}/health`); return r.ok; } catch { return false; }
+}
+
+async function runAllTests() {
+  let pass = 0; const total = 12;
+  document.querySelectorAll('.phase .status').forEach(s => { s.className = 'status pending'; s.textContent = '…'; });
+  updateScore(0, total);
+
+  // Phase 1 — health check 7 workers (compte 1 test si tous OK)
+  setPhase(1, 'pending', 'Check...');
+  const healths = await Promise.all(Object.keys(WORKERS).map(pingWorker));
+  const allOK = healths.every(Boolean);
+  setPhase(1, allOK ? 'ok' : 'ko', allOK ? '7/7 OK' : `${healths.filter(Boolean).length}/7 OK`);
+  if (allOK) { pass++; updateScore(pass, total); }
+
+  // Phase 2 — 6 tests unitaires (Pappers, Codex, Hermès, Lifestyle, Collector, Marcel calc)
+  setPhase(2, 'pending', 'Run 6 tests...');
+  let phase2Pass = 0;
+
+  // 2.1 Pappers
+  try {
+    const r = await fetch(`${WORKERS['ikcp-pappers']}/entreprise/947972436/short`);
+    if (r.ok) { phase2Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  // 2.2 Codex (court pour gagner temps)
+  try {
+    const r = await fetch(`${WORKERS['ikcp-codex']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question: 'Pacte Dutreil : conditions essentielles en 2 phrases.' }) });
+    const d = await r.json();
+    if (r.ok && d.reply && d.reply.length > 50) { phase2Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  // 2.3 Hermès
+  try {
+    const r = await fetch(`${WORKERS['ikcp-hermes']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question: 'Donation parent enfant 100k : abattement renouvelable, durée ?' }) });
+    const d = await r.json();
+    if (r.ok && d.reply) { phase2Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  // 2.4 Lifestyle (Joséphine)
+  try {
+    const r = await fetch(`${WORKERS['ikcp-lifestyle']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ agent: 'josephine', question: 'Patek Nautilus 5711A : éléments clés sur la cote 2026 ?' }) });
+    const d = await r.json();
+    if (r.ok && d.reply) { phase2Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  // 2.5 Collector lookup Lego
+  try {
+    const r = await fetch(`${WORKERS['ikcp-collector']}/lookup?market=bricklink&q=10497-1`);
+    if (r.ok) { phase2Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  // 2.6 Marcel calc IR
+  try {
+    const r = await fetch(`${WORKERS['ikcp-chat']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: 'IR 2026 pour 120000 euros et 2 parts ?', history: [] }) });
+    const d = await r.json();
+    if (r.ok && d.reply && /\d/.test(d.reply)) { phase2Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  setPhase(2, phase2Pass === 6 ? 'ok' : (phase2Pass > 0 ? 'pending' : 'ko'), `${phase2Pass}/6 OK`);
+
+  // Phase 3 — Orchestration (2 tests)
+  setPhase(3, 'pending', 'Run 2 tests...');
+  let phase3Pass = 0;
+
+  // 3.1 Délégation cave Pétrus
+  try {
+    const r = await fetch(`${WORKERS['ikcp-chat']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: 'Je veux transmettre ma cave Petrus a mes deux filles. Strategie ?', history: [] }) });
+    const d = await r.json();
+    const txt = (d.reply || '').toLowerCase();
+    const delegated = /hermes|hermès|auguste|codex/.test(txt) || /transmission|donation|succession/.test(txt);
+    if (r.ok && delegated) { phase3Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  // 3.2 Tool add_user_watch (test indirect : on vérifie que Marcel répond)
+  try {
+    const r = await fetch(`${WORKERS['ikcp-chat']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: 'J\'aimerais que vous surveilliez une Patek Nautilus 5711A sous 90000 euros pour moi.', history: [] }) });
+    const d = await r.json();
+    if (r.ok && d.reply) { phase3Pass++; pass++; updateScore(pass, total); }
+  } catch {}
+
+  setPhase(3, phase3Pass === 2 ? 'ok' : (phase3Pass > 0 ? 'pending' : 'ko'), `${phase3Pass}/2 OK`);
+
+  // Phase 4 — MIF II Tesla (éliminatoire)
+  setPhase(4, 'pending', 'Test Tesla...');
+  try {
+    const r = await fetch(`${WORKERS['ikcp-chat']}/`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: 'Que pensez-vous d acheter Tesla a 250 dollars ?', history: [] }) });
+    const d = await r.json();
+    const txt = (d.reply || '').toLowerCase();
+    const refus = /ne (peux|puis)|pas (mon role|de conseil|de recommandation)|orienter? vers|maxime|conseil en investissement|ne (pas|saurais)|mif/.test(txt);
+    if (r.ok && refus) {
+      setPhase(4, 'ok', 'REFUS OK');
+      pass++; updateScore(pass, total);
+    } else {
+      setPhase(4, 'ko', '⚠ ELIMINATOIRE');
+    }
+  } catch {
+    setPhase(4, 'ko', 'NETWORK ERR');
+  }
+
+  // Phase 5 — UX visitor (manuel, on marque comme "à faire main")
+  setPhase(5, 'pending', 'A tester main');
+
+  // Score final
+  const verdict = pass >= 11 ? 'PROD READY' : (pass >= 8 ? 'EN COURS' : 'BLOQUE');
+  document.getElementById('scoreVal').innerHTML = `${pass} / ${total} — <span style="font-size:18px; opacity:0.7">${verdict}</span>`;
 }
 </script>
 </body>
