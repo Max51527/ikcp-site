@@ -749,6 +749,136 @@ section.funnel::before, section.heritage::before, section.beta::before{
   section.hero{ text-align:center; align-items:center }
   .hero h1{ max-width:none }
 }
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  HERO SIREN — accroche immédiate, droit au but                    ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+.hero-siren{
+  width:100%; max-width:680px; margin:24px auto 18px;
+  background:var(--paper); border:1.5px solid var(--line-strong);
+  border-radius:80px; padding:8px 8px 8px 32px;
+  display:flex; align-items:center; gap:14px;
+  box-shadow:0 24px 60px -20px rgba(45,37,32,0.18), 0 1px 0 rgba(255,255,255,0.6) inset;
+  transition:all 0.7s var(--ease-luxe);
+  opacity:0; animation:fadeUp 1.4s 1s var(--ease-luxe) forwards;
+}
+.hero-siren:focus-within{
+  border-color:var(--terra);
+  box-shadow:0 32px 70px -16px rgba(217,119,87,0.30), 0 1px 0 rgba(255,255,255,0.6) inset;
+  transform:translateY(-2px);
+}
+.hero-siren-label{
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:0.32em; color:var(--ink-faint); text-transform:uppercase;
+  font-weight:700; padding-right:14px; border-right:1px solid var(--line-strong);
+}
+.hero-siren input{
+  flex:1; border:none; outline:none; background:transparent;
+  font-family:'JetBrains Mono',monospace; font-size:16px; color:var(--ink);
+  letter-spacing:0.14em; font-weight:500; padding:12px 8px;
+}
+.hero-siren input::placeholder{ color:var(--ink-faint); font-weight:400; letter-spacing:0.1em }
+.hero-siren button{
+  padding:14px 28px; background:var(--ink); color:var(--paper);
+  border:none; border-radius:70px; font-family:'Outfit',sans-serif;
+  font-weight:500; font-size:13.5px; cursor:pointer; letter-spacing:0.02em;
+  transition:all 0.5s var(--ease-luxe); white-space:nowrap;
+}
+.hero-siren button:hover{ background:var(--terra); transform:scale(1.02) }
+.hero-siren button:disabled{ background:var(--line-strong); cursor:wait }
+.hero-siren-note{
+  font-family:'JetBrains Mono',monospace; font-size:9.5px;
+  letter-spacing:0.28em; color:var(--ink-faint); text-transform:uppercase;
+  font-weight:600; margin-bottom:36px; text-align:center;
+  opacity:0; animation:fadeIn 1.4s 1.3s forwards;
+}
+.hero-siren-note b{ color:var(--terra-deep); font-weight:700 }
+@media(min-width:1100px){
+  .hero-siren, .hero-siren-note{ align-self:center; margin-left:auto; margin-right:auto }
+}
+@media(max-width:600px){
+  .hero-siren{ flex-direction:column; padding:16px; border-radius:22px; align-items:stretch; gap:10px }
+  .hero-siren-label{ border-right:none; padding:0 0 8px 0; border-bottom:1px solid var(--line); text-align:center }
+  .hero-siren input{ padding:12px 16px; background:var(--paper-2); border-radius:14px; text-align:center }
+  .hero-siren button{ padding:14px; border-radius:14px }
+}
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  RÉSULTAT MARCEL — panneau live qui apparaît après SIREN           ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+.marcel-result{
+  display:none; padding:120px 48px 80px;
+  background:linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.marcel-result.show{ display:block; animation:fadeUp 0.9s var(--ease-luxe) }
+.mr-inner{ max-width:1240px; margin:0 auto }
+.mr-head{ text-align:center; margin-bottom:48px }
+.mr-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.4em; text-transform:uppercase; color:var(--terra); font-weight:700; margin-bottom:14px; display:inline-flex; align-items:center; gap:10px }
+.mr-eyebrow .pulse{ display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--terra); animation:pulseGlow 1.2s ease-in-out infinite }
+.mr-head h2{ font-family:'Fraunces',serif; font-variation-settings:"opsz" 144,"SOFT" 90; font-size:clamp(28px,3.6vw,42px); font-weight:400; letter-spacing:-0.022em; color:var(--ink); line-height:1.1; margin-bottom:10px }
+.mr-head h2 em{ font-style:italic; color:var(--terra-deep); font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1 }
+.mr-head .company{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-mute); letter-spacing:0.12em }
+.mr-head .company b{ color:var(--ink); font-weight:600 }
+
+.mr-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin-bottom:36px }
+@media(max-width:760px){ .mr-grid{ grid-template-columns:1fr } }
+
+.mr-card{
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:18px;
+  padding:28px 28px 24px; position:relative; transition:all 0.6s var(--ease-luxe);
+  display:flex; flex-direction:column; gap:10px;
+}
+.mr-card:hover{ transform:translateY(-3px); box-shadow:0 20px 44px -10px rgba(45,37,32,0.12); border-color:var(--terra) }
+.mr-card-agent{
+  display:flex; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px dashed var(--line-strong);
+}
+.mr-card-avatar{
+  width:48px; height:48px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--terra-glow),var(--terra) 60%, var(--terra-deep));
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+  box-shadow:0 6px 20px rgba(217,119,87,0.30);
+}
+.mr-card-id{ flex:1 }
+.mr-card-name{ font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--ink); font-weight:500; line-height:1; letter-spacing:-0.005em }
+.mr-card-role{ font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.26em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-top:4px }
+.mr-card-badge{ font-family:'JetBrains Mono',monospace; font-size:9px; padding:4px 10px; border-radius:30px; letter-spacing:0.2em; text-transform:uppercase; font-weight:700 }
+.mr-card-badge.free{ background:var(--ok); color:#fff }
+.mr-card-badge.premium{ background:rgba(45,37,32,0.06); color:var(--ink-mute); border:1px solid var(--line-strong) }
+.mr-card-body{ padding-top:6px; font-size:14px; color:var(--ink); line-height:1.65 }
+.mr-card-body dl{ display:grid; grid-template-columns:auto 1fr; gap:6px 16px; font-family:'JetBrains Mono',monospace; font-size:12px }
+.mr-card-body dt{ color:var(--ink-faint); letter-spacing:0.08em; text-transform:uppercase; font-weight:600 }
+.mr-card-body dd{ color:var(--ink); font-weight:500 }
+.mr-card-body .insight{ background:rgba(217,119,87,0.08); border-left:2px solid var(--terra); padding:12px 14px; border-radius:0 8px 8px 0; margin-top:14px; font-size:13px; color:var(--ink); line-height:1.6 }
+.mr-card-body .insight b{ font-family:'Fraunces',serif; font-style:italic; color:var(--terra-deep); font-weight:500 }
+
+/* Cards premium (locked) */
+.mr-card.locked{ position:relative; background:rgba(250,246,238,0.4); border-style:dashed; opacity:0.78 }
+.mr-card.locked::before{
+  content:''; position:absolute; inset:0; border-radius:18px;
+  background:linear-gradient(135deg, rgba(244,236,223,0.55) 0%, rgba(232,219,191,0.35) 100%);
+  backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px);
+  pointer-events:none;
+}
+.mr-card.locked .mr-card-agent, .mr-card.locked .mr-card-body{ position:relative; z-index:1 }
+.mr-card.locked .mr-card-body{ filter:blur(2.2px); user-select:none }
+.mr-card.locked .mr-card-avatar{ background:radial-gradient(circle at 35% 30%, var(--paper-3), var(--line-strong) 60%, var(--ink-faint)) }
+.mr-card.locked .mr-card-role{ color:var(--ink-faint) }
+.mr-card .unlock{
+  position:absolute; left:50%; bottom:24px; transform:translateX(-50%);
+  background:var(--ink); color:var(--paper);
+  padding:10px 22px; border-radius:30px; font-family:'Outfit',sans-serif;
+  font-weight:500; font-size:12.5px; text-decoration:none; letter-spacing:0.02em;
+  white-space:nowrap; z-index:2;
+  box-shadow:0 14px 30px -6px rgba(45,37,32,0.30);
+  transition:all 0.5s var(--ease-luxe);
+}
+.mr-card .unlock:hover{ background:var(--terra); transform:translateX(-50%) translateY(-2px) }
+.mr-card .unlock::before{ content:'🔒 '; opacity:0.9 }
+
+.mr-cta{ text-align:center; margin-top:18px }
+.mr-cta p{ font-family:'Fraunces',serif; font-style:italic; font-size:16px; color:var(--ink-mute); margin-bottom:18px }
+.mr-cta p b{ font-style:normal; font-family:'Outfit',sans-serif; color:var(--terra-deep); font-weight:600 }
 </style>
 </head>
 <body>
@@ -779,6 +909,14 @@ section.funnel::before, section.heritage::before, section.beta::before{
   <h1>Une porte. Une équipe.<br>Votre patrimoine <em>en orbite.</em></h1>
   <p class="hero-tagline">Le cabinet IKCP orchestre douze univers patrimoniaux branchés sur intelligence souveraine. Application mobile iOS · Android · PWA. 100 % France.</p>
   <p class="hero-philo"><b>Vous pilotez.</b> Nous mettons à votre disposition la technologie et vos passions sur-mesure. Si vous désirez notre coup d'œil, nous intervenons — <b>mais vous décidez</b>. Sans démarche commerciale non sollicitée.</p>
+
+  <form class="hero-siren" id="heroSirenForm" onsubmit="return runHeroSiren(event)" autocomplete="off">
+    <span class="hero-siren-label">SIREN</span>
+    <input id="heroSirenInput" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres — ex. 947 972 436">
+    <button id="heroSirenBtn" type="submit">Activer Marcel →</button>
+  </form>
+  <div class="hero-siren-note">◆ Démonstration sans engagement · <b>2 agents gratuits</b> · sources officielles France</div>
+
   <div class="hero-stats">
     <span><b>12</b> · univers à votre service</span>
     <span><b>24/7</b> · disponibilité</span>
@@ -814,6 +952,125 @@ section.funnel::before, section.heritage::before, section.beta::before{
     <a href="#univers" class="btn btn-ghost">Découvrir vos univers</a>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ MARCEL RESULT — Panneau live freemium après SIREN ═════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="marcel-result" id="marcelResult">
+  <div class="mr-inner">
+    <div class="mr-head">
+      <div class="mr-eyebrow"><span class="pulse"></span>Marcel orchestre · Réponse en direct</div>
+      <h2><em>Marcel</em> a mobilisé deux spécialistes.<br>Voici ce qu'ils voient.</h2>
+      <div class="company" id="mrCompany">— · —</div>
+    </div>
+
+    <div class="mr-grid" id="mrGrid">
+      <!-- Card Théodore (free) -->
+      <article class="mr-card" id="mrTheodore">
+        <div class="mr-card-agent">
+          <div class="mr-card-avatar">🏛️</div>
+          <div class="mr-card-id">
+            <div class="mr-card-name">Théodore</div>
+            <div class="mr-card-role">Cartographie patrimoniale</div>
+          </div>
+          <span class="mr-card-badge free">Gratuit</span>
+        </div>
+        <div class="mr-card-body" id="mrTheodoreBody">
+          <p style="font-style:italic; color:var(--ink-faint)">Cartographie en cours…</p>
+        </div>
+      </article>
+
+      <!-- Card Codex (free) -->
+      <article class="mr-card" id="mrCodex">
+        <div class="mr-card-agent">
+          <div class="mr-card-avatar">📜</div>
+          <div class="mr-card-id">
+            <div class="mr-card-name">Codex</div>
+            <div class="mr-card-role">Point d'attention fiscal</div>
+          </div>
+          <span class="mr-card-badge free">Gratuit</span>
+        </div>
+        <div class="mr-card-body" id="mrCodexBody">
+          <p style="font-style:italic; color:var(--ink-faint)">Analyse fiscale en cours…</p>
+        </div>
+      </article>
+
+      <!-- Card Hermès (PREMIUM locked) -->
+      <article class="mr-card locked">
+        <div class="mr-card-agent">
+          <div class="mr-card-avatar">🌳</div>
+          <div class="mr-card-id">
+            <div class="mr-card-name">Hermès</div>
+            <div class="mr-card-role">Transmission · Succession</div>
+          </div>
+          <span class="mr-card-badge premium">Premium</span>
+        </div>
+        <div class="mr-card-body">
+          <dl><dt>Droits estimés</dt><dd>—— k€</dd><dt>Réserve héréditaire</dt><dd>——</dd><dt>Pacte Dutreil</dt><dd>—— %</dd></dl>
+          <div class="insight"><b>Recommandation :</b> structuration anticipée Dutreil + donation-partage avec démembrement croisé. Économies estimées —— k€.</div>
+        </div>
+        <a href="#beta" class="unlock">Débloquer avec la bêta</a>
+      </article>
+
+      <!-- Card Augustin (PREMIUM locked) -->
+      <article class="mr-card locked">
+        <div class="mr-card-agent">
+          <div class="mr-card-avatar">🏠</div>
+          <div class="mr-card-id">
+            <div class="mr-card-name">Augustin</div>
+            <div class="mr-card-role">Immobilier · Foncier</div>
+          </div>
+          <span class="mr-card-badge premium">Premium</span>
+        </div>
+        <div class="mr-card-body">
+          <dl><dt>SCI détectées</dt><dd>—</dd><dt>Valorisation parc</dt><dd>—— k€</dd><dt>IFI estimé</dt><dd>—— k€</dd></dl>
+          <div class="insight"><b>Optimisation possible :</b> arbitrage LMNP / déficit foncier sur 3 actifs. Gain net annuel —— k€.</div>
+        </div>
+        <a href="#beta" class="unlock">Débloquer avec la bêta</a>
+      </article>
+
+      <!-- Card Joséphine (PREMIUM locked) -->
+      <article class="mr-card locked">
+        <div class="mr-card-agent">
+          <div class="mr-card-avatar">⌚</div>
+          <div class="mr-card-id">
+            <div class="mr-card-name">Joséphine</div>
+            <div class="mr-card-role">Montres &amp; Joaillerie</div>
+          </div>
+          <span class="mr-card-badge premium">Premium</span>
+        </div>
+        <div class="mr-card-body">
+          <dl><dt>Collection cible</dt><dd>—— pièces</dd><dt>Acquisitions récentes</dt><dd>——</dd><dt>Valorisation marché gris</dt><dd>—— k€</dd></dl>
+          <div class="insight"><b>Veille active :</b> 3 Patek Nautilus disponibles &lt; cote · 1 Richard Mille rare aux enchères. Suivi IFI inclus.</div>
+        </div>
+        <a href="#beta" class="unlock">Débloquer avec la bêta</a>
+      </article>
+
+      <!-- Card Capital (PREMIUM locked) -->
+      <article class="mr-card locked">
+        <div class="mr-card-agent">
+          <div class="mr-card-avatar">💎</div>
+          <div class="mr-card-id">
+            <div class="mr-card-name">Capital</div>
+            <div class="mr-card-role">Private Equity · Marchés</div>
+          </div>
+          <span class="mr-card-badge premium">Premium</span>
+        </div>
+        <div class="mr-card-body">
+          <dl><dt>Club deals ouverts</dt><dd>—</dd><dt>Ticket min</dt><dd>—— k€</dd><dt>TRI historique</dt><dd>—— %</dd></dl>
+          <div class="insight"><b>Deal flow :</b> 4 opérations cohérentes avec votre profil (energy transition, deeptech FR, hôtellerie). Co-investissement aligné.</div>
+        </div>
+        <a href="#beta" class="unlock">Débloquer avec la bêta</a>
+      </article>
+    </div>
+
+    <div class="mr-cta">
+      <p>Vous avez 11 spécialistes au total. <b>Deux travaillent pour vous en cette seconde.</b><br>Les neuf autres se débloquent avec la bêta.</p>
+      <a href="#beta" class="btn btn-primary">Demander mon accès à la bêta →</a>
+    </div>
+  </div>
+</section>
+
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- ═══ CLAIMS ═════════════════════════════════════════════════════ -->
@@ -1310,7 +1567,99 @@ section.funnel::before, section.heritage::before, section.beta::before{
   updateQuota();
 })();
 
-/* ─── Funnel SIREN — branchement worker ikcp-pappers ─── */
+/* ─── HERO SIREN : freemium 2 agents (Théodore + Codex) ─── */
+async function runHeroSiren(e){
+  e.preventDefault();
+  var input = document.getElementById('heroSirenInput');
+  var btn = document.getElementById('heroSirenBtn');
+  var siren = (input.value||'').replace(/\s+/g,'');
+  if(!/^\d{9}$/.test(siren)){
+    input.style.borderColor='var(--bad)';
+    input.focus();
+    return false;
+  }
+  btn.disabled = true; btn.textContent = 'Marcel travaille…';
+  var panel = document.getElementById('marcelResult');
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Reset bodies
+  document.getElementById('mrTheodoreBody').innerHTML = '<p style="font-style:italic; color:var(--ink-faint)">◆ Théodore interroge les sources officielles…</p>';
+  document.getElementById('mrCodexBody').innerHTML = '<p style="font-style:italic; color:var(--ink-faint)">◆ Codex prépare son analyse…</p>';
+  document.getElementById('mrCompany').textContent = 'SIREN ' + siren.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+
+  try{
+    var r = await fetch('https://ikcp-pappers.maxime-ead.workers.dev/?siren=' + siren, {headers:{'Accept':'application/json'}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var data = await r.json();
+    renderTheodore(siren, data);
+    renderCodex(data);
+  }catch(err){
+    document.getElementById('mrTheodoreBody').innerHTML = '<p style="color:var(--bad); font-size:13px">⚠ Théodore n\'a pas pu joindre les sources officielles. Réessayez ou demandez votre accès bêta.</p>';
+    document.getElementById('mrCodexBody').innerHTML = '<p style="color:var(--ink-faint); font-size:13px; font-style:italic">En attente des données de cartographie.</p>';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Activer Marcel →';
+  }
+  return false;
+}
+
+function renderTheodore(siren, data){
+  var nom = data.nom_entreprise || data.denomination || data.nom || 'Société identifiée';
+  var forme = data.forme_juridique || '—';
+  var capital = data.capital ? Number(data.capital).toLocaleString('fr-FR') + ' €' : '—';
+  var creation = data.date_creation || '—';
+  var ville = (data.siege && (data.siege.ville || data.siege.code_postal)) ? ((data.siege.code_postal||'')+' '+(data.siege.ville||'')).trim() : '—';
+  var activite = data.libelle_code_naf || data.activite || '—';
+  var beneficiaire = (data.beneficiaires_effectifs && data.beneficiaires_effectifs[0] && data.beneficiaires_effectifs[0].nom) ? (data.beneficiaires_effectifs[0].prenom + ' ' + data.beneficiaires_effectifs[0].nom) : null;
+  var ageJ = creation && /^\d{4}/.test(creation) ? (new Date().getFullYear() - parseInt(creation.slice(0,4),10)) : null;
+
+  document.getElementById('mrCompany').innerHTML = '<b>'+nom+'</b> · SIREN ' + siren.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3') + (forme!=='—' ? ' · '+forme : '');
+
+  var html = '<dl>' +
+    '<dt>Forme</dt><dd>'+forme+'</dd>' +
+    '<dt>Capital</dt><dd>'+capital+'</dd>' +
+    '<dt>Création</dt><dd>'+creation+(ageJ!==null?' · <em style="color:var(--ink-faint)">'+ageJ+' ans</em>':'')+'</dd>' +
+    '<dt>Siège</dt><dd>'+ville+'</dd>' +
+    '<dt>Activité</dt><dd>'+activite+'</dd>' +
+    (beneficiaire ? '<dt>Dirigeant</dt><dd>'+beneficiaire+'</dd>' : '') +
+    '</dl>';
+
+  // Insight Théodore (basé sur les data)
+  var insight = '<div class="insight">';
+  if(ageJ !== null && ageJ < 3){
+    insight += '<b>Société récente.</b> Structuration patrimoniale typiquement encore légère. Marge importante pour mise en place anticipée (holding, pacte Dutreil, retraite TNS).';
+  } else if(ageJ !== null && ageJ >= 10){
+    insight += '<b>Société mature.</b> Capital probablement très valorisé — une cession future ou un apport-cession (150-0 B ter) mérite cartographie immédiate.';
+  } else {
+    insight += '<b>Situation à cadrer.</b> Capital et ancienneté justifient une cartographie patrimoniale détaillée pour identifier les leviers fiscaux et de transmission.';
+  }
+  insight += '</div>';
+
+  document.getElementById('mrTheodoreBody').innerHTML = html + insight;
+}
+
+function renderCodex(data){
+  var ageJ = data.date_creation && /^\d{4}/.test(data.date_creation) ? (new Date().getFullYear() - parseInt(data.date_creation.slice(0,4),10)) : null;
+  var cap = data.capital ? Number(data.capital) : null;
+  var forme = (data.forme_juridique||'').toUpperCase();
+  var isSAS = /SAS|SARL/i.test(forme);
+  var pointsAttention = [];
+  if(cap !== null && cap < 5000){ pointsAttention.push('Capital très faible (<5 k€) — fragilise IS / défense bancaire / image partenaires'); }
+  if(ageJ !== null && ageJ < 3 && isSAS){ pointsAttention.push('Société de moins de 3 ans — pacte Dutreil non activable avant 2 ans de détention'); }
+  if(ageJ !== null && ageJ >= 5){ pointsAttention.push('Plus de 5 ans : éligibilité Dutreil OK · réflexion apport-cession 150-0 B ter pertinente'); }
+  if(!isSAS){ pointsAttention.push('Forme '+forme+' : revoir si une holding type SAS au-dessus optimiserait dividendes + transmission'); }
+  if(pointsAttention.length === 0){ pointsAttention.push('Cartographie générique : il faudrait croiser avec votre patrimoine privé (IFI, immobilier, transmission) pour identifier les vrais leviers.'); }
+
+  var html = '<dl>' +
+    '<dt>Régime IS</dt><dd>15 % &lt; 42 500 € · 25 % au-delà</dd>' +
+    '<dt>IFI 2026</dt><dd>seuil 1,3 M€ patrimoine net taxable</dd>' +
+    '<dt>Dutreil</dt><dd>abattement 75 % sur transmission</dd>' +
+    '</dl>';
+  var insight = '<div class="insight"><b>Point d\'attention identifié :</b><br>' + pointsAttention[0] + (pointsAttention[1] ? '<br><span style="color:var(--ink-mute)">+ ' + pointsAttention[1] + '</span>' : '') + '</div>';
+  document.getElementById('mrCodexBody').innerHTML = html + insight;
+}
+
+/* ─── Funnel SIREN (legacy / encore utilisable) : branchement worker ikcp-pappers ─── */
 async function runSiren(e){
   e.preventDefault();
   var input = document.getElementById('sirenInput');
