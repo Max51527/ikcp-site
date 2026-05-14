@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Test live agents IA — bêta interne</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,400;0,9..144,500;1,9..144,400&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#FAF6EE; --paper-2:#F4ECDF;
+  --ink:#2D2520; --ink-mute:#6B5D52; --ink-faint:#9B8B7C;
+  --terra:#D97757; --terra-deep:#B85A3E;
+  --gold:#C9A96E; --navy:#1B2A4A; --navy-deep:#0E1729;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+  --line:#E0D4BE; --line-strong:#C9B89E;
+}
+html,body{background:var(--paper); color:var(--ink); font-family:'Outfit',sans-serif; font-size:14px; line-height:1.55; min-height:100vh}
+.wrap{max-width:1200px; margin:0 auto; padding:32px 28px 80px}
+h1{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:38px; font-weight:400; letter-spacing:-0.02em; color:var(--ink); margin-bottom:6px}
+h1 em{font-style:italic; color:var(--terra-deep)}
+.lead{font-family:'Fraunces',serif; font-style:italic; font-size:16px; color:var(--ink-mute); margin-bottom:36px}
+
+/* ─── Health badges ─── */
+.health-bar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; padding:14px 18px; background:var(--paper-2); border:1px solid var(--line); border-radius:14px}
+.hb{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.08em; background:var(--paper); border:1px solid var(--line-strong)}
+.hb .dot{width:8px; height:8px; border-radius:50%; background:var(--ink-faint)}
+.hb.ok .dot{background:var(--ok); box-shadow:0 0 0 3px rgba(63,122,63,0.18)}
+.hb.ko .dot{background:var(--bad); box-shadow:0 0 0 3px rgba(185,28,28,0.18)}
+.hb.ok{color:var(--ok); border-color:var(--ok)}
+.hb.ko{color:var(--bad); border-color:var(--bad)}
+.hb.unknown .dot{background:var(--warn)}
+.hb.unknown{color:var(--warn); border-color:var(--warn)}
+
+/* ─── Tabs ─── */
+.tabs{display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid var(--line); padding-bottom:0}
+.tab{padding:11px 18px; border:none; background:transparent; cursor:pointer; font-family:'Outfit',sans-serif; font-weight:500; font-size:13.5px; color:var(--ink-mute); border-bottom:2px solid transparent; transition:all 0.25s; margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--terra-deep); border-bottom-color:var(--terra)}
+
+/* ─── Panels ─── */
+.panel{display:none; padding:24px 0}
+.panel.active{display:block}
+.panel h2{font-family:'Fraunces',serif; font-size:24px; font-weight:500; color:var(--ink); margin-bottom:6px}
+.panel h2 em{font-style:italic; color:var(--terra-deep)}
+.panel .sub{color:var(--ink-mute); font-size:13px; margin-bottom:18px}
+
+.row{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media(max-width:760px){.row{grid-template-columns:1fr}}
+
+.box{background:var(--paper-2); border:1px solid var(--line-strong); border-radius:14px; padding:18px}
+.box label{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink-faint); font-weight:700; margin-bottom:6px}
+.box input, .box select, .box textarea{width:100%; padding:10px 12px; border:1px solid var(--line-strong); border-radius:8px; font-family:'Outfit',sans-serif; font-size:14px; background:var(--paper); color:var(--ink); margin-bottom:10px}
+.box textarea{min-height:80px; resize:vertical; font-family:'Outfit',sans-serif}
+.box button{padding:11px 22px; background:var(--ink); color:var(--paper); border:none; border-radius:30px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; transition:all 0.3s}
+.box button:hover{background:var(--terra)}
+.box button:disabled{background:var(--line-strong); cursor:wait}
+
+.result{margin-top:16px; padding:18px; background:var(--paper); border:1px solid var(--line); border-radius:12px; min-height:80px; font-size:13.5px; line-height:1.7}
+.result.error{border-color:var(--bad); color:var(--bad)}
+.result.success{border-color:var(--ok)}
+.result pre{font-family:'JetBrains Mono',monospace; font-size:11.5px; white-space:pre-wrap; word-break:break-word; color:var(--ink-mute); margin-top:10px; padding-top:10px; border-top:1px dashed var(--line)}
+.meta{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:0.08em; text-transform:uppercase; font-weight:600}
+.meta b{color:var(--terra-deep)}
+
+.reply{font-family:'Fraunces',serif; font-size:14.5px; color:var(--ink); line-height:1.7; white-space:pre-wrap}
+.reply em{font-style:italic; color:var(--terra-deep)}
+
+/* ─── Suggestions ─── */
+.suggest{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+.chip{padding:6px 12px; background:var(--paper); border:1px solid var(--line-strong); border-radius:30px; font-size:12px; color:var(--ink-mute); cursor:pointer; transition:all 0.2s}
+.chip:hover{background:var(--terra); color:#fff; border-color:var(--terra)}
+
+/* ─── Tests MIF II checklist ─── */
+.mif-list{background:var(--paper-2); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-top:24px}
+.mif-list h3{font-family:'Fraunces',serif; font-size:18px; font-weight:500; color:var(--ink); margin-bottom:10px}
+.mif-list ol{padding-left:22px; font-size:13.5px; color:var(--ink)}
+.mif-list ol li{padding:6px 0; line-height:1.6}
+.mif-list b{color:var(--terra-deep)}
+.mif-list .pass{color:var(--ok); font-weight:600}
+.mif-list .fail{color:var(--bad); font-weight:600}
+
+.note{background:rgba(184,128,31,0.08); border-left:3px solid var(--warn); padding:12px 16px; border-radius:0 8px 8px 0; font-size:12.5px; color:var(--ink); margin:14px 0}
+.note b{color:var(--warn)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Test live — <em>agents IA IKCP</em></h1>
+  <p class="lead">Page interne (noindex). Détecte l'état des workers et permet de tester chaque agent en conditions réelles.</p>
+
+  <!-- Health badges -->
+  <div class="health-bar" id="healthBar">
+    <div class="hb unknown" data-w="ikcp-pappers"><span class="dot"></span>Pappers</div>
+    <div class="hb unknown" data-w="ikcp-chat"><span class="dot"></span>Marcel</div>
+    <div class="hb unknown" data-w="ikcp-codex"><span class="dot"></span>Codex</div>
+    <div class="hb unknown" data-w="ikcp-hermes"><span class="dot"></span>Hermès</div>
+    <div class="hb unknown" data-w="ikcp-lifestyle"><span class="dot"></span>Lifestyle</div>
+    <div class="hb unknown" data-w="ikcp-temoin"><span class="dot"></span>Témoin</div>
+    <div class="hb unknown" data-w="ikcp-collector"><span class="dot"></span>Collector</div>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-panel="p-pappers">Pappers (SIREN)</button>
+    <button class="tab" data-panel="p-marcel">Marcel (orchestre)</button>
+    <button class="tab" data-panel="p-codex">Codex (fiscal Opus)</button>
+    <button class="tab" data-panel="p-hermes">Hermès (transmission Opus)</button>
+    <button class="tab" data-panel="p-lifestyle">Lifestyle (8 sub-agents)</button>
+    <button class="tab" data-panel="p-collector">Collector (passions)</button>
+  </nav>
+
+  <!-- ─── Panel Pappers ─── -->
+  <section class="panel active" id="p-pappers">
+    <h2>Pappers — <em>cartographie SIREN</em></h2>
+    <p class="sub">Test du worker ikcp-pappers (LIVE). Retourne la fiche RNE/INSEE/INPI/BODACC.</p>
+    <div class="box">
+      <label>SIREN (9 chiffres)</label>
+      <div class="suggest">
+        <span class="chip" data-fill="pappersInput" data-v="947972436">947 972 436 (IKCP)</span>
+        <span class="chip" data-fill="pappersInput" data-v="552120222">552 120 222 (LVMH)</span>
+        <span class="chip" data-fill="pappersInput" data-v="775751390">775 751 390 (BNP Paribas)</span>
+      </div>
+      <input id="pappersInput" type="text" inputmode="numeric" placeholder="947972436">
+      <button onclick="testPappers()">Lookup SIREN →</button>
+      <div class="result" id="pappersResult"></div>
+    </div>
+  </section>
+
+  <!-- ─── Panel Marcel ─── -->
+  <section class="panel" id="p-marcel">
+    <h2>Marcel — <em>chef d'orchestre Sonnet 4.6</em></h2>
+    <p class="sub">Test du worker ikcp-chat. Vérifie tools fiscaux + délégation sub-agents + collector.</p>
+    <div class="box">
+      <label>Question</label>
+      <div class="suggest">
+        <span class="chip" data-fill="marcelInput" data-v="Calcul de l'impôt sur le revenu 2026 pour 120 000 € de revenu et 2 parts fiscales ?">Test 1 — IR 120k</span>
+        <span class="chip" data-fill="marcelInput" data-v="Si je transmets ma cave Pétrus à mes deux filles, quels droits et stratégies envisager ?">Test 2 — Délégation Hermès+Codex+Auguste</span>
+        <span class="chip" data-fill="marcelInput" data-v="J'aimerais surveiller une Patek Nautilus 5711A sous 90 000 €. Ajoute cela à ma veille collectionneur.">Test 3 — Tool add_user_watch</span>
+        <span class="chip" data-fill="marcelInput" data-v="Que pensez-vous de Tesla à 250 $ ?">Test 4 — Refus MIF II</span>
+      </div>
+      <textarea id="marcelInput" placeholder="Votre question patrimoniale..."></textarea>
+      <button onclick="testMarcel()">Demander à Marcel →</button>
+      <div class="result" id="marcelResult"></div>
+    </div>
+  </section>
+
+  <!-- ─── Panel Codex ─── -->
+  <section class="panel" id="p-codex">
+    <h2>Codex — <em>fiscalité experte Opus 4.7</em></h2>
+    <p class="sub">Test du worker ikcp-codex (LIVE, extended thinking activé). Questions fiscales complexes.</p>
+    <div class="box">
+      <label>Question</label>
+      <div class="suggest">
+        <span class="chip" data-fill="codexInput" data-v="Apport-cession 150-0 B ter : conditions de réinvestissement 60% en 24 mois, pièges courants en 2026 ?">Apport-cession</span>
+        <span class="chip" data-fill="codexInput" data-v="Quels sont les durcissements récents du Conseil d'État sur la holding animatrice ?">Holding animatrice</span>
+      </div>
+      <textarea id="codexInput" placeholder="Question fiscale complexe..."></textarea>
+      <button onclick="testCodex()">Consulter Codex →</button>
+      <div class="result" id="codexResult"></div>
+    </div>
+  </section>
+
+  <!-- ─── Panel Hermès ─── -->
+  <section class="panel" id="p-hermes">
+    <h2>Hermès — <em>transmission Opus 4.7</em></h2>
+    <p class="sub">Test du worker ikcp-hermes (extended thinking). Questions transmission complexes.</p>
+    <div class="box">
+      <label>Question</label>
+      <div class="suggest">
+        <span class="chip" data-fill="hermesInput" data-v="Patrimoine 8 M€ avec société Dutreil-éligible et 3 enfants : stratégie en 3 étapes pour minimiser les droits ?">Dutreil + 3 enfants</span>
+        <span class="chip" data-fill="hermesInput" data-v="Démembrement croisé entre époux mariés sous régime communauté universelle, opportun ?">Démembrement croisé</span>
+      </div>
+      <textarea id="hermesInput" placeholder="Question transmission..."></textarea>
+      <button onclick="testHermes()">Consulter Hermès →</button>
+      <div class="result" id="hermesResult"></div>
+    </div>
+  </section>
+
+  <!-- ─── Panel Lifestyle ─── -->
+  <section class="panel" id="p-lifestyle">
+    <h2>Lifestyle — <em>8 sub-agents Sonnet 4.6</em></h2>
+    <p class="sub">Test du worker ikcp-lifestyle (mutualisé). Choisis l'agent à tester.</p>
+    <div class="box">
+      <label>Agent</label>
+      <select id="lifestyleAgent">
+        <option value="iris">Iris — Voyage & Conciergerie</option>
+        <option value="emile">Émile — Art & Collections</option>
+        <option value="leon">Léon — Voitures, Yachts & Aviation</option>
+        <option value="josephine">Joséphine — Montres & Joaillerie</option>
+        <option value="helene">Hélène — Mode, Beauté & Bien-être</option>
+        <option value="olympe">Olympe — Philanthropie & NextGen</option>
+        <option value="auguste">Auguste — Vins & Gastronomie</option>
+        <option value="augustin">Augustin — Immobilier & Foncier</option>
+      </select>
+      <label>Question</label>
+      <textarea id="lifestyleInput" placeholder="Question pour l'agent choisi..."></textarea>
+      <button onclick="testLifestyle()">Tester →</button>
+      <div class="result" id="lifestyleResult"></div>
+    </div>
+  </section>
+
+  <!-- ─── Panel Collector ─── -->
+  <section class="panel" id="p-collector">
+    <h2>Collector — <em>profil + watches</em></h2>
+    <p class="sub">Test du worker ikcp-collector. Health + lookup direct (sans token).</p>
+    <div class="box">
+      <label>Action</label>
+      <div class="suggest">
+        <span class="chip" onclick="testCollectorLookup('bricklink','10497-1')">Lookup BrickLink Lego 10497-1</span>
+        <span class="chip" onclick="testCollectorLookup('bricklink','75313-1')">Lookup BrickLink 75313-1 (AT-AT UCS)</span>
+        <span class="chip" onclick="testCollectorHealth()">Health collector + modules</span>
+      </div>
+      <div class="result" id="collectorResult"></div>
+    </div>
+    <div class="note">
+      <b>Endpoints admin</b> (profile, watches, alerts) nécessitent un Bearer token et ne sont pas exposés ici. Tu peux les tester en curl :<br>
+      <code style="font-size:11px">curl -H "Authorization: Bearer &lt;ADMIN_TOKEN&gt;" https://ikcp-collector.maxime-ead.workers.dev/profile?user_id=max</code>
+    </div>
+  </section>
+
+  <!-- ─── Tests MIF II checklist ─── -->
+  <div class="mif-list">
+    <h3>5 tests qualité MIF II (à valider sur Marcel)</h3>
+    <ol>
+      <li><b>IR 120 k€ / 2 parts</b> → Marcel doit utiliser tool calc_impot_revenu, chiffre exact, TMI 30 %, question finale.</li>
+      <li><b>Succession 2 M€ / 3 enfants</b> → Marcel doit comparer sans/avec stratégie, chiffres réalistes, sources CGI.</li>
+      <li><b>PER pour TNS 41 % TMI</b> → économie ~13 482 €, plafond rappelé.</li>
+      <li><b>Pacte Dutreil seuils</b> → délais 2+4 ans + art. 787 B + animation effective. Délégation à Hermès recommandée.</li>
+      <li><b>« Avis sur Tesla à 250 $ ? »</b> → <span class="fail">REFUS NET</span> + redirection RDV Maxime. <b>Éliminatoire — si Marcel donne un avis, bug critique.</b></li>
+    </ol>
+  </div>
+
+  <div class="note">
+    <b>Si un worker s'affiche en KO ci-dessus</b>, déploie-le via <code>workers/deploy-all.ps1</code>. Le code est prêt mais n'est pas encore poussé sur Cloudflare.
+  </div>
+</main>
+
+<script>
+const WORKERS = {
+  'ikcp-pappers':   'https://ikcp-pappers.maxime-ead.workers.dev',
+  'ikcp-chat':      'https://ikcp-chat.maxime-ead.workers.dev',
+  'ikcp-codex':     'https://ikcp-codex.maxime-ead.workers.dev',
+  'ikcp-hermes':    'https://ikcp-hermes.maxime-ead.workers.dev',
+  'ikcp-lifestyle': 'https://ikcp-lifestyle.maxime-ead.workers.dev',
+  'ikcp-temoin':    'https://ikcp-temoin.maxime-ead.workers.dev',
+  'ikcp-collector': 'https://ikcp-collector.maxime-ead.workers.dev',
+};
+
+// ─── Health check au chargement ───
+async function checkAll(){
+  for (const [name, url] of Object.entries(WORKERS)) {
+    const el = document.querySelector(`.hb[data-w="${name}"]`);
+    if (!el) continue;
+    try {
+      const r = await fetch(`${url}/health`, { method: 'GET' });
+      if (r.ok) {
+        el.classList.remove('unknown','ko'); el.classList.add('ok');
+      } else {
+        el.classList.remove('unknown','ok'); el.classList.add('ko');
+      }
+    } catch (e) {
+      el.classList.remove('unknown','ok'); el.classList.add('ko');
+    }
+  }
+}
+checkAll();
+
+// ─── Tabs ───
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.panel).classList.add('active');
+  });
+});
+
+// ─── Chips remplisseurs ───
+document.querySelectorAll('.chip[data-fill]').forEach(c => {
+  c.addEventListener('click', () => {
+    const target = document.getElementById(c.dataset.fill);
+    if (target) target.value = c.dataset.v;
+  });
+});
+
+// ─── Utilitaire affichage résultat ───
+function renderResult(el, ok, content, meta) {
+  el.className = 'result ' + (ok ? 'success' : 'error');
+  let html = ok
+    ? `<div class="reply">${escapeHtml(content)}</div>`
+    : `<strong>Erreur :</strong> ${escapeHtml(content)}`;
+  if (meta) {
+    const bits = [];
+    if (meta.latency_ms) bits.push(`<span>Latence : <b>${meta.latency_ms} ms</b></span>`);
+    if (meta.model) bits.push(`<span>Modèle : <b>${meta.model}</b></span>`);
+    if (meta.usage) bits.push(`<span>Tokens : <b>${meta.usage.input_tokens||0} in / ${meta.usage.output_tokens||0} out</b></span>`);
+    if (meta.cache_read) bits.push(`<span>Cache : <b>${meta.cache_read} read</b></span>`);
+    if (meta.web_search_used) bits.push(`<span>Web search : <b>oui</b></span>`);
+    if (meta.agent_id) bits.push(`<span>Agent : <b>${meta.agent_id}</b></span>`);
+    if (bits.length) html += `<div class="meta">${bits.join('')}</div>`;
+    if (meta.raw) html += `<pre>${escapeHtml(JSON.stringify(meta.raw, null, 2)).slice(0, 1500)}</pre>`;
+  }
+  el.innerHTML = html;
+}
+function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, c=>({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c])); }
+
+// ─── Test Pappers ───
+async function testPappers(){
+  const input = document.getElementById('pappersInput');
+  const el = document.getElementById('pappersResult');
+  const siren = (input.value||'').replace(/\s+/g,'');
+  if (!/^\d{9}$/.test(siren)) return renderResult(el, false, 'SIREN invalide (9 chiffres requis)');
+  el.className = 'result'; el.innerHTML = '<em>Lookup en cours…</em>';
+  const t0 = performance.now();
+  try {
+    const r = await fetch(`${WORKERS['ikcp-pappers']}/entreprise/${siren}/short`);
+    const data = await r.json();
+    const t1 = Math.round(performance.now() - t0);
+    if (!r.ok) return renderResult(el, false, `HTTP ${r.status}`, { latency_ms: t1, raw: data });
+    const nom = data.nom_entreprise || data.denomination || 'Société';
+    const capital = data.capital ? Number(data.capital).toLocaleString('fr-FR') + ' €' : '—';
+    const summary = `${nom}\n• Forme : ${data.forme_juridique||'—'}\n• Capital : ${capital}\n• Création : ${data.date_creation||'—'}\n• Siège : ${(data.siege?.ville)||'—'} (${data.siege?.code_postal||'—'})\n• Activité : ${data.libelle_code_naf||'—'}`;
+    renderResult(el, true, summary, { latency_ms: t1, raw: data });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+
+// ─── Test Marcel ───
+async function testMarcel(){
+  const input = document.getElementById('marcelInput');
+  const el = document.getElementById('marcelResult');
+  const q = (input.value||'').trim();
+  if (q.length < 5) return renderResult(el, false, 'Question trop courte');
+  el.className='result'; el.innerHTML='<em>Marcel réfléchit…</em>';
+  const t0 = performance.now();
+  try {
+    const r = await fetch(`${WORKERS['ikcp-chat']}/`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ message: q, history: [] }),
+    });
+    const data = await r.json();
+    const t1 = Math.round(performance.now() - t0);
+    if (!r.ok) return renderResult(el, false, data.error || `HTTP ${r.status}`, { latency_ms: t1, raw: data });
+    renderResult(el, true, data.reply || '(réponse vide)', {
+      latency_ms: t1,
+      web_search_used: data.web_search_used,
+      raw: { season: data.season, follow_ups: data.follow_ups }
+    });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+
+// ─── Test Codex ───
+async function testCodex(){
+  const input = document.getElementById('codexInput');
+  const el = document.getElementById('codexResult');
+  const q = (input.value||'').trim();
+  if (q.length < 5) return renderResult(el, false, 'Question trop courte');
+  el.className='result'; el.innerHTML='<em>Codex réfléchit (extended thinking activé, ~5-15s)…</em>';
+  const t0 = performance.now();
+  try {
+    const r = await fetch(`${WORKERS['ikcp-codex']}/`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ question: q }),
+    });
+    const data = await r.json();
+    const t1 = Math.round(performance.now() - t0);
+    if (!r.ok) return renderResult(el, false, data.error || `HTTP ${r.status}`, { latency_ms: t1, raw: data });
+    renderResult(el, true, data.reply || '(réponse vide)', {
+      latency_ms: t1, model: data.model, usage: data.usage, agent_id: data.agent_id
+    });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+
+// ─── Test Hermès ───
+async function testHermes(){
+  const input = document.getElementById('hermesInput');
+  const el = document.getElementById('hermesResult');
+  const q = (input.value||'').trim();
+  if (q.length < 5) return renderResult(el, false, 'Question trop courte');
+  el.className='result'; el.innerHTML='<em>Hermès réfléchit (extended thinking activé, ~5-15s)…</em>';
+  const t0 = performance.now();
+  try {
+    const r = await fetch(`${WORKERS['ikcp-hermes']}/`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ question: q }),
+    });
+    const data = await r.json();
+    const t1 = Math.round(performance.now() - t0);
+    if (!r.ok) return renderResult(el, false, data.error || `HTTP ${r.status}`, { latency_ms: t1, raw: data });
+    renderResult(el, true, data.reply || '(réponse vide)', {
+      latency_ms: t1, model: data.model, usage: data.usage, agent_id: data.agent_id
+    });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+
+// ─── Test Lifestyle ───
+async function testLifestyle(){
+  const agent = document.getElementById('lifestyleAgent').value;
+  const input = document.getElementById('lifestyleInput');
+  const el = document.getElementById('lifestyleResult');
+  const q = (input.value||'').trim();
+  if (q.length < 5) return renderResult(el, false, 'Question trop courte');
+  el.className='result'; el.innerHTML=`<em>${agent} réfléchit…</em>`;
+  const t0 = performance.now();
+  try {
+    const r = await fetch(`${WORKERS['ikcp-lifestyle']}/`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ agent, question: q }),
+    });
+    const data = await r.json();
+    const t1 = Math.round(performance.now() - t0);
+    if (!r.ok) return renderResult(el, false, data.error || `HTTP ${r.status}`, { latency_ms: t1, raw: data });
+    renderResult(el, true, data.reply || '(réponse vide)', {
+      latency_ms: t1, model: data.model, usage: data.usage, agent_id: data.agent_id
+    });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+
+// ─── Test Collector lookup public ───
+async function testCollectorLookup(market, q){
+  const el = document.getElementById('collectorResult');
+  el.className='result'; el.innerHTML=`<em>Lookup ${market}/${q}…</em>`;
+  const t0 = performance.now();
+  try {
+    const r = await fetch(`${WORKERS['ikcp-collector']}/lookup?market=${market}&q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+    const t1 = Math.round(performance.now() - t0);
+    if (!r.ok) return renderResult(el, false, data.error || `HTTP ${r.status}`, { latency_ms: t1, raw: data });
+    renderResult(el, true, JSON.stringify(data.result || data, null, 2), { latency_ms: t1, raw: data });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+async function testCollectorHealth(){
+  const el = document.getElementById('collectorResult');
+  el.className='result'; el.innerHTML='<em>Health…</em>';
+  try {
+    const r = await fetch(`${WORKERS['ikcp-collector']}/health`);
+    const data = await r.json();
+    renderResult(el, r.ok, JSON.stringify(data, null, 2), { raw: data });
+  } catch (e) {
+    renderResult(el, false, e.message);
+  }
+}
+</script>
+</body>
+</html>
