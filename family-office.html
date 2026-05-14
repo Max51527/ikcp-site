@@ -379,31 +379,109 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
   <a href="#beta">Demander mon accès →</a>
 </div>
 
-<!-- ═══ HERO ═══ -->
+<!-- ═══ HERO PAPPERS FUNNEL — entrée magique gratuite ═══ -->
 <section class="hero">
   <div>
-    <div class="eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % digital · 100 % France</div>
-    <h1>Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
+    <div class="eyebrow"><span class="live-dot"></span>Aperçu démonstratif gratuit · 100 % France · RGPD souverain</div>
+    <h1>Saisissez votre SIREN.<br><em>Marcel cartographie tout.</em></h1>
     <p class="lede">
-      Le <em>premier Family Office Ardéchois</em> augmenté par intelligence artificielle souveraine. Douze univers patrimoniaux orchestrés par <em>Marcel</em>, votre agent IA dédié. Conçu pour dirigeant(e)s d'entreprise familiale.
+      Marcel interroge le <em>Registre National des Entreprises</em> (source officielle française) et reconstitue automatiquement votre fiche société. <em>Aucune carte bancaire</em>, aucune inscription. La cartographie est offerte. Pour aller plus loin avec les <em>simulateurs personnalisés et 11 autres univers</em>, le tier Premium (290 €/mois) débloque tout.
     </p>
     <div class="hero-actions">
-      <a href="#beta" class="btn-primary">Demander un accès Bêta</a>
-      <a href="#univers" class="btn-secondary">Voir les 12 univers →</a>
+      <a href="#siren-funnel" class="btn-primary">Tester avec mon SIREN →</a>
+      <a href="#beta" class="btn-secondary">Demander un accès Bêta</a>
     </div>
   </div>
 
-  <div class="hero-card">
-    <div class="hero-card-label">★ Démarrage instantané</div>
-    <div class="hero-card-title">Donnez votre nom.<br><em>On vous rend votre patrimoine.</em></div>
-    <p class="hero-card-desc">Cartographie automatique de vos entités, biens et obligations. Hyper-personnalisé, 100 % français, accessible dès <em>290 €/mois</em>.</p>
-    <div class="hero-card-stats">
-      <div><div class="hero-stat-val">12</div><div class="hero-stat-lbl">Univers</div></div>
-      <div><div class="hero-stat-val">50</div><div class="hero-stat-lbl">Bêta familles</div></div>
-      <div><div class="hero-stat-val">100<small style="font-size:13px">%</small></div><div class="hero-stat-lbl">Souverain FR</div></div>
+  <!-- BLOC FUNNEL PAPPERS dans le hero -->
+  <div class="hero-card" id="siren-funnel">
+    <div class="hero-card-label">★ Entrée gratuite · 30 secondes</div>
+    <div class="hero-card-title">Donnez votre <em>SIREN</em>.<br>Marcel s'allume.</div>
+
+    <div style="display:flex; gap:8px; margin:18px 0 12px;">
+      <input type="text" id="siren-input" placeholder="9 chiffres — ex : 947972436" maxlength="11"
+        style="flex:1; padding:14px 16px; background:var(--cream-2); border:1.5px solid var(--gold-deep); border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--navy); outline:none; font-weight:600; letter-spacing:0.05em;">
+      <button onclick="lookupSiren()" id="siren-btn"
+        style="padding:14px 20px; background:var(--navy); color:var(--cream); border:none; border-radius:10px; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; box-shadow:0 4px 12px rgba(27,42,74,0.20);">
+        Activer Marcel
+      </button>
+    </div>
+    <p style="font-size:12px; color:var(--ink-faint); font-style:italic; line-height:1.55;">
+      Essayez avec <b onclick="document.getElementById('siren-input').value='947972436';lookupSiren()" style="cursor:pointer; color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif; font-weight:600">947972436</b> (IKCP démo). Vos données ne quittent pas la France — hébergement Cloudflare Paris.
+    </p>
+
+    <!-- Résultat Pappers + simulateurs -->
+    <div id="siren-result" style="display:none; margin-top:18px; padding:18px; background:var(--cream-2); border-radius:12px; border-left:3px solid var(--gold);">
+      <div id="siren-loading" style="text-align:center; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif;">Marcel interroge le RNE…</div>
+      <div id="siren-data" style="display:none;"></div>
+    </div>
+
+    <div class="hero-card-stats" style="margin-top:18px;">
+      <div><div class="hero-stat-val">2/12</div><div class="hero-stat-lbl">Univers LIVE</div></div>
+      <div><div class="hero-stat-val">10</div><div class="hero-stat-lbl">À débloquer</div></div>
+      <div><div class="hero-stat-val">100<small style="font-size:13px">%</small></div><div class="hero-stat-lbl">RGPD France</div></div>
     </div>
   </div>
 </section>
+
+<!-- ═══ Script funnel Pappers — appelle le worker ikcp-pappers réel ═══ -->
+<script>
+async function lookupSiren() {
+  const input = document.getElementById('siren-input');
+  const btn = document.getElementById('siren-btn');
+  const result = document.getElementById('siren-result');
+  const loading = document.getElementById('siren-loading');
+  const dataDiv = document.getElementById('siren-data');
+
+  const siren = input.value.replace(/\s/g, '');
+  if (!/^\d{9}$/.test(siren)) {
+    alert('Saisissez un SIREN valide (9 chiffres)');
+    return;
+  }
+
+  result.style.display = 'block';
+  loading.style.display = 'block';
+  dataDiv.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  try {
+    const res = await fetch(`https://ikcp-pappers.maxime-ead.workers.dev/entreprise/${siren}/short`, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error('SIREN introuvable au RNE');
+    const data = await res.json();
+
+    loading.style.display = 'none';
+    dataDiv.style.display = 'block';
+    dataDiv.innerHTML = `
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:14px;">
+        <div>
+          <div style="font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; line-height:1.2;">${data.nom || '—'}</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold-deep); margin-top:4px; letter-spacing:0.06em; font-weight:600;">SIREN ${siren.replace(/(\d{3})(\d{3})(\d{3})/,'$1 $2 $3')}</div>
+        </div>
+        <span style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; background:rgba(63,122,63,0.10); color:var(--ok); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.14em; font-weight:700; text-transform:uppercase;">✓ Source RNE</span>
+      </div>
+      <div style="font-size:13px; line-height:1.7; color:var(--ink);">
+        <div><b style="color:var(--navy);">Forme :</b> ${data.forme_juridique || '—'}</div>
+        <div><b style="color:var(--navy);">Capital :</b> ${data.capital ? new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(data.capital) : '—'}</div>
+        <div><b style="color:var(--navy);">Création :</b> ${data.date_creation || '—'}</div>
+        <div><b style="color:var(--navy);">Activité :</b> ${data.libelle_code_naf || data.code_naf || '—'}</div>
+        <div><b style="color:var(--navy);">Siège :</b> ${data.siege?.ville || '—'} (${data.siege?.code_postal || '—'})</div>
+      </div>
+      <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6;">
+        ✓ Cartographie offerte — votre <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">univers Patrimoine</b> est débloqué.<br>
+        Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, activez <a href="#tarifs" style="color:var(--gold-deep); font-weight:600;">Premium (290 €/mois)</a>.
+      </div>
+    `;
+    btn.disabled = false;
+    btn.textContent = 'Activer Marcel';
+  } catch(e) {
+    loading.innerHTML = `<span style="color:var(--ink-mute);">⚠ ${e.message}</span><br><span style="font-size:11px;">Essayez avec un SIREN existant en France (9 chiffres).</span>`;
+    btn.disabled = false;
+    btn.textContent = 'Activer Marcel';
+  }
+}
+document.getElementById('siren-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') lookupSiren(); });
+</script>
 
 <!-- ═══ INTRO DARK ═══ -->
 <section class="fo-intro" id="fo">
@@ -422,6 +500,95 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
   </div>
 </section>
 
+<!-- ═══ MARCEL CONSTELLATION 360° (orchestrateur central) ═══ -->
+<section class="constellation-section">
+  <div class="constellation-wrap">
+    <div class="constellation-head">
+      <div class="constellation-mark">★ Architecture 360°</div>
+      <h2>Marcel orchestre. <em>Vous parlez à un seul.</em><br>L'équipe entière vous répond.</h2>
+      <p class="constellation-deck">
+        Marcel est votre <em>unique interlocuteur</em>. Derrière lui, douze agents IA souverains spécialisés, chacun expert dans son univers. Vous ne voyez que Marcel ; lui orchestre les bons spécialistes selon votre question.
+      </p>
+    </div>
+
+    <div class="constellation">
+      <svg viewBox="0 0 720 720" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- Cercles orbitaux décoratifs -->
+        <circle cx="360" cy="360" r="295" stroke="rgba(201,169,110,0.18)" stroke-width="1" fill="none" stroke-dasharray="2 6"/>
+        <circle cx="360" cy="360" r="220" stroke="rgba(201,169,110,0.10)" stroke-width="0.6" fill="none"/>
+        <circle cx="360" cy="360" r="145" stroke="rgba(201,169,110,0.06)" stroke-width="0.5" fill="none"/>
+
+        <!-- 12 lignes radiales depuis Marcel vers chaque univers -->
+        <g stroke="rgba(184,149,110,0.32)" stroke-width="1" stroke-dasharray="3 5" fill="none">
+          <line x1="360" y1="360" x2="360" y2="65"/>
+          <line x1="360" y1="360" x2="508" y2="105"/>
+          <line x1="360" y1="360" x2="615" y2="213"/>
+          <line x1="360" y1="360" x2="655" y2="360"/>
+          <line x1="360" y1="360" x2="615" y2="508"/>
+          <line x1="360" y1="360" x2="508" y2="615"/>
+          <line x1="360" y1="360" x2="360" y2="655"/>
+          <line x1="360" y1="360" x2="213" y2="615"/>
+          <line x1="360" y1="360" x2="105" y2="508"/>
+          <line x1="360" y1="360" x2="65" y2="360"/>
+          <line x1="360" y1="360" x2="105" y2="213"/>
+          <line x1="360" y1="360" x2="213" y2="105"/>
+        </g>
+
+        <!-- Pulses Marcel → univers (animation orchestration) -->
+        <g fill="#C9A96E">
+          <circle r="3.5"><animateMotion dur="6s" repeatCount="indefinite" path="M 360 360 L 360 65"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="0.5s" repeatCount="indefinite" path="M 360 360 L 508 105"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="1s" repeatCount="indefinite" path="M 360 360 L 615 213"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="1.5s" repeatCount="indefinite" path="M 360 360 L 655 360"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="2s" repeatCount="indefinite" path="M 360 360 L 615 508"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="2.5s" repeatCount="indefinite" path="M 360 360 L 508 615"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="3s" repeatCount="indefinite" path="M 360 360 L 360 655"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="3.5s" repeatCount="indefinite" path="M 360 360 L 213 615"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="4s" repeatCount="indefinite" path="M 360 360 L 105 508"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="4.5s" repeatCount="indefinite" path="M 360 360 L 65 360"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="5s" repeatCount="indefinite" path="M 360 360 L 105 213"/></circle>
+          <circle r="3.5"><animateMotion dur="6s" begin="5.5s" repeatCount="indefinite" path="M 360 360 L 213 105"/></circle>
+        </g>
+
+        <!-- Pulses retour univers → Marcel (synthèse) -->
+        <g fill="#1B2A4A" opacity="0.45">
+          <circle r="2.5"><animateMotion dur="6s" begin="3s" repeatCount="indefinite" path="M 360 65 L 360 360"/></circle>
+          <circle r="2.5"><animateMotion dur="6s" begin="3.5s" repeatCount="indefinite" path="M 615 213 L 360 360"/></circle>
+          <circle r="2.5"><animateMotion dur="6s" begin="4s" repeatCount="indefinite" path="M 615 508 L 360 360"/></circle>
+          <circle r="2.5"><animateMotion dur="6s" begin="4.5s" repeatCount="indefinite" path="M 360 655 L 360 360"/></circle>
+          <circle r="2.5"><animateMotion dur="6s" begin="5s" repeatCount="indefinite" path="M 105 508 L 360 360"/></circle>
+          <circle r="2.5"><animateMotion dur="6s" begin="5.5s" repeatCount="indefinite" path="M 105 213 L 360 360"/></circle>
+        </g>
+      </svg>
+
+      <!-- Marcel central -->
+      <div class="const-center">
+        <div class="const-mark">★ MARCEL</div>
+        <div class="const-name">M</div>
+        <div class="const-role">Chef d'orchestre · Sonnet 4.6</div>
+      </div>
+
+      <!-- 12 univers en orbite (dodécagone) -->
+      <a href="#univers" class="const-univ u1" data-tooltip="Bâtisseur · Opus 4.7 · cartographie 360°"><span class="ico">💼</span><span class="name">Patrimoine</span></a>
+      <a href="#univers" class="const-univ u2" data-tooltip="Architecte · Sonnet 4.6 · DVF live"><span class="ico">🏠</span><span class="name">Immobilier</span></a>
+      <a href="#univers" class="const-univ u3 active" data-tooltip="Codex · Opus 4.7 · ✓ LIVE"><span class="ico">🏛</span><span class="name">Fiscalité</span></a>
+      <a href="#univers" class="const-univ u4" data-tooltip="Stratège · Sonnet 4.6 · marchés temps réel"><span class="ico">📈</span><span class="name">Marchés</span></a>
+      <a href="#univers" class="const-univ u5" data-tooltip="Curateur · Haiku 4.5 · cotes art"><span class="ico">🎨</span><span class="name">Art</span></a>
+      <a href="#univers" class="const-univ u6" data-tooltip="Concierge · Sonnet 4.6 · conciergerie premium"><span class="ico">💎</span><span class="name">Voyage</span></a>
+      <a href="#univers" class="const-univ u7" data-tooltip="Capital · Opus 4.7 · deal flow PE"><span class="ico">🪴</span><span class="name">PE</span></a>
+      <a href="#univers" class="const-univ u8" data-tooltip="Hermès · Opus 4.7 · Dutreil avancé"><span class="ico">🌱</span><span class="name">Transmission</span></a>
+      <a href="#univers" class="const-univ u9" data-tooltip="Mécène · Sonnet 4.6 · don IR/IFI"><span class="ico">🤲</span><span class="name">Philanthropie</span></a>
+      <a href="#univers" class="const-univ u10" data-tooltip="Pédagogue · Sonnet 4.6 · 6 modules NextGen"><span class="ico">🎓</span><span class="name">Formation</span></a>
+      <a href="#univers" class="const-univ u11" data-tooltip="Camille · Haiku 4.5 · échéances + signatures"><span class="ico">📋</span><span class="name">Admin</span></a>
+      <a href="#univers" class="const-univ u12" data-tooltip="Olympe · Sonnet 4.6 · synthèse trimestrielle"><span class="ico">📊</span><span class="name">Reporting</span></a>
+    </div>
+
+    <p class="constellation-caption">
+      Survolez un univers pour voir l'agent spécialiste · ✓ <b>Marcel + Codex (Fiscalité) sont déployés</b> · les autres rejoignent l'équipe Sprint 2-5
+    </p>
+  </div>
+</section>
+
 <!-- ═══ 12 UNIVERS ═══ -->
 <section class="univers" id="univers">
   <div class="section-mark">Demandez-moi · douze univers</div>
@@ -429,20 +596,40 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
   <p class="section-deck">Plus de jargon, plus de noms d'agents. <em>Vous demandez, l'IA exécute.</em> Patrimoine, immobilier, fiscalité, marchés, art, voyage, transmission — chaque univers est branché sur des données en temps réel (registres officiels, DVF, marchés boursiers, cotations art).</p>
 
   <div class="univ-grid">
-    <div class="univ-card"><div class="univ-ico">💼</div><div class="univ-name">Patrimoine</div><div class="univ-tagline">Bilan patrimonial · cartographie d'entreprise · sources officielles</div><span class="univ-status live">● Live</span></div>
-    <div class="univ-card"><div class="univ-ico">🏠</div><div class="univ-name">Immobilier</div><div class="univ-tagline">Prix au m² par CP · DVF live · cartographie</div><span class="univ-status live">● Live</span></div>
-    <div class="univ-card"><div class="univ-ico">🏛</div><div class="univ-name">Fiscalité</div><div class="univ-tagline">IR · IFI · barème 2026 · arbitrages</div><span class="univ-status live">● Live</span></div>
-    <div class="univ-card"><div class="univ-ico">📈</div><div class="univ-name">Marchés</div><div class="univ-tagline">CAC 40 · indices · taux · arbitrage allocation</div><span class="univ-status demo">○ Sprint 1</span></div>
-    <div class="univ-card"><div class="univ-ico">🎨</div><div class="univ-name">Art</div><div class="univ-tagline">Côte d'artiste · enchères · authentification</div><span class="univ-status demo">○ Sprint 3</span></div>
-    <div class="univ-card"><div class="univ-ico">💎</div><div class="univ-name">Voyage</div><div class="univ-tagline">Conciergerie hôtel · jet · expériences sur-mesure</div><span class="univ-status demo">○ Sprint 2</span></div>
-    <div class="univ-card"><div class="univ-ico">🪴</div><div class="univ-name">Private Equity</div><div class="univ-tagline">Deal flow · co-investissement · scoring</div><span class="univ-status demo">○ Sprint 3</span></div>
-    <div class="univ-card"><div class="univ-ico">🌱</div><div class="univ-name">Transmission</div><div class="univ-tagline">Dutreil · donation · succession · simulateur</div><span class="univ-status live">● Live</span></div>
-    <div class="univ-card"><div class="univ-ico">🤲</div><div class="univ-name">Philanthropie</div><div class="univ-tagline">Don défiscalisé IR/IFI · fondation · mécénat</div><span class="univ-status live">● Live</span></div>
-    <div class="univ-card"><div class="univ-ico">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-tagline">6 modules pour vos enfants · sur vos chiffres réels</div><span class="univ-status demo">○ Sprint 2</span></div>
-    <div class="univ-card"><div class="univ-ico">📋</div><div class="univ-name">Administration</div><div class="univ-tagline">Échéances · courriers · signature eIDAS</div><span class="univ-status demo">○ Sprint 2</span></div>
-    <div class="univ-card"><div class="univ-ico">📊</div><div class="univ-name">Reporting</div><div class="univ-tagline">Synthèse trimestrielle PDF · alertes · KPIs</div><span class="univ-status demo">○ Sprint 2</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">💼</div><div class="univ-name">Patrimoine</div><div class="univ-tagline">Cartographie SIREN auto · données RNE officielles</div><span class="univ-status live">✓ LIVE</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🏛</div><div class="univ-name">Fiscalité</div><div class="univ-tagline">IR · IFI · arbitrages · Codex Opus 4.7 expertise</div><span class="univ-status live">✓ LIVE</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">🌱</div><div class="univ-name">Transmission</div><div class="univ-tagline">Dutreil · donation · succession (calculs OK, agent Hermès Sprint 4)</div><span class="univ-status sprint2">⏳ Sprint 4</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">🤲</div><div class="univ-name">Philanthropie</div><div class="univ-tagline">Don défiscalisé IR/IFI · agent Mécène à venir</div><span class="univ-status sprint2">⏳ Sprint 4</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">🏠</div><div class="univ-name">Immobilier</div><div class="univ-tagline">DVF live · prix m² · agent Architecte</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">📊</div><div class="univ-name">Reporting</div><div class="univ-tagline">Synthèse trimestrielle PDF · agent Olympe</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">📋</div><div class="univ-name">Administration</div><div class="univ-tagline">Échéances · courriers · signature eIDAS (Universign)</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-tagline">6 modules pour vos enfants · agent Pédagogue</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">📈</div><div class="univ-name">Marchés</div><div class="univ-tagline">CAC 40 · S&P 500 · allocation drift · agent Stratège</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">💎</div><div class="univ-name">Voyage</div><div class="univ-tagline">Conciergerie premium · Booking + Mr&Mrs Smith</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">🎨</div><div class="univ-name">Art</div><div class="univ-tagline">Côte artistes · Artprice · agent Curateur</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
+    <div class="univ-card locked-card"><div class="univ-ico">🪴</div><div class="univ-name">Private Equity</div><div class="univ-tagline">Deal flow · co-investissement · agent Capital</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
+  </div>
+
+  <!-- Bandeau honnêteté -->
+  <div style="margin-top:36px; padding:22px 28px; background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%); border:1px dashed var(--gold-deep); border-radius:14px; text-align:center;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.28em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px;">★ Transparence Bêta</div>
+    <p style="font-size:14px; color:var(--ink); line-height:1.65; max-width:680px; margin:0 auto;">
+      <b>2 univers sont déjà opérationnels en production</b> (Patrimoine via Pappers, Fiscalité via Codex Opus 4.7). Les <b>10 autres</b> arrivent au fil des sprints, en transparence totale avec les bêta-testeurs. <em style="color:var(--gold-deep); font-family:'Playfair Display',serif;">Vous voyez exactement ce qui marche, ce qui arrive, et quand.</em>
+    </p>
   </div>
 </section>
+
+<!-- ═══ Styles univers grisés/débloquables ═══ -->
+<style>
+.univ-card.live-card{border-color:var(--gold); box-shadow:0 4px 12px rgba(201,169,110,0.18); position:relative}
+.univ-card.live-card::after{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold)); border-radius:14px 14px 0 0}
+.univ-card.locked-card{opacity:0.62; filter:grayscale(0.4); position:relative}
+.univ-card.locked-card::after{content:'🔒'; position:absolute; top:14px; right:14px; font-size:11px; opacity:0.5}
+.univ-card.locked-card:hover{opacity:0.85; filter:grayscale(0)}
+.univ-status.live{background:rgba(63,122,63,0.18); color:var(--ok); border:1px solid var(--ok); font-weight:700}
+.univ-status.sprint2{background:rgba(201,169,110,0.15); color:var(--gold-deep)}
+.univ-status.sprint3{background:rgba(155,143,128,0.12); color:var(--ink-faint)}
+</style>
 
 <!-- ═══ TARIFS ═══ -->
 <section class="tarifs">
@@ -457,18 +644,19 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
     <div class="tier">
       <div class="tier-icon">⚬</div>
       <div class="tier-name">Découverte</div>
-      <div class="tier-tagline">Aperçu · sans engagement</div>
+      <div class="tier-tagline">Aperçu démonstratif · sans engagement</div>
       <div class="tier-price">
         <div class="tier-price-num"><em>0 €</em></div>
         <div class="tier-price-note">— Aucune carte bancaire</div>
       </div>
       <div class="tier-feats">
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Cartographie SIREN</b> automatique gratuite</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>1 observation</b> patrimoniale offerte</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Accès aux <b>simulateurs</b> ikcp.eu</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Cartographie SIREN</b> auto (Pappers/RNE officiel)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Aperçu univers Patrimoine</b> en démo</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Accès aux <b>simulateurs publics</b> ikcp.eu (IR, donation)</span></div>
         <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Newsletter <b>UPPERCUT PATRIMOINE</b></span></div>
+        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>Pas de conseil personnalisé · pas d'accès Marcel/Codex sur vos chiffres</span></div>
       </div>
-      <a href="#beta" class="tier-cta tier-cta-light">Tester gratuitement</a>
+      <a href="#siren-funnel" class="tier-cta tier-cta-light">Tester avec mon SIREN ↑</a>
     </div>
 
     <div class="tier recommended">
@@ -477,15 +665,15 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       <div class="tier-tagline">Paiement mensuel · résiliable</div>
       <div class="tier-price">
         <div class="tier-price-num"><em>290 €</em> <span class="small">/ mois</span></div>
-        <div class="tier-price-note">— Sans engagement · résiliable à tout moment</div>
+        <div class="tier-price-note">— Sans engagement · 6 mois offerts en Bêta</div>
       </div>
       <div class="tier-feats">
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>12 univers ouverts</b> · branchés APIs temps réel</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Marcel illimité</b> · mémoire 90 jours</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Patrimoine</b> · cartographie auto multi-entités</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Reporting</b> · synthèse trimestrielle PDF</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Formation NextGen</b> · 6 modules pour vos enfants</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Univers Patrimoine</b> live · cartographie SIREN auto (RNE officiel)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Univers Fiscalité</b> live · Marcel + Codex Opus 4.7 expertise</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>5 simulateurs déterministes (IR, IFI, Dutreil, donation, succession)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Audit log immutable <b>eIDAS</b> · D1 Paris · MIF II conforme</span></div>
         <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Mail prioritaire à Maxime · 1 RDV mensuel inclus</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico" style="background:var(--gold-bright); color:var(--navy)">↗</span><span><b>+10 univers</b> déployés au fil des Sprints 2-5 (accès inclus dès activation)</span></div>
       </div>
       <a href="#beta" class="tier-cta tier-cta-recommended">Demander un accès Bêta →</a>
     </div>
@@ -550,6 +738,49 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
   <div class="faq-item">
     <div class="faq-q">Comment accéder au Family Office en Bêta ?</div>
     <div class="faq-a">Trois options : (1) <b>Saisir votre SIREN</b> sur la page Découverte pour obtenir une cartographie gratuite + 1 observation, (2) <b>Demander un code d'invitation</b> par email à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> (réponse personnelle sous 48h), (3) <b>Candidater au Cercle Fondateurs</b> en validant les 3 étapes (SIREN + KBIS récent + code).</div>
+  </div>
+</section>
+
+<!-- ═══ BANDEAU RGPD SOUVERAIN ═══ -->
+<section style="padding:80px 32px; background:var(--cream); border-top:1px solid var(--line); border-bottom:1px solid var(--line)">
+  <div style="max-width:1080px; margin:0 auto; text-align:center">
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; background:rgba(63,122,63,0.10); color:var(--ok); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.2em; font-weight:700; margin-bottom:24px; text-transform:uppercase;">
+      <span style="font-size:14px;">🇫🇷</span> RGPD souverain · 100 % France
+    </div>
+    <h2 style="font-family:'Playfair Display',serif; font-size:clamp(28px,3.6vw,42px); color:var(--navy); font-weight:500; letter-spacing:-0.018em; line-height:1.1; margin-bottom:18px;">Vos données ne quittent <em style="color:var(--gold-deep); font-style:italic">jamais la France.</em></h2>
+    <p style="font-size:16px; color:var(--ink-mute); max-width:680px; margin:0 auto 36px; line-height:1.7;">Tout ce qui est dit sur cette page est <b style="color:var(--navy)">vrai et auditable</b>. Pas de promesse marketing — juste l'infrastructure réelle.</p>
+
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px; max-width:980px; margin:0 auto; text-align:left;">
+
+      <div style="background:var(--cream-2); padding:22px 24px; border-radius:14px; border:1px solid var(--line);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px;">Hébergement</div>
+        <div style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; line-height:1.25; margin-bottom:6px;">Cloudflare WEUR</div>
+        <p style="font-size:12.5px; color:var(--ink-mute); line-height:1.55;">Workers en région Paris/Frankfurt. Aucun transit US.</p>
+      </div>
+
+      <div style="background:var(--cream-2); padding:22px 24px; border-radius:14px; border:1px solid var(--line);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px;">Données</div>
+        <div style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; line-height:1.25; margin-bottom:6px;">D1 SQLite Paris (CDG)</div>
+        <p style="font-size:12.5px; color:var(--ink-mute); line-height:1.55;">Audit log immutable · hash SHA-256 · eIDAS qualifié.</p>
+      </div>
+
+      <div style="background:var(--cream-2); padding:22px 24px; border-radius:14px; border:1px solid var(--line);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px;">Sources</div>
+        <div style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; line-height:1.25; margin-bottom:6px;">RNE + Pappers + BCE</div>
+        <p style="font-size:12.5px; color:var(--ink-mute); line-height:1.55;">Registre officiel France. Forex via Banque Centrale Européenne.</p>
+      </div>
+
+      <div style="background:var(--cream-2); padding:22px 24px; border-radius:14px; border:1px solid var(--line);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px;">Droits RGPD</div>
+        <div style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; line-height:1.25; margin-bottom:6px;">DPO + droit oubli 1-clic</div>
+        <p style="font-size:12.5px; color:var(--ink-mute); line-height:1.55;">DPO : maxime@ikcp.fr · suppression complète sur demande.</p>
+      </div>
+
+    </div>
+
+    <p style="margin-top:32px; font-size:13px; color:var(--ink-faint); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6; max-width:780px; margin-left:auto; margin-right:auto;">
+      <b style="color:var(--navy); font-style:normal; font-family:'Outfit',sans-serif; font-weight:600;">Marcel ne donne jamais de conseil personnalisé sans lettre de mission</b> (art. L.541-1 CoMoFi). Toute simulation se termine par une question, pas une recommandation. Conformité MIF II stricte. Audit complet via le worker <em>ikcp-temoin</em>.
+    </p>
   </div>
 </section>
 
