@@ -155,13 +155,16 @@ section.hero{
   opacity:0; animation:fadeUp 1.1s 0.7s forwards;
 }
 .hero-philo{
-  max-width:680px; font-size:14px; color:var(--ink-mute); line-height:1.7;
-  margin-bottom:28px; padding:14px 22px;
-  border-left:2px solid var(--terra); border-radius:0 8px 8px 0;
-  background:rgba(217,119,87,0.04); text-align:left;
+  max-width:700px; font-size:14.5px; color:var(--ink-mute); line-height:1.75;
+  margin-bottom:28px; padding:18px 26px;
+  border-left:2px solid var(--terra); border-radius:2px 14px 14px 2px;
+  background:linear-gradient(90deg, rgba(217,119,87,0.07) 0%, rgba(217,119,87,0.02) 100%);
+  text-align:left;
   opacity:0; animation:fadeUp 1.1s 0.85s forwards;
+  position:relative;
 }
-.hero-philo b{color:var(--ink); font-weight:600}
+.hero-philo::before{content:'«'; position:absolute; left:-4px; top:-20px; font-family:'Fraunces',serif; font-size:64px; color:var(--terra); opacity:0.35; font-style:italic; line-height:1}
+.hero-philo b{color:var(--ink); font-weight:600; font-family:'Fraunces',serif; font-style:italic; font-size:15.5px}
 .hero-stats{
   display:flex; gap:36px; flex-wrap:wrap; justify-content:center;
   font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink-faint); font-weight:600;
@@ -180,11 +183,21 @@ section.hero{
 .constellation svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
 .constellation .center{
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:200px; height:200px; border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,var(--terra-glow) 0%,var(--terra) 40%,var(--terra-deep) 80%,#6E2E1A 100%);
-  box-shadow:0 0 0 1px var(--terra-light),0 0 50px rgba(217,119,87,0.4),0 0 100px rgba(217,119,87,0.2),inset 0 4px 24px rgba(255,255,255,0.25);
+  width:220px; height:220px; border-radius:50%;
+  background:radial-gradient(circle at 35% 28%,var(--terra-glow) 0%,var(--terra) 38%,var(--terra-deep) 78%,#6E2E1A 100%);
+  box-shadow:
+    0 0 0 1px var(--terra-light),
+    0 0 60px rgba(217,119,87,0.45),
+    0 0 140px rgba(217,119,87,0.28),
+    0 0 240px rgba(217,119,87,0.15),
+    inset 0 4px 28px rgba(255,255,255,0.28);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   text-align:center; padding:14px; z-index:5;
+  animation:marcelFloat 6s ease-in-out infinite;
+}
+@keyframes marcelFloat{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.03)}
 }
 .constellation .center::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--terra);opacity:0.3;animation:pulseRing 3s ease-out infinite}
 .constellation .center::after{content:'';position:absolute;inset:-20px;border-radius:50%;border:1px solid var(--terra);opacity:0.2;animation:pulseRing 3s 1.5s ease-out infinite}
@@ -259,6 +272,31 @@ section.claims{
 @media(max-width:760px){.claims-grid{grid-template-columns:1fr;gap:32px}}
 
 /* ════════════════════════════════════════════════════════════════ */
+/* ═══ MARCEL ORCHESTRE — mécanique de pilotage ═══════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.orchestrate{padding:120px 48px; background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%); border-top:1px solid var(--line); border-bottom:1px solid var(--line); position:relative; overflow:hidden}
+section.orchestrate::before{content:''; position:absolute; inset:0; background-image:radial-gradient(circle at 50% 50%, rgba(217,119,87,0.06) 0%, transparent 60%); pointer-events:none}
+.orch-inner{max-width:1100px; margin:0 auto; position:relative; z-index:1}
+.orch-head{text-align:center; margin-bottom:64px}
+.orch-flow{display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; align-items:stretch; position:relative}
+@media(max-width:860px){.orch-flow{grid-template-columns:1fr; gap:18px}}
+.orch-step{background:var(--paper); border:1.5px solid var(--line-strong); border-radius:18px; padding:28px 24px; position:relative; transition:all 0.4s cubic-bezier(0.4,0,0.2,1)}
+.orch-step:hover{transform:translateY(-4px); border-color:var(--terra); box-shadow:0 16px 40px rgba(217,119,87,0.18)}
+.orch-step-num{position:absolute; top:-14px; left:24px; width:28px; height:28px; background:var(--terra); color:var(--paper); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-style:italic; font-size:14px; font-weight:600; box-shadow:0 4px 12px rgba(217,119,87,0.4)}
+.orch-step h4{font-family:'Fraunces',serif; font-size:20px; font-weight:500; color:var(--ink); margin:8px 0 10px; letter-spacing:-0.01em}
+.orch-step h4 em{font-style:italic; color:var(--terra-deep)}
+.orch-step p{font-size:13.5px; color:var(--ink-mute); line-height:1.65}
+.orch-step .quote{font-family:'Fraunces',serif; font-style:italic; font-size:14px; color:var(--terra-deep); margin-top:10px; padding-top:10px; border-top:1px dashed var(--line-strong)}
+/* Flèches entre les steps (desktop only) */
+.orch-flow::after, .orch-flow::before{display:none}
+@media(min-width:861px){
+  .orch-step:not(:last-child)::after{
+    content:'→'; position:absolute; right:-28px; top:50%; transform:translateY(-50%);
+    font-size:24px; color:var(--terra); font-weight:300; z-index:2;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════ */
 /* ═══ 12 UNIVERS — grille cards LIVE/DÉMO ═════════════════════════ */
 /* ════════════════════════════════════════════════════════════════ */
 section.universes{padding:120px 48px 80px; background:var(--paper)}
@@ -273,15 +311,28 @@ section.universes{padding:120px 48px 80px; background:var(--paper)}
 @media(max-width:760px){.universes-grid{grid-template-columns:repeat(2,1fr)}}
 
 .univ{
-  background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
-  padding:22px 20px 18px; position:relative; transition:all 0.3s;
-  display:flex; flex-direction:column; gap:8px; min-height:160px;
+  background:var(--paper); border:1px solid var(--line-strong); border-radius:16px;
+  padding:24px 22px 20px; position:relative; transition:all 0.45s cubic-bezier(0.4,0,0.2,1);
+  display:flex; flex-direction:column; gap:8px; min-height:200px;
+  overflow:hidden;
 }
-.univ:hover{border-color:var(--terra); transform:translateY(-2px); box-shadow:0 14px 32px rgba(45,37,32,0.08)}
-.univ-icon{font-size:24px; line-height:1}
-.univ-name{font-family:'Playfair Display',serif; font-size:19px; font-weight:600; color:var(--ink); line-height:1.15}
+.univ::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:var(--line-strong); transition:background 0.3s, width 0.3s;
+}
+.univ--patrimoine::before{background:var(--terra)}
+.univ--lifestyle::before{background:var(--gold)}
+.univ--passion::before{background:#A35E8C}
+.univ:hover{border-color:var(--terra); transform:translateY(-4px); box-shadow:0 22px 50px rgba(45,37,32,0.12)}
+.univ:hover::before{width:6px}
+.univ-cat{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.32em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:4px}
+.univ--patrimoine .univ-cat{color:var(--terra-deep)}
+.univ--lifestyle .univ-cat{color:var(--gold-deep)}
+.univ--passion .univ-cat{color:#864B72}
+.univ-icon{font-size:28px; line-height:1; margin:2px 0}
+.univ-name{font-family:'Playfair Display',serif; font-size:19px; font-weight:600; color:var(--ink); line-height:1.18}
 .univ-name em{font-style:italic; color:var(--terra-deep); font-weight:500}
-.univ-desc{font-size:12.5px; color:var(--ink-mute); line-height:1.55; flex:1}
+.univ-desc{font-size:12.5px; color:var(--ink-mute); line-height:1.6; flex:1}
 .univ-status{
   display:inline-flex; align-items:center; gap:6px;
   font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.20em; font-weight:700; text-transform:uppercase;
@@ -395,6 +446,10 @@ section.tester{padding:120px 48px; background:linear-gradient(180deg,var(--paper
 .chat-msg.marcel::before{content:'★ Marcel'; display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-bottom:6px}
 .chat-msg.thinking{background:var(--paper-2); color:var(--ink-faint); align-self:flex-start; font-style:italic; font-size:13px}
 .chat-msg.thinking::before{content:'★ Marcel'; display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.chat-routing{align-self:flex-start; max-width:88%; padding:10px 14px; background:rgba(217,119,87,0.08); border:1px dashed var(--terra); border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--terra-deep); letter-spacing:0.05em; line-height:1.55}
+.chat-routing b{color:var(--ink); font-weight:700}
+.chat-routing .pulse{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--terra); margin-right:8px; vertical-align:middle; animation:pulseGlow 1.2s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
 .chat-form{display:flex; gap:0; background:var(--paper-2); border:1.5px solid var(--line-strong); border-radius:50px; padding:5px 5px 5px 22px; transition:all 0.3s}
 .chat-form:focus-within{border-color:var(--terra)}
 .chat-form input{flex:1; border:none; outline:none; background:transparent; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); padding:10px 0}
@@ -519,8 +574,9 @@ footer .no-push b{color:var(--gold-bright)}
 <nav class="top">
   <div class="brand">IKCP<b>.</b><span class="brand-sub">FAMILY OFFICE AUGMENTÉ</span></div>
   <div class="menu">
-    <a href="#univers">12 univers</a>
+    <a href="#univers">Vos univers</a>
     <a href="#passions">Passions</a>
+    <a href="#orchestre">Marcel orchestre</a>
     <a href="#funnel">Cartographie 30 sec</a>
     <a href="#tester">Tester Marcel</a>
     <a href="#beta">Bêta</a>
@@ -538,8 +594,8 @@ footer .no-push b{color:var(--gold-bright)}
   <p class="hero-tagline">Le cabinet IKCP orchestre douze univers patrimoniaux branchés sur intelligence souveraine. Application mobile iOS · Android · PWA. 100 % France.</p>
   <p class="hero-philo"><b>Vous pilotez.</b> Nous mettons à votre disposition la technologie et vos passions sur-mesure. Si vous désirez notre coup d'œil, nous intervenons — <b>mais vous décidez</b>. Sans démarche commerciale non sollicitée.</p>
   <div class="hero-stats">
-    <span><b>11</b> · agents spécialistes</span>
-    <span><b>12</b> · univers patrimoniaux</span>
+    <span><b>12</b> · univers à votre service</span>
+    <span><b>24/7</b> · disponibilité</span>
     <span><b>50</b> · familles fondatrices</span>
     <span><b>100 %</b> · souverain FR</span>
   </div>
@@ -554,22 +610,22 @@ footer .no-push b{color:var(--gold-bright)}
       <div class="center-role">Clarifie · Oriente · Arbitre</div>
     </div>
 
-    <a class="agent-node agent-1" href="#patrimoine"><span class="agent-icon">🏛️</span><span class="agent-name">Bâtisseur</span><span class="agent-domain">Patrimoine · Pappers</span><span class="badge-live">LIVE</span></a>
-    <a class="agent-node agent-2" href="#immobilier"><span class="agent-icon">🏠</span><span class="agent-name">Architecte</span><span class="agent-domain">Immobilier · DVF</span><span class="badge-live">LIVE</span></a>
-    <a class="agent-node agent-3" href="#fiscalite"><span class="agent-icon">📜</span><span class="agent-name">Codex</span><span class="agent-domain">Fiscalité 2026</span><span class="badge-live">LIVE</span></a>
-    <a class="agent-node agent-4" href="#marches"><span class="agent-icon">📊</span><span class="agent-name">Stratège</span><span class="agent-domain">Marchés</span></a>
-    <a class="agent-node agent-5" href="#art"><span class="agent-icon">🎨</span><span class="agent-name">Curateur</span><span class="agent-domain">Art</span></a>
-    <a class="agent-node agent-6" href="#voyage"><span class="agent-icon">✈️</span><span class="agent-name">Conciergerie</span><span class="agent-domain">Voyage</span></a>
-    <a class="agent-node agent-7" href="#pe"><span class="agent-icon">💎</span><span class="agent-name">Capital</span><span class="agent-domain">Private Equity</span></a>
-    <a class="agent-node agent-8" href="#transmission"><span class="agent-icon">🌳</span><span class="agent-name">Hermès</span><span class="agent-domain">Transmission</span><span class="badge-live">LIVE</span></a>
-    <a class="agent-node agent-9" href="#philanthropie"><span class="agent-icon">🌱</span><span class="agent-name">Mécène</span><span class="agent-domain">Philanthropie</span><span class="badge-live">LIVE</span></a>
-    <a class="agent-node agent-10" href="#formation"><span class="agent-icon">🎓</span><span class="agent-name">Pédagogue</span><span class="agent-domain">Formation</span></a>
-    <a class="agent-node agent-11" href="#admin"><span class="agent-icon">📁</span><span class="agent-name">Camille</span><span class="agent-domain">Administration</span></a>
+    <a class="agent-node agent-1" href="#u-patrimoine" data-female="0"><span class="agent-icon">🏛️</span><span class="agent-name">Théodore</span><span class="agent-domain">Patrimoine</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-2" href="#u-immobilier" data-female="0"><span class="agent-icon">🏠</span><span class="agent-name">Augustin</span><span class="agent-domain">Immobilier</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-3" href="#u-fiscalite" data-female="0"><span class="agent-icon">📜</span><span class="agent-name">Codex</span><span class="agent-domain">Fiscalité</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-4" href="#u-pe" data-female="0"><span class="agent-icon">📊</span><span class="agent-name">Capital</span><span class="agent-domain">Marchés &amp; PE</span></a>
+    <a class="agent-node agent-5" href="#u-transmission" data-female="0"><span class="agent-icon">🌳</span><span class="agent-name">Hermès</span><span class="agent-domain">Transmission</span><span class="badge-live">LIVE</span></a>
+    <a class="agent-node agent-6" href="#u-voyage" data-female="1"><span class="agent-icon">✈️</span><span class="agent-name">Iris</span><span class="agent-domain">Voyage &amp; Conciergerie</span></a>
+    <a class="agent-node agent-7" href="#u-art" data-female="0"><span class="agent-icon">🎨</span><span class="agent-name">Émile</span><span class="agent-domain">Art &amp; Collections</span></a>
+    <a class="agent-node agent-8" href="#u-mobilites" data-female="0"><span class="agent-icon">🏎️</span><span class="agent-name">Léon</span><span class="agent-domain">Voitures &amp; Yachts</span></a>
+    <a class="agent-node agent-9" href="#u-montres" data-female="1"><span class="agent-icon">⌚</span><span class="agent-name">Joséphine</span><span class="agent-domain">Montres &amp; Joaillerie</span></a>
+    <a class="agent-node agent-10" href="#u-bien-etre" data-female="1"><span class="agent-icon">🌸</span><span class="agent-name">Hélène</span><span class="agent-domain">Mode &amp; Bien-être</span></a>
+    <a class="agent-node agent-11" href="#u-philanthropie" data-female="1"><span class="agent-icon">🌱</span><span class="agent-name">Olympe</span><span class="agent-domain">Philanthropie</span></a>
   </div>
 
   <div class="hero-actions">
     <a href="#funnel" class="btn btn-primary">Activer Marcel · Cartographie en 30 sec →</a>
-    <a href="#univers" class="btn btn-ghost">Découvrir les 12 univers</a>
+    <a href="#univers" class="btn btn-ghost">Découvrir vos univers</a>
   </div>
 </section>
 
@@ -581,12 +637,12 @@ footer .no-push b{color:var(--gold-bright)}
     <div class="claim">
       <div class="claim-mark">◆ Engagement</div>
       <h3>Plus une promesse.<br><em>Une réalité quotidienne.</em></h3>
-      <p>Quatre univers déjà LIVE, calculs réels en temps réel sur APIs officielles. Tout ce qui s'affiche existe fonctionnellement.</p>
+      <p>Tout ce qui s'affiche, vous pouvez l'utiliser dès aujourd'hui. Quatre univers déjà ouverts à la bêta — les autres se déploient au fil de la phase fondatrice.</p>
     </div>
     <div class="claim">
       <div class="claim-mark">◆ Promesse UX</div>
       <h3>Une question.<br>Un univers. <em>Une réponse exécutée.</em></h3>
-      <p>Marcel comprend, route vers le bon agent spécialiste, et synthétise une réponse sourcée (CGI, Loi de Finances 2026, BOFiP).</p>
+      <p>Posez votre question — Marcel comprend l'enjeu, mobilise les bons savoirs et vous synthétise une réponse exploitable. Vous décidez de la suite.</p>
     </div>
     <div class="claim">
       <div class="claim-mark">◆ Souveraineté client</div>
@@ -597,28 +653,62 @@ footer .no-push b{color:var(--gold-bright)}
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!-- ═══ 12 UNIVERS ═════════════════════════════════════════════════ -->
+<!-- ═══ MARCEL ORCHESTRE — mécanique de pilotage ═══════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="orchestrate" id="orchestre">
+  <div class="orch-inner">
+    <div class="orch-head section-head">
+      <div class="section-eyebrow">◆ Marcel orchestre · Vous décidez</div>
+      <h2><em>Marcel</em> écoute. <em>Marcel</em> oriente.<br>Les spécialistes <em>exécutent</em>.</h2>
+      <p>Marcel n'est pas un chatbot. C'est un chef d'orchestre. Il comprend l'enjeu derrière votre question, mobilise le spécialiste compétent — et vous présente une réponse claire, sourcée, exploitable.</p>
+    </div>
+    <div class="orch-flow">
+      <div class="orch-step">
+        <div class="orch-step-num">1</div>
+        <h4><em>Vous</em> demandez.</h4>
+        <p>Vous posez votre question — patrimoine, montre, mécénat, succession, voyage… aucun sujet n'est trop ample. Aucune syntaxe, aucun jargon.</p>
+        <div class="quote">« Combien coûte la transmission de ma cave Pétrus à mes deux filles ? »</div>
+      </div>
+      <div class="orch-step">
+        <div class="orch-step-num">2</div>
+        <h4><em>Marcel</em> oriente.</h4>
+        <p>Marcel identifie les univers concernés — ici Transmission, Vins, Fiscalité, Mode (équité fille / fille) — et mobilise les bons spécialistes.</p>
+        <div class="quote">→ Hermès (transmission) · Auguste (cave) · Codex (fiscalité)</div>
+      </div>
+      <div class="orch-step">
+        <div class="orch-step-num">3</div>
+        <h4><em>Vous</em> décidez.</h4>
+        <p>Réponse claire, sourcée, chiffrée. Avec les scénarios. Avec les pièges. Pas de recommandation imposée — vous restez le pilote.</p>
+        <div class="quote">« Voici 3 scénarios. Le 2 minimise les droits, le 3 préserve l'unité. À vous. »</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ VOS UNIVERS ═════════════════════════════════════════════════ -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <section class="universes" id="univers">
   <div class="section-head">
-    <div class="section-eyebrow">◆ Douze univers · Une interface</div>
-    <h2>Une seule interface.<br><em>Douze univers</em> branchés sur APIs réelles.</h2>
-    <p>Plus de jargon, plus de noms d'agents. <em>Vous demandez, l'IA exécute</em>. Patrimoine, immobilier, fiscalité, marchés, voyage, transmission — chaque univers est branché sur les données en temps réel.</p>
+    <div class="section-eyebrow">◆ Vos univers · Une porte d'entrée</div>
+    <h2>Une seule interface.<br><em>Vos univers</em> à votre service.</h2>
+    <p>Bien plus qu'une gestion de patrimoine. <em>Tout ce qui mérite votre attention</em> — vos finances, vos passions, vos collections, votre bien-être, votre famille — pensé, instruit et préparé en quelques secondes.</p>
   </div>
 
   <div class="universes-grid">
-    <div class="univ" id="patrimoine"><div class="univ-icon">🏛️</div><div class="univ-name">Patrimoine</div><div class="univ-desc">Cartographie d'entreprise via Pappers — INSEE, INPI, BODACC. Identifie le point d'attention en 30 secondes.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
-    <div class="univ" id="immobilier"><div class="univ-icon">🏠</div><div class="univ-name">Immobilier</div><div class="univ-desc">Prix au m² par code postal · DVF temps réel · cartographie du parc, LMNP, SCI, déficit foncier.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
-    <div class="univ" id="fiscalite"><div class="univ-icon">📜</div><div class="univ-name">Fiscalité</div><div class="univ-desc">IR · IFI · barème <em>2026</em> · arbitrages · simulateurs CGI à jour Loi de Finances 2026.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
-    <div class="univ" id="marches"><div class="univ-icon">📊</div><div class="univ-name">Marchés</div><div class="univ-desc">CAC 40 · indices · taux · arbitrage d'allocation, profil ESMA, lecture macro souveraine.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ" id="art"><div class="univ-icon">🎨</div><div class="univ-name">Art</div><div class="univ-desc">Cote d'artiste · enchères · authentification · fiscalité spécifique œuvres d'art.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ" id="voyage"><div class="univ-icon">✈️</div><div class="univ-name">Voyage <em>& conciergerie</em></div><div class="univ-desc">Hôtels & chalets premium · jet privé · expériences sur-mesure · ouverture privative.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ" id="pe"><div class="univ-icon">💎</div><div class="univ-name">Private Equity</div><div class="univ-desc">Deal flow · co-investissement · scoring · accès club deals partenaires.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ" id="transmission"><div class="univ-icon">🌳</div><div class="univ-name">Transmission</div><div class="univ-desc">Dutreil · donation · succession · simulateur droits, réserve héréditaire, quotité disponible.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
-    <div class="univ" id="philanthropie"><div class="univ-icon">🌱</div><div class="univ-name">Philanthropie</div><div class="univ-desc">Don défiscalisé IR/IFI · fondation · mécénat · alignement sens et fiscalité.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
-    <div class="univ" id="formation"><div class="univ-icon">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-desc">Six modules sur vos chiffres réels · pédagogie héritiers · transmission de valeurs.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ" id="admin"><div class="univ-icon">📁</div><div class="univ-name">Administration</div><div class="univ-desc">Secrétariat patrimonial · archivage eIDAS · gestion des courriers, factures, agenda fiscal.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ" id="reporting"><div class="univ-icon">📈</div><div class="univ-name">Reporting</div><div class="univ-desc">Synthèse trimestrielle · KPIs · alertes intelligents · tableau multigénérationnel.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--patrimoine" id="u-patrimoine"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">🏛️</div><div class="univ-name">Cartographie patrimoniale</div><div class="univ-desc">Vue d'ensemble de votre société et de votre patrimoine professionnel. Point d'attention identifié en 30 secondes.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ univ--patrimoine" id="u-immobilier"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">🏠</div><div class="univ-name">Immobilier &amp; Foncier</div><div class="univ-desc">Valorisation temps réel de votre parc, optimisation LMNP, SCI, démembrement, déficit foncier.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ univ--patrimoine" id="u-fiscalite"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">📜</div><div class="univ-name">Fiscalité <em>2026</em></div><div class="univ-desc">Vos impôts simulés selon la Loi de Finances 2026. Arbitrages, défiscalisation, optimisation IR/IFI.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ univ--patrimoine" id="u-transmission"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">🌳</div><div class="univ-name">Transmission &amp; Succession</div><div class="univ-desc">Pacte Dutreil, donation, succession. Simulateur droits, réserve héréditaire, scénarios chiffrés.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
+    <div class="univ univ--lifestyle" id="u-pe"><div class="univ-cat">✦ Investissement</div><div class="univ-icon">💎</div><div class="univ-name">Private Equity &amp; Marchés</div><div class="univ-desc">Club deals, co-investissement, allocation marchés financiers, suivi de votre allocation globale.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--lifestyle" id="u-voyage"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">✈️</div><div class="univ-name">Voyage <em>&amp; Conciergerie</em></div><div class="univ-desc">Chalets, palaces, jet privé, expériences sur-mesure. Conciergerie 24/7 dans 80 destinations.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--lifestyle" id="u-art"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">🎨</div><div class="univ-name">Art &amp; Collections</div><div class="univ-desc">Cote d'artiste, enchères Sotheby's/Christie's, authentification, fiscalité spécifique œuvres.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--lifestyle" id="u-mobilites"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">🏎️</div><div class="univ-name">Voitures, Yachts <em>&amp; Aviation</em></div><div class="univ-desc">Collection auto premium, yachts privés, jet partagé. Acquisition, valorisation, structuration.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--passion" id="u-montres"><div class="univ-cat">❀ Passions</div><div class="univ-icon">⌚</div><div class="univ-name">Montres <em>&amp; Joaillerie</em></div><div class="univ-desc">Patek, AP, Richard Mille, Cartier. Acquisition, valorisation IFI, suivi cote, marché gris.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--passion" id="u-bien-etre"><div class="univ-cat">❀ Passions</div><div class="univ-icon">🌸</div><div class="univ-name">Mode, Beauté <em>&amp; Bien-être</em></div><div class="univ-desc">Haute couture sur-mesure, spas premium, longévité, beauté. Carnet d'adresses fermé.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--passion" id="u-gastronomie"><div class="univ-cat">❀ Passions</div><div class="univ-icon">🍷</div><div class="univ-name">Vins &amp; Gastronomie</div><div class="univ-desc">Cave Pétrus / Romanée-Conti, tables 3★, accords sommellerie, valorisation cave IFI.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--passion" id="u-philanthropie"><div class="univ-cat">❀ Impact</div><div class="univ-icon">🌱</div><div class="univ-name">Philanthropie <em>&amp; NextGen</em></div><div class="univ-desc">Fondation familiale, mécénat IR/IFI, éducation héritiers, transmission de valeurs.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
   </div>
 </section>
 
@@ -692,12 +782,12 @@ footer .no-push b{color:var(--gold-bright)}
   <div class="funnel-inner">
     <div class="funnel-eyebrow">◆ Démonstration sans engagement · 3 rouages visibles sur 12</div>
     <h2>Votre cartographie <em>en 30 secondes.</em></h2>
-    <p class="funnel-sub">Saisissez le SIREN de votre société. Marcel vous montre ce que la plateforme verrait et identifie un point d'attention patrimonial. Sur sources officielles françaises uniquement.</p>
+    <p class="funnel-sub">Saisissez le SIREN de votre société. Marcel vous montre ce qu'il voit, identifie un point d'attention patrimonial — et vous décidez de la suite.</p>
     <form class="funnel-form" id="sirenForm" onsubmit="return runSiren(event)">
       <input id="sirenInput" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN (ex. 947 972 436)" autocomplete="off">
       <button type="submit">Activer Marcel →</button>
     </form>
-    <div class="funnel-note">Sources : Pappers · INSEE · INPI · BODACC · 100 % France · RGPD souverain</div>
+    <div class="funnel-note">Sources officielles françaises · 100 % France · RGPD souverain · sans inscription</div>
     <div class="funnel-result" id="sirenResult">
       <pre id="sirenOutput"></pre>
     </div>
@@ -712,7 +802,7 @@ footer .no-push b{color:var(--gold-bright)}
     <div class="tester-head">
       <div class="section-eyebrow">◆ Testez Marcel · 3 questions gratuites</div>
       <h2 style="font-family:'Fraunces',serif; font-size:clamp(32px,4vw,48px); font-weight:400; color:var(--ink); letter-spacing:-0.02em; line-height:1.08; margin-bottom:14px">Posez vos questions à <em style="font-style:italic; color:var(--terra-deep)">Marcel.</em></h2>
-      <p style="font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink-mute); max-width:640px; margin:0 auto 24px; line-height:1.55">Démonstration en direct — Marcel répond sourcé (CGI, Loi de Finances 2026, BOFiP). Aucune inscription. Anonyme. <strong style="color:var(--terra-deep); font-weight:600">Vous décidez quand et quoi demander.</strong></p>
+      <p style="font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink-mute); max-width:640px; margin:0 auto 24px; line-height:1.55">Démonstration en direct. Marcel comprend, oriente, et mobilise le bon spécialiste. Aucune inscription. Anonyme. <strong style="color:var(--terra-deep); font-weight:600">Vous décidez quand et quoi demander.</strong></p>
       <div class="tester-tabs">
         <button class="tester-tab active" data-mode="freemium">Découverte <span class="price-pill">GRATUIT</span></button>
         <button class="tester-tab" data-mode="premium">Premium <span class="price-pill">29 €/MOIS</span></button>
@@ -735,7 +825,7 @@ footer .no-push b{color:var(--gold-bright)}
         <button id="chatSend" type="submit">Demander à Marcel →</button>
       </form>
       <div class="chat-note">
-        Conforme MIF II · sources : CGI, BOFiP, Loi de Finances 2026 · hébergement <strong>100 % France</strong> · aucune donnée patrimoniale stockée en clair.
+        Conforme MIF II · sources françaises officielles · hébergement <strong>100 % France</strong> · aucune donnée patrimoniale stockée en clair.
       </div>
     </div>
   </div>
@@ -780,13 +870,14 @@ footer .no-push b{color:var(--gold-bright)}
       <div class="porte-mark">◆ Bêta · 50 familles fondatrices</div>
       <h4>Family Office <em>complet</em></h4>
       <div class="price">Tier mensuel offert pendant la bêta</div>
-      <p>Accès aux 12 univers, application mobile iOS/Android, agents Marcel + 11 spécialistes, conciergerie 24/7, événements privés.</p>
+      <p>Accès illimité à vos 12 univers, application mobile, conciergerie 24/7, équipe Marcel et ses spécialistes mobilisables à la demande.</p>
       <ul>
-        <li>12 univers actifs · APIs réelles</li>
-        <li>Marcel + 11 agents · Opus 4.7 + Sonnet 4.6</li>
-        <li>App mobile + PWA souveraine FR</li>
+        <li>Accès illimité aux 12 univers</li>
+        <li>Marcel &amp; son équipe à votre service 24/7</li>
+        <li>Application iOS &amp; Android · hors ligne</li>
+        <li>Conciergerie premium intégrée</li>
         <li>Lettre de mission Family Office signée</li>
-        <li>4 événements privés/an</li>
+        <li>Suivi trimestriel multigénérationnel</li>
       </ul>
       <a href="#contact" class="porte-cta">Demander mon accès →</a>
     </div>
@@ -795,12 +886,13 @@ footer .no-push b{color:var(--gold-bright)}
       <div class="porte-mark">◆ Sur-mesure · À venir</div>
       <h4>Accompagnement <em>premium</em></h4>
       <div class="price">Module en préparation · Q3 2026</div>
-      <p>Cellule pluridisciplinaire : notaire référent, fiscaliste, family lawyer, art advisor. Charte familiale, gouvernance, transmission multigénérationnelle.</p>
+      <p>Tout ce qu'offre la bêta, plus une cellule humaine pluridisciplinaire, une vie événementielle privée, et la conception d'une stratégie familiale unique.</p>
       <ul>
-        <li>Cellule dédiée · 5 experts partenaires</li>
-        <li>Conseil de famille animé</li>
-        <li>Charte familiale rédigée</li>
-        <li>Reporting trimestriel structuré</li>
+        <li>Cellule dédiée pluridisciplinaire</li>
+        <li>Conseil de famille animé · charte familiale</li>
+        <li><strong>4 événements privés/an</strong> (Megève, Romanée-Conti, Art Basel, soirée Annonay)</li>
+        <li>RDV mensuel privatif avec Maxime</li>
+        <li>Stratégie multigénérationnelle 360°</li>
       </ul>
       <span class="porte-cta soon-cta">Bientôt disponible</span>
     </div>
@@ -813,7 +905,7 @@ footer .no-push b{color:var(--gold-bright)}
 <section class="compliance">
   <div class="compliance-inner">
     <div class="compliance-mark">◆ Conformité réglementaire</div>
-    <p><strong>Marcel et ses 11 spécialistes fournissent une information patrimoniale générale, sourcée (CGI, BOFiP, Loi de Finances 2026, Pappers, DVF).</strong> Ils n'émettent <strong>jamais</strong> de recommandation produit personnalisée. Toute préconisation d'investissement requiert au préalable un Document d'Entrée en Relation et une Lettre de Mission signés (art. 325-3 du RGAMF · art. L.521-2 du Code des Assurances). Cabinet IKCP — ORIAS 23001568 — CIF contrôlé par une association agréée AMF. Hébergement France — RGPD souverain — aucune donnée patrimoniale ne quitte l'Union européenne.</p>
+    <p><strong>Marcel et ses 11 spécialistes fournissent une information patrimoniale générale, sourcée sur des références officielles françaises.</strong> Ils n'émettent <strong>jamais</strong> de recommandation produit personnalisée. Toute préconisation d'investissement requiert au préalable un Document d'Entrée en Relation et une Lettre de Mission signés (art. 325-3 du RGAMF · art. L.521-2 du Code des Assurances). Cabinet IKCP — ORIAS 23001568 — CIF contrôlé par une association agréée AMF. Hébergement France — RGPD souverain — aucune donnée patrimoniale ne quitte l'Union européenne.</p>
   </div>
 </section>
 
@@ -914,6 +1006,35 @@ footer .no-push b{color:var(--gold-bright)}
     var t = document.getElementById('thinking');
     if(t) t.remove();
   }
+  // Détection naïve des spécialistes à mobiliser selon les mots-clés
+  function routeAgents(q){
+    var ql = q.toLowerCase();
+    var match = [];
+    var rules = [
+      [/succession|don[a-z]*|h[ée]rit|transm(et|is|ission)|dutreil|enfants?|fille|fils/, '🌳 Hermès · Transmission'],
+      [/ifi|fiscal|imp[ôo]t|ir|loi de finances|barème/, '📜 Codex · Fiscalité'],
+      [/immobilier|sci|lmnp|d[ée]ficit foncier|m²|appartement|maison|terrain/, '🏠 Augustin · Immobilier'],
+      [/march[ée]|allocation|cac|action|obligation|private equity|club deal|pe/, '📊 Capital · Marchés &amp; PE'],
+      [/yacht|voiture|jet|aviation|ferrari|porsche|bateau/, '🏎️ Léon · Voitures &amp; Yachts'],
+      [/montre|joaill|bague|patek|rolex|audemars|cartier/, '⌚ Joséphine · Montres &amp; Joaillerie'],
+      [/voyage|chalet|h[ôo]tel|conciergerie|destination|s[ée]jour/, '✈️ Iris · Voyage &amp; Conciergerie'],
+      [/art|tableau|enchère|collection|sotheby|christie/, '🎨 Émile · Art &amp; Collections'],
+      [/vin|cave|p[ée]trus|roman[ée]e|champagne|whisky|gastronom|table|restaurant/, '🍷 Auguste · Vins &amp; Gastronomie'],
+      [/mode|beaut[ée]|bien-?[ée]tre|sant[ée]|spa|longévit[ée]|haute couture/, '🌸 Hélène · Mode &amp; Bien-être'],
+      [/philanthrop|fondation|m[ée]c[ée]nat|don ir|impact|nextgen|enfant|h[ée]rit/, '🌱 Olympe · Philanthropie'],
+      [/soci[ée]t[ée]|siren|entreprise|capital social|cartographie|pappers/, '🏛️ Théodore · Patrimoine']
+    ];
+    rules.forEach(function(r){ if(r[0].test(ql) && match.indexOf(r[1])===-1) match.push(r[1]); });
+    return match.slice(0,3); // max 3 agents
+  }
+  function addRouting(agents){
+    if(!agents || !agents.length) return;
+    var div = document.createElement('div');
+    div.className = 'chat-routing';
+    div.innerHTML = '<span class="pulse"></span><b>Marcel mobilise :</b> ' + agents.join(' · ');
+    thread.appendChild(div);
+    thread.scrollTop = thread.scrollHeight;
+  }
 
   // Chips
   document.querySelectorAll('.chat-chip').forEach(function(c){
@@ -945,6 +1066,9 @@ footer .no-push b{color:var(--gold-bright)}
     history.push({role:'user', content:q});
     input.value = '';
     sendBtn.disabled = true; sendBtn.textContent = '…';
+    // Marcel annonce les spécialistes qu'il mobilise
+    var agents = routeAgents(q);
+    if(agents.length) addRouting(agents);
     addThinking();
     try{
       var r = await fetch('https://ikcp-chat.maxime-ead.workers.dev/', {
