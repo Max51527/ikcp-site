@@ -414,6 +414,8 @@ section.universes{padding:120px 48px 80px; background:var(--paper)}
 .univ-status .dot{width:6px;height:6px;border-radius:50%}
 .univ-status.live .dot{background:var(--ok); box-shadow:0 0 0 3px rgba(63,122,63,0.18)}
 .univ-status.demo .dot{background:var(--line-strong)}
+.univ-status.soon{color:var(--warn)}
+.univ-status.soon .dot{background:var(--warn); box-shadow:0 0 0 3px rgba(184,128,31,0.20)}
 
 /* ════════════════════════════════════════════════════════════════ */
 /* ═══ PASSIONS — éditorial + mockup mobile ════════════════════════ */
@@ -962,6 +964,7 @@ section.funnel::before, section.heritage::before, section.beta::before{
     <button id="heroSirenBtn" type="submit">Activer Marcel →</button>
   </form>
   <div class="hero-siren-note">◆ Démonstration sans engagement · <b>2 agents gratuits</b> · sources officielles France</div>
+  <p style="text-align:center; margin-bottom:32px; font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Fraunces',serif"><a href="#beta" style="color:var(--terra-deep); text-decoration:underline">Pas de société ?</a> Vous êtes héritier, profession libérale, retraité — démarrez votre profil familial directement via la bêta privée.</p>
 
   <div class="hero-stats">
     <span><b>12</b> · univers à votre service</span>
@@ -1320,6 +1323,7 @@ section.funnel::before, section.heritage::before, section.beta::before{
     <div class="section-eyebrow">◆ Vos univers · Une porte d'entrée</div>
     <h2>Une seule interface.<br><em>Vos univers</em> à votre service.</h2>
     <p>Bien plus qu'une gestion de patrimoine. <em>Tout ce qui mérite votre attention</em> — vos finances, vos passions, vos collections, votre bien-être, votre famille — pensé, instruit et préparé en quelques secondes.</p>
+    <p style="margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-faint); letter-spacing:0.10em; text-transform:uppercase; font-weight:600">◆ 4 univers LIVE · 8 univers en déploiement Q3–Q4 2026 · Bêta sur invitation</p>
   </div>
 
   <div class="universes-grid">
@@ -1327,14 +1331,14 @@ section.funnel::before, section.heritage::before, section.beta::before{
     <div class="univ univ--patrimoine" id="u-immobilier"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">🏠</div><div class="univ-name">Immobilier &amp; Foncier</div><div class="univ-desc">Valorisation temps réel de votre parc, optimisation LMNP, SCI, démembrement, déficit foncier.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
     <div class="univ univ--patrimoine" id="u-fiscalite"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">📜</div><div class="univ-name">Fiscalité <em>2026</em></div><div class="univ-desc">Vos impôts simulés selon la Loi de Finances 2026. Arbitrages, défiscalisation, optimisation IR/IFI.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
     <div class="univ univ--patrimoine" id="u-transmission"><div class="univ-cat">◆ Patrimoine</div><div class="univ-icon">🌳</div><div class="univ-name">Transmission &amp; Succession</div><div class="univ-desc">Pacte Dutreil, donation, succession. Simulateur droits, réserve héréditaire, scénarios chiffrés.</div><div class="univ-status live"><span class="dot"></span>Live</div></div>
-    <div class="univ univ--lifestyle" id="u-pe"><div class="univ-cat">✦ Investissement</div><div class="univ-icon">💎</div><div class="univ-name">Private Equity &amp; Marchés</div><div class="univ-desc">Club deals, co-investissement, allocation marchés financiers, suivi de votre allocation globale.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--lifestyle" id="u-voyage"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">✈️</div><div class="univ-name">Voyage <em>&amp; Conciergerie</em></div><div class="univ-desc">Chalets, palaces, jet privé, expériences sur-mesure. Conciergerie 24/7 dans 80 destinations.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--lifestyle" id="u-art"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">🎨</div><div class="univ-name">Art &amp; Collections</div><div class="univ-desc">Cote d'artiste, enchères Sotheby's/Christie's, authentification, fiscalité spécifique œuvres.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--lifestyle" id="u-mobilites"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">🏎️</div><div class="univ-name">Voitures, Yachts <em>&amp; Aviation</em></div><div class="univ-desc">Collection auto premium, yachts privés, jet partagé. Acquisition, valorisation, structuration.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--passion" id="u-montres"><div class="univ-cat">❀ Passions</div><div class="univ-icon">⌚</div><div class="univ-name">Montres <em>&amp; Joaillerie</em></div><div class="univ-desc">Patek, AP, Richard Mille, Cartier. Acquisition, valorisation IFI, suivi cote, marché gris.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--passion" id="u-bien-etre"><div class="univ-cat">❀ Passions</div><div class="univ-icon">🌸</div><div class="univ-name">Mode, Beauté <em>&amp; Bien-être</em></div><div class="univ-desc">Haute couture sur-mesure, spas premium, longévité, beauté. Carnet d'adresses fermé.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--passion" id="u-gastronomie"><div class="univ-cat">❀ Passions</div><div class="univ-icon">🍷</div><div class="univ-name">Vins &amp; Gastronomie</div><div class="univ-desc">Cave Pétrus / Romanée-Conti, tables 3★, accords sommellerie, valorisation cave IFI.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
-    <div class="univ univ--passion" id="u-philanthropie"><div class="univ-cat">❀ Impact</div><div class="univ-icon">🌱</div><div class="univ-name">Philanthropie <em>&amp; NextGen</em></div><div class="univ-desc">Fondation familiale, mécénat IR/IFI, éducation héritiers, transmission de valeurs.</div><div class="univ-status demo"><span class="dot"></span>Démo</div></div>
+    <div class="univ univ--lifestyle" id="u-pe"><div class="univ-cat">✦ Investissement</div><div class="univ-icon">💎</div><div class="univ-name">Private Equity &amp; Marchés</div><div class="univ-desc">Club deals, co-investissement, allocation marchés financiers, suivi de votre allocation globale.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--lifestyle" id="u-voyage"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">✈️</div><div class="univ-name">Voyage <em>&amp; Conciergerie</em></div><div class="univ-desc">Chalets, palaces, jet privé, expériences sur-mesure. Conciergerie 24/7 dans 80 destinations.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--lifestyle" id="u-art"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">🎨</div><div class="univ-name">Art &amp; Collections</div><div class="univ-desc">Cote d'artiste, enchères Sotheby's/Christie's, authentification, fiscalité spécifique œuvres.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--lifestyle" id="u-mobilites"><div class="univ-cat">✦ Art de vivre</div><div class="univ-icon">🏎️</div><div class="univ-name">Voitures, Yachts <em>&amp; Aviation</em></div><div class="univ-desc">Collection auto premium, yachts privés, jet partagé. Acquisition, valorisation, structuration.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--passion" id="u-montres"><div class="univ-cat">❀ Passions</div><div class="univ-icon">⌚</div><div class="univ-name">Montres <em>&amp; Joaillerie</em></div><div class="univ-desc">Patek, AP, Richard Mille, Cartier. Acquisition, valorisation IFI, suivi cote, marché gris.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--passion" id="u-bien-etre"><div class="univ-cat">❀ Passions</div><div class="univ-icon">🌸</div><div class="univ-name">Mode, Beauté <em>&amp; Bien-être</em></div><div class="univ-desc">Haute couture sur-mesure, spas premium, longévité, beauté. Carnet d'adresses fermé.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--passion" id="u-gastronomie"><div class="univ-cat">❀ Passions</div><div class="univ-icon">🍷</div><div class="univ-name">Vins &amp; Gastronomie</div><div class="univ-desc">Cave Pétrus / Romanée-Conti, tables 3★, accords sommellerie, valorisation cave IFI.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
+    <div class="univ univ--passion" id="u-philanthropie"><div class="univ-cat">❀ Impact</div><div class="univ-icon">🌱</div><div class="univ-name">Philanthropie <em>&amp; NextGen</em></div><div class="univ-desc">Fondation familiale, mécénat IR/IFI, éducation héritiers, transmission de valeurs.</div><div class="univ-status soon"><span class="dot"></span>Q3-Q4 2026</div></div>
   </div>
 </section>
 
