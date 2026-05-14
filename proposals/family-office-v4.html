@@ -408,6 +408,28 @@ section.tester{padding:120px 48px; background:linear-gradient(180deg,var(--paper
 .chat-blocked b{font-family:'Fraunces',serif; font-style:italic; color:var(--terra-deep); font-size:16px; display:block; margin-bottom:4px; font-weight:500}
 .chat-blocked a.btn{margin-top:12px; display:inline-block}
 
+@media(max-width:600px){
+  /* Forms : passer en colonne (input + button stacked) */
+  .chat-form{flex-direction:column; padding:10px; border-radius:18px; gap:8px}
+  .chat-form input{width:100%; padding:14px 16px; background:var(--paper); border-radius:14px}
+  .chat-form button{width:100%; padding:14px; border-radius:14px; min-width:0}
+  .funnel-form{flex-direction:column; padding:10px; border-radius:18px; gap:8px}
+  .funnel-form input{width:100%; padding:14px 16px; background:var(--paper); border-radius:14px}
+  .funnel-form button{width:100%; padding:14px; border-radius:14px; min-width:0}
+  /* Hero philo : reduire padding */
+  .hero-philo{padding:12px 16px; font-size:13px}
+  /* Sections : reduire padding lateral */
+  section.universes,section.passions,section.tester,section.funnel,section.beta,section.heritage,section.cta-final,section.compliance{padding-left:20px; padding-right:20px}
+  nav.top{padding:12px 16px}
+  /* Tester tabs : pile sur mobile */
+  .tester-tabs{flex-direction:column; align-items:stretch; gap:6px}
+  .tester-tab{justify-content:center}
+  /* Heritage date : reduire */
+  .heritage-date{font-size:64px}
+  /* Footer no-push : full width */
+  footer .no-push{display:block; margin:14px 8px 0}
+}
+
 /* ════════════════════════════════════════════════════════════════ */
 /* ═══ HÉRITAGE MONTGOLFIER (sans Ardèche) ═════════════════════════ */
 /* ════════════════════════════════════════════════════════════════ */
