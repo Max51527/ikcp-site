@@ -369,6 +369,46 @@ section.funnel{padding:120px 48px; background:var(--paper); text-align:center}
 .funnel-result pre{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink); white-space:pre-wrap; line-height:1.6}
 
 /* ════════════════════════════════════════════════════════════════ */
+/* ═══ TESTER MARCEL — chat freemium / premium ═════════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.tester{padding:120px 48px; background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%); border-top:1px solid var(--line)}
+.tester-inner{max-width:920px; margin:0 auto}
+.tester-head{text-align:center; margin-bottom:48px}
+.tester-tabs{display:inline-flex; padding:5px; background:var(--paper-2); border:1px solid var(--line-strong); border-radius:50px; margin-bottom:18px}
+.tester-tab{padding:10px 22px; border-radius:30px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12.5px; letter-spacing:0.04em; cursor:pointer; transition:all 0.25s; border:none; background:transparent; color:var(--ink-mute); display:inline-flex; align-items:center; gap:8px}
+.tester-tab.active{background:var(--ink); color:var(--paper); box-shadow:0 4px 12px rgba(45,37,32,0.18)}
+.tester-tab .price-pill{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; padding:2px 7px; border-radius:30px; background:rgba(255,255,255,0.18); font-weight:700}
+.tester-tab:not(.active) .price-pill{background:var(--paper-3); color:var(--terra-deep)}
+.tester-quota{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--ink-faint); text-transform:uppercase; font-weight:600; margin-top:6px}
+.tester-quota b{color:var(--terra-deep); font-weight:700}
+
+.chat-box{background:var(--paper); border:1.5px solid var(--line-strong); border-radius:24px; padding:24px; box-shadow:0 14px 40px rgba(45,37,32,0.07)}
+.chat-suggest{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px}
+.chat-chip{padding:7px 14px; background:var(--paper-2); border:1px solid var(--line-strong); border-radius:30px; font-size:12.5px; color:var(--ink-mute); cursor:pointer; transition:all 0.2s; font-family:'Outfit',sans-serif; font-weight:500}
+.chat-chip:hover{background:var(--terra); color:#fff; border-color:var(--terra)}
+.chat-thread{min-height:120px; max-height:380px; overflow-y:auto; margin-bottom:16px; padding:4px 2px; display:flex; flex-direction:column; gap:14px}
+.chat-thread::-webkit-scrollbar{width:6px}
+.chat-thread::-webkit-scrollbar-thumb{background:var(--line-strong); border-radius:6px}
+.chat-msg{padding:14px 18px; border-radius:14px; max-width:88%; line-height:1.6; font-size:14px}
+.chat-msg.user{background:var(--ink); color:var(--paper); align-self:flex-end; border-bottom-right-radius:4px}
+.chat-msg.marcel{background:var(--paper-2); color:var(--ink); align-self:flex-start; border-bottom-left-radius:4px; border:1px solid var(--line)}
+.chat-msg.marcel::before{content:'★ Marcel'; display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.chat-msg.thinking{background:var(--paper-2); color:var(--ink-faint); align-self:flex-start; font-style:italic; font-size:13px}
+.chat-msg.thinking::before{content:'★ Marcel'; display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; color:var(--terra-deep); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.chat-form{display:flex; gap:0; background:var(--paper-2); border:1.5px solid var(--line-strong); border-radius:50px; padding:5px 5px 5px 22px; transition:all 0.3s}
+.chat-form:focus-within{border-color:var(--terra)}
+.chat-form input{flex:1; border:none; outline:none; background:transparent; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); padding:10px 0}
+.chat-form input::placeholder{color:var(--ink-faint); font-style:italic}
+.chat-form button{padding:11px 22px; background:var(--terra); color:#fff; border:none; border-radius:50px; font-family:'Outfit',sans-serif; font-weight:600; font-size:13px; cursor:pointer; transition:all 0.3s; min-width:120px}
+.chat-form button:disabled{background:var(--line-strong); cursor:not-allowed}
+.chat-form button:not(:disabled):hover{background:var(--terra-deep)}
+.chat-note{margin-top:14px; font-size:11.5px; color:var(--ink-faint); text-align:center; line-height:1.6}
+.chat-note a{color:var(--terra-deep); text-decoration:underline}
+.chat-blocked{padding:18px 22px; background:linear-gradient(135deg,var(--paper-warm) 0%,var(--paper-3) 100%); border:1px dashed var(--terra); border-radius:14px; text-align:center; font-size:13.5px; color:var(--ink); line-height:1.6}
+.chat-blocked b{font-family:'Fraunces',serif; font-style:italic; color:var(--terra-deep); font-size:16px; display:block; margin-bottom:4px; font-weight:500}
+.chat-blocked a.btn{margin-top:12px; display:inline-block}
+
+/* ════════════════════════════════════════════════════════════════ */
 /* ═══ HÉRITAGE MONTGOLFIER (sans Ardèche) ═════════════════════════ */
 /* ════════════════════════════════════════════════════════════════ */
 section.heritage{padding:120px 48px; background:linear-gradient(180deg,var(--paper-2) 0%,var(--paper-warm) 100%); position:relative; overflow:hidden}
@@ -460,6 +500,7 @@ footer .no-push b{color:var(--gold-bright)}
     <a href="#univers">12 univers</a>
     <a href="#passions">Passions</a>
     <a href="#funnel">Cartographie 30 sec</a>
+    <a href="#tester">Tester Marcel</a>
     <a href="#beta">Bêta</a>
     <span class="beta-pill">● Bêta privée</span>
     <a href="#contact" class="cta">Demander mon accès →</a>
@@ -642,6 +683,43 @@ footer .no-push b{color:var(--gold-bright)}
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ TESTER MARCEL — Chat live freemium ═════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="tester" id="tester">
+  <div class="tester-inner">
+    <div class="tester-head">
+      <div class="section-eyebrow">◆ Testez Marcel · 3 questions gratuites</div>
+      <h2 style="font-family:'Fraunces',serif; font-size:clamp(32px,4vw,48px); font-weight:400; color:var(--ink); letter-spacing:-0.02em; line-height:1.08; margin-bottom:14px">Posez vos questions à <em style="font-style:italic; color:var(--terra-deep)">Marcel.</em></h2>
+      <p style="font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink-mute); max-width:640px; margin:0 auto 24px; line-height:1.55">Démonstration en direct — Marcel répond sourcé (CGI, Loi de Finances 2026, BOFiP). Aucune inscription. Anonyme. <strong style="color:var(--terra-deep); font-weight:600">Vous décidez quand et quoi demander.</strong></p>
+      <div class="tester-tabs">
+        <button class="tester-tab active" data-mode="freemium">Découverte <span class="price-pill">GRATUIT</span></button>
+        <button class="tester-tab" data-mode="premium">Premium <span class="price-pill">29 €/MOIS</span></button>
+      </div>
+      <div class="tester-quota">Questions restantes : <b id="quotaCount">3</b> / 3 · session anonyme</div>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="chat-suggest">
+        <span class="chat-chip" data-q="Quels droits de succession si je transmets 800 000 € à mon enfant ?">🏛️ Droits succession 800 k€</span>
+        <span class="chat-chip" data-q="Pacte Dutreil : comment réduire les droits de transmission de mon entreprise ?">💎 Pacte Dutreil</span>
+        <span class="chat-chip" data-q="Apport-cession 150-0 B ter : quels sont les pièges en 2026 ?">🏢 Apport-cession 150-0 B ter</span>
+        <span class="chat-chip" data-q="Quel impact IFI 2026 sur ma SCI familiale détenant 3 immeubles ?">🏠 IFI 2026 SCI familiale</span>
+      </div>
+      <div class="chat-thread" id="chatThread" aria-live="polite">
+        <div class="chat-msg marcel">Bonjour. Je suis Marcel, chef d'orchestre du Family Office IKCP. Posez-moi votre question patrimoniale — je clarifierai, je sourcerai, et je vous orienterai. Sans recommandation produit personnalisée (MIF II).</div>
+      </div>
+      <form class="chat-form" id="chatForm" onsubmit="return askMarcel(event)">
+        <input id="chatInput" type="text" placeholder="Votre question patrimoniale…" autocomplete="off" maxlength="400">
+        <button id="chatSend" type="submit">Demander à Marcel →</button>
+      </form>
+      <div class="chat-note">
+        Conforme MIF II · sources : CGI, BOFiP, Loi de Finances 2026 · hébergement <strong>100 % France</strong> · aucune donnée patrimoniale stockée en clair.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- ═══ HÉRITAGE MONTGOLFIER — clin d'œil élévation ═════════════ -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <section class="heritage">
@@ -765,6 +843,108 @@ footer .no-push b{color:var(--gold-bright)}
   ring.setAttribute('stroke-width','1'); ring.setAttribute('opacity','0.3');
   ring.setAttribute('stroke-dasharray','2,8');
   svg.appendChild(ring);
+})();
+
+/* ─── Tester Marcel — chat live worker ikcp-chat ─── */
+(function initMarcel(){
+  var FREE_LIMIT = 3;
+  var key = 'ikcp_marcel_count';
+  var history = [];
+  var thread = document.getElementById('chatThread');
+  var input = document.getElementById('chatInput');
+  var sendBtn = document.getElementById('chatSend');
+  var quotaSpan = document.getElementById('quotaCount');
+  var box = document.getElementById('chatBox');
+  if(!thread || !input || !box) return;
+
+  function getCount(){ try{return parseInt(localStorage.getItem(key)||'0',10);}catch(e){return 0;} }
+  function setCount(n){ try{localStorage.setItem(key,String(n));}catch(e){} updateQuota(); }
+  function updateQuota(){
+    var used = getCount(); var left = Math.max(0, FREE_LIMIT - used);
+    if(quotaSpan) quotaSpan.textContent = left;
+    if(left===0){ renderBlocked(); }
+  }
+  function renderBlocked(){
+    if(document.getElementById('chatBlocked')) return;
+    var b = document.createElement('div');
+    b.id = 'chatBlocked'; b.className = 'chat-blocked';
+    b.innerHTML = '<b>Vous avez utilisé vos 3 questions gratuites.</b>Pour continuer en illimité, accédez à la bêta privée Family Office (50 familles fondatrices) ou demandez votre code d\'accès Premium.<br><a href="#beta" class="btn btn-primary" style="margin-top:14px">Demander mon accès →</a>';
+    var form = document.getElementById('chatForm');
+    if(form){ form.style.display='none'; form.parentNode.insertBefore(b, form); }
+  }
+  function addMsg(role, text){
+    var div = document.createElement('div');
+    div.className = 'chat-msg '+role;
+    div.textContent = text;
+    thread.appendChild(div);
+    thread.scrollTop = thread.scrollHeight;
+    return div;
+  }
+  function addThinking(){
+    var div = document.createElement('div');
+    div.className = 'chat-msg thinking';
+    div.id = 'thinking';
+    div.textContent = 'analyse votre question…';
+    thread.appendChild(div);
+    thread.scrollTop = thread.scrollHeight;
+  }
+  function removeThinking(){
+    var t = document.getElementById('thinking');
+    if(t) t.remove();
+  }
+
+  // Chips
+  document.querySelectorAll('.chat-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      input.value = c.getAttribute('data-q')||c.textContent;
+      input.focus();
+    });
+  });
+
+  // Tabs (visuel uniquement pour l'instant — Premium = redirige vers #beta)
+  document.querySelectorAll('.tester-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      var mode = t.getAttribute('data-mode');
+      document.querySelectorAll('.tester-tab').forEach(function(x){x.classList.remove('active')});
+      t.classList.add('active');
+      if(mode==='premium'){
+        document.getElementById('beta').scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    });
+  });
+
+  // Submit
+  window.askMarcel = async function(e){
+    e.preventDefault();
+    var q = (input.value||'').trim();
+    if(!q) return false;
+    if(getCount() >= FREE_LIMIT){ renderBlocked(); return false; }
+    addMsg('user', q);
+    history.push({role:'user', content:q});
+    input.value = '';
+    sendBtn.disabled = true; sendBtn.textContent = '…';
+    addThinking();
+    try{
+      var r = await fetch('https://ikcp-chat.maxime-ead.workers.dev/', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ message:q, history:history.slice(-6) })
+      });
+      var data = await r.json();
+      removeThinking();
+      var reply = data.reply || data.message || data.text || 'Réponse vide.';
+      addMsg('marcel', reply);
+      history.push({role:'assistant', content:reply});
+      setCount(getCount()+1);
+    }catch(err){
+      removeThinking();
+      addMsg('marcel', '⚠ Marcel rencontre une difficulté technique. Veuillez réessayer ou demander votre accès bêta. (Détail : '+err.message+')');
+    }
+    sendBtn.disabled = false; sendBtn.textContent = 'Demander à Marcel →';
+    return false;
+  };
+
+  updateQuota();
 })();
 
 /* ─── Funnel SIREN — branchement worker ikcp-pappers ─── */
