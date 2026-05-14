@@ -563,6 +563,148 @@ footer a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid
 footer .legal{margin-top:10px; font-size:10.5px; color:rgba(250,246,238,0.45); letter-spacing:0.08em; text-transform:uppercase}
 footer .no-push{margin-top:14px; padding:10px 16px; background:rgba(201,169,110,0.10); border:1px solid rgba(201,169,110,0.30); border-radius:8px; display:inline-block; font-size:11.5px; color:rgba(250,246,238,0.85); letter-spacing:0.02em; line-height:1.5}
 footer .no-push b{color:var(--gold-bright)}
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  PREMIUM REFINEMENTS — édit. éditoriale luxe (chirurgical)         ║
+   ║  Discipline tonale · micro-typo · asymétrie · slow motion          ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+
+/* — Easing exponentiel pour TOUT (slow & cinéma) — */
+:root{
+  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-slow: cubic-bezier(0.65, 0, 0.35, 1);
+  --paper-shadow: 0 1px 0 rgba(255,255,255,0.5), 0 30px 80px -20px rgba(45,37,32,0.18);
+}
+
+/* — Body : ligatures, old-style figures, lissage — */
+html,body{
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "ss01" 1;
+  font-variant-ligatures: common-ligatures contextual;
+}
+/* Stats / chiffres en tabular pour alignement */
+.hero-stats, .di-stat-v, .passions-stat-v, .heritage-date{ font-variant-numeric: tabular-nums lining-nums; }
+.hero-stats b, .heritage-date{ font-feature-settings: "lnum" 1, "tnum" 1; }
+
+/* — H1 hero : exploiter axes variable Fraunces — */
+.hero h1{
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 0;
+  letter-spacing: -0.034em;
+  text-wrap: balance;
+}
+.hero h1 em{ font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; letter-spacing:-0.02em }
+
+/* — Eyebrows en small caps gérés en feature, plus fin — */
+.hero-eyebrow, .section-eyebrow, .claim-mark, .funnel-eyebrow,
+.beta-eyebrow, .di-mark, .passions-info .mark, .compliance-mark,
+.brand-sub, .univ-cat, nav.top .menu a, .pcard-tag{
+  font-feature-settings: "ss02" 1, "tnum" 1;
+}
+
+/* — Asymétrie hero : texte ancré gauche, respire droite (desktop only) — */
+@media(min-width:1100px){
+  section.hero{
+    text-align:left; align-items:flex-start;
+    padding-left:max(8vw, 64px); padding-right:max(8vw, 64px);
+    max-width:1440px; margin:0 auto;
+  }
+  .hero-eyebrow, .hero-tagline, .hero-philo, .hero-stats, .hero-actions{ align-self:flex-start }
+  .hero h1{ max-width:780px }
+  .hero-stats{ justify-content:flex-start }
+  .hero-actions{ justify-content:flex-start; margin-top:8px }
+  .constellation{ margin:36px 0 50px; align-self:center }
+  .hero-eyebrow::before{ width:64px }
+  .hero-eyebrow::after{ display:none }
+}
+
+/* — Discipline tonale : passions → variation tonale terra, pas mauve étranger — */
+.univ--passion::before{ background:#9C5A4A } /* terra fanée, pas mauve */
+.univ--passion .univ-cat{ color:#7A4636 }
+section.universes{ padding-top:140px; padding-bottom:120px }
+
+/* — Slow motion sur TOUT — */
+.btn, .agent-node, .univ, .pcard, .porte, .orch-step,
+.chat-chip, .chip, .funnel-form, .chat-form,
+nav.top .cta, nav.top .menu a, footer a{
+  transition: all 0.7s var(--ease-luxe) !important;
+}
+.btn-primary:hover{ transform:translateY(-3px); box-shadow:0 18px 40px rgba(217,119,87,0.28) }
+.univ:hover{ transform:translateY(-6px); box-shadow:0 28px 60px -10px rgba(45,37,32,0.14) }
+.porte:hover{ transform:translateY(-6px); box-shadow:0 28px 60px -10px rgba(45,37,32,0.14) }
+
+/* — Agent nodes : entrée lente staggered — */
+.agent-node{
+  opacity:0; transform:translate(-50%,-50%) scale(0.85);
+  animation:agentEnter 1.4s var(--ease-luxe) forwards;
+}
+@keyframes agentEnter{ to{opacity:1; transform:translate(-50%,-50%) scale(1)} }
+.agent-1{animation-delay:1.2s} .agent-2{animation-delay:1.32s} .agent-3{animation-delay:1.44s}
+.agent-4{animation-delay:1.56s} .agent-5{animation-delay:1.68s} .agent-6{animation-delay:1.80s}
+.agent-7{animation-delay:1.92s} .agent-8{animation-delay:2.04s} .agent-9{animation-delay:2.16s}
+.agent-10{animation-delay:2.28s} .agent-11{animation-delay:2.40s}
+
+/* — Marcel orchestre : passe en INK profond (rupture éditoriale) — */
+section.orchestrate{
+  background:linear-gradient(180deg, #1C1612 0%, #251D17 100%);
+  border-top:1px solid rgba(217,119,87,0.18); border-bottom:1px solid rgba(217,119,87,0.18);
+  color:#E8DBC4;
+}
+section.orchestrate::before{
+  background-image: radial-gradient(circle at 50% 0%, rgba(217,119,87,0.20) 0%, transparent 55%);
+}
+section.orchestrate .section-eyebrow{ color:var(--terra-light) }
+section.orchestrate h2{ color:#F2E8D4; font-variation-settings:"opsz" 144, "SOFT" 90; letter-spacing:-0.028em }
+section.orchestrate h2 em{ color:var(--terra-light); font-variation-settings:"opsz" 144, "SOFT" 100, "WONK" 1 }
+section.orchestrate .section-head p{ color:rgba(232,219,196,0.72) }
+.orch-step{ background:rgba(250,246,238,0.04); border:1px solid rgba(232,219,196,0.14); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px) }
+.orch-step:hover{ background:rgba(250,246,238,0.06); border-color:var(--terra); transform:translateY(-6px); box-shadow:0 28px 60px -8px rgba(0,0,0,0.4) }
+.orch-step h4{ color:#F2E8D4 }
+.orch-step h4 em{ color:var(--terra-light) }
+.orch-step p{ color:rgba(232,219,196,0.74) }
+.orch-step .quote{ color:var(--terra-light); border-top-color:rgba(232,219,196,0.18) }
+.orch-step-num{ background:var(--terra-light); color:#1C1612 }
+@media(min-width:861px){
+  .orch-step:not(:last-child)::after{ color:var(--terra-light) }
+}
+
+/* — Hero h1 : revealing serif lente avec masque — */
+.hero h1{ animation-duration:1.8s; animation-timing-function:var(--ease-luxe) }
+.hero-tagline{ animation-duration:1.6s; animation-timing-function:var(--ease-luxe) }
+.hero-philo{ animation-duration:1.6s; animation-timing-function:var(--ease-luxe) }
+.constellation{ animation-duration:2s; animation-timing-function:var(--ease-luxe) }
+
+/* — Curseur custom (overlay) — */
+.luxe-cursor{
+  position:fixed; top:0; left:0; width:8px; height:8px;
+  background:var(--terra); border-radius:50%;
+  pointer-events:none; z-index:9999; mix-blend-mode:multiply;
+  transform:translate(-50%,-50%);
+  transition:width 0.35s var(--ease-luxe), height 0.35s var(--ease-luxe), background 0.4s var(--ease-luxe), opacity 0.3s;
+}
+.luxe-cursor.hover{ width:48px; height:48px; background:rgba(217,119,87,0.22); mix-blend-mode:normal }
+.luxe-cursor.hidden{ opacity:0 }
+@media(hover:none),(max-width:760px){ .luxe-cursor{ display:none } }
+body{ cursor: default }
+a, button, .agent-node, .univ, .chat-chip, .chip, .porte:not(.soon), .tester-tab{ cursor:none }
+@media(hover:none),(max-width:760px){ a, button, .agent-node, .univ, .chat-chip, .chip, .porte:not(.soon), .tester-tab{ cursor:pointer } }
+
+/* — Sectionned dividers : filets éditoriaux fins — */
+section.claims, section.universes, section.passions, section.tester,
+section.funnel, section.heritage, section.beta{ position:relative }
+section.claims::before, section.universes::before, section.passions::before, section.tester::before,
+section.funnel::before, section.heritage::before, section.beta::before{
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:1px; height:48px; background:linear-gradient(180deg, transparent, var(--terra) 60%, transparent);
+  opacity:0.5;
+}
+
+/* — Refinement boutons : pad serré, weight 500, lettre-spacing micro — */
+.btn{ padding:15px 30px; font-weight:500; letter-spacing:0.014em; font-size:13.5px }
+
+/* — Mobile premium : préserver le hero, retirer asymétrie — */
+@media(max-width:1099px){
+  section.hero{ text-align:center; align-items:center }
+  .hero h1{ max-width:none }
+}
 </style>
 </head>
 <body>
@@ -930,7 +1072,26 @@ footer .no-push b{color:var(--gold-bright)}
 
 </main>
 
+<div class="luxe-cursor" id="luxeCursor"></div>
 <script>
+/* ─── Curseur luxe : point qui s'ouvre en cercle au-dessus des éléments interactifs ─── */
+(function initCursor(){
+  if(matchMedia('(hover:none)').matches || window.innerWidth < 760) return;
+  var c = document.getElementById('luxeCursor');
+  var x = window.innerWidth/2, y = window.innerHeight/2, tx = x, ty = y;
+  document.addEventListener('mousemove', function(e){ tx = e.clientX; ty = e.clientY; c.classList.remove('hidden'); });
+  document.addEventListener('mouseleave', function(){ c.classList.add('hidden'); });
+  function loop(){
+    x += (tx - x) * 0.22; y += (ty - y) * 0.22;
+    c.style.transform = 'translate('+x+'px,'+y+'px) translate(-50%,-50%)';
+    requestAnimationFrame(loop);
+  }
+  loop();
+  var hoverSel = 'a, button, .agent-node, .univ, .chat-chip, .chip, .porte:not(.soon), .tester-tab';
+  document.addEventListener('mouseover', function(e){ if(e.target.closest(hoverSel)) c.classList.add('hover'); });
+  document.addEventListener('mouseout', function(e){ if(e.target.closest(hoverSel)) c.classList.remove('hover'); });
+})();
+
 /* ─── Constellation : lignes radiales discrètes ─── */
 (function drawOrbits(){
   var svg = document.getElementById('orbit-lines');
