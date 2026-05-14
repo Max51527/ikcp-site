@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═══ SEO META — optimisé Family Office digitalisé ═══ -->
+<title>Family Office Augmenté · 100 % digital · Marcel IA — IKCP</title>
+<meta name="description" content="Le premier Family Office augmenté par intelligence artificielle souveraine en Ardèche. 12 univers patrimoniaux, cartographie automatique, conseil 24/7 par Marcel · Bêta privée 50 familles fondatrices · 290 €/mois.">
+<meta name="keywords" content="family office, family office digital, family office Ardèche, family office IA, conseil patrimonial premium, dirigeant entreprise familiale, transmission patrimoine, IKCP, Marcel agent IA patrimonial">
+<meta name="author" content="Maxime Juveneton — IKCP">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ikcp.eu/family-office.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ikcp.eu/family-office.html">
+<meta property="og:title" content="Family Office Augmenté · 100 % digital · IKCP">
+<meta property="og:description" content="Le premier Family Office augmenté par intelligence artificielle souveraine en Ardèche. 12 univers patrimoniaux, cartographie automatique, conseil 24/7. Bêta privée 50 familles fondatrices.">
+<meta property="og:image" content="https://ikcp.eu/og-family-office.jpg">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="IKCP — IKIGAÏ Conseil Patrimonial">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Family Office Augmenté · 100 % digital · IKCP">
+<meta name="twitter:description" content="Premier Family Office augmenté par IA souveraine en Ardèche. 12 univers · Marcel 24/7 · Bêta 50 familles · 290 €/mois.">
+
+<!-- Schema.org · Service + LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Family Office Augmenté",
+  "alternateName": "Marcel Family Office IKCP",
+  "provider": {
+    "@type": "FinancialService",
+    "name": "IKCP — IKIGAÏ Conseil Patrimonial",
+    "url": "https://ikcp.eu",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Saint-Marcel-lès-Annonay",
+      "postalCode": "07100",
+      "addressRegion": "Ardèche",
+      "addressCountry": "FR"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Maxime Juveneton",
+      "jobTitle": "Conseiller en Gestion de Patrimoine",
+      "identifier": "ORIAS 23001568"
+    },
+    "serviceArea": ["Lyon", "Annonay", "Megève", "France"],
+    "telephone": "+33667537979",
+    "email": "maxime@ikcp.fr"
+  },
+  "description": "Family Office digital augmenté par intelligence artificielle souveraine. 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Conçu pour dirigeants d'entreprise familiale.",
+  "areaServed": "FR",
+  "serviceType": "Family Office",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Dirigeants d'entreprise familiale, professions libérales, familles entrepreneuriales"
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Découverte gratuite",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "description": "Cartographie SIREN automatique + 1 observation patrimoniale offerte"
+    },
+    {
+      "@type": "Offer",
+      "name": "Family Office Augmenté",
+      "price": "290",
+      "priceCurrency": "EUR",
+      "priceValidUntil": "2027-12-31",
+      "description": "12 univers actifs · Marcel illimité · École NextGen · 1 RDV mensuel inclus · 6 mois offerts en Bêta"
+    },
+    {
+      "@type": "Offer",
+      "name": "Family Office Sur-mesure",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "description": "Sur devis · familles ≥ 5 M€"
+      },
+      "description": "Tout Augmenté + Univers Liaison externe + validation Maxime systématique"
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F;
+}
+html{scroll-behavior:smooth}
+html,body{background:var(--cream); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.65; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased; min-height:100vh}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION (cohérent index.html)
+═══════════════════════════════════════════════════════════ */
+nav.fo-nav{
+  background:rgba(250,250,248,0.96); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line); padding:14px 32px;
+  display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:0; z-index:100;
+}
+.fo-brand{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1; text-decoration:none}
+.fo-brand b{color:var(--gold); font-style:italic; font-weight:500}
+.fo-brand-sub{display:block; font-size:9.5px; letter-spacing:0.28em; color:var(--gold-deep); text-transform:uppercase; margin-top:5px; font-weight:600}
+.fo-back{display:inline-flex; align-items:center; gap:8px; color:var(--ink-mute); text-decoration:none; font-size:13.5px; font-weight:500; padding:8px 14px; border-radius:6px; transition:all 0.2s}
+.fo-back:hover{color:var(--navy); background:var(--cream-2)}
+
+/* ═══════════════════════════════════════════════════════════
+   BANDEAU PHASE BÊTA
+═══════════════════════════════════════════════════════════ */
+.beta-banner{
+  background:linear-gradient(90deg, var(--navy-deep) 0%, var(--navy) 50%, var(--navy-deep) 100%);
+  color:var(--gold-bright); padding:11px 32px; text-align:center;
+  font-size:12.5px; letter-spacing:0.04em; border-bottom:1px solid var(--gold);
+  position:relative; overflow:hidden;
+}
+.beta-banner::before{
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(226,200,150,0.18), transparent);
+  animation:shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer{0%{left:-100%}50%,100%{left:100%}}
+.beta-banner b{font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-weight:500; margin-right:4px}
+.beta-banner a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep); padding-bottom:1px; font-weight:600; margin-left:6px}
+.beta-banner a:hover{color:#fff}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO PRINCIPAL
+═══════════════════════════════════════════════════════════ */
+.hero{
+  background:linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+  padding:80px 32px 100px;
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px;
+  max-width:1280px; margin:0 auto; align-items:center;
+}
+@media (max-width:980px){.hero{grid-template-columns:1fr; padding:50px 24px 60px; gap:40px}}
+
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.28em; text-transform:uppercase;
+  color:var(--gold-deep); margin-bottom:24px; font-weight:600;
+  display:inline-flex; align-items:center; gap:12px;
+}
+.eyebrow::before{content:''; width:32px; height:1px; background:var(--gold)}
+.live-dot{display:inline-block; width:8px; height:8px; background:var(--ok); border-radius:50%; margin-right:6px; animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px, 5.4vw, 72px); line-height:1.05;
+  font-weight:500; letter-spacing:-0.022em; color:var(--navy);
+  margin-bottom:26px;
+}
+.hero h1 em{font-style:italic; color:var(--gold-deep)}
+
+.hero .lede{
+  font-size:18px; color:var(--ink-mute); line-height:1.7; max-width:560px;
+  margin-bottom:36px;
+}
+.hero .lede em{font-family:'Playfair Display',serif; font-style:italic; color:var(--ink); font-weight:500}
+
+.hero-actions{display:flex; align-items:center; gap:24px; flex-wrap:wrap}
+.btn-primary{
+  padding:15px 32px; background:var(--navy); color:var(--cream);
+  text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.06em;
+  border-radius:6px; transition:all 0.25s;
+  box-shadow:0 6px 18px rgba(27,42,74,0.18);
+}
+.btn-primary:hover{background:var(--navy-deep); transform:translateY(-2px); box-shadow:0 10px 24px rgba(27,42,74,0.28)}
+.btn-secondary{
+  color:var(--navy); text-decoration:none; font-size:13px; font-weight:600;
+  letter-spacing:0.04em; padding:14px 24px;
+  border:1.5px solid var(--gold-deep); border-radius:6px;
+  transition:all 0.25s;
+}
+.btn-secondary:hover{background:var(--gold-deep); color:var(--cream)}
+
+/* Hero card preuve */
+.hero-card{
+  background:var(--cream); border:1px solid var(--line-strong); border-radius:18px;
+  padding:30px 32px; box-shadow:0 24px 60px rgba(27,42,74,0.08);
+  position:relative;
+}
+.hero-card::before{
+  content:''; position:absolute; top:-1px; left:24px; right:24px; height:3px;
+  background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold));
+  border-radius:0 0 3px 3px;
+}
+.hero-card-label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.hero-card-title{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:12px}
+.hero-card-title em{color:var(--gold-deep); font-style:italic}
+.hero-card-desc{font-size:14px; color:var(--ink-mute); line-height:1.6; margin-bottom:18px}
+.hero-card-stats{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; padding-top:18px; border-top:1px dashed var(--line-strong)}
+.hero-stat-val{font-family:'Playfair Display',serif; font-size:24px; color:var(--gold-deep); font-weight:600; line-height:1; font-style:italic}
+.hero-stat-lbl{font-size:10.5px; color:var(--ink-faint); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; font-weight:600}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION INTRO DARK
+═══════════════════════════════════════════════════════════ */
+section.fo-intro{
+  background:var(--navy); padding:90px 32px; color:var(--cream);
+  border-top:6px solid var(--gold);
+}
+.fo-intro-wrap{max-width:1080px; margin:0 auto; text-align:center}
+.fo-intro-mark{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.4em; text-transform:uppercase;
+  color:var(--gold-bright); margin-bottom:24px; font-weight:600;
+}
+.fo-intro h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px, 4.6vw, 56px); line-height:1.06;
+  font-weight:500; letter-spacing:-0.02em; color:var(--cream);
+  margin-bottom:28px; max-width:880px; margin-left:auto; margin-right:auto;
+}
+.fo-intro h2 em{color:var(--gold-bright); font-style:italic}
+.fo-intro .lede{
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:19px; color:rgba(250,250,248,0.85); max-width:680px;
+  margin:0 auto 40px; line-height:1.55;
+}
+
+.fo-pillars{display:grid; grid-template-columns:repeat(4, 1fr); gap:0; max-width:920px; margin:50px auto 0; border-top:1px solid rgba(226,200,150,0.18); border-bottom:1px solid rgba(226,200,150,0.18); padding:32px 0}
+@media (max-width:720px){.fo-pillars{grid-template-columns:repeat(2, 1fr); gap:18px 0}}
+.fo-pillar{text-align:center; padding:0 18px; border-right:1px solid rgba(226,200,150,0.14)}
+.fo-pillar:last-child{border-right:none}
+.fo-pillar-num{font-family:'Playfair Display',serif; font-style:italic; font-size:30px; color:var(--gold-bright); line-height:1; font-weight:500}
+.fo-pillar-num i{font-style:normal; font-size:18px; opacity:0.7}
+.fo-pillar-lbl{font-family:'Playfair Display',serif; font-style:italic; font-size:15px; color:var(--cream); margin-top:6px}
+
+/* ═══════════════════════════════════════════════════════════
+   12 UNIVERS GRID
+═══════════════════════════════════════════════════════════ */
+section.univers{padding:100px 32px; max-width:1280px; margin:0 auto}
+.section-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:14px; font-weight:600}
+.section-mark::before{content:'§ '; opacity:0.5}
+.section h2, section.univers h2{font-family:'Playfair Display',serif; font-size:clamp(32px, 4.4vw, 50px); line-height:1.08; color:var(--navy); font-weight:500; letter-spacing:-0.02em; margin-bottom:18px}
+.section h2 em, section.univers h2 em{color:var(--gold-deep); font-style:italic}
+.section-deck{font-size:16px; color:var(--ink-mute); line-height:1.7; max-width:720px; margin-bottom:50px}
+.section-deck em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+
+.univ-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:14px}
+@media (max-width:1080px){.univ-grid{grid-template-columns:repeat(3, 1fr)}}
+@media (max-width:680px){.univ-grid{grid-template-columns:repeat(2, 1fr)}}
+
+.univ-card{background:var(--cream); border:1px solid var(--line-strong); border-radius:14px; padding:22px 20px 18px; cursor:pointer; transition:all 0.25s; position:relative; overflow:hidden}
+.univ-card:hover{transform:translateY(-3px); box-shadow:0 12px 32px rgba(27,42,74,0.08); border-color:var(--gold)}
+.univ-card::before{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--gold-bright)); opacity:0; transition:opacity 0.25s}
+.univ-card:hover::before{opacity:1}
+.univ-ico{font-size:24px; line-height:1; margin-bottom:12px}
+.univ-name{font-family:'Playfair Display',serif; font-size:17px; color:var(--navy); font-weight:600; margin-bottom:4px; line-height:1.2}
+.univ-tagline{font-size:11.5px; color:var(--ink-faint); line-height:1.45; letter-spacing:0.01em}
+.univ-status{display:inline-block; margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.18em; padding:3px 7px; border-radius:30px; text-transform:uppercase; font-weight:700}
+.univ-status.live{background:rgba(63,122,63,0.12); color:var(--ok)}
+.univ-status.demo{background:rgba(201,169,110,0.18); color:var(--gold-deep)}
+
+/* ═══════════════════════════════════════════════════════════
+   3 TIERS TARIFAIRES
+═══════════════════════════════════════════════════════════ */
+section.tarifs{padding:100px 32px; max-width:1280px; margin:0 auto; background:var(--cream-2)}
+.tarifs-head{text-align:center; margin-bottom:60px; max-width:740px; margin-left:auto; margin-right:auto}
+.tarifs-head h2{font-family:'Playfair Display',serif; font-size:clamp(32px, 4.4vw, 50px); line-height:1.08; color:var(--navy); font-weight:500; letter-spacing:-0.02em; margin-bottom:18px}
+.tarifs-head h2 em{color:var(--gold-deep); font-style:italic}
+.tarifs-head p{font-size:16px; color:var(--ink-mute); line-height:1.7}
+.tarifs-head p em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+
+.tiers-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px}
+@media (max-width:980px){.tiers-grid{grid-template-columns:1fr}}
+
+.tier{background:var(--cream); border:1px solid var(--line-strong); border-radius:18px; padding:38px 32px; position:relative; transition:all 0.3s}
+.tier:hover{transform:translateY(-4px); box-shadow:0 18px 50px rgba(27,42,74,0.10); border-color:var(--gold)}
+.tier.recommended{background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); border:2px solid var(--gold); transform:scale(1.03)}
+.tier.recommended:hover{transform:scale(1.03) translateY(-4px)}
+.tier.recommended::before{content:'★ Recommandé · Phase Bêta'; position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy); padding:5px 16px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; font-weight:700; text-transform:uppercase; white-space:nowrap}
+.tier-icon{font-size:32px; line-height:1; margin-bottom:18px}
+.tier-name{font-family:'Playfair Display',serif; font-size:26px; font-weight:600; color:var(--navy); margin-bottom:4px; letter-spacing:-0.005em}
+.tier.recommended .tier-name{color:var(--cream)}
+.tier-name em{font-style:italic; color:var(--gold-deep)}
+.tier.recommended .tier-name em{color:var(--gold-bright)}
+.tier-tagline{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:22px}
+.tier.recommended .tier-tagline{color:var(--gold-bright)}
+.tier-price{margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--line-strong)}
+.tier.recommended .tier-price{border-color:rgba(226,200,150,0.2)}
+.tier-price-num{font-family:'Playfair Display',serif; font-size:46px; color:var(--navy); font-weight:500; line-height:1; letter-spacing:-0.025em}
+.tier.recommended .tier-price-num{color:var(--cream)}
+.tier-price-num em{font-style:italic; color:var(--gold-deep)}
+.tier.recommended .tier-price-num em{color:var(--gold-bright)}
+.tier-price-num .small{font-size:18px; font-style:italic; font-weight:400; color:var(--ink-faint)}
+.tier.recommended .tier-price-num .small{color:rgba(250,250,248,0.65)}
+.tier-price-note{font-size:12px; color:var(--ink-faint); margin-top:8px; font-style:italic}
+.tier.recommended .tier-price-note{color:rgba(250,250,248,0.7)}
+.tier-feats{display:flex; flex-direction:column; gap:0; margin-bottom:30px}
+.tier-feat{padding:10px 0; font-size:14px; color:var(--ink-mute); line-height:1.5; display:flex; gap:10px; align-items:flex-start; border-bottom:1px dotted var(--line-strong)}
+.tier-feat:last-child{border-bottom:none}
+.tier.recommended .tier-feat{color:rgba(250,250,248,0.82); border-color:rgba(226,200,150,0.12)}
+.tier-feat b{color:var(--navy); font-weight:600}
+.tier.recommended .tier-feat b{color:var(--cream)}
+.tier-feat-ico{flex-shrink:0; width:18px; height:18px; border-radius:50%; background:var(--cream-2); color:var(--gold-deep); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px}
+.tier.recommended .tier-feat-ico{background:var(--gold); color:var(--navy)}
+.tier-cta{display:block; padding:13px 24px; text-align:center; text-decoration:none; font-size:12.5px; font-weight:600; letter-spacing:0.08em; border-radius:6px; transition:all 0.25s}
+.tier-cta-light{background:transparent; color:var(--navy); border:1.5px solid var(--navy)}
+.tier-cta-light:hover{background:var(--navy); color:var(--cream)}
+.tier-cta-recommended{background:var(--gold); color:var(--navy); border:1.5px solid var(--gold); font-weight:700}
+.tier-cta-recommended:hover{background:var(--gold-bright)}
+.tier-cta-dark{background:transparent; color:var(--gold-bright); border:1.5px solid var(--gold-bright)}
+.tier-cta-dark:hover{background:var(--gold-bright); color:var(--navy)}
+
+/* ═══════════════════════════════════════════════════════════
+   FAQ SEO (boost search engines)
+═══════════════════════════════════════════════════════════ */
+section.faq{padding:100px 32px; max-width:920px; margin:0 auto}
+.faq h2{text-align:center}
+.faq-item{background:var(--cream); border:1px solid var(--line); border-radius:14px; padding:24px 28px; margin-bottom:14px; transition:border-color 0.2s}
+.faq-item:hover{border-color:var(--gold)}
+.faq-q{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; line-height:1.3; margin-bottom:10px}
+.faq-a{font-size:14.5px; color:var(--ink-mute); line-height:1.7}
+.faq-a b{color:var(--navy); font-weight:600}
+.faq-a em{font-style:italic; color:var(--gold-deep); font-family:'Playfair Display',serif; font-weight:500}
+
+/* ═══════════════════════════════════════════════════════════
+   CTA FINAL
+═══════════════════════════════════════════════════════════ */
+section.final-cta{padding:100px 32px; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); text-align:center}
+.final-cta h2{color:var(--cream); font-family:'Playfair Display',serif; font-size:clamp(34px, 4.6vw, 52px); font-weight:500; letter-spacing:-0.02em; line-height:1.08; max-width:760px; margin:0 auto 18px}
+.final-cta h2 em{color:var(--gold-bright); font-style:italic}
+.final-cta p{color:rgba(250,250,248,0.78); font-size:16px; max-width:580px; margin:0 auto 36px; line-height:1.7; font-style:italic; font-family:'Playfair Display',serif}
+.final-cta-btn{display:inline-block; padding:18px 42px; background:var(--gold); color:var(--navy); text-decoration:none; font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; border-radius:8px; box-shadow:0 8px 22px rgba(201,169,110,0.30); transition:all 0.25s}
+.final-cta-btn:hover{background:var(--gold-bright); transform:translateY(-2px)}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════ */
+footer.fo{padding:50px 32px; background:var(--ink); color:rgba(250,250,248,0.7); text-align:center}
+footer.fo p{font-size:11.5px; letter-spacing:0.04em; line-height:1.9}
+footer.fo a{color:var(--gold-bright); text-decoration:none}
+footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic}
+
+@media (max-width:760px){
+  nav.fo-nav{padding:12px 18px}
+  .beta-banner{font-size:11px; padding:9px 16px}
+  section.fo-intro, section.tarifs, section.faq{padding:60px 20px}
+  .tier.recommended{transform:scale(1)}
+  .tier.recommended:hover{transform:translateY(-4px)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="fo-nav">
+  <a href="/" class="fo-brand">
+    IKCP<b>.</b>
+    <span class="fo-brand-sub">IKIGAÏ Conseil Patrimonial</span>
+  </a>
+  <a href="/" class="fo-back">← Retour au cabinet</a>
+</nav>
+
+<!-- ═══ BANDEAU PHASE BÊTA ═══ -->
+<div class="beta-banner">
+  <b>Nouveauté.</b> Le <b>Family Office augmenté par IA souveraine</b> est en phase Bêta privée — 50 familles dirigeantes sélectionnées sur le S2 2026.
+  <a href="#beta">Demander mon accès →</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div>
+    <div class="eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % digital · 100 % France</div>
+    <h1>Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
+    <p class="lede">
+      Le <em>premier Family Office Ardéchois</em> augmenté par intelligence artificielle souveraine. Douze univers patrimoniaux orchestrés par <em>Marcel</em>, votre agent IA dédié. Conçu pour dirigeant(e)s d'entreprise familiale.
+    </p>
+    <div class="hero-actions">
+      <a href="#beta" class="btn-primary">Demander un accès Bêta</a>
+      <a href="#univers" class="btn-secondary">Voir les 12 univers →</a>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <div class="hero-card-label">★ Démarrage instantané</div>
+    <div class="hero-card-title">Donnez votre nom.<br><em>On vous rend votre patrimoine.</em></div>
+    <p class="hero-card-desc">Cartographie automatique de vos entités, biens et obligations. Hyper-personnalisé, 100 % français, accessible dès <em>290 €/mois</em>.</p>
+    <div class="hero-card-stats">
+      <div><div class="hero-stat-val">12</div><div class="hero-stat-lbl">Univers</div></div>
+      <div><div class="hero-stat-val">50</div><div class="hero-stat-lbl">Bêta familles</div></div>
+      <div><div class="hero-stat-val">100<small style="font-size:13px">%</small></div><div class="hero-stat-lbl">Souverain FR</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INTRO DARK ═══ -->
+<section class="fo-intro" id="fo">
+  <div class="fo-intro-wrap">
+    <div class="fo-intro-mark">— Le Family Office IKCP en bêta</div>
+    <h2>Une question. <em>Un univers.</em><br>Une réponse exécutée.</h2>
+    <p class="lede">
+      Pour les dirigeant(e)s d'entreprise familiale et leurs enfants. Vous demandez, l'IA exécute, Maxime arbitre. <em>Douze univers</em> branchés sur APIs réelles — patrimoine, immobilier, fiscalité, marchés, art, voyage, transmission, philanthropie, formation, administration, reporting.
+    </p>
+    <div class="fo-pillars">
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Digitalisé</div></div>
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Automatisé</div></div>
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Sur-mesure</div></div>
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Accessible</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 12 UNIVERS ═══ -->
+<section class="univers" id="univers">
+  <div class="section-mark">Demandez-moi · douze univers</div>
+  <h2>Une seule interface. <em>Douze univers branchés sur APIs réelles.</em></h2>
+  <p class="section-deck">Plus de jargon, plus de noms d'agents. <em>Vous demandez, l'IA exécute.</em> Patrimoine, immobilier, fiscalité, marchés, art, voyage, transmission — chaque univers est branché sur des données en temps réel (registres officiels, DVF, marchés boursiers, cotations art).</p>
+
+  <div class="univ-grid">
+    <div class="univ-card"><div class="univ-ico">💼</div><div class="univ-name">Patrimoine</div><div class="univ-tagline">Bilan patrimonial · cartographie d'entreprise · sources officielles</div><span class="univ-status live">● Live</span></div>
+    <div class="univ-card"><div class="univ-ico">🏠</div><div class="univ-name">Immobilier</div><div class="univ-tagline">Prix au m² par CP · DVF live · cartographie</div><span class="univ-status live">● Live</span></div>
+    <div class="univ-card"><div class="univ-ico">🏛</div><div class="univ-name">Fiscalité</div><div class="univ-tagline">IR · IFI · barème 2026 · arbitrages</div><span class="univ-status live">● Live</span></div>
+    <div class="univ-card"><div class="univ-ico">📈</div><div class="univ-name">Marchés</div><div class="univ-tagline">CAC 40 · indices · taux · arbitrage allocation</div><span class="univ-status demo">○ Sprint 1</span></div>
+    <div class="univ-card"><div class="univ-ico">🎨</div><div class="univ-name">Art</div><div class="univ-tagline">Côte d'artiste · enchères · authentification</div><span class="univ-status demo">○ Sprint 3</span></div>
+    <div class="univ-card"><div class="univ-ico">💎</div><div class="univ-name">Voyage</div><div class="univ-tagline">Conciergerie hôtel · jet · expériences sur-mesure</div><span class="univ-status demo">○ Sprint 2</span></div>
+    <div class="univ-card"><div class="univ-ico">🪴</div><div class="univ-name">Private Equity</div><div class="univ-tagline">Deal flow · co-investissement · scoring</div><span class="univ-status demo">○ Sprint 3</span></div>
+    <div class="univ-card"><div class="univ-ico">🌱</div><div class="univ-name">Transmission</div><div class="univ-tagline">Dutreil · donation · succession · simulateur</div><span class="univ-status live">● Live</span></div>
+    <div class="univ-card"><div class="univ-ico">🤲</div><div class="univ-name">Philanthropie</div><div class="univ-tagline">Don défiscalisé IR/IFI · fondation · mécénat</div><span class="univ-status live">● Live</span></div>
+    <div class="univ-card"><div class="univ-ico">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-tagline">6 modules pour vos enfants · sur vos chiffres réels</div><span class="univ-status demo">○ Sprint 2</span></div>
+    <div class="univ-card"><div class="univ-ico">📋</div><div class="univ-name">Administration</div><div class="univ-tagline">Échéances · courriers · signature eIDAS</div><span class="univ-status demo">○ Sprint 2</span></div>
+    <div class="univ-card"><div class="univ-ico">📊</div><div class="univ-name">Reporting</div><div class="univ-tagline">Synthèse trimestrielle PDF · alertes · KPIs</div><span class="univ-status demo">○ Sprint 2</span></div>
+  </div>
+</section>
+
+<!-- ═══ TARIFS ═══ -->
+<section class="tarifs">
+  <div class="tarifs-head">
+    <div class="section-mark">Tarification</div>
+    <h2>Trois <em>portes d'entrée</em>.</h2>
+    <p>Du test gratuit à l'accompagnement sur-mesure. <em>Pendant la Bêta, le tier mensuel est offert 6 mois aux 50 familles fondatrices.</em></p>
+  </div>
+
+  <div class="tiers-grid">
+
+    <div class="tier">
+      <div class="tier-icon">⚬</div>
+      <div class="tier-name">Découverte</div>
+      <div class="tier-tagline">Aperçu · sans engagement</div>
+      <div class="tier-price">
+        <div class="tier-price-num"><em>0 €</em></div>
+        <div class="tier-price-note">— Aucune carte bancaire</div>
+      </div>
+      <div class="tier-feats">
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Cartographie SIREN</b> automatique gratuite</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>1 observation</b> patrimoniale offerte</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Accès aux <b>simulateurs</b> ikcp.eu</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Newsletter <b>UPPERCUT PATRIMOINE</b></span></div>
+      </div>
+      <a href="#beta" class="tier-cta tier-cta-light">Tester gratuitement</a>
+    </div>
+
+    <div class="tier recommended">
+      <div class="tier-icon" style="color:var(--gold-bright)">⬡</div>
+      <div class="tier-name">Family Office <em>Augmenté</em></div>
+      <div class="tier-tagline">Paiement mensuel · résiliable</div>
+      <div class="tier-price">
+        <div class="tier-price-num"><em>290 €</em> <span class="small">/ mois</span></div>
+        <div class="tier-price-note">— Sans engagement · résiliable à tout moment</div>
+      </div>
+      <div class="tier-feats">
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>12 univers ouverts</b> · branchés APIs temps réel</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Marcel illimité</b> · mémoire 90 jours</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Patrimoine</b> · cartographie auto multi-entités</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Reporting</b> · synthèse trimestrielle PDF</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Formation NextGen</b> · 6 modules pour vos enfants</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Mail prioritaire à Maxime · 1 RDV mensuel inclus</span></div>
+      </div>
+      <a href="#beta" class="tier-cta tier-cta-recommended">Demander un accès Bêta →</a>
+    </div>
+
+    <div class="tier">
+      <div class="tier-icon">⬢</div>
+      <div class="tier-name">Family Office <em>Sur-mesure</em></div>
+      <div class="tier-tagline">Bespoke · sur recommandation</div>
+      <div class="tier-price">
+        <div class="tier-price-num"><em>Sur devis</em></div>
+        <div class="tier-price-note">— Familles ≥ 5 M€ · multi-business</div>
+      </div>
+      <div class="tier-feats">
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Tout Augmenté</b> · sans limite</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Liaison externe</b> · notaires, avocats, banquiers</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Espace dossiers chiffré · <b>archivage eIDAS</b> 10 ans</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Validation Maxime</b> systématique sur livrables</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>RDV mensuel garanti · Calendly prioritaire</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Conciergerie ad-hoc · multi-entités · international</span></div>
+      </div>
+      <a href="#beta" class="tier-cta tier-cta-light">Candidater</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ FAQ SEO ═══ -->
+<section class="faq">
+  <div class="section-mark" style="text-align:center">Questions fréquentes</div>
+  <h2 style="text-align:center; margin-bottom:50px">Tout ce qu'il faut savoir sur le <em>Family Office augmenté</em>.</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">Qu'est-ce qu'un Family Office augmenté ?</div>
+    <div class="faq-a">Un <b>Family Office</b> est traditionnellement une structure réservée aux grandes fortunes (≥ 50 M€) qui centralise la gestion patrimoniale d'une famille. Le Family Office <b>augmenté par IA souveraine</b> d'IKCP démocratise cette approche : <em>douze univers patrimoniaux</em> (immobilier, fiscalité, transmission, marchés, art, voyage…) orchestrés par Marcel, votre agent IA dédié. Accessible à partir de 290 €/mois, soit 4 fois moins cher qu'un CGP traditionnel pour 12 fois plus de fonctionnalités.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Pourquoi un Family Office en Ardèche ?</div>
+    <div class="faq-a">IKCP est basé à <b>Saint-Marcel-lès-Annonay (07)</b>, berceau historique de la première montgolfière (Joseph et Étienne Montgolfier, 1783). Notre cabinet revendique cet <em>héritage symbolique de l'élévation patrimoniale</em>. Le siège ardéchois nous permet d'allier <b>indépendance, souveraineté française</b> et accessibilité (Lyon · Annonay · Megève + 100 % digital).</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Mes données patrimoniales restent-elles en France ?</div>
+    <div class="faq-a">Oui, <em>100 % en France</em>. Hébergement Cloudflare zone EU (Paris CDG), base de données SQLite à Paris, archivage eIDAS qualifié 10 ans. Aucun service américain dans notre pipeline sensible. Conformité <b>RGPD souveraine stricte</b>. Vous gardez le contrôle de vos données — droit à l'oubli en 1 clic.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Qui est Marcel, l'agent IA patrimonial ?</div>
+    <div class="faq-a"><b>Marcel</b> est votre interlocuteur unique. Il orchestre les douze univers en coulisses, calcule (IR, IFI, Dutreil, donation), récupère les données officielles (RNE, DVF, BOFIP), et synthétise. Il <em>termine toujours par une question</em> et n'émet jamais de recommandation produit (conformité MIF II strict). Pour le conseil personnalisé sur lettre de mission, Maxime Juveneton (CIF — CNCEF Patrimoine, ORIAS 23001568) prend le relais.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Comment fonctionne la phase Bêta ?</div>
+    <div class="faq-a">Nous ouvrons le Family Office Augmenté à <b>50 familles dirigeantes fondatrices</b> sur le second semestre 2026. Sélection par invitation (SIREN + KBIS récent + code d'accès). En échange d'un retour mensuel sur l'expérience, ces 50 familles bénéficient de <em>6 mois Premium offerts</em> et de l'accès au <em>Cercle Fondateurs</em> (co-création des prochains univers).</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">À qui s'adresse le Family Office Augmenté ?</div>
+    <div class="faq-a">Aux <b>dirigeant(e)s d'entreprise familiale</b>, professions libérales, et familles entrepreneuriales avec un patrimoine entre 500 k€ et 50 M€. Le tier <em>Family Office Augmenté</em> (290 €/mois) cible les patrimoines 500 k€ à 5 M€. Le tier <em>Sur-mesure</em> est réservé aux familles ≥ 5 M€ multi-business.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Comment accéder au Family Office en Bêta ?</div>
+    <div class="faq-a">Trois options : (1) <b>Saisir votre SIREN</b> sur la page Découverte pour obtenir une cartographie gratuite + 1 observation, (2) <b>Demander un code d'invitation</b> par email à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> (réponse personnelle sous 48h), (3) <b>Candidater au Cercle Fondateurs</b> en validant les 3 étapes (SIREN + KBIS récent + code).</div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="final-cta" id="beta">
+  <h2>Cinquante familles dirigeantes.<br><em>Pas une de plus.</em></h2>
+  <p>
+    Nous ouvrons la phase Bêta à 50 familles d'entrepreneurs sélectionnées sur le S2 2026 — accès complet gratuit pendant 6 mois, en échange d'un retour mensuel.
+  </p>
+  <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27acc%C3%A8s%20B%C3%AAta%20Family%20Office%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20un%20acc%C3%A8s%20%C3%A0%20la%20phase%20B%C3%AAta%20du%20Family%20Office%20Augment%C3%A9.%0D%0A%0D%0ASIREN%20de%20ma%20soci%C3%A9t%C3%A9%20%3A%20%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0ABien%20cordialement" class="final-cta-btn">Demander mon accès Bêta →</a>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="fo">
+  <p>
+    <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+  <p class="legal">
+    Site créé par Maxime Juveneton · Tous droits réservés · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)<br>
+    Marcel ne fournit pas de conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier — un conseil patrimonial complet nécessite une lettre de mission.
+  </p>
+</footer>
+
+<!-- ═══ Widget Marcel (médaillon FAB visible sur cette page) ═══ -->
+<script src="/chatbot-widget.js?v=19" defer></script>
+
+<!-- ═══ Schema.org FAQ pour SEO ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Qu'est-ce qu'un Family Office augmenté ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Un Family Office est traditionnellement une structure réservée aux grandes fortunes qui centralise la gestion patrimoniale. Le Family Office augmenté par IA souveraine d'IKCP démocratise cette approche : 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Accessible à partir de 290 €/mois."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mes données patrimoniales restent-elles en France ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, 100% en France. Hébergement Cloudflare zone EU (Paris CDG), base de données à Paris, archivage eIDAS qualifié 10 ans. Aucun service américain dans le pipeline sensible. RGPD souveraine stricte."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qui est Marcel, l'agent IA patrimonial ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Marcel est votre interlocuteur unique. Il orchestre les 12 univers en coulisses, calcule IR/IFI/Dutreil, récupère les données officielles, synthétise. Il termine toujours par une question et n'émet jamais de recommandation produit (MIF II strict)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment fonctionne la phase Bêta du Family Office IKCP ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le Family Office Augmenté ouvre à 50 familles dirigeantes fondatrices au S2 2026. Sélection par invitation (SIREN + KBIS récent + code). 6 mois Premium offerts en échange d'un retour mensuel."
+      }
+    }
+  ]
+}
+</script>
+
+</body>
+</html>
