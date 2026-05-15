@@ -214,11 +214,10 @@ export default {
             },
           ],
           // Extended thinking : Opus reflechit avant de repondre sur les croisements
-          // multi-dispositifs (Dutreil + donation + apport-cession). Budget 2k tokens.
-          thinking: {
-            type: 'enabled',
-            budget_tokens: 2000,
-          },
+          // multi-dispositifs (Dutreil + donation + apport-cession).
+          // Nouvelle API 2026-05 : type: adaptive + output_config.effort
+          thinking: { type: 'adaptive' },
+          output_config: { effort: 'medium' },
           messages: [{ role: 'user', content: userContent }],
         }),
       });

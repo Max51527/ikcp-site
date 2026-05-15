@@ -324,11 +324,9 @@ export default {
           // Opus 4.7 réfléchit explicitement avant de répondre sur les
           // croisements multi-articles CGI + jurisprudence. Qualité ++ sur
           // questions complexes (apport-cession + Dutreil + holding animatrice).
-          // Budget 2000 tokens de raisonnement interne.
-          thinking: {
-            type: 'enabled',
-            budget_tokens: 2000,
-          },
+          // Nouvelle API 2026-05 : type: adaptive + output_config.effort
+          thinking: { type: 'adaptive' },
+          output_config: { effort: 'medium' },
           messages: [{ role: 'user', content: userContent }],
         }),
       });
