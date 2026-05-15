@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Épuré (Proposition D)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#FAF7F0;
+  --ink:#1A1814;
+  --mute:#6B655A;
+  --accent:#C24722;
+  --line:rgba(26,24,20,0.10);
+}
+html,body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Inter',sans-serif;font-weight:400;font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"kern" 1,"liga" 1,"ss01" 1;
+}
+html{scroll-behavior:smooth}
+
+/* ─── NAV minimale ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  padding:22px 40px;
+  background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--line);
+}
+nav .brand{font-family:'Fraunces',serif;font-size:22px;font-weight:500;letter-spacing:-0.005em}
+nav .brand span{color:var(--accent);font-style:italic}
+nav .meta{font-size:12px;color:var(--mute);letter-spacing:0.04em}
+
+/* ─── HERO ─── */
+section.hero{
+  min-height:100vh;
+  padding:160px 40px 80px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+}
+.hero .label{
+  font-size:11.5px;letter-spacing:0.36em;color:var(--accent);
+  text-transform:uppercase;font-weight:600;margin-bottom:28px;
+}
+.hero h1{
+  font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;
+  font-size:clamp(48px,7vw,84px);line-height:1.05;
+  font-weight:400;letter-spacing:-0.025em;color:var(--ink);
+  margin-bottom:24px;max-width:880px;
+}
+.hero h1 em{font-style:italic;color:var(--accent);font-weight:400}
+.hero p.subtitle{
+  font-size:20px;color:var(--mute);max-width:580px;margin:0 auto 48px;
+  line-height:1.55;
+}
+
+/* SIREN — gros et clair, au centre */
+.siren-form{
+  width:100%;max-width:520px;margin:0 auto 24px;
+  display:flex;align-items:stretch;
+  border-bottom:2px solid var(--ink);
+  transition:border-color 0.3s;
+}
+.siren-form:focus-within{border-bottom-color:var(--accent)}
+.siren-form input{
+  flex:1;
+  background:transparent;border:none;outline:none;
+  font-family:'Fraunces',serif;font-size:28px;font-weight:400;
+  padding:14px 0;color:var(--ink);
+  letter-spacing:-0.005em;
+}
+.siren-form input::placeholder{color:var(--mute);opacity:0.5}
+.siren-form button{
+  background:transparent;border:none;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  color:var(--accent);cursor:pointer;
+  padding:14px 0 14px 20px;letter-spacing:0.02em;
+  transition:color 0.3s;
+}
+.siren-form button:hover{color:var(--ink)}
+.siren-form button::after{content:' →';margin-left:6px}
+
+.siren-help{
+  font-size:13px;color:var(--mute);font-style:italic;
+}
+.siren-help a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* Triptyque hyper sobre */
+.triptyque{
+  margin-top:64px;display:flex;align-items:center;gap:36px;
+  font-size:13px;letter-spacing:0.18em;color:var(--mute);
+  text-transform:uppercase;font-weight:500;
+}
+.triptyque b{color:var(--ink);font-weight:600}
+.triptyque .sep{width:4px;height:4px;border-radius:50%;background:var(--accent)}
+@media(max-width:680px){
+  .triptyque{flex-direction:column;gap:14px}
+  .triptyque .sep{display:none}
+}
+
+/* ─── SERVICES ─── */
+section.services{
+  padding:120px 40px;
+  border-top:1px solid var(--line);
+}
+.section-title{
+  max-width:760px;margin:0 auto 64px;text-align:center;
+}
+.section-title .label{
+  font-size:11.5px;letter-spacing:0.36em;color:var(--accent);
+  text-transform:uppercase;font-weight:600;margin-bottom:18px;display:inline-block;
+}
+.section-title h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(32px,4.5vw,52px);line-height:1.1;
+  font-weight:400;letter-spacing:-0.022em;color:var(--ink);
+}
+.section-title h2 em{font-style:italic;color:var(--accent)}
+
+.services-list{
+  max-width:780px;margin:0 auto;
+}
+.svc{
+  padding:36px 0;
+  border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:60px 1fr auto;gap:32px;align-items:baseline;
+}
+.svc:last-child{border-bottom:none}
+.svc-num{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:32px;color:var(--accent);font-weight:400;
+  line-height:1;
+}
+.svc h3{
+  font-family:'Fraunces',serif;
+  font-size:24px;font-weight:500;line-height:1.2;
+  margin-bottom:6px;letter-spacing:-0.012em;
+}
+.svc p{
+  font-size:15.5px;color:var(--mute);line-height:1.6;
+  max-width:520px;
+}
+.svc-status{
+  font-size:11px;letter-spacing:0.22em;color:var(--accent);
+  text-transform:uppercase;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+.svc-status::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 0 3px rgba(194,71,34,0.18);
+}
+@media(max-width:680px){
+  .svc{grid-template-columns:40px 1fr;gap:20px}
+  .svc-num{font-size:24px}
+  .svc h3{font-size:20px}
+  .svc-status{grid-column:2;margin-top:8px}
+}
+
+/* ─── BÊTA ─── */
+section.beta{
+  padding:140px 40px;
+  background:var(--ink);color:var(--bg);
+  text-align:center;
+}
+.beta .label{
+  font-size:11.5px;letter-spacing:0.36em;color:#D4A878;
+  text-transform:uppercase;font-weight:600;margin-bottom:24px;display:inline-block;
+}
+.beta h2{
+  font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;
+  font-size:clamp(36px,5vw,60px);line-height:1.1;
+  font-weight:400;letter-spacing:-0.025em;
+  margin-bottom:20px;
+}
+.beta h2 em{font-style:italic;color:#D4A878}
+.beta .nums{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:18px;color:rgba(250,247,240,0.6);
+  margin-bottom:40px;letter-spacing:0.02em;
+}
+.beta .nums b{color:#D4A878;font-style:normal;font-weight:500}
+.beta .cta{
+  display:inline-block;padding:18px 38px;
+  background:#D4A878;color:var(--ink);
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  text-decoration:none;letter-spacing:0.04em;
+  transition:all 0.3s;
+}
+.beta .cta:hover{background:#E6BC91;transform:translateY(-2px)}
+.beta .note{
+  margin-top:30px;font-size:13px;color:rgba(250,247,240,0.5);
+  font-style:italic;letter-spacing:0.02em;
+}
+
+/* ─── FOOTER ─── */
+footer{
+  padding:40px;background:var(--bg);
+  text-align:center;font-size:12px;color:var(--mute);
+  letter-spacing:0.05em;line-height:1.8;
+}
+footer b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">IKCP<span>.</span></div>
+  <div class="meta">Family Office augmenté · ORIAS 23001568</div>
+</nav>
+
+<!-- HERO ─────────────────────────────────────── -->
+<section class="hero">
+  <div class="label">◆ Bêta privée sur invitation</div>
+  <h1>Une porte. Une équipe.<br>Votre patrimoine, <em>cartographié.</em></h1>
+  <p class="subtitle">Saisissez votre SIREN. Marcel et son équipe identifient votre société en 30 secondes — et vous remettent un premier point d'attention patrimonial.</p>
+
+  <form class="siren-form" onsubmit="return goSiren(event)">
+    <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN" autocomplete="off">
+    <button type="submit">Activer Marcel</button>
+  </form>
+  <p class="siren-help">Sans inscription · <a href="#beta">Pas de société ?</a></p>
+
+  <div class="triptyque">
+    <span><b>100 %</b> Digital</span>
+    <span class="sep"></span>
+    <span><b>100 %</b> Automatisé</span>
+    <span class="sep"></span>
+    <span><em style="font-family:'Fraunces',serif;font-style:italic;color:var(--ink);text-transform:none;letter-spacing:0;font-size:15px;font-weight:500">Sans oublier l'humain</em></span>
+  </div>
+</section>
+
+<!-- SERVICES ─────────────────────────────────── -->
+<section class="services">
+  <div class="section-title">
+    <div class="label">◆ Six services opérationnels</div>
+    <h2>Tout ce qui s'affiche ici,<br><em>vous l'utilisez dès aujourd'hui.</em></h2>
+  </div>
+
+  <div class="services-list">
+    <article class="svc">
+      <div class="svc-num">01</div>
+      <div>
+        <h3>Cartographie patrimoniale</h3>
+        <p>SIREN → société identifiée en 30 secondes. Sources officielles françaises.</p>
+      </div>
+      <div class="svc-status">Live</div>
+    </article>
+
+    <article class="svc">
+      <div class="svc-num">02</div>
+      <div>
+        <h3>Marcel &amp; son équipe</h3>
+        <p>Posez votre question. Réponse sourcée en moins de 5 secondes, 24 h sur 24.</p>
+      </div>
+      <div class="svc-status">Live</div>
+    </article>
+
+    <article class="svc">
+      <div class="svc-num">03</div>
+      <div>
+        <h3>Fiscalité 2026</h3>
+        <p>IR, IFI, succession, donation, Pacte Dutreil. Calculs conformes à la Loi de Finances 2026.</p>
+      </div>
+      <div class="svc-status">Live</div>
+    </article>
+
+    <article class="svc">
+      <div class="svc-num">04</div>
+      <div>
+        <h3>Audit MIF II souverain</h3>
+        <p>Chaque échange tracé à Paris, conservé 10 ans. Accès seulement sur votre demande.</p>
+      </div>
+      <div class="svc-status">Live</div>
+    </article>
+
+    <article class="svc">
+      <div class="svc-num">05</div>
+      <div>
+        <h3>Veille collectionneur</h3>
+        <p>Scan quotidien de vos marchés — montres, voitures, vins. Alertes ciblées.</p>
+      </div>
+      <div class="svc-status">Live</div>
+    </article>
+
+    <article class="svc">
+      <div class="svc-num">06</div>
+      <div>
+        <h3>Application installable</h3>
+        <p>iOS, Android, navigateur. Un tap d'installation. Hors App Store. Souveraine.</p>
+      </div>
+      <div class="svc-status">Live</div>
+    </article>
+  </div>
+</section>
+
+<!-- BÊTA ─────────────────────────────────────── -->
+<section class="beta" id="beta">
+  <div class="label">◆ Bêta privée</div>
+  <h2>Cinquante familles fondatrices.<br><em>Sur invitation.</em></h2>
+  <p class="nums">23 sur 50 places ouvertes · accès <b>offert</b> pendant la phase fondatrice</p>
+  <a href="https://calendly.com/ikcp-maxime" class="cta">Demander mon accès</a>
+  <p class="note">Sur votre initiative. Aucun rappel commercial non sollicité.</p>
+</section>
+
+<footer>
+  <b>IKCP</b> · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436<br>
+  Souverain France · RGPD · Conformité MIF II
+</footer>
+
+<script>
+async function goSiren(e){
+  e.preventDefault();
+  const s = (document.getElementById('siren').value||'').replace(/\s+/g,'');
+  if(!/^\d{9}$/.test(s)) return false;
+  try{
+    const r = await fetch(`https://ikcp-pappers.maxime-ead.workers.dev/entreprise/${s}/short`);
+    const d = await r.json();
+    alert(`◆ Société identifiée.\n\n${d.nom_entreprise||d.denomination||'—'}\nForme : ${d.forme_juridique||'—'}\nCapital : ${d.capital?Number(d.capital).toLocaleString('fr-FR')+' €':'—'}\nCréation : ${d.date_creation||'—'}\n\nMarcel oriente vers le bon spécialiste.`);
+  }catch(err){
+    alert('◆ Connexion temporairement indisponible.\nDemandez votre accès bêta directement.');
+  }
+  return false;
+}
+</script>
+</body>
+</html>
