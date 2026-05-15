@@ -165,6 +165,43 @@ section.hero{
 }
 .hero-philo::before{content:'«'; position:absolute; left:-4px; top:-20px; font-family:'Fraunces',serif; font-size:64px; color:var(--terra); opacity:0.35; font-style:italic; line-height:1}
 .hero-philo b{color:var(--ink); font-weight:600; font-family:'Fraunces',serif; font-style:italic; font-size:15.5px}
+
+/* ─── Triptyque "100% digital · 100% automatisé · sans oublier l'humain" ─── */
+.hero-triptyque{
+  display:flex; align-items:stretch; gap:18px; justify-content:center;
+  margin:8px 0 30px; padding:18px 28px;
+  background:linear-gradient(135deg, rgba(217,119,87,0.06) 0%, rgba(201,169,110,0.06) 100%);
+  border:1px solid var(--line-strong); border-radius:18px;
+  max-width:680px;
+  opacity:0; animation:fadeUp 1.2s 0.95s var(--ease-luxe,cubic-bezier(0.16,1,0.3,1)) forwards;
+}
+.tri{ display:flex; flex-direction:column; align-items:center; justify-content:center; padding:6px 12px; min-width:90px; text-align:center }
+.tri-num{ font-family:'Fraunces',serif; font-variation-settings:"opsz" 144,"SOFT" 80; font-size:32px; font-weight:500; color:var(--terra-deep); line-height:1; letter-spacing:-0.025em }
+.tri-num small{ font-size:18px; opacity:0.7; font-weight:400; vertical-align:6px; margin-left:1px }
+.tri-num em{ font-style:italic; color:var(--terra); font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1 }
+.tri-lbl{ font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.28em; color:var(--ink-mute); text-transform:uppercase; font-weight:700; margin-top:8px }
+.tri-lbl em{ font-style:italic; font-family:'Fraunces',serif; font-size:13px; letter-spacing:0; text-transform:none; color:var(--ink); font-weight:500 }
+.tri-emph .tri-num{ font-size:38px }
+.tri-emph .tri-lbl{ max-width:160px }
+.tri-sep{ width:1px; background:linear-gradient(180deg, transparent, var(--line-strong) 30%, var(--line-strong) 70%, transparent); align-self:stretch }
+@media(max-width:640px){
+  .hero-triptyque{ flex-direction:column; align-items:stretch; padding:14px; gap:10px; max-width:none }
+  .tri-sep{ display:none }
+  .tri{ flex-direction:row; gap:14px; justify-content:flex-start; padding:8px 14px; border-bottom:1px dashed var(--line) }
+  .tri:last-child{ border-bottom:none }
+  .tri-num{ font-size:24px }
+  .tri-emph .tri-num{ font-size:28px }
+  .tri-lbl{ margin-top:0 }
+}
+
+/* ─── SIREN plus prominent (renforcement visuel) ─── */
+.hero-siren{
+  border-width:2px; border-color:var(--terra-light);
+  box-shadow:0 24px 60px -16px rgba(217,119,87,0.22), 0 1px 0 rgba(255,255,255,0.6) inset, 0 0 0 8px rgba(217,119,87,0.05);
+}
+.hero-siren-label{ color:var(--terra-deep) }
+.hero-siren button{ background:var(--terra); }
+.hero-siren button:hover{ background:var(--terra-deep); }
 .hero-stats{
   display:flex; gap:36px; flex-wrap:wrap; justify-content:center;
   font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink-faint); font-weight:600;
@@ -956,6 +993,14 @@ section.funnel::before, section.heritage::before, section.beta::before{
   <span class="hero-eyebrow">Family Office augmenté · Sur invitation</span>
   <h1>Une porte. Une équipe.<br>Votre patrimoine <em>en orbite.</em></h1>
   <p class="hero-tagline">Le cabinet IKCP orchestre douze univers patrimoniaux branchés sur intelligence souveraine. Application mobile iOS · Android · PWA. 100 % France.</p>
+
+  <div class="hero-triptyque" role="list">
+    <div class="tri" role="listitem"><div class="tri-num">100<small>%</small></div><div class="tri-lbl">Digital</div></div>
+    <div class="tri-sep"></div>
+    <div class="tri" role="listitem"><div class="tri-num">100<small>%</small></div><div class="tri-lbl">Automatisé</div></div>
+    <div class="tri-sep"></div>
+    <div class="tri tri-emph" role="listitem"><div class="tri-num"><em>&amp;</em></div><div class="tri-lbl"><em>Sans oublier l'humain</em></div></div>
+  </div>
   <p class="hero-philo"><b>Vous pilotez.</b> Nous mettons à votre disposition la technologie et vos passions sur-mesure. Si vous désirez notre coup d'œil, nous intervenons — <b>mais vous décidez</b>. Sans démarche commerciale non sollicitée.</p>
 
   <form class="hero-siren" id="heroSirenForm" onsubmit="return runHeroSiren(event)" autocomplete="off">
