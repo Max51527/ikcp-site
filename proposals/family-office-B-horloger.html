@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Horloger (Proposition B)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Spectral:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Cormorant+Infant:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#ECE5D0;
+  --bg-2:#E0D7BC;
+  --ink:#2C1810;
+  --ink-mute:#6B4C2C;
+  --gold:#B8862B;
+  --gold-bright:#D4A845;
+  --ruby:#B5283C;
+  --blue:#2A4D6E;
+  --line:rgba(44,24,16,0.18);
+  --line-strong:rgba(44,24,16,0.32);
+}
+html,body{background:var(--bg);color:var(--ink);font-family:'Spectral',serif;font-weight:400;font-size:16px;line-height:1.55;overflow-x:hidden;min-height:100vh;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+
+/* Parchemin texture */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.40 0 0 0 0 0.27 0 0 0 0 0.13 0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:multiply;opacity:0.55;
+}
+main{position:relative;z-index:1}
+
+/* Header gravé */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 36px;background:rgba(236,229,208,0.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line-strong);display:flex;justify-content:space-between;align-items:center}
+.topbar .brand{font-family:'Italiana',serif;font-size:24px;color:var(--ink);letter-spacing:0.16em}
+.topbar .brand small{display:block;font-family:'Spectral',serif;font-style:italic;font-size:10px;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;margin-top:2px;font-weight:500}
+.topbar .meta{font-family:'Spectral',serif;font-style:italic;font-size:11px;color:var(--ink-mute);letter-spacing:0.10em}
+
+/* MOUVEMENT — hero */
+section.movement{min-height:100vh;padding:120px 32px 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.movement .eyebrow{font-family:'Italiana',serif;font-size:11px;letter-spacing:0.42em;color:var(--gold);text-transform:uppercase;margin-bottom:36px;display:inline-flex;align-items:center;gap:18px}
+.movement .eyebrow::before,.movement .eyebrow::after{content:'';width:42px;height:1px;background:var(--gold)}
+
+.caliber{width:min(520px,88vw);height:min(520px,88vw);margin:0 auto 48px;position:relative}
+.caliber svg{width:100%;height:100%;overflow:visible}
+.gear{transform-origin:center;animation:rotate 60s linear infinite}
+.gear-reverse{animation:rotate-rev 45s linear infinite}
+@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes rotate-rev{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+.balance{transform-origin:center;animation:balance 0.5s ease-in-out infinite alternate}
+@keyframes balance{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+.cal-base{fill:var(--bg-2);stroke:var(--gold);stroke-width:0.6}
+.cal-gold{fill:var(--gold)}
+.cal-ruby{fill:var(--ruby);stroke:#7a1a26;stroke-width:0.4}
+.cal-blue{fill:var(--blue)}
+.cal-engrave{fill:none;stroke:var(--ink);stroke-width:0.4;opacity:0.6}
+.cal-text{fill:var(--ink);font-family:'Italiana',serif;font-size:8px;letter-spacing:0.3em;text-anchor:middle}
+
+.movement h1{font-family:'Italiana',serif;font-size:clamp(44px,6vw,76px);line-height:1.05;color:var(--ink);font-weight:400;letter-spacing:-0.005em;margin-bottom:18px;max-width:780px}
+.movement h1 em{font-family:'Spectral',serif;font-style:italic;font-weight:500;color:var(--gold)}
+.movement .sub{font-family:'Spectral',serif;font-style:italic;font-size:18px;color:var(--ink-mute);max-width:580px;margin:0 auto 36px;line-height:1.55}
+.movement .triptyque{display:flex;align-items:center;gap:24px;font-family:'Italiana',serif;font-size:11px;letter-spacing:0.32em;color:var(--ink-mute);text-transform:uppercase;margin-bottom:36px}
+.movement .triptyque b{color:var(--ink);font-weight:400}
+.movement .triptyque em{color:var(--gold);font-style:italic;font-family:'Spectral',serif;text-transform:none;font-size:14px;letter-spacing:0;font-weight:500}
+.movement .triptyque .sep{width:1px;height:24px;background:var(--gold)}
+
+/* Calibre input (SIREN) */
+.calibre-form{background:transparent;border:1px solid var(--gold);padding:6px;display:inline-flex;gap:0;align-items:center;max-width:560px;width:100%;margin:0 auto}
+.calibre-form label{font-family:'Italiana',serif;font-size:10px;letter-spacing:0.32em;color:var(--gold);padding:0 18px;border-right:1px solid var(--gold);text-transform:uppercase}
+.calibre-form input{flex:1;background:transparent;border:none;font-family:'Cormorant Infant',serif;font-size:24px;color:var(--ink);outline:none;padding:14px 16px;letter-spacing:0.08em;font-style:italic}
+.calibre-form input::placeholder{color:var(--ink-mute);opacity:0.5}
+.calibre-form button{background:var(--ink);color:var(--bg);border:none;padding:14px 24px;font-family:'Italiana',serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;cursor:pointer;transition:all 0.4s}
+.calibre-form button:hover{background:var(--gold);color:var(--ink)}
+
+/* COMPLICATIONS (services) */
+section.complications{padding:120px 32px;background:var(--bg-2);border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);position:relative}
+section.complications::before,section.complications::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:140px;height:1px;background:var(--gold);opacity:0.6}
+section.complications::before{top:0}
+section.complications::after{bottom:0}
+.section-head{text-align:center;max-width:760px;margin:0 auto 80px}
+.section-head .lbl{font-family:'Italiana',serif;font-size:11px;letter-spacing:0.42em;color:var(--gold);text-transform:uppercase;margin-bottom:18px;display:inline-block;padding:0 16px;background:var(--bg-2);position:relative;top:-6px}
+.section-head h2{font-family:'Italiana',serif;font-size:clamp(34px,4.5vw,56px);line-height:1.1;color:var(--ink);font-weight:400;letter-spacing:0.005em}
+.section-head h2 em{font-family:'Spectral',serif;font-style:italic;color:var(--gold);font-weight:500}
+
+.compl-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+@media(max-width:860px){.compl-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.compl-grid{grid-template-columns:1fr}}
+.compl{padding:36px 28px 30px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);background:var(--bg-2)}
+.compl:hover{background:var(--bg);box-shadow:inset 0 0 0 1px var(--gold)}
+.compl .roman{font-family:'Cormorant Infant',serif;font-style:italic;font-size:28px;color:var(--gold);font-weight:400;margin-bottom:18px;line-height:1}
+.compl h3{font-family:'Italiana',serif;font-size:22px;color:var(--ink);font-weight:400;line-height:1.18;margin-bottom:6px;letter-spacing:0.005em}
+.compl .complication-name{font-family:'Spectral',serif;font-style:italic;color:var(--gold-bright);font-size:13px;letter-spacing:0.08em;margin-bottom:14px;font-weight:500}
+.compl p{font-family:'Spectral',serif;font-size:14px;color:var(--ink-mute);line-height:1.65;margin-bottom:14px}
+.compl .ruby-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ruby);box-shadow:0 0 0 2px rgba(181,40,60,0.18);margin-right:8px;vertical-align:middle}
+.compl .source{font-family:'Italiana',serif;font-size:10px;color:var(--ink-mute);letter-spacing:0.22em;text-transform:uppercase;border-top:1px dashed var(--line);padding-top:10px;margin-top:auto}
+
+/* CARTE DE GARANTIE (bêta) */
+section.warranty{padding:140px 32px;background:var(--bg);text-align:center;border-top:1px solid var(--line-strong);position:relative}
+.warranty .lbl{font-family:'Italiana',serif;font-size:11px;letter-spacing:0.42em;color:var(--gold);text-transform:uppercase;margin-bottom:24px}
+.warranty h2{font-family:'Italiana',serif;font-size:clamp(38px,5vw,64px);line-height:1.05;color:var(--ink);font-weight:400;margin-bottom:14px}
+.warranty h2 em{font-family:'Spectral',serif;font-style:italic;color:var(--gold);font-weight:500}
+.warranty .sub{font-family:'Spectral',serif;font-style:italic;font-size:17px;color:var(--ink-mute);max-width:580px;margin:0 auto 48px}
+
+.guarantee-card{display:inline-block;max-width:560px;width:100%;background:linear-gradient(135deg,#3a1c0a 0%,#1f0e05 100%);color:var(--bg);padding:46px 42px 38px;border:1px solid var(--gold);position:relative;text-align:left;box-shadow:0 30px 60px -20px rgba(44,24,16,0.45)}
+.guarantee-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(184,134,43,0.3);pointer-events:none}
+.guarantee-card .gc-head{font-family:'Italiana',serif;font-size:10px;letter-spacing:0.42em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between}
+.guarantee-card h3{font-family:'Italiana',serif;font-size:28px;color:var(--bg);font-weight:400;margin-bottom:6px;letter-spacing:0.01em}
+.guarantee-card h3 em{font-family:'Spectral',serif;font-style:italic;color:var(--gold-bright)}
+.guarantee-card .gc-num{font-family:'Cormorant Infant',serif;font-size:62px;color:var(--gold-bright);font-style:italic;line-height:1;margin:14px 0 4px}
+.guarantee-card .gc-num small{font-size:24px;color:var(--bg);opacity:0.5}
+.guarantee-card .gc-meta{font-family:'Spectral',serif;font-style:italic;font-size:13px;color:rgba(236,229,208,0.7);margin-bottom:22px}
+.guarantee-card .gc-sig{display:flex;justify-content:space-between;align-items:flex-end;padding-top:18px;border-top:1px solid rgba(184,134,43,0.3);margin-top:14px;font-family:'Italiana',serif;font-size:9.5px;letter-spacing:0.28em;color:rgba(236,229,208,0.55);text-transform:uppercase}
+.guarantee-card .gc-sig em{font-family:'Cormorant Infant',serif;font-style:italic;font-size:18px;color:var(--gold-bright);letter-spacing:0;text-transform:none}
+.warranty .cta{margin-top:40px;display:inline-block;padding:16px 38px;background:var(--ink);color:var(--bg);font-family:'Italiana',serif;font-size:11px;letter-spacing:0.32em;text-transform:uppercase;text-decoration:none;border:1px solid var(--ink);transition:all 0.4s}
+.warranty .cta:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+
+footer{padding:32px;background:var(--ink);color:var(--bg);font-family:'Italiana',serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;text-align:center;line-height:2}
+footer b{color:var(--gold-bright)}
+footer .delim{display:inline-block;width:30px;text-align:center;color:var(--gold)}
+</style>
+</head>
+<body>
+<main>
+
+<div class="topbar">
+  <div class="brand">IKCP<small>Manufacture patrimoniale · Calibre IKCP-26</small></div>
+  <div class="meta">ORIAS 23001568 · Souverain France · MMXXVI</div>
+</div>
+
+<!-- MOUVEMENT -->
+<section class="movement">
+  <span class="eyebrow">Calibre IKCP-26 · Mouvement augmenté</span>
+
+  <div class="caliber">
+    <svg viewBox="0 0 520 520">
+      <!-- Cercle extérieur (platine) -->
+      <circle cx="260" cy="260" r="250" class="cal-base"/>
+      <circle cx="260" cy="260" r="240" fill="none" stroke="#B8862B" stroke-width="0.5" stroke-dasharray="2 3" opacity="0.5"/>
+      <!-- Texte gravé bord -->
+      <defs>
+        <path id="circle-text" d="M 260,260 m -218,0 a 218,218 0 1,1 436,0 a 218,218 0 1,1 -436,0"/>
+      </defs>
+      <text class="cal-text"><textPath href="#circle-text" startOffset="0">IKCP · MANUFACTURE PATRIMONIALE · CALIBRE 26 · ONZE COMPLICATIONS · FRANCE · MMXXVI · ONZE SPECIALISTES · ORIAS 23001568 · </textPath></text>
+
+      <!-- Engrenage central (balancier) -->
+      <g class="balance">
+        <circle cx="260" cy="260" r="76" class="cal-gold" opacity="0.92"/>
+        <circle cx="260" cy="260" r="70" fill="none" stroke="#7a5a1a" stroke-width="0.5"/>
+        <circle cx="260" cy="260" r="32" class="cal-ruby"/>
+        <circle cx="260" cy="260" r="6" class="cal-gold"/>
+        <!-- Bras balance -->
+        <rect x="178" y="258" width="164" height="4" class="cal-gold"/>
+        <rect x="258" y="178" width="4" height="164" class="cal-gold"/>
+      </g>
+
+      <!-- 6 petits engrenages (complications) -->
+      <g class="gear">
+        <g transform="translate(120,160)"><circle r="32" class="cal-base" stroke-width="1"/><circle r="22" fill="none" stroke="#B8862B" stroke-width="0.7"/><circle r="3" class="cal-ruby"/></g>
+        <g transform="translate(400,160)"><circle r="36" class="cal-base" stroke-width="1"/><circle r="26" fill="none" stroke="#B8862B" stroke-width="0.7"/><circle r="3" class="cal-ruby"/></g>
+        <g transform="translate(420,300)"><circle r="28" class="cal-base" stroke-width="1"/><circle r="18" fill="none" stroke="#B8862B" stroke-width="0.7"/><circle r="3" class="cal-ruby"/></g>
+      </g>
+      <g class="gear-reverse">
+        <g transform="translate(100,320)"><circle r="34" class="cal-base" stroke-width="1"/><circle r="24" fill="none" stroke="#B8862B" stroke-width="0.7"/><circle r="3" class="cal-blue"/></g>
+        <g transform="translate(380,400)"><circle r="30" class="cal-base" stroke-width="1"/><circle r="20" fill="none" stroke="#B8862B" stroke-width="0.7"/><circle r="3" class="cal-blue"/></g>
+        <g transform="translate(180,420)"><circle r="26" class="cal-base" stroke-width="1"/><circle r="16" fill="none" stroke="#B8862B" stroke-width="0.7"/><circle r="3" class="cal-blue"/></g>
+      </g>
+
+      <!-- Signature centre -->
+      <text x="260" y="370" class="cal-text" style="font-size:11px;letter-spacing:0.4em;fill:#B8862B">MARCEL</text>
+      <text x="260" y="384" class="cal-text" style="font-size:7px;letter-spacing:0.32em">MAÎTRE D'ŒUVRE</text>
+    </svg>
+  </div>
+
+  <h1>Une porte. Une équipe.<br>Votre patrimoine, <em>au mouvement.</em></h1>
+  <p class="sub">Onze complications réglées par un maître d'œuvre. Marcel orchestre, les spécialistes exécutent — la précision d'une manufacture, l'automatisation d'une intelligence souveraine.</p>
+
+  <div class="triptyque">
+    <b>100 % Digital</b><span class="sep"></span><b>100 % Automatisé</b><span class="sep"></span><em>Sans oublier l'humain</em>
+  </div>
+
+  <form class="calibre-form" onsubmit="return goSiren(event)">
+    <label>SIREN</label>
+    <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="Numéro de calibre · ex. 947 972 436">
+    <button type="submit">Remonter Marcel</button>
+  </form>
+</section>
+
+<!-- COMPLICATIONS -->
+<section class="complications" id="services">
+  <div class="section-head">
+    <div class="lbl"><span style="background:var(--bg-2);padding:0 12px">Six complications · LIVE</span></div>
+    <h2>Vos <em>complications</em>.<br>Toutes réglées. Toutes opérationnelles.</h2>
+  </div>
+  <div class="compl-grid">
+    <article class="compl">
+      <div class="roman">I.</div>
+      <h3>Cartographie</h3>
+      <div class="complication-name">Quantième patrimonial</div>
+      <p><span class="ruby-dot"></span>Saisissez votre SIREN, votre société est instantanément identifiée à partir des sources officielles françaises.</p>
+      <div class="source">INSEE · INPI · BODACC</div>
+    </article>
+    <article class="compl">
+      <div class="roman">II.</div>
+      <h3>Marcel & équipe</h3>
+      <div class="complication-name">Répétition minute</div>
+      <p><span class="ruby-dot"></span>Marcel comprend l'enjeu, mobilise les bons spécialistes, vous remet une réponse sourcée en quelques secondes.</p>
+      <div class="source">Intelligence souveraine</div>
+    </article>
+    <article class="compl">
+      <div class="roman">III.</div>
+      <h3>Fiscalité 2026</h3>
+      <div class="complication-name">Chronographe fiscal</div>
+      <p><span class="ruby-dot"></span>IR, IFI, succession, donation, Pacte Dutreil. Calculs conformes à la Loi de Finances 2026.</p>
+      <div class="source">CGI · BOFiP · LF 2026</div>
+    </article>
+    <article class="compl">
+      <div class="roman">IV.</div>
+      <h3>Audit MIF II</h3>
+      <div class="complication-name">Réserve de marche</div>
+      <p><span class="ruby-dot"></span>Chaque échange est tracé immutablement à Paris. Conservation 10 ans réglementaires.</p>
+      <div class="source">Art. 325-9 RGAMF</div>
+    </article>
+    <article class="compl">
+      <div class="roman">V.</div>
+      <h3>Veille collectionneur</h3>
+      <div class="complication-name">Tourbillon de marché</div>
+      <p><span class="ruby-dot"></span>Scan quotidien des marchés. Alertes ciblées sur votre wishlist — montres, voitures, vins.</p>
+      <div class="source">Scan 07h00 Paris</div>
+    </article>
+    <article class="compl">
+      <div class="roman">VI.</div>
+      <h3>Application</h3>
+      <div class="complication-name">Échappement souverain</div>
+      <p><span class="ruby-dot"></span>Installable iOS / Android en un tap. Sans App Store. Souveraine France, hors ligne possible.</p>
+      <div class="source">PWA · iOS · Android</div>
+    </article>
+  </div>
+</section>
+
+<!-- WARRANTY -->
+<section class="warranty" id="beta">
+  <div class="lbl">Carte de garantie · Bêta</div>
+  <h2>Cinquante <em>certificats numérotés</em>.</h2>
+  <p class="sub">Les familles fondatrices reçoivent une carte de garantie nominative et numérotée. Pendant la phase fondatrice, le tier mensuel est offert.</p>
+
+  <div class="guarantee-card">
+    <div class="gc-head"><span>● Bulletin de marche</span><span>2026</span></div>
+    <h3>Famille fondatrice <em>nº</em></h3>
+    <div class="gc-num">23<small> / 50</small></div>
+    <div class="gc-meta">Calibre IKCP-26 · Mouvement augmenté · Onze complications</div>
+    <div class="gc-sig">
+      <span>Manufacture IKCP · MMXXVI</span>
+      <em>M. Juveneton</em>
+    </div>
+  </div>
+
+  <br>
+  <a href="https://calendly.com/ikcp-maxime" class="cta">Demander mon accès</a>
+</section>
+
+<footer>
+  IKCP <span class="delim">·</span> Manufacture patrimoniale <span class="delim">·</span> ORIAS <b>23001568</b> <span class="delim">·</span> SIREN <b>947 972 436</b><br>
+  Souverain France <span class="delim">·</span> Aucune démarche commerciale non sollicitée
+</footer>
+
+</main>
+<script>
+async function goSiren(e){
+  e.preventDefault();
+  const s = (document.getElementById('siren').value||'').replace(/\s+/g,'');
+  if(!/^\d{9}$/.test(s)) return false;
+  try{
+    const r = await fetch(`https://ikcp-pappers.maxime-ead.workers.dev/entreprise/${s}/short`);
+    const d = await r.json();
+    alert(`◆ Calibre identifié.\n${d.nom_entreprise||d.denomination||'Société'}\nForme : ${d.forme_juridique||'—'}\nCapital : ${d.capital?Number(d.capital).toLocaleString('fr-FR')+' €':'—'}\n\nMarcel remonte ses complications.`);
+  }catch(err){
+    alert('◆ Manufacture momentanément silencieuse. Réessayez ou demandez votre accès.');
+  }
+  return false;
+}
+</script>
+</body>
+</html>

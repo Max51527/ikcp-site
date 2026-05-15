@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Atlas (Proposition C)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Crimson+Pro:ital,wght@0,400;0,500;1,400;1,500&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F0E6D2;
+  --bg-2:#E8DCC0;
+  --ink:#1F2E1A;
+  --ink-mute:#4F5B45;
+  --contour:#8B5A2B;
+  --river:#2A647D;
+  --accent:#C2392F;
+  --gold:#9B7D1F;
+  --line:rgba(31,46,26,0.25);
+  --line-strong:rgba(31,46,26,0.50);
+}
+html,body{background:var(--bg);color:var(--ink);font-family:'Crimson Pro',serif;font-weight:400;font-size:17px;line-height:1.6;overflow-x:hidden;min-height:100vh;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+
+/* Texture papier ancien + cartographique */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.22 0 0 0 0 0.09 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:multiply;opacity:0.55;
+}
+/* Lignes topo en fond */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><g fill='none' stroke='%238B5A2B' stroke-width='0.4' opacity='0.18'><path d='M 0,300 Q 200,180 400,260 T 800,200'/><path d='M 0,340 Q 220,220 420,300 T 800,260'/><path d='M 0,380 Q 240,260 440,340 T 800,320'/><path d='M 0,420 Q 260,300 460,380 T 800,380'/><path d='M 0,460 Q 280,340 480,420 T 800,440'/><path d='M 0,500 Q 300,380 500,460 T 800,500'/></g></svg>");
+  background-size:cover;background-position:center;opacity:0.4;
+}
+main{position:relative;z-index:1}
+
+/* Cartouche topbar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 36px;background:rgba(240,230,210,0.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--line-strong);display:flex;justify-content:space-between;align-items:center;font-family:'IM Fell English SC',serif;font-size:13px;letter-spacing:0.08em;color:var(--ink)}
+.topbar .brand{font-family:'IM Fell English',serif;font-style:italic;font-size:22px;color:var(--ink);letter-spacing:0.01em}
+.topbar .meta{font-size:11px;color:var(--ink-mute)}
+.topbar .compass{display:inline-block;width:20px;height:20px;vertical-align:middle;margin-right:8px}
+.topbar .compass svg{width:100%;height:100%}
+
+/* TERRITOIRE — hero */
+section.territoire{min-height:100vh;padding:110px 32px 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.territoire .cartouche{display:inline-block;padding:8px 24px;border:1px solid var(--line-strong);font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:0.32em;color:var(--ink);margin-bottom:36px;background:var(--bg-2)}
+.territoire .calligraphy{font-family:'Tangerine',cursive;font-size:64px;color:var(--accent);line-height:1;margin-bottom:8px;font-weight:400}
+.territoire h1{font-family:'IM Fell English',serif;font-size:clamp(48px,7vw,88px);line-height:1.05;color:var(--ink);font-weight:400;letter-spacing:-0.01em;margin-bottom:24px;max-width:840px;font-style:italic}
+.territoire h1 em{color:var(--accent);font-style:italic;font-weight:400}
+.territoire .legende{font-family:'Crimson Pro',serif;font-style:italic;font-size:18.5px;color:var(--ink-mute);max-width:600px;margin:0 auto 44px;line-height:1.55}
+.territoire .triptyque{font-family:'IM Fell English SC',serif;font-size:13px;letter-spacing:0.22em;color:var(--ink);text-transform:uppercase;margin-bottom:40px}
+.territoire .triptyque b{color:var(--accent);font-weight:400}
+.territoire .triptyque .sep{display:inline-block;color:var(--gold);margin:0 14px}
+
+/* SIREN comme coordonnée GPS */
+.releve{display:inline-flex;align-items:stretch;background:var(--bg-2);border:1px solid var(--line-strong);max-width:600px;width:100%;margin:0 auto;font-family:'Crimson Pro',serif}
+.releve .lbl{padding:18px 22px;background:var(--ink);color:var(--bg);font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:0.24em;display:flex;align-items:center}
+.releve input{flex:1;background:transparent;border:none;padding:18px 22px;font-family:'IM Fell English',serif;font-style:italic;font-size:22px;color:var(--ink);outline:none;letter-spacing:0.06em}
+.releve input::placeholder{color:var(--ink-mute);opacity:0.55}
+.releve button{padding:0 26px;background:var(--accent);color:var(--bg);border:none;font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:0.22em;cursor:pointer;transition:all 0.4s}
+.releve button:hover{background:#8B1A14}
+
+/* SENTIERS — services */
+section.sentiers{padding:140px 32px;border-top:1px dashed var(--line-strong);position:relative}
+.section-head{text-align:center;max-width:780px;margin:0 auto 72px}
+.section-head .lbl{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:0.32em;color:var(--accent);text-transform:uppercase;margin-bottom:20px;padding:6px 18px;display:inline-block;border-top:1px solid var(--accent);border-bottom:1px solid var(--accent)}
+.section-head h2{font-family:'IM Fell English',serif;font-style:italic;font-size:clamp(36px,4.8vw,58px);line-height:1.1;color:var(--ink);font-weight:400;letter-spacing:-0.005em}
+.section-head h2 em{color:var(--accent)}
+.section-head .sub{font-family:'Crimson Pro',serif;font-style:italic;font-size:17.5px;color:var(--ink-mute);max-width:620px;margin:18px auto 0;line-height:1.55}
+
+.sentiers-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+@media(max-width:760px){.sentiers-grid{grid-template-columns:1fr}}
+.sentier{padding:38px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:60px 1fr;gap:24px;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);background:transparent}
+.sentier:hover{background:rgba(194,57,47,0.04)}
+.sentier-num{font-family:'IM Fell English',serif;font-style:italic;font-size:48px;color:var(--accent);line-height:1;font-weight:400}
+.sentier h3{font-family:'IM Fell English',serif;font-style:italic;font-size:24px;color:var(--ink);font-weight:400;line-height:1.2;margin-bottom:8px;letter-spacing:0.005em}
+.sentier .balise{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:12px}
+.sentier p{font-family:'Crimson Pro',serif;font-size:15.5px;color:var(--ink-mute);line-height:1.65;margin-bottom:14px}
+.sentier .source{font-family:'IM Fell English SC',serif;font-size:10.5px;color:var(--ink);letter-spacing:0.22em;border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+.sentier .source::before{content:'⚐ ';color:var(--accent)}
+
+/* PROVINCES */
+section.provinces{padding:140px 32px;background:var(--bg-2);border-top:1px dashed var(--line-strong)}
+.provinces-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-strong)}
+@media(max-width:760px){.provinces-grid{grid-template-columns:repeat(2,1fr)}}
+.province{padding:28px 22px;background:var(--bg);position:relative;transition:all 0.4s ease;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+.province:hover{background:rgba(194,57,47,0.06)}
+.province .roman{font-family:'IM Fell English',serif;font-style:italic;font-size:22px;color:var(--accent);font-weight:400}
+.province h4{font-family:'IM Fell English',serif;font-style:italic;font-size:20px;color:var(--ink);font-weight:400;line-height:1.15;margin:6px 0}
+.province .statut{font-family:'IM Fell English SC',serif;font-size:9.5px;letter-spacing:0.22em;text-transform:uppercase;margin-top:auto;padding-top:10px;border-top:1px dashed var(--line)}
+.province .statut.live{color:var(--accent)}
+.province .statut.soon{color:var(--ink-mute);font-style:italic}
+.province.soon{background:repeating-linear-gradient(135deg,var(--bg) 0,var(--bg) 8px,var(--bg-2) 8px,var(--bg-2) 16px)}
+
+/* CONCESSION — bêta */
+section.concession{padding:160px 32px;text-align:center;border-top:1px solid var(--line-strong)}
+.concession .lbl{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:0.32em;color:var(--accent);text-transform:uppercase;margin-bottom:18px}
+.concession h2{font-family:'IM Fell English',serif;font-style:italic;font-size:clamp(40px,5.5vw,68px);line-height:1.05;color:var(--ink);font-weight:400;margin-bottom:14px}
+.concession h2 em{color:var(--accent)}
+.concession .legende{font-family:'Crimson Pro',serif;font-style:italic;font-size:18px;color:var(--ink-mute);max-width:600px;margin:0 auto 52px}
+
+.acte{display:inline-block;max-width:600px;width:100%;background:var(--bg-2);border:2px double var(--ink);padding:46px 42px 38px;text-align:left;position:relative}
+.acte::before,.acte::after{content:'';position:absolute;width:22px;height:22px;border:1px solid var(--ink)}
+.acte::before{top:8px;left:8px;border-right:none;border-bottom:none}
+.acte::after{bottom:8px;right:8px;border-left:none;border-top:none}
+.acte .acte-head{text-align:center;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--ink)}
+.acte .acte-titre{font-family:'IM Fell English',serif;font-style:italic;font-size:22px;color:var(--ink);font-weight:400;line-height:1.2}
+.acte .acte-sub{font-family:'IM Fell English SC',serif;font-size:10.5px;letter-spacing:0.32em;color:var(--accent);text-transform:uppercase;margin-top:6px}
+.acte .acte-body{font-family:'Crimson Pro',serif;font-size:15px;color:var(--ink);line-height:1.65;margin-bottom:24px}
+.acte .acte-body p{margin-bottom:10px;text-indent:24px}
+.acte .acte-body strong{font-family:'IM Fell English',serif;font-style:italic;font-weight:500;color:var(--accent)}
+.acte .acte-sig{display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid var(--ink);font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:0.22em;color:var(--ink-mute);text-transform:uppercase}
+.acte .acte-sig em{font-family:'Tangerine',cursive;font-style:italic;font-size:30px;color:var(--accent);letter-spacing:0;text-transform:none;line-height:1}
+.acte .seal{position:absolute;bottom:24px;right:36px;width:64px;height:64px;border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IM Fell English SC',serif;font-size:8px;letter-spacing:0.15em;color:var(--accent);text-align:center;transform:rotate(-12deg);text-transform:uppercase;line-height:1.2;background:rgba(194,57,47,0.08)}
+.concession .cta{margin-top:48px;display:inline-block;padding:18px 38px;background:var(--ink);color:var(--bg);font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:0.32em;text-transform:uppercase;text-decoration:none;transition:all 0.4s}
+.concession .cta:hover{background:var(--accent)}
+
+footer{padding:34px;background:var(--ink);color:var(--bg);font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;text-align:center;line-height:2}
+footer b{color:#D4A845}
+footer .sep{display:inline-block;color:var(--accent);margin:0 12px}
+</style>
+</head>
+<body>
+<main>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="compass"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#1F2E1A" stroke-width="1.2"/><polygon points="12,3 14,12 12,21 10,12" fill="#C2392F"/><circle cx="12" cy="12" r="1.5" fill="#1F2E1A"/></svg></span>
+    IKCP · <em>Atlas patrimonial</em>
+  </div>
+  <div class="meta">N. 45° · E. 4° · MMXXVI · ORIAS 23001568</div>
+</div>
+
+<!-- TERRITOIRE -->
+<section class="territoire">
+  <span class="cartouche">Cabinet IKCP · Cartographie Patrimoniale · MMXXVI</span>
+  <div class="calligraphy">Atlas</div>
+  <h1>Une porte. Une équipe.<br><em>Votre patrimoine, cartographié.</em></h1>
+  <p class="legende">Marcel et ses onze spécialistes parcourent vos douze provinces patrimoniales — patrimoine, art, voyage, collections — et vous remettent une carte vivante de ce que vous possédez.</p>
+
+  <div class="triptyque"><b>100 % Digital</b><span class="sep">✦</span><b>100 % Automatisé</b><span class="sep">✦</span><em>Sans oublier l'humain</em></div>
+
+  <form class="releve" onsubmit="return goSiren(event)">
+    <span class="lbl">⚐ Point de départ</span>
+    <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="SIREN — vos coordonnées · ex. 947 972 436">
+    <button type="submit">Relever</button>
+  </form>
+</section>
+
+<!-- SENTIERS -->
+<section class="sentiers" id="services">
+  <div class="section-head">
+    <span class="lbl">Six sentiers · balisés</span>
+    <h2><em>Six chemins</em> opérationnels.<br>Balisés. Praticables.</h2>
+    <p class="sub">Chaque sentier mène à un service vivant — ni promesse, ni mockup. Une fois l'accès accordé, vous les empruntez à votre rythme.</p>
+  </div>
+  <div class="sentiers-grid">
+    <article class="sentier">
+      <div class="sentier-num">I.</div>
+      <div>
+        <div class="balise">Sentier de cartographie</div>
+        <h3>Votre société, en trente secondes</h3>
+        <p>Le SIREN devient un point sur la carte. Forme, capital, ancienneté, dirigeants, siège — Théodore vous remet votre fiche de relevé.</p>
+        <div class="source">INSEE · INPI · BODACC</div>
+      </div>
+    </article>
+    <article class="sentier">
+      <div class="sentier-num">II.</div>
+      <div>
+        <div class="balise">Sentier d'expédition</div>
+        <h3>Marcel & son équipe, à toute heure</h3>
+        <p>Posez votre question. Marcel comprend l'enjeu, dépêche le bon spécialiste, vous remet une réponse sourcée. Toujours moins de cinq secondes.</p>
+        <div class="source">Intelligence souveraine</div>
+      </div>
+    </article>
+    <article class="sentier">
+      <div class="sentier-num">III.</div>
+      <div>
+        <div class="balise">Sentier fiscal</div>
+        <h3>Le terrain fiscal 2026</h3>
+        <p>IR, IFI, succession, donation, Pacte Dutreil. Calculs conformes à la Loi de Finances 2026 — chiffres déterministes, sources CGI systématiquement citées.</p>
+        <div class="source">CGI · BOFiP · LF 2026</div>
+      </div>
+    </article>
+    <article class="sentier">
+      <div class="sentier-num">IV.</div>
+      <div>
+        <div class="balise">Sentier des archives</div>
+        <h3>Vos échanges, gravés à Paris</h3>
+        <p>Chaque conversation est tracée immutablement dans une base souveraine française. Conservation dix ans réglementaires, accès uniquement sur votre demande.</p>
+        <div class="source">Art. 325-9 RGAMF</div>
+      </div>
+    </article>
+    <article class="sentier">
+      <div class="sentier-num">V.</div>
+      <div>
+        <div class="balise">Sentier de veille</div>
+        <h3>Le guetteur quotidien</h3>
+        <p>Vous renseignez votre profil — montres, voitures, vins, Lego. Chaque matin, l'agent parcourt les marchés et vous alerte sur les opportunités matchant votre wishlist.</p>
+        <div class="source">Scan 07h00 Paris</div>
+      </div>
+    </article>
+    <article class="sentier">
+      <div class="sentier-num">VI.</div>
+      <div>
+        <div class="balise">Sentier portatif</div>
+        <h3>Votre atlas, dans la poche</h3>
+        <p>L'outil s'installe en un tap sur votre iPhone ou Android — sans passage par l'App Store. Souverain France, consultable hors ligne.</p>
+        <div class="source">PWA · iOS · Android</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- PROVINCES -->
+<section class="provinces" id="univers">
+  <div class="section-head">
+    <span class="lbl">Douze provinces · balisées</span>
+    <h2>Vos <em>douze provinces</em>.<br>Quatre déjà cartographiées.</h2>
+    <p class="sub">Les provinces hachurées sont en relevé d'arpentage — leur ouverture est prévue Q3 et Q4 2026.</p>
+  </div>
+  <div class="provinces-grid">
+    <article class="province"><div class="roman">I.</div><h4>Patrimoine</h4><div class="statut live">⚐ LIVE</div></article>
+    <article class="province"><div class="roman">II.</div><h4>Immobilier</h4><div class="statut live">⚐ LIVE</div></article>
+    <article class="province"><div class="roman">III.</div><h4>Fiscalité 2026</h4><div class="statut live">⚐ LIVE</div></article>
+    <article class="province"><div class="roman">IV.</div><h4>Transmission</h4><div class="statut live">⚐ LIVE</div></article>
+    <article class="province soon"><div class="roman">V.</div><h4>Marchés & PE</h4><div class="statut soon">Relevé · Q3 2026</div></article>
+    <article class="province soon"><div class="roman">VI.</div><h4>Voyage</h4><div class="statut soon">Relevé · Q3 2026</div></article>
+    <article class="province soon"><div class="roman">VII.</div><h4>Art & Collections</h4><div class="statut soon">Relevé · Q4 2026</div></article>
+    <article class="province soon"><div class="roman">VIII.</div><h4>Voitures · Yachts</h4><div class="statut soon">Relevé · Q4 2026</div></article>
+    <article class="province soon"><div class="roman">IX.</div><h4>Montres · Joaillerie</h4><div class="statut soon">Relevé · Q4 2026</div></article>
+    <article class="province soon"><div class="roman">X.</div><h4>Bien-être</h4><div class="statut soon">Relevé · Q4 2026</div></article>
+    <article class="province soon"><div class="roman">XI.</div><h4>Vins · Gastronomie</h4><div class="statut soon">Relevé · Q4 2026</div></article>
+    <article class="province soon"><div class="roman">XII.</div><h4>Philanthropie</h4><div class="statut soon">Relevé · Q4 2026</div></article>
+  </div>
+</section>
+
+<!-- CONCESSION -->
+<section class="concession" id="beta">
+  <span class="lbl">Acte d'attribution · Bêta privée</span>
+  <h2>Cinquante <em>concessions d'exploration</em>.</h2>
+  <p class="legende">Les familles fondatrices reçoivent un acte nominatif. Pendant la phase de relevé, l'accès mensuel est offert.</p>
+
+  <div class="acte">
+    <div class="acte-head">
+      <div class="acte-titre">Acte d'attribution patrimoniale</div>
+      <div class="acte-sub">Manufacture IKCP · MMXXVI · Confidentiel</div>
+    </div>
+    <div class="acte-body">
+      <p>Par le présent acte, le porteur identifié est invité à rejoindre les <strong>cinquante familles fondatrices</strong> de l'Atlas Patrimonial IKCP, et obtient pour la durée de la phase fondatrice <strong>l'accès illimité aux six sentiers balisés</strong> et aux quatre premières provinces cartographiées.</p>
+      <p>La présente concession demeure révocable de plein droit par le porteur, à tout moment, sans démarche commerciale ni rappel non sollicité.</p>
+    </div>
+    <div class="acte-sig">
+      <span>Manufacture IKCP<br>ORIAS 23001568</span>
+      <em>Maxime J.</em>
+    </div>
+    <div class="seal">SCEAU<br>IKCP<br>MMXXVI</div>
+  </div>
+
+  <br>
+  <a href="https://calendly.com/ikcp-maxime" class="cta">⚐ Demander mon acte</a>
+</section>
+
+<footer>
+  IKCP <span class="sep">⚐</span> IKIGAÏ Conseil Patrimonial <span class="sep">⚐</span> ORIAS <b>23001568</b> <span class="sep">⚐</span> SIREN <b>947 972 436</b><br>
+  Atlas Patrimonial <span class="sep">⚐</span> Souverain France <span class="sep">⚐</span> Aucune démarche commerciale non sollicitée
+</footer>
+
+</main>
+<script>
+async function goSiren(e){
+  e.preventDefault();
+  const s = (document.getElementById('siren').value||'').replace(/\s+/g,'');
+  if(!/^\d{9}$/.test(s)) return false;
+  try{
+    const r = await fetch(`https://ikcp-pappers.maxime-ead.workers.dev/entreprise/${s}/short`);
+    const d = await r.json();
+    alert(`⚐ Point de départ relevé.\n${d.nom_entreprise||d.denomination||'Société'}\nForme : ${d.forme_juridique||'—'}\nCapital : ${d.capital?Number(d.capital).toLocaleString('fr-FR')+' €':'—'}\nSiège : ${d.siege?.ville||'—'}\n\nMarcel ouvre votre carte.`);
+  }catch(err){
+    alert('⚐ Cartographe injoignable. Réessayez ou demandez votre acte.');
+  }
+  return false;
+}
+</script>
+</body>
+</html>
