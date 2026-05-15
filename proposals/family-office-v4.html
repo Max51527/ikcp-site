@@ -548,6 +548,34 @@ section.funnel{padding:120px 48px; background:var(--paper); text-align:center}
 .funnel-result pre{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink); white-space:pre-wrap; line-height:1.6}
 
 /* ════════════════════════════════════════════════════════════════ */
+/* ═══ VOS SERVICES — uniquement ce qui est LIVE ═══════════════════ */
+/* ════════════════════════════════════════════════════════════════ */
+section.services{padding:120px 48px; background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.services-inner{max-width:1240px; margin:0 auto}
+.services-head{text-align:center; margin-bottom:48px}
+.services-head h2{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144,"SOFT" 90; font-size:clamp(32px,4vw,52px); font-weight:400; letter-spacing:-0.022em; color:var(--ink); line-height:1.08; margin-bottom:14px}
+.services-head h2 em{font-style:italic; color:var(--terra-deep); font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1}
+.services-head .sub{font-family:'Fraunces',serif; font-style:italic; font-size:17px; color:var(--ink-mute); line-height:1.55; max-width:680px; margin:0 auto}
+
+.services-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-bottom:36px}
+@media(max-width:760px){.services-grid{grid-template-columns:1fr}}
+
+.svc{background:var(--paper); border:1px solid var(--line-strong); border-radius:16px; padding:26px 24px; position:relative; transition:all 0.6s var(--ease-luxe,cubic-bezier(0.16,1,0.3,1)); display:flex; gap:18px; align-items:flex-start}
+.svc:hover{transform:translateY(-3px); border-color:var(--terra); box-shadow:0 22px 50px -12px rgba(45,37,32,0.12)}
+.svc-icon{flex-shrink:0; width:52px; height:52px; border-radius:50%; background:radial-gradient(circle at 35% 30%,var(--terra-glow),var(--terra) 60%,var(--terra-deep)); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 6px 20px rgba(217,119,87,0.25)}
+.svc-body{flex:1}
+.svc-tag{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; color:var(--ok); text-transform:uppercase; font-weight:700; margin-bottom:6px; display:inline-flex; align-items:center; gap:6px}
+.svc-tag::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px rgba(63,122,63,0.18)}
+.svc-tag.soon{color:var(--warn)}
+.svc-tag.soon::before{background:var(--warn); box-shadow:0 0 0 3px rgba(184,128,31,0.18)}
+.svc h3{font-family:'Fraunces',serif; font-size:20px; font-weight:500; color:var(--ink); line-height:1.18; margin-bottom:6px}
+.svc h3 em{font-style:italic; color:var(--terra-deep)}
+.svc p{font-size:13.5px; color:var(--ink-mute); line-height:1.6}
+
+.services-note{margin-top:30px; padding:18px 24px; background:var(--paper-2); border:1px dashed var(--line-strong); border-radius:14px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.10em; color:var(--ink-mute); line-height:1.7; text-transform:uppercase; font-weight:600}
+.services-note b{color:var(--terra-deep); font-weight:700}
+
+/* ════════════════════════════════════════════════════════════════ */
 /* ═══ TESTER MARCEL — chat freemium / premium ═════════════════════ */
 /* ════════════════════════════════════════════════════════════════ */
 section.tester{padding:120px 48px; background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%); border-top:1px solid var(--line)}
@@ -975,11 +1003,9 @@ section.funnel::before, section.heritage::before, section.beta::before{
   <div class="brand">IKCP<b>.</b><span class="brand-sub">FAMILY OFFICE AUGMENTÉ</span></div>
   <div class="menu">
     <a href="#univers">Vos univers</a>
-    <a href="#passions">Passions</a>
-    <a href="#definition">Le FO augmenté</a>
-    <a href="#orchestre">Marcel orchestre</a>
-    <a href="#funnel">Cartographie 30 sec</a>
-    <a href="#beta">Bêta</a>
+    <a href="#passions">Vos passions</a>
+    <a href="#services">Vos services</a>
+    <a href="#beta">Votre bêta</a>
     <span class="beta-pill">● Bêta privée</span>
     <a href="#contact" class="cta">Demander mon accès →</a>
   </div>
@@ -1395,6 +1421,80 @@ section.funnel::before, section.heritage::before, section.beta::before{
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ VOS SERVICES — uniquement ce qui est LIVE et operationnel -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-head">
+      <div class="section-eyebrow">◆ Vos services · Ce qui est opérationnel aujourd'hui</div>
+      <h2>Tout ce qui s'affiche ici, <em>vous l'utilisez dès aujourd'hui.</em></h2>
+      <p class="sub">Pas de promesse marketing. Six services LIVE — testés, audités, conformes. Le reste est en déploiement.</p>
+    </div>
+
+    <div class="services-grid">
+      <article class="svc">
+        <div class="svc-icon">🗺️</div>
+        <div class="svc-body">
+          <span class="svc-tag">Live</span>
+          <h3>Cartographie patrimoniale <em>en 30 secondes</em></h3>
+          <p>Saisissez votre SIREN, votre société est instantanément cartographiée à partir des sources officielles françaises (INSEE, INPI, BODACC). Capital, dirigeants, ancienneté, activité, siège — Théodore vous remet un point d'attention patrimonial.</p>
+        </div>
+      </article>
+
+      <article class="svc">
+        <div class="svc-icon">🎼</div>
+        <div class="svc-body">
+          <span class="svc-tag">Live</span>
+          <h3>Marcel &amp; son équipe <em>24/7</em></h3>
+          <p>Posez votre question : Marcel comprend l'enjeu, mobilise les bons spécialistes (Codex en fiscalité, Hermès en transmission, Augustin en immobilier…) et vous remet une réponse sourcée. Réponse en quelques secondes, jamais plus de 5.</p>
+        </div>
+      </article>
+
+      <article class="svc">
+        <div class="svc-icon">📜</div>
+        <div class="svc-body">
+          <span class="svc-tag">Live</span>
+          <h3>Fiscalité 2026 <em>en temps réel</em></h3>
+          <p>IR, IFI, succession, donation, Pacte Dutreil. Calculs déterministes 100 % conformes à la Loi de Finances 2026, sources CGI citées systématiquement. Pas d'approximation, pas d'hallucination.</p>
+        </div>
+      </article>
+
+      <article class="svc">
+        <div class="svc-icon">🛡️</div>
+        <div class="svc-body">
+          <span class="svc-tag">Live</span>
+          <h3>Audit MIF II <em>souverain France</em></h3>
+          <p>Chaque échange est tracé en base D1 Paris (souverain Cloudflare WEUR). Hash immuable, conservation 10 ans réglementaires (art. 325-9 RGAMF). Vous (et seulement vous, sur votre demande) accédez à votre journal complet.</p>
+        </div>
+      </article>
+
+      <article class="svc">
+        <div class="svc-icon">🔍</div>
+        <div class="svc-body">
+          <span class="svc-tag">Live</span>
+          <h3>Veille collectionneur <em>quotidienne</em></h3>
+          <p>Vous renseignez votre profil (montres, voitures, Lego, vins…). Chaque jour à 7 h, l'agent scrute les marchés officiels et vous alerte sur les opportunités correspondant à votre wishlist. Sources publiques uniquement, sans démarche commerciale.</p>
+        </div>
+      </article>
+
+      <article class="svc">
+        <div class="svc-icon">🎈</div>
+        <div class="svc-body">
+          <span class="svc-tag">Live</span>
+          <h3>Application <em>web installable</em></h3>
+          <p>L'outil fonctionne dans votre navigateur, mais s'installe aussi sur l'écran d'accueil de votre iPhone ou Android en un tap — sans passage par l'App Store. Souverain France, hors ligne possible sur les données déjà chargées.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="services-note">
+      ◆ Conciergerie premium · cellule partenaires (notaire / fiscaliste / family lawyer) · signature eIDAS · reporting trimestriel multigénérationnel — <b>en déploiement Sprint 2-3 (juin-juillet 2026)</b>
+    </div>
+  </div>
+</section>
+
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- ═══ FUNNEL SIREN — Marcel cartographie 30 sec ═══════════════ -->
