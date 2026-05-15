@@ -104,6 +104,65 @@ section.hero{
   .triptyque .sep{display:none}
 }
 
+/* ─── MARCEL & SES SPÉCIALISTES ─── */
+section.marcel{
+  padding:120px 40px;
+  background:linear-gradient(180deg,var(--bg) 0%,#F5EFE0 100%);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  text-align:center;
+}
+.constellation{
+  width:min(640px,90vw);height:min(640px,90vw);
+  margin:36px auto 0;position:relative;
+}
+.constellation svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.marcel-center{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:148px;height:148px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#E8A88E,var(--accent) 55%,#8B2F18 95%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 0 50px rgba(194,71,34,0.30),0 0 100px rgba(194,71,34,0.15),inset 0 4px 16px rgba(255,255,255,0.22);
+}
+.marcel-center .name{
+  font-family:'Fraunces',serif;font-style:italic;font-size:30px;
+  color:var(--bg);font-weight:500;letter-spacing:-0.005em;
+}
+.marcel-center .role{
+  font-size:9.5px;letter-spacing:0.28em;color:var(--bg);
+  text-transform:uppercase;opacity:0.85;margin-top:4px;font-weight:600;
+}
+.agent{
+  position:absolute;width:84px;height:84px;border-radius:50%;
+  background:var(--bg);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transform:translate(-50%,-50%);
+  transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.agent:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(194,71,34,0.18);transform:translate(-50%,-50%) scale(1.08)}
+.agent .ag-name{
+  font-family:'Fraunces',serif;font-style:italic;font-size:14px;
+  color:var(--ink);font-weight:500;
+}
+.agent .ag-dom{
+  font-size:8.5px;letter-spacing:0.18em;color:var(--mute);
+  text-transform:uppercase;font-weight:600;margin-top:3px;text-align:center;padding:0 6px;
+}
+/* Positions hendécagone */
+.a1{top:6%;left:50%} .a2{top:13%;left:73%} .a3{top:32%;left:90%}
+.a4{top:57%;left:93%} .a5{top:78%;left:82%} .a6{top:90%;left:62%}
+.a7{top:90%;left:38%} .a8{top:78%;left:18%} .a9{top:57%;left:7%}
+.a10{top:32%;left:10%} .a11{top:13%;left:27%}
+.constellation-orbit{position:absolute;inset:0;pointer-events:none;opacity:0.30}
+
+@media(max-width:680px){
+  .marcel-center{width:96px;height:96px}
+  .marcel-center .name{font-size:20px}
+  .marcel-center .role{font-size:8px}
+  .agent{width:62px;height:62px}
+  .agent .ag-name{font-size:11px}
+  .agent .ag-dom{display:none}
+}
+
 /* ─── SERVICES ─── */
 section.services{
   padding:120px 40px;
@@ -162,6 +221,34 @@ section.services{
   .svc h3{font-size:20px}
   .svc-status{grid-column:2;margin-top:8px}
 }
+
+/* ─── VOS UNIVERS ─── */
+section.univers{padding:120px 40px;border-top:1px solid var(--line)}
+.univers-cats{max-width:1100px;margin:0 auto}
+.univ-cat{margin-bottom:48px}
+.univ-cat:last-child{margin-bottom:0}
+.univ-cat-head{
+  font-size:11.5px;letter-spacing:0.36em;color:var(--accent);
+  text-transform:uppercase;font-weight:600;margin-bottom:18px;
+  padding-bottom:10px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.univ-cat-head em{color:var(--mute);font-style:italic;font-weight:400;letter-spacing:0.04em;text-transform:none;font-size:13px}
+.univ-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-left:1px solid var(--line);border-top:1px solid var(--line)}
+@media(max-width:760px){.univ-grid{grid-template-columns:repeat(2,1fr)}}
+.univ{
+  padding:22px 20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;justify-content:space-between;min-height:120px;
+  transition:background 0.3s;
+}
+.univ:hover{background:rgba(194,71,34,0.04)}
+.univ h4{font-family:'Fraunces',serif;font-size:18px;font-weight:500;line-height:1.2;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em}
+.univ h4 em{font-style:italic;color:var(--accent)}
+.univ .status{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;margin-top:auto}
+.univ .status.live{color:var(--accent)}
+.univ .status.live::before{content:'●  ';color:var(--accent)}
+.univ .status.soon{color:var(--mute);font-style:italic}
+.univ .status.soon::before{content:'◯  ';color:var(--mute);font-style:normal}
 
 /* ─── BÊTA ─── */
 section.beta{
@@ -236,6 +323,36 @@ footer b{color:var(--ink);font-weight:600}
   </div>
 </section>
 
+<!-- MARCEL & ÉQUIPE ──────────────────────────── -->
+<section class="marcel">
+  <div class="section-title">
+    <div class="label">◆ Marcel & son équipe</div>
+    <h2>Onze spécialistes,<br><em>un seul interlocuteur.</em></h2>
+  </div>
+
+  <div class="constellation">
+    <svg class="constellation-orbit" viewBox="0 0 640 640">
+      <circle cx="320" cy="320" r="265" fill="none" stroke="#C24722" stroke-width="0.7" stroke-dasharray="2 8"/>
+    </svg>
+    <div class="marcel-center">
+      <div class="name">Marcel</div>
+      <div class="role">Chef d'orchestre</div>
+    </div>
+    <div class="agent a1"><span class="ag-name">Théodore</span><span class="ag-dom">Patrimoine</span></div>
+    <div class="agent a2"><span class="ag-name">Augustin</span><span class="ag-dom">Immobilier</span></div>
+    <div class="agent a3"><span class="ag-name">Codex</span><span class="ag-dom">Fiscalité</span></div>
+    <div class="agent a4"><span class="ag-name">Capital</span><span class="ag-dom">Marchés</span></div>
+    <div class="agent a5"><span class="ag-name">Hermès</span><span class="ag-dom">Transmission</span></div>
+    <div class="agent a6"><span class="ag-name">Iris</span><span class="ag-dom">Voyage</span></div>
+    <div class="agent a7"><span class="ag-name">Émile</span><span class="ag-dom">Art</span></div>
+    <div class="agent a8"><span class="ag-name">Léon</span><span class="ag-dom">Mobilité</span></div>
+    <div class="agent a9"><span class="ag-name">Joséphine</span><span class="ag-dom">Joaillerie</span></div>
+    <div class="agent a10"><span class="ag-name">Hélène</span><span class="ag-dom">Bien-être</span></div>
+    <div class="agent a11"><span class="ag-name">Olympe</span><span class="ag-dom">Mécénat</span></div>
+  </div>
+</section>
+
+
 <!-- SERVICES ─────────────────────────────────── -->
 <section class="services">
   <div class="section-title">
@@ -299,6 +416,49 @@ footer b{color:var(--ink);font-weight:600}
     </article>
   </div>
 </section>
+
+<!-- VOS UNIVERS ──────────────────────────────── -->
+<section class="univers" id="univers">
+  <div class="section-title">
+    <div class="label">◆ Vos univers · 4 ouverts · 8 en déploiement</div>
+    <h2>Tout ce qui mérite<br>votre <em>attention.</em></h2>
+  </div>
+
+  <div class="univers-cats">
+
+    <div class="univ-cat">
+      <div class="univ-cat-head"><span>Patrimoine</span><em>4 univers ouverts</em></div>
+      <div class="univ-grid">
+        <article class="univ"><h4>Cartographie</h4><span class="status live">Live</span></article>
+        <article class="univ"><h4>Immobilier</h4><span class="status live">Live</span></article>
+        <article class="univ"><h4>Fiscalité <em>2026</em></h4><span class="status live">Live</span></article>
+        <article class="univ"><h4>Transmission</h4><span class="status live">Live</span></article>
+      </div>
+    </div>
+
+    <div class="univ-cat">
+      <div class="univ-cat-head"><span>Investissement &amp; art de vivre</span><em>en déploiement Q3 2026</em></div>
+      <div class="univ-grid">
+        <article class="univ"><h4>Marchés &amp; <em>Private Equity</em></h4><span class="status soon">Q3 2026</span></article>
+        <article class="univ"><h4>Voyage &amp; Conciergerie</h4><span class="status soon">Q3 2026</span></article>
+        <article class="univ"><h4>Art &amp; Collections</h4><span class="status soon">Q4 2026</span></article>
+        <article class="univ"><h4>Voitures · Yachts</h4><span class="status soon">Q4 2026</span></article>
+      </div>
+    </div>
+
+    <div class="univ-cat">
+      <div class="univ-cat-head"><span>Loisirs &amp; passions</span><em>en déploiement Q4 2026</em></div>
+      <div class="univ-grid">
+        <article class="univ"><h4>Montres &amp; <em>Joaillerie</em></h4><span class="status soon">Q4 2026</span></article>
+        <article class="univ"><h4>Vins &amp; Gastronomie</h4><span class="status soon">Q4 2026</span></article>
+        <article class="univ"><h4>Mode &amp; Bien-être</h4><span class="status soon">Q4 2026</span></article>
+        <article class="univ"><h4>Mécénat &amp; <em>NextGen</em></h4><span class="status soon">Q4 2026</span></article>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 
 <!-- BÊTA ─────────────────────────────────────── -->
 <section class="beta" id="beta">
