@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Cockpit (Proposition A)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Cormorant:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#1A1F1B;
+  --bg-2:#0F1310;
+  --instrument:#0A0C09;
+  --cream:#F5EDD8;
+  --cream-mute:rgba(245,237,216,0.62);
+  --accent:#FF6B35;
+  --lume:#B8E000;
+  --line:#3A4239;
+  --line-fine:rgba(245,237,216,0.10);
+}
+html,body{background:var(--bg);color:var(--cream);font-family:'Cormorant',serif;font-weight:400;font-size:16px;line-height:1.5;overflow-x:hidden;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* Grain texture */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.7 0 0 0 0 0.6 0 0 0 0 0.4 0 0 0 0.12 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:overlay;opacity:0.6;
+}
+main{position:relative;z-index:1}
+
+/* TOPBAR cockpit */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 32px;background:linear-gradient(180deg,var(--bg) 0%,rgba(26,31,27,0.85) 100%);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--cream-mute);font-weight:500}
+.topbar .brand{display:flex;align-items:center;gap:12px}
+.topbar .brand b{color:var(--cream);font-weight:600;letter-spacing:0.32em}
+.topbar .brand i{color:var(--accent);font-style:normal;font-size:14px}
+.topbar .status{display:flex;align-items:center;gap:18px}
+.topbar .status .dot{width:7px;height:7px;border-radius:50%;background:var(--lume);box-shadow:0 0 8px var(--lume);animation:lume 2s ease-in-out infinite}
+@keyframes lume{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* HERO altimètre */
+section.takeoff{min-height:100vh;padding:96px 32px 60px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative}
+.takeoff .eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.5em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:32px;display:inline-flex;align-items:center;gap:14px}
+.takeoff .eyebrow::before,.takeoff .eyebrow::after{content:'';width:30px;height:1px;background:var(--accent)}
+
+/* Altimeter SVG */
+.altimeter{width:min(420px,82vw);height:min(420px,82vw);margin:8px auto 40px;position:relative}
+.altimeter svg{width:100%;height:100%;overflow:visible}
+.alt-ring{fill:none;stroke:var(--instrument);stroke-width:18}
+.alt-tick{stroke:var(--cream);stroke-width:1.2}
+.alt-tick-major{stroke:var(--cream);stroke-width:2;stroke-linecap:square}
+.alt-num{fill:var(--cream);font-family:'Major Mono Display',monospace;font-size:14px;text-anchor:middle;dominant-baseline:central}
+.alt-center{fill:var(--instrument);stroke:var(--line);stroke-width:1}
+.alt-needle{fill:var(--accent);transform-origin:center;animation:needle 4.5s cubic-bezier(0.16,1,0.3,1) infinite alternate;filter:drop-shadow(0 0 6px rgba(255,107,53,0.55))}
+@keyframes needle{from{transform:rotate(45deg)}to{transform:rotate(295deg)}}
+.alt-needle-small{fill:var(--lume);transform-origin:center;animation:needle-small 12s linear infinite}
+@keyframes needle-small{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.alt-label{fill:var(--cream-mute);font-family:'JetBrains Mono',monospace;font-size:9px;text-anchor:middle;letter-spacing:0.18em;text-transform:uppercase}
+.alt-readout{fill:var(--lume);font-family:'Major Mono Display',monospace;font-size:32px;text-anchor:middle;dominant-baseline:central;filter:drop-shadow(0 0 4px rgba(184,224,0,0.6))}
+
+.takeoff h1{font-family:'Cormorant',serif;font-style:italic;font-weight:500;font-size:clamp(38px,5.6vw,68px);line-height:1.1;letter-spacing:-0.02em;color:var(--cream);margin-bottom:14px;max-width:760px}
+.takeoff h1 em{color:var(--accent);font-style:italic}
+.takeoff .tagline{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:0.32em;color:var(--cream-mute);text-transform:uppercase;font-weight:500;margin-bottom:24px}
+.takeoff .tagline b{color:var(--lume);font-weight:600}
+
+/* SIREN cockpit input */
+.checklist{margin:24px auto 0;max-width:560px;width:100%;background:var(--instrument);border:1px solid var(--line);border-radius:8px;padding:18px 22px;font-family:'JetBrains Mono',monospace}
+.checklist .ck-head{font-size:9px;letter-spacing:0.32em;color:var(--accent);text-transform:uppercase;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between}
+.checklist input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--lume);font-family:'Major Mono Display',monospace;font-size:24px;padding:10px 0;outline:none;letter-spacing:0.18em;text-align:center;filter:drop-shadow(0 0 3px rgba(184,224,0,0.4))}
+.checklist input::placeholder{color:var(--cream-mute);opacity:0.45}
+.checklist .ck-btn{margin-top:14px;width:100%;background:var(--accent);color:var(--bg);border:none;padding:13px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;font-weight:700;cursor:pointer;border-radius:4px;transition:all 0.3s}
+.checklist .ck-btn:hover{background:var(--lume);color:var(--bg)}
+
+/* INSTRUMENTS panel (6 services) */
+section.instruments{padding:120px 32px 100px;background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);border-top:1px solid var(--line)}
+.section-head{text-align:center;margin-bottom:64px;max-width:780px;margin-left:auto;margin-right:auto}
+.section-head .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.4em;color:var(--accent);text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.section-head h2{font-family:'Cormorant',serif;font-style:italic;font-weight:500;font-size:clamp(30px,4vw,48px);line-height:1.1;color:var(--cream);letter-spacing:-0.02em}
+.section-head h2 em{color:var(--accent)}
+
+.dials{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto}
+@media(max-width:860px){.dials{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.dials{grid-template-columns:1fr}}
+.dial{background:var(--instrument);border:1px solid var(--line);border-radius:10px;padding:24px 22px 22px;position:relative;transition:all 0.5s cubic-bezier(0.16,1,0.3,1)}
+.dial:hover{border-color:var(--accent);box-shadow:0 0 24px rgba(255,107,53,0.18),inset 0 0 0 1px rgba(255,107,53,0.18);transform:translateY(-3px)}
+.dial-num{font-family:'Major Mono Display',monospace;font-size:11px;color:var(--accent);letter-spacing:0.22em;margin-bottom:14px;font-weight:600}
+.dial-gauge{width:88px;height:88px;margin-bottom:16px;position:relative}
+.dial-gauge svg{width:100%;height:100%}
+.gauge-ring{fill:none;stroke:var(--line);stroke-width:4}
+.gauge-fill{fill:none;stroke:var(--lume);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(184,224,0,0.55))}
+.gauge-center{fill:var(--bg);stroke:var(--cream);stroke-width:1}
+.gauge-needle{fill:var(--accent);transform-origin:center}
+.dial h3{font-family:'Cormorant',serif;font-style:italic;font-size:22px;color:var(--cream);font-weight:500;line-height:1.2;margin-bottom:8px;letter-spacing:-0.005em}
+.dial p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cream-mute);line-height:1.6;letter-spacing:0.02em;margin-bottom:14px}
+.dial .source{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cream-mute);letter-spacing:0.22em;text-transform:uppercase;font-weight:600;border-top:1px solid var(--line);padding-top:10px}
+.dial .source b{color:var(--lume)}
+
+/* CREW (équipage) */
+section.crew{padding:120px 32px;background:var(--bg);text-align:center;border-top:1px solid var(--line)}
+.crew-orb{position:relative;width:min(580px,86vw);height:min(580px,86vw);margin:48px auto 32px}
+.crew-marcel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:148px;height:148px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--accent),#A6391C);box-shadow:0 0 40px rgba(255,107,53,0.45),0 0 90px rgba(255,107,53,0.22),inset 0 4px 16px rgba(245,237,216,0.18);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.crew-marcel-name{font-family:'Cormorant',serif;font-style:italic;font-size:30px;color:var(--cream);font-weight:500;letter-spacing:-0.01em}
+.crew-marcel-role{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.28em;color:var(--cream);text-transform:uppercase;opacity:0.85;margin-top:6px}
+.crew-agent{position:absolute;width:84px;height:84px;border-radius:50%;background:var(--instrument);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translate(-50%,-50%);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+.crew-agent:hover{border-color:var(--lume);box-shadow:0 0 12px rgba(184,224,0,0.4)}
+.crew-agent .ag-name{font-family:'Cormorant',serif;font-style:italic;font-size:14px;color:var(--cream);font-weight:500}
+.crew-agent .ag-role{font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.20em;color:var(--cream-mute);text-transform:uppercase;font-weight:600;margin-top:3px;text-align:center}
+/* 11 positions hendécagone */
+.a-1{top:6%;left:50%} .a-2{top:13%;left:73%} .a-3{top:32%;left:90%}
+.a-4{top:57%;left:93%} .a-5{top:78%;left:82%} .a-6{top:90%;left:62%}
+.a-7{top:90%;left:38%} .a-8{top:78%;left:18%} .a-9{top:57%;left:7%}
+.a-10{top:32%;left:10%} .a-11{top:13%;left:27%}
+.orbit-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.42}
+
+/* CLEARANCE (bêta) */
+section.clearance{padding:140px 32px;background:linear-gradient(180deg,var(--bg-2) 0%,#000 100%);text-align:center;border-top:1px solid var(--line)}
+.clearance h2{font-family:'Cormorant',serif;font-style:italic;font-size:clamp(36px,5vw,62px);line-height:1.05;color:var(--cream);margin-bottom:14px;font-weight:500;letter-spacing:-0.02em}
+.clearance h2 em{color:var(--accent)}
+.clearance .meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.32em;color:var(--cream-mute);text-transform:uppercase;font-weight:500;margin-bottom:36px}
+.clearance .meta b{color:var(--lume)}
+.clearance .ticket{display:inline-block;margin:24px auto;padding:28px 36px;background:var(--instrument);border:1.5px dashed var(--line);border-radius:6px;font-family:'JetBrains Mono',monospace;text-align:left}
+.clearance .ticket .row{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:8px 0;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:0.14em;text-transform:uppercase}
+.clearance .ticket .row:last-child{border-bottom:none}
+.clearance .ticket .row b{color:var(--accent);font-weight:600}
+.clearance .ticket .row span{color:var(--cream)}
+.clearance .cta{margin-top:32px;display:inline-block;padding:16px 38px;background:var(--accent);color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.32em;text-transform:uppercase;font-weight:700;text-decoration:none;border-radius:4px;transition:all 0.3s}
+.clearance .cta:hover{background:var(--lume);color:var(--bg);box-shadow:0 0 24px rgba(184,224,0,0.4)}
+
+/* FOOTER cockpit */
+footer{padding:30px 32px;background:#000;color:var(--cream-mute);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;text-align:center;border-top:1px solid var(--line);line-height:1.8}
+footer b{color:var(--lume)}
+</style>
+</head>
+<body>
+<main>
+
+<div class="topbar">
+  <div class="brand"><b>IKCP</b> <i>·</i> Family Office Augmenté</div>
+  <div class="status">
+    <span><span class="dot"></span> Système opérationnel</span>
+    <span>ORIAS 23001568</span>
+  </div>
+</div>
+
+<!-- DÉCOLLAGE -->
+<section class="takeoff">
+  <span class="eyebrow">Pré-vol · Identification requise</span>
+  <div class="altimeter">
+    <svg viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="90" class="alt-ring"/>
+      <!-- Graduations -->
+      <g>
+        <line x1="100" y1="14" x2="100" y2="22" class="alt-tick-major"/>
+        <line x1="100" y1="186" x2="100" y2="178" class="alt-tick-major"/>
+        <line x1="14" y1="100" x2="22" y2="100" class="alt-tick-major"/>
+        <line x1="186" y1="100" x2="178" y2="100" class="alt-tick-major"/>
+        <text x="100" y="32" class="alt-num">0</text>
+        <text x="168" y="100" class="alt-num">3</text>
+        <text x="100" y="172" class="alt-num">6</text>
+        <text x="32" y="100" class="alt-num">9</text>
+      </g>
+      <!-- 24 graduations minor -->
+      <g>
+        <line x1="100" y1="14" x2="100" y2="18" class="alt-tick"/>
+        <line x1="120.7" y1="16.7" x2="119.4" y2="20.7" class="alt-tick"/>
+        <line x1="140.7" y1="25.4" x2="138.1" y2="29" class="alt-tick"/>
+        <line x1="158.4" y1="40.2" x2="154.9" y2="42.9" class="alt-tick"/>
+        <line x1="172.5" y1="59.3" x2="168.5" y2="60.7" class="alt-tick"/>
+        <line x1="182.5" y1="80.6" x2="178.5" y2="82" class="alt-tick"/>
+      </g>
+      <!-- Aiguille principale -->
+      <polygon points="100,100 96,30 100,22 104,30" class="alt-needle"/>
+      <!-- Petite aiguille -->
+      <polygon points="100,100 98,60 100,55 102,60" class="alt-needle-small"/>
+      <circle cx="100" cy="100" r="8" class="alt-center"/>
+      <!-- Readout -->
+      <text x="100" y="138" class="alt-readout">947</text>
+      <text x="100" y="158" class="alt-label">Niveau de vol</text>
+    </svg>
+  </div>
+  <h1>Une porte. Une équipe.<br>Votre patrimoine <em>en altitude.</em></h1>
+  <p class="tagline">100 %&nbsp;<b>Digital</b> · 100 %&nbsp;<b>Automatisé</b> · Sans oublier l'humain</p>
+
+  <form class="checklist" onsubmit="return goSiren(event)">
+    <div class="ck-head"><span>▸ Pre-flight checklist</span><span>FR · CDG</span></div>
+    <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN">
+    <button class="ck-btn" type="submit">▸ Décoller avec Marcel</button>
+  </form>
+</section>
+
+<!-- INSTRUMENTS -->
+<section class="instruments" id="services">
+  <div class="section-head">
+    <div class="lbl">Six instruments · LIVE</div>
+    <h2>Vos services <em>opérationnels.</em><br>Tous les voyants au vert.</h2>
+  </div>
+  <div class="dials">
+    <article class="dial">
+      <div class="dial-num">SVC · 01</div>
+      <div class="dial-gauge"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="gauge-ring"/><circle cx="50" cy="50" r="38" class="gauge-fill" pathLength="100" stroke-dasharray="92 100" transform="rotate(-90 50 50)"/><circle cx="50" cy="50" r="3" class="gauge-center"/></svg></div>
+      <h3>Cartographie SIREN</h3>
+      <p>SIREN saisi → société identifiée en 30 secondes via sources officielles.</p>
+      <div class="source"><b>● LIVE</b> · INSEE · INPI · BODACC</div>
+    </article>
+    <article class="dial">
+      <div class="dial-num">SVC · 02</div>
+      <div class="dial-gauge"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="gauge-ring"/><circle cx="50" cy="50" r="38" class="gauge-fill" pathLength="100" stroke-dasharray="100 100" transform="rotate(-90 50 50)"/><circle cx="50" cy="50" r="3" class="gauge-center"/></svg></div>
+      <h3>Marcel & équipe</h3>
+      <p>Marcel orchestre 11 spécialistes IA. Réponse en moins de 5 secondes.</p>
+      <div class="source"><b>● LIVE</b> · Intelligence souveraine</div>
+    </article>
+    <article class="dial">
+      <div class="dial-num">SVC · 03</div>
+      <div class="dial-gauge"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="gauge-ring"/><circle cx="50" cy="50" r="38" class="gauge-fill" pathLength="100" stroke-dasharray="88 100" transform="rotate(-90 50 50)"/><circle cx="50" cy="50" r="3" class="gauge-center"/></svg></div>
+      <h3>Fiscalité 2026</h3>
+      <p>IR · IFI · Dutreil · succession. Calculs conformes Loi de Finances 2026.</p>
+      <div class="source"><b>● LIVE</b> · CGI · BOFiP · LF 2026</div>
+    </article>
+    <article class="dial">
+      <div class="dial-num">SVC · 04</div>
+      <div class="dial-gauge"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="gauge-ring"/><circle cx="50" cy="50" r="38" class="gauge-fill" pathLength="100" stroke-dasharray="100 100" transform="rotate(-90 50 50)"/><circle cx="50" cy="50" r="3" class="gauge-center"/></svg></div>
+      <h3>Audit MIF II souverain</h3>
+      <p>Chaque échange tracé immutablement à Paris. Conservation 10 ans.</p>
+      <div class="source"><b>● LIVE</b> · art. 325-9 RGAMF</div>
+    </article>
+    <article class="dial">
+      <div class="dial-num">SVC · 05</div>
+      <div class="dial-gauge"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="gauge-ring"/><circle cx="50" cy="50" r="38" class="gauge-fill" pathLength="100" stroke-dasharray="76 100" transform="rotate(-90 50 50)"/><circle cx="50" cy="50" r="3" class="gauge-center"/></svg></div>
+      <h3>Veille collectionneur</h3>
+      <p>Scan quotidien des marchés. Alertes ciblées sur votre wishlist.</p>
+      <div class="source"><b>● LIVE</b> · Scan 07h Paris</div>
+    </article>
+    <article class="dial">
+      <div class="dial-num">SVC · 06</div>
+      <div class="dial-gauge"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="gauge-ring"/><circle cx="50" cy="50" r="38" class="gauge-fill" pathLength="100" stroke-dasharray="100 100" transform="rotate(-90 50 50)"/><circle cx="50" cy="50" r="3" class="gauge-center"/></svg></div>
+      <h3>Application web</h3>
+      <p>Installable iOS/Android en 1 tap. Sans App Store. Souveraine.</p>
+      <div class="source"><b>● LIVE</b> · PWA · Hors ligne</div>
+    </article>
+  </div>
+</section>
+
+<!-- CREW -->
+<section class="crew">
+  <div class="section-head">
+    <div class="lbl">Équipage · 11 spécialistes</div>
+    <h2>Marcel <em>commande</em>.<br>Les spécialistes <em>exécutent.</em></h2>
+  </div>
+  <div class="crew-orb">
+    <svg class="orbit-svg" viewBox="0 0 580 580">
+      <circle cx="290" cy="290" r="240" fill="none" stroke="#FF6B35" stroke-width="0.7" stroke-dasharray="2 8" opacity="0.55"/>
+    </svg>
+    <div class="crew-marcel">
+      <div class="crew-marcel-name">Marcel</div>
+      <div class="crew-marcel-role">Commandant</div>
+    </div>
+    <div class="crew-agent a-1"><span class="ag-name">Théodore</span><span class="ag-role">Patrimoine</span></div>
+    <div class="crew-agent a-2"><span class="ag-name">Augustin</span><span class="ag-role">Immobilier</span></div>
+    <div class="crew-agent a-3"><span class="ag-name">Codex</span><span class="ag-role">Fiscalité</span></div>
+    <div class="crew-agent a-4"><span class="ag-name">Capital</span><span class="ag-role">Marchés</span></div>
+    <div class="crew-agent a-5"><span class="ag-name">Hermès</span><span class="ag-role">Transmission</span></div>
+    <div class="crew-agent a-6"><span class="ag-name">Iris</span><span class="ag-role">Voyage</span></div>
+    <div class="crew-agent a-7"><span class="ag-name">Émile</span><span class="ag-role">Art</span></div>
+    <div class="crew-agent a-8"><span class="ag-name">Léon</span><span class="ag-role">Mobilité</span></div>
+    <div class="crew-agent a-9"><span class="ag-name">Joséphine</span><span class="ag-role">Joaillerie</span></div>
+    <div class="crew-agent a-10"><span class="ag-name">Hélène</span><span class="ag-role">Bien-être</span></div>
+    <div class="crew-agent a-11"><span class="ag-name">Olympe</span><span class="ag-role">Mécénat</span></div>
+  </div>
+</section>
+
+<!-- CLEARANCE -->
+<section class="clearance" id="beta">
+  <div class="section-head">
+    <div class="lbl">Autorisation d'envol · Bêta privée</div>
+    <h2>50 sièges. <em>Sur invitation.</em></h2>
+  </div>
+  <p class="meta">● <b>23 / 50</b> · Embarquement en cours · Restant <b>27</b></p>
+
+  <div class="ticket">
+    <div class="row"><b>Vol</b><span>IKCP · FAMILY OFFICE BÊTA</span></div>
+    <div class="row"><b>Tarif</b><span>Mensuel offert · Phase fondatrice</span></div>
+    <div class="row"><b>Durée</b><span>6 mois renouvelables</span></div>
+    <div class="row"><b>Cabine</b><span>Familles patrimoine ≥ 1 M€</span></div>
+    <div class="row"><b>Embarquement</b><span>Sur demande exclusive</span></div>
+  </div>
+
+  <br>
+  <a href="https://calendly.com/ikcp-maxime" class="cta">▸ Demander mon accès</a>
+</section>
+
+<footer>
+  IKCP · IKIGAÏ Conseil Patrimonial · ORIAS <b>23001568</b> · SIREN <b>947 972 436</b><br>
+  ● Système opérationnel · Souverain France · Aucune démarche commerciale non sollicitée
+</footer>
+
+</main>
+<script>
+async function goSiren(e){
+  e.preventDefault();
+  const s = (document.getElementById('siren').value||'').replace(/\s+/g,'');
+  if(!/^\d{9}$/.test(s)) return false;
+  try{
+    const r = await fetch(`https://ikcp-pappers.maxime-ead.workers.dev/entreprise/${s}/short`);
+    const d = await r.json();
+    alert(`✈ Décollage autorisé.\n${d.nom_entreprise||d.denomination||'Société identifiée'}\nForme : ${d.forme_juridique||'—'}\nCapital : ${d.capital?Number(d.capital).toLocaleString('fr-FR')+' €':'—'}\n\nMarcel oriente vers le bon spécialiste.`);
+  }catch(err){
+    alert('⚠ Tour de contrôle injoignable. Réessayez ou demandez votre accès bêta.');
+  }
+  return false;
+}
+</script>
+</body>
+</html>
