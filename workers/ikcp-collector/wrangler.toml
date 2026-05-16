@@ -40,10 +40,20 @@ binding = "IKCP_COLLECTOR_DB"
 database_name = "ikcp_collector_db"
 database_id = "36917503-cb64-402d-99c3-28ad48587bd8"
 
-# Cron Trigger : scan quotidien 7h Paris (05:00 UTC en heure d'ete, 06:00 UTC en heure d'hiver)
-# On choisit 06:00 UTC (= 7h Paris hiver, 8h Paris ete) pour rester regulier.
+# Cron Triggers — multi-automations Marcel (UTC)
+# 5h00 : cote actifs surveilles (Perplexity)
+# 5h30 : daily digest email (Brevo)
+# 6h00 : veille nocturne fiscale/jurisprudence (Perplexity)
+# 9h00 lundi : detection inactivite (nudge Brevo)
+# 0h00 1er du mois : cartographie SIREN refresh (Pappers)
 [triggers]
-crons = ["0 6 * * *"]
+crons = [
+  "0 5 * * *",
+  "30 5 * * *",
+  "0 6 * * *",
+  "0 9 * * 1",
+  "0 0 1 * *",
+]
 
 [observability]
 enabled = true
