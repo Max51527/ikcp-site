@@ -93,63 +93,68 @@ export const Marcel = {
   // ─── Auth + utilisateur ─────────────────────────────────────
   Auth: {
     async requestMagicLink(email) {
-      return jsonFetch(`${ENDPOINTS.client}/auth/request`, {
+      return jsonFetch(`${ENDPOINTS.client}/auth/send`, {
         method: 'POST',
         body: JSON.stringify({ email }),
       });
     },
     async logout() {
-      await jsonFetch(`${ENDPOINTS.client}/auth/logout`, { method: 'POST' });
-      location.href = '/';
+      await jsonFetch(`${ENDPOINTS.client}/auth/logout`, { method: 'GET' });
+      location.href = '/app/index.html';
     },
     async me() {
-      return jsonFetch(`${ENDPOINTS.client}/me`);
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me`);
     },
   },
 
-  // ─── Données utilisateur ────────────────────────────────────
+  // ─── Données utilisateur (toutes routes /api/v1/me/*) ──────
   Me: {
+    async sirens() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/sirens`);
+    },
     async addSiren(siren) {
-      return jsonFetch(`${ENDPOINTS.client}/me/sirens`, {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/sirens`, {
         method: 'POST',
         body: JSON.stringify({ siren }),
       });
     },
     async conversations() {
-      return jsonFetch(`${ENDPOINTS.client}/me/conversations`);
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/conversations`);
     },
-    async contacts(filters = {}) {
-      const qs = new URLSearchParams(filters).toString();
-      return jsonFetch(`${ENDPOINTS.client}/me/contacts${qs ? '?' + qs : ''}`);
+    async contacts() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/contacts`);
     },
     async addContact(payload) {
-      return jsonFetch(`${ENDPOINTS.client}/me/contacts`, {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/contacts`, {
         method: 'POST',
         body: JSON.stringify(payload),
       });
     },
+    async deleteContact(id) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/contacts/${id}`, { method: 'DELETE' });
+    },
     async alerts(unread = false) {
-      return jsonFetch(`${ENDPOINTS.client}/me/alerts${unread ? '?unread=1' : ''}`);
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/alerts${unread ? '?unread=1' : ''}`);
     },
     async documents() {
-      return jsonFetch(`${ENDPOINTS.client}/me/documents`);
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/documents`);
     },
     async watches() {
-      return jsonFetch(`${ENDPOINTS.client}/me/watches`);
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/watches`);
     },
     async addWatch(payload) {
-      return jsonFetch(`${ENDPOINTS.client}/me/watches`, {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/watches`, {
         method: 'POST',
         body: JSON.stringify(payload),
       });
     },
     async exportRgpd() {
-      return jsonFetch(`${ENDPOINTS.client}/me/export`);
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/export`);
     },
     async deleteAccount() {
       const ok = confirm('Supprimer définitivement votre compte et toutes vos données ? Action irréversible.');
       if (!ok) return false;
-      await jsonFetch(`${ENDPOINTS.client}/me`, { method: 'DELETE' });
+      await jsonFetch(`${ENDPOINTS.client}/api/v1/me`, { method: 'DELETE' });
       return true;
     },
   },

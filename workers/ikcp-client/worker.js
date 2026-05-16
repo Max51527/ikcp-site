@@ -55,6 +55,27 @@ export default {
       if (path === '/api/v1/stripe/portal' && method === 'POST') return await handleStripePortal(session, env);
       if (path === '/auth/logout') return await handleLogout(session, env);
 
+      // ─── Espace utilisateur (CRUD freemium v2) ──────────
+      if (path === '/api/v1/me/sirens' && method === 'POST') return await handleSirensAdd(request, session, env);
+      if (path === '/api/v1/me/sirens' && method === 'GET') return await handleSirensList(session, env);
+
+      if (path === '/api/v1/me/conversations' && method === 'GET') return await handleConvList(session, env);
+
+      if (path === '/api/v1/me/contacts' && method === 'GET') return await handleContactsList(session, env);
+      if (path === '/api/v1/me/contacts' && method === 'POST') return await handleContactsAdd(request, session, env);
+      const cm = path.match(/^\/api\/v1\/me\/contacts\/([a-f0-9-]+)$/);
+      if (cm && method === 'DELETE') return await handleContactsDelete(cm[1], session, env);
+
+      if (path === '/api/v1/me/alerts' && method === 'GET') return await handleAlertsList(request, session, env);
+
+      if (path === '/api/v1/me/documents' && method === 'GET') return await handleDocsList(session, env);
+
+      if (path === '/api/v1/me/watches' && method === 'GET') return await handleWatchesList(session, env);
+      if (path === '/api/v1/me/watches' && method === 'POST') return await handleWatchesAdd(request, session, env);
+
+      if (path === '/api/v1/me/export' && method === 'GET') return await handleExportRgpd(session, env);
+      if (path === '/api/v1/me' && method === 'DELETE') return await handleDeleteAccount(request, session, env);
+
       return json({ error: 'not_found' }, 404);
     } catch (err) {
       console.error('Worker error:', err.stack || err.message);
@@ -452,4 +473,144 @@ function emailTemplateCancelRetention() {
     <p>Vous repassez en compte Découverte. Votre historique est préservé.</p>
     <p>Pour toute question : <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a></p>
   </div>`;
+}
+
+// ──────────────────────────────────────────────────────────────
+// CRUD ESPACE UTILISATEUR (freemium v2)
+// ──────────────────────────────────────────────────────────────
+
+async function handleSirensList(session, env) {
+  const rows = await env.D1.prepare('SELECT id, siren, nom_societe, forme_juridique, capital, date_creation, ville, is_primary FROM user_sirens WHERE user_id = ? ORDER BY is_primary DESC, created_at DESC')
+    .bind(session.userId).all();
+  return json(rows.results || []);
+}
+
+async function handleSirensAdd(request, session, env) {
+  const { siren } = await request.json().catch(() => ({}));
+  if (!siren || !/^\d{9}$/.test(String(siren).replace(/\s/g, '')))
+    return json({ error: 'invalid_siren' }, 400);
+  const s = String(siren).replace(/\s/g, '');
+
+  // Cartographie via worker ikcp-pappers
+  let data = null;
+  try {
+    const r = await fetch(`${env.IKCP_PAPPERS_URL}/entreprise/${s}/short`);
+    data = await r.json();
+  } catch (_) { /* ignore — on stocke quand même */ }
+
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  await env.D1.prepare('INSERT INTO user_sirens (id, user_id, siren, nom_societe, forme_juridique, capital, date_creation, ville, cached_json, last_refreshed_at, is_primary, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
+    .bind(id, session.userId, s, data?.nom || null, data?.forme_juridique || null, data?.capital || null, data?.date_creation || null, data?.siege?.ville || null, data ? JSON.stringify(data) : null, now, 0, now)
+    .run();
+  await audit(env, session.userId, 'siren_add', request, { siren: s });
+  return json({ ok: true, id, data });
+}
+
+async function handleConvList(session, env) {
+  const rows = await env.D1.prepare('SELECT id, title, sphere, agent_principal, messages_count, last_message_at FROM conversations WHERE user_id = ? ORDER BY last_message_at DESC LIMIT 50')
+    .bind(session.userId).all();
+  return json(rows.results || []);
+}
+
+async function handleContactsList(session, env) {
+  const rows = await env.D1.prepare('SELECT id, category, nom, prenom, societe, email, telephone, ville, notes, is_favorite, last_interaction_at FROM user_contacts WHERE user_id = ? ORDER BY is_favorite DESC, nom ASC')
+    .bind(session.userId).all();
+  return json(rows.results || []);
+}
+
+async function handleContactsAdd(request, session, env) {
+  const body = await request.json().catch(() => ({}));
+  if (!body.nom || !body.category) return json({ error: 'missing_fields', required: ['nom', 'category'] }, 400);
+
+  // Quota tier discovery : 5 contacts max
+  const count = await env.D1.prepare('SELECT COUNT(*) AS n FROM user_contacts WHERE user_id = ?').bind(session.userId).first();
+  if (session.tier === 'discovery' && (count?.n || 0) >= 5) {
+    return json({ error: 'tier_limit', max: 5, upgrade: 'premium_essentiel' }, 403);
+  }
+
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  await env.D1.prepare('INSERT INTO user_contacts (id, user_id, category, nom, prenom, societe, adresse, code_postal, ville, pays, telephone, email, site_web, notes, tags_json, is_favorite, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    .bind(id, session.userId, body.category, body.nom, body.prenom || null, body.societe || null, body.adresse || null, body.code_postal || null, body.ville || null, body.pays || 'France', body.telephone || null, body.email || null, body.site_web || null, body.notes || null, body.tags_json || null, body.is_favorite ? 1 : 0, now, now)
+    .run();
+  await audit(env, session.userId, 'contact_add', request, { category: body.category });
+  return json({ ok: true, id });
+}
+
+async function handleContactsDelete(id, session, env) {
+  await env.D1.prepare('DELETE FROM user_contacts WHERE id = ? AND user_id = ?').bind(id, session.userId).run();
+  return json({ ok: true });
+}
+
+async function handleAlertsList(request, session, env) {
+  const u = new URL(request.url);
+  const unread = u.searchParams.get('unread') === '1';
+  const sql = unread
+    ? 'SELECT id, sphere, source, title, body, url, importance, read_at, created_at FROM alerts WHERE user_id = ? AND read_at IS NULL ORDER BY importance DESC, created_at DESC LIMIT 50'
+    : 'SELECT id, sphere, source, title, body, url, importance, read_at, created_at FROM alerts WHERE user_id = ? ORDER BY created_at DESC LIMIT 50';
+  const rows = await env.D1.prepare(sql).bind(session.userId).all();
+  return json(rows.results || []);
+}
+
+async function handleDocsList(session, env) {
+  const rows = await env.D1.prepare('SELECT id, type, title, r2_key, hash_eidas, signed_at, size_bytes, created_at FROM user_documents WHERE user_id = ? ORDER BY created_at DESC LIMIT 100')
+    .bind(session.userId).all();
+  return json(rows.results || []);
+}
+
+async function handleWatchesList(session, env) {
+  const rows = await env.D1.prepare('SELECT id, market, category, query, target_price, last_value, last_checked_at, active, created_at FROM user_watches WHERE user_id = ? AND active = 1 ORDER BY created_at DESC')
+    .bind(session.userId).all();
+  return json(rows.results || []);
+}
+
+async function handleWatchesAdd(request, session, env) {
+  const body = await request.json().catch(() => ({}));
+  if (!body.market || !body.query) return json({ error: 'missing_fields', required: ['market', 'query'] }, 400);
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  await env.D1.prepare('INSERT INTO user_watches (id, user_id, market, category, query, target_price, last_value, last_checked_at, active, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)')
+    .bind(id, session.userId, body.market, body.category || null, body.query, body.target_price || null, null, null, 1, now).run();
+  await audit(env, session.userId, 'watch_add', request, { market: body.market, query: body.query });
+  return json({ ok: true, id });
+}
+
+async function handleExportRgpd(session, env) {
+  const userId = session.userId;
+  const [user, sirens, conversations, contacts, alerts, documents, watches] = await Promise.all([
+    env.D1.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first(),
+    env.D1.prepare('SELECT * FROM user_sirens WHERE user_id = ?').bind(userId).all(),
+    env.D1.prepare('SELECT * FROM conversations WHERE user_id = ?').bind(userId).all(),
+    env.D1.prepare('SELECT * FROM user_contacts WHERE user_id = ?').bind(userId).all(),
+    env.D1.prepare('SELECT * FROM alerts WHERE user_id = ?').bind(userId).all(),
+    env.D1.prepare('SELECT * FROM user_documents WHERE user_id = ?').bind(userId).all(),
+    env.D1.prepare('SELECT * FROM user_watches WHERE user_id = ?').bind(userId).all(),
+  ]);
+  return json({
+    export_date: new Date().toISOString(),
+    user, sirens: sirens.results, conversations: conversations.results,
+    contacts: contacts.results, alerts: alerts.results,
+    documents: documents.results, watches: watches.results,
+    rgpd_note: 'Vos données souveraines France (Cloudflare WEUR Paris). Pour exercer votre droit à l\'oubli : DELETE /api/v1/me',
+  });
+}
+
+async function handleDeleteAccount(request, session, env) {
+  const userId = session.userId;
+  // Cascade — toutes les tables liées
+  await Promise.all([
+    env.D1.prepare('DELETE FROM user_sirens WHERE user_id = ?').bind(userId).run(),
+    env.D1.prepare('DELETE FROM conversations WHERE user_id = ?').bind(userId).run(),
+    env.D1.prepare('DELETE FROM messages WHERE conversation_id IN (SELECT id FROM conversations WHERE user_id = ?)').bind(userId).run().catch(() => {}),
+    env.D1.prepare('DELETE FROM user_contacts WHERE user_id = ?').bind(userId).run(),
+    env.D1.prepare('DELETE FROM alerts WHERE user_id = ?').bind(userId).run(),
+    env.D1.prepare('DELETE FROM user_documents WHERE user_id = ?').bind(userId).run(),
+    env.D1.prepare('DELETE FROM user_watches WHERE user_id = ?').bind(userId).run(),
+    env.D1.prepare('DELETE FROM usage_daily WHERE user_id = ?').bind(userId).run().catch(() => {}),
+    env.D1.prepare('DELETE FROM audit_index WHERE user_id = ?').bind(userId).run().catch(() => {}),
+  ]);
+  await env.D1.prepare('UPDATE users SET deleted_at = ?, email = NULL, display_name = NULL, prenom = NULL WHERE id = ?').bind(Date.now(), userId).run();
+  await audit(env, userId, 'account_delete', request, {});
+  return json({ ok: true, message: 'Compte supprimé. Vos données ont été effacées conformément au RGPD.' });
 }
