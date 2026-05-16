@@ -12,9 +12,12 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#FAF7F0;
+  --bg-2:#F5EFE0;
   --ink:#1A1814;
   --mute:#6B655A;
+  --faint:#9B8F80;
   --accent:#C24722;
+  --gold:#C9A96E;
   --line:rgba(26,24,20,0.10);
 }
 html,body{
@@ -25,17 +28,29 @@ html,body{
 }
 html{scroll-behavior:smooth}
 
-/* ─── NAV minimale ─── */
+/* ─── NAV charte officielle ─── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:50;
-  padding:22px 40px;
-  background:rgba(250,247,240,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 32px;
+  background:rgba(250,247,240,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
   border-bottom:1px solid var(--line);
 }
-nav .brand{font-family:'Fraunces',serif;font-size:22px;font-weight:500;letter-spacing:-0.005em}
+.brand-wrap{display:flex;flex-direction:column;line-height:1.1;flex-shrink:0}
+nav .brand{font-family:'Fraunces',serif;font-size:24px;font-weight:500;letter-spacing:-0.005em;color:var(--ink)}
 nav .brand span{color:var(--accent);font-style:italic}
-nav .meta{font-size:12px;color:var(--mute);letter-spacing:0.04em}
+nav .brand-sub{font-size:9px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:600;margin-top:2px}
+.nav-menu{list-style:none;display:flex;gap:32px;flex:1;justify-content:center}
+.nav-menu a{font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);text-decoration:none;font-weight:500;transition:color 0.3s;letter-spacing:0.005em}
+.nav-menu a:hover{color:var(--accent)}
+.nav-ctas{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-cta{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;text-decoration:none;padding:10px 18px;border-radius:999px;letter-spacing:0.015em;transition:all 0.3s;white-space:nowrap}
+.nav-cta-outline{color:var(--accent);border:1px solid var(--accent);background:transparent}
+.nav-cta-outline:hover{background:rgba(194,71,34,0.06)}
+.nav-cta-dark{color:var(--bg);background:var(--ink);padding:11px 22px}
+.nav-cta-dark:hover{background:var(--accent);transform:translateY(-1px)}
+@media(max-width:960px){.nav-menu{display:none}}
+@media(max-width:640px){.nav-cta-outline{display:none}}
 
 /* ─── HERO ─── */
 section.hero{
@@ -56,9 +71,12 @@ section.hero{
 }
 .hero h1 em{font-style:italic;color:var(--accent);font-weight:400}
 .hero p.subtitle{
-  font-size:20px;color:var(--mute);max-width:580px;margin:0 auto 48px;
-  line-height:1.55;
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:18px;color:var(--mute);max-width:680px;margin:0 auto 48px;
+  line-height:1.55;letter-spacing:-0.005em;
 }
+.hero p.subtitle em{font-style:italic;color:var(--ink);font-weight:500}
+.hero p.subtitle b{font-style:normal;color:var(--ink);font-weight:600}
 
 /* SIREN — gros et clair, au centre */
 .siren-form{
@@ -271,12 +289,12 @@ section.marcel{
   font-size:11.5px;color:var(--mute);font-style:italic;line-height:1.5;
 }
 .agent{
-  position:absolute;width:88px;height:88px;border-radius:50%;
+  position:absolute;width:108px;height:108px;border-radius:50%;
   background:var(--bg);border:1px solid var(--line);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   transform:translate(-50%,-50%) scale(0.85);
   transition:all 0.5s cubic-bezier(0.16,1,0.3,1);
-  cursor:pointer;
+  cursor:pointer;padding:8px;
   opacity:0;animation:agentIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
   z-index:3;
 }
@@ -340,12 +358,11 @@ section.marcel{
   font-size:8.5px;letter-spacing:0.18em;color:var(--mute);
   text-transform:uppercase;font-weight:600;margin-top:3px;text-align:center;padding:0 6px;
 }
-.agent .ag-sphere{
-  font-family:'Fraunces',serif;font-style:italic;font-size:12.5px;
-  color:var(--ink);font-weight:500;line-height:1.15;
-  text-align:center;padding:0 6px;letter-spacing:-0.005em;
-}
-.agent .ag-icon{width:22px;height:22px;margin-bottom:4px;color:var(--accent);opacity:0.85;transition:all 0.4s}
+.agent .ag-emoji{font-size:28px;line-height:1;margin-bottom:4px;display:block;filter:drop-shadow(0 2px 3px rgba(26,24,20,0.08));transition:transform 0.4s}
+.agent:hover .ag-emoji{transform:scale(1.12)}
+.agent .ag-name{font-family:'Fraunces',serif;font-size:13.5px;font-weight:500;color:var(--ink);line-height:1.1;letter-spacing:-0.005em}
+.agent .ag-dom{font-family:'Inter',sans-serif;font-size:8.5px;letter-spacing:0.16em;color:var(--mute);text-transform:uppercase;font-weight:600;margin-top:2px;text-align:center;padding:0 4px}
+.agent .ag-icon,.agent .ag-sphere{display:none}
 .agent .ag-badge{
   position:absolute;top:-7px;right:-4px;
   font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;
@@ -638,16 +655,24 @@ section.beta{
   font-style:italic;letter-spacing:0.02em;
 }
 
-/* ─── FOOTER ─── */
-footer{
-  padding:40px;background:var(--bg);
-  text-align:center;font-size:12px;color:var(--mute);
-  letter-spacing:0.05em;line-height:1.8;
-}
+/* ─── FOOTER détaillé charte officielle ─── */
+footer{padding:50px 40px;background:var(--bg);text-align:center;font-size:12px;color:var(--mute);letter-spacing:0.02em;line-height:1.7}
 footer b{color:var(--ink);font-weight:600}
-.foot-links{display:inline-block;margin-top:6px;font-size:11px}
-.foot-links a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px;transition:color 0.3s}
+.foot-block{font-size:13px;color:var(--ink);line-height:1.7;margin-bottom:20px}
+.foot-brand{font-family:'Fraunces',serif;font-size:17px;font-weight:500;letter-spacing:-0.005em;color:var(--ink);margin-bottom:4px}
+.foot-block a{color:var(--accent);text-decoration:none}
+.foot-souverain{
+  max-width:680px;margin:0 auto 22px;padding:18px 24px;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:10px;
+  font-size:11.5px;color:var(--mute);line-height:1.7;text-align:left;
+}
+.foot-flag{display:block;font-size:11.5px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:0.02em}
+.foot-souverain b{color:var(--ink);font-weight:600}
+.foot-souverain a{color:var(--accent);text-decoration:none}
+.foot-links{display:inline-block;margin-top:6px;font-size:11.5px}
+.foot-links a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px;transition:color 0.3s;margin:0 4px}
 .foot-links a:hover{color:var(--accent);border-color:var(--accent)}
+.foot-copy{margin-top:24px;font-size:10.5px;color:var(--faint);font-style:italic;letter-spacing:0.04em}
 
 /* ─── BANDEAU RGPD ─── */
 .rgpd-banner{
@@ -682,15 +707,27 @@ footer b{color:var(--ink);font-weight:600}
 <body>
 
 <nav>
-  <div class="brand">IKCP<span>.</span></div>
-  <div class="meta">Family Office augmenté · ORIAS 23001568</div>
+  <div class="brand-wrap">
+    <div class="brand">IKCP<span>.</span></div>
+    <span class="brand-sub">Family Office augmenté</span>
+  </div>
+  <ul class="nav-menu">
+    <li><a href="#univers">Vos univers</a></li>
+    <li><a href="#passions">Vos passions</a></li>
+    <li><a href="#services">Vos services</a></li>
+    <li><a href="#beta">Votre bêta</a></li>
+  </ul>
+  <div class="nav-ctas">
+    <a href="#beta" class="nav-cta nav-cta-outline">● Bêta privée</a>
+    <a href="https://calendly.com/ikcp-maxime" class="nav-cta nav-cta-dark">Demander mon accès →</a>
+  </div>
 </nav>
 
 <!-- HERO ─────────────────────────────────────── -->
 <section class="hero">
-  <div class="label">◆ Bêta privée sur invitation</div>
-  <h1>Une porte. Une équipe.<br>Votre patrimoine, <em>cartographié.</em></h1>
-  <p class="subtitle">Saisissez votre SIREN. Marcel et son équipe identifient votre société en 30 secondes — et vous remettent un premier point d'attention patrimonial.</p>
+  <div class="label">◆ Bêta privée · 50 familles fondatrices</div>
+  <h1>Une porte. Une équipe.<br>Votre patrimoine <em>en orbite.</em></h1>
+  <p class="subtitle">Le cabinet IKCP orchestre <em>douze univers patrimoniaux</em> branchés sur intelligence souveraine. Application mobile iOS · Android · PWA. <b>100 % France.</b></p>
 
   <form class="siren-form" onsubmit="return goSiren(event)">
     <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN" autocomplete="off">
@@ -753,65 +790,68 @@ footer b{color:var(--ink);font-weight:600}
       </form>
       <div class="status"><span class="live-dot"></span><span id="marcelStatus">En écoute</span></div>
     </div>
-    <div class="agent a1" data-sphere="batisseur" data-status="live">
-      <span class="ag-badge live">LIVE</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6"/></svg>
-      <span class="ag-sphere">Bâtisseur</span>
+    <div class="agent a1" data-sphere="theodore" data-status="soon">
+      <span class="ag-emoji" aria-hidden="true">🏛️</span>
+      <span class="ag-name">Théodore</span>
+      <span class="ag-dom">Patrimoine</span>
     </div>
-    <div class="agent a2" data-sphere="architecte" data-status="live">
+    <div class="agent a2" data-sphere="augustin" data-status="live">
       <span class="ag-badge live">LIVE</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9M5 10v11h14V10M9 21v-7h6v7"/></svg>
-      <span class="ag-sphere">Architecte</span>
+      <span class="ag-emoji" aria-hidden="true">🏠</span>
+      <span class="ag-name">Augustin</span>
+      <span class="ag-dom">Immobilier</span>
     </div>
     <div class="agent a3" data-sphere="codex" data-status="live">
       <span class="ag-badge live">LIVE</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM8 8h8M8 12h8M8 16h5"/></svg>
-      <span class="ag-sphere">Codex</span>
+      <span class="ag-emoji" aria-hidden="true">📜</span>
+      <span class="ag-name">Codex</span>
+      <span class="ag-dom">Fiscalité</span>
     </div>
-    <div class="agent a4" data-sphere="hermes" data-status="live">
+    <div class="agent a4" data-sphere="capital" data-status="soon">
+      <span class="ag-emoji" aria-hidden="true">📊</span>
+      <span class="ag-name">Capital</span>
+      <span class="ag-dom">Marchés &amp; PE</span>
+    </div>
+    <div class="agent a5" data-sphere="hermes" data-status="live">
       <span class="ag-badge live">LIVE</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M9 5l3-3 3 3M12 8c-4 0-7 3-7 7v7h14v-7c0-4-3-7-7-7z"/></svg>
-      <span class="ag-sphere">Hermès</span>
+      <span class="ag-emoji" aria-hidden="true">🌳</span>
+      <span class="ag-name">Hermès</span>
+      <span class="ag-dom">Transmission</span>
     </div>
-    <div class="agent a5" data-sphere="stratege" data-status="soon">
-      <span class="ag-badge soon">Q3</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8M14 8h6v6"/></svg>
-      <span class="ag-sphere">Stratège</span>
+    <div class="agent a6" data-sphere="iris" data-status="soon">
+      <span class="ag-emoji" aria-hidden="true">✈️</span>
+      <span class="ag-name">Iris</span>
+      <span class="ag-dom">Voyage</span>
     </div>
-    <div class="agent a6" data-sphere="curateur" data-status="soon">
-      <span class="ag-badge soon">Q3</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="1"/><circle cx="9" cy="9" r="1.5"/><path d="M21 14l-5-5-7 7M3 21h18"/></svg>
-      <span class="ag-sphere">Curateur</span>
+    <div class="agent a7" data-sphere="emile" data-status="soon">
+      <span class="ag-emoji" aria-hidden="true">🎨</span>
+      <span class="ag-name">Émile</span>
+      <span class="ag-dom">Art</span>
     </div>
-    <div class="agent a7" data-sphere="concierge" data-status="soon">
-      <span class="ag-badge soon">Q3</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-      <span class="ag-sphere">Concierge</span>
+    <div class="agent a8" data-sphere="leon" data-status="late">
+      <span class="ag-emoji" aria-hidden="true">🏎️</span>
+      <span class="ag-name">Léon</span>
+      <span class="ag-dom">Voitures &amp; Yachts</span>
     </div>
-    <div class="agent a8" data-sphere="mecene" data-status="soon">
-      <span class="ag-badge soon">Q3</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10c0-3 2-5 5-5 1.5 0 3 1 3 3 0-2 1.5-3 3-3 3 0 5 2 5 5 0 5.5-7 10-9 10h-.001z"/></svg>
-      <span class="ag-sphere">Mécène</span>
+    <div class="agent a9" data-sphere="josephine" data-status="late">
+      <span class="ag-emoji" aria-hidden="true">⌚</span>
+      <span class="ag-name">Joséphine</span>
+      <span class="ag-dom">Montres &amp; Joaillerie</span>
     </div>
-    <div class="agent a9" data-sphere="capital" data-status="late">
-      <span class="ag-badge late">Q4</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M8 12l4-4 4 4M5 4h14"/></svg>
-      <span class="ag-sphere">Capital</span>
+    <div class="agent a10" data-sphere="helene" data-status="late">
+      <span class="ag-emoji" aria-hidden="true">🌸</span>
+      <span class="ag-name">Hélène</span>
+      <span class="ag-dom">Mode &amp; Bien-être</span>
     </div>
-    <div class="agent a10" data-sphere="pedagogue" data-status="late">
-      <span class="ag-badge late">Q4</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l10-5 10 5-10 5L2 8zM6 10v6c0 1 3 3 6 3s6-2 6-3v-6"/></svg>
-      <span class="ag-sphere">Pédagogue</span>
+    <div class="agent a11" data-sphere="auguste" data-status="late">
+      <span class="ag-emoji" aria-hidden="true">🍷</span>
+      <span class="ag-name">Auguste</span>
+      <span class="ag-dom">Vins &amp; Gastro</span>
     </div>
-    <div class="agent a11" data-sphere="camille" data-status="late">
-      <span class="ag-badge late">Q4</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span class="ag-sphere">Camille</span>
-    </div>
-    <div class="agent a12" data-sphere="olympe" data-status="late">
-      <span class="ag-badge late">Q4</span>
-      <svg class="ag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 4"/></svg>
-      <span class="ag-sphere">Olympe</span>
+    <div class="agent a12" data-sphere="olympe" data-status="soon">
+      <span class="ag-emoji" aria-hidden="true">🌱</span>
+      <span class="ag-name">Olympe</span>
+      <span class="ag-dom">Philanthropie</span>
     </div>
   </div>
   <p class="constellation-hint">Tapez votre question dans Marcel · ou <b>cliquez une sphère →</b></p>
@@ -1048,14 +1088,28 @@ footer b{color:var(--ink);font-weight:600}
 </section>
 
 <footer>
-  <b>IKCP</b> · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436<br>
-  Souverain France · RGPD · Conformité MIF II<br>
+  <div class="foot-block">
+    <div class="foot-brand"><b>IKCP</b> — IKIGAÏ Conseil Patrimonial</div>
+    <div>ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436</div>
+    <div>Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a></div>
+  </div>
+  <div class="foot-souverain">
+    <span class="foot-flag">🇫🇷 RGPD souverain · France.</span>
+    Vos données restent sur le territoire français.<br>
+    Hébergement Cloudflare Workers configuré en zone régionale <b>EU only</b> (Paris, Frankfurt).
+    Base de données <b>D1 SQLite</b> en data center Paris.
+    Stockage documents <b>R2 chiffré côté client</b> (zero-knowledge) — vous gardez les clés.
+    Agents IA utilisés en formule Premium uniquement, via endpoint EU.<br>
+    Droit à l'oubli en 1 clic · DPO : <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a><br>
+    Pas de cookies tiers · pas de tracking externe · pas de services US-based dans le pipeline
+  </div>
   <span class="foot-links">
     <a href="/cgu.html">CGU</a> ·
     <a href="/mentions-legales.html">Mentions légales</a> ·
     <a href="/politique-confidentialite.html">Politique de confidentialité</a> ·
     <a href="/der.html">DER bêta</a>
   </span>
+  <div class="foot-copy">Site créé par Maxime Juveneton · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)</div>
 </footer>
 
 <!-- BANDEAU RGPD COOKIES ─────────────────────────── -->
@@ -1071,8 +1125,8 @@ footer b{color:var(--ink);font-weight:600}
 <script>
 /* ─── Sphères : contenu + ouverture modal ─── */
 const SPHERES = {
-  patrimoine: {
-    title: "Patrimoine",
+  theodore: {
+    title: "Théodore · Patrimoine",
     desc: "Cartographie de votre société et de vos actifs. Point d'attention identifié en 30 secondes.",
     status: "LIVE",
     items: [
@@ -1082,8 +1136,8 @@ const SPHERES = {
       ["Suivi multigénérationnel", "Héritiers, ayants droit, projection 20 ans"]
     ]
   },
-  immobilier: {
-    title: "Immobilier",
+  augustin: {
+    title: "Augustin · Immobilier",
     desc: "Valorisation temps réel, optimisation LMNP / SCI / démembrement, déficit foncier.",
     status: "LIVE",
     items: [
@@ -1094,8 +1148,8 @@ const SPHERES = {
       ["Déficit foncier", "−10 700 €/an, report 10 ans"]
     ]
   },
-  fiscalite: {
-    title: "Fiscalité 2026",
+  codex: {
+    title: "Codex · Fiscalité 2026",
     desc: "Calculs conformes Loi de Finances 2026, sources CGI citées systématiquement.",
     status: "LIVE",
     items: [
@@ -1106,8 +1160,8 @@ const SPHERES = {
       ["Pacte Dutreil", "Abattement 75 %, engagement collectif + individuel"]
     ]
   },
-  marches: {
-    title: "Marchés & Private Equity",
+  capital: {
+    title: "Capital · Marchés & PE",
     desc: "Suivi marchés financiers, accès club deals partenaires, allocation alignée.",
     status: "Q3 2026",
     items: [
@@ -1117,8 +1171,8 @@ const SPHERES = {
       ["Allocation patrimoniale globale", "Multi-classes, drift, rebalancing"]
     ]
   },
-  transmission: {
-    title: "Transmission",
+  hermes: {
+    title: "Hermès · Transmission",
     desc: "Pacte Dutreil, donation, succession, démembrement, OBO — scénarios chiffrés.",
     status: "LIVE",
     items: [
@@ -1129,8 +1183,8 @@ const SPHERES = {
       ["Mandat de protection future", "Anticipation incapacité, art. 477 C. civil"]
     ]
   },
-  voyage: {
-    title: "Voyage & Conciergerie",
+  iris: {
+    title: "Iris · Voyage & Conciergerie",
     desc: "Chalets, palaces, jet privé, expériences sur-mesure dans 80 destinations.",
     status: "Q3 2026",
     items: [
@@ -1141,8 +1195,8 @@ const SPHERES = {
       ["Conciergerie 24/7", "Réservations, transferts, demandes spéciales"]
     ]
   },
-  art: {
-    title: "Art & Collections",
+  emile: {
+    title: "Émile · Art & Collections",
     desc: "Cote artistes, calendriers Sotheby's / Christie's / Drouot, fiscalité œuvres.",
     status: "Q4 2026",
     items: [
@@ -1153,8 +1207,8 @@ const SPHERES = {
       ["Free port & assurance", "Genève, Luxembourg, AXA Art, Hiscox"]
     ]
   },
-  mobilite: {
-    title: "Véhicules",
+  leon: {
+    title: "Léon · Voitures & Yachts",
     desc: "Classic cars, yachts, aviation privée. Acquisition, valorisation, structuration.",
     status: "Q4 2026",
     items: [
@@ -1165,8 +1219,8 @@ const SPHERES = {
       ["Garages climatisés", "Lyon, Megève, Paris, Genève"]
     ]
   },
-  joaillerie: {
-    title: "Montres & Joaillerie",
+  josephine: {
+    title: "Joséphine · Montres & Joaillerie",
     desc: "Patek, AP, Richard Mille, Cartier, VCA. Acquisition, valorisation IFI, suivi cote.",
     status: "Q4 2026",
     items: [
@@ -1177,8 +1231,8 @@ const SPHERES = {
       ["Valorisation IFI", "Œuvres collection exonérées sous conditions"]
     ]
   },
-  "bien-etre": {
-    title: "Bien-être",
+  helene: {
+    title: "Hélène · Mode & Bien-être",
     desc: "Haute couture, longévité, beauté, spas premium, médecine préventive.",
     status: "Q4 2026",
     items: [
@@ -1189,16 +1243,28 @@ const SPHERES = {
       ["Carnet d'adresses fermé", "Praticiens, thérapeutes, retraites privées"]
     ]
   },
-  mecenat: {
-    title: "Mécénat & Philanthropie",
+  olympe: {
+    title: "Olympe · Philanthropie",
     desc: "Fondation familiale, dons IR/IFI, transmission de valeurs, NextGen.",
-    status: "Q4 2026",
+    status: "Q3 2026",
     items: [
       ["Fondation familiale", "FRUP, fonds de dotation, fondation abritée"],
       ["Réduction IR & IFI", "66 % don IR (plafond 20 % revenu), 75 % IFI (plafond 50 k€)"],
       ["Mécénat d'entreprise", "60 % IS art. 238 bis CGI, en numéraire ou nature"],
       ["Causes structurées", "Climat, éducation, santé, culture, recherche"],
       ["NextGen — éducation valeurs", "Conseil de famille, programmes Wise, Aspen NextGen"]
+    ]
+  },
+  auguste: {
+    title: "Auguste · Vins & Gastronomie",
+    desc: "Caves, primeurs, grands crus, tables 3 étoiles, fiscalité cave.",
+    status: "Q4 2026",
+    items: [
+      ["Bordeaux primeurs", "Cru classé, calendrier campagne avril/mai, Liv-ex Fine Wine"],
+      ["Bourgogne grand cru", "Domaines confidentiels, allocation, secondaire"],
+      ["Champagnes prestige", "Salon, Krug Clos, Cristal Roederer, Dom Pérignon P2"],
+      ["Tables 3 étoiles", "Flocons de Sel (Renaut), Plaza Athénée, Guide Michelin"],
+      ["Fiscalité cave", "Stock professionnel vs collection personnelle, dation"]
     ]
   }
 };
@@ -1239,17 +1305,18 @@ const idleSignalLoop = setInterval(() => {
 
 /* ─── MARCEL LIVE : détection mots-clés → illumination cascade des sphères concernées ─── */
 const SPHERE_KEYWORDS = {
-  patrimoine:   ['société','siren','capital','dirigeant','holding','sas','sci','sarl','patrimoine'],
-  immobilier:   ['immobilier','sci ','lmnp','meublé','foncier','locatif','rési','dvf','ifi'],
-  fiscalite:    ['ir ','impôt','fiscal','tmi','barème','tax','plus-value','pfu','loi de finances'],
-  marches:      ['marché','cac','crypto','etf','obligation','action','bourse','allocation','private equity','pe '],
-  transmission: ['dutreil','donation','succession','transmission','héritage','démembrement','usufruit','obo','apport-cession','150-0 b'],
-  voyage:       ['voyage','chalet','palace','aviation','jet','conciergerie','yacht'],
-  art:          ['art ','œuvre','tableau','sotheby','christie','drouot','peinture','sculpture'],
-  mobilite:     ['voiture','classic car','porsche','ferrari','yacht','aviation','collection auto'],
-  joaillerie:   ['montre','patek','rolex','audemars','richard mille','joaillerie','diamant','cartier','van cleef'],
-  'bien-etre':  ['bien-être','santé','longévité','spa','couture','chanel','dior','hermès','wellness'],
-  mecenat:      ['mécénat','fondation','don ','philanthropie','aillagon','nextgen']
+  theodore:  ['société','siren','capital','dirigeant','holding','sas','sci','sarl','patrimoine','cartographie'],
+  augustin:  ['immobilier','sci ','lmnp','meublé','foncier','locatif','résidence','dvf','ifi'],
+  codex:     ['ir ','impôt','fiscal','tmi','barème','plus-value','pfu','loi de finances','bofip','cgi'],
+  capital:   ['marché','cac','crypto','etf','obligation','action','bourse','allocation','private equity','pe '],
+  hermes:    ['dutreil','donation','succession','transmission','héritage','démembrement','usufruit','obo','apport-cession','150-0 b'],
+  iris:      ['voyage','chalet','palace','aviation','jet','conciergerie','megève','courchevel'],
+  emile:     ['art ','œuvre','tableau','sotheby','christie','drouot','peinture','sculpture','artprice'],
+  leon:      ['voiture','classic car','porsche','ferrari','yacht','collection auto','rm sotheby'],
+  josephine: ['montre','patek','rolex','audemars','richard mille','joaillerie','diamant','cartier','van cleef','chrono24'],
+  helene:    ['bien-être','santé','longévité','spa','couture','chanel','dior','wellness','lanserhof'],
+  olympe:    ['mécénat','fondation','don ','philanthropie','aillagon','nextgen','aspen'],
+  auguste:   ['vin','cave','bordeaux','bourgogne','champagne','primeur','pétrus','liv-ex','gastronomie']
 };
 
 function detectSpheres(text){
@@ -1296,7 +1363,7 @@ async function askMarcel(e){
   // Pré-illumine sur la question
   const initialSpheres = detectSpheres(q);
   lightSpheres(initialSpheres);
-  respMobilised.textContent = '— mobilise ' + initialSpheres.map(s => s.replace('-',' ')).join(', ');
+  respMobilised.textContent = '— mobilise ' + initialSpheres.map(s => s.charAt(0).toUpperCase()+s.slice(1)).join(', ');
 
   respAnswer.textContent = '…';
   respBox.classList.add('show');
@@ -1313,7 +1380,7 @@ async function askMarcel(e){
     // Re-détecte les sphères concernées d'après la réponse complète
     const finalSpheres = detectSpheres(q + ' ' + reply);
     lightSpheres(finalSpheres);
-    respMobilised.textContent = '— a mobilisé ' + finalSpheres.map(s => s.replace('-',' ')).join(', ');
+    respMobilised.textContent = '— a mobilisé ' + finalSpheres.map(s => s.charAt(0).toUpperCase()+s.slice(1)).join(', ');
 
     // Affichage progressif (typing effect léger)
     respAnswer.textContent = '';
@@ -1396,7 +1463,7 @@ async function goSiren(e){
 
 À partir de ce profil société uniquement, dresse-moi :
 1. Les 2 ou 3 points d'attention patrimoniaux les plus probables (cartographie holding, capitalisation, transmission, fiscalité société, animation, structuration immobilier pro)
-2. Les sphères Family Office que tu mobiliserais en priorité pour ce profil (parmi : Patrimoine, Immobilier, Fiscalité, Marchés & PE, Transmission, Voyage, Art, Véhicules, Joaillerie, Bien-être, Mécénat)
+2. Les spécialistes Marcel que tu mobiliserais en priorité pour ce profil (parmi : Théodore - Patrimoine, Augustin - Immobilier, Codex - Fiscalité, Capital - Marchés & PE, Hermès - Transmission, Iris - Voyage, Émile - Art, Léon - Voitures & Yachts, Joséphine - Montres & Joaillerie, Hélène - Mode & Bien-être, Olympe - Philanthropie, Auguste - Vins & Gastronomie)
 3. Une question d'orientation à me poser pour préciser le contexte
 
 Format : concis, structuré, sourcé (CGI / BOFIP). Termine par UNE question (pas une recommandation).`;
@@ -1426,7 +1493,7 @@ async function askMarcelWithPrompt(realPrompt, label){
   status.textContent = 'Marcel analyse votre société…';
 
   // Illumination initiale : sphères "société" toujours mobilisées en premier lieu
-  const initialSpheres = ['patrimoine','fiscalite','transmission'];
+  const initialSpheres = ['theodore','codex','hermes'];
   lightSpheres(initialSpheres);
   respMobilised.textContent = label ? `— analyse ${label}` : '';
 
