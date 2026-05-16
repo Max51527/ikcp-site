@@ -29,9 +29,11 @@ const ALLOWED_ORIGINS = [
   'https://admin.ikcp.eu',
   'http://localhost:3000',
   'http://localhost:5500',
+  'http://localhost:8765',
   'http://localhost:8787',
-  'http://127.0.0.1:5500',
   'http://127.0.0.1:3000',
+  'http://127.0.0.1:5500',
+  'http://127.0.0.1:8765',
   'null', // file:// (test local depuis test-harness.html)
   '',     // GET direct depuis navigateur (pas d'Origin header)
 ];
@@ -206,6 +208,10 @@ const TOOLS_FISCAL = [
       required: ['agent', 'question'],
     },
   },
+  // TODO Sprint 2 : tool search_veille (Perplexity proxy via ikcp-veille)
+  // Bug identifié 2026-05-16 : conflit avec web_search natif Anthropic provoque API 400
+  // Fix : retirer web_search_20250305 du tools array OU renommer search_veille en consult_external
+  // Code prêt côté worker.js (branche exec ligne 879) et ikcp-veille déployé.
 ];
 
 // Barème IR 2026 (LF 2026, revenus 2025)
@@ -874,6 +880,28 @@ export default {
               query: i.query,
               target_price: i.target_price,
             });
+          } else if (tu.name === 'search_veille') {
+            // Appel veille augmentée (worker ikcp-veille proxy)
+            try {
+              const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  query: i.query,
+                  mode: i.mode || 'quick',
+                  user_id: 'marcel_internal',
+                  tier: 'premium_fo', // Marcel a accès en interne
+                }),
+              });
+              if (!vr.ok) {
+                const errBody = await vr.text();
+                result = { error: 'veille_unavailable', status: vr.status, detail: errBody.slice(0, 200) };
+              } else {
+                result = await vr.json();
+              }
+            } catch (err) {
+              result = { error: 'veille_network', message: err.message };
+            }
           } else {
             result = executeTool(tu.name, i);
           }

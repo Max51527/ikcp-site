@@ -981,8 +981,8 @@ css.textContent=`
 .ikcp-followup-btn{background:white;border:1px solid #e5ded2;color:#2e2520;border-radius:10px;padding:8px 12px;font-size:12px;font-family:'DM Sans',system-ui,sans-serif;cursor:pointer;text-align:left;transition:all 0.15s;font-weight:500;line-height:1.4}
 .ikcp-followup-btn:hover{background:#1f1a16;color:white;border-color:#1f1a16;transform:translateX(2px)}
 .ikcp-loading-bubble{display:flex;align-items:center;gap:12px;padding:12px 16px}
-.ikcp-balloon-wrap{flex-shrink:0;width:32px;height:42px;display:flex;align-items:center;justify-content:center;animation:ikcp-balloon-rise 2.2s ease-in-out infinite}
-.ikcp-balloon-svg{width:30px;height:auto;filter:drop-shadow(0 3px 4px rgba(31,26,22,0.18))}
+.ikcp-balloon-wrap{flex-shrink:0!important;width:32px!important;height:42px!important;max-width:32px!important;max-height:42px!important;display:flex;align-items:center;justify-content:center;animation:ikcp-balloon-rise 2.2s ease-in-out infinite;box-sizing:border-box}
+.ikcp-balloon-svg{width:30px!important;height:40px!important;max-width:30px!important;max-height:40px!important;flex-shrink:0;filter:drop-shadow(0 3px 4px rgba(31,26,22,0.18))}
 @keyframes ikcp-balloon-rise{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
 .ikcp-loading-text{font-size:12px;color:#907b65;font-style:italic;font-weight:500}
 .ikcp-loading-dots{display:inline-block;animation:ikcp-ellipsis 1.5s infinite;width:20px}
@@ -1101,7 +1101,9 @@ _pageCtxSent=true;
 }
 var prefix=[pageLine,ctx].filter(Boolean).join('\n');
 var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
-var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf})});
+var _abort=new AbortController();var _killTimer=setTimeout(function(){_abort.abort();},45000);
+var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf}),signal:_abort.signal});
+clearTimeout(_killTimer);
 var d=await r.json();
 var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
 var followUps=Array.isArray(d.follow_ups)?d.follow_ups:[];
@@ -1153,8 +1155,10 @@ saveConv(msgs,count);
 hideLoading();
 typeOutMessage(reply,html);
 return;
-}catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>'});saveConv(msgs,count);}
-hideLoading();render();
+}catch(e){
+var errMsg=(e&&e.name==='AbortError')?'<p>Marcel a mis trop de temps à répondre (timeout 45 s). Réessayez votre question, ou <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">contactez Maxime directement</a>.</p>':'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>';
+msgs.push({role:'assistant',html:errMsg});saveConv(msgs,count);
+}finally{hideLoading();render();}
 }
 
 // ──────────────────────────────────────────────────────────────
