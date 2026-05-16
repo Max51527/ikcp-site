@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<title>Marcel — Family Office augmenté</title>
+<meta name="description" content="Votre Family Office augmenté. Une porte. Une équipe. Votre patrimoine en orbite.">
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/marcel-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Marcel">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#FAF7F0; --bg-2:#F5EFE0;
+  --ink:#1A1814; --mute:#6B655A;
+  --accent:#C24722; --gold:#C9A96E;
+  --line:rgba(26,24,20,0.10);
+}
+html,body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Inter',sans-serif;font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ─── Header ─── */
+header{
+  padding:22px 24px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-family:'Fraunces',serif;font-size:22px;font-weight:500;letter-spacing:-0.005em}
+.brand em{font-style:italic;color:var(--accent)}
+.brand-sub{font-size:9.5px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:500;margin-top:2px;display:block}
+.back{font-size:12px;color:var(--mute);text-decoration:none;letter-spacing:0.04em}
+.back:hover{color:var(--accent)}
+
+/* ─── Main login ─── */
+main{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;
+}
+.marcel-orb{
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle at 42% 32%,#F0B89B 0%,#E08161 22%,#C24722 55%,#8B2F18 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:#FAF7F0;
+  box-shadow:0 0 0 1px rgba(194,71,34,0.15),0 0 60px rgba(194,71,34,0.25),inset 0 8px 30px rgba(255,255,255,0.18);
+  animation:breathe 5.5s ease-in-out infinite;margin-bottom:30px;
+}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.marcel-orb .lbl{font-family:'Inter',sans-serif;font-size:9px;letter-spacing:0.32em;text-transform:uppercase;font-weight:600;opacity:0.92}
+.marcel-orb .lbl::before{content:'★ '}
+.marcel-orb .nm{font-family:'Fraunces',serif;font-style:italic;font-size:40px;margin-top:2px}
+.marcel-orb .tg{font-family:'Fraunces',serif;font-style:italic;font-size:11px;opacity:0.78;margin-top:6px}
+
+h1{
+  font-family:'Fraunces',serif;font-size:clamp(28px,5vw,42px);
+  line-height:1.1;font-weight:400;letter-spacing:-0.022em;
+  margin-bottom:14px;max-width:520px;
+}
+h1 em{font-style:italic;color:var(--accent)}
+p.lead{font-size:15.5px;color:var(--mute);max-width:480px;margin:0 auto 36px;line-height:1.6}
+
+/* ─── Login form ─── */
+form.login{
+  width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px;
+}
+form.login label{
+  font-size:10.5px;letter-spacing:0.22em;color:var(--mute);
+  text-transform:uppercase;font-weight:600;text-align:left;
+}
+form.login input{
+  width:100%;padding:16px 18px;background:#fff;
+  border:1.5px solid var(--line);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);
+  outline:none;transition:border-color 0.3s;
+}
+form.login input:focus{border-color:var(--accent)}
+form.login button{
+  padding:16px 24px;background:var(--ink);color:#fff;
+  border:none;border-radius:12px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  letter-spacing:0.04em;transition:all 0.3s;
+}
+form.login button:hover{background:var(--accent);transform:translateY(-1px)}
+form.login button:disabled{opacity:0.6;cursor:wait}
+.muted{font-size:12px;color:var(--mute);font-style:italic;margin-top:8px}
+.message{
+  margin-top:14px;padding:14px 16px;border-radius:10px;
+  font-size:13.5px;line-height:1.5;
+}
+.message.ok{background:rgba(63,122,63,0.10);color:#3F7A3F;border:1px solid rgba(63,122,63,0.30)}
+.message.err{background:rgba(185,28,28,0.08);color:#B91C1C;border:1px solid rgba(185,28,28,0.20)}
+
+/* ─── Footer ─── */
+footer{
+  padding:20px 24px;border-top:1px solid var(--line);text-align:center;
+  font-size:11px;color:var(--mute);letter-spacing:0.05em;line-height:1.7;
+}
+footer b{color:var(--ink);font-weight:600}
+footer a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">Marcel<em>.</em></div>
+    <span class="brand-sub">Family Office augmenté · by IKCP</span>
+  </div>
+  <a href="https://ikcp.eu/" class="back">← Site IKCP</a>
+</header>
+
+<main>
+  <div class="marcel-orb">
+    <div class="lbl">CHEF D'ORCHESTRE</div>
+    <div class="nm">Marcel</div>
+    <div class="tg">Clarifie · Oriente · Arbitre</div>
+  </div>
+
+  <h1>Bienvenue dans votre <em>Family Office.</em></h1>
+  <p class="lead">Connexion par lien sécurisé. Pas de mot de passe à retenir — nous vous envoyons un lien valide 15 minutes par email.</p>
+
+  <form class="login" onsubmit="return askLink(event)">
+    <label for="email">Votre adresse email</label>
+    <input id="email" type="email" name="email" placeholder="vous@cabinet.fr" required autocomplete="email">
+    <button type="submit" id="btn">Recevoir mon lien sécurisé</button>
+    <div id="msg"></div>
+    <p class="muted">Conforme MIF II · RGPD France · audit eIDAS qualifié</p>
+  </form>
+</main>
+
+<footer>
+  <span><b>IKCP</b> · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436</span><br>
+  <a href="/cgu.html">CGU</a> ·
+  <a href="/mentions-legales.html">Mentions légales</a> ·
+  <a href="/politique-confidentialite.html">RGPD</a> ·
+  <a href="/der.html">DER bêta</a>
+</footer>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+
+// Service Worker (offline)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/app/sw.js').catch(console.warn);
+}
+
+// Si déjà loggué → redirige dashboard
+Marcel.Auth.me()
+  .then(() => location.href = '/app/dashboard.html')
+  .catch(() => { /* pas de session → reste sur login */ });
+
+window.askLink = async function(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  if(!email) return false;
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  btn.disabled = true; btn.textContent = 'Envoi en cours…';
+  msg.innerHTML = '';
+  try{
+    await Marcel.Auth.requestMagicLink(email);
+    msg.className = 'message ok';
+    msg.innerHTML = `✓ Lien envoyé à <b>${email}</b>. Vérifiez votre boîte (et vos spams). Valide 15 minutes.`;
+    btn.textContent = 'Lien envoyé ✓';
+  }catch(err){
+    msg.className = 'message err';
+    msg.innerHTML = 'Une erreur est survenue. Réessayez dans un instant, ou contactez <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>.';
+    btn.disabled = false; btn.textContent = 'Recevoir mon lien sécurisé';
+  }
+  return false;
+}
+</script>
+
+</body>
+</html>

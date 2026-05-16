@@ -619,14 +619,20 @@ section.beta{
   margin-bottom:40px;letter-spacing:0.02em;
 }
 .beta .nums b{color:#D4A878;font-style:normal;font-weight:500}
+.beta-ctas{display:inline-flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
 .beta .cta{
-  display:inline-block;padding:18px 38px;
-  background:#D4A878;color:var(--ink);
+  display:inline-flex;align-items:center;gap:8px;padding:18px 32px;
   font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
   text-decoration:none;letter-spacing:0.04em;
-  transition:all 0.3s;
+  transition:all 0.3s;border-radius:8px;
 }
-.beta .cta:hover{background:#E6BC91;transform:translateY(-2px)}
+.beta .cta-primary{background:#D4A878;color:var(--ink)}
+.beta .cta-primary:hover{background:#E6BC91;transform:translateY(-2px)}
+.beta .cta-secondary{background:transparent;color:#D4A878;border:1px solid rgba(212,168,120,0.5)}
+.beta .cta-secondary:hover{background:rgba(212,168,120,0.10);border-color:#D4A878}
+.beta .cta-arrow{font-size:16px;font-weight:400;transition:transform 0.3s}
+.beta .cta:hover .cta-arrow{transform:translateX(3px)}
+@media(max-width:560px){.beta-ctas{flex-direction:column;gap:10px;width:100%}.beta .cta{width:100%;justify-content:center}}
 .beta .note{
   margin-top:30px;font-size:13px;color:rgba(250,247,240,0.5);
   font-style:italic;letter-spacing:0.02em;
@@ -1034,7 +1040,10 @@ footer b{color:var(--ink);font-weight:600}
   <div class="label">◆ Bêta privée</div>
   <h2>Cinquante familles fondatrices.<br><em>Sur invitation.</em></h2>
   <p class="nums">23 sur 50 places ouvertes · accès <b>offert</b> pendant la phase fondatrice</p>
-  <a href="https://calendly.com/ikcp-maxime" class="cta">Demander mon accès</a>
+  <div class="beta-ctas">
+    <a href="https://app.ikcp.eu/" class="cta cta-primary">Ouvrir Marcel <span class="cta-arrow">→</span></a>
+    <a href="https://calendly.com/ikcp-maxime" class="cta cta-secondary">Demander mon accès</a>
+  </div>
   <p class="note">Sur votre initiative. Aucun rappel commercial non sollicité.</p>
 </section>
 

@@ -1,0 +1,70 @@
+{
+  "name": "Marcel — Family Office augmenté",
+  "short_name": "Marcel",
+  "description": "Votre Family Office augmenté. Une porte. Une équipe. Votre patrimoine en orbite.",
+  "id": "/app/",
+  "start_url": "/app/dashboard.html",
+  "scope": "/app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "fr",
+  "dir": "ltr",
+  "background_color": "#FAF7F0",
+  "theme_color": "#C24722",
+  "categories": ["finance", "productivity", "business"],
+  "icons": [
+    {
+      "src": "/app/icons/marcel-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/marcel-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/marcel-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/app/icons/marcel-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/app/screenshots/dashboard.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Poser une question à Marcel",
+      "short_name": "Marcel",
+      "url": "/app/marcel.html",
+      "icons": [{ "src": "/app/icons/shortcut-marcel.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Veille du jour",
+      "short_name": "Veille",
+      "url": "/app/veille.html",
+      "icons": [{ "src": "/app/icons/shortcut-veille.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Carnet de contacts",
+      "short_name": "Carnet",
+      "url": "/app/carnet.html",
+      "icons": [{ "src": "/app/icons/shortcut-carnet.png", "sizes": "96x96" }]
+    }
+  ],
+  "prefer_related_applications": false
+}
