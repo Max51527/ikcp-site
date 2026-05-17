@@ -23,7 +23,8 @@
 const VEILLE_URL = 'https://ikcp-veille.maxime-ead.workers.dev/search';
 const PAPPERS_URL = 'https://ikcp-pappers.maxime-ead.workers.dev/entreprise';
 const TEMOIN_URL = 'https://ikcp-temoin.maxime-ead.workers.dev/log';
-const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
+const RESEND_URL = 'https://api.resend.com/emails';
+const SENDER_FROM = 'Marcel · IKCP <noreply@ikcp.eu>';
 
 // ─── Dispatcher principal ────────────────────────────────────
 export async function runAutomation(cronExpression, env) {
@@ -238,23 +239,25 @@ async function audit(userId, action, sphere, summary) {
 }
 
 async function sendBrevoEmail(env, to, subject, html) {
-  if (!env.BREVO_API_KEY) { console.warn('[email] BREVO_API_KEY missing'); return; }
+  // Renommée pour rétrocompatibilité mais utilise Resend (plus simple, transactionnel pur).
+  if (!env.RESEND_API_KEY) { console.warn('[email] RESEND_API_KEY missing'); return; }
   try {
-    await fetch(BREVO_URL, {
+    const r = await fetch(RESEND_URL, {
       method: 'POST',
       headers: {
-        'api-key': env.BREVO_API_KEY,
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        sender: { name: 'Marcel · IKCP', email: 'noreply@ikcp.eu' },
-        to: [{ email: to }],
+        from: SENDER_FROM,
+        to: [to],
         subject,
-        htmlContent: html,
+        html,
       }),
     });
+    if (!r.ok) console.error('[email] Resend error:', r.status, (await r.text()).slice(0, 200));
   } catch (err) {
-    console.error('[email] Brevo error:', err.message);
+    console.error('[email] Resend network error:', err.message);
   }
 }
 
