@@ -47,13 +47,11 @@ database_id = "36917503-cb64-402d-99c3-28ad48587bd8"
 # 9h00 lundi : detection inactivite (nudge Brevo)
 # 0h00 1er du mois : cartographie SIREN refresh (Pappers)
 [triggers]
-crons = [
-  "0 5 * * *",
-  "30 5 * * *",
-  "0 6 * * *",
-  "0 9 * * 1",
-  "0 0 1 * *",
-]
+crons = ["0 6 * * *"]
+# Limite 5 cron Cloudflare atteinte sur le compte.
+# Autres automations (veille, digest, inactivite, refresh SIREN) appelables manuellement
+# via endpoint admin POST /trigger?type=veille|digest|cote|inactivite|refresh
+# Voir docs/AUTOMATISATIONS-AGENTS-IA.md
 
 [observability]
 enabled = true

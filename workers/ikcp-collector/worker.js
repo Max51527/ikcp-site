@@ -33,6 +33,7 @@
 
 import * as BrickLink from './modules/bricklink.js';
 import { MODULES_STUBS_LIST, getModuleStub } from './modules/stubs.js';
+import { runAutomation } from './automations.js';
 
 const ALLOWED_ORIGINS = [
   'https://ikcp.eu',
@@ -260,8 +261,15 @@ export default {
     return jsonResponse({ error: 'not_found', path: url.pathname }, 404, origin);
   },
 
-  // ── Cron Trigger (configure dans wrangler.toml)
+  // ── Cron Triggers — multi-automations Marcel
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(dailyScan(env));
+    const cronExp = event.cron;
+    console.log('[cron] Triggered:', cronExp);
+    // Cron 6h UTC = scan quotidien historique watches user_watches
+    if (cronExp === '0 6 * * *') {
+      ctx.waitUntil(dailyScan(env));
+    }
+    // Tous les cron → dispatch automations.js (veille nocturne, cote actifs, digest mail, inactivité, refresh SIREN)
+    ctx.waitUntil(runAutomation(cronExp, env));
   },
 };
