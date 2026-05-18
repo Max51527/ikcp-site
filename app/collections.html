@@ -76,6 +76,36 @@ section.col-hero{padding:26px 0 14px;border-bottom:1px solid var(--line);margin-
 /* Bouton ajouter pièce */
 .add-item{margin-top:18px;width:100%;padding:14px;background:var(--bg-2);border:1.5px dashed var(--line);border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;color:var(--mute);font-weight:500;transition:all 0.2s;text-align:center}
 .add-item:hover{border-color:var(--accent);color:var(--accent);background:rgba(194,71,34,0.04)}
+
+/* ─── Insights Marcel par catégorie ─── */
+.cat-insight{margin:14px 0 18px;padding:12px 16px;background:linear-gradient(135deg,rgba(194,71,34,0.04) 0%,rgba(201,169,110,0.06) 100%);border:1px solid rgba(194,71,34,0.18);border-radius:10px;display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.55}
+.cat-insight .ins-emoji{font-size:22px;line-height:1;flex-shrink:0}
+.cat-insight .ins-body{flex:1;color:var(--ink)}
+.cat-insight .ins-body b{color:var(--accent);font-weight:600}
+.cat-insight .ins-action{font-size:11px;letter-spacing:0.04em;color:var(--accent);background:transparent;border:1px solid var(--accent);padding:5px 12px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;flex-shrink:0;align-self:center;transition:all 0.2s}
+.cat-insight .ins-action:hover{background:var(--accent);color:var(--bg)}
+
+/* ─── Toolbar tri/filtre ─── */
+.items-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.items-toolbar .sort{display:flex;gap:6px;flex-wrap:wrap}
+.items-toolbar .sort button{background:transparent;border:1px solid var(--line);color:var(--mute);font-size:11px;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:0.02em;transition:all 0.2s}
+.items-toolbar .sort button:hover{border-color:var(--accent);color:var(--accent)}
+.items-toolbar .sort button.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.items-toolbar .search{flex:1;min-width:160px;max-width:240px;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:12px;font-family:'Inter',sans-serif;outline:none}
+.items-toolbar .search:focus{border-color:var(--accent);background:var(--bg)}
+
+/* ─── Action quick — ajouter via Marcel ─── */
+.quick-add{position:fixed;bottom:90px;right:20px;width:54px;height:54px;border-radius:50%;background:var(--accent);color:var(--bg);border:none;font-size:24px;font-weight:300;cursor:pointer;box-shadow:0 10px 28px -8px rgba(194,71,34,0.45);transition:all 0.3s;z-index:30;display:flex;align-items:center;justify-content:center}
+.quick-add:hover{transform:scale(1.08);box-shadow:0 14px 36px -8px rgba(194,71,34,0.55)}
+.quick-add-tooltip{position:absolute;right:64px;top:50%;transform:translateY(-50%);background:var(--ink);color:var(--bg);padding:7px 14px;border-radius:8px;font-size:12px;font-family:'Inter',sans-serif;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.quick-add:hover .quick-add-tooltip{opacity:1}
+
+/* ─── Export PDF / Assurance ─── */
+.col-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.col-actions button{background:var(--bg);border:1px solid var(--line);color:var(--ink);padding:10px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;letter-spacing:0.02em;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px}
+.col-actions button:hover{border-color:var(--accent);color:var(--accent)}
+.col-actions button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.col-actions button.primary:hover{background:var(--accent);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -100,7 +130,19 @@ section.col-hero{padding:26px 0 14px;border-bottom:1px solid var(--line);margin-
 
   <div class="cat-grid" id="catGrid"></div>
 
+  <div class="col-actions">
+    <button class="primary" onclick="exportPdf()">📄 Exporter ma collection (PDF assurance)</button>
+    <button onclick="exportSuccession()">🌳 Dossier succession (eIDAS)</button>
+    <button onclick="askMarcelGlobal()">💬 Demander à Marcel un point global</button>
+  </div>
+
 </main>
+
+<!-- Quick add via Marcel -->
+<button class="quick-add" onclick="quickAddViaMarcel()" aria-label="Ajouter une pièce via Marcel">
+  +
+  <span class="quick-add-tooltip">Ajouter via Marcel</span>
+</button>
 
 <!-- Modal détail catégorie -->
 <div class="cat-detail" id="catDetail" onclick="if(event.target===this)closeCatDetail()">
@@ -224,36 +266,145 @@ function renderSparkline(delta){
   return `<polyline points="${points.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
 
+let activeCatKey = null;
+let activeSort = 'value_desc';
+
+function generateInsight(cat){
+  if(!cat.items.length) return null;
+
+  // Trouve la pièce avec meilleure performance
+  const best = [...cat.items].sort((a,b) => b.delta - a.delta)[0];
+  const worst = [...cat.items].sort((a,b) => a.delta - b.delta)[0];
+  const totalGain = cat.items.reduce((s,it) => s + (it.current_value - it.acquired_price), 0);
+  const acquiredTotal = cat.items.reduce((s,it) => s + it.acquired_price, 0);
+  const globalPerf = (totalGain / acquiredTotal * 100).toFixed(0);
+
+  // Insights variés selon catégorie
+  if(cat.name === 'Horlogerie' && best.delta > 50){
+    return { emoji:'⚡', text:`Votre <b>${best.brand} ${best.model.split('·')[0].trim()}</b> a pris <b>+${best.delta.toFixed(0)} %</b> depuis acquisition. C'est aujourd'hui votre meilleure performance sur cette catégorie.`, action:'Demander conseil', prompt:`Analyse mon ${best.brand} ${best.model} — vendre maintenant ou conserver ? Cote +${best.delta.toFixed(0)}% depuis achat.` };
+  }
+  if(cat.name === 'Automobile' && cat.items.length >= 2){
+    return { emoji:'🏁', text:`Votre garage représente <b>${Marcel.Utils.formatEUR(cat.total)}</b> de valeur. Aviez-vous pensé à structurer ces actifs en <b>SCI fiscalisée</b> pour optimiser IFI et transmission ?`, action:'Marcel m\'explique', prompt:`Comment structurer ma collection automobile (${cat.items.length} voitures, valeur ${Marcel.Utils.formatEUR(cat.total)}) en SCI ou personne morale pour IFI/transmission ?` };
+  }
+  if(cat.name === 'Vins'){
+    return { emoji:'🍇', text:`Votre cave a pris <b>+${globalPerf} %</b> depuis acquisition. Marcel surveille la liquidité Liv-ex sur vos millésimes pour signaler les fenêtres d'arbitrage.`, action:'Voir mes alertes', prompt:`Vins · quelles fenêtres d'arbitrage cette année sur Pétrus 1990, DRC 2015, Salon 1996 ? Conseil garde vs vente.` };
+  }
+  if(cat.name === 'Art & Œuvres' && best.delta > 30){
+    return { emoji:'🖼️', text:`Votre <b>${best.brand} ${best.model.split('·')[0].trim()}</b> est éligible à la <b>dation en paiement</b> (art. 1716 bis CGI) — un outil de transmission peu connu mais puissant sur les œuvres de cote significative.`, action:'M\'expliquer la dation', prompt:`Explique-moi la dation art. 1716 bis CGI sur une œuvre de ${Marcel.Utils.formatEUR(best.current_value)} (${best.brand}). Conditions et seuils.` };
+  }
+  if(cat.name === 'Joaillerie'){
+    return { emoji:'💎', text:`Joaillerie de plus de 30 ans = <b>œuvre de collection</b>, potentiellement <b>exonérée d'IFI</b> (art. 885 H CGI) sous conditions de qualification.`, action:'Vérifier mes pièces', prompt:`Mes pièces de joaillerie sont-elles éligibles à l'exonération IFI art. 885 H CGI ? Conditions à remplir.` };
+  }
+  if(cat.name === 'Pièces rares' && cat.items.length === 0){
+    return { emoji:'📜', text:`Manuscrits, autographes, premières éditions, pièces de famille — souvent oubliés mais à <b>haute valeur transmissive</b>. Documenter = protéger.`, action:'Marcel me guide', prompt:`Comment commencer à documenter mes pièces rares (livres, manuscrits, autographes) en collection avec leur valeur ?` };
+  }
+  return { emoji:'📊', text:`Performance globale catégorie : <b>${globalPerf > 0 ? '+' : ''}${globalPerf} %</b> depuis acquisition. ${cat.items.length} pièce${cat.items.length > 1 ? 's' : ''} surveillée${cat.items.length > 1 ? 's' : ''}.`, action:'Approfondir', prompt:`Synthèse globale ma collection ${cat.name.toLowerCase()} : ${cat.items.length} pièces, ${Marcel.Utils.formatEUR(cat.total)}, perf +${globalPerf}%.` };
+}
+
+function renderItems(cat){
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  let items = [...cat.items].filter(it => (it.brand + ' ' + it.model).toLowerCase().includes(search));
+
+  // Tri
+  switch(activeSort){
+    case 'value_desc': items.sort((a,b) => b.current_value - a.current_value); break;
+    case 'delta_desc': items.sort((a,b) => b.delta - a.delta); break;
+    case 'year_asc':   items.sort((a,b) => a.year - b.year); break;
+    case 'recent':     items.sort((a,b) => (b.acquired_year||b.year) - (a.acquired_year||a.year)); break;
+  }
+
+  document.getElementById('itemsGrid').innerHTML = items.length === 0
+    ? '<div class="empty" style="grid-column:1/-1"><h4>Aucune pièce</h4><p>Aucune pièce ne correspond à votre recherche.</p></div>'
+    : items.map(it => `
+        <article class="item-card">
+          <div class="item-photo">${it.emoji}</div>
+          <div class="item-body">
+            <div class="item-brand">${it.brand}</div>
+            <div class="item-model">${it.model}</div>
+            <div class="item-meta">ref. ${it.ref} · ${it.year}</div>
+            <div class="item-value">
+              <span class="price">${Marcel.Utils.formatEUR(it.current_value)}</span>
+              <span class="delta ${it.delta > 0 ? 'up' : 'down'}">${it.delta > 0 ? '↗ +' : '↘ '}${Math.abs(it.delta).toFixed(1)} %</span>
+            </div>
+            <div class="item-meta">acheté ${Marcel.Utils.formatEUR(it.acquired_price)} · source ${it.source}</div>
+            <div class="item-actions">
+              <button class="primary" onclick="viewPhoto('${it.id}')">📸 Photo</button>
+              <button onclick="viewDoc('${it.id}','cert')">📄 Certificat</button>
+              <button onclick="askMarcelAbout('Estimer la valeur réelle actuelle de ${it.brand} ${it.model} année ${it.year}')">🔍 Estimer</button>
+              <button onclick="askMarcelAbout('Je veux vendre ${it.brand} ${it.model} acquise ${Marcel.Utils.formatEUR(it.acquired_price)} cotée ${Marcel.Utils.formatEUR(it.current_value)}. Quels canaux ? Quelle fiscalité PV ?')">💼 Vendre</button>
+              <button onclick="askMarcelAbout('Assurance pour ${it.brand} ${it.model} valeur ${Marcel.Utils.formatEUR(it.current_value)} — AXA Art vs Hiscox vs autres ?')">🛡 Assurer</button>
+              <button onclick="askMarcelAbout('${it.brand} ${it.model} ${it.year} — perspectives 5-10 ans + fiscalité IFI + conseil transmission')">💬 Marcel</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+}
+
 window.openCat = function(key){
   const cat = DEMO_COLLECTIONS[key];
   if(!cat) return;
+  activeCatKey = key;
+  activeSort = 'value_desc';
   document.getElementById('catDetailTitle').innerHTML = `${cat.emoji} <em>${cat.name}</em>`;
   document.getElementById('catDetailSub').textContent = cat.items.length === 0 ? 'Aucune pièce dans cette catégorie. Commencez par en ajouter une.' : `${cat.items.length} pièce${cat.items.length > 1 ? 's' : ''} · valorisation totale ${Marcel.Utils.formatEUR(cat.total)}`;
-  document.getElementById('itemsGrid').innerHTML = cat.items.map(it => `
-    <article class="item-card">
-      <div class="item-photo">${it.emoji}</div>
-      <div class="item-body">
-        <div class="item-brand">${it.brand}</div>
-        <div class="item-model">${it.model}</div>
-        <div class="item-meta">ref. ${it.ref} · ${it.year}</div>
-        <div class="item-value">
-          <span class="price">${Marcel.Utils.formatEUR(it.current_value)}</span>
-          <span class="delta ${it.delta > 0 ? 'up' : 'down'}">${it.delta > 0 ? '↗ +' : '↘ '}${Math.abs(it.delta).toFixed(1)} %</span>
-        </div>
-        <div class="item-meta">acheté ${Marcel.Utils.formatEUR(it.acquired_price)} · source ${it.source}</div>
-        <div class="item-actions">
-          <button class="primary">📸 Photo</button>
-          <button>📄 Certificat</button>
-          <button>🔍 Estimer</button>
-          <button>💼 Vendre</button>
-          <button>🛡 Assurer</button>
-          <button onclick="askMarcelAbout('${it.brand} ${it.model}')">💬 Marcel</button>
-        </div>
+
+  // Insight Marcel auto
+  const insight = generateInsight(cat);
+  const insightHtml = insight
+    ? `<div class="cat-insight"><span class="ins-emoji">${insight.emoji}</span><span class="ins-body">${insight.text}</span><button class="ins-action" onclick="askMarcelAbout('${insight.prompt.replace(/'/g,"\\'")}')">${insight.action} →</button></div>`
+    : '';
+
+  // Toolbar tri / recherche
+  const toolbar = cat.items.length >= 2 ? `
+    <div class="items-toolbar">
+      <input class="search" id="searchInput" placeholder="Rechercher dans cette catégorie…" oninput="renderItemsForActiveCat()">
+      <div class="sort">
+        <button class="active" data-sort="value_desc" onclick="setSort('value_desc')">Valeur ↓</button>
+        <button data-sort="delta_desc" onclick="setSort('delta_desc')">Perf ↓</button>
+        <button data-sort="year_asc" onclick="setSort('year_asc')">Année ↑</button>
       </div>
-    </article>
-  `).join('');
+    </div>
+  ` : '';
+
+  const card = document.querySelector('.cat-detail-card');
+  const existing = card.querySelector('.cat-insight, .items-toolbar');
+  // Reset zones dynamiques
+  card.querySelectorAll('.cat-insight, .items-toolbar').forEach(e => e.remove());
+  const sub = document.getElementById('catDetailSub');
+  if(insightHtml) sub.insertAdjacentHTML('afterend', insightHtml);
+  if(toolbar) (card.querySelector('.cat-insight') || sub).insertAdjacentHTML('afterend', toolbar);
+
+  renderItems(cat);
   document.getElementById('catDetail').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+window.setSort = function(s){
+  activeSort = s;
+  document.querySelectorAll('.items-toolbar .sort button').forEach(b => b.classList.toggle('active', b.dataset.sort === s));
+  renderItemsForActiveCat();
+}
+window.renderItemsForActiveCat = function(){
+  if(activeCatKey) renderItems(DEMO_COLLECTIONS[activeCatKey]);
+}
+
+window.viewPhoto = function(id){ alert('Photo HD à brancher (upload R2 EU) · pièce ' + id) }
+window.viewDoc = function(id, type){ alert('Document ' + type + ' à brancher (R2 EU) · pièce ' + id) }
+
+window.exportPdf = async function(){
+  alert('Export PDF "Mes collections" pour assurance — à brancher worker ikcp-olympe Sprint 2.\n\nIl générera : photo HD chaque pièce + provenance + cote + certificat + carnet d\'entretien + signature eIDAS Témoin.');
+}
+window.exportSuccession = function(){
+  alert('Dossier succession eIDAS — synthèse pour notaire avec valorisation totale + répartition par catégorie + recommandations transmission (Hermès en backstage de Maxime).');
+}
+window.askMarcelGlobal = function(){
+  const stats = Object.values(DEMO_COLLECTIONS).reduce((s,c) => ({ total: s.total + c.total, items: s.items + c.items.length }), { total: 0, items: 0 });
+  sessionStorage.setItem('marcel_q', `Point global sur mes ${stats.items} pièces de collection (valorisation ${Marcel.Utils.formatEUR(stats.total)}). Recommandations transmission, IFI, assurance, arbitrages.`);
+  location.href = '/app/marcel.html?ask=1';
+}
+window.quickAddViaMarcel = function(){
+  sessionStorage.setItem('marcel_q', `Je viens d'acquérir une nouvelle pièce que je veux ajouter à ma collection. Pose-moi 5 questions courtes (catégorie, marque, modèle, prix d'achat, certificat dispo ?) pour la documenter, puis prépare un récap structuré.`);
+  location.href = '/app/marcel.html?ask=1';
 }
 window.closeCatDetail = function(){
   document.getElementById('catDetail').classList.remove('open');
