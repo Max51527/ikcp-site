@@ -100,6 +100,33 @@ section.col-hero{padding:26px 0 14px;border-bottom:1px solid var(--line);margin-
 .quick-add-tooltip{position:absolute;right:64px;top:50%;transform:translateY(-50%);background:var(--ink);color:var(--bg);padding:7px 14px;border-radius:8px;font-size:12px;font-family:'Inter',sans-serif;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.3s}
 .quick-add:hover .quick-add-tooltip{opacity:1}
 
+/* ─── Modal agent dédié (réponse live) ─── */
+.agent-modal{display:none;position:fixed;inset:0;z-index:250;background:rgba(26,24,20,0.55);backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.agent-modal.open{display:flex}
+.agent-modal-card{background:var(--bg);max-width:780px;width:100%;border-radius:14px;padding:28px 30px 26px;box-shadow:0 40px 90px -20px rgba(26,24,20,0.45);position:relative}
+.agent-modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:transparent;border:1px solid var(--line);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.agent-modal-close:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.agent-modal-header{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+.agent-modal-emoji{font-size:36px;flex-shrink:0}
+.agent-modal-title{font-family:'Fraunces',serif;font-size:22px;font-weight:500;letter-spacing:-0.015em}
+.agent-modal-title em{font-style:italic;color:var(--accent)}
+.agent-modal-role{font-size:11px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:600;margin-top:2px}
+.agent-modal-question{margin:18px 0;padding:12px 16px;background:var(--bg-2);border-left:3px solid var(--accent);border-radius:6px;font-family:'Fraunces',serif;font-style:italic;font-size:13.5px;color:var(--mute);line-height:1.5}
+.agent-modal-body{font-size:14px;line-height:1.7;max-height:60vh;overflow-y:auto;white-space:pre-wrap}
+.agent-modal-body h2,.agent-modal-body h3{font-family:'Fraunces',serif;font-weight:500;margin:14px 0 8px}
+.agent-modal-body h2{font-size:18px}
+.agent-modal-body h3{font-size:15px}
+.agent-modal-body strong{font-weight:600;color:var(--ink)}
+.agent-modal-body em{font-style:italic;color:var(--accent)}
+.agent-modal-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
+.agent-modal-body th,.agent-modal-body td{padding:7px 10px;border:1px solid var(--line);text-align:left}
+.agent-modal-body th{background:var(--bg-2);font-weight:600}
+.agent-modal-loading{padding:30px;text-align:center;color:var(--mute);font-style:italic}
+.agent-modal-loading::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:10px;animation:pulse 1.4s ease-in-out infinite;vertical-align:middle}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(0.6);opacity:0.4}}
+.agent-modal-meta{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.agent-modal-disclaimer{margin-top:10px;font-size:10.5px;color:var(--mute);font-style:italic;line-height:1.5}
+
 /* ─── Export PDF / Assurance ─── */
 .col-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
 .col-actions button{background:var(--bg);border:1px solid var(--line);color:var(--ink);padding:10px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;letter-spacing:0.02em;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px}
@@ -152,6 +179,24 @@ section.col-hero{padding:26px 0 14px;border-bottom:1px solid var(--line);margin-
     <p class="cat-detail-sub" id="catDetailSub"></p>
     <div class="items-grid" id="itemsGrid"></div>
     <button class="add-item" onclick="addItem()">Ajouter une pièce à cette catégorie</button>
+  </div>
+</div>
+
+<!-- Modal agent dédié (Joséphine, Léon, Auguste, Émile, Hélène, Olympe…) -->
+<div class="agent-modal" id="agentModal" onclick="if(event.target===this)closeAgentModal()">
+  <div class="agent-modal-card">
+    <button class="agent-modal-close" onclick="closeAgentModal()">×</button>
+    <div class="agent-modal-header">
+      <span class="agent-modal-emoji" id="agentEmoji"></span>
+      <div>
+        <div class="agent-modal-title" id="agentTitle"></div>
+        <div class="agent-modal-role" id="agentRole"></div>
+      </div>
+    </div>
+    <div class="agent-modal-question" id="agentQuestion"></div>
+    <div class="agent-modal-body" id="agentBody"></div>
+    <div class="agent-modal-meta" id="agentMeta"></div>
+    <div class="agent-modal-disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
   </div>
 </div>
 
@@ -330,10 +375,10 @@ function renderItems(cat){
             <div class="item-actions">
               <button class="primary" onclick="viewPhoto('${it.id}')">📸 Photo</button>
               <button onclick="viewDoc('${it.id}','cert')">📄 Certificat</button>
-              <button onclick="askMarcelAbout('Estimer la valeur réelle actuelle de ${it.brand} ${it.model} année ${it.year}')">🔍 Estimer</button>
-              <button onclick="askMarcelAbout('Je veux vendre ${it.brand} ${it.model} acquise ${Marcel.Utils.formatEUR(it.acquired_price)} cotée ${Marcel.Utils.formatEUR(it.current_value)}. Quels canaux ? Quelle fiscalité PV ?')">💼 Vendre</button>
-              <button onclick="askMarcelAbout('Assurance pour ${it.brand} ${it.model} valeur ${Marcel.Utils.formatEUR(it.current_value)} — AXA Art vs Hiscox vs autres ?')">🛡 Assurer</button>
-              <button onclick="askMarcelAbout('${it.brand} ${it.model} ${it.year} — perspectives 5-10 ans + fiscalité IFI + conseil transmission')">💬 Marcel</button>
+              <button onclick="askPieceSpecialist('${activeCatKey}','${it.id}','estimate')">🔍 Estimer</button>
+              <button onclick="askPieceSpecialist('${activeCatKey}','${it.id}','sell')">💼 Vendre</button>
+              <button onclick="askPieceSpecialist('${activeCatKey}','${it.id}','insure')">🛡 Assurer</button>
+              <button onclick="askPieceSpecialist('${activeCatKey}','${it.id}','advise')">💬 ${(CATEGORY_AGENT[activeCatKey]?.name) || 'Marcel'}</button>
             </div>
           </div>
         </article>
@@ -348,10 +393,12 @@ window.openCat = function(key){
   document.getElementById('catDetailTitle').innerHTML = `${cat.emoji} <em>${cat.name}</em>`;
   document.getElementById('catDetailSub').textContent = cat.items.length === 0 ? 'Aucune pièce dans cette catégorie. Commencez par en ajouter une.' : `${cat.items.length} pièce${cat.items.length > 1 ? 's' : ''} · valorisation totale ${Marcel.Utils.formatEUR(cat.total)}`;
 
-  // Insight Marcel auto
+  // Insight Marcel auto — bouton va parler à l'agent dédié de la catégorie
   const insight = generateInsight(cat);
+  const agent = CATEGORY_AGENT[key];
+  const agentLabel = agent ? `${agent.emoji} ${agent.name}` : 'Marcel';
   const insightHtml = insight
-    ? `<div class="cat-insight"><span class="ins-emoji">${insight.emoji}</span><span class="ins-body">${insight.text}</span><button class="ins-action" onclick="askMarcelAbout('${insight.prompt.replace(/'/g,"\\'")}')">${insight.action} →</button></div>`
+    ? `<div class="cat-insight"><span class="ins-emoji">${insight.emoji}</span><span class="ins-body">${insight.text}</span><button class="ins-action" onclick="askSpecialist('${key}','${insight.prompt.replace(/'/g,"\\'")}')">Parler à ${agentLabel} →</button></div>`
     : '';
 
   // Toolbar tri / recherche
@@ -388,8 +435,119 @@ window.renderItemsForActiveCat = function(){
   if(activeCatKey) renderItems(DEMO_COLLECTIONS[activeCatKey]);
 }
 
+// ─── Mapping catégorie → sub-agent dédié (charte officielle) ───
+const CATEGORY_AGENT = {
+  horlogerie:  { id:'josephine', name:'Joséphine', role:'Montres & Joaillerie',          emoji:'⌚' },
+  joaillerie:  { id:'josephine', name:'Joséphine', role:'Montres & Joaillerie',          emoji:'💎' },
+  automobile:  { id:'leon',      name:'Léon',      role:'Voitures, Yachts & Aviation',   emoji:'🏎️' },
+  vins:        { id:'auguste',   name:'Auguste',   role:'Vins & Gastronomie',            emoji:'🍷' },
+  art:         { id:'emile',     name:'Émile',     role:'Art & Collections',             emoji:'🎨' },
+  rare:        { id:'emile',     name:'Émile',     role:'Art & Collections',             emoji:'📜' },
+};
+
+// Construit le contexte agent à partir de la catégorie complète
+function buildAgentContext(catKey){
+  const cat = DEMO_COLLECTIONS[catKey];
+  if(!cat || !cat.items.length) return '';
+  const itemsTxt = cat.items.map(it =>
+    `- ${it.brand} ${it.model.split('·')[0].trim()} (${it.year}) acquise ${Marcel.Utils.formatEUR(it.acquired_price)}, cote actuelle ${Marcel.Utils.formatEUR(it.current_value)} (${it.delta > 0 ? '+' : ''}${it.delta.toFixed(1)}%, source ${it.source})`
+  ).join('\n');
+  return `COLLECTION ${cat.name.toUpperCase()} DE L'UTILISATEUR (${cat.items.length} pièces, valeur totale ${Marcel.Utils.formatEUR(cat.total)}) :\n${itemsTxt}\n\nUtilisateur : dirigeant SAS conseil, 47 ans, 6 M€ patrimoine net, collectionneur depuis 15 ans, marié, 2 enfants ados.`;
+}
+
+// ─── Appel DIRECT au sub-agent (court-circuite Marcel orchestrateur) ───
+async function askSpecialist(catKey, question, itemContext){
+  const agent = CATEGORY_AGENT[catKey];
+  if(!agent){
+    // Fallback Marcel pour catégories sans agent dédié
+    sessionStorage.setItem('marcel_q', question);
+    location.href = '/app/marcel.html?ask=1';
+    return;
+  }
+
+  // Ouvre la modal
+  document.getElementById('agentEmoji').textContent = agent.emoji;
+  document.getElementById('agentTitle').innerHTML = `${agent.name} <em>· en ligne</em>`;
+  document.getElementById('agentRole').textContent = agent.role;
+  document.getElementById('agentQuestion').textContent = `« ${question} »`;
+  document.getElementById('agentBody').innerHTML = `<div class="agent-modal-loading">${agent.name} consulte votre collection et le marché secondaire…</div>`;
+  document.getElementById('agentMeta').innerHTML = '';
+  document.getElementById('agentModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Construit context : collection complète + pièce ciblée
+  const fullContext = buildAgentContext(catKey) + (itemContext ? `\n\nPIÈCE CIBLÉE : ${itemContext}` : '');
+
+  // Appel direct ikcp-lifestyle (sub-agent dédié, pas Marcel orchestrateur)
+  const t0 = performance.now();
+  try {
+    const r = await fetch('https://ikcp-lifestyle.maxime-ead.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agent: agent.id, question, context: fullContext }),
+    });
+    const ms = Math.round(performance.now() - t0);
+    const data = await r.json();
+    const reply = data.reply || data.message || 'Aucune réponse reçue.';
+
+    document.getElementById('agentBody').innerHTML = renderMarkdown(reply);
+    document.getElementById('agentMeta').innerHTML = `
+      <span>⏱ ${(ms/1000).toFixed(1)}s</span>
+      <span>${agent.name} a consulté votre collection (${DEMO_COLLECTIONS[catKey].items.length} pièces)</span>
+    `;
+  } catch(err){
+    document.getElementById('agentBody').innerHTML = `<p style="color:var(--bad)"><b>Erreur réseau.</b> ${agent.name} est momentanément indisponible. Réessayez dans un instant ou <a href="mailto:maxime@ikcp.fr">contactez Maxime</a>.</p>`;
+  }
+}
+
+window.closeAgentModal = function(){
+  document.getElementById('agentModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderMarkdown(s){
+  if(typeof s !== 'string') s = JSON.stringify(s, null, 2);
+  return s
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>');
+}
+
+// Override : tous les boutons "Marcel" passent maintenant par askSpecialist
+window.askMarcelAbout = function(prompt){
+  // Détection auto de la catégorie active
+  if(activeCatKey && CATEGORY_AGENT[activeCatKey]){
+    askSpecialist(activeCatKey, prompt);
+  } else {
+    sessionStorage.setItem('marcel_q', prompt);
+    location.href = '/app/marcel.html?ask=1';
+  }
+}
+
+// Action contextuelle sur une pièce → agent dédié avec prompt typé
+window.askPieceSpecialist = function(catKey, itemId, action){
+  const cat = DEMO_COLLECTIONS[catKey];
+  const it = cat?.items.find(x => x.id === itemId);
+  if(!it) return;
+  const piecePretty = `${it.brand} ${it.model.split('·')[0].trim()} (${it.year})`;
+  const itemContext = `${piecePretty} · acquise ${Marcel.Utils.formatEUR(it.acquired_price)} · cote actuelle ${Marcel.Utils.formatEUR(it.current_value)} (${it.delta > 0 ? '+' : ''}${it.delta.toFixed(1)}%, source ${it.source}) · réf. ${it.ref}`;
+
+  const PROMPTS = {
+    estimate: `Estimation actuelle réelle de ${piecePretty} : confirmes-tu la cote de ${Marcel.Utils.formatEUR(it.current_value)} ? Quelle fourchette en réalité aujourd'hui sur ${it.source} et alternatives ?`,
+    sell: `Je veux vendre ${piecePretty} cotée ${Marcel.Utils.formatEUR(it.current_value)}. Quels canaux conseillés (Phillips, Sotheby's, RM, Chrono24, gré à gré) ? Quelle fiscalité PV pour un dirigeant patrimoine 6 M€ ? Délai estimé ?`,
+    insure: `Assurance pour ${piecePretty} valeur ${Marcel.Utils.formatEUR(it.current_value)} : AXA Art, Hiscox, Chubb, ou option courtier privé ? Coût annuel estimé ? Conditions spécifiques (expertise photo, garde, transport) ?`,
+    advise: `${piecePretty} : perspectives 5-10 ans, fiscalité IFI 2026, conseil transmission (mes enfants ont 14 et 16 ans). Donne-moi un point complet.`,
+  };
+
+  askSpecialist(catKey, PROMPTS[action] || PROMPTS.advise, itemContext);
+}
+
 window.viewPhoto = function(id){ alert('Photo HD à brancher (upload R2 EU) · pièce ' + id) }
 window.viewDoc = function(id, type){ alert('Document ' + type + ' à brancher (R2 EU) · pièce ' + id) }
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') { closeCatDetail(); closeAgentModal(); } });
 
 window.exportPdf = async function(){
   alert('Export PDF "Mes collections" pour assurance — à brancher worker ikcp-olympe Sprint 2.\n\nIl générera : photo HD chaque pièce + provenance + cote + certificat + carnet d\'entretien + signature eIDAS Témoin.');
