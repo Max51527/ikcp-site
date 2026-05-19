@@ -566,6 +566,41 @@
     .immo-ask{font-size:10.5px;color:rgba(201,169,110,0.5);cursor:pointer;padding:9px 0 0;border-top:1px solid rgba(255,255,255,0.05);margin-top:8px;display:flex;align-items:center;justify-content:space-between;transition:.15s}
     .immo-ask:hover{color:var(--gold)}
 
+    /* ── PASSION / LIFESTYLE CARDS (Mes univers) ── */
+    .passion-grid-m{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:4px}
+    @media(max-width:1000px){.passion-grid-m{grid-template-columns:repeat(2,1fr)}}
+    .pcard{
+      border-radius:var(--card-r);padding:20px 18px 16px;
+      cursor:pointer;transition:.25s;position:relative;overflow:hidden;
+      display:flex;flex-direction:column;gap:6px;min-height:130px;
+    }
+    .pcard::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0);transition:.2s}
+    .pcard:hover::before{background:rgba(0,0,0,0.12)}
+    .pcard:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,0.4)}
+    .pcard-ico{font-size:28px;line-height:1;margin-bottom:4px}
+    .pcard-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#fff;line-height:1.2}
+    .pcard-sub{font-size:10.5px;color:rgba(255,255,255,0.55);font-style:italic;line-height:1.4;flex:1}
+    .pcard-action{font-size:10px;color:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);margin-top:auto;transition:.15s}
+    .pcard:hover .pcard-action{color:rgba(255,255,255,0.9)}
+    .pcard-wip{font-size:8.5px;padding:2px 7px;border-radius:10px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.12);align-self:flex-start;margin-bottom:2px}
+    /* Couleurs distinctes par passion */
+    .pcard.auto{background:linear-gradient(145deg,#4A1F0A,#7A3010)}
+    .pcard.watch{background:linear-gradient(145deg,#0B1525,#1B2A4A)}
+    .pcard.wine{background:linear-gradient(145deg,#3D0B18,#621828)}
+    .pcard.yacht{background:linear-gradient(145deg,#092A42,#0E3F62)}
+    .pcard.horse{background:linear-gradient(145deg,#2E1C05,#4E310A)}
+    .pcard.golf{background:linear-gradient(145deg,#082B14,#0E4522)}
+    .pcard.arts{background:linear-gradient(145deg,#230840,#3A1260)}
+    .pcard.travel{background:linear-gradient(145deg,#062E2E,#0A4A4A)}
+    .pcard.gastro{background:linear-gradient(145deg,#3A1E05,#5E3008)}
+    /* Accent lumineux en coin */
+    .pcard::after{
+      content:'';position:absolute;top:-30px;right:-30px;
+      width:80px;height:80px;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,0.07) 0%,transparent 70%);
+      pointer-events:none;
+    }
+
     /* ── PROGRESS BAR ── */
     .progress-wrap{margin-top:8px}
     .progress-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:5px}
@@ -1286,6 +1321,86 @@
     <div class="view" id="view-univers">
       <div class="page-title">⬡ Tous mes services</div>
       <div class="page-sub">Votre Family Office digital · 4 actifs · 8 bientôt · 6 à venir · outils & transversaux inclus</div>
+
+      <!-- ✨ GROUPE 0 — Lifestyle & Passions -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">✨ Lifestyle & Passions — Vos 9 univers</div>
+          <span class="services-group-badge" style="background:rgba(201,169,110,0.1);color:var(--gold);border-color:rgba(201,169,110,0.2);">✦ Marcel connecté</span>
+        </div>
+        <div class="passion-grid-m">
+
+          <div class="pcard auto" onclick="askMarcel('Univers Automobiles de collection — Famille Moreau : Ferrari, Aston Martin, Porsche air-cooled dans mon patrimoine. Valorisation IFI, assurance collections, transmission et fiscalité d\'une vente éventuelle.')">
+            <div class="pcard-ico">🚗</div>
+            <div class="pcard-name">Automobiles de collection</div>
+            <div class="pcard-sub">Ferrari · Aston · Porsche air-cooled</div>
+            <div class="pcard-action"><span>Analyser avec Marcel</span><span>→</span></div>
+          </div>
+
+          <div class="pcard watch" onclick="askMarcel('Univers Horlogerie — collection AP Royal Oak 15500 (~95k€) + Patek Nautilus 5711 (~175k€) + Richard Mille RM11. Valorisation, IFI meubles meublants, assurance, opportunités de cession en 2026.')">
+            <div class="pcard-ico">⌚</div>
+            <div class="pcard-name">Horlogerie</div>
+            <div class="pcard-sub">Patek · AP · Richard Mille</div>
+            <div class="pcard-action"><span>Analyser avec Marcel</span><span>→</span></div>
+          </div>
+
+          <div class="pcard wine" onclick="askMarcel('Univers Cave & vins rares — 380 bouteilles dont Pétrus 2018 (3 caisses), Romanée-Conti 2019 (6 bouteilles), Yquem. Valorisation cave, IFI, vente via iDealwine vs Christie\'s, transmission.')">
+            <div class="pcard-ico">🍷</div>
+            <div class="pcard-name">Cave et vins rares</div>
+            <div class="pcard-sub">Pétrus · Romanée-Conti · Yquem</div>
+            <div class="pcard-action"><span>Analyser avec Marcel</span><span>→</span></div>
+          </div>
+
+          <div class="pcard yacht" onclick="askMarcel('Univers Yachting & voile — projet acquisition voilier 12m ou location charter Méditerranée. Structuration SCI ou société de détention, TVA, financement maritime, assurance Pantaenius.')">
+            <div class="pcard-ico">⛵</div>
+            <div class="pcard-name">Yachting & voile</div>
+            <div class="pcard-sub">Charter · racing · marinas</div>
+            <div class="pcard-wip">🔨 Q4 2026</div>
+            <div class="pcard-action"><span>Poser une question</span><span>→</span></div>
+          </div>
+
+          <div class="pcard horse" onclick="askMarcel('Univers Équestre — polo et équitation de compétition. Budget entretien chevaux, fiscalité activité équestre, déductibilité charges, polo Argentine ou Royal Ascot.')">
+            <div class="pcard-ico">🐎</div>
+            <div class="pcard-name">Équestre</div>
+            <div class="pcard-sub">Polo Argentine · Royal Ascot</div>
+            <div class="pcard-wip">🔨 Q4 2026</div>
+            <div class="pcard-action"><span>Poser une question</span><span>→</span></div>
+          </div>
+
+          <div class="pcard golf" onclick="askMarcel('Univers Golf premium — abonnements Sunningdale, Cypress Point, Morfontaine. Cotisations déductibles ? Accueil clients sur golf : frais professionnels ? Structuration si projet d\'investissement dans un club.')">
+            <div class="pcard-ico">⛳</div>
+            <div class="pcard-name">Golf premium</div>
+            <div class="pcard-sub">Sunningdale · Cypress Point</div>
+            <div class="pcard-wip">🔨 Q4 2026</div>
+            <div class="pcard-action"><span>Poser une question</span><span>→</span></div>
+          </div>
+
+          <div class="pcard arts" onclick="askMarcel('Univers Mécénat & arts — mécénat Opéra Garnier et Comédie-Française, donations d\'œuvres. Réduction IS 60% mécénat entreprise, déductibilité IR 66%, stratégie de donation d\'œuvres avec abattement.')">
+            <div class="pcard-ico">🎭</div>
+            <div class="pcard-name">Mécénat & arts</div>
+            <div class="pcard-sub">Garnier · Comédie-Française</div>
+            <div class="pcard-action"><span>Analyser avec Marcel</span><span>→</span></div>
+          </div>
+
+          <div class="pcard travel" onclick="askMarcel('Univers Voyages exclusifs — Cookson Adventures Antarctique, Black Tomato lodges. Budget annuel voyages famille. Déductibilité si voyage mixte professionnel/privé ? Assurance premium voyage famille dirigeant.')">
+            <div class="pcard-ico">🌍</div>
+            <div class="pcard-name">Voyages exclusifs</div>
+            <div class="pcard-sub">Cookson · Black Tomato</div>
+            <div class="pcard-wip">🔨 Q4 2026</div>
+            <div class="pcard-action"><span>Poser une question</span><span>→</span></div>
+          </div>
+
+          <div class="pcard gastro" onclick="askMarcel('Univers Gastronomie — tables Noma, El Celler de Can Roca, Asador Etxebarri, Flocons de Sel. Frais de représentation clients déductibles ? Abonnement table réservée via holding ? Fiscalité avantages en nature.')">
+            <div class="pcard-ico">🍽</div>
+            <div class="pcard-name">Gastronomie</div>
+            <div class="pcard-sub">Noma · El Celler · Asador</div>
+            <div class="pcard-wip">🔨 Q4 2026</div>
+            <div class="pcard-action"><span>Poser une question</span><span>→</span></div>
+          </div>
+
+        </div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:8px;font-style:italic">Cliquez sur un univers pour l'analyser avec Marcel · 🔨 Q4 2026 = module dédié en développement, conseil Marcel disponible maintenant</div>
+      </div>
 
       <!-- GROUPE 1 — Actifs maintenant -->
       <div class="services-group">
