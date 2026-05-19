@@ -399,7 +399,7 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
     <div class="hero-card-title">Donnez votre <em>SIREN</em>.<br>Marcel s'allume.</div>
 
     <div style="display:flex; gap:8px; margin:18px 0 12px;">
-      <input type="text" id="siren-input" placeholder="9 chiffres — ex : 947972436" maxlength="11"
+      <input type="text" id="siren-input" placeholder="Votre SIREN — 9 chiffres" maxlength="11"
         style="flex:1; padding:14px 16px; background:var(--cream-2); border:1.5px solid var(--gold-deep); border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--navy); outline:none; font-weight:600; letter-spacing:0.05em;">
       <button onclick="lookupSiren()" id="siren-btn"
         style="padding:14px 20px; background:var(--navy); color:var(--cream); border:none; border-radius:10px; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; box-shadow:0 4px 12px rgba(27,42,74,0.20);">
@@ -407,7 +407,7 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       </button>
     </div>
     <p style="font-size:12px; color:var(--ink-faint); font-style:italic; line-height:1.55;">
-      Essayez avec <b onclick="document.getElementById('siren-input').value='947972436';lookupSiren()" style="cursor:pointer; color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif; font-weight:600">947972436</b> (IKCP démo). Vos données ne quittent pas la France — hébergement Cloudflare Paris.
+      Vos données ne quittent pas la France — hébergement souverain Paris.
     </p>
 
     <!-- Résultat Pappers + simulateurs -->
@@ -415,6 +415,8 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       <div id="siren-loading" style="text-align:center; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif;">Marcel interroge le RNE…</div>
       <div id="siren-data" style="display:none;"></div>
     </div>
+    <!-- Automatisations IKCP détectées pour cette entreprise -->
+    <div id="automations-result" style="display:none; margin-top:14px;"></div>
 
     <div class="hero-card-stats" style="margin-top:18px;">
       <div><div class="hero-stat-val">2/12</div><div class="hero-stat-lbl">Univers LIVE</div></div>
@@ -474,12 +476,110 @@ async function lookupSiren() {
     `;
     btn.disabled = false;
     btn.textContent = 'Activer Marcel';
+    renderAutomations(data, siren);
   } catch(e) {
     loading.innerHTML = `<span style="color:var(--ink-mute);">⚠ ${e.message}</span><br><span style="font-size:11px;">Essayez avec un SIREN existant en France (9 chiffres).</span>`;
     btn.disabled = false;
     btn.textContent = 'Activer Marcel';
+    const autoBox = document.getElementById('automations-result');
+    if (autoBox) autoBox.style.display = 'none';
   }
 }
+
+function renderAutomations(data, siren) {
+  const box = document.getElementById('automations-result');
+  if (!box) return;
+
+  const nafCode = (data.code_naf || '').toUpperCase().replace(/\s/g,'');
+  const forme   = (data.forme_juridique || '').toLowerCase();
+  const capital = parseFloat(data.capital) || 0;
+  const nom     = (data.nom || 'CETTE SOCIÉTÉ').toUpperCase().substring(0, 36);
+
+  // Detect creation year for age-based rules
+  const dateStr = data.date_creation || '';
+  const yrMatch = dateStr.match(/(\d{4})/);
+  const age = yrMatch ? (2026 - parseInt(yrMatch[1])) : 3;
+
+  const isHolding  = /^(6420|6430|6499|7010)/.test(nafCode);
+  const isImmo     = /^68/.test(nafCode) || forme.includes('sci') || forme.includes('civile immo');
+  const hasCapital = capital >= 200000;
+  const isMature   = age >= 3;
+
+  const automations = [];
+
+  // 1. Cartographie — toujours
+  automations.push({ icon:'🗺', label:'Cartographie auto', universe:'Patrimoine', live:true,
+    desc:'Capital, dirigeants, BEs, forme — synchronisés avec le RNE officiel chaque nuit.' });
+
+  // 2. Holding → optimisation structurelle
+  if (isHolding) {
+    automations.push({ icon:'🏛', label:'Optimisation holding', universe:'Fiscalité', live:true,
+      desc:'Remontée de dividendes, intégration fiscale, OBO — schémas chiffrés sur vos comptes.' });
+  }
+
+  // 3. Capital significatif → Dutreil + IFI
+  if (hasCapital || isHolding) {
+    automations.push({ icon:'⚖', label:'Pacte Dutreil', universe:'Fiscalité', live:true,
+      desc:'Abattement 75 % sur transmission d\'entreprise. Éligibilité détectée automatiquement.' });
+    automations.push({ icon:'📊', label:'Simulation IFI', universe:'Fiscalité', live:true,
+      desc:'Calcul IFI sur titres de société. Seuils, assiette, optimisations — résultat instantané.' });
+  }
+
+  // 4. Société ancienne → succession / donation
+  if (isMature) {
+    automations.push({ icon:'🎁', label:'Calcul donation', universe:'Fiscalité', live:true,
+      desc:'Donation d\'entreprise avec abattements légaux. Calcul exact selon barème CGI.' });
+  }
+
+  // 5. Immobilier / SCI
+  if (isImmo) {
+    automations.push({ icon:'🏠', label:'Stratégie SCI & immo', universe:'Immobilier', live:false,
+      desc:'IS vs IR, LMNP, démembrement de propriété. Agent Architecte — disponible Q3 2026.' });
+  }
+
+  // 6. Audit MIF II — toujours
+  automations.push({ icon:'🔐', label:'Audit log MIF II', universe:'Conformité', live:true,
+    desc:'Chaque échange horodaté et haché en base Paris. Inviolable, traçabilité eIDAS.' });
+
+  // 7. Marcel — toujours
+  automations.push({ icon:'🎼', label:'Marcel 24/7', universe:'Intelligence', live:true,
+    desc:'Chef d\'orchestre patrimonial. Réponse en quelques secondes, à toute heure, sans RDV.' });
+
+  const liveCount = automations.filter(a => a.live).length;
+
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div style="background:var(--navy); border-radius:14px; border:1px solid rgba(201,169,110,0.25); overflow:hidden;">
+      <div style="padding:16px 20px 12px; border-bottom:1px solid rgba(201,169,110,0.15); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold-bright); font-weight:700;">⚡ ${liveCount} AUTOMATISATIONS ACTIVES</span>
+          <div style="font-family:'Playfair Display',serif; font-size:15px; color:var(--cream); margin-top:4px; font-weight:500; line-height:1.2;">Détectées pour <em style="color:var(--gold-bright);">${nom}</em></div>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; padding:5px 12px; border-radius:20px; background:rgba(63,160,63,0.2); color:#6dcc6d; font-weight:700; white-space:nowrap;">● Analyse temps réel</span>
+      </div>
+      <div style="padding:16px 20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px;">
+        ${automations.map(a => `
+          <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(201,169,110,${a.live ? '0.28' : '0.10'}); border-radius:10px; padding:13px 14px; display:flex; flex-direction:column; gap:5px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">
+              <span style="font-size:18px; line-height:1;">${a.icon}</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.15em; font-weight:700; text-transform:uppercase; padding:2px 7px; border-radius:20px; ${a.live ? 'background:rgba(63,160,63,0.2); color:#6dcc6d;' : 'background:rgba(201,169,110,0.12); color:var(--gold-bright);'}">${a.live ? '● LIVE' : '◌ Q3 2026'}</span>
+            </div>
+            <div style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; color:var(--cream); line-height:1.2;">${a.label}</div>
+            <div style="font-size:9.5px; font-family:'JetBrains Mono',monospace; letter-spacing:0.1em; color:var(--gold-bright); opacity:0.75; margin-bottom:2px;">${a.universe}</div>
+            <div style="font-size:11px; color:rgba(250,250,248,0.55); line-height:1.55;">${a.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="padding:14px 20px 18px; border-top:1px solid rgba(201,169,110,0.12); text-align:center;">
+        <a href="#beta" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:var(--gold); color:var(--navy); border-radius:6px; font-size:11.5px; font-weight:700; letter-spacing:0.1em; text-decoration:none; text-transform:uppercase; transition:background 0.2s;">
+          Accéder à toutes ces automatisations →
+        </a>
+        <p style="font-size:10.5px; color:rgba(250,250,248,0.4); margin-top:10px; margin-bottom:0; font-style:italic; font-family:'Playfair Display',serif;">Accès Bêta gratuit · 50 familles fondatrices · sans carte bancaire</p>
+      </div>
+    </div>
+  `;
+}
+
 document.getElementById('siren-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') lookupSiren(); });
 </script>
 
@@ -968,7 +1068,7 @@ const UNIVERS_DATA = {
       'Mise à jour automatique chaque nuit'
     ],
     examples: [
-      '« Cartographie 947972436 » → fiche IKCP complète en 2 secondes',
+      'Saisissez un SIREN → fiche entreprise complète en 2 secondes',
       '« Mes filiales et participations » → arbre patrimonial structuré',
       '« Ma valorisation Dutreil estimée » → calcul brut sur les comptes'
     ],
