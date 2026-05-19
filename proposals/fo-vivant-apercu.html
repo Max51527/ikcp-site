@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKCP — Aperçu Site Vivant · Family Office</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:       #1B2A4A;
+      --navy-deep:  #0E1729;
+      --navy-mid:   #162240;
+      --cream:      #FAFAF8;
+      --cream-2:    #F4EFE7;
+      --cream-3:    #EDE5D8;
+      --gold:       #C9A96E;
+      --gold-bright:#E2C896;
+      --gold-deep:  #8B6F3F;
+      --ink:        #2C2418;
+      --ink-mute:   #6B5D52;
+      --ink-faint:  #9E9080;
+      --red:        #C44B3B;
+      --green:      #2D7A4F;
+      --amber:      #B87333;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ─── BANNER APERÇU ─── */
+    .apercu-banner {
+      background: var(--gold);
+      color: var(--navy-deep);
+      text-align: center;
+      padding: 9px 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      background: var(--navy-deep);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 33px;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--gold);
+      letter-spacing: 3px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a.active { color: var(--gold); font-weight: 600; }
+
+    .nav-cta {
+      background: var(--gold);
+      color: var(--navy-deep);
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── MODULE 1 : BARRE DE VIE ─── */
+    .barre-vie {
+      background: var(--navy);
+      padding: 0 48px;
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+    }
+
+    .bv-item {
+      flex: 1;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bv-item:last-child { border-right: none; }
+
+    .bv-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .bv-item:hover::after { transform: scaleX(1); }
+
+    .bv-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+
+    .bv-content {}
+
+    .bv-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .bv-val .gold { color: var(--gold); }
+    .bv-val .green { color: #4ADE80; }
+    .bv-val .red { color: #FCA5A5; }
+    .bv-val small { font-size: 11px; color: rgba(255,255,255,0.35); font-family: 'Outfit', sans-serif; }
+
+    .bv-lbl {
+      font-size: 9px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .pulse {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: #4ADE80;
+      border-radius: 50%;
+      animation: pulseAnim 2s infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(74,222,128,0); }
+    }
+
+    /* Beta progress bar */
+    .beta-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .beta-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ─── MODULE 2 : TAUX DU PATRIMOINE ─── */
+    .taux-section {
+      background: var(--navy-deep);
+      padding: 64px 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 36px;
+    }
+
+    .section-eyebrow {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: #fff;
+      font-style: italic;
+      line-height: 1.2;
+    }
+
+    .section-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      text-align: right;
+    }
+
+    .taux-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 2px;
+    }
+
+    .taux-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 22px 18px;
+      transition: background 0.2s;
+      cursor: default;
+    }
+
+    .taux-card:hover {
+      background: rgba(201,169,110,0.07);
+      border-color: rgba(201,169,110,0.2);
+    }
+
+    .taux-univers {
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.7;
+    }
+
+    .taux-name {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .taux-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .taux-unit {
+      display: inline;
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .taux-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .taux-delta.up { background: rgba(45,122,79,0.25); color: #4ADE80; }
+    .taux-delta.down { background: rgba(196,75,59,0.2); color: #FCA5A5; }
+    .taux-delta.flat { background: rgba(201,169,110,0.15); color: var(--gold); }
+
+    .taux-source {
+      font-size: 8px;
+      color: rgba(255,255,255,0.2);
+      margin-top: 8px;
+    }
+
+    /* ─── MODULE 3 : CALENDRIER FISCAL ─── */
+    .cal-section {
+      background: var(--cream);
+      padding: 64px 48px;
+    }
+
+    .cal-section .section-title { color: var(--navy); font-style: normal; }
+    .cal-section .section-eyebrow { }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .cal-item {
+      background: #fff;
+      border: 1px solid var(--cream-3);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 22px 24px;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: default;
+    }
+
+    .cal-item:hover {
+      border-color: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    .cal-item.done { opacity: 0.45; }
+
+    .cal-badge {
+      flex-shrink: 0;
+      width: 62px;
+      height: 62px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+    }
+
+    .cal-badge .days {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .cal-badge .label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .cal-badge.urgent { background: #FEE2E2; }
+    .cal-badge.urgent .days { color: var(--red); }
+    .cal-badge.urgent .label { color: rgba(196,75,59,0.6); }
+
+    .cal-badge.warn { background: #FEF3C7; }
+    .cal-badge.warn .days { color: var(--amber); }
+    .cal-badge.warn .label { color: rgba(184,115,51,0.6); }
+
+    .cal-badge.normal { background: #EFF6FF; }
+    .cal-badge.normal .days { color: #3B82F6; }
+    .cal-badge.normal .label { color: rgba(59,130,246,0.6); }
+
+    .cal-badge.done-badge { background: var(--cream-2); }
+    .cal-badge.done-badge .days { color: var(--ink-faint); font-size: 14px; }
+
+    .cal-info {}
+
+    .cal-info .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .cal-info .detail {
+      font-size: 12px;
+      color: var(--ink-mute);
+      line-height: 1.5;
+    }
+
+    .cal-info .date-pill {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ink-faint);
+      background: var(--cream-2);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .cal-footer {
+      margin-top: 20px;
+      font-size: 11px;
+      color: var(--ink-faint);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cal-footer::before {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--cream-3);
+    }
+
+    /* ─── MODULE 4 : MARCEL Q DU MOMENT ─── */
+    .marcel-section {
+      background: var(--navy);
+      padding: 64px 48px;
+    }
+
+    .marcel-section .section-title { color: #fff; }
+
+    .marcel-q-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .mq-left {
+      padding: 40px;
+      border-right: 1px solid rgba(201,169,110,0.1);
+    }
+
+    .mq-right {
+      padding: 40px;
+    }
+
+    .mq-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .mq-tag::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.4;
+    }
+
+    .question-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 20px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .question-meta {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .question-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .answer-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .marcel-badge {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .answer-header .info .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .answer-header .info .model {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      opacity: 0.7;
+      text-transform: uppercase;
+    }
+
+    .answer-body {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.85;
+      margin-bottom: 28px;
+    }
+
+    .answer-body strong { color: var(--gold-bright); }
+
+    .answer-body .fade-out {
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0));
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0));
+      max-height: 120px;
+      overflow: hidden;
+    }
+
+    .answer-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary-dark {
+      background: var(--gold);
+      color: var(--navy-deep);
+      padding: 13px 24px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: block;
+    }
+
+    .btn-primary-dark:hover { background: var(--gold-bright); }
+
+    .btn-outline-dark {
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      padding: 12px 24px;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      display: block;
+      transition: all 0.2s;
+    }
+
+    .btn-outline-dark:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .answer-disclaimer {
+      margin-top: 16px;
+      font-size: 9px;
+      color: rgba(255,255,255,0.2);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* ─── MODULE 5 : ESPACE MEMBRE TEASER ─── */
+    .membre-section {
+      background: var(--cream-2);
+      padding: 64px 48px;
+    }
+
+    .membre-section .section-title { color: var(--navy); }
+
+    .membre-teaser {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--cream-3);
+    }
+
+    .membre-blur {
+      filter: blur(4px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .membre-dash-preview {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 480px;
+      background: var(--navy-deep);
+    }
+
+    .dash-sidebar {
+      background: var(--navy);
+      padding: 24px 0;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dash-logo {
+      padding: 0 20px 24px;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--gold);
+      letter-spacing: 3px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dash-user {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dash-user-name {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .dash-user-plan {
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .dash-nav {
+      padding: 12px 0;
+    }
+
+    .dash-nav-item {
+      padding: 10px 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dash-nav-item.active {
+      color: #fff;
+      background: rgba(201,169,110,0.08);
+      border-left: 2px solid var(--gold);
+    }
+
+    .dash-nav-item .notif {
+      margin-left: auto;
+      background: var(--red);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dash-main {
+      padding: 28px;
+      background: var(--cream-2);
+    }
+
+    .dash-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .dash-kpi {
+      background: #fff;
+      padding: 16px;
+      border: 1px solid var(--cream-3);
+    }
+
+    .dash-kpi .k-lbl {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .dash-kpi .k-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    .dash-kpi .k-val.gold { color: var(--gold-deep); }
+    .dash-kpi .k-val.red { color: var(--red); font-size: 14px; }
+
+    .dash-row {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 10px;
+    }
+
+    .dash-card {
+      background: #fff;
+      padding: 18px;
+      border: 1px solid var(--cream-3);
+    }
+
+    .dash-card-title {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--gold-deep);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .univers-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .univers-mini-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--ink-mute);
+      padding: 6px 8px;
+      background: var(--cream);
+    }
+
+    .u-live { font-size: 8px; background: #DCFCE7; color: var(--green); padding: 1px 6px; border-radius: 10px; margin-left: auto; font-weight: 700; }
+    .u-soon { font-size: 8px; background: #FEF3C7; color: var(--amber); padding: 1px 6px; border-radius: 10px; margin-left: auto; font-weight: 700; }
+
+    .alerts-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .alert-mini {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--ink-mute);
+      line-height: 1.4;
+    }
+
+    /* Overlay espace membre */
+    .membre-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(170deg, rgba(14,23,41,0.4) 0%, rgba(14,23,41,0.92) 60%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px;
+    }
+
+    .overlay-icon { font-size: 36px; margin-bottom: 18px; }
+
+    .overlay-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: #fff;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .overlay-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      max-width: 420px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .overlay-cta {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-gold-lg {
+      background: var(--gold);
+      color: var(--navy-deep);
+      padding: 14px 32px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-ghost-lg {
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      padding: 14px 28px;
+      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.15);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    .overlay-places {
+      margin-top: 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .overlay-places strong {
+      color: var(--gold);
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      background: var(--navy-deep);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--gold);
+      letter-spacing: 3px;
+    }
+
+    .footer-legal {
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .taux-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      nav, .barre-vie, .taux-section, .cal-section, .marcel-section,
+      .membre-section, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .barre-vie { flex-wrap: wrap; }
+      .bv-item { min-width: 50%; border-bottom: 1px solid rgba(255,255,255,0.04); }
+      .taux-grid { grid-template-columns: repeat(2, 1fr); }
+      .cal-grid { grid-template-columns: 1fr; }
+      .marcel-q-card { grid-template-columns: 1fr; }
+      .mq-left { border-right: none; border-bottom: 1px solid rgba(201,169,110,0.1); }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- APERÇU BANNER -->
+  <div class="apercu-banner">
+    ⚡ APERÇU "SITE VIVANT" — 5 MODULES PROPOSÉS INTÉGRÉS DANS LE VOLET FAMILY OFFICE · 19 MAI 2026
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">IKCP.</div>
+    <ul class="nav-links">
+      <li><a href="#">Cabinet</a></li>
+      <li><a href="#" class="active">Family Office</a></li>
+      <li><a href="#">Marcel</a></li>
+      <li><a href="#">Annonay</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <a href="#beta" class="nav-cta">Rejoindre la bêta</a>
+  </nav>
+
+  <!-- MODULE 1 : BARRE DE VIE -->
+  <div class="barre-vie" id="barre-vie">
+    <div class="bv-item">
+      <div class="bv-icon">🏛</div>
+      <div class="bv-content">
+        <div class="bv-val">
+          <span class="gold" id="beta-count">0</span><small>&nbsp;/ 50 familles</small>
+        </div>
+        <div class="bv-lbl">Bêta fondatrice · Places restantes</div>
+      </div>
+      <div class="beta-bar"><div class="beta-bar-fill" id="beta-fill"></div></div>
+    </div>
+    <div class="bv-item">
+      <div class="bv-icon">🗺</div>
+      <div class="bv-content">
+        <div class="bv-val"><span class="gold">127</span><small>&nbsp;ce mois</small></div>
+        <div class="bv-lbl">Cartographies SIREN réalisées</div>
+      </div>
+    </div>
+    <div class="bv-item">
+      <div class="bv-icon">🎼</div>
+      <div class="bv-content">
+        <div class="bv-val"><span class="pulse"></span><span class="green">Marcel</span><small>&nbsp;actif</small></div>
+        <div class="bv-lbl">Agent patrimonial · 24h/24 · Paris</div>
+      </div>
+    </div>
+    <div class="bv-item">
+      <div class="bv-icon">⏱</div>
+      <div class="bv-content">
+        <div class="bv-val"><span id="last-min">4</span><small>&nbsp;min</small></div>
+        <div class="bv-lbl">Dernière analyse patrimoniale</div>
+      </div>
+    </div>
+    <div class="bv-item">
+      <div class="bv-icon">📅</div>
+      <div class="bv-content">
+        <div class="bv-val"><span class="red">J&#8209;10</span><small>&nbsp;Décl. IR</small></div>
+        <div class="bv-lbl">Prochaine échéance fiscale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 2 : TAUX DU PATRIMOINE -->
+  <section class="taux-section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Module 2 — Pouls du Patrimoine</div>
+        <div class="section-title">Les indicateurs qui comptent,<br><em>mis à jour chaque jour</em></div>
+      </div>
+      <div class="section-meta">
+        Données BCE · BDF · INSEE · BOFIP<br>
+        Cloudflare Worker CRON · Actualisé 19.05.2026
+      </div>
+    </div>
+    <div class="taux-grid">
+      <div class="taux-card">
+        <div class="taux-univers">Épargne · Assurance-Vie</div>
+        <div class="taux-name">Livret A</div>
+        <div class="taux-val">2,40<span class="taux-unit">&thinsp;%</span></div>
+        <div><span class="taux-delta down">↘ &minus;0,30 % en fév.</span></div>
+        <div class="taux-source">Banque de France · Révisé 01.02.2025</div>
+      </div>
+      <div class="taux-card">
+        <div class="taux-univers">Immobilier · Fonds euros</div>
+        <div class="taux-name">OAT 10 ans</div>
+        <div class="taux-val">3,18<span class="taux-unit">&thinsp;%</span></div>
+        <div><span class="taux-delta down">↘ &minus;0,12 % / semaine</span></div>
+        <div class="taux-source">Agence France Trésor · Cours du jour</div>
+      </div>
+      <div class="taux-card">
+        <div class="taux-univers">Crédit Immobilier</div>
+        <div class="taux-name">Taux immo moyen 20 ans</div>
+        <div class="taux-val">3,48<span class="taux-unit">&thinsp;%</span></div>
+        <div><span class="taux-delta flat">→ stable</span></div>
+        <div class="taux-source">Crédit Logement · Baromètre mai 2026</div>
+      </div>
+      <div class="taux-card">
+        <div class="taux-univers">Fiscal · Retraite</div>
+        <div class="taux-name">Plafond PER 2026</div>
+        <div class="taux-val">35 194<span class="taux-unit">&thinsp;€</span></div>
+        <div><span class="taux-delta up">↗ +893 € vs 2025</span></div>
+        <div class="taux-source">BOFIP 2026 · 10 % PASS · Art. 163 quatervicies CGI</div>
+      </div>
+      <div class="taux-card">
+        <div class="taux-univers">Transmission · Succession</div>
+        <div class="taux-name">Abattement enfant</div>
+        <div class="taux-val">100 k<span class="taux-unit">&thinsp;€</span></div>
+        <div><span class="taux-delta flat">→ inchangé</span></div>
+        <div class="taux-source">CGI art. 779 · Renouvelable tous les 15 ans</div>
+      </div>
+      <div class="taux-card">
+        <div class="taux-univers">Macro · Pouvoir d'achat</div>
+        <div class="taux-name">Inflation IPC annuelle</div>
+        <div class="taux-val">+0,9<span class="taux-unit">&thinsp;%</span></div>
+        <div><span class="taux-delta down">↘ &minus;0,7 % vs 2025</span></div>
+        <div class="taux-source">INSEE · Avril 2026 (12 mois glissants)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULE 3 : CALENDRIER FISCAL -->
+  <section class="cal-section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Module 3 — Calendrier Fiscal</div>
+        <div class="section-title" style="font-family:'Playfair Display',serif;font-size:32px;color:var(--navy);">
+          Vos prochaines<br><em style="font-style:italic;">échéances critiques</em>
+        </div>
+      </div>
+      <div class="section-meta" style="color:var(--ink-faint);text-align:right;">
+        Mis à jour chaque trimestre<br>
+        Personnalisable selon votre statut (TNS / IS / IFI)
+      </div>
+    </div>
+
+    <div class="cal-grid">
+      <div class="cal-item">
+        <div class="cal-badge urgent">
+          <span class="days">J&minus;10</span>
+          <span class="label">29 MAI</span>
+        </div>
+        <div class="cal-info">
+          <div class="title">Déclaration IR en ligne — Zone 2</div>
+          <div class="detail">Départements 20 à 54 · Formulaire 2042 + annexes (2042 C, 2044 locatif…)</div>
+          <span class="date-pill">29.05.2026</span>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-badge urgent">
+          <span class="days">J&minus;17</span>
+          <span class="label">05 JUIN</span>
+        </div>
+        <div class="cal-info">
+          <div class="title">Déclaration IR en ligne — Zone 3</div>
+          <div class="detail">Départements 55 à 976 · DOM · Non-résidents</div>
+          <span class="date-pill">05.06.2026</span>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-badge warn">
+          <span class="days">J&minus;27</span>
+          <span class="label">15 JUIN</span>
+        </div>
+        <div class="cal-info">
+          <div class="title">Déclaration IFI 2026</div>
+          <div class="detail">Patrimoine immobilier net &gt; 1,3 M€ · Formulaire 2042-IFI · Cession d'actifs avant le 1er jan ?</div>
+          <span class="date-pill">15.06.2026</span>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-badge warn">
+          <span class="days">J&minus;27</span>
+          <span class="label">15 JUIN</span>
+        </div>
+        <div class="cal-info">
+          <div class="title">Acompte IS T2 (sociétés IS)</div>
+          <div class="detail">2e acompte · Base IS N&#8209;1 · Modulable si N &lt; N&#8209;1 d'au moins 10 %</div>
+          <span class="date-pill">15.06.2026</span>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-badge normal">
+          <span class="days">J&minus;87</span>
+          <span class="label">15 SEPT</span>
+        </div>
+        <div class="cal-info">
+          <div class="title">Acompte IS T3 + modulation PAS optionnelle</div>
+          <div class="detail">Prélèvement à la source · Modulation si revenus 2026 &lt; 2025 de &gt; 10 %</div>
+          <span class="date-pill">15.09.2026</span>
+        </div>
+      </div>
+      <div class="cal-item done">
+        <div class="cal-badge done-badge">
+          <span class="days">✓</span>
+          <span class="label">PASSÉ</span>
+        </div>
+        <div class="cal-info">
+          <div class="title">Déclaration IR Zone 1 — clôturée</div>
+          <div class="detail">Départements 01 à 19 · 22 mai 2026</div>
+          <span class="date-pill">22.05.2026</span>
+        </div>
+      </div>
+    </div>
+    <div class="cal-footer">Dans l'espace membre : calendrier personnalisé selon votre statut et alertes email automatiques</div>
+  </section>
+
+  <!-- MODULE 4 : MARCEL Q DU MOMENT -->
+  <section class="marcel-section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Module 4 — Marcel Question de la Semaine</div>
+        <div class="section-title">Une question. Une réponse.<br><em>Chaque semaine.</em></div>
+      </div>
+      <div class="section-meta" style="color:rgba(255,255,255,0.25);">
+        Renouvelé chaque lundi<br>
+        Cache KV Cloudflare · 7 jours
+      </div>
+    </div>
+
+    <div class="marcel-q-card">
+      <div class="mq-left">
+        <div class="mq-tag">Semaine du 19 mai · Holding &amp; Transmission</div>
+        <div class="question-text">
+          « Mon holding animatrice détient 3 filiales opérationnelles. Je souhaite transmettre à mes 2 enfants — le Pacte Dutreil s'applique-t-il à l'ensemble du groupe ou uniquement à l'opco ? Et si une filiale est patrimoniale ? »
+        </div>
+        <div class="question-meta">
+          <span>🏭 Industrie · &gt;5 M€ CA</span>
+          <span>👤 Dirigeant · 52 ans</span>
+          <span>📍 Rhône-Alpes</span>
+        </div>
+      </div>
+      <div class="mq-right">
+        <div class="answer-header">
+          <div class="marcel-badge">🎼</div>
+          <div class="info">
+            <div class="name">Marcel · Agent patrimonial IKCP</div>
+            <div class="model">Intelligence souveraine · Cloudflare Paris WEUR</div>
+          </div>
+        </div>
+        <div class="answer-body">
+          <div class="fade-out">
+            Le Pacte Dutreil (art. 787 B CGI) est applicable à une <strong>holding animatrice</strong>, à condition qu'elle exerce une animation "effective et continue" sur l'ensemble de ses filiales. Si une filiale est purement passive — SCI patrimoniale ou holding interposée — son poids dans l'actif peut <strong>réduire voire exclure le bénéfice</strong>, selon la doctrine BOFiP (BOI-ENR-DMTG-10-20-40-10).
+            <br><br>
+            La jurisprudence récente (Cass. com. 14 oct. 2020) a précisé que le ratio "actif opérationnel / actif total" est apprécié à la date de transmission…
+          </div>
+        </div>
+        <div class="answer-actions">
+          <a href="#siren" class="btn-primary-dark">Analyser mon holding →</a>
+          <a href="#chat" class="btn-outline-dark">Poser ma question à Marcel</a>
+        </div>
+        <div class="answer-disclaimer">
+          Analyse indicative ne constituant pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.
+          Pour une recommandation adaptée à votre situation, contactez Maxime Juveneton — ORIAS 23001568.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULE 5 : ESPACE MEMBRE TEASER -->
+  <section class="membre-section" id="beta">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow" style="color:var(--gold-deep);">Module 5 — Espace Membre</div>
+        <div class="section-title" style="font-family:'Playfair Display',serif;font-size:32px;color:var(--navy);">
+          Votre tableau de bord<br><em style="font-style:italic;">patrimonial privé</em>
+        </div>
+      </div>
+      <div class="section-meta" style="color:var(--ink-faint);">
+        Accès sur invitation · Auth magic link<br>
+        Sprint 2 · Disponible Q3 2026
+      </div>
+    </div>
+
+    <div class="membre-teaser">
+      <div class="membre-blur">
+        <div class="membre-dash-preview">
+          <div class="dash-sidebar">
+            <div class="dash-logo">IKCP.</div>
+            <div class="dash-user">
+              <div class="dash-user-name">Famille Dupont</div>
+              <div class="dash-user-plan">Fondateur · Bêta</div>
+            </div>
+            <div class="dash-nav">
+              <div class="dash-nav-item active">📊 Tableau de bord</div>
+              <div class="dash-nav-item">🗺 Mon Patrimoine</div>
+              <div class="dash-nav-item">🎼 Marcel</div>
+              <div class="dash-nav-item">🌐 Mes Univers</div>
+              <div class="dash-nav-item">📁 Documents <span class="notif">2</span></div>
+              <div class="dash-nav-item">🔔 Alertes <span class="notif">3</span></div>
+              <div class="dash-nav-item">⚙ Profil</div>
+            </div>
+          </div>
+          <div class="dash-main">
+            <div class="dash-kpis">
+              <div class="dash-kpi">
+                <div class="k-lbl">Patrimoine net</div>
+                <div class="k-val">3,4M €</div>
+              </div>
+              <div class="dash-kpi">
+                <div class="k-lbl">Score patrimonial</div>
+                <div class="k-val gold">78 / 100</div>
+              </div>
+              <div class="dash-kpi">
+                <div class="k-lbl">Optimisation identifiée</div>
+                <div class="k-val">142 k€</div>
+              </div>
+              <div class="dash-kpi">
+                <div class="k-lbl">Prochaine échéance</div>
+                <div class="k-val red">IFI · J&minus;27</div>
+              </div>
+            </div>
+            <div class="dash-row">
+              <div class="dash-card">
+                <div class="dash-card-title">Mes univers actifs</div>
+                <div class="univers-mini">
+                  <div class="univers-mini-item">🗺 Cartographie entreprise <span class="u-live">LIVE</span></div>
+                  <div class="univers-mini-item">🎼 Marcel 24h/24 <span class="u-live">LIVE</span></div>
+                  <div class="univers-mini-item">⚖ Expertise fiscale Codex <span class="u-live">LIVE</span></div>
+                  <div class="univers-mini-item">📋 Audit MIF II <span class="u-live">LIVE</span></div>
+                  <div class="univers-mini-item">🏠 Immobilier &amp; IFI <span class="u-soon">Q3 2026</span></div>
+                  <div class="univers-mini-item">🎨 Collection &amp; Art <span class="u-soon">Q4 2026</span></div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="dash-card">
+                  <div class="dash-card-title">Alertes actives</div>
+                  <div class="alerts-mini">
+                    <div class="alert-mini">🔴 IFI dans 27 jours</div>
+                    <div class="alert-mini">🟡 Acompte IS T2 · 15 juin</div>
+                    <div class="alert-mini">🟢 Donation parents · ✓ faite</div>
+                  </div>
+                </div>
+                <div class="dash-card">
+                  <div class="dash-card-title">Documents récents</div>
+                  <div class="alerts-mini">
+                    <div class="alert-mini">📄 DER 2026 · 14 mai</div>
+                    <div class="alert-mini">📊 Bilan Q1 · 12 avril</div>
+                    <div class="alert-mini">📋 Lettre de mission</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="membre-overlay">
+        <div class="overlay-icon">🔒</div>
+        <div class="overlay-title">Votre espace patrimonial privé</div>
+        <div class="overlay-sub">Tableau de bord, 12 univers actifs, Marcel 24h/24, documents DER &amp; lettres de mission, alertes fiscales personnalisées. Accès sur invitation — bêta 50 familles fondatrices.</div>
+        <div class="overlay-cta">
+          <a href="#" class="btn-gold-lg">Demander mon accès →</a>
+          <a href="#" class="btn-ghost-lg">En savoir plus</a>
+        </div>
+        <div class="overlay-places">
+          <strong id="places-restantes">7</strong> places restantes sur 50 · Validation par Maxime Juveneton
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-brand">IKCP.</div>
+    <div class="footer-legal">
+      IKCP · SIREN 947 972 436 · ORIAS 23001568 · CIF CNCEF Patrimoine<br>
+      Hébergement souverain · Cloudflare Workers WEUR Paris · RGPD France<br>
+      © 2026 Maxime Juveneton — <a href="mailto:maxime@ikcp.eu" style="color:var(--gold);text-decoration:none;">maxime@ikcp.eu</a>
+    </div>
+  </footer>
+
+  <script>
+    // ── Counter animation ──
+    function animCount(el, target, duration = 1400) {
+      let n = 0;
+      const step = target / (duration / 16);
+      const timer = setInterval(() => {
+        n = Math.min(n + step, target);
+        el.textContent = Math.round(n);
+        if (n >= target) clearInterval(timer);
+      }, 16);
+    }
+
+    // ── Intersection Observer pour déclencher les animations ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+
+        if (id === 'barre-vie') {
+          setTimeout(() => {
+            animCount(document.getElementById('beta-count'), 43);
+            setTimeout(() => {
+              document.getElementById('beta-fill').style.width = '86%';
+            }, 200);
+            const mins = [2,3,4,5,6,7][Math.floor(Math.random()*6)];
+            document.getElementById('last-min').textContent = mins;
+          }, 100);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const bv = document.getElementById('barre-vie');
+    if (bv) observer.observe(bv);
+
+    // ── Last activity : update aléatoire ──
+    setInterval(() => {
+      const el = document.getElementById('last-min');
+      if (el) {
+        const v = [2,3,4,5,6,1][Math.floor(Math.random()*6)];
+        el.textContent = v;
+      }
+    }, 15000);
+
+    // ── Places restantes ──
+    document.getElementById('places-restantes').textContent = 50 - 43;
+  </script>
+</body>
+</html>
