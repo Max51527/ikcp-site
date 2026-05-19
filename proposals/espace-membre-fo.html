@@ -5,1754 +5,1507 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IKCP · Espace Membre — Family Office</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --navy:       #1B2A4A;
       --navy-deep:  #0E1729;
       --navy-mid:   #152038;
-      --navy-side:  #111E35;
+      --navy-side:  #0D1827;
       --cream:      #FAFAF8;
       --cream-2:    #F4EFE7;
-      --cream-3:    #EDE5D8;
       --gold:       #C9A96E;
       --gold-bright:#E2C896;
       --gold-deep:  #8B6F3F;
-      --ink:        #2C2418;
-      --ink-mute:   #6B5D52;
-      --ink-faint:  #9E9080;
+      --ink-mute:   #6B7FA3;
       --red:        #C44B3B;
       --green:      #2D7A4F;
       --amber:      #B87333;
-      --sidebar-w:  240px;
+      --sidebar-w:  252px;
       --topbar-h:   60px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      height: 100%;
-      font-family: 'Outfit', sans-serif;
-      background: var(--navy-deep);
-      color: var(--cream);
-      overflow-x: hidden;
-    }
-
-    /* ═══════════════════════════════════════
-       APP SHELL
-    ═══════════════════════════════════════ */
-    .app {
-      display: grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
-      grid-template-rows: var(--topbar-h) 1fr;
-      min-height: 100vh;
-    }
-
-    /* ─── SIDEBAR ─── */
-    .sidebar {
-      grid-row: 1 / 3;
-      background: var(--navy-side);
-      border-right: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      flex-direction: column;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar-logo {
-      padding: 22px 20px 20px;
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      color: var(--gold);
-      letter-spacing: 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      flex-shrink: 0;
-    }
-
-    .sidebar-logo .tagline {
-      font-family: 'Outfit', sans-serif;
-      font-size: 8px;
-      color: rgba(255,255,255,0.2);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: 3px;
-    }
-
-    .sidebar-user {
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      flex-shrink: 0;
-    }
-
-    .sidebar-user .avatar {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--gold-deep), var(--gold));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      margin-bottom: 10px;
-    }
-
-    .sidebar-user .name {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      line-height: 1.3;
-    }
-
-    .sidebar-user .plan-badge {
-      display: inline-block;
-      margin-top: 4px;
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--gold);
-      background: rgba(201,169,110,0.12);
-      border: 1px solid rgba(201,169,110,0.2);
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
-
-    /* Navigation */
-    .sidebar-nav {
-      flex: 1;
-      padding: 10px 0;
-      overflow-y: auto;
-    }
-
-    .nav-group-label {
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.2);
-      text-transform: uppercase;
-      padding: 14px 20px 6px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 20px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.45);
-      cursor: pointer;
-      transition: all 0.15s;
-      border-left: 2px solid transparent;
-      user-select: none;
-    }
-
-    .nav-item:hover {
-      color: rgba(255,255,255,0.75);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .nav-item.active {
-      color: #fff;
-      background: rgba(201,169,110,0.08);
-      border-left-color: var(--gold);
-      font-weight: 500;
-    }
-
-    .nav-item .icon { font-size: 15px; flex-shrink: 0; }
-
-    .nav-item .badge {
-      margin-left: auto;
-      font-size: 9px;
-      font-weight: 700;
-      min-width: 18px;
-      height: 18px;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 5px;
-    }
-
-    .badge-red { background: var(--red); color: #fff; }
-    .badge-gold { background: rgba(201,169,110,0.2); color: var(--gold); }
-    .badge-green { background: rgba(45,122,79,0.3); color: #4ADE80; }
-
-    /* Sidebar footer */
-    .sidebar-footer {
-      padding: 16px 20px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      flex-shrink: 0;
-    }
-
-    .sidebar-footer .orias {
-      font-size: 9px;
-      color: rgba(255,255,255,0.2);
-      line-height: 1.8;
-    }
-
-    .sidebar-footer .logout {
-      margin-top: 10px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.3);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s;
-    }
-
-    .sidebar-footer .logout:hover { color: var(--gold); }
-
-    /* ─── TOPBAR ─── */
-    .topbar {
-      background: var(--navy-deep);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: center;
-      padding: 0 28px;
-      gap: 16px;
-    }
-
-    .topbar-breadcrumb {
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-    }
-
-    .topbar-breadcrumb strong {
-      color: rgba(255,255,255,0.8);
-      font-weight: 500;
-    }
-
-    .topbar-spacer { flex: 1; }
-
-    .topbar-date {
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      color: rgba(255,255,255,0.25);
-    }
-
-    .topbar-notif {
-      position: relative;
-      width: 34px;
-      height: 34px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .topbar-notif .dot {
-      position: absolute;
-      top: 6px; right: 6px;
-      width: 7px; height: 7px;
-      background: var(--red);
-      border-radius: 50%;
-      border: 1px solid var(--navy-deep);
-    }
-
-    .topbar-pulse {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.3);
-    }
-
-    .pulse-dot {
-      width: 7px; height: 7px;
-      background: #4ADE80;
-      border-radius: 50%;
-      animation: pulseGreen 2s infinite;
-    }
-
-    @keyframes pulseGreen {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(74,222,128,0.3); }
-      50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(74,222,128,0); }
-    }
-
-    /* ─── MAIN CONTENT ─── */
-    .main {
-      background: #10192C;
-      overflow-y: auto;
-    }
-
-    .view { display: none; height: 100%; }
-    .view.active { display: block; }
-
-    /* ═══════════════════════════════════════
-       VUE : TABLEAU DE BORD
-    ═══════════════════════════════════════ */
-    .dash-view {
-      padding: 28px;
-    }
-
-    .dash-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .dash-greeting {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
-      color: #fff;
-      font-style: italic;
-    }
-
-    .dash-greeting .date {
-      font-family: 'Outfit', sans-serif;
-      font-style: normal;
-      font-size: 12px;
-      color: rgba(255,255,255,0.3);
-      margin-top: 3px;
-    }
-
-    .dash-action-btn {
-      background: var(--gold);
-      color: var(--navy-deep);
-      padding: 10px 20px;
-      font-size: 12px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      letter-spacing: 0.5px;
-      transition: background 0.2s;
-    }
-
-    .dash-action-btn:hover { background: var(--gold-bright); }
-
-    /* KPIs */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-      margin-bottom: 20px;
-    }
-
-    .kpi-card {
-      background: var(--navy-mid);
-      padding: 20px;
-      border: 1px solid rgba(255,255,255,0.04);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-
-    .kpi-card:hover { border-color: rgba(201,169,110,0.2); }
-
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-    }
-
-    .kpi-card.kpi-gold::before { background: var(--gold); }
-    .kpi-card.kpi-green::before { background: #4ADE80; }
-    .kpi-card.kpi-red::before { background: var(--red); }
-    .kpi-card.kpi-blue::before { background: #60A5FA; }
-
-    .kpi-label {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,0.3);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .kpi-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 26px;
-      font-weight: 500;
-      color: #fff;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .kpi-value.red { color: #FCA5A5; }
-    .kpi-value.gold { color: var(--gold-bright); }
-    .kpi-value.green { color: #4ADE80; }
-
-    .kpi-sub {
-      font-size: 10px;
-      color: rgba(255,255,255,0.3);
-    }
-
-    /* Rows */
-    .dash-row {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 2px;
-      margin-bottom: 2px;
-    }
-
-    .dash-row-full {
-      margin-bottom: 2px;
-    }
-
-    .card {
-      background: var(--navy-mid);
-      padding: 22px;
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .card-title {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(201,169,110,0.1);
-    }
-
-    /* Patrimoine breakdown */
-    .patrimoine-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .pat-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.02);
-    }
-
-    .pat-icon { font-size: 16px; flex-shrink: 0; }
-
-    .pat-info { flex: 1; }
-
-    .pat-name {
-      font-size: 12px;
-      color: rgba(255,255,255,0.7);
-    }
-
-    .pat-detail {
-      font-size: 10px;
-      color: rgba(255,255,255,0.25);
-      margin-top: 1px;
-    }
-
-    .pat-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      text-align: right;
-    }
-
-    .pat-pct {
-      font-size: 9px;
-      color: rgba(255,255,255,0.25);
-      text-align: right;
-    }
-
-    .pat-bar-wrap {
-      width: 60px;
-      height: 3px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 2px;
-    }
-
-    .pat-bar { height: 100%; background: var(--gold); border-radius: 2px; }
-
-    .pat-total {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 12px 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      margin-top: 6px;
-    }
-
-    .pat-total .lbl {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-    }
-
-    .pat-total .val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--gold-bright);
-    }
-
-    /* Alerts */
-    .alerts-list { display: flex; flex-direction: column; gap: 8px; }
-
-    .alert-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px;
-      background: rgba(255,255,255,0.02);
-      border-left: 2px solid transparent;
-      transition: border-color 0.2s;
-    }
-
-    .alert-item:hover { border-left-color: var(--gold); }
-
-    .alert-item .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 3px;
-    }
-
-    .alert-item .dot.red { background: var(--red); }
-    .alert-item .dot.amber { background: #F59E0B; }
-    .alert-item .dot.green { background: #4ADE80; }
-
-    .alert-item .a-title {
-      font-size: 12px;
-      color: rgba(255,255,255,0.75);
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
-
-    .alert-item .a-detail {
-      font-size: 10px;
-      color: rgba(255,255,255,0.3);
-    }
-
-    .alert-item .a-date {
-      margin-left: auto;
-      font-size: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      color: rgba(255,255,255,0.2);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* Univers mini */
-    .univers-grid-mini {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    .u-mini {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 12px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .u-mini:hover {
-      background: rgba(201,169,110,0.06);
-      border-color: rgba(201,169,110,0.15);
-    }
-
-    .u-mini .u-icon { font-size: 18px; }
-    .u-mini .u-name { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 500; }
-    .u-mini .u-badge { align-self: flex-start; font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
-    .u-live { background: rgba(45,122,79,0.25); color: #4ADE80; }
-    .u-soon { background: rgba(184,115,51,0.2); color: #F59E0B; }
-
-    /* ═══════════════════════════════════════
-       VUE : MARCEL
-    ═══════════════════════════════════════ */
-    .marcel-view {
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - var(--topbar-h));
-    }
-
-    .chat-header {
-      padding: 20px 28px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      background: var(--navy-mid);
-      flex-shrink: 0;
-    }
-
-    .chat-avatar {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--gold-deep), var(--gold));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .chat-header .info .name {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .chat-header .info .sub {
-      font-size: 10px;
-      color: rgba(255,255,255,0.35);
-      letter-spacing: 1px;
-    }
-
-    .chat-history-notice {
-      margin-left: auto;
-      font-size: 10px;
-      color: rgba(255,255,255,0.2);
-      text-align: right;
-    }
-
-    .chat-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .chat-msg {
-      display: flex;
-      gap: 12px;
-      max-width: 82%;
-    }
-
-    .chat-msg.user {
-      align-self: flex-end;
-      flex-direction: row-reverse;
-    }
-
-    .chat-msg .msg-avatar {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      margin-top: 2px;
-    }
-
-    .chat-msg.user .msg-avatar {
-      background: rgba(255,255,255,0.07);
-      color: rgba(255,255,255,0.6);
-    }
-
-    .chat-msg.assistant .msg-avatar {
-      background: linear-gradient(135deg, var(--gold-deep), var(--gold));
-    }
-
-    .msg-bubble {
-      padding: 14px 18px;
-      font-size: 13px;
-      line-height: 1.7;
-      border-radius: 2px;
-    }
-
-    .chat-msg.user .msg-bubble {
-      background: rgba(201,169,110,0.12);
-      color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(201,169,110,0.15);
-    }
-
-    .chat-msg.assistant .msg-bubble {
-      background: var(--navy-mid);
-      color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .msg-bubble strong { color: var(--gold-bright); }
-    .msg-bubble em { color: rgba(255,255,255,0.5); font-style: italic; }
-
-    .msg-disclaimer {
-      margin-top: 10px;
-      font-size: 9px;
-      color: rgba(255,255,255,0.2);
-      font-style: italic;
-    }
-
-    .typing-indicator {
-      display: none;
-      align-items: center;
-      gap: 5px;
-      padding: 12px 16px;
-      background: var(--navy-mid);
-      width: fit-content;
-    }
-
-    .typing-indicator.visible { display: flex; }
-
-    .typing-dot {
-      width: 6px; height: 6px;
-      background: var(--gold);
-      border-radius: 50%;
-      animation: typingBounce 1.2s infinite;
-    }
-
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typingBounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30% { transform: translateY(-5px); opacity: 1; }
-    }
-
-    .chat-input-wrap {
-      padding: 16px 28px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      background: var(--navy-mid);
-      flex-shrink: 0;
-    }
-
-    .chat-input-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .chat-input {
-      flex: 1;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
-      padding: 12px 16px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      outline: none;
-      resize: none;
-      min-height: 48px;
-      max-height: 120px;
-      transition: border-color 0.2s;
-    }
-
-    .chat-input::placeholder { color: rgba(255,255,255,0.2); }
-    .chat-input:focus { border-color: rgba(201,169,110,0.3); }
-
-    .chat-send {
-      background: var(--gold);
-      color: var(--navy-deep);
-      border: none;
-      padding: 0 20px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-      min-width: 80px;
-    }
-
-    .chat-send:hover { background: var(--gold-bright); }
-    .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .chat-footer-note {
-      margin-top: 8px;
-      font-size: 9px;
-      color: rgba(255,255,255,0.15);
-      font-style: italic;
-    }
-
-    /* ═══════════════════════════════════════
-       VUE : UNIVERS
-    ═══════════════════════════════════════ */
-    .univers-view { padding: 28px; }
-
-    .univers-header {
-      margin-bottom: 24px;
-    }
-
-    .univers-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      color: #fff;
-      font-style: italic;
-    }
-
-    .univers-header .sub {
-      font-size: 12px;
-      color: rgba(255,255,255,0.35);
-      margin-top: 5px;
-    }
-
-    .univers-full-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .univers-card {
-      background: var(--navy-mid);
-      border: 1px solid rgba(255,255,255,0.04);
-      padding: 24px;
-      cursor: pointer;
-      transition: all 0.15s;
-      position: relative;
-    }
-
-    .univers-card:hover {
-      background: rgba(201,169,110,0.05);
-      border-color: rgba(201,169,110,0.2);
-    }
-
-    .univers-card.locked { opacity: 0.5; cursor: default; }
-    .univers-card.locked:hover { background: var(--navy-mid); border-color: rgba(255,255,255,0.04); }
-
-    .univers-card .u-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .univers-card .u-emoji { font-size: 28px; }
-
-    .univers-card .u-status {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 4px;
-    }
-
-    .u-status.live { background: rgba(45,122,79,0.25); color: #4ADE80; }
-    .u-status.q3 { background: rgba(184,115,51,0.2); color: #F59E0B; }
-    .u-status.q4 { background: rgba(59,130,246,0.15); color: #93C5FD; }
-    .u-status.locked { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
-
-    .univers-card .u-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 6px;
-    }
-
-    .univers-card .u-desc {
-      font-size: 11px;
-      color: rgba(255,255,255,0.35);
-      line-height: 1.6;
-    }
-
-    .univers-card .u-indicator {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      font-size: 10px;
-      color: var(--gold);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .univers-card .u-lock {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    /* ═══════════════════════════════════════
-       VUE : DOCUMENTS
-    ═══════════════════════════════════════ */
-    .docs-view { padding: 28px; }
-
-    .docs-view h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      color: #fff;
-      font-style: italic;
-      margin-bottom: 24px;
-    }
-
-    .docs-list { display: flex; flex-direction: column; gap: 2px; }
-
-    .doc-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
-      background: var(--navy-mid);
-      border: 1px solid rgba(255,255,255,0.04);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .doc-item:hover {
-      border-color: rgba(201,169,110,0.2);
-      background: rgba(201,169,110,0.04);
-    }
-
-    .doc-icon {
-      width: 40px; height: 40px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .doc-info { flex: 1; }
-
-    .doc-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.75);
-      margin-bottom: 3px;
-    }
-
-    .doc-meta {
-      font-size: 10px;
-      color: rgba(255,255,255,0.25);
-    }
-
-    .doc-size {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: rgba(255,255,255,0.25);
-    }
-
-    .doc-badge {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 4px;
-    }
-
-    .doc-badge.new { background: rgba(201,169,110,0.2); color: var(--gold); }
-    .doc-badge.signed { background: rgba(45,122,79,0.2); color: #4ADE80; }
-    .doc-badge.pending { background: rgba(196,75,59,0.2); color: #FCA5A5; }
-
-    /* ═══════════════════════════════════════
-       VUE : ALERTES
-    ═══════════════════════════════════════ */
-    .alertes-view { padding: 28px; }
-
-    .alertes-view h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      color: #fff;
-      font-style: italic;
-      margin-bottom: 6px;
-    }
-
-    .alertes-view .sub {
-      font-size: 12px;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 24px;
-    }
-
-    .alertes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
-    }
-
-    .alerte-card {
-      background: var(--navy-mid);
-      border: 1px solid rgba(255,255,255,0.04);
-      padding: 20px;
-      border-left-width: 3px;
-    }
-
-    .alerte-card.urgent { border-left-color: var(--red); }
-    .alerte-card.warn { border-left-color: #F59E0B; }
-    .alerte-card.info { border-left-color: #60A5FA; }
-    .alerte-card.done { border-left-color: #4ADE80; opacity: 0.55; }
-
-    .alerte-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .alerte-tag {
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
-    }
-
-    .alerte-days {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-    }
-
-    .alerte-days.red { color: #FCA5A5; }
-    .alerte-days.amber { color: #F59E0B; }
-    .alerte-days.blue { color: #93C5FD; }
-    .alerte-days.green { color: #4ADE80; }
-
-    .alerte-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 5px;
-    }
-
-    .alerte-desc {
-      font-size: 11px;
-      color: rgba(255,255,255,0.35);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-
-    .alerte-action {
-      font-size: 11px;
-      color: var(--gold);
-      cursor: pointer;
-    }
-
-    .alerte-action:hover { text-decoration: underline; }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      :root { --sidebar-w: 200px; }
-      .univers-full-grid { grid-template-columns: repeat(2, 1fr); }
-    }
+      --card-r:     12px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--navy-deep);color:var(--cream);overflow-x:hidden}
+
+    /* ── MESH GRADIENT BG ── */
+    body::before{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 10%, rgba(201,169,110,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 10% 80%, rgba(27,42,74,0.6) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 50% 50%, rgba(14,23,41,0.4) 0%, transparent 100%);
+    }
+
+    /* ── APP SHELL ── */
+    .app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;min-height:100vh;position:relative;z-index:1}
+
+    /* ══════════════ SIDEBAR ══════════════ */
+    .sidebar{
+      grid-row:1/3;background:var(--navy-side);
+      border-right:1px solid rgba(201,169,110,0.1);
+      display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;
+      scrollbar-width:none;
+    }
+    .sidebar::-webkit-scrollbar{display:none}
+
+    .sidebar-logo{
+      padding:22px 20px 18px;
+      font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);letter-spacing:5px;
+      border-bottom:1px solid rgba(201,169,110,0.1);flex-shrink:0;
+      background:linear-gradient(135deg,rgba(201,169,110,0.05),transparent);
+    }
+    .sidebar-logo .tagline{font-family:'Outfit',sans-serif;font-size:8px;color:rgba(255,255,255,0.2);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+
+    .sidebar-user{
+      display:flex;align-items:center;gap:10px;padding:14px 18px;
+      border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);flex-shrink:0;
+    }
+    .user-avatar{
+      width:36px;height:36px;border-radius:50%;
+      background:linear-gradient(135deg,var(--gold-deep),var(--gold));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:13px;color:var(--navy-deep);flex-shrink:0;
+      box-shadow:0 0 0 2px rgba(201,169,110,0.3);
+    }
+    .user-name{font-size:13px;font-weight:600;color:var(--cream)}
+    .user-badge{font-size:10px;color:var(--gold);background:rgba(201,169,110,0.12);padding:2px 7px;border-radius:20px;margin-top:2px;display:inline-block;letter-spacing:.5px}
+
+    .nav-group{padding:14px 0 6px;flex-shrink:0}
+    .nav-label{font-size:9px;font-weight:600;color:rgba(255,255,255,0.2);letter-spacing:2px;text-transform:uppercase;padding:0 18px 8px}
+    .nav-item{
+      display:flex;align-items:center;gap:10px;padding:9px 18px;
+      cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.55);font-size:13px;font-weight:400;
+      position:relative;border-left:2px solid transparent;
+    }
+    .nav-item:hover{color:var(--cream);background:rgba(255,255,255,0.04);border-left-color:rgba(201,169,110,0.3)}
+    .nav-item.active{color:var(--gold);background:rgba(201,169,110,0.08);border-left-color:var(--gold);font-weight:600}
+    .nav-item .icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+    .nav-item .badge{
+      margin-left:auto;background:var(--red);color:#fff;
+      border-radius:10px;padding:1px 6px;font-size:10px;font-weight:600;
+    }
+    .nav-item .live-dot{
+      margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--green);
+      box-shadow:0 0 6px var(--green);animation:pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+    /* Agent status in sidebar */
+    .agent-status-item{
+      display:flex;align-items:center;gap:9px;padding:7px 18px;font-size:12px;color:rgba(255,255,255,0.5);
+      transition:.2s;cursor:pointer;
+    }
+    .agent-status-item:hover{color:var(--cream);background:rgba(255,255,255,0.03)}
+    .agent-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .agent-dot.active{background:#3ECC8A;box-shadow:0 0 5px #3ECC8A;animation:pulse-dot 2s infinite}
+    .agent-dot.standby{background:var(--amber);box-shadow:0 0 5px var(--amber)}
+    .agent-name-s{font-size:12px;font-weight:500}
+    .agent-model{font-size:9px;color:rgba(255,255,255,0.2);margin-left:auto;font-family:'JetBrains Mono',monospace}
+
+    .sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,0.05);flex-shrink:0}
+    .sidebar-footer a{display:block;font-size:11px;color:rgba(255,255,255,0.25);text-decoration:none;margin-bottom:4px}
+    .orias{font-size:10px;color:rgba(201,169,110,0.4);letter-spacing:.5px;margin-top:6px}
+
+    /* ══════════════ TOPBAR ══════════════ */
+    .topbar{
+      background:rgba(14,23,41,0.85);backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(201,169,110,0.08);
+      display:flex;align-items:center;gap:12px;padding:0 24px;
+      position:sticky;top:0;z-index:100;
+    }
+    .breadcrumb{font-size:13px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:6px;flex:1}
+    .breadcrumb span{color:var(--cream);font-weight:500}
+    .breadcrumb .sep{color:rgba(255,255,255,0.15)}
+
+    .topbar-agents{display:flex;align-items:center;gap:8px;margin-right:8px}
+    .agent-chip{
+      display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
+      background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+      font-size:11px;color:rgba(255,255,255,0.6);cursor:pointer;transition:.2s;
+    }
+    .agent-chip:hover{background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3);color:var(--gold)}
+    .agent-chip .dot{width:6px;height:6px;border-radius:50%}
+    .agent-chip .dot.on{background:#3ECC8A;box-shadow:0 0 4px #3ECC8A;animation:pulse-dot 2.5s infinite}
+    .agent-chip .dot.sb{background:var(--amber)}
+
+    .topbar-date{font-size:12px;color:rgba(255,255,255,0.3);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+    .topbar-notif{
+      width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.05);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+      font-size:16px;transition:.2s;position:relative;
+    }
+    .topbar-notif:hover{background:rgba(201,169,110,0.1)}
+    .notif-badge{
+      position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;
+      background:var(--red);border:2px solid var(--navy-deep);
+    }
+
+    /* ══════════════ MAIN ══════════════ */
+    .main{overflow-y:auto;padding:28px 28px 48px;position:relative}
+    .view{display:none;animation:fadeUp .35s ease both}
+    .view.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+    .page-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--cream);margin-bottom:4px}
+    .page-sub{font-size:13px;color:rgba(255,255,255,0.35);margin-bottom:26px;font-style:italic}
+
+    /* ── GRID HELPERS ── */
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+    .grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:22px}
+    .grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:22px}
+
+    /* ── KPI CARD ── */
+    .kpi{
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);padding:18px 20px 16px;
+      transition:all .25s;position:relative;overflow:hidden;cursor:default;
+    }
+    .kpi::before{
+      content:'';position:absolute;inset:0;border-radius:var(--card-r);opacity:0;
+      background:linear-gradient(135deg,rgba(201,169,110,0.06),transparent);transition:.3s;
+    }
+    .kpi:hover{border-color:rgba(201,169,110,0.25);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+    .kpi:hover::before{opacity:1}
+    .kpi-label{font-size:11px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .kpi-label .ico{font-size:13px}
+    .kpi-value{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--cream);line-height:1}
+    .kpi-value.gold{color:var(--gold-bright)}
+    .kpi-value.alert{color:#F87171}
+    .kpi-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-top:8px}
+    .kpi-trend{display:flex;align-items:center;gap:4px;font-size:11px;margin-top:6px}
+    .kpi-trend.up{color:#4ADE80} .kpi-trend.down{color:#F87171} .kpi-trend.warn{color:var(--amber)}
+    .kpi-ask{
+      font-size:10px;color:rgba(201,169,110,0.5);margin-top:8px;cursor:pointer;
+      display:inline-flex;align-items:center;gap:4px;text-decoration:none;
+      transition:.2s;border-bottom:1px dashed rgba(201,169,110,0.2);
+    }
+    .kpi-ask:hover{color:var(--gold)}
+
+    /* ── CHART CARD ── */
+    .chart-card{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);padding:20px 22px;
+    }
+    .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .chart-title{font-size:14px;font-weight:600;color:var(--cream)}
+    .chart-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px}
+    .chart-actions{display:flex;gap:8px;align-items:center}
+    .chart-btn{
+      font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);cursor:pointer;transition:.2s;
+    }
+    .chart-btn:hover,.chart-btn.active{background:rgba(201,169,110,0.12);border-color:rgba(201,169,110,0.3);color:var(--gold)}
+    .chart-wrap{position:relative;height:200px;max-height:200px}
+    .chart-wrap canvas{max-height:200px}
+    #chart-allocation{max-height:190px}
+    #chart-radar{max-height:220px}
+
+    /* ── MARCEL SUGGÈRE ── */
+    .marcel-panel{
+      background:linear-gradient(135deg,rgba(201,169,110,0.07),rgba(14,23,41,0.6));
+      border:1px solid rgba(201,169,110,0.2);border-radius:var(--card-r);
+      padding:20px 22px;margin-bottom:22px;position:relative;overflow:hidden;
+    }
+    .marcel-panel::before{
+      content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;
+      background:radial-gradient(circle,rgba(201,169,110,0.12),transparent 70%);pointer-events:none;
+    }
+    .marcel-panel-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .marcel-icon{
+      width:32px;height:32px;border-radius:50%;
+      background:linear-gradient(135deg,var(--gold-deep),var(--gold));
+      display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;
+      box-shadow:0 0 14px rgba(201,169,110,0.4);animation:glow-ring 3s ease-in-out infinite;
+    }
+    @keyframes glow-ring{0%,100%{box-shadow:0 0 8px rgba(201,169,110,0.3)}50%{box-shadow:0 0 20px rgba(201,169,110,0.6)}}
+    .marcel-panel-title{font-size:13px;font-weight:600;color:var(--gold-bright)}
+    .marcel-panel-sub{font-size:11px;color:rgba(255,255,255,0.3)}
+    .suggestion-list{display:flex;flex-direction:column;gap:10px}
+    .suggestion-item{
+      display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+      border-radius:8px;cursor:pointer;transition:.2s;
+    }
+    .suggestion-item:hover{background:rgba(201,169,110,0.07);border-color:rgba(201,169,110,0.2)}
+    .suggestion-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+    .suggestion-text{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.5}
+    .suggestion-agent{font-size:10px;color:var(--gold);margin-top:3px;opacity:.7}
+
+    /* ── SECTION CARD ── */
+    .section-card{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);padding:20px 22px;
+    }
+    .section-title{font-size:14px;font-weight:600;color:var(--cream);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .section-title .badge-live{
+      font-size:9px;padding:2px 7px;border-radius:10px;background:rgba(62,204,138,0.15);
+      color:#3ECC8A;border:1px solid rgba(62,204,138,0.2);letter-spacing:.5px;
+    }
+
+    /* ── ALERT ITEM ── */
+    .alert-item{
+      display:flex;align-items:flex-start;gap:12px;padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .alert-item:last-child{border-bottom:none;padding-bottom:0}
+    .alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+    .alert-dot.red{background:var(--red);box-shadow:0 0 6px var(--red)}
+    .alert-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+    .alert-dot.green{background:var(--green);box-shadow:0 0 6px var(--green)}
+    .alert-dot.blue{background:#60A5FA;box-shadow:0 0 6px #60A5FA}
+    .alert-body{flex:1}
+    .alert-title{font-size:13px;font-weight:500;color:var(--cream);margin-bottom:3px}
+    .alert-desc{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5}
+    .alert-meta{display:flex;align-items:center;gap:8px;margin-top:6px}
+    .alert-tag{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.06)}
+    .alert-cta{
+      font-size:10px;color:var(--gold);cursor:pointer;padding:3px 10px;
+      border-radius:20px;border:1px solid rgba(201,169,110,0.25);transition:.2s;
+      display:flex;align-items:center;gap:4px;white-space:nowrap;
+    }
+    .alert-cta:hover{background:rgba(201,169,110,0.1);border-color:var(--gold)}
+
+    /* ── UNIVERS CARD ── */
+    .univers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+    .univers-card{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);padding:16px 18px;transition:.25s;cursor:pointer;position:relative;overflow:hidden;
+    }
+    .univers-card:hover{border-color:rgba(201,169,110,0.2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+    .univers-card.locked{opacity:.45;filter:grayscale(.5)}
+    .univers-card.locked:hover{transform:none;box-shadow:none}
+    .univers-ico{font-size:22px;margin-bottom:8px}
+    .univers-name{font-size:13px;font-weight:600;color:var(--cream);margin-bottom:4px}
+    .univers-desc{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.4;margin-bottom:10px}
+    .univers-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:#3ECC8A}
+    .univers-soon{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,0.25)}
+    .univers-agent{font-size:10px;color:var(--gold);margin-top:6px;cursor:pointer;opacity:.7}
+    .univers-agent:hover{opacity:1}
+
+    /* ── DOCS ── */
+    .doc-item{
+      display:flex;align-items:center;gap:12px;padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,0.05);transition:.2s;cursor:pointer;
+    }
+    .doc-item:last-child{border-bottom:none}
+    .doc-item:hover .doc-name{color:var(--gold)}
+    .doc-icon{font-size:20px;flex-shrink:0;width:36px;text-align:center}
+    .doc-name{font-size:13px;font-weight:500;color:var(--cream);transition:.2s}
+    .doc-meta{font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px}
+    .doc-actions{margin-left:auto;display:flex;gap:8px}
+    .doc-btn{font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);cursor:pointer;transition:.2s}
+    .doc-btn:hover{border-color:rgba(201,169,110,0.3);color:var(--gold)}
+
+    /* ── AGENTS VIEW ── */
+    .agent-card{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);padding:22px 24px;transition:.25s;
+    }
+    .agent-card:hover{border-color:rgba(201,169,110,0.2);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+    .agent-card-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .agent-avatar{
+      width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+      font-size:22px;flex-shrink:0;
+    }
+    .agent-avatar.gold{background:linear-gradient(135deg,#5C3D1A,var(--gold));box-shadow:0 0 16px rgba(201,169,110,0.4);animation:glow-ring 3s infinite}
+    .agent-avatar.blue{background:linear-gradient(135deg,#0E2A4A,#2D6BA0)}
+    .agent-avatar.green{background:linear-gradient(135deg,#0A2A1A,#2D7A4F)}
+    .agent-avatar.purple{background:linear-gradient(135deg,#1E0A3C,#6B3FA0)}
+    .agent-card-name{font-size:16px;font-weight:700;color:var(--cream)}
+    .agent-card-role{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px}
+    .agent-card-model{font-size:11px;color:var(--gold);margin-top:2px;font-family:'JetBrains Mono',monospace}
+    .agent-status-badge{
+      margin-left:auto;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;
+      display:flex;align-items:center;gap:5px;flex-shrink:0;
+    }
+    .agent-status-badge.active{background:rgba(62,204,138,0.12);color:#3ECC8A;border:1px solid rgba(62,204,138,0.25)}
+    .agent-status-badge.standby{background:rgba(184,115,51,0.12);color:var(--amber);border:1px solid rgba(184,115,51,0.25)}
+    .agent-desc{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:14px}
+    .agent-metrics{display:flex;gap:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);margin-bottom:14px}
+    .agent-metric{text-align:center}
+    .agent-metric-val{font-size:18px;font-weight:700;color:var(--cream);font-family:'Playfair Display',serif}
+    .agent-metric-key{font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px;text-transform:uppercase;letter-spacing:.8px}
+    .agent-skills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+    .skill-tag{font-size:10px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.08)}
+    .agent-btn{
+      width:100%;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+      background:linear-gradient(135deg,rgba(201,169,110,0.15),rgba(201,169,110,0.05));
+      border:1px solid rgba(201,169,110,0.25);color:var(--gold);
+      font-family:'Outfit',sans-serif;
+    }
+    .agent-btn:hover{background:linear-gradient(135deg,rgba(201,169,110,0.25),rgba(201,169,110,0.1));border-color:var(--gold)}
+
+    /* ── CHAT VIEW ── */
+    .chat-layout{display:grid;grid-template-columns:1fr 280px;gap:16px;height:calc(100vh - var(--topbar-h) - 80px);min-height:500px}
+    .chat-main{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:var(--card-r);display:flex;flex-direction:column;overflow:hidden}
+    .chat-header{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;flex-shrink:0}
+    .chat-messages{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(201,169,110,0.15) transparent}
+    .msg{display:flex;gap:10px;max-width:90%}
+    .msg.user{flex-direction:row-reverse;align-self:flex-end}
+    .msg-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+    .msg-avatar.m{background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:var(--navy-deep);box-shadow:0 0 8px rgba(201,169,110,0.3)}
+    .msg-avatar.u{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+    .msg-bubble{padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.6}
+    .msg.marcel .msg-bubble{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.85);border-radius:2px 10px 10px 10px}
+    .msg.user .msg-bubble{background:linear-gradient(135deg,rgba(201,169,110,0.15),rgba(201,169,110,0.08));border:1px solid rgba(201,169,110,0.2);color:var(--cream);border-radius:10px 2px 10px 10px}
+    .msg-disclaimer{font-size:10px;color:rgba(255,255,255,0.2);margin-top:6px;font-style:italic;line-height:1.4}
+    .msg-agent-badge{font-size:10px;color:var(--gold);margin-bottom:4px;font-weight:500;display:flex;align-items:center;gap:4px}
+    .chat-input-area{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0}
+    .chat-input-row{display:flex;gap:10px;align-items:flex-end}
+    .chat-textarea{
+      flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+      border-radius:10px;padding:10px 14px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:13px;
+      resize:none;min-height:44px;max-height:120px;transition:.2s;
+    }
+    .chat-textarea::placeholder{color:rgba(255,255,255,0.2)}
+    .chat-textarea:focus{outline:none;border-color:rgba(201,169,110,0.4);box-shadow:0 0 0 3px rgba(201,169,110,0.08)}
+    .chat-send{
+      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--gold-deep),var(--gold));
+      border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;
+      transition:.2s;flex-shrink:0;
+    }
+    .chat-send:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(201,169,110,0.4)}
+    .chat-send:disabled{opacity:.4;transform:none;cursor:not-allowed}
+    .chat-shortcuts{font-size:10px;color:rgba(255,255,255,0.15);padding-top:8px;text-align:center}
+    .chat-sidebar-panel{display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+    .chat-side-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--card-r);padding:14px 16px}
+    .chat-side-title{font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px}
+    .quick-q{
+      padding:8px 10px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
+      font-size:11px;color:rgba(255,255,255,0.6);cursor:pointer;margin-bottom:7px;transition:.2s;line-height:1.4;
+    }
+    .quick-q:last-child{margin-bottom:0}
+    .quick-q:hover{background:rgba(201,169,110,0.08);border-color:rgba(201,169,110,0.2);color:var(--cream)}
+
+    /* ── ALERTES FULL VIEW ── */
+    .alert-full-item{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);padding:16px 20px;margin-bottom:12px;
+      display:flex;align-items:flex-start;gap:14px;transition:.2s;
+    }
+    .alert-full-item:hover{border-color:rgba(201,169,110,0.15)}
+    .alert-full-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
+    .alert-urgency{
+      padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin-left:auto;
+      white-space:nowrap;flex-shrink:0;
+    }
+    .alert-urgency.high{background:rgba(196,75,59,0.15);color:#F87171;border:1px solid rgba(196,75,59,0.25)}
+    .alert-urgency.med{background:rgba(184,115,51,0.15);color:var(--amber);border:1px solid rgba(184,115,51,0.25)}
+    .alert-urgency.low{background:rgba(45,122,79,0.15);color:#4ADE80;border:1px solid rgba(45,122,79,0.25)}
+
+    /* ── TYPING INDICATOR ── */
+    .typing{display:none;align-items:center;gap:6px;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:2px 10px 10px 10px;width:fit-content}
+    .typing.show{display:flex}
+    .typing span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:typing-bounce .8s infinite}
+    .typing span:nth-child(2){animation-delay:.15s}
+    .typing span:nth-child(3){animation-delay:.3s}
+    @keyframes typing-bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+    /* ── FAB ── */
+    .fab{
+      position:fixed;bottom:32px;right:32px;z-index:200;
+      width:52px;height:52px;border-radius:50%;
+      background:linear-gradient(135deg,var(--gold-deep),var(--gold));
+      border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 8px 24px rgba(201,169,110,0.35),0 0 0 0 rgba(201,169,110,0.2);
+      animation:fab-pulse 3s infinite;transition:.2s;
+    }
+    .fab:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(201,169,110,0.5)}
+    @keyframes fab-pulse{0%,100%{box-shadow:0 8px 24px rgba(201,169,110,0.35),0 0 0 0 rgba(201,169,110,0.2)}50%{box-shadow:0 8px 24px rgba(201,169,110,0.35),0 0 0 12px rgba(201,169,110,0)}}
+
+    /* ── FAB MENU ── */
+    .fab-menu{
+      position:fixed;bottom:96px;right:32px;z-index:200;
+      display:flex;flex-direction:column;gap:8px;align-items:flex-end;
+      opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;
+    }
+    .fab-menu.open{opacity:1;pointer-events:all;transform:translateY(0)}
+    .fab-action{
+      display:flex;align-items:center;gap:10px;
+      background:rgba(14,23,41,0.95);border:1px solid rgba(201,169,110,0.25);
+      border-radius:30px;padding:8px 16px 8px 12px;cursor:pointer;transition:.2s;
+      backdrop-filter:blur(12px);
+    }
+    .fab-action:hover{background:rgba(201,169,110,0.1);border-color:var(--gold)}
+    .fab-action .ico{font-size:16px}
+    .fab-action .lbl{font-size:12px;font-weight:500;color:var(--cream);white-space:nowrap}
+
+    /* ── COUNTERS ── */
+    .counter{display:inline}
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap{margin-top:8px}
+    .progress-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:5px}
+    .progress-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden}
+    .progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));transform:scaleX(0);transform-origin:left;transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+    .progress-fill.animated{transform:scaleX(1)}
+
+    /* ── SCORE RINGS ── */
+    .score-ring-wrap{display:flex;justify-content:center;align-items:center;padding:10px 0}
+
+    /* ── SHIMMER LOADING ── */
+    @keyframes shimmer{from{background-position:-400px 0}to{background-position:400px 0}}
+    .shimmer{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.03) 75%);background-size:400px 100%;animation:shimmer 1.5s infinite}
+
+    /* ── ACTIVITY FEED ── */
+    .activity-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+    .activity-item:last-child{border-bottom:none}
+    .activity-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
+    .activity-text{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.4}
+    .activity-time{font-size:10px;color:rgba(255,255,255,0.2);font-family:'JetBrains Mono',monospace;flex-shrink:0;margin-top:1px}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.univers-grid{grid-template-columns:repeat(2,1fr)}.chat-layout{grid-template-columns:1fr}}
+    @media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid-3{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 
 <div class="app">
 
-  <!-- ─── SIDEBAR ─── -->
+  <!-- ══════════════ SIDEBAR ══════════════ -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      IKCP.
-      <div class="tagline">Family Office Augmenté</div>
+      IKCP
+      <div class="tagline">Family Office Augmenté · Bêta Fondateurs</div>
     </div>
 
     <div class="sidebar-user">
-      <div class="avatar">🏛</div>
-      <div class="name">Famille Moreau</div>
-      <div class="plan-badge">Fondateur · Bêta</div>
+      <div class="user-avatar">FM</div>
+      <div>
+        <div class="user-name">Famille Moreau</div>
+        <span class="user-badge">⭐ Fondateur Bêta</span>
+      </div>
     </div>
 
-    <nav class="sidebar-nav">
-      <div class="nav-group-label">Espace privé</div>
-      <div class="nav-item active" data-view="dashboard">
-        <span class="icon">📊</span> Tableau de bord
+    <div class="nav-group">
+      <div class="nav-label">Navigation</div>
+      <div class="nav-item active" onclick="showView('dashboard')">
+        <span class="icon">◈</span> Tableau de bord
       </div>
-      <div class="nav-item" data-view="dashboard">
-        <span class="icon">🗺</span> Mon Patrimoine
+      <div class="nav-item" onclick="showView('marcel')">
+        <span class="icon">✦</span> Marcel
+        <span class="live-dot"></span>
       </div>
-      <div class="nav-item" data-view="marcel">
-        <span class="icon">🎼</span> Marcel
-        <span class="badge badge-green">✓</span>
+      <div class="nav-item" onclick="showView('agents')">
+        <span class="icon">⬡</span> Agents IA
       </div>
-      <div class="nav-item" data-view="univers">
-        <span class="icon">🌐</span> Mes Univers
-        <span class="badge badge-gold">4</span>
+      <div class="nav-item" onclick="showView('univers')">
+        <span class="icon">◎</span> Mes univers
       </div>
-      <div class="nav-item" data-view="docs">
-        <span class="icon">📁</span> Documents
-        <span class="badge badge-red">2</span>
+      <div class="nav-item" onclick="showView('docs')">
+        <span class="icon">▣</span> Documents
       </div>
-      <div class="nav-item" data-view="alertes">
-        <span class="icon">🔔</span> Alertes
-        <span class="badge badge-red">3</span>
+      <div class="nav-item" onclick="showView('alertes')">
+        <span class="icon">◉</span> Alertes
+        <span class="badge">3</span>
       </div>
+    </div>
 
-      <div class="nav-group-label" style="margin-top:12px;">Outils</div>
-      <div class="nav-item" data-view="dashboard">
-        <span class="icon">🔍</span> Cartographie SIREN
+    <div class="nav-group">
+      <div class="nav-label">Agents actifs</div>
+      <div class="agent-status-item" onclick="showView('agents')">
+        <div class="agent-dot active"></div>
+        <span class="agent-name-s">Marcel</span>
+        <span class="agent-model">Sonnet</span>
       </div>
-      <div class="nav-item" data-view="dashboard">
-        <span class="icon">⚖</span> Simulateurs
+      <div class="agent-status-item" onclick="showView('agents')">
+        <div class="agent-dot standby"></div>
+        <span class="agent-name-s">Codex</span>
+        <span class="agent-model">Opus</span>
       </div>
-      <div class="nav-item" data-view="dashboard">
-        <span class="icon">📅</span> Calendrier fiscal
+      <div class="agent-status-item" onclick="showView('agents')">
+        <div class="agent-dot active"></div>
+        <span class="agent-name-s">Témoin</span>
+        <span class="agent-model">MIF II</span>
       </div>
-
-      <div class="nav-group-label" style="margin-top:12px;">Mon cabinet</div>
-      <div class="nav-item" data-view="dashboard">
-        <span class="icon">👤</span> Maxime Juveneton
+      <div class="agent-status-item" onclick="showView('agents')">
+        <div class="agent-dot active"></div>
+        <span class="agent-name-s">Pappers</span>
+        <span class="agent-model">SIREN</span>
       </div>
-      <div class="nav-item" data-view="dashboard">
-        <span class="icon">⚙</span> Préférences
-      </div>
-    </nav>
+    </div>
 
     <div class="sidebar-footer">
-      <div class="orias">
-        IKCP · ORIAS 23001568<br>
-        CIF CNCEF Patrimoine<br>
-        Hébergement WEUR Paris · RGPD
-      </div>
-      <div class="logout">↩ Déconnexion</div>
+      <a href="#">Paramètres</a>
+      <a href="#">Contacter Maxime</a>
+      <div class="orias">ORIAS 23001568 · MIF II</div>
     </div>
   </aside>
 
-  <!-- ─── TOPBAR ─── -->
+  <!-- ══════════════ TOPBAR ══════════════ -->
   <header class="topbar">
-    <div class="topbar-breadcrumb">IKCP — <strong id="topbar-title">Tableau de bord</strong></div>
-    <div class="topbar-spacer"></div>
-    <div class="topbar-pulse">
-      <div class="pulse-dot"></div>
-      Marcel actif
+    <div class="breadcrumb">
+      IKCP <span class="sep">/</span> <span id="bc-title">Tableau de bord</span>
     </div>
+
+    <div class="topbar-agents">
+      <div class="agent-chip" onclick="showView('agents')" title="Marcel actif">
+        <div class="dot on"></div> Marcel
+      </div>
+      <div class="agent-chip" onclick="showView('agents')" title="Codex en veille">
+        <div class="dot sb"></div> Codex
+      </div>
+    </div>
+
     <div class="topbar-date" id="topbar-date"></div>
-    <div class="topbar-notif">🔔<div class="dot"></div></div>
+    <div class="topbar-notif" onclick="showView('alertes')">
+      🔔
+      <div class="notif-badge"></div>
+    </div>
   </header>
 
-  <!-- ─── MAIN ─── -->
+  <!-- ══════════════ MAIN ══════════════ -->
   <main class="main">
 
-    <!-- ═══ VUE : TABLEAU DE BORD ═══ -->
+    <!-- ─────────── DASHBOARD ─────────── -->
     <div class="view active" id="view-dashboard">
-      <div class="dash-view">
+      <div class="page-title">Bonjour, Famille Moreau</div>
+      <div class="page-sub">Votre patrimoine sous intelligence souveraine · 19 mai 2026</div>
 
-        <div class="dash-header">
+      <!-- KPIs -->
+      <div class="grid-4">
+        <div class="kpi" onclick="askMarcel('Analyser la performance de mon patrimoine global de 3,4 M€ depuis un an')">
+          <div class="kpi-label"><span class="ico">◈</span> Patrimoine global</div>
+          <div class="kpi-value gold"><span class="counter" data-target="3400000" data-prefix="€ " data-format="currency">3 400 000</span></div>
+          <div class="kpi-trend up">▲ +21,4 % sur 12 mois</div>
+          <a class="kpi-ask" onclick="event.stopPropagation();askMarcel('Analyser la performance de mon patrimoine global')">✦ Demander à Marcel</a>
+        </div>
+        <div class="kpi" onclick="askMarcel('Analyser mon score patrimonial global de 78 sur 100 et identifier les axes d\'amélioration')">
+          <div class="kpi-label"><span class="ico">◎</span> Score patrimonial</div>
+          <div class="kpi-value gold"><span class="counter" data-target="78" data-suffix="/100">78</span></div>
+          <div class="kpi-trend up">▲ +5 pts ce trimestre</div>
+          <a class="kpi-ask" onclick="event.stopPropagation();askMarcel('Quels axes d\'optimisation pour améliorer mon score patrimonial au-delà de 80 ?')">✦ Voir les axes Codex</a>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><span class="ico">▣</span> Revenus déclarés 2025</div>
+          <div class="kpi-value"><span class="counter" data-target="142000" data-prefix="€ " data-format="currency">142 000</span></div>
+          <div class="kpi-trend up">▲ +8 k€ vs 2024</div>
+          <a class="kpi-ask" onclick="askMarcel('Optimisation fiscale revenus 142k€ 2025 — TMI, PER, déficit foncier')">✦ Optimiser avec Marcel</a>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><span class="ico">◉</span> IFI 2026</div>
+          <div class="kpi-value alert">J‑<span class="counter" data-target="27">27</span></div>
+          <div class="kpi-trend warn">⚠ Déclaration 15 juin</div>
+          <a class="kpi-ask" onclick="askMarcel('Rappel IFI 2026 : barème, calcul, stratégies de réduction applicables à ma situation')">⚡ Urgence — Codex</a>
+        </div>
+      </div>
+
+      <!-- Marcel Suggère -->
+      <div class="marcel-panel">
+        <div class="marcel-panel-header">
+          <div class="marcel-icon">✦</div>
           <div>
-            <div class="dash-greeting">Bonjour, <em>Famille Moreau</em></div>
-            <div class="dash-greeting date" id="dash-date"></div>
+            <div class="marcel-panel-title">Marcel Suggère</div>
+            <div class="marcel-panel-sub">3 opportunités détectées cette semaine</div>
           </div>
-          <button class="dash-action-btn" onclick="showView('marcel')">Poser une question à Marcel →</button>
+          <button onclick="showView('marcel')" style="margin-left:auto;padding:6px 14px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);color:var(--gold);font-size:11px;cursor:pointer;font-family:'Outfit',sans-serif">Tout demander →</button>
         </div>
-
-        <!-- KPIs -->
-        <div class="kpi-grid">
-          <div class="kpi-card kpi-gold">
-            <div class="kpi-label">Patrimoine net estimé</div>
-            <div class="kpi-value">3,4M <span style="font-size:16px;opacity:0.5">€</span></div>
-            <div class="kpi-sub">Mis à jour · Q1 2026</div>
-          </div>
-          <div class="kpi-card kpi-green">
-            <div class="kpi-label">Score patrimonial</div>
-            <div class="kpi-value green">78<span style="font-size:14px;opacity:0.5"> / 100</span></div>
-            <div class="kpi-sub">Solide · +5 pts depuis le bilan</div>
-          </div>
-          <div class="kpi-card kpi-blue">
-            <div class="kpi-label">Optimisation identifiée</div>
-            <div class="kpi-value" style="color:#93C5FD;">142k <span style="font-size:16px;opacity:0.5">€</span></div>
-            <div class="kpi-sub">Transmission + IFI + PER</div>
-          </div>
-          <div class="kpi-card kpi-red">
-            <div class="kpi-label">Prochaine échéance</div>
-            <div class="kpi-value red" style="font-size:18px;">IFI · J&minus;27</div>
-            <div class="kpi-sub">15 juin 2026 · Formulaire 2042-IFI</div>
-          </div>
-        </div>
-
-        <div class="dash-row">
-          <!-- Patrimoine détaillé -->
-          <div class="card">
-            <div class="card-title">Répartition patrimoniale</div>
-            <div class="patrimoine-rows">
-              <div class="pat-row">
-                <span class="pat-icon">🏠</span>
-                <div class="pat-info">
-                  <div class="pat-name">Résidence principale</div>
-                  <div class="pat-detail">Lyon 6e · Acquis 2018 · Crédit 124k€</div>
-                </div>
-                <div>
-                  <div class="pat-val">950k €</div>
-                  <div class="pat-pct">28 %</div>
-                </div>
-                <div class="pat-bar-wrap"><div class="pat-bar" style="width:28%"></div></div>
-              </div>
-              <div class="pat-row">
-                <span class="pat-icon">🏗</span>
-                <div class="pat-info">
-                  <div class="pat-name">Immobilier locatif</div>
-                  <div class="pat-detail">2 appartements LMNP · Annonay + Lyon</div>
-                </div>
-                <div>
-                  <div class="pat-val">680k €</div>
-                  <div class="pat-pct">20 %</div>
-                </div>
-                <div class="pat-bar-wrap"><div class="pat-bar" style="width:20%"></div></div>
-              </div>
-              <div class="pat-row">
-                <span class="pat-icon">🏦</span>
-                <div class="pat-info">
-                  <div class="pat-name">Holding + Parts opco</div>
-                  <div class="pat-detail">SAS MOREAU INDUSTRIE · Holding animatrice</div>
-                </div>
-                <div>
-                  <div class="pat-val">1,2M €</div>
-                  <div class="pat-pct">35 %</div>
-                </div>
-                <div class="pat-bar-wrap"><div class="pat-bar" style="width:35%"></div></div>
-              </div>
-              <div class="pat-row">
-                <span class="pat-icon">📈</span>
-                <div class="pat-info">
-                  <div class="pat-name">Assurance-vie + PER</div>
-                  <div class="pat-detail">AV Generali 340k€ · PER Linxea 95k€</div>
-                </div>
-                <div>
-                  <div class="pat-val">435k €</div>
-                  <div class="pat-pct">13 %</div>
-                </div>
-                <div class="pat-bar-wrap"><div class="pat-bar" style="width:13%"></div></div>
-              </div>
-              <div class="pat-row">
-                <span class="pat-icon">💰</span>
-                <div class="pat-info">
-                  <div class="pat-name">Épargne disponible</div>
-                  <div class="pat-detail">Livret A + CTO + Fonds €</div>
-                </div>
-                <div>
-                  <div class="pat-val">135k €</div>
-                  <div class="pat-pct">4 %</div>
-                </div>
-                <div class="pat-bar-wrap"><div class="pat-bar" style="width:4%"></div></div>
-              </div>
-            </div>
-            <div class="pat-total">
-              <span class="lbl">Total net</span>
-              <span class="val">3 400 000 €</span>
-            </div>
-          </div>
-
-          <!-- Alertes & Univers -->
-          <div style="display:flex;flex-direction:column;gap:2px;">
-            <div class="card">
-              <div class="card-title">Alertes actives</div>
-              <div class="alerts-list">
-                <div class="alert-item">
-                  <div class="dot red"></div>
-                  <div>
-                    <div class="a-title">IFI 2026 à déclarer</div>
-                    <div class="a-detail">Patrimoine immobilier net &gt; 1,3 M€</div>
-                  </div>
-                  <div class="a-date">J&minus;27</div>
-                </div>
-                <div class="alert-item">
-                  <div class="dot amber"></div>
-                  <div>
-                    <div class="a-title">Acompte IS T2</div>
-                    <div class="a-detail">Holding · IS N&minus;1 · Modulable</div>
-                  </div>
-                  <div class="a-date">J&minus;27</div>
-                </div>
-                <div class="alert-item">
-                  <div class="dot amber"></div>
-                  <div>
-                    <div class="a-title">Révision fenêtre donation</div>
-                    <div class="a-detail">Abattement 100k€ rechargeable en 2027</div>
-                  </div>
-                  <div class="a-date">2027</div>
-                </div>
-                <div class="alert-item">
-                  <div class="dot green"></div>
-                  <div>
-                    <div class="a-title">DER 2026 signée</div>
-                    <div class="a-detail">Document en règle · 14 mai 2026</div>
-                  </div>
-                  <div class="a-date">✓</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">Univers actifs</div>
-              <div class="univers-grid-mini">
-                <div class="u-mini" onclick="showView('univers')">
-                  <span class="u-icon">🗺</span>
-                  <span class="u-name">Cartographie</span>
-                  <span class="u-badge u-live">LIVE</span>
-                </div>
-                <div class="u-mini" onclick="showView('marcel')">
-                  <span class="u-icon">🎼</span>
-                  <span class="u-name">Marcel</span>
-                  <span class="u-badge u-live">LIVE</span>
-                </div>
-                <div class="u-mini" onclick="showView('univers')">
-                  <span class="u-icon">⚖</span>
-                  <span class="u-name">Codex Fiscal</span>
-                  <span class="u-badge u-live">LIVE</span>
-                </div>
-                <div class="u-mini" onclick="showView('univers')">
-                  <span class="u-icon">🏠</span>
-                  <span class="u-name">Immobilier</span>
-                  <span class="u-badge u-soon">Q3</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ═══ VUE : MARCEL ═══ -->
-    <div class="view" id="view-marcel">
-      <div class="marcel-view">
-        <div class="chat-header">
-          <div class="chat-avatar">🎼</div>
-          <div class="info">
-            <div class="name">Marcel · Agent patrimonial IKCP</div>
-            <div class="sub">Intelligence souveraine · Cloudflare Workers Paris WEUR · MIF II compliant</div>
-          </div>
-          <div class="chat-history-notice">
-            Conversation chiffrée · Logged Témoin<br>
-            Historique conservé 30 jours
-          </div>
-        </div>
-
-        <div class="chat-body" id="chat-body">
-          <!-- Message d'accueil -->
-          <div class="chat-msg assistant">
-            <div class="msg-avatar">🎼</div>
+        <div class="suggestion-list">
+          <div class="suggestion-item" onclick="askMarcel('Optimisation PER : versements déductibles avant 31 décembre 2026. Quel montant optimal pour ma TMI ?')">
+            <div class="suggestion-ico">📊</div>
             <div>
-              <div class="msg-bubble">
-                Bonjour. Je suis Marcel, votre agent patrimonial IKCP.<br><br>
-                Je peux vous aider sur la <strong>fiscalité</strong>, la <strong>transmission</strong>, l'<strong>immobilier</strong>, la <strong>retraite TNS</strong>, les <strong>holdings</strong>, la <strong>prévoyance</strong> ou analyser votre situation avec votre <strong>SIREN</strong>.<br><br>
-                <em>Quelle est votre question du moment ?</em>
-                <div class="msg-disclaimer">
-                  Analyse informative · Ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi) · Pour une recommandation, contactez Maxime.
+              <div class="suggestion-text">Versement PER avant le 31 déc. : votre TMI à 41 % rend la fenêtre très avantageuse. Jusqu'à 24 800 € déductibles restants.</div>
+              <div class="suggestion-agent">✦ Marcel · Fiscalité · Demander maintenant</div>
+            </div>
+          </div>
+          <div class="suggestion-item" onclick="askMarcel('Pacte Dutreil sur ma SCI familiale : conditions, évaluation, calendrier optimal avant transmission')">
+            <div class="suggestion-ico">🏛</div>
+            <div>
+              <div class="suggestion-text">Votre SCI familiale est éligible au Pacte Dutreil (art. 787 B CGI). Exonération 75 % potentielle en préparant dès maintenant.</div>
+              <div class="suggestion-agent">⚖ Codex · Transmission · Expertise fiscale</div>
+            </div>
+          </div>
+          <div class="suggestion-item" onclick="askMarcel('Donation parents-enfants 2026 : abattement 100k€ renouvelé, stratégie démembrement, calendrier')">
+            <div class="suggestion-ico">🎁</div>
+            <div>
+              <div class="suggestion-text">Abattement 100 k€ parent-enfant disponible depuis 2021. Donation avant fin 2026 pour réinitialiser le délai de 15 ans.</div>
+              <div class="suggestion-agent">✦ Marcel · Donation · Action recommandée</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts row 1 -->
+      <div class="grid-2-1">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Évolution du patrimoine</div>
+              <div class="chart-sub">12 derniers mois · données indicatives</div>
+            </div>
+            <div class="chart-actions">
+              <div class="chart-btn active">12M</div>
+              <div class="chart-btn">5A</div>
+              <div class="chart-btn" onclick="askMarcel('Analyser la trajectoire de mon patrimoine sur les 12 derniers mois — performance par classe d\'actif')">✦ Analyser</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-patrimoine" height="180"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Allocation actifs</div>
+              <div class="chart-sub">Répartition au 19/05/2026</div>
+            </div>
+            <div class="chart-actions">
+              <div class="chart-btn" onclick="askMarcel('Mon allocation patrimoniale est-elle optimale ? Comparer avec les ratios recommandés pour un patrimoine de 3,4 M€')">✦ Codex</div>
+            </div>
+          </div>
+          <canvas id="chart-allocation" height="180"></canvas>
+          <div style="margin-top:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px">
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#C9A96E;display:inline-block"></span>Holding 35%</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#1B5FAA;display:inline-block"></span>Résid. princ. 28%</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#2D7A4F;display:inline-block"></span>Immo loc. 20%</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#6B3FA0;display:inline-block"></span>AV + PER 13%</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#444E6E;display:inline-block"></span>Épargne 4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts row 2 -->
+      <div class="grid-1-2">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Radar patrimonial</div>
+              <div class="chart-sub">Score par domaine</div>
+            </div>
+            <div class="chart-actions">
+              <div class="chart-btn" onclick="askMarcel('Détailler mon score de 55/100 en retraite — quelles optimisations PER, PEA, assurance-vie pour l\'améliorer ?')">⚠ Retraite 55</div>
+            </div>
+          </div>
+          <canvas id="chart-radar" height="230"></canvas>
+        </div>
+        <div class="grid-2" style="margin-bottom:0;align-content:start">
+          <!-- Alerts mini -->
+          <div class="section-card" style="grid-column:1/-1">
+            <div class="section-title">Alertes prioritaires <span class="badge-live">3 actives</span></div>
+            <div class="alert-item">
+              <div class="alert-dot red"></div>
+              <div class="alert-body">
+                <div class="alert-title">Déclaration IFI 2026</div>
+                <div class="alert-desc">Échéance 15 juin · Valeur estimée ~85 k€</div>
+                <div class="alert-meta">
+                  <span class="alert-tag" style="color:var(--red)">J-27</span>
+                  <span class="alert-cta" onclick="askMarcel('IFI 2026 : calcul complet, stratégies de réduction, passif déductible pour mon patrimoine')">⚡ Codex IFI →</span>
+                </div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot amber"></div>
+              <div class="alert-body">
+                <div class="alert-title">Acompte IR — 2e mensualité</div>
+                <div class="alert-desc">Prélèvement 15 juin · 4 200 €</div>
+                <div class="alert-meta">
+                  <span class="alert-tag" style="color:var(--amber)">J-27</span>
+                  <span class="alert-cta" onclick="askMarcel('Puis-je moduler mes acomptes IR 2026 à la baisse au vu de ma situation réelle ?')">✦ Marcel →</span>
+                </div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot blue"></div>
+              <div class="alert-body">
+                <div class="alert-title">DER à actualiser</div>
+                <div class="alert-desc">Document d'Entrée en Relation · annuel</div>
+                <div class="alert-meta">
+                  <span class="alert-tag">MIF II</span>
+                  <span class="alert-cta" onclick="showView('docs')">📄 Documents →</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Typing indicator -->
-          <div class="chat-msg assistant" id="typing-wrap" style="display:none;">
-            <div class="msg-avatar">🎼</div>
-            <div class="typing-indicator visible" id="typing">
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
-              <div class="typing-dot"></div>
+          <!-- Activity feed -->
+          <div class="section-card" style="grid-column:1/-1">
+            <div class="section-title">Activité agents IA</div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#3ECC8A"></div>
+              <div class="activity-text">Marcel a répondu à votre question sur le PER — 18 réponses ce mois</div>
+              <div class="activity-time">auj.</div>
             </div>
-          </div>
-        </div>
-
-        <div class="chat-input-wrap">
-          <div class="chat-input-row">
-            <textarea
-              class="chat-input"
-              id="chat-input"
-              placeholder="Posez votre question patrimoniale… (Ex: Quel est l'impact fiscal d'un apport-cession sur ma holding ?)"
-              rows="2"
-            ></textarea>
-            <button class="chat-send" id="chat-send" onclick="sendMessage()">Envoyer</button>
-          </div>
-          <div class="chat-footer-note">
-            Marcel utilise les barèmes CGI 2026 · Sources officielles BDF, BOFiP, INSEE · Audit log MIF II automatique · Hébergement souverain France
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--amber)"></div>
+              <div class="activity-text">Codex a analysé votre dossier Dutreil (art. 787 B CGI)</div>
+              <div class="activity-time">hier</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#60A5FA"></div>
+              <div class="activity-text">Témoin a enregistré 23 interactions MIF II ce mois</div>
+              <div class="activity-time">lun.</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:var(--gold)"></div>
+              <div class="activity-text">Pappers a cartographié 3 entités liées à votre holding</div>
+              <div class="activity-time">dim.</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ VUE : UNIVERS ═══ -->
+    <!-- ─────────── MARCEL CHAT ─────────── -->
+    <div class="view" id="view-marcel">
+      <div class="page-title">✦ Marcel</div>
+      <div class="page-sub">Votre intelligence patrimoniale souveraine — actif 24/7</div>
+
+      <div class="chat-layout">
+        <div class="chat-main">
+          <div class="chat-header">
+            <div class="marcel-icon" style="width:28px;height:28px;font-size:13px">✦</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--cream)">Marcel</div>
+              <div style="font-size:11px;color:#3ECC8A;display:flex;align-items:center;gap:4px">
+                <span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span>
+                En ligne · Chef d'orchestre patrimonial
+              </div>
+            </div>
+            <div style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25)">MIF II · ORIAS 23001568</div>
+          </div>
+
+          <div class="chat-messages" id="chat-messages">
+            <div class="msg marcel">
+              <div class="msg-avatar m">✦</div>
+              <div>
+                <div class="msg-agent-badge">✦ Marcel · Intelligence souveraine</div>
+                <div class="msg-bubble">Bonjour, Famille Moreau. Je suis Marcel, votre chef d'orchestre patrimonial.<br><br>J'ai analysé votre situation ce matin : votre IFI est à <strong>J-27</strong>, un versement PER avant décembre vous ferait économiser jusqu'à <strong>~10 k€ d'impôts</strong>, et votre SCI est potentiellement éligible au Pacte Dutreil.<br><br>Que souhaitez-vous approfondir aujourd'hui ?</div>
+                <div class="msg-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+              </div>
+            </div>
+            <div class="typing" id="typing-indicator">
+              <div class="msg-avatar m" style="width:30px;height:30px">✦</div>
+              <div class="typing show">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <div class="chat-input-row">
+              <textarea class="chat-textarea" id="chat-input" rows="1" placeholder="Posez votre question patrimoniale…" onkeydown="handleKey(event)"></textarea>
+              <button class="chat-send" id="chat-send-btn" onclick="sendMessage()">→</button>
+            </div>
+            <div class="chat-shortcuts">Entrée pour envoyer · Shift+Entrée pour saut de ligne · Questions délicates → déléguées à Codex</div>
+          </div>
+        </div>
+
+        <div class="chat-sidebar-panel">
+          <div class="chat-side-card">
+            <div class="chat-side-title">Questions fréquentes</div>
+            <div class="quick-q" onclick="setQuestion('Quel est le barème IFI 2026 et comment réduire mon imposition ?')">Barème IFI 2026 et optimisation</div>
+            <div class="quick-q" onclick="setQuestion('Comment fonctionne l\'exonération Dutreil pour la transmission de mon entreprise ?')">Pacte Dutreil : conditions 2026</div>
+            <div class="quick-q" onclick="setQuestion('Quelle stratégie de donation optimale pour transmettre à mes enfants cette année ?')">Donation optimale 2026</div>
+            <div class="quick-q" onclick="setQuestion('Comparer PER, assurance-vie et PEA pour préparer ma retraite sur 10 ans')">PER vs AV vs PEA retraite</div>
+            <div class="quick-q" onclick="setQuestion('Quel montant optimal à verser sur mon PER avant le 31 décembre pour ma TMI à 41% ?')">Optimisation PER TMI 41%</div>
+          </div>
+          <div class="chat-side-card">
+            <div class="chat-side-title">Agents disponibles</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:10px">Marcel orchestre automatiquement. Questions complexes → délégation à Codex (Opus).</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="width:7px;height:7px;border-radius:50%;background:#3ECC8A;animation:pulse-dot 2s infinite"></div>
+              <span style="font-size:11px;color:var(--cream)">Marcel</span>
+              <span style="font-size:10px;color:rgba(255,255,255,0.25);margin-left:auto">Général</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:7px;height:7px;border-radius:50%;background:var(--amber)"></div>
+              <span style="font-size:11px;color:var(--cream)">Codex</span>
+              <span style="font-size:10px;color:rgba(255,255,255,0.25);margin-left:auto">Fiscal expert</span>
+            </div>
+          </div>
+          <div class="chat-side-card">
+            <div class="chat-side-title">Ce mois</div>
+            <div style="font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--cream)">18</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:10px">questions posées</div>
+            <div class="progress-wrap">
+              <div class="progress-label"><span>Utilisation</span><span>18/∞</span></div>
+              <div class="progress-bar"><div class="progress-fill animated" style="width:36%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── AGENTS IA ─────────── -->
+    <div class="view" id="view-agents">
+      <div class="page-title">⬡ Agents IA Souverains</div>
+      <div class="page-sub">Votre équipe d'intelligence patrimoniale dédiée · 4 agents actifs</div>
+
+      <div class="grid-2">
+        <!-- Marcel -->
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-avatar gold">✦</div>
+            <div>
+              <div class="agent-card-name">Marcel</div>
+              <div class="agent-card-role">Chef d'orchestre patrimonial</div>
+              <div class="agent-card-model">Sonnet 4.6 · Cloudflare WEUR</div>
+            </div>
+            <div class="agent-status-badge active"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block"></span> Actif</div>
+          </div>
+          <div class="agent-desc">Point d'entrée unique de votre Family Office. Marcel analyse votre situation globale, répond à vos questions patrimoniales et orchestre les agents spécialisés quand la profondeur l'exige. Conforme MIF II, audit continu.</div>
+          <div class="agent-metrics">
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="18">18</div><div class="agent-metric-key">Questions/mois</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="23">23</div><div class="agent-metric-key">Logs MIF II</div></div>
+            <div class="agent-metric"><div class="agent-metric-val"><span style="font-size:14px;color:#3ECC8A">●</span></div><div class="agent-metric-key">Disponible</div></div>
+          </div>
+          <div class="agent-skills">
+            <span class="skill-tag">Fiscalité générale</span><span class="skill-tag">Transmission</span>
+            <span class="skill-tag">Immobilier</span><span class="skill-tag">Retraite</span>
+            <span class="skill-tag">Prévoyance</span><span class="skill-tag">Orchestration</span>
+          </div>
+          <button class="agent-btn" onclick="showView('marcel')">✦ Interroger Marcel →</button>
+        </div>
+
+        <!-- Codex -->
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-avatar blue">⚖</div>
+            <div>
+              <div class="agent-card-name">Codex</div>
+              <div class="agent-card-role">Expert fiscal & juridique</div>
+              <div class="agent-card-model">Opus 4.7 · Analyse approfondie</div>
+            </div>
+            <div class="agent-status-badge standby">⊙ En veille</div>
+          </div>
+          <div class="agent-desc">Sub-agent d'expertise fiscale senior. Codex intervient sur les arbitrages multi-dispositifs complexes : Dutreil, apport-cession, démembrement, jurisprudence fiscale. Citation CGI, BOFIP, arrêts Cass. com. systématiques.</div>
+          <div class="agent-metrics">
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="4">4</div><div class="agent-metric-key">Analyses/mois</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="3">3</div><div class="agent-metric-key">Schémas étudiés</div></div>
+            <div class="agent-metric"><div class="agent-metric-val" style="font-size:12px;color:var(--amber)">Opus</div><div class="agent-metric-key">Modèle</div></div>
+          </div>
+          <div class="agent-skills">
+            <span class="skill-tag">Dutreil 787B CGI</span><span class="skill-tag">Apport-cession</span>
+            <span class="skill-tag">Démembrement</span><span class="skill-tag">IFI</span>
+            <span class="skill-tag">IS/IR arbitrage</span><span class="skill-tag">Jurisprudence</span>
+          </div>
+          <button class="agent-btn" onclick="askMarcel('Question fiscale complexe : je souhaite une analyse Codex sur les conditions du Pacte Dutreil pour ma holding en 2026')">⚖ Déléguer à Codex →</button>
+        </div>
+
+        <!-- Témoin -->
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-avatar green">📋</div>
+            <div>
+              <div class="agent-card-name">Témoin</div>
+              <div class="agent-card-role">Audit log MIF II souverain</div>
+              <div class="agent-card-model">D1 SQLite · Paris CDG · WEUR</div>
+            </div>
+            <div class="agent-status-badge active"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block"></span> Actif</div>
+          </div>
+          <div class="agent-desc">Enregistre chaque interaction patrimoniale sous SHA-256 dans une base Cloudflare D1 hébergée à Paris. Audit trail permanent, conformité RGPD souveraine France. Chaque échange Marcel/Codex est horodaté et signé.</div>
+          <div class="agent-metrics">
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="241">241</div><div class="agent-metric-key">Logs total</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="100">100</div><div class="agent-metric-key">% Conformes</div></div>
+            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px;color:#3ECC8A">Paris</div><div class="agent-metric-key">Hébergement</div></div>
+          </div>
+          <div class="agent-skills">
+            <span class="skill-tag">MIF II audit</span><span class="skill-tag">SHA-256</span>
+            <span class="skill-tag">RGPD France</span><span class="skill-tag">D1 SQLite</span>
+            <span class="skill-tag">Trail 10 ans</span>
+          </div>
+          <button class="agent-btn" style="cursor:default;opacity:.6">📋 Audit automatique · Transparent</button>
+        </div>
+
+        <!-- Pappers -->
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-avatar purple">🗺</div>
+            <div>
+              <div class="agent-card-name">Pappers</div>
+              <div class="agent-card-role">Cartographie SIREN & RNE</div>
+              <div class="agent-card-model">API Pappers · Cache KV 1h</div>
+            </div>
+            <div class="agent-status-badge active"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block"></span> Actif</div>
+          </div>
+          <div class="agent-desc">Cartographie vos entités juridiques en 30 secondes depuis le SIREN : capital, bénéficiaires effectifs, statuts, actes de cession. Données RNE officielles, mise en cache 1h. Base de toute analyse patrimoniale.</div>
+          <div class="agent-metrics">
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="3">3</div><div class="agent-metric-key">Entités liées</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="7">7</div><div class="agent-metric-key">Actionnaires</div></div>
+            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px">30s</div><div class="agent-metric-key">Analyse</div></div>
+          </div>
+          <div class="agent-skills">
+            <span class="skill-tag">RNE officiel</span><span class="skill-tag">Bénéf. effectifs</span>
+            <span class="skill-tag">Capital social</span><span class="skill-tag">Dirigeants</span>
+            <span class="skill-tag">Actes BODACC</span>
+          </div>
+          <button class="agent-btn" onclick="askMarcel('Cartographier mes entités via Pappers : holding, SCI, sociétés liées. SIREN principal : 947972436')">🗺 Cartographier →</button>
+        </div>
+      </div>
+
+      <!-- Agents à venir -->
+      <div class="section-card">
+        <div class="section-title">Agents en préparation · Q3-Q4 2026</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px">
+          <div style="text-align:center;padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;opacity:.5">
+            <div style="font-size:20px;margin-bottom:6px">🏗</div>
+            <div style="font-size:12px;font-weight:600;color:var(--cream)">Bâtisseur</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.3)">Cartographie 360°</div>
+            <div style="font-size:10px;color:var(--amber);margin-top:4px">Q3 2026</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;opacity:.5">
+            <div style="font-size:20px;margin-bottom:6px">🏛</div>
+            <div style="font-size:12px;font-weight:600;color:var(--cream)">Architecte</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.3)">Immo · DVF · IFI</div>
+            <div style="font-size:10px;color:var(--amber);margin-top:4px">Q3 2026</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;opacity:.5">
+            <div style="font-size:20px;margin-bottom:6px">📈</div>
+            <div style="font-size:12px;font-weight:600;color:var(--cream)">Stratège</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.3)">Marchés · Allocation</div>
+            <div style="font-size:10px;color:var(--amber);margin-top:4px">Q4 2026</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;opacity:.5">
+            <div style="font-size:20px;margin-bottom:6px">🎭</div>
+            <div style="font-size:12px;font-weight:600;color:var(--cream)">Concierge</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.3)">Lifestyle · Voyages</div>
+            <div style="font-size:10px;color:var(--amber);margin-top:4px">Q4 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── UNIVERS ─────────── -->
     <div class="view" id="view-univers">
-      <div class="univers-view">
-        <div class="univers-header">
-          <h2>Vos <em>12 univers</em> patrimoniaux</h2>
-          <div class="sub">4 actifs · 8 en développement Q3–Q4 2026 · Co-construits avec les 50 familles fondatrices</div>
+      <div class="page-title">◎ Mes univers patrimoniaux</div>
+      <div class="page-sub">4 univers actifs · 8 en préparation · orchestrés par Marcel</div>
+
+      <div class="univers-grid">
+        <div class="univers-card">
+          <div class="univers-ico">◈</div>
+          <div class="univers-name">Cartographie patrimoniale</div>
+          <div class="univers-desc">Vision 360° de votre patrimoine via SIREN. Entités, actionnaires, capital, bénéficiaires effectifs en 30s.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Pappers RNE</div>
+          <div class="univers-agent" onclick="askMarcel('Lancer une cartographie complète de mes entités patrimoniales')">🗺 Lancer via Pappers →</div>
         </div>
-        <div class="univers-full-grid">
+        <div class="univers-card">
+          <div class="univers-ico">✦</div>
+          <div class="univers-name">Marcel 24/7</div>
+          <div class="univers-desc">Questions patrimoniales illimitées. Marcel répond, analyse, délègue. Conforme MIF II. Audit continu.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Sonnet 4.6</div>
+          <div class="univers-agent" onclick="showView('marcel')">✦ Ouvrir Marcel →</div>
+        </div>
+        <div class="univers-card">
+          <div class="univers-ico">⚖</div>
+          <div class="univers-name">Fiscalité & Transmission</div>
+          <div class="univers-desc">Simulations IR, IFI, droits de succession, Dutreil, apport-cession. Codex cite le CGI et la jurisprudence.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Codex Opus</div>
+          <div class="univers-agent" onclick="askMarcel('Analyse fiscale complète : IR, IFI, transmission, stratégies optimales pour ma situation')">⚖ Analyse Codex →</div>
+        </div>
+        <div class="univers-card">
+          <div class="univers-ico">📋</div>
+          <div class="univers-name">Audit MIF II</div>
+          <div class="univers-desc">Chaque interaction horodatée et signée SHA-256 en base Paris CDG. RGPD souverain France. Traçabilité 10 ans.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Témoin D1</div>
+          <div class="univers-agent">📋 Automatique · Transparent</div>
+        </div>
 
-          <div class="univers-card">
-            <div class="u-top">
-              <span class="u-emoji">🗺</span>
-              <span class="u-status live">LIVE</span>
-            </div>
-            <div class="u-title">Cartographie entreprise</div>
-            <div class="u-desc">Analyse SIREN complète via RNE · Dirigeants, capital, structure, âge, bilan Pappers · En 30 secondes.</div>
-            <div class="u-indicator">127 cartographies ce mois</div>
-          </div>
-
-          <div class="univers-card">
-            <div class="u-top">
-              <span class="u-emoji">🎼</span>
-              <span class="u-status live">LIVE</span>
-            </div>
-            <div class="u-title">Marcel 24h/24</div>
-            <div class="u-desc">Agent patrimonial IA · Fiscalité, transmission, retraite TNS, holding, prévoyance. Répond en 8 secondes.</div>
-            <div class="u-indicator">89 questions ce mois</div>
-          </div>
-
-          <div class="univers-card">
-            <div class="u-top">
-              <span class="u-emoji">⚖</span>
-              <span class="u-status live">LIVE</span>
-            </div>
-            <div class="u-title">Expertise fiscale Codex</div>
-            <div class="u-desc">Sub-agent expert CGI · Citations jurisprudence exactes (Cass. com., CE) · Arbitrages multi-dispositifs chiffrés.</div>
-            <div class="u-indicator">Opus 4.7 · PER max 35 194 €</div>
-          </div>
-
-          <div class="univers-card">
-            <div class="u-top">
-              <span class="u-emoji">📋</span>
-              <span class="u-status live">LIVE</span>
-            </div>
-            <div class="u-title">Audit MIF II · Témoin</div>
-            <div class="u-desc">Chaque interaction auditée et hashée SHA-256 · D1 Paris CDG · Conformité réglementaire totale.</div>
-            <div class="u-indicator">1 205 entrées audit log</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">🏠</span>
-              <span class="u-status q3">Q3 2026</span>
-            </div>
-            <div class="u-title">Immobilier & IFI</div>
-            <div class="u-desc">DVF valorisation temps réel · Simulation IFI · Impact DPE · Démembrement et SCI.</div>
-            <div class="u-indicator">OAT 10 ans : 3,18 %</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">🌱</span>
-              <span class="u-status q3">Q3 2026</span>
-            </div>
-            <div class="u-title">Retraite & Prévoyance TNS</div>
-            <div class="u-desc">Simulation retraite complémentaire · Loi Madelin · PER individuel · Capital décès TNS.</div>
-            <div class="u-indicator">Taux remplacement moy : 45 %</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">🏛</span>
-              <span class="u-status q3">Q3 2026</span>
-            </div>
-            <div class="u-title">Transmission & Succession</div>
-            <div class="u-desc">Simulation droits succession · Pacte Dutreil · Donation-partage · SCI démembrement.</div>
-            <div class="u-indicator">Abattement enfant 100k€</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">🎨</span>
-              <span class="u-status q4">Q4 2026</span>
-            </div>
-            <div class="u-title">Collection & Actifs Tangibles</div>
-            <div class="u-desc">Art · Horlogerie · Vins · Numismatique · Valorisation live Rebrickable · Fiscalité actifs tangibles.</div>
-            <div class="u-indicator">Rebrickable + Artprice API</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">🚀</span>
-              <span class="u-status q4">Q4 2026</span>
-            </div>
-            <div class="u-title">Stratégie & Marchés</div>
-            <div class="u-desc">Allocation d'actifs · Drift tracking · Scénarios de marché · CAC 40 / PE / Obligations.</div>
-            <div class="u-indicator">AMF · Analyse factuelle neutre</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">✈</span>
-              <span class="u-status q4">Q4 2026</span>
-            </div>
-            <div class="u-title">Conciergerie Lifestyle</div>
-            <div class="u-desc">Voyage · Gastronomie · Billetterie prestige · Carnet d'adresses Megève · Partenaires vérifiés.</div>
-            <div class="u-indicator">Partenaires Megève · Lyon</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">⚡</span>
-              <span class="u-status locked">2027</span>
-            </div>
-            <div class="u-title">Hermès · Réseau expert</div>
-            <div class="u-desc">Liaison notaires · Avocats fiscalistes · Experts-comptables IKCP · Coordination dossiers complexes.</div>
-            <div class="u-indicator">Sprint 5 · Réseau Maxime</div>
-          </div>
-
-          <div class="univers-card locked">
-            <div class="u-top">
-              <span class="u-emoji">🔮</span>
-              <span class="u-status locked">2027</span>
-            </div>
-            <div class="u-title">Analyse prédictive</div>
-            <div class="u-desc">Modèles de projection patrimoniale 10/20/30 ans · Simulation scénarios de cession · Optimisation dynamique.</div>
-            <div class="u-indicator">Backtesting · Monte Carlo</div>
-          </div>
-
+        <div class="univers-card locked">
+          <div class="univers-ico">🏗</div>
+          <div class="univers-name">Immobilier & DVF</div>
+          <div class="univers-desc">Valorisation, données DVF, IFI immo, rendements locatifs, arbitrages.</div>
+          <div class="univers-soon">⊙ Q3 2026 · Architecte</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">📈</div>
+          <div class="univers-name">Marchés & Allocation</div>
+          <div class="univers-desc">Analyse allocation, drift, opportunités de marché, ETF, PEA stratégie.</div>
+          <div class="univers-soon">⊙ Q4 2026 · Stratège</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">🎁</div>
+          <div class="univers-name">Transmission & Succession</div>
+          <div class="univers-desc">Simulation succession, SCI familiale, démembrement, donations échelonnées.</div>
+          <div class="univers-soon">⊙ Q3 2026 · Bâtisseur</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">🛡</div>
+          <div class="univers-name">Prévoyance & Protection</div>
+          <div class="univers-desc">Analyse contrats prévoyance, TNS, invalidité, décès. Optim charges sociales.</div>
+          <div class="univers-soon">⊙ Q4 2026</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">🎭</div>
+          <div class="univers-name">Concierge Lifestyle</div>
+          <div class="univers-desc">Voyages, gastronomie, événements exclusifs. Réseau partenaires privilégiés.</div>
+          <div class="univers-soon">⊙ Q4 2026 · Concierge</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">🖼</div>
+          <div class="univers-name">Art & Collectibles</div>
+          <div class="univers-desc">Valorisation, fiscalité des œuvres, horlogerie, vins de collection.</div>
+          <div class="univers-soon">⊙ Q4 2026 · Curateur</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">🌍</div>
+          <div class="univers-name">International</div>
+          <div class="univers-desc">Expatriation, double imposition, structures étrangères, Hermès notaires.</div>
+          <div class="univers-soon">⊙ Sprint 5 · Hermès</div>
+        </div>
+        <div class="univers-card locked">
+          <div class="univers-ico">🤝</div>
+          <div class="univers-name">Partenaires & Réseau</div>
+          <div class="univers-desc">Notaires, avocats, experts-comptables. Mise en relation qualifiée.</div>
+          <div class="univers-soon">⊙ Sprint 5 · Hermès</div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ VUE : DOCUMENTS ═══ -->
+    <!-- ─────────── DOCUMENTS ─────────── -->
     <div class="view" id="view-docs">
-      <div class="docs-view">
-        <h2><em>Mes documents</em></h2>
-        <div class="docs-list">
+      <div class="page-title">▣ Documents</div>
+      <div class="page-sub">Votre dossier réglementaire · MIF II conforme</div>
+
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="section-title">Documents réglementaires</div>
           <div class="doc-item">
-            <div class="doc-icon">📄</div>
-            <div class="doc-info">
-              <div class="doc-name">DER 2026 — Document d'Entrée en Relation</div>
-              <div class="doc-meta">Généré · 14 mai 2026 · Signé electroniquement eIDAS</div>
+            <div class="doc-icon">📋</div>
+            <div>
+              <div class="doc-name">Document d'Entrée en Relation 2026</div>
+              <div class="doc-meta">Signé · 12 janvier 2026 · MIF II art. L.541-8</div>
             </div>
-            <div class="doc-size">284 Ko</div>
-            <span class="doc-badge signed">Signé</span>
+            <div class="doc-actions">
+              <div class="doc-btn">Voir</div>
+              <div class="doc-btn" onclick="askMarcel('Mon DER 2026 est-il à jour ? Quelles informations doivent être actualisées ?')">✦ Marcel</div>
+            </div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon">📝</div>
+            <div>
+              <div class="doc-name">Lettre de Mission Premium · 2026</div>
+              <div class="doc-meta">Active · Honoraires forfaitaires</div>
+            </div>
+            <div class="doc-actions">
+              <div class="doc-btn">Voir</div>
+              <div class="doc-btn" onclick="askMarcel('Rappel du périmètre de ma lettre de mission : quels services sont inclus ?')">✦ Marcel</div>
+            </div>
           </div>
           <div class="doc-item">
             <div class="doc-icon">📊</div>
-            <div class="doc-info">
-              <div class="doc-name">Bilan patrimonial Q1 2026</div>
-              <div class="doc-meta">Confidentiel · 12 avril 2026 · Préparé par Maxime Juveneton</div>
+            <div>
+              <div class="doc-name">Bilan Patrimonial Q1 2026</div>
+              <div class="doc-meta">31 mars 2026 · Valorisation 3 400 k€</div>
             </div>
-            <div class="doc-size">1,2 Mo</div>
-            <span class="doc-badge new">Nouveau</span>
+            <div class="doc-actions">
+              <div class="doc-btn">Voir</div>
+              <div class="doc-btn" onclick="askMarcel('Analyser les principales évolutions de mon patrimoine entre Q4 2025 et Q1 2026')">✦ Marcel</div>
+            </div>
           </div>
-          <div class="doc-item">
-            <div class="doc-icon">📋</div>
-            <div class="doc-info">
-              <div class="doc-name">Lettre de mission — Conseil patrimonial global</div>
-              <div class="doc-meta">En vigueur · Signée · 15 mars 2026</div>
+          <div class="doc-item" style="border-bottom:none">
+            <div class="doc-icon">⚖</div>
+            <div>
+              <div class="doc-name">Note d'Analyse Codex — Dutreil</div>
+              <div class="doc-meta">8 mai 2026 · Expertise fiscale Opus 4.7</div>
             </div>
-            <div class="doc-size">95 Ko</div>
-            <span class="doc-badge signed">En vigueur</span>
+            <div class="doc-actions">
+              <div class="doc-btn">Voir</div>
+              <div class="doc-btn" onclick="askMarcel('Résumer les conclusions de l\'analyse Codex sur le Pacte Dutreil pour ma holding')">⚖ Codex</div>
+            </div>
           </div>
-          <div class="doc-item">
-            <div class="doc-icon">⚠</div>
-            <div class="doc-info">
-              <div class="doc-name">Actualisation DER — Mise à jour profil risque</div>
-              <div class="doc-meta">Action requise · À signer avant le 30 juin 2026</div>
-            </div>
-            <div class="doc-size">—</div>
-            <span class="doc-badge pending">À signer</span>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">Actualisation requise</div>
+          <div style="padding:14px;background:rgba(196,75,59,0.06);border:1px solid rgba(196,75,59,0.15);border-radius:8px;margin-bottom:14px">
+            <div style="font-size:13px;font-weight:600;color:#F87171;margin-bottom:6px">⚠ DER à actualiser</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:10px">Votre Document d'Entrée en Relation doit être actualisé annuellement. Dernière version : janvier 2026. Action requise avant le 12 janvier 2027.</div>
+            <button onclick="askMarcel('Quelles informations dois-je fournir pour actualiser mon DER 2026 ? Liste complète des éléments MIF II.')" style="padding:8px 16px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);border-radius:20px;color:var(--gold);font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif">✦ Préparer avec Marcel</button>
           </div>
-          <div class="doc-item">
-            <div class="doc-icon">📈</div>
-            <div class="doc-info">
-              <div class="doc-name">Note d'analyse — Transmission holding Moreau</div>
-              <div class="doc-meta">Analyse Codex · Rédigée par Marcel · 8 mai 2026</div>
-            </div>
-            <div class="doc-size">156 Ko</div>
-            <span class="doc-badge new">Nouveau</span>
+
+          <div class="section-title" style="margin-top:4px">Activité Témoin récente</div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-text">Note Codex Dutreil enregistrée · SHA-256 signé</div>
+            <div class="activity-time">08/05</div>
           </div>
-          <div class="doc-item">
-            <div class="doc-icon">📋</div>
-            <div class="doc-info">
-              <div class="doc-name">Audit MIF II — Historique interactions Q1 2026</div>
-              <div class="doc-meta">Export Témoin D1 · Hashé SHA-256 · RGPD compliant</div>
-            </div>
-            <div class="doc-size">42 Ko</div>
-            <span class="doc-badge signed">Archivé</span>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div class="activity-text">Bilan Q1 transmis et archivé</div>
+            <div class="activity-time">01/04</div>
+          </div>
+          <div class="activity-item" style="border-bottom:none">
+            <div class="activity-dot"></div>
+            <div class="activity-text">LM et DER 2026 signés · conforme art. L.541-8</div>
+            <div class="activity-time">12/01</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ VUE : ALERTES ═══ -->
+    <!-- ─────────── ALERTES ─────────── -->
     <div class="view" id="view-alertes">
-      <div class="alertes-view">
-        <h2><em>Alertes &amp; Échéances</em></h2>
-        <div class="sub">Personnalisées selon votre profil · Statut TNS · IS · IFI · Patrimoine &gt; 1 M€</div>
-        <div class="alertes-grid">
+      <div class="page-title">◉ Mes alertes</div>
+      <div class="page-sub">6 alertes personnalisées · 3 nécessitent votre attention</div>
 
-          <div class="alerte-card urgent">
-            <div class="alerte-top">
-              <span class="alerte-tag">Fiscal · Urgent</span>
-              <span class="alerte-days red">J&minus;10</span>
+      <div class="grid-2" style="margin-bottom:0">
+        <div>
+          <div class="alert-full-item">
+            <div class="alert-full-dot" style="background:var(--red);box-shadow:0 0 8px var(--red)"></div>
+            <div style="flex:1">
+              <div class="alert-title">🔴 Déclaration IFI 2026</div>
+              <div class="alert-desc" style="margin-top:4px">Échéance légale 15 juin 2026. Valeur patrimoine imposable estimée ~1,2 M€ (RP non déductible). IFI brut ~85 k€ avant passif. Réduction possible : passif immobilier, dons.</div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <span class="alert-cta" onclick="askMarcel('Calcul IFI 2026 détaillé : barème, passif déductible, stratégies de réduction. Patrimoine imposable estimé 1,2 M€')">⚖ Analyse Codex →</span>
+                <span class="alert-tag" style="color:var(--red)">J-27</span>
+              </div>
             </div>
-            <div class="alerte-title">Déclaration IR Zone 2 — Date limite</div>
-            <div class="alerte-desc">Formulaire 2042 + annexes. Pensez à vérifier vos revenus locatifs (2044), plus-values (2042 C), et déductions PER (10 % revenus pros).</div>
-            <div class="alerte-action">→ Demander à Marcel de m'aider</div>
+            <div class="alert-urgency high">Urgent</div>
           </div>
 
-          <div class="alerte-card urgent">
-            <div class="alerte-top">
-              <span class="alerte-tag">Fiscal · Urgent</span>
-              <span class="alerte-days red">J&minus;27</span>
+          <div class="alert-full-item">
+            <div class="alert-full-dot" style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></div>
+            <div style="flex:1">
+              <div class="alert-title">🟠 Acompte IR — 15 juin</div>
+              <div class="alert-desc" style="margin-top:4px">2e prélèvement mensuel 2026 : 4 200 €. Si vos revenus 2026 sont inférieurs à 2025, vous pouvez moduler à la baisse en ligne (impots.gouv.fr).</div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <span class="alert-cta" onclick="askMarcel('Puis-je moduler mon acompte IR du 15 juin à la baisse ? Conditions, procédure, délai sur impots.gouv.fr')">✦ Marcel →</span>
+                <span class="alert-tag" style="color:var(--amber)">J-27</span>
+              </div>
             </div>
-            <div class="alerte-title">IFI 2026 — Formulaire 2042-IFI</div>
-            <div class="alerte-desc">Patrimoine immobilier net estimé 1,63 M€. Vérifier la déductibilité des crédits immobiliers restants. Simulation possible avec Marcel.</div>
-            <div class="alerte-action">→ Simuler mon IFI 2026</div>
+            <div class="alert-urgency med">À traiter</div>
           </div>
 
-          <div class="alerte-card warn">
-            <div class="alerte-top">
-              <span class="alerte-tag">Société · Important</span>
-              <span class="alerte-days amber">J&minus;27</span>
+          <div class="alert-full-item">
+            <div class="alert-full-dot" style="background:#60A5FA;box-shadow:0 0 8px #60A5FA"></div>
+            <div style="flex:1">
+              <div class="alert-title">🔵 DER à actualiser</div>
+              <div class="alert-desc" style="margin-top:4px">Document d'Entrée en Relation signé en janvier 2026. Actualisation annuelle recommandée MIF II. Aucune modification réglementaire urgente à ce jour.</div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <span class="alert-cta" onclick="showView('docs')">📄 Documents →</span>
+                <span class="alert-tag">MIF II</span>
+              </div>
             </div>
-            <div class="alerte-title">Acompte IS T2 — Holding Moreau</div>
-            <div class="alerte-desc">2e acompte sur base IS N-1. Si résultat 2026 prévu inférieur de &gt; 10 %, modulation possible avant le 15 juin. Économie potentielle : ~12 k€.</div>
-            <div class="alerte-action">→ Analyser la modulation</div>
+            <div class="alert-urgency low">Info</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="alert-full-item">
+            <div class="alert-full-dot" style="background:var(--gold);box-shadow:0 0 8px rgba(201,169,110,0.5)"></div>
+            <div style="flex:1">
+              <div class="alert-title">✨ Donation 2027 à planifier</div>
+              <div class="alert-desc" style="margin-top:4px">Abattement 100 k€ parent-enfant dernier utilisé en 2012. Délai 15 ans = fenêtre disponible depuis 2027. Préparer la donation maintenant pour optimiser.</div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <span class="alert-cta" onclick="askMarcel('Planifier une donation enfants pour 2027 : abattement 100k€, démembrement, calendrier optimal, acte notarié')">✦ Planifier avec Marcel</span>
+                <span class="alert-tag" style="color:var(--gold)">Opportunité</span>
+              </div>
+            </div>
+            <div class="alert-urgency low">Planifier</div>
           </div>
 
-          <div class="alerte-card info">
-            <div class="alerte-top">
-              <span class="alerte-tag">Transmission · À anticiper</span>
-              <span class="alerte-days blue">2027</span>
+          <div class="alert-full-item">
+            <div class="alert-full-dot" style="background:#4ADE80;box-shadow:0 0 8px #4ADE80"></div>
+            <div style="flex:1">
+              <div class="alert-title">✅ Versement PER optimal</div>
+              <div class="alert-desc" style="margin-top:4px">TMI 41 %. Plafond épargne retraite 2026 disponible : 24 800 €. Chaque 1 000 € versé = 410 € d'impôts économisés. Fenêtre : avant le 31 décembre.</div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <span class="alert-cta" onclick="askMarcel('Calculer le versement PER optimal avant le 31 décembre 2026 pour ma TMI à 41% et mes revenus 2026')">✦ Calculer avec Marcel</span>
+                <span class="alert-tag" style="color:#4ADE80">Dec. 2026</span>
+              </div>
             </div>
-            <div class="alerte-title">Fenêtre donation — Abattement rechargeable</div>
-            <div class="alerte-desc">Abattement enfant 100k€ : dernière donation le 12 juin 2012 → fenêtre rouverte en juin 2027. Anticiper la stratégie dès maintenant.</div>
-            <div class="alerte-action">→ Préparer la stratégie de donation</div>
+            <div class="alert-urgency low">À faire</div>
           </div>
 
-          <div class="alerte-card info">
-            <div class="alerte-top">
-              <span class="alerte-tag">Retraite · Optimisation</span>
-              <span class="alerte-days blue">Avant 31.12</span>
+          <div class="alert-full-item" style="margin-bottom:0">
+            <div class="alert-full-dot" style="background:#3ECC8A;box-shadow:0 0 8px #3ECC8A"></div>
+            <div style="flex:1">
+              <div class="alert-title">✅ Bilan Q2 2026 programmé</div>
+              <div class="alert-desc" style="margin-top:4px">Bilan semestriel avec Maxime prévu le 30 juin 2026. Ordre du jour : performance H1, stratégie H2, mise à jour LM si évolution patrimoniale.</div>
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <span class="alert-cta" onclick="askMarcel('Préparer l\'ordre du jour du bilan Q2 avec Maxime : points clés à aborder, chiffres à compiler')">✦ Préparer avec Marcel</span>
+                <span class="alert-tag" style="color:#3ECC8A">30 juin</span>
+              </div>
             </div>
-            <div class="alerte-title">Versement PER 2026 — Déduction maximale</div>
-            <div class="alerte-desc">Plafond PER 2026 : 35 194 €. Versements restants autorisés : ~28 200 €. Économie fiscale à 41 % : ~11 600 €. À optimiser avant le 31 décembre.</div>
-            <div class="alerte-action">→ Calculer mon versement PER optimal</div>
+            <div class="alert-urgency low">Planifié</div>
           </div>
-
-          <div class="alerte-card done">
-            <div class="alerte-top">
-              <span class="alerte-tag">Réglementaire · Fait</span>
-              <span class="alerte-days green">✓ Fait</span>
-            </div>
-            <div class="alerte-title">DER 2026 signée · MIF II conforme</div>
-            <div class="alerte-desc">Document d'entrée en relation 2026 signé le 14 mai. Profil de risque mis à jour. Valable jusqu'au 14 mai 2027.</div>
-            <div class="alerte-action">→ Voir le document</div>
-          </div>
-
         </div>
       </div>
     </div>
 
-  </main>
+  </main><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- ── FAB ── -->
+<button class="fab" id="fab-btn" onclick="toggleFab()" title="Actions rapides">✦</button>
+<div class="fab-menu" id="fab-menu">
+  <div class="fab-action" onclick="showView('marcel');toggleFab()">
+    <span class="ico">✦</span><span class="lbl">Poser une question à Marcel</span>
+  </div>
+  <div class="fab-action" onclick="askMarcel('Alerte urgente IFI 2026 : calcul et stratégies de réduction');toggleFab()">
+    <span class="ico">⚡</span><span class="lbl">IFI urgent — Codex</span>
+  </div>
+  <div class="fab-action" onclick="askMarcel('Cartographier mes entités via Pappers');toggleFab()">
+    <span class="ico">🗺</span><span class="lbl">Cartographie SIREN</span>
+  </div>
+  <div class="fab-action" onclick="showView('alertes');toggleFab()">
+    <span class="ico">◉</span><span class="lbl">Voir mes alertes (3)</span>
+  </div>
 </div>
 
 <script>
-  // ── Navigation ──
-  function showView(viewName) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+// ─── WORKER URL ───
+const WORKER_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
+let chatHistory = [];
 
-    const view = document.getElementById('view-' + viewName);
-    if (view) view.classList.add('active');
+// ─── DATE ───
+function updateDate(){
+  const d=new Date();
+  document.getElementById('topbar-date').textContent=
+    d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+updateDate();
 
-    const navMap = { dashboard: 'Tableau de bord', marcel: 'Marcel', univers: 'Mes Univers', docs: 'Documents', alertes: 'Alertes' };
-    document.getElementById('topbar-title').textContent = navMap[viewName] || 'Espace Membre';
+// ─── VIEW SWITCH ───
+const BC_TITLES={dashboard:'Tableau de bord',marcel:'Marcel · Chat',agents:'Agents IA',univers:'Mes univers',docs:'Documents',alertes:'Alertes'};
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+id)?.classList.add('active');
+  document.querySelector(`[onclick="showView('${id}')"]`)?.classList.add('active');
+  document.getElementById('bc-title').textContent=BC_TITLES[id]||id;
+  // lazy-init charts when dashboard becomes visible
+  if(id==='dashboard')setTimeout(initCharts,50);
+}
 
-    document.querySelectorAll('.nav-item').forEach(n => {
-      if (n.dataset.view === viewName || (n.textContent.includes(navMap[viewName] || ''))) {
-        n.classList.add('active');
+// ─── CHARTS ───
+let chartsInit=false;
+function initCharts(){
+  if(chartsInit)return; chartsInit=true;
+
+  Chart.defaults.color='rgba(255,255,255,0.45)';
+  Chart.defaults.borderColor='rgba(255,255,255,0.06)';
+
+  // — Patrimoine area chart —
+  const ctx1=document.getElementById('chart-patrimoine').getContext('2d');
+  const grad=ctx1.createLinearGradient(0,0,0,180);
+  grad.addColorStop(0,'rgba(201,169,110,0.3)');
+  grad.addColorStop(1,'rgba(201,169,110,0.02)');
+  new Chart(ctx1,{
+    type:'line',
+    data:{
+      labels:['Jun','Jul','Aoû','Sep','Oct','Nov','Déc','Jan','Fév','Mar','Avr','Mai'],
+      datasets:[{
+        label:'Patrimoine (k€)',
+        data:[2800,2900,2950,3000,3050,3100,3150,3200,3280,3320,3380,3400],
+        borderColor:'#C9A96E',borderWidth:2,
+        backgroundColor:grad,fill:true,tension:.4,
+        pointRadius:3,pointBackgroundColor:'#C9A96E',pointBorderColor:'#0E1729',pointBorderWidth:2,
+        pointHoverRadius:5
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'rgba(14,23,41,0.95)',borderColor:'rgba(201,169,110,0.25)',borderWidth:1,
+        titleColor:'#C9A96E',bodyColor:'rgba(255,255,255,0.7)',
+        callbacks:{label:ctx=>`  ${(ctx.parsed.y/1000).toFixed(1)} M€`}
+      }},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{font:{size:10}}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{font:{size:10},callback:v=>v/1000+'M'}}
       }
-    });
-  }
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const v = item.dataset.view || 'dashboard';
-      const text = item.textContent.trim().toLowerCase();
-      if (text.includes('marcel')) showView('marcel');
-      else if (text.includes('univers')) showView('univers');
-      else if (text.includes('document')) showView('docs');
-      else if (text.includes('alertes')) showView('alertes');
-      else showView('dashboard');
-    });
-  });
-
-  // ── Date ──
-  function setDates() {
-    const now = new Date();
-    const opts = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
-    const str = now.toLocaleDateString('fr-FR', opts);
-    const el = document.getElementById('dash-date');
-    if (el) el.textContent = str.charAt(0).toUpperCase() + str.slice(1);
-    const top = document.getElementById('topbar-date');
-    if (top) top.textContent = now.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' });
-  }
-
-  setDates();
-
-  // ── Marcel Chat ──
-  const WORKER_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
-  let history = [];
-
-  async function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('chat-send');
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    input.value = '';
-    sendBtn.disabled = true;
-
-    addMessage('user', msg);
-
-    const typingWrap = document.getElementById('typing-wrap');
-    typingWrap.style.display = 'flex';
-    scrollChat();
-
-    try {
-      const res = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, history })
-      });
-
-      typingWrap.style.display = 'none';
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const reply = data.reply || 'Je rencontre une difficulté technique. Réessayez dans un instant.';
-
-      history.push({ role:'user', content:msg }, { role:'assistant', content:reply });
-      if (history.length > 20) history = history.slice(-20);
-
-      addMessage('assistant', reply);
-    } catch (e) {
-      typingWrap.style.display = 'none';
-      addMessage('assistant', 'Je rencontre une difficulté de connexion. Réessayez dans quelques secondes.');
     }
-
-    sendBtn.disabled = false;
-    input.focus();
-  }
-
-  function addMessage(role, text) {
-    const body = document.getElementById('chat-body');
-    const typingWrap = document.getElementById('typing-wrap');
-
-    const div = document.createElement('div');
-    div.className = `chat-msg ${role}`;
-
-    const icon = role === 'assistant' ? '🎼' : '👤';
-    const formatted = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\n\n/g, '</p><p style="margin-top:10px">')
-      .replace(/\n/g, '<br>');
-
-    const disclaimer = role === 'assistant'
-      ? '<div class="msg-disclaimer">Analyse informative · Art. L.541-1 CoMoFi · Loggée MIF II</div>'
-      : '';
-
-    div.innerHTML = `
-      <div class="msg-avatar">${icon}</div>
-      <div><div class="msg-bubble"><p>${formatted}</p>${disclaimer}</div></div>
-    `;
-
-    body.insertBefore(div, typingWrap);
-    scrollChat();
-  }
-
-  function scrollChat() {
-    const body = document.getElementById('chat-body');
-    setTimeout(() => { body.scrollTop = body.scrollHeight; }, 50);
-  }
-
-  document.getElementById('chat-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   });
+
+  // — Allocation doughnut —
+  const ctx2=document.getElementById('chart-allocation').getContext('2d');
+  new Chart(ctx2,{
+    type:'doughnut',
+    data:{
+      labels:['Holding','Résid. princ.','Immo loc.','AV + PER','Épargne'],
+      datasets:[{
+        data:[1200,950,680,435,135],
+        backgroundColor:['#C9A96E','#1B5FAA','#2D7A4F','#6B3FA0','#444E6E'],
+        borderColor:'rgba(14,23,41,0.8)',borderWidth:2,hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(14,23,41,0.95)',borderColor:'rgba(201,169,110,0.25)',borderWidth:1,
+          titleColor:'#C9A96E',bodyColor:'rgba(255,255,255,0.7)',
+          callbacks:{label:ctx=>`  ${ctx.label}: ${(ctx.parsed/1000).toFixed(1)} M€`}
+        }
+      }
+    }
+  });
+
+  // — Radar score —
+  const ctx3=document.getElementById('chart-radar').getContext('2d');
+  const radGrad=ctx3.createRadialGradient(0,0,0,0,0,200);
+  radGrad.addColorStop(0,'rgba(201,169,110,0.15)');
+  radGrad.addColorStop(1,'rgba(201,169,110,0.02)');
+  new Chart(ctx3,{
+    type:'radar',
+    data:{
+      labels:['Transmission','Fiscalité','Prévoyance','Immobilier','Retraite','Liquidité'],
+      datasets:[{
+        label:'Score',
+        data:[65,72,80,78,55,90],
+        backgroundColor:radGrad,
+        borderColor:'rgba(201,169,110,0.7)',borderWidth:2,
+        pointBackgroundColor:'#C9A96E',pointBorderColor:'#0E1729',pointBorderWidth:2,
+        pointRadius:4,pointHoverRadius:6
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'rgba(14,23,41,0.95)',borderColor:'rgba(201,169,110,0.25)',borderWidth:1,
+        titleColor:'#C9A96E',bodyColor:'rgba(255,255,255,0.7)'
+      }},
+      scales:{r:{
+        beginAtZero:true,max:100,
+        grid:{color:'rgba(255,255,255,0.07)'},
+        angleLines:{color:'rgba(255,255,255,0.07)'},
+        pointLabels:{color:'rgba(255,255,255,0.55)',font:{size:10,family:"'Outfit',sans-serif"}},
+        ticks:{display:false,stepSize:20}
+      }}
+    }
+  });
+}
+// Init charts on page load (dashboard is default active)
+setTimeout(initCharts,150);
+
+// ─── ANIMATED COUNTERS ───
+function animateCounters(){
+  document.querySelectorAll('.counter[data-target]').forEach(el=>{
+    if(el.dataset.animated)return;
+    el.dataset.animated='1';
+    const target=parseInt(el.dataset.target);
+    const prefix=el.dataset.prefix||'';
+    const suffix=el.dataset.suffix||'';
+    const fmt=el.dataset.format;
+    const duration=1400;
+    const start=performance.now();
+    function tick(now){
+      const p=Math.min((now-start)/duration,1);
+      const ease=1-Math.pow(1-p,3);
+      const val=Math.round(target*ease);
+      el.textContent=prefix+(fmt==='currency'?val.toLocaleString('fr-FR'):val)+suffix;
+      if(p<1)requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+// Run on page load + view change
+setTimeout(animateCounters,200);
+const _orig=showView;
+window.showView=function(id){
+  _orig(id);
+  setTimeout(animateCounters,100);
+};
+
+// ─── PROGRESS BAR ANIMATE ───
+function animateProgressBars(){
+  document.querySelectorAll('.progress-fill:not(.animated)').forEach(el=>{
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){el.classList.add('animated');observer.disconnect()}});
+    },{threshold:.3});
+    observer.observe(el);
+  });
+}
+setTimeout(animateProgressBars,300);
+
+// ─── CHAT ───
+function appendMessage(role,content,agentLabel){
+  const messages=document.getElementById('chat-messages');
+  const div=document.createElement('div');
+  div.className='msg '+role;
+  if(role==='marcel'){
+    div.innerHTML=`
+      <div class="msg-avatar m">✦</div>
+      <div>
+        <div class="msg-agent-badge">${agentLabel||'✦ Marcel · Intelligence souveraine'}</div>
+        <div class="msg-bubble">${content.replace(/\n/g,'<br>')}</div>
+        <div class="msg-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+      </div>`;
+  } else {
+    div.innerHTML=`
+      <div class="msg-bubble">${content}</div>
+      <div class="msg-avatar u">FM</div>`;
+  }
+  const typing=document.getElementById('typing-indicator');
+  messages.insertBefore(div,typing);
+  messages.scrollTop=messages.scrollHeight;
+}
+
+function setTyping(show){
+  const t=document.getElementById('typing-indicator');
+  t.style.display=show?'flex':'none';
+  if(show){const m=document.getElementById('chat-messages');m.scrollTop=m.scrollHeight;}
+}
+
+async function sendMessage(){
+  const input=document.getElementById('chat-input');
+  const btn=document.getElementById('chat-send-btn');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  btn.disabled=true;
+  appendMessage('user',msg);
+  chatHistory.push({role:'user',content:msg});
+  setTyping(true);
+  try{
+    const res=await fetch(WORKER_URL,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:msg,history:chatHistory.slice(-10)})
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const reply=data.reply||data.error||'Erreur de réponse.';
+    setTyping(false);
+    chatHistory.push({role:'assistant',content:reply});
+    appendMessage('marcel',reply,data.delegated_by==='Codex'?'⚖ Codex · Expert fiscal Opus':'✦ Marcel · Intelligence souveraine');
+  }catch(e){
+    setTyping(false);
+    appendMessage('marcel','Service temporairement indisponible. Veuillez réessayer dans quelques instants.');
+  }
+  btn.disabled=false;
+}
+
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+
+function setQuestion(q){
+  showView('marcel');
+  setTimeout(()=>{
+    const input=document.getElementById('chat-input');
+    input.value=q;input.focus();
+  },100);
+}
+
+function askMarcel(q){
+  showView('marcel');
+  setTimeout(()=>{
+    const input=document.getElementById('chat-input');
+    input.value=q;
+    sendMessage();
+  },200);
+}
+
+// ─── FAB ───
+let fabOpen=false;
+function toggleFab(){
+  fabOpen=!fabOpen;
+  const menu=document.getElementById('fab-menu');
+  const btn=document.getElementById('fab-btn');
+  menu.classList.toggle('open',fabOpen);
+  btn.textContent=fabOpen?'✕':'✦';
+  btn.style.transform=fabOpen?'rotate(45deg)':'rotate(0)';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.fab')&&!e.target.closest('.fab-menu')&&fabOpen)toggleFab();
+});
 </script>
 </body>
 </html>
