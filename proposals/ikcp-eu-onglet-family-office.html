@@ -722,11 +722,11 @@ function betaCheckSiren(){
   r.style.color='var(--ink-mute)';
   r.innerHTML = '<em>Vérification en cours auprès du Registre National des Entreprises…</em>';
   setTimeout(()=>{
-    // Mock cohérent : seul 947972436 et autres SIREN valides FR mockés
-    if (v === '947972436') {
+    // Mock cohérent : SIREN valides FR mockés
+    if (v === '775670417') {
       r.style.borderColor='var(--ok)';
       r.style.color='var(--navy)';
-      r.innerHTML = '<strong style="color:var(--ok)">✓ Identité vérifiée.</strong><br><span style="font-size:12.5px; color:var(--ink-mute)">IKIGAI CONSEIL PATRIMONIAL · SASU · Annonay (07100) · dirigeant Maxime JUVENETON</span>';
+      r.innerHTML = '<strong style="color:var(--ok)">✓ Identité vérifiée.</strong><br><span style="font-size:12.5px; color:var(--ink-mute)">LVMH MOËT HENNESSY LOUIS VUITTON · SA · Paris (75008) · PDG Bernard ARNAULT</span>';
       // Passe à étape 2
       document.getElementById('beta-step-2').style.display='block';
       document.querySelectorAll('.beta-step-num')[0].classList.add('done');

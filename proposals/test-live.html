@@ -221,11 +221,11 @@ h1 em{font-style:italic; color:var(--terra-deep)}
     <div class="box">
       <label>SIREN (9 chiffres)</label>
       <div class="suggest">
-        <span class="chip" data-fill="pappersInput" data-v="947972436">947 972 436 (IKCP)</span>
-        <span class="chip" data-fill="pappersInput" data-v="552120222">552 120 222 (LVMH)</span>
+        <span class="chip" data-fill="pappersInput" data-v="775670417">775 670 417 (LVMH)</span>
+        <span class="chip" data-fill="pappersInput" data-v="552032534">552 032 534 (Hermès)</span>
         <span class="chip" data-fill="pappersInput" data-v="775751390">775 751 390 (BNP Paribas)</span>
       </div>
-      <input id="pappersInput" type="text" inputmode="numeric" placeholder="947972436">
+      <input id="pappersInput" type="text" inputmode="numeric" placeholder="775670417">
       <button onclick="testPappers()">Lookup SIREN →</button>
       <div class="result" id="pappersResult"></div>
     </div>
@@ -594,7 +594,7 @@ async function runAllTests() {
 
   // 2.1 Pappers
   try {
-    const r = await fetch(`${WORKERS['ikcp-pappers']}/entreprise/947972436/short`);
+    const r = await fetch(`${WORKERS['ikcp-pappers']}/entreprise/775670417/short`);
     if (r.ok) { phase2Pass++; pass++; updateScore(pass, total); }
   } catch {}
 

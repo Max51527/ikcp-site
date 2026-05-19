@@ -334,7 +334,7 @@ footer.fn .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       <button class="siren-btn" onclick="activateMarcel()">Activer Marcel</button>
     </div>
     <div class="siren-helper">
-      Essayez : <b onclick="document.getElementById('siren-input').value='947972436';activateMarcel()">947972436</b> (IKCP) ou <b onclick="document.getElementById('siren-input').value='775670417';activateMarcel()">775670417</b> (LVMH). Données issues des registres officiels publics français — aucun accès comptable nécessaire pour cette étape.
+      Essayez : <b onclick="document.getElementById('siren-input').value='775670417';activateMarcel()">775670417</b> (LVMH) ou <b onclick="document.getElementById('siren-input').value='552032534';activateMarcel()">552032534</b> (Hermès). Données issues des registres officiels publics français — aucun accès comptable nécessaire pour cette étape.
     </div>
   </div>
 
@@ -471,14 +471,14 @@ footer.fn .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
 // Base de données SIREN mockés (sans appel Pappers en démo)
 // En prod : remplacer par fetch vers worker ikcp-pappers
 const SIREN_DB = {
-  '947972436': {
-    nom: 'IKIGAI CONSEIL PATRIMONIAL',
-    forme: 'SAS à associé unique',
-    capital: 1000,
-    creation: '21 avril 2023',
-    age_societe: 3,
-    siege: 'Saint-Marcel-lès-Annonay (07100)',
-    naf_code: '70.22Z',
+  '552032534': {
+    nom: 'HERMÈS INTERNATIONAL',
+    forme: 'Société en commandite par actions',
+    capital: 53840400,
+    creation: '1 juin 1938',
+    age_societe: 86,
+    siege: 'Paris (75008)',
+    naf_code: '14.19Z',
     naf_libelle: 'Conseil pour les affaires et autres conseils de gestion',
     dirigeant: 'M. Maxime JUVENETON · Président',
     be: 'M. Maxime JUVENETON · 100 %',
@@ -619,7 +619,7 @@ function activateMarcel() {
       document.getElementById('f-dirigeant').textContent = '—';
       document.getElementById('f-be').textContent = '—';
       document.getElementById('advice-title').innerHTML = 'Démonstration limitée';
-      document.getElementById('advice-body').innerHTML = `Seuls les SIREN <em>947972436</em>, <em>775670417</em> et <em>812345678</em> sont préchargés en démo. En production, n'importe quel SIREN français valide est interrogé via les <b>sources officielles publiques</b> (Registre National des Entreprises).`;
+      document.getElementById('advice-body').innerHTML = `Seuls les SIREN <em>775670417</em> (LVMH), <em>552032534</em> (Hermès) et <em>812345678</em> sont préchargés en démo. En production, n'importe quel SIREN français valide est interrogé via les <b>sources officielles publiques</b> (Registre National des Entreprises).`;
       document.getElementById('advice-source').innerHTML = 'Source : Registre National des Entreprises (RNE) — gouv.fr.';
       document.getElementById('result-zone').scrollIntoView({behavior:'smooth', block:'start'});
       return;
