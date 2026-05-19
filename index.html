@@ -3965,5 +3965,85 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         });
     }
     </script>
+
+    <!-- ─── MODAL CONTACT INTELLIGENT — fix boutons Échanger ─── -->
+    <div id="ikcp-contact-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(31,26,22,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;font-family:'Outfit','Inter',sans-serif">
+      <div style="background:#FAF7F0;max-width:480px;width:100%;border-radius:18px;padding:32px 30px;box-shadow:0 40px 90px -20px rgba(31,26,22,0.45);position:relative;text-align:center">
+        <button onclick="ikcpCloseContact()" aria-label="Fermer" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(31,26,22,0.12);font-size:18px;cursor:pointer;color:#1f1a16;display:flex;align-items:center;justify-content:center">×</button>
+        <div style="font-size:38px;line-height:1;margin-bottom:14px">✍️</div>
+        <h3 style="font-family:'Playfair Display','Fraunces',serif;font-style:italic;font-size:24px;font-weight:500;color:#1f1a16;margin-bottom:10px;letter-spacing:-0.012em">Comment souhaitez-vous échanger&nbsp;?</h3>
+        <p style="font-size:14px;color:#6b5d52;margin-bottom:24px;line-height:1.55">Maxime vous répond personnellement sous 24h ouvrées. Cabinet ORIAS 23001568.</p>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+
+          <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A"
+             style="display:flex;align-items:center;justify-content:space-between;background:#1f1a16;color:#FAF7F0;text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:600;letter-spacing:0.02em;transition:all 0.2s">
+            <span>✉️ Email · ouvrir mon client mail</span>
+            <span style="opacity:0.6">→</span>
+          </a>
+
+          <button onclick="ikcpCopyEmail()" id="ikcp-copy-btn"
+             style="display:flex;align-items:center;justify-content:space-between;background:#fff;color:#1f1a16;border:1px solid rgba(31,26,22,0.12);text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:600;letter-spacing:0.02em;cursor:pointer;font-family:inherit;text-align:left">
+            <span>📋 Copier <code style="font-family:monospace;color:#b8956e;background:rgba(184,149,110,0.12);padding:2px 6px;border-radius:4px;font-size:12.5px">maxime@ikcp.fr</code></span>
+            <span style="opacity:0.6">→</span>
+          </button>
+
+          <a href="tel:+33786428850"
+             style="display:flex;align-items:center;justify-content:space-between;background:#fff;color:#1f1a16;border:1px solid rgba(31,26,22,0.12);text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:600;letter-spacing:0.02em;transition:all 0.2s">
+            <span>📞 Appeler · <span style="font-family:monospace;color:#b8956e">07 86 42 88 50</span></span>
+            <span style="opacity:0.6">→</span>
+          </a>
+
+          <a href="https://calendly.com/ikcp-maxime" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;justify-content:space-between;background:#b8956e;color:#1f1a16;text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:700;letter-spacing:0.02em;transition:all 0.2s">
+            <span>📅 Prendre RDV directement (Calendly)</span>
+            <span>→</span>
+          </a>
+
+        </div>
+
+        <p style="margin-top:18px;font-size:11px;color:#9b8f80;font-style:italic;letter-spacing:0.02em">Premier échange offert · sans engagement · cabinet 100% indépendant</p>
+      </div>
+    </div>
+
+    <script>
+    // Intercepte TOUS les clicks sur mailto:maxime et propose une modal multi-options
+    (function(){
+      const modal = document.getElementById('ikcp-contact-modal');
+      function openContact(e){
+        if(e){ e.preventDefault(); e.stopPropagation(); }
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+      window.ikcpCloseContact = function(){
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      };
+      window.ikcpCopyEmail = async function(){
+        const btn = document.getElementById('ikcp-copy-btn');
+        try {
+          await navigator.clipboard.writeText('maxime@ikcp.fr');
+          const original = btn.innerHTML;
+          btn.innerHTML = '<span style="color:#3F7A3F">✓ Email copié dans le presse-papiers</span><span style="opacity:0.6">✓</span>';
+          setTimeout(() => { btn.innerHTML = original; }, 2200);
+        } catch(_){
+          alert('Email à copier manuellement : maxime@ikcp.fr');
+        }
+      };
+      // Fermer au click sur le fond
+      modal.addEventListener('click', e => { if(e.target === modal) ikcpCloseContact(); });
+      document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.style.display === 'flex') ikcpCloseContact(); });
+
+      // Capture tous les clics sur mailto:maxime
+      document.addEventListener('click', function(e){
+        const a = e.target.closest('a[href^="mailto:maxime"]');
+        if(a){
+          // Sur mobile, on laisse passer le mailto natif (souvent configuré)
+          if(/iPhone|iPad|Android/i.test(navigator.userAgent)) return;
+          openContact(e);
+        }
+      }, true);
+    })();
+    </script>
 </body>
 </html>
