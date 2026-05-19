@@ -457,8 +457,62 @@
     .activity-text{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.4}
     .activity-time{font-size:10px;color:rgba(255,255,255,0.2);font-family:'JetBrains Mono',monospace;flex-shrink:0;margin-top:1px}
 
+    /* ── VOICE UI ── */
+    .mic-btn{
+      width:44px;height:44px;border-radius:10px;flex-shrink:0;cursor:pointer;
+      background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+      display:flex;align-items:center;justify-content:center;font-size:18px;
+      transition:.2s;position:relative;
+    }
+    .mic-btn:hover{background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3)}
+    .mic-btn.listening{
+      background:rgba(196,75,59,0.15);border-color:rgba(196,75,59,0.5);
+      animation:mic-pulse 1s ease-in-out infinite;
+    }
+    @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(196,75,59,0.3)}50%{box-shadow:0 0 0 8px rgba(196,75,59,0)}}
+    .speak-btn{
+      display:inline-flex;align-items:center;gap:4px;
+      font-size:10px;color:rgba(255,255,255,0.25);cursor:pointer;padding:3px 8px;
+      border-radius:20px;border:1px solid rgba(255,255,255,0.06);
+      transition:.2s;margin-top:6px;background:rgba(255,255,255,0.02);
+    }
+    .speak-btn:hover{color:var(--gold);border-color:rgba(201,169,110,0.25);background:rgba(201,169,110,0.05)}
+    .speak-btn.playing{color:var(--gold);border-color:rgba(201,169,110,0.3)}
+    .voice-wave{display:flex;align-items:center;gap:2px;height:16px}
+    .voice-wave span{width:2px;background:var(--red);border-radius:2px;animation:voice-bar .8s ease-in-out infinite}
+    .voice-wave span:nth-child(1){animation-delay:0s;height:4px}
+    .voice-wave span:nth-child(2){animation-delay:.1s;height:10px}
+    .voice-wave span:nth-child(3){animation-delay:.2s;height:16px}
+    .voice-wave span:nth-child(4){animation-delay:.3s;height:10px}
+    .voice-wave span:nth-child(5){animation-delay:.4s;height:6px}
+    @keyframes voice-bar{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+    .voice-status{
+      font-size:11px;color:var(--red);display:none;align-items:center;gap:6px;
+      padding:4px 10px;background:rgba(196,75,59,0.1);border-radius:20px;
+      border:1px solid rgba(196,75,59,0.2);
+    }
+    .voice-status.show{display:flex}
+
+    /* ── SERVICES SECTION HEADERS ── */
+    .services-group{margin-bottom:28px}
+    .services-group-header{
+      display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .services-group-title{font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px}
+    .services-group-badge{font-size:10px;padding:2px 8px;border-radius:10px}
+    .badge-live2{background:rgba(62,204,138,0.12);color:#3ECC8A;border:1px solid rgba(62,204,138,0.2)}
+    .badge-online{background:rgba(96,165,250,0.12);color:#60A5FA;border:1px solid rgba(96,165,250,0.2)}
+    .badge-soon{background:rgba(184,115,51,0.12);color:var(--amber);border:1px solid rgba(184,115,51,0.2)}
+    .badge-later{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.08)}
+    .badge-incl{background:rgba(201,169,110,0.1);color:var(--gold);border:1px solid rgba(201,169,110,0.2)}
+    .univers-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .univers-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .univers-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
     /* ── RESPONSIVE ── */
-    @media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.univers-grid{grid-template-columns:repeat(2,1fr)}.chat-layout{grid-template-columns:1fr}}
+    @media(max-width:1300px){.univers-grid-5{grid-template-columns:repeat(3,1fr)}.univers-grid-4{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.univers-grid{grid-template-columns:repeat(2,1fr)}.univers-grid-3{grid-template-columns:repeat(2,1fr)}.chat-layout{grid-template-columns:1fr}}
     @media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid-3{grid-template-columns:1fr}}
   </style>
 </head>
@@ -760,10 +814,17 @@
 
           <div class="chat-input-area">
             <div class="chat-input-row">
+              <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Dicter votre question">🎤</button>
               <textarea class="chat-textarea" id="chat-input" rows="1" placeholder="Posez votre question patrimoniale…" onkeydown="handleKey(event)"></textarea>
               <button class="chat-send" id="chat-send-btn" onclick="sendMessage()">→</button>
             </div>
-            <div class="chat-shortcuts">Entrée pour envoyer · Shift+Entrée pour saut de ligne · Questions complexes traitées automatiquement</div>
+            <div style="display:flex;align-items:center;gap:10px;padding-top:7px">
+              <div class="voice-status" id="voice-status">
+                <div class="voice-wave"><span></span><span></span><span></span><span></span><span></span></div>
+                Écoute en cours…
+              </div>
+              <div class="chat-shortcuts" style="padding-top:0">Entrée pour envoyer · 🎤 pour dicter · Questions complexes traitées automatiquement</div>
+            </div>
           </div>
         </div>
 
@@ -936,88 +997,258 @@
       </div>
     </div>
 
-    <!-- ─────────── UNIVERS ─────────── -->
+    <!-- ─────────── UNIVERS / SERVICES ─────────── -->
     <div class="view" id="view-univers">
-      <div class="page-title">◎ Mes univers patrimoniaux</div>
-      <div class="page-sub">4 univers actifs · 8 en préparation · disponibles dans votre espace</div>
+      <div class="page-title">⬡ Tous mes services</div>
+      <div class="page-sub">Votre Family Office digital · 4 actifs · 8 bientôt · 6 à venir · outils & transversaux inclus</div>
 
-      <div class="univers-grid">
-        <div class="univers-card">
-          <div class="univers-ico">◈</div>
-          <div class="univers-name">Cartographie patrimoniale</div>
-          <div class="univers-desc">Vision 360° de votre patrimoine via SIREN. Entités, actionnaires, capital, bénéficiaires effectifs en 30s.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Registre national</div>
-          <div class="univers-agent" onclick="askMarcel('Lancer une cartographie complète de mes entités patrimoniales')">🗺 Lancer la cartographie →</div>
+      <!-- GROUPE 1 — Actifs maintenant -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">Actifs maintenant</div>
+          <span class="services-group-badge badge-live2">● 4 LIVE</span>
         </div>
-        <div class="univers-card">
-          <div class="univers-ico">✦</div>
-          <div class="univers-name">Conseil patrimonial 24/7</div>
-          <div class="univers-desc">Questions patrimoniales illimitées. Réponses expertes, analyses chiffrées. Conforme MIF II. Audit continu.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · 24h/24</div>
-          <div class="univers-agent" onclick="showView('marcel')">✦ Ouvrir mon conseiller →</div>
+        <div class="univers-grid-4">
+          <div class="univers-card">
+            <div class="univers-ico">◈</div>
+            <div class="univers-name">Cartographie patrimoniale</div>
+            <div class="univers-desc">Vision 360° de vos entités : SIREN, capital, actionnaires, bénéficiaires effectifs, actes officiels. Résultat en 30s.</div>
+            <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE</div>
+            <div class="univers-agent" onclick="askMarcel('Lancer une cartographie complète de mes entités patrimoniales')">Lancer →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">✦</div>
+            <div class="univers-name">Conseil patrimonial 24/7</div>
+            <div class="univers-desc">Questions illimitées. Réponses expertes, chiffrées, sourcées. Escalade automatique sur sujets complexes.</div>
+            <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · 24h/24</div>
+            <div class="univers-agent" onclick="showView('marcel')">Ouvrir →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">⚖</div>
+            <div class="univers-name">Fiscalité & Transmission</div>
+            <div class="univers-desc">IR, IFI, droits de succession, Dutreil, apport-cession, démembrement. Analyses avec citations CGI et jurisprudence.</div>
+            <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Expertise senior</div>
+            <div class="univers-agent" onclick="askMarcel('Analyse fiscale complète : IR, IFI, transmission, stratégies optimales pour ma situation')">Analyser →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">📋</div>
+            <div class="univers-name">Traçabilité MIF II</div>
+            <div class="univers-desc">Chaque échange horodaté, archivé, conforme MIF II. Données hébergées en France. Traçabilité 10 ans. Inclus automatiquement.</div>
+            <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Souverain France</div>
+            <div class="univers-agent">Automatique · Inclus</div>
+          </div>
         </div>
-        <div class="univers-card">
-          <div class="univers-ico">⚖</div>
-          <div class="univers-name">Fiscalité & Transmission</div>
-          <div class="univers-desc">Simulations IR, IFI, droits de succession, Dutreil, apport-cession. Analyses citant le CGI et la jurisprudence.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Expertise senior</div>
-          <div class="univers-agent" onclick="askMarcel('Analyse fiscale complète : IR, IFI, transmission, stratégies optimales pour ma situation')">⚖ Demander une analyse →</div>
-        </div>
-        <div class="univers-card">
-          <div class="univers-ico">📋</div>
-          <div class="univers-name">Audit MIF II</div>
-          <div class="univers-desc">Chaque échange horodaté et archivé. Données hébergées en France. RGPD souverain. Traçabilité 10 ans.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Souverain France</div>
-          <div class="univers-agent">📋 Automatique · Transparent · Inclus</div>
-        </div>
+      </div>
 
-        <div class="univers-card locked">
-          <div class="univers-ico">🏗</div>
-          <div class="univers-name">Immobilier & DVF</div>
-          <div class="univers-desc">Valorisation, données DVF, IFI immo, rendements locatifs, arbitrages.</div>
-          <div class="univers-soon">⊙ Q3 2026 · Architecte</div>
+      <!-- GROUPE 2 — Simulateurs & outils -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">Simulateurs & outils</div>
+          <span class="services-group-badge badge-online">● Disponibles</span>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">📈</div>
-          <div class="univers-name">Marchés & Allocation</div>
-          <div class="univers-desc">Analyse allocation, drift, opportunités de marché, ETF, PEA stratégie.</div>
-          <div class="univers-soon">⊙ Q4 2026 · Stratège</div>
+        <div class="univers-grid-4">
+          <div class="univers-card">
+            <div class="univers-ico">🧮</div>
+            <div class="univers-name">Simulateur IR 2026</div>
+            <div class="univers-desc">Calcul impôt sur le revenu selon votre situation : salaires, dividendes, revenus fonciers, PFU, TMI. Barème 2026.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="askMarcel('Simuler mon impôt sur le revenu 2026 : revenus 142k€, dividendes holding, revenus fonciers. Calcul complet avec TMI.')">Simuler →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">🏛</div>
+            <div class="univers-name">Simulateur IFI</div>
+            <div class="univers-desc">Calcul IFI : valorisation patrimoine immobilier, passif déductible, réductions, seuils. Stratégies d'optimisation.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="askMarcel('Calculer mon IFI 2026 : patrimoine immobilier net estimé 1,2M€. Passif déductible, stratégies de réduction.')">Calculer →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">🎁</div>
+            <div class="univers-name">Simulateur Donation</div>
+            <div class="univers-desc">Donation parent-enfant : abattements, droits, démembrement, calendrier. Comparaison pleine propriété vs usufruit.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="askMarcel('Simulation donation à mes enfants 2026 : abattement 100k€, droits residuels, stratégie démembrement.')">Simuler →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">⚰</div>
+            <div class="univers-name">Simulateur Succession</div>
+            <div class="univers-desc">Droits de succession selon lien de parenté, masse successorale, abattements, Dutreil. Économies optimisation.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="askMarcel('Simulation succession : masse successorale estimée 3,4M€. Droits pour 2 enfants, avec et sans optimisation Dutreil.')">Simuler →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">📅</div>
+            <div class="univers-name">Calendrier fiscal</div>
+            <div class="univers-desc">Toutes vos échéances fiscales personnalisées : IR, IFI, IS, TVA, CFE. Alertes J-30, J-15, J-7 automatiques.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="showView('alertes')">Mes alertes →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">📊</div>
+            <div class="univers-name">Score patrimonial</div>
+            <div class="univers-desc">Notation 0-100 de votre patrimoine sur 6 axes : transmission, fiscalité, prévoyance, immobilier, retraite, liquidité.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="askMarcel('Analyser mon score patrimonial 78/100 — axes d\'amélioration prioritaires')">Analyser →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">🔊</div>
+            <div class="univers-name">Conseil vocal</div>
+            <div class="univers-desc">Dictez vos questions, écoutez les réponses. Synthèse vocale naturelle intégrée au conseiller.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="showView('marcel');setTimeout(()=>document.getElementById('mic-btn').click(),300)">Activer →</div>
+          </div>
+          <div class="univers-card">
+            <div class="univers-ico">📄</div>
+            <div class="univers-name">Export & Rapports</div>
+            <div class="univers-desc">Bilan patrimonial PDF, synthèse fiscale, rapport de performance. Personnalisé avec votre logo famille.</div>
+            <div class="univers-live" style="color:#60A5FA"><span style="width:6px;height:6px;border-radius:50%;background:#60A5FA;display:inline-block"></span> Disponible</div>
+            <div class="univers-agent" onclick="showView('docs')">Mes documents →</div>
+          </div>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">🎁</div>
-          <div class="univers-name">Transmission & Succession</div>
-          <div class="univers-desc">Simulation succession, SCI familiale, démembrement, donations échelonnées.</div>
-          <div class="univers-soon">⊙ Q3 2026 · Bâtisseur</div>
+      </div>
+
+      <!-- GROUPE 3 — Q3 2026 -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">Q3 2026 — En développement</div>
+          <span class="services-group-badge badge-soon">⊙ Bientôt</span>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">🛡</div>
-          <div class="univers-name">Prévoyance & Protection</div>
-          <div class="univers-desc">Analyse contrats prévoyance, TNS, invalidité, décès. Optim charges sociales.</div>
-          <div class="univers-soon">⊙ Q4 2026</div>
+        <div class="univers-grid-4">
+          <div class="univers-card locked">
+            <div class="univers-ico">🏘</div>
+            <div class="univers-name">Immobilier & DVF</div>
+            <div class="univers-desc">Valorisation automatique, données DVF officielles, IFI immo, rendements locatifs nets, arbitrages vente/conservation.</div>
+            <div class="univers-soon">⊙ Q3 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">🏗</div>
+            <div class="univers-name">Cartographie 360°</div>
+            <div class="univers-desc">Patrimoine global multi-entités visualisé : holding, SCI, sociétés, comptes. Détection automatique des incohérences.</div>
+            <div class="univers-soon">⊙ Q3 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">🔏</div>
+            <div class="univers-name">Signature électronique</div>
+            <div class="univers-desc">Signature eIDAS qualifiée de vos documents patrimoniaux. Lettre de mission, mandats, DER. Conformité notariale.</div>
+            <div class="univers-soon">⊙ Q3 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">📰</div>
+            <div class="univers-name">Veille réglementaire</div>
+            <div class="univers-desc">Alertes automatiques sur les nouvelles lois fiscales, PLF, instructions BOFIP. Analyse d'impact sur votre situation.</div>
+            <div class="univers-soon">⊙ Q3 2026</div>
+          </div>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">🎭</div>
-          <div class="univers-name">Concierge Lifestyle</div>
-          <div class="univers-desc">Voyages, gastronomie, événements exclusifs. Réseau partenaires privilégiés.</div>
-          <div class="univers-soon">⊙ Q4 2026 · Concierge</div>
+      </div>
+
+      <!-- GROUPE 4 — Q4 2026 -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">Q4 2026 — Planifiés</div>
+          <span class="services-group-badge badge-soon">⊙ Planifiés</span>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">🖼</div>
-          <div class="univers-name">Art & Collectibles</div>
-          <div class="univers-desc">Valorisation, fiscalité des œuvres, horlogerie, vins de collection.</div>
-          <div class="univers-soon">⊙ Q4 2026 · Curateur</div>
+        <div class="univers-grid-5">
+          <div class="univers-card locked">
+            <div class="univers-ico">📈</div>
+            <div class="univers-name">Marchés & Allocation</div>
+            <div class="univers-desc">Suivi allocation, drift détection, rebalancement suggéré. ETF, PEA, PER. Analyse en temps réel.</div>
+            <div class="univers-soon">⊙ Q4 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">🛡</div>
+            <div class="univers-name">Prévoyance & Protection</div>
+            <div class="univers-desc">Audit contrats prévoyance TNS, invalidité, décès. Optimisation charges sociales dirigeant. Gaps détectés.</div>
+            <div class="univers-soon">⊙ Q4 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">🎯</div>
+            <div class="univers-name">Retraite & PER</div>
+            <div class="univers-desc">Simulation retraite complète : régimes obligatoires, PER, AV, projections à 60/65/70 ans. Capital vs rente.</div>
+            <div class="univers-soon">⊙ Q4 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">🎭</div>
+            <div class="univers-name">Concierge lifestyle</div>
+            <div class="univers-desc">Voyages sur-mesure, gastronomie étoilée, événements exclusifs. Réseau de partenaires sélectionnés.</div>
+            <div class="univers-soon">⊙ Q4 2026</div>
+          </div>
+          <div class="univers-card locked">
+            <div class="univers-ico">🖼</div>
+            <div class="univers-name">Art & Collectibles</div>
+            <div class="univers-desc">Valorisation d'œuvres, fiscalité art, horlogerie, vins de collection. Tendances marché et cotes officielles.</div>
+            <div class="univers-soon">⊙ Q4 2026</div>
+          </div>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">🌍</div>
-          <div class="univers-name">International</div>
-          <div class="univers-desc">Expatriation, double imposition, structures étrangères, Hermès notaires.</div>
-          <div class="univers-soon">⊙ Sprint 5 · Hermès</div>
+      </div>
+
+      <!-- GROUPE 5 — À venir -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">À venir — Sprint 5-6</div>
+          <span class="services-group-badge badge-later">○ Futur</span>
         </div>
-        <div class="univers-card locked">
-          <div class="univers-ico">🤝</div>
-          <div class="univers-name">Partenaires & Réseau</div>
-          <div class="univers-desc">Notaires, avocats, experts-comptables. Mise en relation qualifiée.</div>
-          <div class="univers-soon">⊙ Sprint 5 · Hermès</div>
+        <div class="univers-grid-4">
+          <div class="univers-card locked" style="opacity:.3">
+            <div class="univers-ico">🌍</div>
+            <div class="univers-name">International</div>
+            <div class="univers-desc">Expatriation, double imposition, structures étrangères, trusts, fondations. Réseau notaires internationaux.</div>
+            <div class="univers-soon">○ 2027</div>
+          </div>
+          <div class="univers-card locked" style="opacity:.3">
+            <div class="univers-ico">🤝</div>
+            <div class="univers-name">Réseau & Partenaires</div>
+            <div class="univers-desc">Mise en relation qualifiée : notaires, avocats fiscalistes, experts-comptables, banquiers privés partenaires.</div>
+            <div class="univers-soon">○ 2027</div>
+          </div>
+          <div class="univers-card locked" style="opacity:.3">
+            <div class="univers-ico">👨‍👩‍👧</div>
+            <div class="univers-name">Espace famille</div>
+            <div class="univers-desc">Accès multi-membres : conjoint, enfants, héritiers. Gouvernance familiale. Partage sécurisé de documents.</div>
+            <div class="univers-soon">○ 2027</div>
+          </div>
+          <div class="univers-card locked" style="opacity:.3">
+            <div class="univers-ico">🕊</div>
+            <div class="univers-name">Philanthropie</div>
+            <div class="univers-desc">Fondations, fonds de dotation, mécénat. Stratégie philanthropique et optimisation fiscale associée.</div>
+            <div class="univers-soon">○ 2027</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUPE 6 — Transversaux inclus -->
+      <div class="services-group">
+        <div class="services-group-header">
+          <div class="services-group-title">Toujours inclus</div>
+          <span class="services-group-badge badge-incl">✦ Premium</span>
+        </div>
+        <div class="univers-grid-4">
+          <div class="univers-card" style="border-color:rgba(201,169,110,0.15)">
+            <div class="univers-ico">📱</div>
+            <div class="univers-name">Application mobile</div>
+            <div class="univers-desc">PWA installable sur iOS & Android. Tableau de bord, conseiller, alertes en temps réel. Hors ligne partiel.</div>
+            <div class="univers-live" style="color:var(--gold)"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block"></span> Installable maintenant</div>
+            <div class="univers-agent" onclick="alert('Ajoutez cette page à votre écran d\'accueil via le menu de votre navigateur')">Installer →</div>
+          </div>
+          <div class="univers-card" style="border-color:rgba(201,169,110,0.15)">
+            <div class="univers-ico">📬</div>
+            <div class="univers-name">Newsletter UPPERCUT</div>
+            <div class="univers-desc">Chaque semaine : décryptage réglementaire, cas pratique, veille patrimoniale. Réservée aux membres actifs.</div>
+            <div class="univers-live" style="color:var(--gold)"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block"></span> Abonné</div>
+            <div class="univers-agent" onclick="askMarcel('Résumé des dernières actualités fiscales de la semaine pour UPPERCUT PATRIMOINE')">Dernier numéro →</div>
+          </div>
+          <div class="univers-card" style="border-color:rgba(201,169,110,0.15)">
+            <div class="univers-ico">📞</div>
+            <div class="univers-name">Rendez-vous Maxime</div>
+            <div class="univers-desc">Échange humain 1h avec Maxime Juveneton ORIAS 23001568. Vision stratégique, décision complexe, bilan annuel.</div>
+            <div class="univers-live" style="color:var(--gold)"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block"></span> Sur réservation</div>
+            <div class="univers-agent" onclick="askMarcel('Je souhaite réserver un rendez-vous avec Maxime pour un bilan patrimonial complet')">Réserver →</div>
+          </div>
+          <div class="univers-card" style="border-color:rgba(201,169,110,0.15)">
+            <div class="univers-ico">🔐</div>
+            <div class="univers-name">Espace sécurisé RGPD</div>
+            <div class="univers-desc">Données chiffrées, hébergées en France, jamais revendues. Accès personnel uniquement. Suppression sur demande.</div>
+            <div class="univers-live" style="color:var(--gold)"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block"></span> Actif</div>
+            <div class="univers-agent">Confidentiel · Souverain</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1218,6 +1449,101 @@
 <script>
 // ─── WORKER URL ───
 const WORKER_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
+
+// ─── VOICE — VoxCPM + Web Speech API ───
+// VoxCPM : https://github.com/OpenBMB/VoxCPM
+// Laisser vide → fallback Web Speech API (SpeechSynthesis natif)
+const VOXCPM_URL = '';
+
+let isListening = false;
+let recognition = null;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function toggleMic() {
+  if (!SR) {
+    alert('Reconnaissance vocale non disponible sur ce navigateur (Chrome recommandé).');
+    return;
+  }
+  if (isListening) {
+    recognition?.stop();
+    isListening = false;
+    updateMicBtn();
+    return;
+  }
+  recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.onstart = () => { isListening = true; updateMicBtn(); };
+  recognition.onresult = e => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    const input = document.getElementById('chat-input');
+    if (input) input.value = transcript;
+  };
+  recognition.onend = () => { isListening = false; updateMicBtn(); };
+  recognition.onerror = () => { isListening = false; updateMicBtn(); };
+  recognition.start();
+}
+
+function updateMicBtn() {
+  const btn = document.getElementById('mic-btn');
+  const status = document.getElementById('voice-status');
+  if (btn) {
+    btn.classList.toggle('listening', isListening);
+    btn.textContent = isListening ? '⏹' : '🎤';
+  }
+  if (status) status.classList.toggle('show', isListening);
+}
+
+async function speak(text, btnEl) {
+  const clean = text.replace(/<[^>]+>/g, '').replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 600);
+
+  if (btnEl) {
+    btnEl.classList.add('playing');
+    btnEl.textContent = '▶ Lecture…';
+  }
+  const resetBtn = () => {
+    if (btnEl) { btnEl.classList.remove('playing'); btnEl.textContent = '🔊 Écouter'; }
+  };
+
+  // — Essai VoxCPM (auto-hébergé) —
+  if (VOXCPM_URL) {
+    try {
+      const res = await fetch(VOXCPM_URL + '/synthesize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, language: 'fr', voice: 'fr_FR' })
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const audio = new Audio(URL.createObjectURL(blob));
+        audio.onended = resetBtn;
+        audio.play();
+        return;
+      }
+    } catch (e) { /* fallback */ }
+  }
+
+  // — Fallback Web Speech API —
+  const synth = window.speechSynthesis;
+  if (!synth) { resetBtn(); return; }
+  synth.cancel();
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'fr-FR';
+  utt.rate = 0.88;
+  utt.pitch = 1.0;
+  utt.onend = resetBtn;
+  utt.onerror = resetBtn;
+  // Attendre chargement voix si nécessaire
+  const setVoice = () => {
+    const voices = synth.getVoices().filter(v => v.lang.startsWith('fr'));
+    if (voices.length) utt.voice = voices[0];
+    synth.speak(utt);
+  };
+  if (synth.getVoices().length) setVoice();
+  else { synth.onvoiceschanged = setVoice; }
+}
+
 let chatHistory = [];
 
 // ─── DATE ───
@@ -1388,12 +1714,16 @@ function appendMessage(role,content,agentLabel){
   const div=document.createElement('div');
   div.className='msg '+role;
   if(role==='marcel'){
+    const speakId='speak-'+Date.now();
     div.innerHTML=`
       <div class="msg-avatar m">✦</div>
       <div>
         <div class="msg-agent-badge">✦ IKCP · Conseiller patrimonial</div>
         <div class="msg-bubble">${content.replace(/\n/g,'<br>')}</div>
-        <div class="msg-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+          <div class="msg-disclaimer" style="flex:1">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+          <button class="speak-btn" id="${speakId}" onclick="speak(this.closest('.msg').querySelector('.msg-bubble').textContent,this)">🔊 Écouter</button>
+        </div>
       </div>`;
   } else {
     div.innerHTML=`
