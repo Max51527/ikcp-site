@@ -36,7 +36,8 @@
   <!-- ── Marcel-Live champ sticky ── -->
   <form class="marcel-live-bar" onsubmit="return askMarcel(event)">
     <span class="label">Marcel</span>
-    <input id="qInput" type="text" placeholder="Posez votre question…" maxlength="280" autocomplete="off">
+    <input id="qInput" type="text" placeholder="Posez votre question ou parlez 🎤" maxlength="280" autocomplete="off">
+    <button type="button" id="dashMic" onclick="dashToggleMic()" aria-label="Parler à Marcel" style="background:transparent;color:var(--mute);border:1px solid var(--line);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;transition:all 0.2s">🎤</button>
     <button type="submit" aria-label="Envoyer">→</button>
   </form>
 
@@ -137,9 +138,40 @@
 
 <script type="module">
 import { Marcel } from '/app/js/api.js';
+import { Voice } from '/app/js/voice.js';
 
 // Service Worker (offline)
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+
+// Voix dashboard — saisie vocale → soumet automatique
+window.dashToggleMic = function(){
+  const btn = document.getElementById('dashMic');
+  const input = document.getElementById('qInput');
+  if(!Voice.isSupported().stt){
+    alert('Reconnaissance vocale non supportée sur ce navigateur.');
+    return;
+  }
+  if(Voice.isListening()){
+    Voice.stopListening();
+    btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
+    btn.textContent = '🎤';
+    return;
+  }
+  btn.style.background='var(--accent)'; btn.style.color='var(--bg)'; btn.style.borderColor='var(--accent)';
+  btn.textContent = '⏹';
+  Voice.startListening({
+    onInterim: t => { input.value = t; },
+    onFinal: t => {
+      input.value = t;
+      btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
+      btn.textContent = '🎤';
+      sessionStorage.setItem('marcel_q', t);
+      location.href = '/app/marcel.html?ask=1';
+    },
+    onError: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
+    onEnd: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
+  });
+}
 
 // Vérif session + charge données
 let me = null;

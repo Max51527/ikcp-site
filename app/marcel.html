@@ -40,12 +40,25 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
   background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   padding:14px 22px max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--line);
 }
-.chat-input form{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;transition:border-color 0.3s}
+.chat-input form{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;transition:border-color 0.3s}
 .chat-input form:focus-within{border-color:var(--accent)}
-.chat-input input{flex:1;border:none;outline:none;background:transparent;font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;color:var(--ink);padding:8px 0}
+.chat-input input{flex:1;border:none;outline:none;background:transparent;font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;color:var(--ink);padding:8px 0;min-width:0}
 .chat-input input::placeholder{color:var(--faint)}
-.chat-input button{background:var(--ink);color:var(--cream);border:none;border-radius:999px;width:38px;height:38px;font-size:16px;font-weight:700;cursor:pointer}
+.chat-input button{background:var(--ink);color:var(--cream);border:none;border-radius:999px;width:38px;height:38px;font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0}
 .chat-input button:hover{background:var(--accent)}
+.chat-input .mic{background:transparent;color:var(--ink);border:1.5px solid var(--line);width:38px;height:38px;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.chat-input .mic:hover{border-color:var(--accent);color:var(--accent)}
+.chat-input .mic.listening{background:var(--accent);color:var(--bg);border-color:var(--accent);animation:micPulse 1.2s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(194,71,34,0.6)}50%{box-shadow:0 0 0 8px rgba(194,71,34,0)}}
+.voice-bar{position:fixed;bottom:80px;left:0;right:0;background:rgba(250,247,240,0.96);backdrop-filter:blur(8px);padding:8px 22px;border-top:1px solid var(--line);display:none;align-items:center;justify-content:center;gap:14px;z-index:30;font-size:12px}
+.voice-bar.show{display:flex}
+.voice-bar .auto-read{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--mute);font-weight:500}
+.voice-bar .auto-read input{accent-color:var(--accent)}
+.voice-bar .stop{background:transparent;border:1px solid var(--line);padding:4px 12px;border-radius:999px;font-size:11px;cursor:pointer;color:var(--mute);font-family:'Inter',sans-serif}
+.voice-bar .stop:hover{border-color:var(--bad);color:var(--bad)}
+.msg .read-btn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--mute);font-size:11px;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:0.02em;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px}
+.msg .read-btn:hover{border-color:var(--accent);color:var(--accent)}
+.msg .read-btn.speaking{background:var(--accent);color:var(--bg);border-color:var(--accent)}
 .back-link{position:absolute;left:22px;top:22px;color:var(--mute);text-decoration:none;font-size:12px;letter-spacing:0.04em}
 .back-link:hover{color:var(--accent)}
 @media(max-width:680px){.chat-head h1{font-size:26px}}
@@ -72,8 +85,14 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
   </div>
 </div>
 
+<div class="voice-bar" id="voiceBar">
+  <label class="auto-read"><input type="checkbox" id="autoRead"> Marcel lit ses réponses à voix haute</label>
+  <button class="stop" onclick="stopReading()" id="stopReadBtn" style="display:none">⏹ Stop lecture</button>
+</div>
+
 <div class="chat-input">
   <form onsubmit="return send(event)">
+    <button type="button" class="mic" id="micBtn" onclick="toggleMic()" aria-label="Parler à Marcel" title="Parler à Marcel">🎤</button>
     <input id="q" type="text" placeholder="Posez votre question à Marcel…" maxlength="500" autocomplete="off" required>
     <button type="submit" aria-label="Envoyer">→</button>
   </form>
@@ -81,10 +100,92 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 
 <script type="module">
 import { Marcel } from '/app/js/api.js';
+import { Voice } from '/app/js/voice.js';
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
 let history = [];
 try { await Marcel.Auth.me(); } catch(_){ location.href = '/app/index.html'; }
+
+// ─── Voix Marcel (Web Speech API) ───
+const voiceSupport = Voice.isSupported();
+const prefs = Voice.getPreferences();
+const micBtn = document.getElementById('micBtn');
+const voiceBar = document.getElementById('voiceBar');
+const autoReadInput = document.getElementById('autoRead');
+const stopReadBtn = document.getElementById('stopReadBtn');
+
+if(!voiceSupport.stt){
+  micBtn.style.display = 'none';
+} else {
+  voiceBar.classList.add('show');
+  autoReadInput.checked = !!prefs.autoRead;
+}
+autoReadInput?.addEventListener('change', e => Voice.setAutoRead(e.target.checked));
+
+window.toggleMic = function(){
+  if(!voiceSupport.stt) return alert('Reconnaissance vocale non supportée sur ce navigateur.\nUtilisez Chrome, Edge ou Safari.');
+  if(Voice.isListening()){
+    Voice.stopListening();
+    micBtn.classList.remove('listening');
+    micBtn.textContent = '🎤';
+    return;
+  }
+  micBtn.classList.add('listening');
+  micBtn.textContent = '⏹';
+  const input = document.getElementById('q');
+  input.placeholder = 'Parlez à Marcel…';
+  Voice.startListening({
+    onInterim: (txt) => { input.value = txt; },
+    onFinal: (txt) => {
+      input.value = txt;
+      micBtn.classList.remove('listening');
+      micBtn.textContent = '🎤';
+      input.placeholder = 'Posez votre question à Marcel…';
+      // Auto-send après transcription finale
+      setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
+    },
+    onError: (err) => {
+      micBtn.classList.remove('listening');
+      micBtn.textContent = '🎤';
+      input.placeholder = 'Posez votre question à Marcel…';
+      if(err?.error === 'not-allowed') alert('Marcel a besoin d\'accéder à votre micro. Autorisez l\'accès dans les paramètres du navigateur.');
+    },
+    onEnd: () => {
+      micBtn.classList.remove('listening');
+      micBtn.textContent = '🎤';
+      input.placeholder = 'Posez votre question à Marcel…';
+    },
+  });
+}
+
+window.stopReading = function(){
+  Voice.stopSpeaking();
+  stopReadBtn.style.display = 'none';
+  document.querySelectorAll('.read-btn.speaking').forEach(b => b.classList.remove('speaking'));
+}
+
+// Lecture d'un message à la demande
+window.readMessage = function(btnId, text){
+  const btn = document.getElementById(btnId);
+  if(Voice.isSpeaking() && btn.classList.contains('speaking')){
+    Voice.stopSpeaking();
+    btn.classList.remove('speaking');
+    stopReadBtn.style.display = 'none';
+    return;
+  }
+  document.querySelectorAll('.read-btn.speaking').forEach(b => b.classList.remove('speaking'));
+  Voice.speak(text, { rate: prefs.rate || 1.05 });
+  btn.classList.add('speaking');
+  stopReadBtn.style.display = 'inline-flex';
+  // Détecte fin de lecture
+  const check = setInterval(() => {
+    if(!Voice.isSpeaking()){
+      btn.classList.remove('speaking');
+      stopReadBtn.style.display = 'none';
+      clearInterval(check);
+    }
+  }, 500);
+}
 
 // Si question pré-remplie depuis dashboard
 const pendingQ = sessionStorage.getItem('marcel_q');
@@ -135,8 +236,17 @@ window.send = async function(e){
 
     const a = document.createElement('div');
     a.className = 'msg a';
-    a.innerHTML = md(reply) + '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
+    const msgId = 'msg-' + Date.now();
+    a.id = msgId;
+    const escaped = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+    const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}', \`${reply.replace(/`/g,'').replace(/\\/g,'\\\\').replace(/"/g,'\\"')}\`)">🔊 Écouter la réponse</button>` : '';
+    a.innerHTML = md(reply) + readBtn + '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
     msgs.appendChild(a);
+
+    // Auto-read si pref activée
+    if(voiceSupport.tts && Voice.getPreferences().autoRead){
+      setTimeout(() => readMessage('rd-' + msgId, reply), 300);
+    }
   }catch(err){
     ld.remove();
     const a = document.createElement('div');
