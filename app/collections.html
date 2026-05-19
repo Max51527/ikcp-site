@@ -1,3 +1,8 @@
+<!--
+  © 2026 IKCP · Maxime Juveneton · ORIAS 23001568
+  Tous droits réservés — Proprietary & Confidential
+  Reproduction interdite sans autorisation écrite — maxime@ikcp.fr
+-->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -329,7 +334,7 @@ function generateInsight(cat){
     return { emoji:'⚡', text:`Votre <b>${best.brand} ${best.model.split('·')[0].trim()}</b> a pris <b>+${best.delta.toFixed(0)} %</b> depuis acquisition. C'est aujourd'hui votre meilleure performance sur cette catégorie.`, action:'Demander conseil', prompt:`Analyse mon ${best.brand} ${best.model} — vendre maintenant ou conserver ? Cote +${best.delta.toFixed(0)}% depuis achat.` };
   }
   if(cat.name === 'Automobile' && cat.items.length >= 2){
-    return { emoji:'🏁', text:`Votre garage représente <b>${Marcel.Utils.formatEUR(cat.total)}</b> de valeur. Aviez-vous pensé à structurer ces actifs en <b>SCI fiscalisée</b> pour optimiser IFI et transmission ?`, action:'Marcel m\'explique', prompt:`Comment structurer ma collection automobile (${cat.items.length} voitures, valeur ${Marcel.Utils.formatEUR(cat.total)}) en SCI ou personne morale pour IFI/transmission ?` };
+    return { emoji:'🏁', text:`Votre garage représente <b>${Marcel.Utils.formatEUR(cat.total)}</b> — une collection qui mérite une réflexion patrimoniale globale. Posez une question à Marcel.`, action:'Question à Marcel', prompt:`Analyse ma collection automobile : ${cat.items.length} véhicules, valeur totale ${Marcel.Utils.formatEUR(cat.total)}. Quelles questions dois-je me poser sur le plan patrimonial ?` };
   }
   if(cat.name === 'Vins'){
     return { emoji:'🍇', text:`Votre cave a pris <b>+${globalPerf} %</b> depuis acquisition. Marcel surveille la liquidité Liv-ex sur vos millésimes pour signaler les fenêtres d'arbitrage.`, action:'Voir mes alertes', prompt:`Vins · quelles fenêtres d'arbitrage cette année sur Pétrus 1990, DRC 2015, Salon 1996 ? Conseil garde vs vente.` };
