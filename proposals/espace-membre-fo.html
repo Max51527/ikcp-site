@@ -459,6 +459,66 @@
     .asset-badge.live{background:rgba(62,204,138,0.15);color:#3ECC8A;border:1px solid rgba(62,204,138,0.2)}
     .asset-badge.watch{background:rgba(184,115,51,0.15);color:var(--amber);border:1px solid rgba(184,115,51,0.2)}
 
+    /* ── ASSET IMAGE WRAP (upload + overlay support) ── */
+    .asset-img-wrap{position:relative;overflow:hidden;display:block}
+    .asset-img-wrap img{width:100%;height:130px;object-fit:cover;display:block;transition:.3s}
+    .asset-img-wrap:hover img{transform:scale(1.03)}
+    .asset-img-wrap .asset-img-placeholder{position:absolute;inset:0;height:auto;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,rgba(27,42,74,0.8),rgba(14,23,41,0.9))}
+    /* Camera upload overlay */
+    .upload-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);opacity:0;transition:.2s;cursor:pointer;z-index:2}
+    .asset-img-wrap:hover .upload-lbl{opacity:1;background:rgba(0,0,0,0.48)}
+    .upload-lbl-inner{display:flex;flex-direction:column;align-items:center;gap:4px;color:#fff;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;pointer-events:none}
+    .upload-lbl-inner span:first-child{font-size:20px}
+
+    /* ── IMMO CARD — wide horizontal layout ── */
+    .immo-list{display:flex;flex-direction:column;gap:16px}
+    .immo-card{
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+      border-radius:var(--card-r);overflow:hidden;transition:.25s;
+      display:grid;grid-template-columns:260px 1fr;
+    }
+    @media(max-width:900px){.immo-card{grid-template-columns:1fr}}
+    .immo-card:hover{border-color:rgba(201,169,110,0.28);box-shadow:0 10px 36px rgba(0,0,0,0.38)}
+    .immo-img-wrap{position:relative;overflow:hidden}
+    .immo-img-wrap img{width:100%;height:100%;min-height:220px;object-fit:cover;display:block;transition:.4s}
+    .immo-img-wrap:hover img{transform:scale(1.04)}
+    .immo-img-wrap .asset-img-placeholder{position:absolute;inset:0;height:auto;display:flex;align-items:center;justify-content:center;font-size:52px;background:linear-gradient(160deg,rgba(27,42,74,0.85),rgba(14,23,41,0.95))}
+    /* AI Filigrane overlay on immo image */
+    .ai-filigrane{
+      position:absolute;bottom:0;left:0;right:0;padding:10px 12px;
+      background:linear-gradient(transparent,rgba(14,23,41,0.94));
+      display:flex;align-items:flex-end;justify-content:space-between;
+      pointer-events:none;
+    }
+    .ai-fil-left .ai-fil-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(226,200,150,0.6);margin-bottom:2px}
+    .ai-fil-left .ai-fil-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold-bright);font-weight:500}
+    .ai-fil-trend{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:rgba(45,122,79,0.25);color:#3ECC8A;border:1px solid rgba(62,204,138,0.2)}
+    /* Immo right content */
+    .immo-right{padding:16px 18px;display:flex;flex-direction:column;gap:0}
+    .immo-badge-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+    .immo-badge-row .asset-badge{position:static}
+    .immo-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--cream);font-weight:600;margin-bottom:2px}
+    .immo-detail{font-size:11px;color:rgba(255,255,255,0.33);margin-bottom:10px;line-height:1.45}
+    .immo-value{font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--gold-bright);font-weight:500;letter-spacing:-0.02em;margin-bottom:12px}
+    /* Financing */
+    .immo-fin{background:rgba(255,255,255,0.028);border-radius:8px;padding:10px 13px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.055)}
+    .immo-fin-hdr{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:8px;font-weight:600;display:flex;align-items:center;gap:6px}
+    .immo-fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 10px;margin-bottom:7px}
+    .immo-fin-item{}
+    .immo-fin-lbl{font-size:8.5px;color:rgba(255,255,255,0.22);letter-spacing:0.05em;margin-bottom:1px}
+    .immo-fin-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cream);font-weight:500}
+    .immo-fin-val.hi{color:var(--gold-bright)}
+    .ltv-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:10px;overflow:hidden}
+    .ltv-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#3ECC8A,#2D7A4F);transition:width 1s ease}
+    /* Chart */
+    .immo-chart{border-top:1px solid rgba(255,255,255,0.05);padding-top:10px;flex:1}
+    .immo-chart-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .immo-chart-hdr-lbl{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.25)}
+    .immo-chart-hdr-perf{font-size:10px;color:#3ECC8A;font-weight:600}
+    .immo-chart canvas{width:100%!important;height:70px!important}
+    .immo-ask{font-size:10.5px;color:rgba(201,169,110,0.5);cursor:pointer;padding:9px 0 0;border-top:1px solid rgba(255,255,255,0.05);margin-top:8px;display:flex;align-items:center;justify-content:space-between;transition:.15s}
+    .immo-ask:hover{color:var(--gold)}
+
     /* ── PROGRESS BAR ── */
     .progress-wrap{margin-top:8px}
     .progress-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:5px}
@@ -1282,9 +1342,9 @@
     <!-- ─────────── MES BIENS ─────────── -->
     <div class="view" id="view-biens">
       <div class="page-title">◈ Mes biens</div>
-      <div class="page-sub">Inventaire patrimonial · Famille Moreau · valorisation au 19 mai 2026</div>
+      <div class="page-sub">Inventaire patrimonial · Famille Moreau · valorisation au 19 mai 2026 — <span style="color:rgba(201,169,110,0.6);font-size:10px;">Cliquez sur une photo pour la personnaliser</span></div>
 
-      <!-- Univers Immobilier -->
+      <!-- ═══ IMMOBILIER — cartes larges avec analyse IA + financement + graphique ═══ -->
       <div class="asset-universe">
         <div class="asset-universe-header">
           <div class="asset-universe-title">
@@ -1293,51 +1353,169 @@
           </div>
           <span class="asset-universe-total">2 050 k€</span>
         </div>
-        <div class="asset-grid">
 
-          <div class="asset-card" onclick="askMarcel('Analyse de ma résidence principale Paris 16e : valeur 950k€, simulation IFI, potentiel locatif si changement d\'usage.')">
-            <span class="asset-badge live">Résidence</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=75&auto=format&fit=crop" alt="Appartement Paris" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">🏙️</div>
-            <div class="asset-body">
-              <div class="asset-name">Résidence principale — Paris 16e</div>
-              <div class="asset-detail">135 m² · Rue de la Pompe · Acquis 2018</div>
-              <div class="asset-value">950 000 €</div>
-              <span class="asset-tag">IFI taxable</span>
-              <div class="asset-ask">Analyser avec mon conseiller →</div>
+        <div class="immo-list">
+
+          <!-- ── Résidence Paris 16e ── -->
+          <div class="immo-card">
+            <div class="immo-img-wrap">
+              <img id="img-paris" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80&auto=format&fit=crop" alt="Paris 16e" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-paris').style.cssText='display:flex;position:absolute;inset:0;height:auto'">
+              <div id="ph-paris" class="asset-img-placeholder" style="display:none">🏙️</div>
+              <!-- AI Filigrane -->
+              <div class="ai-filigrane">
+                <div class="ai-fil-left">
+                  <div class="ai-fil-lbl">✦ Estimation IA · mai 2026</div>
+                  <div class="ai-fil-val">963 000 €</div>
+                </div>
+                <div class="ai-fil-trend">▲ +1,4 %/an</div>
+              </div>
+              <!-- Upload overlay -->
+              <label class="upload-lbl" for="up-paris" title="Changer la photo">
+                <div class="upload-lbl-inner"><span>📷</span><span>Changer la photo</span></div>
+              </label>
+              <input type="file" id="up-paris" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-paris','ph-paris')">
+            </div>
+            <div class="immo-right">
+              <div class="immo-badge-row">
+                <span class="asset-badge live">Résidence principale</span>
+                <span class="asset-tag">IFI taxable</span>
+                <span class="asset-tag">DPE C</span>
+              </div>
+              <div class="immo-title">Résidence principale — Paris 16e</div>
+              <div class="immo-detail">135 m² · Rue de la Pompe · Acquis 2018 · 5e étage · Cave + parking</div>
+              <div class="immo-value">950 000 €</div>
+              <!-- Financement -->
+              <div class="immo-fin">
+                <div class="immo-fin-hdr">🏦 Financement en cours</div>
+                <div class="immo-fin-grid">
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Emprunté</div><div class="immo-fin-val">720 000 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Capital restant dû</div><div class="immo-fin-val hi">483 000 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Mensualité</div><div class="immo-fin-val">2 840 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Taux</div><div class="immo-fin-val">1,15 %</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Fin de crédit</div><div class="immo-fin-val">janv. 2041</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">LTV actuelle</div><div class="immo-fin-val hi">51 %</div></div>
+                </div>
+                <div class="ltv-bar"><div class="ltv-fill" style="width:49%"></div></div>
+              </div>
+              <!-- Chart valeur potentielle -->
+              <div class="immo-chart">
+                <div class="immo-chart-hdr">
+                  <span class="immo-chart-hdr-lbl">◦ Valeur estimée 2018 → 2030</span>
+                  <span class="immo-chart-hdr-perf">▲ +10,5 % · 8 ans</span>
+                </div>
+                <canvas id="chart-paris"></canvas>
+              </div>
+              <div class="immo-ask" onclick="askMarcel('Analyse résidence principale Paris 16e : valeur actuelle 950k€, estimation IA 963k€. Simulation IFI 2026, abattement 30%, impact si mise en location. Capital restant dû 483k€ à 1,15%.')">
+                <span>Analyser avec mon conseiller</span><span>→</span>
+              </div>
             </div>
           </div>
 
-          <div class="asset-card" onclick="askMarcel('SCI La Grange en Ardèche : valeur 680k€, IS ou IR ? Opportunité Dutreil ou démembrement pour transmission ?')">
-            <span class="asset-badge live">SCI</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=400&q=75&auto=format&fit=crop" alt="Propriété Ardèche" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">🏡</div>
-            <div class="asset-body">
-              <div class="asset-name">SCI La Grange — Ardèche</div>
-              <div class="asset-detail">320 m² · Saint-Marcel-lès-Annonay · 6 ha</div>
-              <div class="asset-value">680 000 €</div>
-              <span class="asset-tag">SCI familiale</span>
-              <div class="asset-ask">Analyser avec mon conseiller →</div>
+          <!-- ── SCI Ardèche ── -->
+          <div class="immo-card">
+            <div class="immo-img-wrap">
+              <img id="img-ardeche" src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&q=80&auto=format&fit=crop" alt="SCI Ardèche" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-ardeche').style.cssText='display:flex;position:absolute;inset:0;height:auto'">
+              <div id="ph-ardeche" class="asset-img-placeholder" style="display:none">🏡</div>
+              <div class="ai-filigrane">
+                <div class="ai-fil-left">
+                  <div class="ai-fil-lbl">✦ Estimation IA · mai 2026</div>
+                  <div class="ai-fil-val">694 000 €</div>
+                </div>
+                <div class="ai-fil-trend">▲ +2,1 %/an</div>
+              </div>
+              <label class="upload-lbl" for="up-ardeche" title="Changer la photo">
+                <div class="upload-lbl-inner"><span>📷</span><span>Changer la photo</span></div>
+              </label>
+              <input type="file" id="up-ardeche" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-ardeche','ph-ardeche')">
+            </div>
+            <div class="immo-right">
+              <div class="immo-badge-row">
+                <span class="asset-badge live">SCI familiale</span>
+                <span class="asset-tag">IS · abattement Dutreil possible</span>
+              </div>
+              <div class="immo-title">SCI La Grange — Ardèche</div>
+              <div class="immo-detail">320 m² habitables · Saint-Marcel-lès-Annonay · 6 ha de terrain · Corps de ferme restauré 2021</div>
+              <div class="immo-value">680 000 €</div>
+              <div class="immo-fin">
+                <div class="immo-fin-hdr">🏦 Financement en cours</div>
+                <div class="immo-fin-grid">
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Emprunté</div><div class="immo-fin-val">520 000 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Capital restant dû</div><div class="immo-fin-val hi">318 000 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Mensualité</div><div class="immo-fin-val">2 190 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Taux</div><div class="immo-fin-val">1,38 %</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Fin de crédit</div><div class="immo-fin-val">mars 2039</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">LTV actuelle</div><div class="immo-fin-val hi">47 %</div></div>
+                </div>
+                <div class="ltv-bar"><div class="ltv-fill" style="width:53%"></div></div>
+              </div>
+              <div class="immo-chart">
+                <div class="immo-chart-hdr">
+                  <span class="immo-chart-hdr-lbl">◦ Valeur estimée 2019 → 2030</span>
+                  <span class="immo-chart-hdr-perf">▲ +51 % · 7 ans</span>
+                </div>
+                <canvas id="chart-ardeche"></canvas>
+              </div>
+              <div class="immo-ask" onclick="askMarcel('SCI La Grange Ardèche : valeur 680k€, estimation IA 694k€. Régime IS ou IR — laquelle est optimale ? Opportunité Dutreil à 75% si transmission ? Capital restant dû 318k€.')">
+                <span>Analyser avec mon conseiller</span><span>→</span>
+              </div>
             </div>
           </div>
 
-          <div class="asset-card" onclick="askMarcel('Immeuble de rapport Lyon 6e : valeur 420k€, rendement locatif brut actuel, optimisation fiscale SCI IS ou revenus fonciers ?')">
-            <span class="asset-badge live">Locatif</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&q=75&auto=format&fit=crop" alt="Immeuble Lyon" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">🏢</div>
-            <div class="asset-body">
-              <div class="asset-name">Immeuble de rapport — Lyon 6e</div>
-              <div class="asset-detail">4 lots · Rue Auguste Comte · Rendement 4,8 %</div>
-              <div class="asset-value">420 000 €</div>
-              <span class="asset-tag">Revenus fonciers</span>
-              <div class="asset-ask">Analyser avec mon conseiller →</div>
+          <!-- ── Immeuble Lyon ── -->
+          <div class="immo-card">
+            <div class="immo-img-wrap">
+              <img id="img-lyon" src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=600&q=80&auto=format&fit=crop" alt="Immeuble Lyon 6e" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-lyon').style.cssText='display:flex;position:absolute;inset:0;height:auto'">
+              <div id="ph-lyon" class="asset-img-placeholder" style="display:none">🏢</div>
+              <div class="ai-filigrane">
+                <div class="ai-fil-left">
+                  <div class="ai-fil-lbl">✦ Estimation IA · mai 2026</div>
+                  <div class="ai-fil-val">427 000 €</div>
+                </div>
+                <div class="ai-fil-trend" style="background:rgba(45,122,79,0.25);color:#3ECC8A;">Rdt 4,8 %</div>
+              </div>
+              <label class="upload-lbl" for="up-lyon" title="Changer la photo">
+                <div class="upload-lbl-inner"><span>📷</span><span>Changer la photo</span></div>
+              </label>
+              <input type="file" id="up-lyon" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-lyon','ph-lyon')">
+            </div>
+            <div class="immo-right">
+              <div class="immo-badge-row">
+                <span class="asset-badge live">Locatif</span>
+                <span class="asset-tag">Revenus fonciers</span>
+                <span class="asset-tag">Rdt brut 4,8 %</span>
+              </div>
+              <div class="immo-title">Immeuble de rapport — Lyon 6e</div>
+              <div class="immo-detail">4 lots (T2 + T3 + T3 + T4) · Rue Auguste Comte · Loyers 1 680 €/mois · Pleine propriété</div>
+              <div class="immo-value">420 000 €</div>
+              <div class="immo-fin">
+                <div class="immo-fin-hdr">🏦 Financement en cours</div>
+                <div class="immo-fin-grid">
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Emprunté</div><div class="immo-fin-val">340 000 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Capital restant dû</div><div class="immo-fin-val hi">175 000 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Mensualité</div><div class="immo-fin-val">1 420 €</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Taux</div><div class="immo-fin-val">0,95 %</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">Fin de crédit</div><div class="immo-fin-val">juin 2036</div></div>
+                  <div class="immo-fin-item"><div class="immo-fin-lbl">LTV actuelle</div><div class="immo-fin-val hi">42 %</div></div>
+                </div>
+                <div class="ltv-bar"><div class="ltv-fill" style="width:58%"></div></div>
+              </div>
+              <div class="immo-chart">
+                <div class="immo-chart-hdr">
+                  <span class="immo-chart-hdr-lbl">◦ Valeur estimée 2020 → 2030</span>
+                  <span class="immo-chart-hdr-perf">▲ +19 % · 6 ans</span>
+                </div>
+                <canvas id="chart-lyon"></canvas>
+              </div>
+              <div class="immo-ask" onclick="askMarcel('Immeuble rapport Lyon 6e : valeur 420k€, loyers 1680€/mois, rendement 4,8%. Passer en SCI IS pour amortir ? Impact sur revenus fonciers vs rémunération nette. Capital restant dû 175k€.')">
+                <span>Analyser avec mon conseiller</span><span>→</span>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
 
-      <!-- Univers Placements & Holdings -->
+      <!-- ═══ PLACEMENTS & HOLDINGS — grid avec upload photo ═══ -->
       <div class="asset-universe">
         <div class="asset-universe-header">
           <div class="asset-universe-title">
@@ -1350,7 +1528,14 @@
 
           <div class="asset-card" onclick="askMarcel('Holding Moreau SAS : valeur 1,2M€ en capital + réserves. Quelle stratégie de remontée de dividendes optimisée IS/IR pour 2026 ?')">
             <span class="asset-badge live">Holding</span>
-            <div class="asset-img-placeholder" style="height:130px;display:flex">🏛️</div>
+            <div class="asset-img-wrap">
+              <div class="asset-img-placeholder" style="height:130px;display:flex">🏛️</div>
+              <label class="upload-lbl" for="up-holding" title="Changer la photo">
+                <div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div>
+              </label>
+              <input type="file" id="up-holding" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-holding','ph-holding')">
+              <img id="img-holding" style="display:none;position:absolute;inset:0;width:100%;height:130px;object-fit:cover" alt="Holding">
+            </div>
             <div class="asset-body">
               <div class="asset-name">Holding Moreau SAS</div>
               <div class="asset-detail">Capital 50k€ · Réserves 1 150k€ · Régime IS</div>
@@ -1362,8 +1547,12 @@
 
           <div class="asset-card" onclick="askMarcel('Mon contrat assurance-vie : 320k€, Swiss Life Luxembourg. Clause bénéficiaire optimale pour transmettre avec abattements 152 500€ ?')">
             <span class="asset-badge live">AV</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=75&auto=format&fit=crop" alt="Placements financiers" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">📈</div>
+            <div class="asset-img-wrap">
+              <img id="img-av" class="asset-img" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=75&auto=format&fit=crop" alt="Placements financiers" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-av').style.display='flex'">
+              <div id="ph-av" class="asset-img-placeholder" style="display:none;height:130px">📈</div>
+              <label class="upload-lbl" for="up-av"><div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div></label>
+              <input type="file" id="up-av" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-av','ph-av')">
+            </div>
             <div class="asset-body">
               <div class="asset-name">Assurance-vie · Swiss Life Luxembourg</div>
               <div class="asset-detail">Contrat 2019 · UC 70% / Fonds € 30%</div>
@@ -1375,7 +1564,12 @@
 
           <div class="asset-card" onclick="askMarcel('PER individuel : 115k€. Versement complémentaire avant fin 2026 pour maximiser la déduction fiscale à TMI 41% ?')">
             <span class="asset-badge live">PER</span>
-            <div class="asset-img-placeholder" style="height:130px;display:flex">📊</div>
+            <div class="asset-img-wrap">
+              <div id="ph-per" class="asset-img-placeholder" style="height:130px;display:flex">📊</div>
+              <label class="upload-lbl" for="up-per"><div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div></label>
+              <input type="file" id="up-per" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-per','ph-per')">
+              <img id="img-per" style="display:none;position:absolute;inset:0;width:100%;height:130px;object-fit:cover" alt="PER">
+            </div>
             <div class="asset-body">
               <div class="asset-name">PER Individuel</div>
               <div class="asset-detail">Ouvert 2021 · Plafond restant ~24 800 €</div>
@@ -1387,7 +1581,12 @@
 
           <div class="asset-card" onclick="askMarcel('Épargne liquide 235k€ répartie entre livret A, LDDS et compte courant. Comment optimiser cette trésorerie excédentaire ?')">
             <span class="asset-badge watch">Trésorerie</span>
-            <div class="asset-img-placeholder" style="height:130px;display:flex">💶</div>
+            <div class="asset-img-wrap">
+              <div id="ph-tres" class="asset-img-placeholder" style="height:130px;display:flex">💶</div>
+              <label class="upload-lbl" for="up-tres"><div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div></label>
+              <input type="file" id="up-tres" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-tres','ph-tres')">
+              <img id="img-tres" style="display:none;position:absolute;inset:0;width:100%;height:130px;object-fit:cover" alt="Liquidités">
+            </div>
             <div class="asset-body">
               <div class="asset-name">Épargne & Liquidités</div>
               <div class="asset-detail">Livret A + LDDS + CC · Taux 3% max</div>
@@ -1400,7 +1599,7 @@
         </div>
       </div>
 
-      <!-- Univers Passions & Collections -->
+      <!-- ═══ PASSIONS & COLLECTIONS — grid avec upload photo ═══ -->
       <div class="asset-universe">
         <div class="asset-universe-header">
           <div class="asset-universe-title">
@@ -1413,8 +1612,12 @@
 
           <div class="asset-card" onclick="askMarcel('Collection horlogère : AP Royal Oak 15500 (~95k€) + Patek Nautilus 5711 (~175k€). Valorisation IFI, assurance, vente potentielle en 2026 ?')">
             <span class="asset-badge live">Horlogerie</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=75&auto=format&fit=crop" alt="Montre de luxe" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">⌚</div>
+            <div class="asset-img-wrap">
+              <img id="img-watch" class="asset-img" src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&q=75&auto=format&fit=crop" alt="Montre de luxe" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-watch').style.display='flex'">
+              <div id="ph-watch" class="asset-img-placeholder" style="display:none;height:130px">⌚</div>
+              <label class="upload-lbl" for="up-watch"><div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div></label>
+              <input type="file" id="up-watch" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-watch','ph-watch')">
+            </div>
             <div class="asset-body">
               <div class="asset-name">Collection horlogère · 2 pièces</div>
               <div class="asset-detail">AP Royal Oak 15500 · Patek Nautilus 5711</div>
@@ -1426,11 +1629,15 @@
 
           <div class="asset-card" onclick="askMarcel('Cave à vins : 45k€ dont 3 caisses Pétrus 2018 (12 bouteilles). Valeur IFI, fiscalité d\'une vente, Idealwine vs Christie\'s ?')">
             <span class="asset-badge live">Vins</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&q=75&auto=format&fit=crop" alt="Cave à vins" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">🍷</div>
+            <div class="asset-img-wrap">
+              <img id="img-wine" class="asset-img" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&q=75&auto=format&fit=crop" alt="Cave à vins" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-wine').style.display='flex'">
+              <div id="ph-wine" class="asset-img-placeholder" style="display:none;height:130px">🍷</div>
+              <label class="upload-lbl" for="up-wine"><div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div></label>
+              <input type="file" id="up-wine" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-wine','ph-wine')">
+            </div>
             <div class="asset-body">
               <div class="asset-name">Cave à vins · 380 bouteilles</div>
-              <div class="asset-detail">Pétrus 2018 · Romanée-Conti 2019 · Petrus</div>
+              <div class="asset-detail">Pétrus 2018 · Romanée-Conti 2019</div>
               <div class="asset-value">45 000 €</div>
               <span class="asset-tag">Art & collection</span>
               <div class="asset-ask">Valoriser & planifier →</div>
@@ -1439,8 +1646,12 @@
 
           <div class="asset-card" onclick="askMarcel('Tableau huile sur toile attribué à Nicolas de Staël (expert en cours) : valeur estimée 73k€. Démarches d\'assurance, donation avec abattement art ?')">
             <span class="asset-badge watch">Expertise</span>
-            <img class="asset-img" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&q=75&auto=format&fit=crop" alt="Oeuvre d'art" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="asset-img-placeholder" style="display:none">🎨</div>
+            <div class="asset-img-wrap">
+              <img id="img-art" class="asset-img" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&q=75&auto=format&fit=crop" alt="Oeuvre d'art" loading="lazy" onerror="this.style.display='none';document.getElementById('ph-art').style.display='flex'">
+              <div id="ph-art" class="asset-img-placeholder" style="display:none;height:130px">🎨</div>
+              <label class="upload-lbl" for="up-art"><div class="upload-lbl-inner"><span>📷</span><span>Personnaliser</span></div></label>
+              <input type="file" id="up-art" accept="image/*" style="display:none" onchange="handleImgUpload(this,'img-art','ph-art')">
+            </div>
             <div class="asset-body">
               <div class="asset-name">Tableau — Nicolas de Staël (att.)</div>
               <div class="asset-detail">Huile sur toile 80×100 · Expertise Sotheby's</div>
@@ -1776,8 +1987,9 @@ function showView(id){
   document.getElementById('view-'+id)?.classList.add('active');
   document.querySelector(`[onclick="showView('${id}')"]`)?.classList.add('active');
   document.getElementById('bc-title').textContent=BC_TITLES[id]||id;
-  // lazy-init charts when dashboard becomes visible
+  // lazy-init charts when dashboard or biens becomes visible
   if(id==='dashboard')setTimeout(initCharts,50);
+  if(id==='biens')setTimeout(initImmoCharts,80);
 }
 
 // ─── CHARTS ───
@@ -2002,6 +2214,85 @@ function askMarcel(q){
     input.value=q;
     sendMessage();
   },200);
+}
+
+// ─── IMAGE UPLOAD ───
+function handleImgUpload(input, imgId, phId) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById(imgId);
+    const ph  = document.getElementById(phId);
+    if (img) { img.src = e.target.result; img.style.display = 'block'; img.style.position = ''; img.style.inset = ''; }
+    if (ph)  { ph.style.display = 'none'; }
+    // For immo-img-wrap: ensure img fills properly
+    if (img && img.closest('.immo-img-wrap')) {
+      img.style.cssText = 'width:100%;height:100%;min-height:220px;object-fit:cover;display:block';
+    }
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ─── IMMO CHARTS (Chart.js) ───
+function initImmoCharts() {
+  const defaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 1200, easing: 'easeInOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => '  ' + (ctx.raw / 1000).toFixed(0) + ' k€' },
+        backgroundColor:'rgba(14,23,41,0.96)', titleColor:'#E2C896', bodyColor:'#FAFAF8',
+        borderColor:'rgba(201,169,110,0.2)', borderWidth:1, padding:8, cornerRadius:6
+      }
+    },
+    scales: {
+      x: { grid:{display:false}, ticks:{color:'rgba(255,255,255,0.18)',font:{size:8,family:'JetBrains Mono'},maxRotation:0} },
+      y: { display:false, grid:{display:false} }
+    },
+    elements: { point:{radius:2.5,hoverRadius:5,backgroundColor:'#C9A96E'}, line:{tension:0.42} }
+  };
+
+  // ── Paris 16e ──
+  const c1 = document.getElementById('chart-paris');
+  if (c1) new Chart(c1, { type:'line', data:{
+    labels:['2018','2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets:[
+      { label:'Historique', data:[780000,808000,818000,852000,898000,918000,928000,940000,950000,null,null,null,null],
+        borderColor:'#C9A96E', backgroundColor:'rgba(201,169,110,0.10)', fill:true, borderWidth:2, spanGaps:false },
+      { label:'Projection IA', data:[null,null,null,null,null,null,null,null,950000,972000,998000,1022000,1050000],
+        borderColor:'#E2C896', borderDash:[5,3], backgroundColor:'rgba(226,200,150,0.05)', fill:true, borderWidth:1.5, spanGaps:false }
+    ]}, options:{...defaults} });
+
+  // ── SCI Ardèche ──
+  const c2 = document.getElementById('chart-ardeche');
+  if (c2) new Chart(c2, { type:'line', data:{
+    labels:['2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets:[
+      { label:'Historique', data:[448000,475000,518000,568000,615000,645000,662000,680000,null,null,null,null],
+        borderColor:'#C9A96E', backgroundColor:'rgba(201,169,110,0.10)', fill:true, borderWidth:2, spanGaps:false },
+      { label:'Projection IA', data:[null,null,null,null,null,null,null,680000,702000,724000,747000,770000],
+        borderColor:'#E2C896', borderDash:[5,3], backgroundColor:'rgba(226,200,150,0.05)', fill:true, borderWidth:1.5, spanGaps:false }
+    ]}, options:{...defaults} });
+
+  // ── Immeuble Lyon ──
+  const c3 = document.getElementById('chart-lyon');
+  if (c3) new Chart(c3, { type:'line', data:{
+    labels:['2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'],
+    datasets:[
+      { label:'Historique', data:[352000,362000,372000,385000,398000,410000,420000,null,null,null,null],
+        borderColor:'#C9A96E', backgroundColor:'rgba(201,169,110,0.10)', fill:true, borderWidth:2, spanGaps:false },
+      { label:'Projection IA', data:[null,null,null,null,null,null,420000,438000,456000,476000,498000],
+        borderColor:'#E2C896', borderDash:[5,3], backgroundColor:'rgba(226,200,150,0.05)', fill:true, borderWidth:1.5, spanGaps:false }
+    ]}, options:{...defaults} });
+}
+
+// Init charts when DOM ready (also on nav to view-biens)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initImmoCharts);
+} else {
+  setTimeout(initImmoCharts, 100);
 }
 
 // ─── FAB ───
