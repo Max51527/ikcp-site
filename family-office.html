@@ -6,7 +6,7 @@
 
 <!-- ═══ SEO META — optimisé Family Office digitalisé ═══ -->
 <title>Family Office Augmenté · 100 % digital · Marcel IA — IKCP</title>
-<meta name="description" content="Le premier Family Office augmenté par intelligence artificielle souveraine en Ardèche. 12 univers patrimoniaux, cartographie automatique, conseil 24/7 par Marcel · Bêta privée 50 familles fondatrices · 290 €/mois.">
+<meta name="description" content="Le premier Family Office augmenté par intelligence artificielle souveraine en Ardèche. 12 univers patrimoniaux, cartographie automatique, conseil 24/7 par Marcel · Bêta privée 50 familles fondatrices · accès offert.">
 <meta name="keywords" content="family office, family office digital, family office Ardèche, family office IA, conseil patrimonial premium, dirigeant entreprise familiale, transmission patrimoine, IKCP, Marcel agent IA patrimonial">
 <meta name="author" content="Maxime Juveneton — IKCP">
 <meta name="robots" content="index, follow">
@@ -24,7 +24,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Family Office Augmenté · 100 % digital · IKCP">
-<meta name="twitter:description" content="Premier Family Office augmenté par IA souveraine en Ardèche. 12 univers · Marcel 24/7 · Bêta 50 familles · 290 €/mois.">
+<meta name="twitter:description" content="Premier Family Office augmenté par IA souveraine en Ardèche. 12 univers · Marcel 24/7 · Bêta privée 50 familles · accès offert.">
 
 <!-- Schema.org · Service + LocalBusiness -->
 <script type="application/ld+json">
@@ -71,11 +71,11 @@
     },
     {
       "@type": "Offer",
-      "name": "Family Office Augmenté",
-      "price": "290",
+      "name": "Bêta fondateur (gratuit pendant la phase Bêta)",
+      "price": "0",
       "priceCurrency": "EUR",
-      "priceValidUntil": "2027-12-31",
-      "description": "12 univers actifs · Marcel illimité · École NextGen · 1 RDV mensuel inclus · 6 mois offerts en Bêta"
+      "priceValidUntil": "2026-12-31",
+      "description": "Accès complet · 12 univers · Marcel illimité · RDV inclus · tarification post-Bêta co-construite avec les 50 fondateurs"
     },
     {
       "@type": "Offer",
@@ -469,7 +469,7 @@ async function lookupSiren() {
       </div>
       <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6;">
         ✓ Cartographie offerte — votre <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">univers Patrimoine</b> est débloqué.<br>
-        Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, activez <a href="#tarifs" style="color:var(--gold-deep); font-weight:600;">Premium (290 €/mois)</a>.
+        Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, <a href="#beta" style="color:var(--gold-deep); font-weight:600;">demandez votre accès Bêta gratuit</a>.
       </div>
     `;
     btn.disabled = false;
@@ -1237,7 +1237,7 @@ function openUnivModal(univKey){
   const body = document.getElementById('univ-modal-body');
   const accessBadge = data.access === 'freemium'
     ? '<span class="access-badge freemium">🎁 Inclus en Freemium</span>'
-    : '<span class="access-badge premium">★ Premium 290 €/mois</span>';
+    : '<span class="access-badge premium">★ Accès Bêta fondateur</span>';
   const statusBadge = data.status === 'live'
     ? '<span class="status-badge live">'+data.statusLabel+'</span>'
     : '<span class="status-badge soon">'+data.statusLabel+'</span>';
@@ -1269,7 +1269,7 @@ function openUnivModal(univKey){
 
     ${data.access === 'premium' ? `
       <div class="modal-cta">
-        <p>Cet univers est <strong>débloqué en formule Premium</strong> à 290 €/mois (6 mois offerts en phase Bêta).</p>
+        <p>Cet univers est <strong>débloqué pour les 50 familles fondatrices</strong> de la phase Bêta. Accès complet offert pendant toute la durée de la Bêta.</p>
         <a href="#beta" class="modal-cta-btn" onclick="closeUnivModal()">Demander un accès Bêta →</a>
       </div>
     ` : `
@@ -1570,20 +1570,20 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
     </div>
 
     <div class="tier recommended">
-      <div class="tier-icon" style="color:var(--gold-bright)">⬡</div>
-      <div class="tier-name">Family Office <em>Augmenté</em></div>
-      <div class="tier-tagline">Paiement mensuel · résiliable</div>
+      <div class="tier-icon" style="color:var(--gold-bright)">★</div>
+      <div class="tier-name">Bêta <em>fondateur</em></div>
+      <div class="tier-tagline">50 familles · accès complet offert</div>
       <div class="tier-price">
-        <div class="tier-price-num"><em>290 €</em> <span class="small">/ mois</span></div>
-        <div class="tier-price-note">— Sans engagement · 6 mois offerts en Bêta</div>
+        <div class="tier-price-num"><em>0 €</em> <span class="small">pendant la Bêta</span></div>
+        <div class="tier-price-note">— Sans carte bancaire · sans engagement</div>
       </div>
       <div class="tier-feats">
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Univers Patrimoine</b> live · cartographie SIREN auto (RNE officiel)</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Univers Fiscalité</b> live · Marcel + Codex Opus 4.7 expertise</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>5 simulateurs déterministes (IR, IFI, Dutreil, donation, succession)</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Audit log immutable <b>eIDAS</b> · D1 Paris · MIF II conforme</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Mail prioritaire à Maxime · 1 RDV mensuel inclus</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico" style="background:var(--gold-bright); color:var(--navy)">↗</span><span><b>+10 univers</b> déployés au fil des Sprints 2-5 (accès inclus dès activation)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Tous les univers</b> disponibles activés au fil des Sprints</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Marcel chef d'orchestre + 12 spécialistes IA souverains</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Cartographie SIREN auto · audit MIF II eIDAS · D1 Paris</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Mail prioritaire</b> à Maxime · RDV inclus pendant la Bêta</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Retour mensuel structuré attendu en échange (5 questions)</span></div>
+        <div class="tier-feat" style="background:rgba(201,169,110,0.10); border-radius:8px; padding:10px 12px; margin-top:6px"><span class="tier-feat-ico" style="background:var(--gold-bright); color:var(--navy)">i</span><span><b>Tarification post-Bêta annoncée Q4 2026</b>, co-construite avec les 50 familles fondatrices.</span></div>
       </div>
       <a href="#beta" class="tier-cta tier-cta-recommended">Demander un accès Bêta →</a>
     </div>
@@ -1617,11 +1617,11 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
 
   <div class="faq-item">
     <div class="faq-q">Qu'est-ce qu'un Family Office augmenté ?</div>
-    <div class="faq-a">Un <b>Family Office</b> est traditionnellement une structure réservée aux grandes fortunes (≥ 50 M€) qui centralise la gestion patrimoniale d'une famille. Le Family Office <b>augmenté par IA souveraine</b> d'IKCP démocratise cette approche : <em>douze univers patrimoniaux</em> (immobilier, fiscalité, transmission, marchés, art, voyage…) orchestrés par Marcel, votre agent IA dédié. Accessible à partir de 290 €/mois, soit 4 fois moins cher qu'un CGP traditionnel pour 12 fois plus de fonctionnalités.</div>
+    <div class="faq-a">Un <b>Family Office</b> est traditionnellement une structure réservée aux grandes fortunes (≥ 50 M€) qui centralise la gestion patrimoniale d'une famille. Le Family Office <b>augmenté par IA souveraine</b> d'IKCP démocratise cette approche : <em>douze univers patrimoniaux</em> (immobilier, fiscalité, transmission, marchés, art, voyage…) orchestrés par Marcel, votre agent IA dédié. Actuellement en <b>phase Bêta privée</b> avec accès complet offert aux 50 familles fondatrices · tarification post-Bêta co-construite avec elles.</div>
   </div>
 
   <div class="faq-q">Pourquoi un Family Office <em>100 % digital</em> ?</div>
-    <div class="faq-a">Les Family Offices traditionnels sont <b>réservés aux très grandes fortunes</b> (≥ 50 M€) avec des coûts d'équipe à 6 chiffres. Notre approche : <em>digitaliser ce qui peut l'être</em> (cartographie auto, simulateurs, conseil IA souverain, réservations) et <em>réserver l'humain à ce qui compte vraiment</em> (validation Maxime, RDV mensuels, arbitrages stratégiques). Résultat : un service de qualité Family Office <b>accessible à 290 €/mois</b> au lieu de 50 k€/an.</div>
+    <div class="faq-a">Les Family Offices traditionnels sont <b>réservés aux très grandes fortunes</b> (≥ 50 M€) avec des coûts d'équipe à 6 chiffres. Notre approche : <em>digitaliser ce qui peut l'être</em> (cartographie auto, simulateurs, conseil IA souverain, réservations) et <em>réserver l'humain à ce qui compte vraiment</em> (validation Maxime, RDV mensuels, arbitrages stratégiques). Résultat : un service de qualité Family Office <b>accessible à un coût marginal</b> au lieu de 50 k€/an de Single Family Office. Tarification post-Bêta annoncée Q4 2026.</div>
   </div>
 
   <div class="faq-item">
@@ -1641,7 +1641,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
 
   <div class="faq-item">
     <div class="faq-q">À qui s'adresse le Family Office Augmenté ?</div>
-    <div class="faq-a">Aux <b>dirigeant(e)s d'entreprise familiale</b>, professions libérales, et familles entrepreneuriales avec un patrimoine entre 500 k€ et 50 M€. Le tier <em>Family Office Augmenté</em> (290 €/mois) cible les patrimoines 500 k€ à 5 M€. Le tier <em>Sur-mesure</em> est réservé aux familles ≥ 5 M€ multi-business.</div>
+    <div class="faq-a">Aux <b>dirigeant(e)s d'entreprise familiale</b>, professions libérales, et familles entrepreneuriales avec un patrimoine entre 500 k€ et 50 M€. La <em>Bêta fondateur</em> (gratuite) est ouverte à 50 familles. Le tier <em>Sur-mesure</em> sera réservé aux familles ≥ 5 M€ multi-business après la Bêta.</div>
   </div>
 
   <div class="faq-item">
@@ -1729,7 +1729,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
       "name": "Qu'est-ce qu'un Family Office augmenté ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Un Family Office est traditionnellement une structure réservée aux grandes fortunes qui centralise la gestion patrimoniale. Le Family Office augmenté par IA souveraine d'IKCP démocratise cette approche : 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Accessible à partir de 290 €/mois."
+        "text": "Un Family Office est traditionnellement une structure réservée aux grandes fortunes qui centralise la gestion patrimoniale. Le Family Office augmenté par IA souveraine d'IKCP démocratise cette approche : 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Actuellement en phase Bêta privée avec accès complet offert aux 50 familles fondatrices."
       }
     },
     {
