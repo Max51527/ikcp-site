@@ -342,6 +342,7 @@
     .chat-layout{display:grid;grid-template-columns:1fr 280px;gap:16px;height:calc(100vh - var(--topbar-h) - 80px);min-height:500px}
     .chat-main{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:var(--card-r);display:flex;flex-direction:column;overflow:hidden}
     .chat-header{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;flex-shrink:0}
+    .chat-msgs-wrap{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column}
     .chat-messages{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(201,169,110,0.15) transparent}
     .msg{display:flex;gap:10px;max-width:90%}
     .msg.user{flex-direction:row-reverse;align-self:flex-end}
@@ -435,6 +436,52 @@
 
     /* ── COUNTERS ── */
     .counter{display:inline}
+
+    /* ── MONTGOLFIÈRE SEND BTN ── */
+    .chat-send{
+      width:42px;height:42px;border-radius:12px;flex-shrink:0;cursor:pointer;
+      background:linear-gradient(135deg,var(--gold),var(--gold-bright));
+      border:none;display:flex;align-items:center;justify-content:center;
+      color:var(--navy);transition:.2s;
+    }
+    .chat-send:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 6px 20px rgba(201,169,110,0.45)}
+    .chat-send:disabled{opacity:.35;transform:none;cursor:not-allowed}
+    .chat-send svg{width:18px;height:22px;display:block}
+
+    /* ── AGENTS CONSTELLATION FILIGRANE ── */
+    .chat-msgs-wrap{position:relative;flex:1;overflow:hidden}
+    .agents-filigrane{
+      position:absolute;inset:0;pointer-events:none;z-index:0;
+      display:flex;align-items:center;justify-content:center;
+      opacity:1;
+    }
+    .agents-svg{width:100%;height:100%;max-width:580px;max-height:420px;overflow:visible}
+    @keyframes orbit-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @keyframes orbit-rev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+    .orbit-inner{transform-origin:300px 240px;animation:orbit-slow 90s linear infinite}
+    .orbit-outer{transform-origin:300px 240px;animation:orbit-rev 140s linear infinite}
+    @keyframes filigrane-pulse{0%,100%{opacity:.7}50%{opacity:1}}
+    .agents-filigrane{animation:filigrane-pulse 8s ease-in-out infinite}
+    /* Messages sit above filigrane */
+    .chat-messages{position:relative;z-index:1;flex:1;overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+    .chat-messages::-webkit-scrollbar{width:4px}
+    .chat-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px}
+
+    /* ── AGENTS TEAM SIDEBAR ── */
+    .agents-team-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px}
+    .agent-team-chip{
+      display:flex;align-items:center;gap:6px;padding:5px 8px;
+      background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.055);
+      border-radius:8px;transition:.15s;cursor:default;
+    }
+    .agent-team-chip:hover{border-color:rgba(201,169,110,0.2);background:rgba(201,169,110,0.04)}
+    .agent-team-chip .a-ico{font-size:13px;flex-shrink:0;line-height:1}
+    .agent-team-chip .a-info{}
+    .agent-team-chip .a-name{font-size:9.5px;font-weight:600;color:var(--cream);letter-spacing:0.02em}
+    .agent-team-chip .a-role{font-size:8.5px;color:rgba(255,255,255,0.3);line-height:1.3}
+    .agent-team-chip .a-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-left:auto}
+    .a-dot.live{background:#3ECC8A;box-shadow:0 0 4px #3ECC8A}
+    .a-dot.soon{background:rgba(201,169,110,0.4)}
 
     /* ── ASSET COLLECTIONS (Mes biens) ── */
     .asset-universe{margin-bottom:32px}
@@ -881,6 +928,88 @@
             <div style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25)">MIF II · ORIAS 23001568 · Confidentiel</div>
           </div>
 
+          <!-- Wrapper needed so filigrane is sibling to messages -->
+          <div class="chat-msgs-wrap">
+          <div class="agents-filigrane" aria-hidden="true">
+            <svg class="agents-svg" viewBox="0 0 600 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer ring lines (Marcel → outer agents) -->
+              <g stroke="#C9A96E" stroke-width="0.5" opacity="0.12" stroke-dasharray="3 5">
+                <line x1="300" y1="240" x2="382" y2="75"/><!-- Noé -->
+                <line x1="300" y1="240" x2="478" y2="150"/><!-- Neptune -->
+                <line x1="300" y1="240" x2="460" y2="345"/><!-- Clio -->
+                <line x1="300" y1="240" x2="300" y2="415"/><!-- Sirius -->
+                <line x1="300" y1="240" x2="140" y2="345"/><!-- Écho -->
+                <line x1="300" y1="240" x2="122" y2="150"/><!-- Zéphyr -->
+              </g>
+              <!-- Inner ring lines (Marcel → inner agents) -->
+              <g stroke="#C9A96E" stroke-width="0.7" opacity="0.18">
+                <line x1="300" y1="240" x2="300" y2="132"/><!-- Codex -->
+                <line x1="300" y1="240" x2="398" y2="172"/><!-- Hermès -->
+                <line x1="300" y1="240" x2="362" y2="324"/><!-- Athéna -->
+                <line x1="300" y1="240" x2="238" y2="324"/><!-- Auguste -->
+                <line x1="300" y1="240" x2="202" y2="172"/><!-- Léon -->
+              </g>
+
+              <!-- Rotating outer ring agents -->
+              <g class="orbit-outer">
+                <!-- Noé — Prévoyance -->
+                <circle cx="382" cy="75" r="18" stroke="#C9A96E" stroke-width="0.6" fill="rgba(201,169,110,0.04)" opacity="0.35"/>
+                <text x="382" y="79" text-anchor="middle" fill="#E2C896" font-size="13" opacity="0.35" font-family="serif">🛡</text>
+                <text x="382" y="96" text-anchor="middle" fill="#C9A96E" font-size="7" opacity="0.3" font-family="monospace" letter-spacing="1">NOÉ</text>
+                <!-- Neptune — Passions -->
+                <circle cx="478" cy="150" r="18" stroke="#C9A96E" stroke-width="0.6" fill="rgba(201,169,110,0.04)" opacity="0.35"/>
+                <text x="478" y="154" text-anchor="middle" fill="#E2C896" font-size="13" opacity="0.35" font-family="serif">⛵</text>
+                <text x="478" y="171" text-anchor="middle" fill="#C9A96E" font-size="7" opacity="0.3" font-family="monospace" letter-spacing="1">NEPTUNE</text>
+                <!-- Clio — Art -->
+                <circle cx="460" cy="345" r="18" stroke="#C9A96E" stroke-width="0.6" fill="rgba(201,169,110,0.04)" opacity="0.35"/>
+                <text x="460" y="349" text-anchor="middle" fill="#E2C896" font-size="13" opacity="0.35" font-family="serif">🎭</text>
+                <text x="460" y="366" text-anchor="middle" fill="#C9A96E" font-size="7" opacity="0.3" font-family="monospace" letter-spacing="1">CLIO</text>
+                <!-- Sirius — Veille -->
+                <circle cx="300" cy="415" r="18" stroke="#C9A96E" stroke-width="0.6" fill="rgba(201,169,110,0.04)" opacity="0.35"/>
+                <text x="300" y="419" text-anchor="middle" fill="#E2C896" font-size="13" opacity="0.35" font-family="serif">🔭</text>
+                <text x="300" y="436" text-anchor="middle" fill="#C9A96E" font-size="7" opacity="0.3" font-family="monospace" letter-spacing="1">SIRIUS</text>
+                <!-- Écho — RGPD -->
+                <circle cx="140" cy="345" r="18" stroke="#C9A96E" stroke-width="0.6" fill="rgba(201,169,110,0.04)" opacity="0.35"/>
+                <text x="140" y="349" text-anchor="middle" fill="#E2C896" font-size="13" opacity="0.35" font-family="serif">🛡</text>
+                <text x="140" y="366" text-anchor="middle" fill="#C9A96E" font-size="7" opacity="0.3" font-family="monospace" letter-spacing="1">ÉCHO</text>
+                <!-- Zéphyr — Conciergerie -->
+                <circle cx="122" cy="150" r="18" stroke="#C9A96E" stroke-width="0.6" fill="rgba(201,169,110,0.04)" opacity="0.35"/>
+                <text x="122" y="154" text-anchor="middle" fill="#E2C896" font-size="13" opacity="0.35" font-family="serif">🌐</text>
+                <text x="122" y="171" text-anchor="middle" fill="#C9A96E" font-size="7" opacity="0.3" font-family="monospace" letter-spacing="1">ZÉPHYR</text>
+              </g>
+
+              <!-- Rotating inner ring agents -->
+              <g class="orbit-inner">
+                <!-- Codex — Fiscal -->
+                <circle cx="300" cy="132" r="22" stroke="#C9A96E" stroke-width="0.9" fill="rgba(201,169,110,0.06)" opacity="0.45"/>
+                <text x="300" y="137" text-anchor="middle" fill="#E2C896" font-size="14" opacity="0.45" font-family="serif">⚖</text>
+                <text x="300" y="155" text-anchor="middle" fill="#C9A96E" font-size="7.5" opacity="0.35" font-family="monospace" letter-spacing="1.2">CODEX</text>
+                <!-- Hermès — Collections -->
+                <circle cx="398" cy="172" r="22" stroke="#C9A96E" stroke-width="0.9" fill="rgba(201,169,110,0.06)" opacity="0.45"/>
+                <text x="398" y="177" text-anchor="middle" fill="#E2C896" font-size="14" opacity="0.45" font-family="serif">💎</text>
+                <text x="398" y="195" text-anchor="middle" fill="#C9A96E" font-size="7.5" opacity="0.35" font-family="monospace" letter-spacing="1.2">HERMÈS</text>
+                <!-- Athéna — Immobilier -->
+                <circle cx="362" cy="324" r="22" stroke="#C9A96E" stroke-width="0.9" fill="rgba(201,169,110,0.06)" opacity="0.45"/>
+                <text x="362" y="329" text-anchor="middle" fill="#E2C896" font-size="14" opacity="0.45" font-family="serif">🏛</text>
+                <text x="362" y="347" text-anchor="middle" fill="#C9A96E" font-size="7.5" opacity="0.35" font-family="monospace" letter-spacing="1.2">ATHÉNA</text>
+                <!-- Auguste — Transmission -->
+                <circle cx="238" cy="324" r="22" stroke="#C9A96E" stroke-width="0.9" fill="rgba(201,169,110,0.06)" opacity="0.45"/>
+                <text x="238" y="329" text-anchor="middle" fill="#E2C896" font-size="14" opacity="0.45" font-family="serif">📜</text>
+                <text x="238" y="347" text-anchor="middle" fill="#C9A96E" font-size="7.5" opacity="0.35" font-family="monospace" letter-spacing="1.2">AUGUSTE</text>
+                <!-- Léon — Holdings -->
+                <circle cx="202" cy="172" r="22" stroke="#C9A96E" stroke-width="0.9" fill="rgba(201,169,110,0.06)" opacity="0.45"/>
+                <text x="202" y="177" text-anchor="middle" fill="#E2C896" font-size="14" opacity="0.45" font-family="serif">🏦</text>
+                <text x="202" y="195" text-anchor="middle" fill="#C9A96E" font-size="7.5" opacity="0.35" font-family="monospace" letter-spacing="1.2">LÉON</text>
+              </g>
+
+              <!-- Marcel — centre fixe -->
+              <circle cx="300" cy="240" r="32" stroke="#C9A96E" stroke-width="1" fill="rgba(201,169,110,0.07)" opacity="0.5"/>
+              <circle cx="300" cy="240" r="38" stroke="#C9A96E" stroke-width="0.4" stroke-dasharray="2 4" fill="none" opacity="0.2"/>
+              <text x="300" y="246" text-anchor="middle" fill="#E2C896" font-size="20" opacity="0.5" font-family="serif">✦</text>
+              <text x="300" y="263" text-anchor="middle" fill="#C9A96E" font-size="8.5" opacity="0.4" font-family="monospace" letter-spacing="2">MARCEL</text>
+            </svg>
+          </div>
+
           <div class="chat-messages" id="chat-messages">
             <div class="msg marcel">
               <div class="msg-avatar m">✦</div>
@@ -897,12 +1026,30 @@
               </div>
             </div>
           </div>
+          </div><!-- /chat-msgs-wrap -->
 
           <div class="chat-input-area">
             <div class="chat-input-row">
               <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Dicter votre question">🎤</button>
               <textarea class="chat-textarea" id="chat-input" rows="1" placeholder="Posez votre question patrimoniale…" onkeydown="handleKey(event)"></textarea>
-              <button class="chat-send" id="chat-send-btn" onclick="sendMessage()">→</button>
+              <!-- Montgolfière send button -->
+              <button class="chat-send" id="chat-send-btn" onclick="sendMessage()" title="Envoyer">
+                <svg viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Envelope ballon -->
+                  <ellipse cx="10" cy="9.5" rx="8" ry="9.5" stroke="currentColor" stroke-width="1.5"/>
+                  <!-- Seam vertical -->
+                  <path d="M10 0.5 C13 5 13 14 10 19 C7 14 7 5 10 0.5Z" fill="currentColor" opacity="0.2"/>
+                  <!-- Bande horizontale -->
+                  <path d="M2 9.5 Q10 12.5 18 9.5" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+                  <!-- Cordes -->
+                  <line x1="6.5" y1="18.5" x2="7" y2="22" stroke="currentColor" stroke-width="1.2"/>
+                  <line x1="13.5" y1="18.5" x2="13" y2="22" stroke="currentColor" stroke-width="1.2"/>
+                  <line x1="9.2" y1="19" x2="9.2" y2="22" stroke="currentColor" stroke-width="0.9"/>
+                  <line x1="10.8" y1="19" x2="10.8" y2="22" stroke="currentColor" stroke-width="0.9"/>
+                  <!-- Nacelle -->
+                  <rect x="6" y="22" width="8" height="4" rx="1.4" stroke="currentColor" stroke-width="1.4"/>
+                </svg>
+              </button>
             </div>
             <div style="display:flex;align-items:center;gap:10px;padding-top:7px">
               <div class="voice-status" id="voice-status">
@@ -924,13 +1071,65 @@
             <div class="quick-q" onclick="setQuestion('Quel montant optimal à verser sur mon PER avant le 31 décembre pour ma TMI à 41% ?')">Optimisation PER TMI 41%</div>
           </div>
           <div class="chat-side-card">
-            <div class="chat-side-title">Domaines couverts</div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">⚖</span> Fiscalité & transmission</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">🏛</span> Patrimoine & structuration</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">🛡</span> Prévoyance & retraite</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">🏠</span> Immobilier & financement</div>
+            <div class="chat-side-title">✦ L'équipe Marcel — 11 spécialistes</div>
+            <div class="agents-team-grid">
+              <div class="agent-team-chip">
+                <span class="a-ico">⚖</span>
+                <div class="a-info"><div class="a-name">Codex</div><div class="a-role">Fiscal & droit</div></div>
+                <div class="a-dot live"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">📜</span>
+                <div class="a-info"><div class="a-name">Auguste</div><div class="a-role">Succession</div></div>
+                <div class="a-dot live"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">💎</span>
+                <div class="a-info"><div class="a-name">Hermès</div><div class="a-role">Collections</div></div>
+                <div class="a-dot live"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">🏛</span>
+                <div class="a-info"><div class="a-name">Athéna</div><div class="a-role">Immobilier</div></div>
+                <div class="a-dot live"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">🏦</span>
+                <div class="a-info"><div class="a-name">Léon</div><div class="a-role">Holdings</div></div>
+                <div class="a-dot live"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">⛵</span>
+                <div class="a-info"><div class="a-name">Neptune</div><div class="a-role">Passions</div></div>
+                <div class="a-dot soon"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">🎭</span>
+                <div class="a-info"><div class="a-name">Clio</div><div class="a-role">Art & mécénat</div></div>
+                <div class="a-dot soon"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">🛡</span>
+                <div class="a-info"><div class="a-name">Noé</div><div class="a-role">Prévoyance</div></div>
+                <div class="a-dot soon"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">🔭</span>
+                <div class="a-info"><div class="a-name">Sirius</div><div class="a-role">Veille & alertes</div></div>
+                <div class="a-dot soon"></div>
+              </div>
+              <div class="agent-team-chip">
+                <span class="a-ico">🌐</span>
+                <div class="a-info"><div class="a-name">Zéphyr</div><div class="a-role">Conciergerie</div></div>
+                <div class="a-dot soon"></div>
+              </div>
+              <div class="agent-team-chip" style="grid-column:1/-1">
+                <span class="a-ico">🔒</span>
+                <div class="a-info"><div class="a-name">Écho</div><div class="a-role">RGPD · Conformité MIF II</div></div>
+                <div class="a-dot live"></div>
+              </div>
             </div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-top:8px;font-style:italic;text-align:center">● LIVE — actif · ◌ déploiement Q3-Q4 2026</div>
           </div>
           <div class="chat-side-card">
             <div class="chat-side-title">Ce mois</div>
