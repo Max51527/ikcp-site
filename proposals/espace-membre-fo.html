@@ -682,8 +682,92 @@
 
     /* ── RESPONSIVE ── */
     @media(max-width:1300px){.univers-grid-5{grid-template-columns:repeat(3,1fr)}.univers-grid-4{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.univers-grid{grid-template-columns:repeat(2,1fr)}.univers-grid-3{grid-template-columns:repeat(2,1fr)}.chat-layout{grid-template-columns:1fr}}
-    @media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid-3{grid-template-columns:1fr}}
+    @media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.univers-grid{grid-template-columns:repeat(2,1fr)}.univers-grid-3{grid-template-columns:repeat(2,1fr)}.chat-layout{grid-template-columns:1fr}.uv-grid-3{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:800px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid-3{grid-template-columns:1fr}.uv-grid-3,.uv-grid-2{grid-template-columns:1fr}}
+
+    /* ═══════════════════════════════════
+       UNIVERS VIEW PANELS — 12 univers
+    ═══════════════════════════════════ */
+    .uv-hero{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap}
+    .uv-badge-live{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(62,204,138,0.12);border:1px solid rgba(62,204,138,0.25);border-radius:20px;font-size:11px;color:#3ECC8A;font-weight:600;flex-shrink:0}
+    .uv-badge-live::before{content:'';width:6px;height:6px;border-radius:50%;background:#3ECC8A;animation:pulse-dot 2s infinite}
+    .uv-badge-sprint{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(184,115,51,0.1);border:1px solid rgba(184,115,51,0.25);border-radius:20px;font-size:11px;color:var(--amber);flex-shrink:0}
+    .uv-badge-s4{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:11px;color:rgba(255,255,255,0.35);flex-shrink:0}
+
+    .uv-sprint-banner{margin-bottom:20px;padding:14px 18px;background:rgba(14,23,41,0.6);border:1px solid rgba(201,169,110,0.12);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .uv-sprint-label{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.06em;margin-bottom:3px}
+    .uv-sprint-desc{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5}
+    .uv-progress{background:rgba(255,255,255,0.06);height:3px;border-radius:4px;margin-top:6px;min-width:140px}
+    .uv-progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-deep),var(--gold))}
+
+    .uv-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+    .uv-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:18px}
+    .uv-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 20px}
+    .uv-panel-wide{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+    .uv-panel-gold{background:rgba(201,169,110,0.04);border:1px solid rgba(201,169,110,0.14);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+    .uv-panel-h{font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:1.6px;text-transform:uppercase;margin-bottom:13px;display:flex;align-items:center;gap:7px}
+    .uv-kpi-n{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:500;color:var(--gold);letter-spacing:-.02em;margin-bottom:3px}
+    .uv-kpi-l{font-size:10px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:.1em}
+
+    .tax-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12.5px}
+    .tax-row:last-child{border-bottom:none;padding-top:10px;font-weight:600}
+    .tax-label{color:rgba(255,255,255,0.5)}.tax-val{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cream)}
+    .tax-val.gold{color:var(--gold)}.tax-val.red{color:#E57373}.tax-val.green{color:#3ECC8A}
+
+    .optim-item{padding:9px 12px;background:rgba(62,204,138,0.05);border:1px solid rgba(62,204,138,0.12);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;transition:.2s}
+    .optim-item:hover{background:rgba(62,204,138,0.09);border-color:rgba(62,204,138,0.2)}
+    .optim-desc{font-size:11.5px;color:rgba(255,255,255,0.6);line-height:1.4;flex:1}
+    .optim-save{font-family:'JetBrains Mono',monospace;font-size:13px;color:#3ECC8A;font-weight:600;white-space:nowrap}
+
+    .entity-card{padding:13px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:10px;cursor:pointer;transition:.2s}
+    .entity-card:hover{border-color:rgba(201,169,110,0.25);background:rgba(201,169,110,0.04)}
+    .entity-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .entity-name{font-size:13px;font-weight:600;color:var(--cream)}
+    .entity-tag{font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(201,169,110,0.1);color:var(--gold);border:1px solid rgba(201,169,110,0.14)}
+    .entity-siren{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.18);margin-bottom:8px}
+    .entity-kpis{display:flex;gap:14px;flex-wrap:wrap}
+    .entity-kpi{font-size:11px;color:rgba(255,255,255,0.4)}.entity-kpi span{font-family:'JetBrains Mono',monospace;color:var(--cream)}
+    .org-chart{padding:13px 14px;background:rgba(255,255,255,0.02);border-radius:8px;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;color:rgba(255,255,255,0.45)}
+    .oc-root{color:var(--gold-bright);font-weight:600}.oc-l1{padding-left:16px;color:rgba(255,255,255,0.55)}.oc-l2{padding-left:32px;color:rgba(255,255,255,0.32)}
+
+    .uv-btn{padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;border:none;font-family:'Outfit',sans-serif;letter-spacing:.04em}
+    .uv-btn-p{background:var(--navy);color:var(--gold-bright);border:1px solid rgba(201,169,110,0.25)!important}
+    .uv-btn-p:hover{background:rgba(201,169,110,0.08)}
+    .uv-btn-g{background:transparent;color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.1)!important}
+    .uv-btn-g:hover{color:var(--cream);border-color:rgba(255,255,255,0.25)!important}
+    .uv-action-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+    .codex-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;background:linear-gradient(135deg,rgba(107,63,160,0.14),rgba(107,63,160,0.04));border:1px solid rgba(107,63,160,0.28);border-radius:8px;margin-bottom:14px}
+    .codex-badge .cb-l{font-size:11px;color:rgba(255,255,255,0.55);line-height:1.4}
+    .codex-badge .cb-m{font-family:'JetBrains Mono',monospace;font-size:10px;color:#A78BFA;font-weight:600}
+
+    .uv-locked-wrap{position:relative;overflow:hidden;border-radius:10px;min-height:100px}
+    .uv-locked-blur{filter:blur(4px);opacity:.35;pointer-events:none;user-select:none}
+    .uv-locked-cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(14,23,41,0.65)}
+    .uv-locked-icon{font-size:22px;opacity:.5}.uv-locked-txt{font-size:11px;color:rgba(255,255,255,0.4);text-align:center;padding:0 16px}
+    .uv-notify-btn{padding:8px 18px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.28);border-radius:20px;color:var(--gold);font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:.2s;margin-top:4px}
+    .uv-notify-btn:hover{background:rgba(201,169,110,0.18)}
+
+    .uv-mn{background:rgba(201,169,110,0.04);border:1px solid rgba(201,169,110,0.1);border-radius:10px;padding:14px 16px;margin-top:14px}
+    .uv-mn-title{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+    .uv-mn-chips{display:flex;flex-wrap:wrap;gap:7px}
+    .uv-mn-chip{padding:6px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:20px;font-size:11px;color:rgba(255,255,255,0.55);cursor:pointer;transition:.2s}
+    .uv-mn-chip:hover{color:var(--gold);border-color:rgba(201,169,110,0.22)}
+
+    .deal-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;margin-bottom:8px}
+    .deal-name{font-size:12px;font-weight:600;color:var(--cream)}.deal-sector{font-size:10px;color:var(--ink-mute)}
+    .deal-tag{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600}
+    .deal-tag.co{background:rgba(62,204,138,0.12);color:#3ECC8A}.deal-tag.watch{background:rgba(201,169,110,0.1);color:var(--gold)}.deal-tag.closed{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3)}
+
+    .module-card{padding:12px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;display:flex;align-items:center;gap:12px}
+    .module-ico{font-size:18px;flex-shrink:0;width:28px;text-align:center}.module-info{flex:1}
+    .module-title{font-size:12px;font-weight:600;color:var(--cream);margin-bottom:2px}
+    .module-desc{font-size:10px;color:rgba(255,255,255,0.35);line-height:1.4}
+    .module-lock{font-size:12px;opacity:.4}
+
+    /* sidebar nav sub */
+    .nav-sub{padding-left:30px!important;font-size:11.5px!important;letter-spacing:.01em}
+    .nav-sub.dimmed{opacity:.5}.nav-sub.dimmed:hover{opacity:.8}
   </style>
 </head>
 <body>
@@ -729,6 +813,58 @@
       <div class="nav-item" onclick="showView('alertes')">
         <span class="icon">◉</span> Alertes
         <span class="badge">3</span>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">12 Univers</div>
+      <div class="nav-item nav-sub" onclick="showView('patrimoine')">
+        <span class="icon">💼</span> Patrimoine
+        <span class="live-dot"></span>
+      </div>
+      <div class="nav-item nav-sub" onclick="showView('fiscalite')">
+        <span class="icon">🏛</span> Fiscalité
+        <span class="live-dot"></span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('immobilier')">
+        <span class="icon">🏠</span> Immobilier
+        <span class="badge" style="background:rgba(184,115,51,0.15);color:var(--amber);border:none;font-size:9px">S2</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('reporting')">
+        <span class="icon">📊</span> Reporting
+        <span class="badge" style="background:rgba(184,115,51,0.15);color:var(--amber);border:none;font-size:9px">S2</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('administration')">
+        <span class="icon">📋</span> Administration
+        <span class="badge" style="background:rgba(184,115,51,0.15);color:var(--amber);border:none;font-size:9px">S2</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('formation')">
+        <span class="icon">🎓</span> Formation NextGen
+        <span class="badge" style="background:rgba(184,115,51,0.15);color:var(--amber);border:none;font-size:9px">S2</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('marches')">
+        <span class="icon">📈</span> Marchés
+        <span class="badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);border:none;font-size:9px">S3</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('voyage')">
+        <span class="icon">💎</span> Voyage
+        <span class="badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);border:none;font-size:9px">S3</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('art')">
+        <span class="icon">🎨</span> Art
+        <span class="badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);border:none;font-size:9px">S3</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('pe')">
+        <span class="icon">🪴</span> Private Equity
+        <span class="badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);border:none;font-size:9px">S3</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('transmission')">
+        <span class="icon">🌱</span> Transmission
+        <span class="badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);border:none;font-size:9px">S4</span>
+      </div>
+      <div class="nav-item nav-sub dimmed" onclick="showView('philanthropie')">
+        <span class="icon">🤲</span> Philanthropie
+        <span class="badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);border:none;font-size:9px">S4</span>
       </div>
     </div>
 
@@ -1414,26 +1550,26 @@
           <span class="services-group-badge badge-live2">● 4 LIVE</span>
         </div>
         <div class="univers-grid-4">
-          <div class="univers-card">
-            <div class="univers-ico">◈</div>
-            <div class="univers-name">Cartographie patrimoniale</div>
-            <div class="univers-desc">Vision 360° de vos entités : SIREN, capital, actionnaires, bénéficiaires effectifs, actes officiels. Résultat en 30s.</div>
+          <div class="univers-card" style="cursor:pointer" onclick="showView('patrimoine')">
+            <div class="univers-ico">💼</div>
+            <div class="univers-name">Patrimoine</div>
+            <div class="univers-desc">Cartographie SIREN · données RNE officielles · organigramme · capitaux propres consolidés.</div>
             <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE</div>
-            <div class="univers-agent" onclick="askMarcel('Lancer une cartographie complète de mes entités patrimoniales')">Lancer →</div>
+            <div class="univers-agent">Ouvrir →</div>
           </div>
-          <div class="univers-card">
+          <div class="univers-card" style="cursor:pointer" onclick="showView('fiscalite')">
+            <div class="univers-ico">🏛</div>
+            <div class="univers-name">Fiscalité</div>
+            <div class="univers-desc">IR · IFI · arbitrages · optimisations détectées · Codex Opus 4.7 expertise senior.</div>
+            <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Expertise senior</div>
+            <div class="univers-agent">Ouvrir →</div>
+          </div>
+          <div class="univers-card" style="cursor:pointer" onclick="showView('marcel')">
             <div class="univers-ico">✦</div>
             <div class="univers-name">Conseil patrimonial 24/7</div>
             <div class="univers-desc">Questions illimitées. Réponses expertes, chiffrées, sourcées. Escalade automatique sur sujets complexes.</div>
             <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · 24h/24</div>
-            <div class="univers-agent" onclick="showView('marcel')">Ouvrir →</div>
-          </div>
-          <div class="univers-card">
-            <div class="univers-ico">⚖</div>
-            <div class="univers-name">Fiscalité & Transmission</div>
-            <div class="univers-desc">IR, IFI, droits de succession, Dutreil, apport-cession, démembrement. Analyses avec citations CGI et jurisprudence.</div>
-            <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Expertise senior</div>
-            <div class="univers-agent" onclick="askMarcel('Analyse fiscale complète : IR, IFI, transmission, stratégies optimales pour ma situation')">Analyser →</div>
+            <div class="univers-agent">Ouvrir →</div>
           </div>
           <div class="univers-card">
             <div class="univers-ico">📋</div>
@@ -1518,29 +1654,33 @@
           <span class="services-group-badge badge-soon">⊙ Bientôt</span>
         </div>
         <div class="univers-grid-4">
-          <div class="univers-card locked">
-            <div class="univers-ico">🏘</div>
-            <div class="univers-name">Immobilier & DVF</div>
-            <div class="univers-desc">Valorisation automatique, données DVF officielles, IFI immo, rendements locatifs nets, arbitrages vente/conservation.</div>
-            <div class="univers-soon">⊙ Q3 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.75" onclick="showView('immobilier')">
+            <div class="univers-ico">🏠</div>
+            <div class="univers-name">Immobilier</div>
+            <div class="univers-desc">DVF live · prix m² · rendements nets · agent Architecte. Marcel répond déjà sur l'immo.</div>
+            <div class="univers-soon">⊙ Sprint 2 · Q3 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">🏗</div>
-            <div class="univers-name">Cartographie 360°</div>
-            <div class="univers-desc">Patrimoine global multi-entités visualisé : holding, SCI, sociétés, comptes. Détection automatique des incohérences.</div>
-            <div class="univers-soon">⊙ Q3 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.75" onclick="showView('reporting')">
+            <div class="univers-ico">📊</div>
+            <div class="univers-name">Reporting</div>
+            <div class="univers-desc">Synthèse trimestrielle PDF · agent Olympe · bilan personnalisé famille.</div>
+            <div class="univers-soon">⊙ Sprint 2 · Q3 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">🔏</div>
-            <div class="univers-name">Signature électronique</div>
-            <div class="univers-desc">Signature eIDAS qualifiée de vos documents patrimoniaux. Lettre de mission, mandats, DER. Conformité notariale.</div>
-            <div class="univers-soon">⊙ Q3 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.75" onclick="showView('administration')">
+            <div class="univers-ico">📋</div>
+            <div class="univers-name">Administration</div>
+            <div class="univers-desc">Échéances · courriers · signature eIDAS qualifiée · coffre-fort documents.</div>
+            <div class="univers-soon">⊙ Sprint 2 · Q3 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">📰</div>
-            <div class="univers-name">Veille réglementaire</div>
-            <div class="univers-desc">Alertes automatiques sur les nouvelles lois fiscales, PLF, instructions BOFIP. Analyse d'impact sur votre situation.</div>
-            <div class="univers-soon">⊙ Q3 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.75" onclick="showView('formation')">
+            <div class="univers-ico">🎓</div>
+            <div class="univers-name">Formation NextGen</div>
+            <div class="univers-desc">6 modules pour vos enfants · agent Pédagogue · intelligence financière familiale.</div>
+            <div class="univers-soon">⊙ Sprint 2 · Q3 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
         </div>
       </div>
@@ -1552,35 +1692,33 @@
           <span class="services-group-badge badge-soon">⊙ Planifiés</span>
         </div>
         <div class="univers-grid-5">
-          <div class="univers-card locked">
+          <div class="univers-card" style="cursor:pointer;opacity:.65" onclick="showView('marches')">
             <div class="univers-ico">📈</div>
-            <div class="univers-name">Marchés & Allocation</div>
-            <div class="univers-desc">Suivi allocation, drift détection, rebalancement suggéré. ETF, PEA, PER. Analyse en temps réel.</div>
-            <div class="univers-soon">⊙ Q4 2026</div>
+            <div class="univers-name">Marchés</div>
+            <div class="univers-desc">CAC 40 · S&P 500 · drift allocation · rebalancement · agent Stratège.</div>
+            <div class="univers-soon">⊙ Sprint 3 · Q4 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">🛡</div>
-            <div class="univers-name">Prévoyance & Protection</div>
-            <div class="univers-desc">Audit contrats prévoyance TNS, invalidité, décès. Optimisation charges sociales dirigeant. Gaps détectés.</div>
-            <div class="univers-soon">⊙ Q4 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.65" onclick="showView('voyage')">
+            <div class="univers-ico">💎</div>
+            <div class="univers-name">Voyage</div>
+            <div class="univers-desc">Conciergerie premium · Cookson · Mr&Mrs Smith · déductibilité pro.</div>
+            <div class="univers-soon">⊙ Sprint 3 · Q4 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">🎯</div>
-            <div class="univers-name">Retraite & PER</div>
-            <div class="univers-desc">Simulation retraite complète : régimes obligatoires, PER, AV, projections à 60/65/70 ans. Capital vs rente.</div>
-            <div class="univers-soon">⊙ Q4 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.65" onclick="showView('art')">
+            <div class="univers-ico">🎨</div>
+            <div class="univers-name">Art</div>
+            <div class="univers-desc">Côte Artprice · fiscalité œuvres · dation · agent Curateur.</div>
+            <div class="univers-soon">⊙ Sprint 3 · Q4 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">🎭</div>
-            <div class="univers-name">Concierge lifestyle</div>
-            <div class="univers-desc">Voyages sur-mesure, gastronomie étoilée, événements exclusifs. Réseau de partenaires sélectionnés.</div>
-            <div class="univers-soon">⊙ Q4 2026</div>
-          </div>
-          <div class="univers-card locked">
-            <div class="univers-ico">🖼</div>
-            <div class="univers-name">Art & Collectibles</div>
-            <div class="univers-desc">Valorisation d'œuvres, fiscalité art, horlogerie, vins de collection. Tendances marché et cotes officielles.</div>
-            <div class="univers-soon">⊙ Q4 2026</div>
+          <div class="univers-card" style="cursor:pointer;opacity:.65" onclick="showView('pe')">
+            <div class="univers-ico">🪴</div>
+            <div class="univers-name">Private Equity</div>
+            <div class="univers-desc">Deal flow · co-investissement · FCPR · agent Capital.</div>
+            <div class="univers-soon">⊙ Sprint 3 · Q4 2026</div>
+            <div class="univers-agent">Prévisualiser →</div>
           </div>
         </div>
       </div>
@@ -1592,29 +1730,31 @@
           <span class="services-group-badge badge-later">○ Futur</span>
         </div>
         <div class="univers-grid-4">
-          <div class="univers-card locked" style="opacity:.3">
+          <div class="univers-card" style="cursor:pointer;opacity:.5" onclick="showView('transmission')">
+            <div class="univers-ico">🌱</div>
+            <div class="univers-name">Transmission</div>
+            <div class="univers-desc">Dutreil · donation · succession · arbre successoral · agent Hermès. Marcel répond déjà.</div>
+            <div class="univers-soon">○ Sprint 4 · 2027</div>
+            <div class="univers-agent">Prévisualiser →</div>
+          </div>
+          <div class="univers-card" style="cursor:pointer;opacity:.5" onclick="showView('philanthropie')">
+            <div class="univers-ico">🤲</div>
+            <div class="univers-name">Philanthropie</div>
+            <div class="univers-desc">Don IR/IFI · fonds de dotation · mécénat IS · agent Mécène. Simulateur disponible.</div>
+            <div class="univers-soon">○ Sprint 4 · 2027</div>
+            <div class="univers-agent">Prévisualiser →</div>
+          </div>
+          <div class="univers-card locked" style="opacity:.25">
             <div class="univers-ico">🌍</div>
             <div class="univers-name">International</div>
             <div class="univers-desc">Expatriation, double imposition, structures étrangères, trusts, fondations. Réseau notaires internationaux.</div>
-            <div class="univers-soon">○ 2027</div>
+            <div class="univers-soon">○ 2027+</div>
           </div>
-          <div class="univers-card locked" style="opacity:.3">
-            <div class="univers-ico">🤝</div>
-            <div class="univers-name">Réseau & Partenaires</div>
-            <div class="univers-desc">Mise en relation qualifiée : notaires, avocats fiscalistes, experts-comptables, banquiers privés partenaires.</div>
-            <div class="univers-soon">○ 2027</div>
-          </div>
-          <div class="univers-card locked" style="opacity:.3">
+          <div class="univers-card locked" style="opacity:.25">
             <div class="univers-ico">👨‍👩‍👧</div>
             <div class="univers-name">Espace famille</div>
-            <div class="univers-desc">Accès multi-membres : conjoint, enfants, héritiers. Gouvernance familiale. Partage sécurisé de documents.</div>
-            <div class="univers-soon">○ 2027</div>
-          </div>
-          <div class="univers-card locked" style="opacity:.3">
-            <div class="univers-ico">🕊</div>
-            <div class="univers-name">Philanthropie</div>
-            <div class="univers-desc">Fondations, fonds de dotation, mécénat. Stratégie philanthropique et optimisation fiscale associée.</div>
-            <div class="univers-soon">○ 2027</div>
+            <div class="univers-desc">Accès multi-membres : conjoint, enfants, héritiers. Gouvernance familiale. Partage sécurisé.</div>
+            <div class="univers-soon">○ 2027+</div>
           </div>
         </div>
       </div>
@@ -1654,6 +1794,820 @@
             <div class="univers-live" style="color:var(--gold)"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block"></span> Actif</div>
             <div class="univers-agent">Confidentiel · Souverain</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         💼  UNIVERS 1 — PATRIMOINE (LIVE)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-patrimoine">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">💼 Patrimoine</div>
+          <div class="page-sub">Cartographie SIREN · données RNE officielles · Pappers temps réel</div>
+        </div>
+        <span class="uv-badge-live">LIVE</span>
+      </div>
+
+      <div class="uv-grid-3">
+        <div class="uv-panel">
+          <div class="uv-panel-h">🏢 Entités actives</div>
+          <div class="uv-kpi-n">2</div>
+          <div class="uv-kpi-l">Sociétés cartographiées</div>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">💶 Capitaux propres</div>
+          <div class="uv-kpi-n">2,4 M€</div>
+          <div class="uv-kpi-l">Consolidé estimé</div>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">⚡ Dernière carto</div>
+          <div class="uv-kpi-n" style="font-size:17px">19/05/2026</div>
+          <div class="uv-kpi-l">Actualisée · 28s</div>
+        </div>
+      </div>
+
+      <div class="uv-panel-wide">
+        <div class="uv-panel-h">◈ Vos entités</div>
+        <div class="entity-card" onclick="askMarcel('Analyse complète MOREAU INDUSTRIES SAS — santé financière, ratios clés, points d\'attention et leviers de croissance')">
+          <div class="entity-head">
+            <div class="entity-name">MOREAU INDUSTRIES SAS</div>
+            <span class="entity-tag">Holding opérationnelle</span>
+          </div>
+          <div class="entity-siren">SIREN 782 046 103 · NAF 6420Z · RCS Lyon · Créée 1998</div>
+          <div class="entity-kpis">
+            <div class="entity-kpi">Capital <span>250 000 €</span></div>
+            <div class="entity-kpi">CA 2024 <span>3,2 M€</span></div>
+            <div class="entity-kpi">Résultat <span style="color:#3ECC8A">+187 k€</span></div>
+            <div class="entity-kpi">Effectif <span>18 pers.</span></div>
+          </div>
+        </div>
+        <div class="entity-card" onclick="askMarcel('Analyse SCI LA PROVENÇALE — valeur vénale actuelle, IFI 2026, stratégie de transmission aux héritiers')">
+          <div class="entity-head">
+            <div class="entity-name">SCI LA PROVENÇALE</div>
+            <span class="entity-tag">SCI patrimoniale</span>
+          </div>
+          <div class="entity-siren">SIREN 891 342 657 · NAF 6831Z · RCS Annonay · Créée 2012</div>
+          <div class="entity-kpis">
+            <div class="entity-kpi">Capital <span>10 000 €</span></div>
+            <div class="entity-kpi">Actif net <span>680 k€</span></div>
+            <div class="entity-kpi">Loyers <span style="color:#3ECC8A">+36 k€/an</span></div>
+            <div class="entity-kpi">2 associés</div>
+          </div>
+        </div>
+        <div class="org-chart">
+          <div class="oc-root">👤 Famille Moreau (personnes physiques)</div>
+          <div class="oc-l1">├── 💼 MOREAU INDUSTRIES SAS [100 %]</div>
+          <div class="oc-l2">│   ├── Holding · 3 filiales opérationnelles</div>
+          <div class="oc-l2">│   └── Dividendes → 18 000 €/an → perso</div>
+          <div class="oc-l1">├── 🏠 SCI LA PROVENÇALE [50/50 époux]</div>
+          <div class="oc-l2">│   └── 3 biens immobiliers · valeur nette 680 k€</div>
+          <div class="oc-l1">└── 📊 Comptes perso · AV · PER [directs]</div>
+        </div>
+        <div class="uv-action-bar">
+          <button class="uv-btn uv-btn-p" onclick="askMarcel('Actualiser la cartographie complète de mes entités patrimoniales avec données RNE fraîches et analyse financière consolidée')">✦ Actualiser la cartographie</button>
+          <button class="uv-btn uv-btn-g" onclick="askMarcel('Détecter les gaps dans ma structure patrimoniale : protections manquantes, optimisations fiscales non exploitées, risques de concentration')">Détecter les gaps →</button>
+        </div>
+      </div>
+
+      <div class="uv-panel-wide">
+        <div class="uv-panel-h">🔍 Ajouter une entité par SIREN</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input id="uv-siren-input" type="text" maxlength="9" placeholder="Votre SIREN — 9 chiffres"
+            style="flex:1;min-width:160px;padding:10px 13px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--cream);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"
+            oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)"
+            onkeydown="if(event.key==='Enter')uvSirenSearch()">
+          <button class="uv-btn uv-btn-p" onclick="uvSirenSearch()">Cartographier →</button>
+        </div>
+        <div id="uv-siren-result" style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.35);font-style:italic"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🏛  UNIVERS 2 — FISCALITÉ (LIVE)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-fiscalite">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🏛 Fiscalité</div>
+          <div class="page-sub">IR · IFI · arbitrages · Codex Opus 4.7 expertise senior</div>
+        </div>
+        <span class="uv-badge-live">LIVE · Expertise senior</span>
+      </div>
+
+      <div class="codex-badge">
+        <span style="font-size:16px">🔮</span>
+        <div>
+          <div class="cb-l">Moteur fiscal — Agent spécialiste fiscal</div>
+          <div class="cb-m">Claude Opus 4.7 · Expertise senior · Citations CGI + jurisprudence</div>
+        </div>
+      </div>
+
+      <div class="uv-grid-3">
+        <!-- IR 2026 -->
+        <div class="uv-panel">
+          <div class="uv-panel-h">📑 IR 2026 — Estimatif</div>
+          <div class="tax-row"><span class="tax-label">Revenus salariaux</span><span class="tax-val">142 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Dividendes (PFU 30 %)</span><span class="tax-val">18 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Revenus fonciers</span><span class="tax-val">22 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Revenu fiscal de réf.</span><span class="tax-val gold">182 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">TMI applicable</span><span class="tax-val gold">41 %</span></div>
+          <div class="tax-row" style="border-top:1px solid rgba(255,255,255,0.08);margin-top:6px"><span class="tax-label" style="font-weight:600;color:var(--cream)">Impôt brut estimé</span><span class="tax-val red">48 200 €</span></div>
+          <div class="uv-action-bar" style="margin-top:10px">
+            <button class="uv-btn uv-btn-p" style="font-size:11px;padding:7px 12px" onclick="askMarcel('Simuler mon IR 2026 détaillé : 142k€ salaires, 18k€ dividendes, 22k€ fonciers. Calcul complet avec TMI, niches fiscales applicables, stratégies PER.')">Simuler en détail</button>
+          </div>
+        </div>
+
+        <!-- IFI 2026 -->
+        <div class="uv-panel">
+          <div class="uv-panel-h">🏛 IFI 2026 — Estimatif</div>
+          <div class="tax-row"><span class="tax-label">Immobilier brut</span><span class="tax-val">1 280 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Abattement RP 30 %</span><span class="tax-val green">− 285 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Passif déductible</span><span class="tax-val green">− 280 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Base nette IFI</span><span class="tax-val gold">715 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Tranche 0,7 %</span><span class="tax-val">415 k€ × 0,7 %</span></div>
+          <div class="tax-row" style="border-top:1px solid rgba(255,255,255,0.08);margin-top:6px"><span class="tax-label" style="font-weight:600;color:var(--cream)">IFI brut estimé</span><span class="tax-val red">3 430 €</span></div>
+          <div class="uv-action-bar" style="margin-top:10px">
+            <button class="uv-btn uv-btn-p" style="font-size:11px;padding:7px 12px" onclick="askMarcel('Calculer mon IFI 2026 complet : immobilier brut 1,28M€, abattements, passif. Stratégies pour réduire la base ou le montant.')">Optimiser l\'IFI</button>
+          </div>
+        </div>
+
+        <!-- Optimisations -->
+        <div class="uv-panel">
+          <div class="uv-panel-h">✨ Optimisations détectées</div>
+          <div class="optim-item" onclick="askMarcel('Versement PER avant fin 2026 : quel montant optimal pour ma TMI 41 % ? Économie IR maximale et impact retraite.')">
+            <div class="optim-desc">Versement PER avant 31/12 · TMI 41 %</div>
+            <div class="optim-save">− 4 200 €</div>
+          </div>
+          <div class="optim-item" onclick="askMarcel('Travaux de rénovation en déficit foncier : modalités, plafond 10 700€, report, combinaison avec Denormandie ou Malraux ?')">
+            <div class="optim-desc">Déficit foncier travaux · plafond 10 700 €</div>
+            <div class="optim-save">− 4 400 €</div>
+          </div>
+          <div class="optim-item" onclick="askMarcel('Don IFI 2026 : organismes éligibles, plafond 75 000€, réduction 75% du don. Combinaison avec Réduction Mécénat IS ?')">
+            <div class="optim-desc">Don IFI · déduction 75 % · plafond 75 k€</div>
+            <div class="optim-save">− 750 €</div>
+          </div>
+          <div class="optim-item" onclick="askMarcel('Optimisation dividendes holding 2026 : PFU vs barème progressif, timing versement, impact IFI, stratégie de rémunération mixte.')">
+            <div class="optim-desc">Arbitrage dividendes · PFU vs barème</div>
+            <div class="optim-save">à chiffrer</div>
+          </div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:11px">
+            <span style="color:rgba(255,255,255,0.35)">Économies estimées cette année</span>
+            <span style="font-family:'JetBrains Mono',monospace;color:#3ECC8A;font-weight:600">≥ 9 350 €</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-panel-wide">
+        <div class="uv-panel-h">📅 Prochaines échéances fiscales</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:160px;padding:10px 12px;background:rgba(184,115,51,0.07);border:1px solid rgba(184,115,51,0.2);border-radius:8px">
+            <div style="font-size:10px;color:var(--amber);font-weight:600;letter-spacing:.05em;margin-bottom:3px">15 SEPT 2026 · J−119</div>
+            <div style="font-size:12px;color:var(--cream)">IFI — Solde</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.35)">Montant estimé 3 430 €</div>
+          </div>
+          <div style="flex:1;min-width:160px;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:600;letter-spacing:.05em;margin-bottom:3px">31 DÉC 2026 · J−226</div>
+            <div style="font-size:12px;color:var(--cream)">Versement PER</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.35)">Déductible IR 2026</div>
+          </div>
+          <div style="flex:1;min-width:160px;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px">
+            <div style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:600;letter-spacing:.05em;margin-bottom:3px">MAI 2027 · J+</div>
+            <div style="font-size:12px;color:var(--cream)">IR 2026 — Déclaration</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.35)">Calendrier à confirmer</div>
+          </div>
+        </div>
+        <div class="uv-action-bar">
+          <button class="uv-btn uv-btn-p" onclick="askMarcel('Question complète à Codex : analyse exhaustive de ma situation fiscale 2026 et recommandations prioritaires avant fin d\'année')">✦ Analyse complète Codex</button>
+          <button class="uv-btn uv-btn-g" onclick="askMarcel('Simulation : si je mets 10 000€ en PER versement 2026, quel est mon gain net IR en tenant compte de ma TMI 41% et des plafonds disponibles ?')">Simuler PER 2026 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🏠  UNIVERS 3 — IMMOBILIER (Sprint 2)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-immobilier">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🏠 Immobilier</div>
+          <div class="page-sub">DVF live · prix m² · rendements nets · agent Architecte</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 2 · Q3 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 2</div>
+          <div class="uv-sprint-desc">Connexion DVF (Demandes de Valeurs Foncières) · API prix m² en temps réel · agent Architecte · valorisation automatique</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:35%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">35 % construit · Ouverture estimée Q3 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je souhaite être notifié en priorité à l\'ouverture du module Immobilier DVF. Notez ma demande.')">🔔 Me notifier à l'ouverture</button>
+      </div>
+
+      <!-- Preview locked -->
+      <div class="uv-grid-2">
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">🗺 Vos biens — valorisation DVF</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div class="tax-row"><span class="tax-label">Paris 16e · 87 m²</span><span class="tax-val">1 150 000 €</span></div>
+              <div class="tax-row"><span class="tax-label">Ardèche · 220 m²</span><span class="tax-val">620 000 €</span></div>
+              <div class="tax-row"><span class="tax-label">Lyon Presqu'île · 54 m²</span><span class="tax-val">280 000 €</span></div>
+              <div class="tax-row"><span class="tax-label">Rendement locatif net moy.</span><span class="tax-val green">4,2 %</span></div>
+            </div>
+            <div class="uv-locked-cover">
+              <div class="uv-locked-icon">🔒</div>
+              <div class="uv-locked-txt">Valorisation DVF temps réel<br>disponible Sprint 2</div>
+            </div>
+          </div>
+        </div>
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">📊 Prix m² · zone géo</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div style="height:120px;background:linear-gradient(180deg,rgba(201,169,110,0.2),transparent);border-radius:6px;display:flex;align-items:flex-end;padding:8px;gap:8px">
+                <div style="flex:1;background:var(--gold);border-radius:3px 3px 0 0;height:80%"></div>
+                <div style="flex:1;background:var(--gold-deep);border-radius:3px 3px 0 0;height:55%"></div>
+                <div style="flex:1;background:rgba(201,169,110,0.4);border-radius:3px 3px 0 0;height:35%"></div>
+              </div>
+            </div>
+            <div class="uv-locked-cover">
+              <div class="uv-locked-icon">📈</div>
+              <div class="uv-locked-txt">Benchmark prix m² · DVF officiel<br>disponible Sprint 2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel répond maintenant sur l'immobilier</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Estimer la valeur de mon appartement Paris 16e (87m², Passy) en mai 2026 selon les dernières transactions DVF du secteur')">Estimer valeur Paris 16e</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Calcul rendement locatif net pour appartement Lyon : loyer 1 200€/mois, prix 280 000€, charges copropriété 120€/mois, taxe foncière 900€/an')">Rendement locatif net Lyon</div>
+          <div class="uv-mn-chip" onclick="askMarcel('IFI 2026 : mon immobilier brut est 2,05M€. Abattement résidence principale, passif déductible, stratégies de réduction de la base IFI')">Optimiser ma base IFI</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Vendre ou garder mon appartement Ardèche : analyse plus-value immobilière, durée de détention, exonérations possibles en 2026')">Vendre vs garder Ardèche</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         📊  UNIVERS 4 — REPORTING (Sprint 2)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-reporting">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">📊 Reporting</div>
+          <div class="page-sub">Synthèse trimestrielle PDF · agent Olympe · bilan patrimonial personnalisé</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 2 · Q3 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 2</div>
+          <div class="uv-sprint-desc">Agent Olympe · génération PDF trimestrielle · graphiques personnalisés · comparatif N−1 · envoi email sécurisé</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:20%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">20 % construit · Ouverture estimée Q3 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Inscrire ma demande pour accès prioritaire au module Reporting PDF lors de son ouverture Sprint 2.')">🔔 Accès prioritaire</button>
+      </div>
+
+      <div class="uv-grid-2">
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">📄 Rapport Q1 2026 — Aperçu</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur" style="padding:8px">
+              <div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:12px">
+                <div style="font-size:10px;color:var(--gold);margin-bottom:6px;font-weight:700">IKCP — BILAN PATRIMONIAL Q1 2026</div>
+                <div style="font-size:9px;color:rgba(255,255,255,0.4);margin-bottom:8px">Famille Moreau · Confidentiel</div>
+                <div style="height:6px;background:rgba(255,255,255,0.1);border-radius:3px;margin-bottom:5px"></div>
+                <div style="height:6px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:5px;width:70%"></div>
+                <div style="height:6px;background:rgba(255,255,255,0.07);border-radius:3px;width:85%"></div>
+              </div>
+            </div>
+            <div class="uv-locked-cover">
+              <div class="uv-locked-icon">📊</div>
+              <div class="uv-locked-txt">Rapport PDF personnalisé<br>généré par agent Olympe · Sprint 2</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="uv-panel">
+          <div class="uv-panel-h">🗓 Calendrier des rapports</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="padding:8px 10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:7px">
+              <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:2px">Q1 2026 — GÉNÉRÉ ✓</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.4)">Rapport bilan · Déc–Mars 2026</div>
+            </div>
+            <div style="padding:8px 10px;background:rgba(201,169,110,0.05);border:1px solid rgba(201,169,110,0.12);border-radius:7px">
+              <div style="font-size:10px;color:var(--gold);margin-bottom:2px">Q2 2026 — À VENIR · Juil 2026</div>
+              <div style="font-size:12px;color:var(--cream)">Rapport semestriel + bilan fiscal H1</div>
+            </div>
+            <div style="padding:8px 10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:7px">
+              <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:2px">Q3 · Q4 2026 — PLANIFIÉS</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.4)">Bilan annuel · revue clôture</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel synthétise maintenant</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Synthèse de ma situation patrimoniale au 19 mai 2026 : performance, points forts, axes d\'amélioration — format rapport trimestriel')">Synthèse patrimoine mai 2026</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Évolution de mon patrimoine de 2,8M€ à 3,4M€ en 12 mois : analyse des leviers de croissance et projection à 24 mois')">Analyse croissance 12 mois</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Bilan fiscal 2026 à mi-parcours : IR estimé, IFI, optimisations réalisées, actions restantes avant 31 décembre')">Bilan fiscal H1 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         📋  UNIVERS 5 — ADMINISTRATION (Sprint 2)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-administration">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">📋 Administration</div>
+          <div class="page-sub">Échéances · courriers · signature eIDAS qualifiée · Universign</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 2 · Q3 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 2</div>
+          <div class="uv-sprint-desc">Signature eIDAS qualifiée (Universign) · génération automatique courriers · calendrier fiscal personnalisé · coffre-fort documents</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:25%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">25 % construit · Ouverture estimée Q3 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je souhaite être notifié à l\'ouverture du module Administration + Signature eIDAS.')">🔔 Me notifier</button>
+      </div>
+
+      <div class="uv-grid-3">
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">📅 Prochaines échéances</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div class="tax-row"><span class="tax-label">15 sept.</span><span class="tax-val red">IFI solde</span></div>
+              <div class="tax-row"><span class="tax-label">30 sept.</span><span class="tax-val">AG annuelle SAS</span></div>
+              <div class="tax-row"><span class="tax-label">31 oct.</span><span class="tax-val">Déclaration IS 2025</span></div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">📅</div><div class="uv-locked-txt">Calendrier personnalisé · Sprint 2</div></div>
+          </div>
+        </div>
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">✍ Signature eIDAS</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div style="padding:8px;font-size:11px;color:rgba(255,255,255,0.5)">Lettre de mission<br>DER 2026<br>Mandat de gestion</div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">🔏</div><div class="uv-locked-txt">Signature qualifiée eIDAS · Sprint 2</div></div>
+          </div>
+        </div>
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">📬 Courriers types</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.8">Mise en demeure<br>Réclamation fiscale<br>Courrier notaire<br>Lettre banquier</div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">✉</div><div class="uv-locked-txt">Courriers auto-générés · Sprint 2</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel rédige maintenant</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Rédige un courrier de réclamation fiscale pour contester une cotisation IR erronée pour l\'exercice 2024. Motifs possibles et formulaire 2044')">Courrier réclamation fiscale</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Quelles sont les obligations administratives d\'une SAS holding familiale en 2026 : AG, comptes annuels, rapport de gestion, délais')">Obligations SAS 2026</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Checklist complète pour une donation de parts sociales à ses enfants : acte notarié, déclaration, délais, enregistrement')">Checklist donation parts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🎓  UNIVERS 6 — FORMATION NEXTGEN (Sprint 2)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-formation">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🎓 Formation NextGen</div>
+          <div class="page-sub">6 modules pour vos enfants · intelligence financière · agent Pédagogue</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 2 · Q3 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 2</div>
+          <div class="uv-sprint-desc">6 modules pédagogiques · 15–25 ans · budgeting, investissement, fiscalité de base, transmission, entrepreneuriat, crypto</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:15%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">15 % construit · Ouverture estimée Q3 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Inscrire mes enfants sur la liste d\'attente Formation NextGen.')">🔔 Liste d'attente</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+        <div class="module-card">
+          <div class="module-ico">💰</div>
+          <div class="module-info">
+            <div class="module-title">Module 1 — Les fondamentaux du budget</div>
+            <div class="module-desc">Comprendre revenus, dépenses, épargne. Construire son premier budget personnel. Pour 15–18 ans.</div>
+          </div>
+          <div class="module-lock">🔒</div>
+        </div>
+        <div class="module-card">
+          <div class="module-ico">📈</div>
+          <div class="module-info">
+            <div class="module-title">Module 2 — Introduction à l'investissement</div>
+            <div class="module-desc">Bourse, ETF, obligations, immobilier. Les règles d'or. Simulateur de croissance. Pour 16–22 ans.</div>
+          </div>
+          <div class="module-lock">🔒</div>
+        </div>
+        <div class="module-card">
+          <div class="module-ico">🏛</div>
+          <div class="module-info">
+            <div class="module-title">Module 3 — Fiscalité pour les jeunes actifs</div>
+            <div class="module-desc">IR première déclaration, PEA jeune, livret A vs PER. Cas pratiques. Pour 18–25 ans.</div>
+          </div>
+          <div class="module-lock">🔒</div>
+        </div>
+        <div class="module-card">
+          <div class="module-ico">🤝</div>
+          <div class="module-info">
+            <div class="module-title">Module 4 — Transmission & héritage</div>
+            <div class="module-desc">Comprendre les donations, l'héritage, les abattements. Le pacte familial. Pour 20–30 ans.</div>
+          </div>
+          <div class="module-lock">🔒</div>
+        </div>
+        <div class="module-card">
+          <div class="module-ico">🚀</div>
+          <div class="module-info">
+            <div class="module-title">Module 5 — Créer et gérer son entreprise</div>
+            <div class="module-desc">Statuts, comptabilité de base, cotisations TNS, rémunération optimale. Pour 20–28 ans.</div>
+          </div>
+          <div class="module-lock">🔒</div>
+        </div>
+        <div class="module-card">
+          <div class="module-ico">₿</div>
+          <div class="module-info">
+            <div class="module-title">Module 6 — Actifs numériques & crypto</div>
+            <div class="module-desc">Fiscalité crypto 2026, wallets sécurisés, déclaration formulaire 2086, staking, NFTs. Pour 16–30 ans.</div>
+          </div>
+          <div class="module-lock">🔒</div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel enseigne déjà à vos enfants</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Explique à mon fils de 19 ans comment fonctionne un PEA jeune : plafond, fonctionnement, avantages fiscaux, ETF recommandables pour démarrer avec 1 000€')">PEA jeune pour 19 ans</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Mon enfant reçoit un virement de 10 000€ de donation : comment le déclarer, placer intelligemment et quels droits s\'appliquent ?')">Donation 10 k€ à enfant</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Explique simplement la fiscalité des cryptomonnaies en 2026 à un jeune de 22 ans qui a 8 000€ en Bitcoin : impôt, formulaire, timing de vente')">Crypto fiscalité 22 ans</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         📈  UNIVERS 7 — MARCHÉS (Sprint 3)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-marches">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">📈 Marchés</div>
+          <div class="page-sub">CAC 40 · S&P 500 · allocation drift · agent Stratège</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 3 · Q4 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 3</div>
+          <div class="uv-sprint-desc">Suivi allocation multi-poches · détection drift · rebalancement suggéré · flux macro · agent Stratège (Sonnet 4.7)</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:10%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">10 % construit · Ouverture estimée Q4 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je veux être parmi les premiers à accéder au module Marchés — Agent Stratège Sprint 3.')">🔔 Accès bêta Sprint 3</button>
+      </div>
+
+      <div class="uv-grid-2">
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">📊 Allocation actuelle vs cible</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.5)"><span>Actions Europe</span><span>35 % → cible 40 %</span></div>
+                <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="width:35%;height:100%;background:var(--gold);border-radius:3px"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.5)"><span>Obligations</span><span>20 % → cible 15 %</span></div>
+                <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="width:20%;height:100%;background:#E57373;border-radius:3px"></div></div>
+              </div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">📈</div><div class="uv-locked-txt">Drift détection · Sprint 3</div></div>
+          </div>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">🌍 Agent Stratège — capacités</div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:rgba(255,255,255,0.55)">
+            <div>◈ Analyse macro hebdomadaire (BCE, Fed, inflation)</div>
+            <div>◈ Détection drift allocation + alerte automatique</div>
+            <div>◈ Rebalancement suggéré avec impact fiscal</div>
+            <div>◈ Comparaison ETF Europe vs S&P500</div>
+            <div>◈ Suivi PEA · CTO · AV · PER en un seul dashboard</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel répond maintenant sur les marchés</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Analyse macro mai 2026 : situation BCE, Fed, inflation zone euro, impact sur allocation patrimoniale d\'un dirigeant français avec 435k€ en assurance-vie')">Macro mai 2026 · BCE/Fed</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Comparaison ETF Europe : Amundi MSCI World vs Lyxor CAC40 vs Vanguard S&P500 — frais, tracking error, fiscalité PEA en 2026')">ETF Europe vs US PEA</div>
+          <div class="uv-mn-chip" onclick="askMarcel('J\'ai 200k€ en assurance-vie fonds euros à 2,8%. Est-il judicieux de rebalancer vers des UC actions Europe pour un horizon 10 ans ?')">Rebalancer AV fonds euros</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         💎  UNIVERS 8 — VOYAGE (Sprint 3)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-voyage">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">💎 Voyage</div>
+          <div class="page-sub">Conciergerie premium · Cookson · Mr&Mrs Smith · fiscalité déplacement</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 3 · Q4 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 3</div>
+          <div class="uv-sprint-desc">Conciergerie Cookson Adventures · Mr&Mrs Smith API · déductibilité voyages pro/perso · agents partenaires exclusifs</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:5%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">5 % · Ouverture estimée Q4 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je souhaite un accès prioritaire au module Voyage premium Sprint 3.')">🔔 Accès prioritaire</button>
+      </div>
+
+      <div class="uv-grid-3">
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">✈ Prochains voyages planifiés</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:2">Antarctique · Jan 2027<br>Japon · Avr 2027<br>Patagonie · Déc 2026</div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">✈</div><div class="uv-locked-txt">Gestionnaire voyages · Sprint 3</div></div>
+          </div>
+        </div>
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">🏨 Partenaires sélectionnés</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:2">Cookson Adventures<br>Mr & Mrs Smith<br>Black Tomato<br>Scott Dunn</div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">🤝</div><div class="uv-locked-txt">Partenaires intégrés · Sprint 3</div></div>
+          </div>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">📊 Budget voyages 2026</div>
+          <div class="tax-row"><span class="tax-label">Budget annuel déclaré</span><span class="tax-val">48 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Part pro déductible (est.)</span><span class="tax-val green">~30 %</span></div>
+          <div class="tax-row"><span class="tax-label">Économie IR potentielle</span><span class="tax-val green">5 900 €</span></div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel sur vos voyages maintenant</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Voyage pro-perso en Japon avec ma famille (8 jours, 12 000€) : quelle part est déductible des revenus professionnels ? Comment documenter pour sécuriser en cas de contrôle fiscal ?')">Déductibilité voyage Japon</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Avantages en nature : si ma holding prend en charge un voyage de 15 000€ pour ma famille, quel est l\'impact IS vs IR vs cotisations TNS ?')">Voyage pris en charge holding</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Assurance voyage premium pour famille dirigeant : que couvrir, plafonds, options rapatriement, assistance médicale internationale, quel niveau de couverture minimum ?')">Assurance voyage famille</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🎨  UNIVERS 9 — ART (Sprint 3)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-art">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🎨 Art & Collectibles</div>
+          <div class="page-sub">Côte artistes · Artprice · dation · agent Curateur</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 3 · Q4 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 3</div>
+          <div class="uv-sprint-desc">Artprice API · Invaluable · côte artistes temps réel · fiscalité œuvres · dation en paiement art. 1716 bis CGI · agent Curateur</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:8%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">8 % · Ouverture estimée Q4 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je veux un accès prioritaire au module Art et Collectibles Sprint 3 — j\'ai des œuvres à valoriser.')">🔔 Accès bêta Art</button>
+      </div>
+
+      <div class="uv-grid-2">
+        <div class="uv-panel" style="position:relative;overflow:hidden">
+          <div class="uv-panel-h">🖼 Collection — aperçu bloqué</div>
+          <div class="uv-locked-wrap">
+            <div class="uv-locked-blur">
+              <div class="tax-row"><span class="tax-label">Peinture · Zao Wou-Ki</span><span class="tax-val">185 000 €</span></div>
+              <div class="tax-row"><span class="tax-label">Sculpture · Giacometti (attr.)</span><span class="tax-val">92 000 €</span></div>
+              <div class="tax-row"><span class="tax-label">Photographies · Gursky (2)</span><span class="tax-val">24 000 €</span></div>
+            </div>
+            <div class="uv-locked-cover"><div class="uv-locked-icon">🎨</div><div class="uv-locked-txt">Suivi collection Artprice · Sprint 3</div></div>
+          </div>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">⚖ Régimes fiscaux art</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+            <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;color:rgba(255,255,255,0.55)"><span style="color:var(--gold)">Vente oeuvre +30 ans</span><br>Exonération TVI possible (art. 150 VI CGI)</div>
+            <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;color:rgba(255,255,255,0.55)"><span style="color:var(--gold)">Dation en paiement</span><br>Transmission au Trésor, déduction IS/ISF (art. 1716 bis CGI)</div>
+            <div style="padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;color:rgba(255,255,255,0.55)"><span style="color:var(--gold)">Mécénat entreprise</span><br>Réduction IS 60 % du don (loi 2003-709)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel × Art maintenant</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('J\'ai un Zao Wou-Ki acquis 80 000€ il y a 12 ans, estimé aujourd\'hui 185 000€. Fiscalité de la vente en 2026 : TVI, abattement ancienneté, impôt net ?')">Vente Zao Wou-Ki · TVI</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Expliquer la dation en paiement art 1716 bis CGI : conditions, valeur minimum, procédure, avantage IS comparé à une cession ordinaire')">Dation en paiement CGI</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Joaillerie de plus de 30 ans : conditions d\'exonération IFI art. 885 H CGI, qualification œuvre de collection, documents nécessaires')">Joaillerie IFI art. 885 H</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🪴  UNIVERS 10 — PRIVATE EQUITY (Sprint 3)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-pe">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🪴 Private Equity</div>
+          <div class="page-sub">Deal flow · co-investissement · fonds FCPR · agent Capital</div>
+        </div>
+        <span class="uv-badge-sprint">⊙ Sprint 3 · Q4 2026</span>
+      </div>
+
+      <div class="uv-sprint-banner">
+        <div>
+          <div class="uv-sprint-label">EN DÉVELOPPEMENT · SPRINT 3</div>
+          <div class="uv-sprint-desc">Accès deal flow co-investissement · analyse FCPR/FPCI · agents Capital · due diligence assistée · fiscalité IR-PME, Dutreil acquéreur</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:12%"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px">12 % · Ouverture estimée Q4 2026</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je souhaite accéder au deal flow co-investissement Sprint 3 — Private Equity familial.')">🔔 Accès deal flow</button>
+      </div>
+
+      <div class="uv-panel-wide">
+        <div class="uv-panel-h">🔍 Deal flow — aperçu (Sprint 3)</div>
+        <div class="uv-locked-wrap">
+          <div class="uv-locked-blur">
+            <div class="deal-row"><div><div class="deal-name">SAS THERMALTECH</div><div class="deal-sector">MedTech · Grenoble · Série A</div></div><span class="deal-tag co">Co-invest ouvert</span></div>
+            <div class="deal-row"><div><div class="deal-name">HOLDING AGRI-SMART</div><div class="deal-sector">AgriTech · Occitanie · LBO primaire</div></div><span class="deal-tag watch">En veille</span></div>
+            <div class="deal-row"><div><div class="deal-name">FCPR TRANSITION IV</div><div class="deal-sector">Infrastructure · Paris · FPCI</div></div><span class="deal-tag watch">Souscription ouverte</span></div>
+            <div class="deal-row"><div><div class="deal-name">SCI RÉSIDENTIEL PREMIUM</div><div class="deal-sector">Promo immo · Lyon · OPCI</div></div><span class="deal-tag closed">Clôturé</span></div>
+          </div>
+          <div class="uv-locked-cover">
+            <div class="uv-locked-icon">🌱</div>
+            <div class="uv-locked-txt">Deal flow co-investissement<br>accès exclusif Sprint 3</div>
+            <button class="uv-notify-btn" onclick="askMarcel('Inscrire ma demande accès prioritaire deal flow Private Equity Sprint 3 IKCP')">Rejoindre la liste</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel × Private Equity maintenant</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Réduction IR-PME 2026 : si j\'investis 50 000€ dans une PME éligible via augmentation de capital, quel est le gain fiscal net, plafonds, conditions de conservation ?')">IR-PME · 50 k€ · économie IR</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Comparaison FCPR vs FPCI pour un investisseur non professionnel avec 200k€ à allouer en PE : liquidité, fiscalité, ticket minimum, durée')">FCPR vs FPCI · 200 k€</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Dutreil acquéreur : lors de rachat d\'une PME familiale, comment utiliser le régime Dutreil pour réduire les droits de mutation ? Conditions, engagement, exonération 75 %')">Dutreil acquéreur PME</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🌱  UNIVERS 11 — TRANSMISSION (Sprint 4)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-transmission">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🌱 Transmission</div>
+          <div class="page-sub">Dutreil · donation · succession · calculs · agent Hermès Sprint 4</div>
+        </div>
+        <span class="uv-badge-s4">○ Sprint 4 · 2027</span>
+      </div>
+
+      <div class="uv-sprint-banner" style="border-color:rgba(255,255,255,0.08)">
+        <div>
+          <div class="uv-sprint-label" style="color:rgba(255,255,255,0.4)">EN DÉVELOPPEMENT · SPRINT 4 · 2027</div>
+          <div class="uv-sprint-desc">Agent Hermès spécialiste transmission · Dutreil calculateur · arbre successoral · simulation donation viager · acte notarié assisté</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:5%;background:rgba(255,255,255,0.2)"></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.2);margin-top:4px">En cours de spécification · Sprint 4</div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je veux être notifié à l\'ouverture du module Transmission avec agent Hermès.')">🔔 Me notifier</button>
+      </div>
+
+      <div class="uv-grid-2">
+        <div class="uv-panel" style="opacity:.55;position:relative;overflow:hidden">
+          <div class="uv-panel-h">🌳 Arbre successoral</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;color:rgba(255,255,255,0.4)">
+            Défunt M. Moreau<br>
+            ├── Épouse · 25 % usufruit<br>
+            ├── Enfant 1 · 37,5 %<br>
+            └── Enfant 2 · 37,5 %<br>
+            <span style="color:rgba(255,255,255,0.2)">— Droits estimés : 187 k€</span>
+          </div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(14,23,41,0.5);border-radius:10px;font-size:11px;color:rgba(255,255,255,0.3)">🔒 Sprint 4</div>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">✨ Ce que l'agent Hermès fera</div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:rgba(255,255,255,0.5)">
+            <div>◈ Calcul Dutreil avec exonération 75 % auto</div>
+            <div>◈ Simulation donation pleine propriété vs NP</div>
+            <div>◈ Arbre successoral interactif avec droits</div>
+            <div>◈ Calendrier optimal des donations (15 ans)</div>
+            <div>◈ Pacte Dutreil entrepreneur assisté</div>
+            <div>◈ Intégration notaire partenaire IKCP</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel répond maintenant sur la transmission</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Dutreil transmission 2026 : pour transmettre ma SAS (valeur 1,2M€) à mes enfants, conditions d\'application, engagement collectif, exonération 75 %, droits résiduels')">Dutreil SAS 1,2 M€</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Donation nue-propriété à mes deux enfants d\'un appartement (valeur 280k€) : calcul droits avec abattement 100k€ par enfant, valeur usufruit, économie vs pleine propriété')">Donation NP · 2 enfants</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Succession avec 3,4M€ patrimoine, 2 enfants, conjoint survivant : droits sans préparation, droits avec Dutreil + donations successives sur 15 ans')">Succession 3,4 M€ optimisée</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Assurance-vie et succession : avantages du contrat AV hors succession, clause bénéficiaire démembrée, plafond abattement 152 500€ par bénéficiaire')">AV hors succession</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         🤲  UNIVERS 12 — PHILANTHROPIE (Sprint 4)
+    ══════════════════════════════════════════════ -->
+    <div class="view" id="view-philanthropie">
+      <div class="uv-hero">
+        <div>
+          <div class="page-title">🤲 Philanthropie</div>
+          <div class="page-sub">Don défiscalisé IR/IFI · fondation · mécénat · agent Mécène Sprint 4</div>
+        </div>
+        <span class="uv-badge-s4">○ Sprint 4 · 2027</span>
+      </div>
+
+      <div class="uv-sprint-banner" style="border-color:rgba(255,255,255,0.08)">
+        <div>
+          <div class="uv-sprint-label" style="color:rgba(255,255,255,0.4)">EN DÉVELOPPEMENT · SPRINT 4 · 2027</div>
+          <div class="uv-sprint-desc">Agent Mécène · création fondation assistée · simulateur don IFI/IR · Fonds de dotation familial · impact reporting · réseau ADMICAL</div>
+          <div class="uv-progress" style="width:100%;max-width:300px"><div class="uv-progress-fill" style="width:3%;background:rgba(255,255,255,0.2)"></div></div>
+        </div>
+        <button class="uv-notify-btn" onclick="askMarcel('Je souhaite être notifié à l\'ouverture du module Philanthropie avec agent Mécène Sprint 4.')">🔔 Me notifier</button>
+      </div>
+
+      <div class="uv-grid-3">
+        <div class="uv-panel">
+          <div class="uv-panel-h">💡 Simulateur don IFI</div>
+          <div class="tax-row"><span class="tax-label">Don éligible IFI</span><span class="tax-val">5 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Réduction IFI (75 %)</span><span class="tax-val green">3 750 €</span></div>
+          <div class="tax-row"><span class="tax-label">Plafond 75 000 €/an</span><span class="tax-val gold">✓ Disponible</span></div>
+          <div class="tax-row"><span class="tax-label">Coût réel du don</span><span class="tax-val">1 250 €</span></div>
+          <button class="uv-btn uv-btn-p" style="margin-top:10px;font-size:11px;width:100%" onclick="askMarcel('Simuler un don IFI de 10 000€ en 2026 : organismes éligibles, réduction 75%, plafond, combinaison avec don IR 66%, coût réel net')">Simuler mon don IFI</button>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">🏛 Mécénat entreprise</div>
+          <div class="tax-row"><span class="tax-label">Don IS déductible</span><span class="tax-val">20 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Réduction IS (60 %)</span><span class="tax-val green">12 000 €</span></div>
+          <div class="tax-row"><span class="tax-label">Plafond 0,5 % CA</span><span class="tax-val gold">16 000 € dispo</span></div>
+          <div class="tax-row"><span class="tax-label">Coût réel via holding</span><span class="tax-val">8 000 €</span></div>
+          <button class="uv-btn uv-btn-p" style="margin-top:10px;font-size:11px;width:100%" onclick="askMarcel('Mécénat via ma SAS holding : don 20k€ en 2026, réduction IS 60%, plafond, choix des organismes, conventions de mécénat, comptabilisation')">Simuler mécénat SAS</button>
+        </div>
+        <div class="uv-panel">
+          <div class="uv-panel-h">🌱 Fondation / Fonds de dotation</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.8">
+            <div style="color:var(--cream);font-weight:600;margin-bottom:6px">Fonds de dotation familial</div>
+            <div>◈ Capital minimal : 15 000 €</div>
+            <div>◈ Délai de création : 2–3 mois</div>
+            <div>◈ Gouvernance familiale possible</div>
+            <div>◈ Dons déductibles IR 66 %</div>
+            <div>◈ Pérennité de l'impact philanthropique</div>
+          </div>
+          <button class="uv-btn uv-btn-g" style="margin-top:10px;font-size:11px;width:100%" onclick="askMarcel('Je veux créer un fonds de dotation familial : conditions, statuts types, gouvernance, montant minimal, avantages fiscaux comparés à une fondation reconnue d\'utilité publique')">Créer un fonds de dotation</button>
+        </div>
+      </div>
+
+      <div class="uv-mn">
+        <div class="uv-mn-title">✦ Marcel sur la philanthropie maintenant</div>
+        <div class="uv-mn-chips">
+          <div class="uv-mn-chip" onclick="askMarcel('Quels organismes sont éligibles au don IFI 2026 ? Distinction IFI éligibles vs IR éligibles, exemples concrets, Fondation de France, Institut Pasteur')">Organismes éligibles IFI 2026</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Combinaison optimale don IR + don IFI 2026 pour TMI 41 % et IFI 3 430€ : montants maximaux, séquençage, organismes différents ou identiques ?')">Combinaison don IR + IFI</div>
+          <div class="uv-mn-chip" onclick="askMarcel('Transmettre des œuvres d\'art via un don à une institution : régimes DMTG, dation en paiement, ou donation directe ? Quel est le plus avantageux fiscalement ?')">Don d'œuvres à institution</div>
         </div>
       </div>
     </div>
@@ -2299,16 +3253,40 @@ function updateDate(){
 updateDate();
 
 // ─── VIEW SWITCH ───
-const BC_TITLES={dashboard:'Tableau de bord',marcel:'Mon conseiller',agents:'Mes services',univers:'Mes univers',biens:'Mes biens',docs:'Documents',alertes:'Alertes'};
+const BC_TITLES={
+  dashboard:'Tableau de bord',marcel:'Mon conseiller',agents:'Mes services',
+  univers:'Mes univers',biens:'Mes biens',docs:'Documents',alertes:'Alertes',
+  /* 12 univers */
+  patrimoine:'💼 Patrimoine',fiscalite:'🏛 Fiscalité',
+  immobilier:'🏠 Immobilier',reporting:'📊 Reporting',
+  administration:'📋 Administration',formation:'🎓 Formation NextGen',
+  marches:'📈 Marchés',voyage:'💎 Voyage',art:'🎨 Art',pe:'🪴 Private Equity',
+  transmission:'🌱 Transmission',philanthropie:'🤲 Philanthropie'
+};
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('view-'+id)?.classList.add('active');
   document.querySelector(`[onclick="showView('${id}')"]`)?.classList.add('active');
   document.getElementById('bc-title').textContent=BC_TITLES[id]||id;
-  // lazy-init charts when dashboard or biens becomes visible
+  // lazy-init charts
   if(id==='dashboard')setTimeout(initCharts,50);
   if(id==='biens')setTimeout(initImmoCharts,80);
+  // scroll to top of main on view switch
+  document.querySelector('.main')?.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── PATRIMOINE · SIREN SEARCH (mockup) ───
+function uvSirenSearch(){
+  const siren=document.getElementById('uv-siren-input')?.value.trim();
+  const res=document.getElementById('uv-siren-result');
+  if(!res)return;
+  if(!siren||siren.length!==9){res.textContent='⚠ Entrez un SIREN valide (9 chiffres)';return;}
+  res.textContent='⏳ Cartographie en cours via Pappers…';
+  setTimeout(()=>{
+    res.innerHTML=`<span style="color:#3ECC8A">✓ Entité trouvée · ${siren}</span><span style="margin-left:12px;color:rgba(255,255,255,0.35)">Données RNE récupérées en 1,8s — ajoutée à votre cartographie</span>`;
+    setTimeout(()=>askMarcel(`Analyse complète de l'entité SIREN ${siren} : raison sociale, forme juridique, capital, dirigeants, résultats, points d'attention patrimonial`),400);
+  },1800);
 }
 
 // ─── CHARTS ───
