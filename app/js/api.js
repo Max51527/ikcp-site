@@ -151,6 +151,21 @@ export const Marcel = {
     async exportRgpd() {
       return jsonFetch(`${ENDPOINTS.client}/api/v1/me/export`);
     },
+    async saveProfile(profile_json, prenom) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/profile`, {
+        method: 'POST',
+        body: JSON.stringify({ profile_json, prenom }),
+      });
+    },
+    async saveConsents(consents) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/consents`, {
+        method: 'POST',
+        body: JSON.stringify({ consents }),
+      });
+    },
+    async auditLog() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/audit-log`);
+    },
     async deleteAccount() {
       const ok = confirm('Supprimer définitivement votre compte et toutes vos données ? Action irréversible.');
       if (!ok) return false;

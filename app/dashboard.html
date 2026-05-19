@@ -149,6 +149,20 @@ try {
   location.href = '/app/index.html';
 }
 
+// Onboarding requis si pas encore complété
+if(me){
+  let profile = null;
+  try { profile = me.profile_json ? JSON.parse(me.profile_json) : null; } catch(_){}
+  if(!profile?.onboarding_completed && !localStorage.getItem('marcel_onboarding_skipped')){
+    const fromWelcome = new URLSearchParams(location.search).get('welcome');
+    if(!fromWelcome){
+      location.href = '/app/onboarding.html';
+    }
+  }
+  // Surcharge prenom si disponible
+  if(profile?.prenom) me.prenom = profile.prenom;
+}
+
 if(me){
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();

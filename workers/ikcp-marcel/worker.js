@@ -84,6 +84,30 @@ async function collectorFetch(env, path, method = 'GET', body = null) {
   }
 }
 
+async function fetchUserContextFromClient(request) {
+  try {
+    const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', {
+      headers: { Cookie: request.headers.get('Cookie') || '' },
+    });
+    if (!r.ok) return null;
+    const me = await r.json();
+    const lines = [];
+    let profile = {};
+    try { profile = me.profile_json ? JSON.parse(me.profile_json) : {}; } catch (_) {}
+    if (profile.prenom) lines.push(`Prénom : ${profile.prenom}`);
+    if (profile.age) lines.push(`Âge : ${profile.age} ans`);
+    if (profile.situation) lines.push(`Situation : ${profile.situation.replace(/_/g, ' ')}`);
+    if (profile.profession) lines.push(`Activité : ${profile.profession.replace(/_/g, ' ')}`);
+    if (profile.spheres && profile.spheres.length) lines.push(`Univers favoris : ${profile.spheres.join(', ')}`);
+    if (me.sirens && me.sirens.length) {
+      lines.push(`Sociétés rattachées (${me.sirens.length}) :`);
+      me.sirens.slice(0, 3).forEach(s => lines.push(`  • ${s.nom_societe} · ${s.siren} · ${s.forme_juridique || ''}`));
+    }
+    if (me.tier) lines.push(`Tier abonnement : ${me.tier}`);
+    return lines.length ? lines.join('\n') : null;
+  } catch (_) { return null; }
+}
+
 async function delegateToSpecialist(agentId, question, context) {
   const spec = SPECIALISTS_REGISTRY[agentId];
   if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS.join(', ')}` };
@@ -783,7 +807,20 @@ export default {
       }
 
       const ctx = getCurrentContext();
-      const systemPromptText = buildSystemPrompt(ctx);
+      let systemPromptText = buildSystemPrompt(ctx);
+
+      // ── Mémoire conversationnelle Sprint 2 ──
+      // Si l'utilisateur est authentifié (cookie session), on enrichit
+      // le system prompt avec son profil + ses sociétés. Marcel se souvient.
+      const cookieHeader = request.headers.get('Cookie') || '';
+      if (cookieHeader.includes('ikcp_session')) {
+        try {
+          const userCtx = await fetchUserContextFromClient(request);
+          if (userCtx) {
+            systemPromptText += `\n\n# CLIENT CONNECTÉ — MÉMOIRE PERSISTANTE\n` + userCtx + `\nTu connais ce client. Salue-le par son prénom si pertinent. Ne lui demande JAMAIS d'informations déjà connues (situation familiale, profession, sociétés rattachées). Adapte tes réponses à son profil.`;
+          }
+        } catch (_) { /* mémoire non bloquante */ }
+      }
 
       // Prompt caching : le system prompt est stable, on le marque pour cache
       // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)

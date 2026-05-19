@@ -76,6 +76,11 @@ export default {
       if (path === '/api/v1/me/export' && method === 'GET') return await handleExportRgpd(session, env);
       if (path === '/api/v1/me' && method === 'DELETE') return await handleDeleteAccount(request, session, env);
 
+      // ── Prototype Sprint 2 — profil, consentements, audit log
+      if (path === '/api/v1/me/profile' && method === 'POST') return await handleProfileSave(request, session, env);
+      if (path === '/api/v1/me/consents' && method === 'POST') return await handleConsentsSave(request, session, env);
+      if (path === '/api/v1/me/audit-log' && method === 'GET') return await handleAuditLog(session, env);
+
       return json({ error: 'not_found' }, 404);
     } catch (err) {
       console.error('Worker error:', err.stack || err.message);
@@ -595,6 +600,47 @@ async function handleExportRgpd(session, env) {
     rgpd_note: 'Vos données souveraines France (Cloudflare WEUR Paris). Pour exercer votre droit à l\'oubli : DELETE /api/v1/me',
   });
 }
+
+async function handleProfileSave(request, session, env) {
+  const body = await request.json().catch(() => ({}));
+  const { profile_json, prenom } = body;
+  if (!profile_json) return json({ error: 'profile_json_required' }, 400);
+  await env.D1.prepare('UPDATE users SET profile_json = ?, prenom = COALESCE(?, prenom), last_seen = ? WHERE id = ?')
+    .bind(profile_json, prenom || null, Date.now(), session.userId).run();
+  await audit(env, session.userId, 'profile_save', request, { has_prenom: !!prenom });
+  return json({ ok: true });
+}
+
+async function handleConsentsSave(request, session, env) {
+  const body = await request.json().catch(() => ({}));
+  const { consents } = body;
+  if (typeof consents !== 'object' || consents === null) return json({ error: 'consents_required' }, 400);
+  await env.D1.prepare('UPDATE users SET consents_json = ?, marketing_consent = ?, last_seen = ? WHERE id = ?')
+    .bind(JSON.stringify(consents), consents.marketing ? 1 : 0, Date.now(), session.userId).run();
+  await audit(env, session.userId, 'consents_update', request, { keys: Object.keys(consents) });
+  return json({ ok: true, saved: consents });
+}
+
+async function handleAuditLog(session, env) {
+  const rows = await env.D1.prepare('SELECT id, action, ip, user_agent, metadata_json, ts FROM audit_log WHERE user_id = ? ORDER BY ts DESC LIMIT 30')
+    .bind(session.userId).all();
+  return json((rows.results || []).map(r => ({
+    id: r.id,
+    action: r.action,
+    user_agent: (r.user_agent || '').slice(0, 80),
+    ip_masked: maskIp(r.ip),
+    metadata: r.metadata_json ? safeParseJson(r.metadata_json) : null,
+    ts: r.ts,
+    ts_iso: new Date(r.ts).toISOString(),
+  })));
+}
+
+function maskIp(ip) {
+  if (!ip) return '—';
+  if (ip.includes(':')) return ip.split(':').slice(0, 3).join(':') + '::****'; // IPv6
+  return ip.split('.').slice(0, 2).join('.') + '.x.x'; // IPv4
+}
+function safeParseJson(s) { try { return JSON.parse(s); } catch (_) { return s; } }
 
 async function handleDeleteAccount(request, session, env) {
   const userId = session.userId;

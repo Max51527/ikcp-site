@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<title>Marcel · Bienvenue</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/marcel.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
+.onboard{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 22px 100px;max-width:580px;margin:0 auto;width:100%;text-align:center}
+.onboard .step{display:none;width:100%;animation:slideIn 0.4s cubic-bezier(0.16,1,0.3,1)}
+.onboard .step.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.onboard .marcel-mini{width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 42% 32%,#F0B89B 0%,#E08161 22%,#C24722 55%,#8B2F18 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#FAF7F0;box-shadow:0 0 0 1px rgba(194,71,34,0.15),0 0 60px rgba(194,71,34,0.22);animation:breathe 5s ease-in-out infinite;margin:0 auto 30px;text-align:center;padding:14px}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.marcel-mini .role{font-size:8px;letter-spacing:0.28em;color:#FFE3CC;font-weight:600;text-transform:uppercase;line-height:1}
+.marcel-mini .role::before{content:'★ '}
+.marcel-mini .nm{font-family:'Fraunces',serif;font-style:italic;font-size:30px;line-height:1.05;margin-top:4px}
+.onboard h1{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,38px);font-weight:400;letter-spacing:-0.02em;line-height:1.1;color:var(--ink);margin-bottom:10px}
+.onboard h1 em{font-style:italic;color:var(--accent)}
+.onboard p.lead{font-size:15px;color:var(--mute);line-height:1.6;margin:0 auto 28px;max-width:480px}
+
+/* Profil — inputs */
+.field{text-align:left;margin-bottom:14px}
+.field label{display:block;font-size:10px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.field input,.field select{width:100%;padding:13px 16px;background:#fff;border:1.5px solid var(--line);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color 0.2s}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+
+/* Sphères — multi-select */
+.spheres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:520px){.spheres-grid{grid-template-columns:repeat(2,1fr)}}
+.sphere-pick{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 10px;cursor:pointer;text-align:center;transition:all 0.2s;user-select:none}
+.sphere-pick:hover{border-color:var(--accent)}
+.sphere-pick.selected{background:rgba(194,71,34,0.06);border-color:var(--accent);box-shadow:0 0 0 2px rgba(194,71,34,0.10)}
+.sphere-pick .em{font-size:24px;display:block;margin-bottom:4px}
+.sphere-pick .nm{font-family:'Fraunces',serif;font-size:12px;font-style:italic;color:var(--ink);font-weight:500}
+
+/* Buttons */
+.nav-actions{display:flex;gap:10px;margin-top:24px;justify-content:center}
+.nav-actions button{padding:13px 26px;border-radius:10px;border:none;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:0.02em;cursor:pointer;transition:all 0.2s}
+.btn-next{background:var(--ink);color:var(--bg)}
+.btn-next:hover{background:var(--accent);transform:translateY(-1px)}
+.btn-back{background:transparent;color:var(--mute);border:1px solid var(--line)}
+.btn-back:hover{border-color:var(--accent);color:var(--accent)}
+.btn-skip{background:transparent;color:var(--faint);font-size:12px;font-weight:500;text-decoration:underline;border:none;cursor:pointer;padding:8px}
+
+/* Progress */
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:30px}
+.progress span{width:30px;height:4px;background:var(--line);border-radius:2px;transition:background 0.3s}
+.progress span.done{background:var(--accent)}
+.progress span.active{background:var(--ink)}
+
+/* SIREN status */
+.siren-status{margin-top:12px;padding:14px 16px;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;text-align:left;font-size:13px;line-height:1.5;display:none}
+.siren-status.show{display:block;animation:slideIn 0.4s}
+.siren-status.ok{border-color:rgba(63,122,63,0.30);background:rgba(63,122,63,0.08)}
+.siren-status.err{border-color:rgba(185,28,28,0.30);background:rgba(185,28,28,0.06)}
+.siren-status b{color:var(--ink);font-weight:600;display:block;margin-bottom:4px}
+.siren-status .meta{color:var(--mute);font-size:11.5px}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Bienvenue</span></div>
+  <button class="btn-skip" onclick="skipAll()">Passer pour plus tard →</button>
+</header>
+
+<div class="onboard">
+
+  <!-- ─── STEP 1 — Bonjour ─── -->
+  <div class="step active" id="step1">
+    <div class="marcel-mini"><div class="role">CHEF D'ORCHESTRE</div><div class="nm">Marcel</div></div>
+    <h1>Bonjour. Je suis <em>Marcel.</em></h1>
+    <p class="lead">Votre Family Office augmenté. Je coordonne 12 spécialistes pour orchestrer votre patrimoine, vos passions et votre transmission — pendant que vous dormez.<br><br>Avant de commencer, j'aimerais <em>vous connaître</em>.</p>
+    <div class="progress"><span class="active"></span><span></span><span></span><span></span></div>
+    <div class="nav-actions">
+      <button class="btn-next" onclick="next(2)">Allons-y →</button>
+    </div>
+  </div>
+
+  <!-- ─── STEP 2 — Profil ─── -->
+  <div class="step" id="step2">
+    <h1>Dites-moi qui <em>vous êtes.</em></h1>
+    <p class="lead">Marcel se souviendra à chaque conversation. Vous ne re-expliquerez jamais votre situation.</p>
+    <div class="field">
+      <label for="prenom">Votre prénom</label>
+      <input id="prenom" type="text" placeholder="Maxime" autocomplete="given-name">
+    </div>
+    <div class="field">
+      <label for="age">Votre âge</label>
+      <input id="age" type="number" min="18" max="100" placeholder="47">
+    </div>
+    <div class="field">
+      <label for="situation">Situation familiale</label>
+      <select id="situation">
+        <option value="">— Choisir —</option>
+        <option value="celibataire">Célibataire</option>
+        <option value="couple_sans">En couple sans enfants</option>
+        <option value="couple_avec">En couple avec enfants</option>
+        <option value="divorce">Divorcé(e) / séparé(e)</option>
+        <option value="recompose">Famille recomposée</option>
+        <option value="veuf">Veuf / veuve</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="profession">Activité principale</label>
+      <select id="profession">
+        <option value="">— Choisir —</option>
+        <option value="dirigeant_sas">Dirigeant SAS / SA</option>
+        <option value="dirigeant_eurl">Dirigeant EURL / SARL</option>
+        <option value="profession_liberale">Profession libérale</option>
+        <option value="cadre">Cadre dirigeant</option>
+        <option value="entrepreneur">Entrepreneur · holding</option>
+        <option value="rentier">Investisseur / retraité actif</option>
+        <option value="autre">Autre</option>
+      </select>
+    </div>
+    <div class="progress"><span class="done"></span><span class="active"></span><span></span><span></span></div>
+    <div class="nav-actions">
+      <button class="btn-back" onclick="next(1)">← Retour</button>
+      <button class="btn-next" onclick="next(3)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ─── STEP 3 — Passions ─── -->
+  <div class="step" id="step3">
+    <h1>Quels univers vous <em>passionnent ?</em></h1>
+    <p class="lead">Marcel mobilisera ses spécialistes dédiés selon vos centres d'intérêt. Sélectionnez ceux qui vous parlent.</p>
+    <div class="spheres-grid" id="spheresGrid">
+      <div class="sphere-pick" data-sphere="patrimoine"><span class="em">🏛️</span><span class="nm">Patrimoine</span></div>
+      <div class="sphere-pick" data-sphere="immobilier"><span class="em">🏠</span><span class="nm">Immobilier</span></div>
+      <div class="sphere-pick" data-sphere="fiscalite"><span class="em">📜</span><span class="nm">Fiscalité</span></div>
+      <div class="sphere-pick" data-sphere="transmission"><span class="em">🌳</span><span class="nm">Transmission</span></div>
+      <div class="sphere-pick" data-sphere="marches"><span class="em">📊</span><span class="nm">Marchés &amp; PE</span></div>
+      <div class="sphere-pick" data-sphere="voyage"><span class="em">✈️</span><span class="nm">Voyage</span></div>
+      <div class="sphere-pick" data-sphere="art"><span class="em">🎨</span><span class="nm">Art</span></div>
+      <div class="sphere-pick" data-sphere="vehicules"><span class="em">🏎️</span><span class="nm">Véhicules</span></div>
+      <div class="sphere-pick" data-sphere="horlogerie"><span class="em">⌚</span><span class="nm">Horlogerie</span></div>
+      <div class="sphere-pick" data-sphere="vins"><span class="em">🍷</span><span class="nm">Vins</span></div>
+      <div class="sphere-pick" data-sphere="bienetre"><span class="em">🌸</span><span class="nm">Bien-être</span></div>
+      <div class="sphere-pick" data-sphere="philanthropie"><span class="em">🌱</span><span class="nm">Philanthropie</span></div>
+    </div>
+    <div class="progress"><span class="done"></span><span class="done"></span><span class="active"></span><span></span></div>
+    <div class="nav-actions">
+      <button class="btn-back" onclick="next(2)">← Retour</button>
+      <button class="btn-next" onclick="next(4)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ─── STEP 4 — Cartographie SIREN ─── -->
+  <div class="step" id="step4">
+    <h1>Votre première <em>cartographie ?</em></h1>
+    <p class="lead">Saisissez le SIREN de votre société principale. Marcel récupère la fiche en 30 secondes via les sources publiques officielles.</p>
+    <div class="field">
+      <label for="siren">SIREN (9 chiffres)</label>
+      <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="947 972 436" autocomplete="off">
+    </div>
+    <div class="siren-status" id="sirenStatus"></div>
+    <div class="progress"><span class="done"></span><span class="done"></span><span class="done"></span><span class="active"></span></div>
+    <div class="nav-actions">
+      <button class="btn-back" onclick="next(3)">← Retour</button>
+      <button class="btn-next" id="finishBtn" onclick="finishOnboarding()">Terminer →</button>
+    </div>
+    <p style="margin-top:14px"><button class="btn-skip" onclick="finishOnboarding(true)">Ajouter ma société plus tard</button></p>
+  </div>
+
+</div>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+
+let me;
+try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+// Si déjà complété → dashboard
+if(me?.profile_json){
+  try{
+    const p = JSON.parse(me.profile_json);
+    if(p.onboarding_completed) location.href='/app/dashboard.html';
+  }catch(_){}
+}
+
+const data = { prenom:'', age:null, situation:'', profession:'', spheres:[], siren_data:null };
+
+window.next = function(step){
+  // Sauvegarde valeurs courantes
+  if(document.getElementById('step2').classList.contains('active')){
+    data.prenom = document.getElementById('prenom').value.trim();
+    data.age = parseInt(document.getElementById('age').value, 10) || null;
+    data.situation = document.getElementById('situation').value;
+    data.profession = document.getElementById('profession').value;
+  }
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Toggle sphère
+document.querySelectorAll('.sphere-pick').forEach(el => {
+  el.addEventListener('click', () => {
+    el.classList.toggle('selected');
+    const s = el.dataset.sphere;
+    if(el.classList.contains('selected')) data.spheres.push(s);
+    else data.spheres = data.spheres.filter(x => x !== s);
+  });
+});
+
+// SIREN check auto (debounced)
+let sirenT;
+document.getElementById('siren').addEventListener('input', (e) => {
+  clearTimeout(sirenT);
+  const v = e.target.value.replace(/\s+/g, '');
+  const status = document.getElementById('sirenStatus');
+  if(!/^\d{9}$/.test(v)){ status.classList.remove('show'); return; }
+  status.className = 'siren-status show';
+  status.innerHTML = '<b>Cartographie en cours…</b><span class="meta">Marcel consulte les sources officielles</span>';
+  sirenT = setTimeout(async () => {
+    try{
+      const d = await Marcel.cartographie(v);
+      data.siren_data = d;
+      status.className = 'siren-status show ok';
+      status.innerHTML = `<b>✓ ${d.nom || 'Société identifiée'}</b><span class="meta">${d.forme_juridique?.split(',')[0] || ''} · ${d.siege?.ville || ''} · Capital ${d.capital ? Marcel.Utils.formatEUR(d.capital) : '—'} · Créée ${d.date_creation ? new Date(d.date_creation).getFullYear() : '—'}</span>`;
+    }catch(err){
+      status.className = 'siren-status show err';
+      status.innerHTML = `<b>Société introuvable</b><span class="meta">Vérifiez votre SIREN (9 chiffres exacts)</span>`;
+      data.siren_data = null;
+    }
+  }, 600);
+});
+
+window.finishOnboarding = async function(skipSiren = false){
+  const btn = document.getElementById('finishBtn');
+  if(btn){ btn.disabled = true; btn.textContent = 'Enregistrement…'; }
+
+  const profile = {
+    prenom: data.prenom,
+    age: data.age,
+    situation: data.situation,
+    profession: data.profession,
+    spheres: data.spheres,
+    onboarding_completed: true,
+    onboarded_at: new Date().toISOString(),
+  };
+
+  try {
+    await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me/profile', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ profile_json: JSON.stringify(profile), prenom: data.prenom })
+    });
+    if(!skipSiren && data.siren_data){
+      await Marcel.Me.addSiren(data.siren_data.siren);
+    }
+  }catch(err){
+    console.warn('Onboarding sync error:', err);
+  }
+
+  // Stocke aussi en localStorage pour reload immédiat
+  localStorage.setItem('marcel_profile', JSON.stringify(profile));
+  location.href = '/app/dashboard.html?welcome=1';
+}
+
+window.skipAll = function(){
+  if(confirm('Passer l\'onboarding ? Vous pourrez le compléter depuis votre profil.')){
+    localStorage.setItem('marcel_profile', JSON.stringify({ onboarding_completed: false, skipped_at: new Date().toISOString() }));
+    location.href = '/app/dashboard.html';
+  }
+}
+</script>
+</body>
+</html>
