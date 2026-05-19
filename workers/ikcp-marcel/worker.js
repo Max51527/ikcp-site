@@ -27,6 +27,8 @@ const ALLOWED_ORIGINS = [
   'https://marcel.ikcp.eu',
   'https://famille.ikcp.eu',
   'https://admin.ikcp.eu',
+  'https://app.ikcp.eu',
+  'https://ikcp-eu.pages.dev',       // Cloudflare Pages (production)
   'http://localhost:3000',
   'http://localhost:5500',
   'http://localhost:8765',
@@ -685,12 +687,18 @@ ${Object.entries(seasons).map(([s, c]) => `<div class="bar"><div class="bar-labe
 
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  // Autorise les origines listées + tout sous-domaine ikcp.eu + déploiements Pages
+  const isAllowed = ALLOWED_ORIGINS.includes(origin)
+    || origin.endsWith('.ikcp.eu')
+    || origin.endsWith('.ikcp-eu.pages.dev')
+    || origin.endsWith('.workers.dev');
+  const allowed = isAllowed ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
   };
 }
 
@@ -732,7 +740,11 @@ export default {
     }
 
     const origin = request.headers.get('Origin') || '';
-    if (!ALLOWED_ORIGINS.includes(origin)) {
+    const originOk = ALLOWED_ORIGINS.includes(origin)
+      || origin.endsWith('.ikcp.eu')
+      || origin.endsWith('.ikcp-eu.pages.dev')
+      || origin.endsWith('.workers.dev');
+    if (!originOk) {
       return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },

@@ -178,13 +178,36 @@ Une fois activé, créer : `ikcp-temoin` (audit archive 10 ans).
 
 ## 🌐 DNS et domaines
 
-- **ikcp.eu** : DNS Cloudflare → site Cloudflare Pages
-- **ikcp.fr** : DNS Cloudflare → redirection 301 vers ikcp.eu (à finaliser)
+- **ikcp.eu** : DNS chez **Hostinger** (pas Cloudflare) · Hébergement migré vers Cloudflare Pages `ikcp-eu`
+  - ⚠️ **ACTION REQUISE** : mettre à jour le DNS Hostinger (voir ci-dessous)
+  - En attendant : site live sur https://ikcp-eu.pages.dev (code à jour, Marcel fonctionnel)
+- **ikcp.fr** : à mapper → redirection 301 vers ikcp.eu
 - **api.ikcp.eu** (à mapper) : sous-domaine pour exposer les workers en custom domain
   - `api.ikcp.eu/pappers/*` → ikcp-pappers
   - `api.ikcp.eu/marcel/*` → ikcp-chat
   - `api.ikcp.eu/codex/*` → ikcp-codex
   - `api.ikcp.eu/temoin/*` → ikcp-temoin
+
+### 🔧 Basculer ikcp.eu vers Cloudflare Pages (action manuelle Hostinger)
+
+1. Se connecter sur hPanel Hostinger → Domaines → ikcp.eu → DNS Zone Editor
+2. Supprimer l'enregistrement A actuel qui pointe vers l'hébergement Hostinger
+3. Ajouter un enregistrement CNAME :
+   - Type : CNAME
+   - Name : @ (ou ikcp.eu)
+   - Value : `ikcp-eu.pages.dev`
+   - TTL : 300
+4. Si CNAME sur apex non supporté → utiliser un enregistrement ALIAS/ANAME
+5. Attendre propagation DNS (5-60 min)
+6. Le domaine personnalisé dans Pages se validera automatiquement
+
+### 📦 Cloudflare Pages — projet `ikcp-eu`
+
+- **URL preview** : https://ikcp-eu.pages.dev (✅ LIVE · code à jour)
+- **Projet** : `ikcp-eu` (créé le 19 mai 2026)
+- **Branche production** : `main`
+- **Auto-deploy** : GitHub Actions `.github/workflows/deploy-pages.yml` (sur push main)
+- **Domaine custom** : `ikcp.eu` (⏳ en attente mise à jour DNS Hostinger)
 
 ---
 

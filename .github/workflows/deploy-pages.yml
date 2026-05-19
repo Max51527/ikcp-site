@@ -1,0 +1,27 @@
+name: Deploy IKCP Site to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'workers/**'
+      - 'docs/**'
+      - '_archive/**'
+      - '*.md'
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          command: pages deploy . --project-name ikcp-eu --branch=main --commit-dirty=true
