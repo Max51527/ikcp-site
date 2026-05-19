@@ -18,6 +18,7 @@
  */
 
 const STORAGE_KEY = 'marcel_voice_prefs_v1';
+const VOICE_WORKER = 'https://ikcp-voice.maxime-ead.workers.dev';
 
 function getPrefs() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
@@ -158,6 +159,158 @@ const Voice = {
   listFrenchVoices() {
     if (!('speechSynthesis' in window)) return [];
     return window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('fr'));
+  },
+
+  // ────────────────────────────────────────────────
+  // MODE PREMIUM — STT/TTS serveur (Mistral Voxtral + ElevenLabs)
+  // ────────────────────────────────────────────────
+
+  _audioRecorder: null,
+  _audioStream: null,
+  _audioChunks: [],
+  _audioPlayer: null,
+
+  /** STT serveur premium : enregistre micro → POST /stt → texte
+   *  callbacks { onStart, onStop, onFinal, onError, maxSeconds }
+   */
+  async startRecordingPremium({ onStart, onStop, onFinal, onError, maxSeconds = 60 } = {}) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this._audioStream = stream;
+      this._audioChunks = [];
+      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm';
+      const rec = new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 64000 });
+
+      rec.ondataavailable = (e) => { if (e.data.size > 0) this._audioChunks.push(e.data); };
+      rec.onstop = async () => {
+        // Stop tracks micro
+        stream.getTracks().forEach(t => t.stop());
+        onStop?.();
+        const blob = new Blob(this._audioChunks, { type: mime });
+        if (blob.size < 1000) { onError?.(new Error('Enregistrement trop court')); return; }
+
+        // POST vers worker voice
+        try {
+          const form = new FormData();
+          form.append('audio', blob, 'recording.webm');
+          const r = await fetch(VOICE_WORKER + '/stt', { method: 'POST', body: form, credentials: 'include' });
+          if (!r.ok) {
+            const err = await r.json().catch(() => ({}));
+            onError?.(new Error(err.error || `HTTP ${r.status}`));
+            return;
+          }
+          const data = await r.json();
+          onFinal?.(data.text, { source: data.source, durationMs: data.duration_ms });
+        } catch (e) {
+          onError?.(e);
+        }
+      };
+      rec.onerror = (e) => onError?.(e.error || new Error('Erreur enregistrement'));
+
+      this._audioRecorder = rec;
+      rec.start();
+      onStart?.();
+
+      // Auto-stop après maxSeconds
+      setTimeout(() => { if (rec.state === 'recording') rec.stop(); }, maxSeconds * 1000);
+    } catch (err) {
+      onError?.(err);
+    }
+  },
+
+  stopRecordingPremium() {
+    if (this._audioRecorder && this._audioRecorder.state === 'recording') {
+      this._audioRecorder.stop();
+    }
+  },
+
+  isRecordingPremium() {
+    return this._audioRecorder?.state === 'recording';
+  },
+
+  /** TTS serveur premium : POST /tts → audio/mpeg → playback */
+  async speakPremium(text, { voiceId } = {}) {
+    this.stopSpeaking();
+    if (!text || typeof text !== 'string') return false;
+    try {
+      const r = await fetch(VOICE_WORKER + '/tts', {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, voice: voiceId }),
+      });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        if (err.fallback_use_webspeech) {
+          this.speak(text);
+          return 'fallback_webspeech';
+        }
+        throw new Error(err.error || `HTTP ${r.status}`);
+      }
+      const buf = await r.arrayBuffer();
+      const audio = new Audio(URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' })));
+      this._audioPlayer = audio;
+      audio.onended = () => { this._audioPlayer = null; URL.revokeObjectURL(audio.src); };
+      await audio.play();
+      return 'premium';
+    } catch (err) {
+      console.warn('[voice] TTS premium failed, fallback Web Speech:', err.message);
+      this.speak(text);
+      return 'fallback_webspeech';
+    }
+  },
+
+  stopPremiumPlayback() {
+    if (this._audioPlayer) {
+      this._audioPlayer.pause();
+      this._audioPlayer.currentTime = 0;
+      this._audioPlayer = null;
+    }
+  },
+
+  /** Override stopSpeaking pour couvrir les 2 modes */
+  stopSpeakingAll() {
+    this.stopSpeaking();
+    this.stopPremiumPlayback();
+  },
+
+  /** Sélection automatique : premium si dispo + autorisé, fallback Web Speech */
+  async smartSpeak(text, { tier, voiceId } = {}) {
+    const prefs = this.getPreferences();
+    if (prefs.premiumMode && (tier === 'premium_essentiel' || tier === 'premium_fo')) {
+      return await this.speakPremium(text, { voiceId });
+    }
+    this.speak(text, { rate: prefs.rate || 1.0 });
+    return 'webspeech';
+  },
+
+  async smartListen(callbacks = {}) {
+    const prefs = this.getPreferences();
+    if (prefs.premiumMode) {
+      return this.startRecordingPremium(callbacks);
+    }
+    return this.startListening(callbacks);
+  },
+
+  setPremiumMode(v) {
+    const p = getPrefs();
+    p.premiumMode = !!v;
+    savePrefs(p);
+  },
+
+  /** Health check du worker voice */
+  async checkPremiumStatus() {
+    try {
+      const r = await fetch(VOICE_WORKER + '/health');
+      const data = await r.json();
+      return {
+        ok: r.ok,
+        stt_voxtral: data.stt?.voxtral || false,
+        stt_whisper: data.stt?.whisper_cf || false,
+        tts_elevenlabs: data.tts?.elevenlabs || false,
+      };
+    } catch (_) {
+      return { ok: false };
+    }
   },
 };
 

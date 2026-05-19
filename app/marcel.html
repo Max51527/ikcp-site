@@ -104,7 +104,26 @@ import { Voice } from '/app/js/voice.js';
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
 let history = [];
-try { await Marcel.Auth.me(); } catch(_){ location.href = '/app/index.html'; }
+let userTier = 'discovery';
+let me;
+try { me = await Marcel.Auth.me(); userTier = me?.tier || 'discovery'; } catch(_){ location.href = '/app/index.html'; }
+
+// Vérifie statut voix premium en arrière-plan
+let premiumVoiceAvailable = false;
+Voice.checkPremiumStatus().then(s => {
+  premiumVoiceAvailable = s.ok && (s.stt_voxtral || s.stt_whisper);
+  if(premiumVoiceAvailable && (userTier === 'premium_essentiel' || userTier === 'premium_fo')){
+    document.querySelector('.voice-bar')?.insertAdjacentHTML('beforeend',
+      `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium (Voxtral + ElevenLabs)</label>`);
+    setTimeout(() => {
+      const cb = document.getElementById('premiumVoiceMode');
+      if(cb){
+        cb.checked = !!Voice.getPreferences().premiumMode;
+        cb.addEventListener('change', e => Voice.setPremiumMode(e.target.checked));
+      }
+    }, 100);
+  }
+});
 
 // ─── Voix Marcel (Web Speech API) ───
 const voiceSupport = Voice.isSupported();
@@ -122,39 +141,60 @@ if(!voiceSupport.stt){
 }
 autoReadInput?.addEventListener('change', e => Voice.setAutoRead(e.target.checked));
 
-window.toggleMic = function(){
-  if(!voiceSupport.stt) return alert('Reconnaissance vocale non supportée sur ce navigateur.\nUtilisez Chrome, Edge ou Safari.');
-  if(Voice.isListening()){
-    Voice.stopListening();
-    micBtn.classList.remove('listening');
-    micBtn.textContent = '🎤';
+window.toggleMic = async function(){
+  const input = document.getElementById('q');
+  const prefs = Voice.getPreferences();
+  const usePremium = prefs.premiumMode && premiumVoiceAvailable && (userTier === 'premium_essentiel' || userTier === 'premium_fo');
+
+  // Mode premium (Voxtral/Whisper serveur)
+  if(usePremium){
+    if(Voice.isRecordingPremium()){
+      Voice.stopRecordingPremium();
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+      return;
+    }
+    input.placeholder = 'Enregistrement en cours… (10s max recommandé)';
+    Voice.startRecordingPremium({
+      onStart: () => { micBtn.classList.add('listening'); micBtn.textContent = '⏹'; },
+      onStop: () => { input.placeholder = 'Transcription Voxtral…'; },
+      onFinal: (text, meta) => {
+        input.value = text;
+        micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+        input.placeholder = `Posez votre question à Marcel… (${meta?.source || 'voxtral'})`;
+        setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
+      },
+      onError: (err) => {
+        micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+        input.placeholder = 'Posez votre question à Marcel…';
+        if(err?.name === 'NotAllowedError') alert('Autorisez l\'accès au micro dans les paramètres du navigateur.');
+        else console.warn('[voice premium] fallback Web Speech', err);
+      },
+      maxSeconds: 30,
+    });
     return;
   }
-  micBtn.classList.add('listening');
-  micBtn.textContent = '⏹';
-  const input = document.getElementById('q');
+
+  // Mode standard Web Speech API
+  if(!voiceSupport.stt) return alert('Reconnaissance vocale non supportée. Utilisez Chrome, Edge ou Safari.');
+  if(Voice.isListening()){
+    Voice.stopListening(); micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; return;
+  }
+  micBtn.classList.add('listening'); micBtn.textContent = '⏹';
   input.placeholder = 'Parlez à Marcel…';
   Voice.startListening({
-    onInterim: (txt) => { input.value = txt; },
-    onFinal: (txt) => {
-      input.value = txt;
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
+    onInterim: t => { input.value = t; },
+    onFinal: t => {
+      input.value = t;
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
       input.placeholder = 'Posez votre question à Marcel…';
-      // Auto-send après transcription finale
       setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
     },
-    onError: (err) => {
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
+    onError: e => {
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
       input.placeholder = 'Posez votre question à Marcel…';
-      if(err?.error === 'not-allowed') alert('Marcel a besoin d\'accéder à votre micro. Autorisez l\'accès dans les paramètres du navigateur.');
+      if(e?.error === 'not-allowed') alert('Autorisez le micro dans les paramètres.');
     },
-    onEnd: () => {
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
-      input.placeholder = 'Posez votre question à Marcel…';
-    },
+    onEnd: () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; input.placeholder = 'Posez votre question à Marcel…'; },
   });
 }
 
@@ -164,23 +204,28 @@ window.stopReading = function(){
   document.querySelectorAll('.read-btn.speaking').forEach(b => b.classList.remove('speaking'));
 }
 
-// Lecture d'un message à la demande
-window.readMessage = function(btnId, text){
+// Lecture d'un message à la demande — smart speak (premium si dispo)
+window.readMessage = async function(btnId, text){
   const btn = document.getElementById(btnId);
-  if(Voice.isSpeaking() && btn.classList.contains('speaking')){
-    Voice.stopSpeaking();
+  if((Voice.isSpeaking() || Voice._audioPlayer) && btn.classList.contains('speaking')){
+    Voice.stopSpeakingAll();
     btn.classList.remove('speaking');
     stopReadBtn.style.display = 'none';
     return;
   }
   document.querySelectorAll('.read-btn.speaking').forEach(b => b.classList.remove('speaking'));
-  Voice.speak(text, { rate: prefs.rate || 1.05 });
   btn.classList.add('speaking');
   stopReadBtn.style.display = 'inline-flex';
-  // Détecte fin de lecture
+
+  const mode = await Voice.smartSpeak(text, { tier: userTier });
+  if(mode === 'premium'){
+    btn.textContent = '⏸ ElevenLabs (Marcel premium)';
+  }
+  // Détecte fin de lecture (toutes sources)
   const check = setInterval(() => {
-    if(!Voice.isSpeaking()){
+    if(!Voice.isSpeaking() && !Voice._audioPlayer){
       btn.classList.remove('speaking');
+      btn.textContent = '🔊 Écouter la réponse';
       stopReadBtn.style.display = 'none';
       clearInterval(check);
     }

@@ -1,0 +1,30 @@
+name = "ikcp-voice"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+workers_dev = true
+keep_vars = true
+
+# Région Cloudflare WEUR (Paris/Frankfurt) — RGPD souverain
+[placement]
+mode = "smart"
+
+# Cloudflare Workers AI binding (Whisper fallback STT + futur TTS)
+[ai]
+binding = "AI"
+
+# KV : cache TTS 7j (mêmes textes redemandés = pas de re-facturation)
+[[kv_namespaces]]
+binding = "VOICE_CACHE"
+id = "1adfd430021b4ea9aca4fdcbb846b752"
+
+[vars]
+ELEVENLABS_VOICE_ID = "EXAVITQu4vr4xnSDxMaL"  # Bella FR (placeholder, à customiser)
+TTS_MAX_CHARS = "5000"                          # plafond par requête
+STT_PRIMARY = "voxtral"                         # voxtral | whisper-cf
+TTS_PRIMARY = "elevenlabs"                      # elevenlabs | webspeech-fallback
+CACHE_TTL_HOURS = "168"                         # 7 jours
+
+# Secrets à set via wrangler secret put :
+# MISTRAL_API_KEY        — clé Voxtral STT (la-plateforme.mistral.ai)
+# ELEVENLABS_API_KEY     — clé TTS premium (elevenlabs.io)
+# TEMOIN_INTERNAL_TOKEN  — audit Témoin
