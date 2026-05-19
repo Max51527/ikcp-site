@@ -487,14 +487,14 @@
         <span class="icon">◈</span> Tableau de bord
       </div>
       <div class="nav-item" onclick="showView('marcel')">
-        <span class="icon">✦</span> Marcel
+        <span class="icon">✦</span> Mon conseiller
         <span class="live-dot"></span>
       </div>
       <div class="nav-item" onclick="showView('agents')">
-        <span class="icon">⬡</span> Agents IA
+        <span class="icon">◎</span> Mes services
       </div>
       <div class="nav-item" onclick="showView('univers')">
-        <span class="icon">◎</span> Mes univers
+        <span class="icon">⬡</span> Mes univers
       </div>
       <div class="nav-item" onclick="showView('docs')">
         <span class="icon">▣</span> Documents
@@ -502,30 +502,6 @@
       <div class="nav-item" onclick="showView('alertes')">
         <span class="icon">◉</span> Alertes
         <span class="badge">3</span>
-      </div>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-label">Agents actifs</div>
-      <div class="agent-status-item" onclick="showView('agents')">
-        <div class="agent-dot active"></div>
-        <span class="agent-name-s">Marcel</span>
-        <span class="agent-model">Sonnet</span>
-      </div>
-      <div class="agent-status-item" onclick="showView('agents')">
-        <div class="agent-dot standby"></div>
-        <span class="agent-name-s">Codex</span>
-        <span class="agent-model">Opus</span>
-      </div>
-      <div class="agent-status-item" onclick="showView('agents')">
-        <div class="agent-dot active"></div>
-        <span class="agent-name-s">Témoin</span>
-        <span class="agent-model">MIF II</span>
-      </div>
-      <div class="agent-status-item" onclick="showView('agents')">
-        <div class="agent-dot active"></div>
-        <span class="agent-name-s">Pappers</span>
-        <span class="agent-model">SIREN</span>
       </div>
     </div>
 
@@ -543,11 +519,8 @@
     </div>
 
     <div class="topbar-agents">
-      <div class="agent-chip" onclick="showView('agents')" title="Marcel actif">
-        <div class="dot on"></div> Marcel
-      </div>
-      <div class="agent-chip" onclick="showView('agents')" title="Codex en veille">
-        <div class="dot sb"></div> Codex
+      <div class="agent-chip" title="Analyse en temps réel">
+        <div class="dot on"></div> Intelligence active
       </div>
     </div>
 
@@ -572,25 +545,25 @@
           <div class="kpi-label"><span class="ico">◈</span> Patrimoine global</div>
           <div class="kpi-value gold"><span class="counter" data-target="3400000" data-prefix="€ " data-format="currency">3 400 000</span></div>
           <div class="kpi-trend up">▲ +21,4 % sur 12 mois</div>
-          <a class="kpi-ask" onclick="event.stopPropagation();askMarcel('Analyser la performance de mon patrimoine global')">✦ Demander à Marcel</a>
+          <a class="kpi-ask" onclick="event.stopPropagation();askMarcel('Analyser la performance de mon patrimoine global de 3,4 M€ depuis un an')">Analyser →</a>
         </div>
         <div class="kpi" onclick="askMarcel('Analyser mon score patrimonial global de 78 sur 100 et identifier les axes d\'amélioration')">
           <div class="kpi-label"><span class="ico">◎</span> Score patrimonial</div>
           <div class="kpi-value gold"><span class="counter" data-target="78" data-suffix="/100">78</span></div>
           <div class="kpi-trend up">▲ +5 pts ce trimestre</div>
-          <a class="kpi-ask" onclick="event.stopPropagation();askMarcel('Quels axes d\'optimisation pour améliorer mon score patrimonial au-delà de 80 ?')">✦ Voir les axes Codex</a>
+          <a class="kpi-ask" onclick="event.stopPropagation();askMarcel('Quels axes d\'optimisation pour améliorer mon score patrimonial au-delà de 80 ?')">Optimiser →</a>
         </div>
         <div class="kpi">
           <div class="kpi-label"><span class="ico">▣</span> Revenus déclarés 2025</div>
           <div class="kpi-value"><span class="counter" data-target="142000" data-prefix="€ " data-format="currency">142 000</span></div>
           <div class="kpi-trend up">▲ +8 k€ vs 2024</div>
-          <a class="kpi-ask" onclick="askMarcel('Optimisation fiscale revenus 142k€ 2025 — TMI, PER, déficit foncier')">✦ Optimiser avec Marcel</a>
+          <a class="kpi-ask" onclick="askMarcel('Optimisation fiscale revenus 142k€ 2025 — TMI, PER, déficit foncier')">Optimiser →</a>
         </div>
         <div class="kpi">
           <div class="kpi-label"><span class="ico">◉</span> IFI 2026</div>
           <div class="kpi-value alert">J‑<span class="counter" data-target="27">27</span></div>
           <div class="kpi-trend warn">⚠ Déclaration 15 juin</div>
-          <a class="kpi-ask" onclick="askMarcel('Rappel IFI 2026 : barème, calcul, stratégies de réduction applicables à ma situation')">⚡ Urgence — Codex</a>
+          <a class="kpi-ask" onclick="askMarcel('Rappel IFI 2026 : barème, calcul, stratégies de réduction applicables à ma situation')">⚡ Analyse urgente →</a>
         </div>
       </div>
 
@@ -599,31 +572,31 @@
         <div class="marcel-panel-header">
           <div class="marcel-icon">✦</div>
           <div>
-            <div class="marcel-panel-title">Marcel Suggère</div>
-            <div class="marcel-panel-sub">3 opportunités détectées cette semaine</div>
+            <div class="marcel-panel-title">Opportunités détectées</div>
+            <div class="marcel-panel-sub">3 actions à fort impact identifiées cette semaine</div>
           </div>
-          <button onclick="showView('marcel')" style="margin-left:auto;padding:6px 14px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);color:var(--gold);font-size:11px;cursor:pointer;font-family:'Outfit',sans-serif">Tout demander →</button>
+          <button onclick="showView('marcel')" style="margin-left:auto;padding:6px 14px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);color:var(--gold);font-size:11px;cursor:pointer;font-family:'Outfit',sans-serif">Approfondir →</button>
         </div>
         <div class="suggestion-list">
           <div class="suggestion-item" onclick="askMarcel('Optimisation PER : versements déductibles avant 31 décembre 2026. Quel montant optimal pour ma TMI ?')">
             <div class="suggestion-ico">📊</div>
             <div>
               <div class="suggestion-text">Versement PER avant le 31 déc. : votre TMI à 41 % rend la fenêtre très avantageuse. Jusqu'à 24 800 € déductibles restants.</div>
-              <div class="suggestion-agent">✦ Marcel · Fiscalité · Demander maintenant</div>
+              <div class="suggestion-agent">Fiscalité · Analyser →</div>
             </div>
           </div>
           <div class="suggestion-item" onclick="askMarcel('Pacte Dutreil sur ma SCI familiale : conditions, évaluation, calendrier optimal avant transmission')">
             <div class="suggestion-ico">🏛</div>
             <div>
               <div class="suggestion-text">Votre SCI familiale est éligible au Pacte Dutreil (art. 787 B CGI). Exonération 75 % potentielle en préparant dès maintenant.</div>
-              <div class="suggestion-agent">⚖ Codex · Transmission · Expertise fiscale</div>
+              <div class="suggestion-agent">Transmission · Analyser →</div>
             </div>
           </div>
           <div class="suggestion-item" onclick="askMarcel('Donation parents-enfants 2026 : abattement 100k€ renouvelé, stratégie démembrement, calendrier')">
             <div class="suggestion-ico">🎁</div>
             <div>
               <div class="suggestion-text">Abattement 100 k€ parent-enfant disponible depuis 2021. Donation avant fin 2026 pour réinitialiser le délai de 15 ans.</div>
-              <div class="suggestion-agent">✦ Marcel · Donation · Action recommandée</div>
+              <div class="suggestion-agent">Donation · Action recommandée →</div>
             </div>
           </div>
         </div>
@@ -640,7 +613,7 @@
             <div class="chart-actions">
               <div class="chart-btn active">12M</div>
               <div class="chart-btn">5A</div>
-              <div class="chart-btn" onclick="askMarcel('Analyser la trajectoire de mon patrimoine sur les 12 derniers mois — performance par classe d\'actif')">✦ Analyser</div>
+              <div class="chart-btn" onclick="askMarcel('Analyser la trajectoire de mon patrimoine sur les 12 derniers mois — performance par classe d\'actif')">Analyser</div>
             </div>
           </div>
           <div class="chart-wrap"><canvas id="chart-patrimoine" height="180"></canvas></div>
@@ -652,7 +625,7 @@
               <div class="chart-sub">Répartition au 19/05/2026</div>
             </div>
             <div class="chart-actions">
-              <div class="chart-btn" onclick="askMarcel('Mon allocation patrimoniale est-elle optimale ? Comparer avec les ratios recommandés pour un patrimoine de 3,4 M€')">✦ Codex</div>
+              <div class="chart-btn" onclick="askMarcel('Mon allocation patrimoniale est-elle optimale ? Comparer avec les ratios recommandés pour un patrimoine de 3,4 M€')">Analyser</div>
             </div>
           </div>
           <canvas id="chart-allocation" height="180"></canvas>
@@ -677,7 +650,7 @@
               <div class="chart-sub">Score par domaine</div>
             </div>
             <div class="chart-actions">
-              <div class="chart-btn" onclick="askMarcel('Détailler mon score de 55/100 en retraite — quelles optimisations PER, PEA, assurance-vie pour l\'améliorer ?')">⚠ Retraite 55</div>
+              <div class="chart-btn" onclick="askMarcel('Détailler mon score de 55/100 en retraite — quelles optimisations PER, PEA, assurance-vie pour l\'améliorer ?')">⚠ Retraite 55 →</div>
             </div>
           </div>
           <canvas id="chart-radar" height="230"></canvas>
@@ -693,7 +666,7 @@
                 <div class="alert-desc">Échéance 15 juin · Valeur estimée ~85 k€</div>
                 <div class="alert-meta">
                   <span class="alert-tag" style="color:var(--red)">J-27</span>
-                  <span class="alert-cta" onclick="askMarcel('IFI 2026 : calcul complet, stratégies de réduction, passif déductible pour mon patrimoine')">⚡ Codex IFI →</span>
+                  <span class="alert-cta" onclick="askMarcel('IFI 2026 : calcul complet, stratégies de réduction, passif déductible pour mon patrimoine')">⚡ Analyse urgente →</span>
                 </div>
               </div>
             </div>
@@ -704,7 +677,7 @@
                 <div class="alert-desc">Prélèvement 15 juin · 4 200 €</div>
                 <div class="alert-meta">
                   <span class="alert-tag" style="color:var(--amber)">J-27</span>
-                  <span class="alert-cta" onclick="askMarcel('Puis-je moduler mes acomptes IR 2026 à la baisse au vu de ma situation réelle ?')">✦ Marcel →</span>
+                  <span class="alert-cta" onclick="askMarcel('Puis-je moduler mes acomptes IR 2026 à la baisse au vu de ma situation réelle ?')">Analyser →</span>
                 </div>
               </div>
             </div>
@@ -723,25 +696,25 @@
 
           <!-- Activity feed -->
           <div class="section-card" style="grid-column:1/-1">
-            <div class="section-title">Activité agents IA</div>
+            <div class="section-title">Activité récente</div>
             <div class="activity-item">
               <div class="activity-dot" style="background:#3ECC8A"></div>
-              <div class="activity-text">Marcel a répondu à votre question sur le PER — 18 réponses ce mois</div>
+              <div class="activity-text">Analyse PER complétée — 18 échanges ce mois</div>
               <div class="activity-time">auj.</div>
             </div>
             <div class="activity-item">
               <div class="activity-dot" style="background:var(--amber)"></div>
-              <div class="activity-text">Codex a analysé votre dossier Dutreil (art. 787 B CGI)</div>
+              <div class="activity-text">Note d'analyse Transmission · Pacte Dutreil disponible</div>
               <div class="activity-time">hier</div>
             </div>
             <div class="activity-item">
               <div class="activity-dot" style="background:#60A5FA"></div>
-              <div class="activity-text">Témoin a enregistré 23 interactions MIF II ce mois</div>
+              <div class="activity-text">23 échanges archivés ce mois · Conformité MIF II ✓</div>
               <div class="activity-time">lun.</div>
             </div>
             <div class="activity-item">
               <div class="activity-dot" style="background:var(--gold)"></div>
-              <div class="activity-text">Pappers a cartographié 3 entités liées à votre holding</div>
+              <div class="activity-text">Cartographie patrimoine : 3 entités analysées</div>
               <div class="activity-time">dim.</div>
             </div>
           </div>
@@ -751,29 +724,29 @@
 
     <!-- ─────────── MARCEL CHAT ─────────── -->
     <div class="view" id="view-marcel">
-      <div class="page-title">✦ Marcel</div>
-      <div class="page-sub">Votre intelligence patrimoniale souveraine — actif 24/7</div>
+      <div class="page-title">✦ Mon conseiller</div>
+      <div class="page-sub">Votre espace de conseil patrimonial — disponible 24h/24</div>
 
       <div class="chat-layout">
         <div class="chat-main">
           <div class="chat-header">
             <div class="marcel-icon" style="width:28px;height:28px;font-size:13px">✦</div>
             <div>
-              <div style="font-size:13px;font-weight:600;color:var(--cream)">Marcel</div>
+              <div style="font-size:13px;font-weight:600;color:var(--cream)">Conseiller IKCP</div>
               <div style="font-size:11px;color:#3ECC8A;display:flex;align-items:center;gap:4px">
                 <span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span>
-                En ligne · Chef d'orchestre patrimonial
+                En ligne · Disponible 24h/24
               </div>
             </div>
-            <div style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25)">MIF II · ORIAS 23001568</div>
+            <div style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25)">MIF II · ORIAS 23001568 · Confidentiel</div>
           </div>
 
           <div class="chat-messages" id="chat-messages">
             <div class="msg marcel">
               <div class="msg-avatar m">✦</div>
               <div>
-                <div class="msg-agent-badge">✦ Marcel · Intelligence souveraine</div>
-                <div class="msg-bubble">Bonjour, Famille Moreau. Je suis Marcel, votre chef d'orchestre patrimonial.<br><br>J'ai analysé votre situation ce matin : votre IFI est à <strong>J-27</strong>, un versement PER avant décembre vous ferait économiser jusqu'à <strong>~10 k€ d'impôts</strong>, et votre SCI est potentiellement éligible au Pacte Dutreil.<br><br>Que souhaitez-vous approfondir aujourd'hui ?</div>
+                <div class="msg-agent-badge">✦ IKCP · Conseiller patrimonial</div>
+                <div class="msg-bubble">Bonjour, Famille Moreau. Votre conseiller IKCP est à votre disposition.<br><br>J'ai analysé votre situation ce matin : votre IFI est à <strong>J-27</strong>, un versement PER avant décembre vous ferait économiser jusqu'à <strong>~10 k€ d'impôts</strong>, et votre SCI est potentiellement éligible au Pacte Dutreil.<br><br>Que souhaitez-vous approfondir aujourd'hui ?</div>
                 <div class="msg-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
               </div>
             </div>
@@ -790,7 +763,7 @@
               <textarea class="chat-textarea" id="chat-input" rows="1" placeholder="Posez votre question patrimoniale…" onkeydown="handleKey(event)"></textarea>
               <button class="chat-send" id="chat-send-btn" onclick="sendMessage()">→</button>
             </div>
-            <div class="chat-shortcuts">Entrée pour envoyer · Shift+Entrée pour saut de ligne · Questions délicates → déléguées à Codex</div>
+            <div class="chat-shortcuts">Entrée pour envoyer · Shift+Entrée pour saut de ligne · Questions complexes traitées automatiquement</div>
           </div>
         </div>
 
@@ -804,17 +777,12 @@
             <div class="quick-q" onclick="setQuestion('Quel montant optimal à verser sur mon PER avant le 31 décembre pour ma TMI à 41% ?')">Optimisation PER TMI 41%</div>
           </div>
           <div class="chat-side-card">
-            <div class="chat-side-title">Agents disponibles</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6;margin-bottom:10px">Marcel orchestre automatiquement. Questions complexes → délégation à Codex (Opus).</div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-              <div style="width:7px;height:7px;border-radius:50%;background:#3ECC8A;animation:pulse-dot 2s infinite"></div>
-              <span style="font-size:11px;color:var(--cream)">Marcel</span>
-              <span style="font-size:10px;color:rgba(255,255,255,0.25);margin-left:auto">Général</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="width:7px;height:7px;border-radius:50%;background:var(--amber)"></div>
-              <span style="font-size:11px;color:var(--cream)">Codex</span>
-              <span style="font-size:10px;color:rgba(255,255,255,0.25);margin-left:auto">Fiscal expert</span>
+            <div class="chat-side-title">Domaines couverts</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">⚖</span> Fiscalité & transmission</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">🏛</span> Patrimoine & structuration</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">🛡</span> Prévoyance & retraite</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:7px"><span style="font-size:12px">🏠</span> Immobilier & financement</div>
             </div>
           </div>
           <div class="chat-side-card">
@@ -832,8 +800,8 @@
 
     <!-- ─────────── AGENTS IA ─────────── -->
     <div class="view" id="view-agents">
-      <div class="page-title">⬡ Agents IA Souverains</div>
-      <div class="page-sub">Votre équipe d'intelligence patrimoniale dédiée · 4 agents actifs</div>
+      <div class="page-title">◎ Mes services inclus</div>
+      <div class="page-sub">Votre Family Office digital · 4 services actifs dès maintenant</div>
 
       <div class="grid-2">
         <!-- Marcel -->
@@ -841,24 +809,24 @@
           <div class="agent-card-header">
             <div class="agent-avatar gold">✦</div>
             <div>
-              <div class="agent-card-name">Marcel</div>
-              <div class="agent-card-role">Chef d'orchestre patrimonial</div>
-              <div class="agent-card-model">Sonnet 4.6 · Cloudflare WEUR</div>
+              <div class="agent-card-name">Conseiller patrimonial</div>
+              <div class="agent-card-role">Disponible 24h/24 · Questions illimitées</div>
+              <div class="agent-card-model">Hébergé en France · Données souveraines</div>
             </div>
             <div class="agent-status-badge active"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block"></span> Actif</div>
           </div>
-          <div class="agent-desc">Point d'entrée unique de votre Family Office. Marcel analyse votre situation globale, répond à vos questions patrimoniales et orchestre les agents spécialisés quand la profondeur l'exige. Conforme MIF II, audit continu.</div>
+          <div class="agent-desc">Votre conseiller disponible à toute heure, sans délai. Posez vos questions patrimoniales librement : fiscalité, transmission, immobilier, retraite. Chaque réponse est tracée et conforme MIF II.</div>
           <div class="agent-metrics">
-            <div class="agent-metric"><div class="agent-metric-val counter" data-target="18">18</div><div class="agent-metric-key">Questions/mois</div></div>
-            <div class="agent-metric"><div class="agent-metric-val counter" data-target="23">23</div><div class="agent-metric-key">Logs MIF II</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="18">18</div><div class="agent-metric-key">Échanges ce mois</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="23">23</div><div class="agent-metric-key">Archivés MIF II</div></div>
             <div class="agent-metric"><div class="agent-metric-val"><span style="font-size:14px;color:#3ECC8A">●</span></div><div class="agent-metric-key">Disponible</div></div>
           </div>
           <div class="agent-skills">
-            <span class="skill-tag">Fiscalité générale</span><span class="skill-tag">Transmission</span>
+            <span class="skill-tag">Fiscalité</span><span class="skill-tag">Transmission</span>
             <span class="skill-tag">Immobilier</span><span class="skill-tag">Retraite</span>
-            <span class="skill-tag">Prévoyance</span><span class="skill-tag">Orchestration</span>
+            <span class="skill-tag">Prévoyance</span><span class="skill-tag">Donation</span>
           </div>
-          <button class="agent-btn" onclick="showView('marcel')">✦ Interroger Marcel →</button>
+          <button class="agent-btn" onclick="showView('marcel')">✦ Ouvrir mon conseiller →</button>
         </div>
 
         <!-- Codex -->
@@ -866,24 +834,24 @@
           <div class="agent-card-header">
             <div class="agent-avatar blue">⚖</div>
             <div>
-              <div class="agent-card-name">Codex</div>
-              <div class="agent-card-role">Expert fiscal & juridique</div>
-              <div class="agent-card-model">Opus 4.7 · Analyse approfondie</div>
+              <div class="agent-card-name">Analyse fiscale approfondie</div>
+              <div class="agent-card-role">Expertise juridique & patrimoniale avancée</div>
+              <div class="agent-card-model">Mobilisé automatiquement sur les cas complexes</div>
             </div>
-            <div class="agent-status-badge standby">⊙ En veille</div>
+            <div class="agent-status-badge standby">⊙ Sur demande</div>
           </div>
-          <div class="agent-desc">Sub-agent d'expertise fiscale senior. Codex intervient sur les arbitrages multi-dispositifs complexes : Dutreil, apport-cession, démembrement, jurisprudence fiscale. Citation CGI, BOFIP, arrêts Cass. com. systématiques.</div>
+          <div class="agent-desc">Pour vos questions fiscales complexes : Dutreil, apport-cession, démembrement, arbitrages IS/IR. Chaque analyse cite les articles du CGI, les instructions BOFIP et la jurisprudence applicable. Un niveau d'expertise normalement réservé aux grands cabinets.</div>
           <div class="agent-metrics">
-            <div class="agent-metric"><div class="agent-metric-val counter" data-target="4">4</div><div class="agent-metric-key">Analyses/mois</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="4">4</div><div class="agent-metric-key">Analyses ce mois</div></div>
             <div class="agent-metric"><div class="agent-metric-val counter" data-target="3">3</div><div class="agent-metric-key">Schémas étudiés</div></div>
-            <div class="agent-metric"><div class="agent-metric-val" style="font-size:12px;color:var(--amber)">Opus</div><div class="agent-metric-key">Modèle</div></div>
+            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px;color:var(--gold)">Inclus</div><div class="agent-metric-key">Premium</div></div>
           </div>
           <div class="agent-skills">
             <span class="skill-tag">Dutreil 787B CGI</span><span class="skill-tag">Apport-cession</span>
             <span class="skill-tag">Démembrement</span><span class="skill-tag">IFI</span>
             <span class="skill-tag">IS/IR arbitrage</span><span class="skill-tag">Jurisprudence</span>
           </div>
-          <button class="agent-btn" onclick="askMarcel('Question fiscale complexe : je souhaite une analyse Codex sur les conditions du Pacte Dutreil pour ma holding en 2026')">⚖ Déléguer à Codex →</button>
+          <button class="agent-btn" onclick="askMarcel('Je souhaite une analyse fiscale approfondie sur le Pacte Dutreil pour ma holding familiale en 2026')">⚖ Demander une analyse →</button>
         </div>
 
         <!-- Témoin -->
@@ -891,24 +859,23 @@
           <div class="agent-card-header">
             <div class="agent-avatar green">📋</div>
             <div>
-              <div class="agent-card-name">Témoin</div>
-              <div class="agent-card-role">Audit log MIF II souverain</div>
-              <div class="agent-card-model">D1 SQLite · Paris CDG · WEUR</div>
+              <div class="agent-card-name">Traçabilité & conformité MIF II</div>
+              <div class="agent-card-role">Archivage réglementaire automatique</div>
+              <div class="agent-card-model">Hébergement France · RGPD souverain</div>
             </div>
             <div class="agent-status-badge active"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block"></span> Actif</div>
           </div>
-          <div class="agent-desc">Enregistre chaque interaction patrimoniale sous SHA-256 dans une base Cloudflare D1 hébergée à Paris. Audit trail permanent, conformité RGPD souveraine France. Chaque échange Marcel/Codex est horodaté et signé.</div>
+          <div class="agent-desc">Chaque échange patrimonial est automatiquement archivé, horodaté et conforme MIF II. Vos données restent en France, sur des serveurs souverains. Traçabilité 10 ans. Aucune action de votre part requise.</div>
           <div class="agent-metrics">
-            <div class="agent-metric"><div class="agent-metric-val counter" data-target="241">241</div><div class="agent-metric-key">Logs total</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="241">241</div><div class="agent-metric-key">Échanges archivés</div></div>
             <div class="agent-metric"><div class="agent-metric-val counter" data-target="100">100</div><div class="agent-metric-key">% Conformes</div></div>
-            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px;color:#3ECC8A">Paris</div><div class="agent-metric-key">Hébergement</div></div>
+            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px;color:#3ECC8A">France</div><div class="agent-metric-key">Données</div></div>
           </div>
           <div class="agent-skills">
-            <span class="skill-tag">MIF II audit</span><span class="skill-tag">SHA-256</span>
-            <span class="skill-tag">RGPD France</span><span class="skill-tag">D1 SQLite</span>
-            <span class="skill-tag">Trail 10 ans</span>
+            <span class="skill-tag">MIF II</span><span class="skill-tag">RGPD France</span>
+            <span class="skill-tag">Archivage 10 ans</span><span class="skill-tag">Horodatage</span>
           </div>
-          <button class="agent-btn" style="cursor:default;opacity:.6">📋 Audit automatique · Transparent</button>
+          <button class="agent-btn" style="cursor:default;opacity:.6">📋 Automatique · Transparent · Inclus</button>
         </div>
 
         <!-- Pappers -->
@@ -916,30 +883,30 @@
           <div class="agent-card-header">
             <div class="agent-avatar purple">🗺</div>
             <div>
-              <div class="agent-card-name">Pappers</div>
-              <div class="agent-card-role">Cartographie SIREN & RNE</div>
-              <div class="agent-card-model">API Pappers · Cache KV 1h</div>
+              <div class="agent-card-name">Cartographie patrimoniale</div>
+              <div class="agent-card-role">Vision 360° de vos entités en 30 secondes</div>
+              <div class="agent-card-model">Données officielles · Registre national</div>
             </div>
             <div class="agent-status-badge active"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block"></span> Actif</div>
           </div>
-          <div class="agent-desc">Cartographie vos entités juridiques en 30 secondes depuis le SIREN : capital, bénéficiaires effectifs, statuts, actes de cession. Données RNE officielles, mise en cache 1h. Base de toute analyse patrimoniale.</div>
+          <div class="agent-desc">Renseignez un numéro SIREN : obtenez instantanément la cartographie complète de vos entités — capital, bénéficiaires effectifs, dirigeants, actes. Données officielles du registre national. Base indispensable à toute analyse patrimoniale.</div>
           <div class="agent-metrics">
-            <div class="agent-metric"><div class="agent-metric-val counter" data-target="3">3</div><div class="agent-metric-key">Entités liées</div></div>
+            <div class="agent-metric"><div class="agent-metric-val counter" data-target="3">3</div><div class="agent-metric-key">Entités cartogr.</div></div>
             <div class="agent-metric"><div class="agent-metric-val counter" data-target="7">7</div><div class="agent-metric-key">Actionnaires</div></div>
-            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px">30s</div><div class="agent-metric-key">Analyse</div></div>
+            <div class="agent-metric"><div class="agent-metric-val" style="font-size:11px">30s</div><div class="agent-metric-key">Résultat</div></div>
           </div>
           <div class="agent-skills">
-            <span class="skill-tag">RNE officiel</span><span class="skill-tag">Bénéf. effectifs</span>
+            <span class="skill-tag">Registre national</span><span class="skill-tag">Bénéf. effectifs</span>
             <span class="skill-tag">Capital social</span><span class="skill-tag">Dirigeants</span>
-            <span class="skill-tag">Actes BODACC</span>
+            <span class="skill-tag">Actes officiels</span>
           </div>
-          <button class="agent-btn" onclick="askMarcel('Cartographier mes entités via Pappers : holding, SCI, sociétés liées. SIREN principal : 947972436')">🗺 Cartographier →</button>
+          <button class="agent-btn" onclick="askMarcel('Cartographier mes entités : holding, SCI, sociétés liées. SIREN principal : 947972436')">🗺 Lancer la cartographie →</button>
         </div>
       </div>
 
       <!-- Agents à venir -->
       <div class="section-card">
-        <div class="section-title">Agents en préparation · Q3-Q4 2026</div>
+        <div class="section-title">Services à venir · Q3-Q4 2026</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px">
           <div style="text-align:center;padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;opacity:.5">
             <div style="font-size:20px;margin-bottom:6px">🏗</div>
@@ -972,36 +939,36 @@
     <!-- ─────────── UNIVERS ─────────── -->
     <div class="view" id="view-univers">
       <div class="page-title">◎ Mes univers patrimoniaux</div>
-      <div class="page-sub">4 univers actifs · 8 en préparation · orchestrés par Marcel</div>
+      <div class="page-sub">4 univers actifs · 8 en préparation · disponibles dans votre espace</div>
 
       <div class="univers-grid">
         <div class="univers-card">
           <div class="univers-ico">◈</div>
           <div class="univers-name">Cartographie patrimoniale</div>
           <div class="univers-desc">Vision 360° de votre patrimoine via SIREN. Entités, actionnaires, capital, bénéficiaires effectifs en 30s.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Pappers RNE</div>
-          <div class="univers-agent" onclick="askMarcel('Lancer une cartographie complète de mes entités patrimoniales')">🗺 Lancer via Pappers →</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Registre national</div>
+          <div class="univers-agent" onclick="askMarcel('Lancer une cartographie complète de mes entités patrimoniales')">🗺 Lancer la cartographie →</div>
         </div>
         <div class="univers-card">
           <div class="univers-ico">✦</div>
-          <div class="univers-name">Marcel 24/7</div>
-          <div class="univers-desc">Questions patrimoniales illimitées. Marcel répond, analyse, délègue. Conforme MIF II. Audit continu.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Sonnet 4.6</div>
-          <div class="univers-agent" onclick="showView('marcel')">✦ Ouvrir Marcel →</div>
+          <div class="univers-name">Conseil patrimonial 24/7</div>
+          <div class="univers-desc">Questions patrimoniales illimitées. Réponses expertes, analyses chiffrées. Conforme MIF II. Audit continu.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · 24h/24</div>
+          <div class="univers-agent" onclick="showView('marcel')">✦ Ouvrir mon conseiller →</div>
         </div>
         <div class="univers-card">
           <div class="univers-ico">⚖</div>
           <div class="univers-name">Fiscalité & Transmission</div>
-          <div class="univers-desc">Simulations IR, IFI, droits de succession, Dutreil, apport-cession. Codex cite le CGI et la jurisprudence.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Codex Opus</div>
-          <div class="univers-agent" onclick="askMarcel('Analyse fiscale complète : IR, IFI, transmission, stratégies optimales pour ma situation')">⚖ Analyse Codex →</div>
+          <div class="univers-desc">Simulations IR, IFI, droits de succession, Dutreil, apport-cession. Analyses citant le CGI et la jurisprudence.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Expertise senior</div>
+          <div class="univers-agent" onclick="askMarcel('Analyse fiscale complète : IR, IFI, transmission, stratégies optimales pour ma situation')">⚖ Demander une analyse →</div>
         </div>
         <div class="univers-card">
           <div class="univers-ico">📋</div>
           <div class="univers-name">Audit MIF II</div>
-          <div class="univers-desc">Chaque interaction horodatée et signée SHA-256 en base Paris CDG. RGPD souverain France. Traçabilité 10 ans.</div>
-          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Témoin D1</div>
-          <div class="univers-agent">📋 Automatique · Transparent</div>
+          <div class="univers-desc">Chaque échange horodaté et archivé. Données hébergées en France. RGPD souverain. Traçabilité 10 ans.</div>
+          <div class="univers-live"><span style="width:6px;height:6px;border-radius:50%;background:#3ECC8A;display:inline-block;animation:pulse-dot 2s infinite"></span> LIVE · Souverain France</div>
+          <div class="univers-agent">📋 Automatique · Transparent · Inclus</div>
         </div>
 
         <div class="univers-card locked">
@@ -1071,7 +1038,7 @@
             </div>
             <div class="doc-actions">
               <div class="doc-btn">Voir</div>
-              <div class="doc-btn" onclick="askMarcel('Mon DER 2026 est-il à jour ? Quelles informations doivent être actualisées ?')">✦ Marcel</div>
+              <div class="doc-btn" onclick="askMarcel('Mon DER 2026 est-il à jour ? Quelles informations doivent être actualisées ?')">Analyser →</div>
             </div>
           </div>
           <div class="doc-item">
@@ -1082,7 +1049,7 @@
             </div>
             <div class="doc-actions">
               <div class="doc-btn">Voir</div>
-              <div class="doc-btn" onclick="askMarcel('Rappel du périmètre de ma lettre de mission : quels services sont inclus ?')">✦ Marcel</div>
+              <div class="doc-btn" onclick="askMarcel('Rappel du périmètre de ma lettre de mission : quels services sont inclus ?')">Analyser →</div>
             </div>
           </div>
           <div class="doc-item">
@@ -1093,18 +1060,18 @@
             </div>
             <div class="doc-actions">
               <div class="doc-btn">Voir</div>
-              <div class="doc-btn" onclick="askMarcel('Analyser les principales évolutions de mon patrimoine entre Q4 2025 et Q1 2026')">✦ Marcel</div>
+              <div class="doc-btn" onclick="askMarcel('Analyser les principales évolutions de mon patrimoine entre Q4 2025 et Q1 2026')">Analyser →</div>
             </div>
           </div>
           <div class="doc-item" style="border-bottom:none">
             <div class="doc-icon">⚖</div>
             <div>
-              <div class="doc-name">Note d'Analyse Codex — Dutreil</div>
-              <div class="doc-meta">8 mai 2026 · Expertise fiscale Opus 4.7</div>
+              <div class="doc-name">Note d'analyse approfondie — Dutreil</div>
+              <div class="doc-meta">8 mai 2026 · Analyse fiscale approfondie</div>
             </div>
             <div class="doc-actions">
               <div class="doc-btn">Voir</div>
-              <div class="doc-btn" onclick="askMarcel('Résumer les conclusions de l\'analyse Codex sur le Pacte Dutreil pour ma holding')">⚖ Codex</div>
+              <div class="doc-btn" onclick="askMarcel('Résumer les conclusions de l\'analyse Dutreil pour ma holding')">Résumer →</div>
             </div>
           </div>
         </div>
@@ -1114,13 +1081,13 @@
           <div style="padding:14px;background:rgba(196,75,59,0.06);border:1px solid rgba(196,75,59,0.15);border-radius:8px;margin-bottom:14px">
             <div style="font-size:13px;font-weight:600;color:#F87171;margin-bottom:6px">⚠ DER à actualiser</div>
             <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:10px">Votre Document d'Entrée en Relation doit être actualisé annuellement. Dernière version : janvier 2026. Action requise avant le 12 janvier 2027.</div>
-            <button onclick="askMarcel('Quelles informations dois-je fournir pour actualiser mon DER 2026 ? Liste complète des éléments MIF II.')" style="padding:8px 16px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);border-radius:20px;color:var(--gold);font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif">✦ Préparer avec Marcel</button>
+            <button onclick="askMarcel('Quelles informations dois-je fournir pour actualiser mon DER 2026 ? Liste complète des éléments MIF II.')" style="padding:8px 16px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);border-radius:20px;color:var(--gold);font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif">✦ Préparer mon actualisation</button>
           </div>
 
-          <div class="section-title" style="margin-top:4px">Activité Témoin récente</div>
+          <div class="section-title" style="margin-top:4px">Activité récente</div>
           <div class="activity-item">
             <div class="activity-dot"></div>
-            <div class="activity-text">Note Codex Dutreil enregistrée · SHA-256 signé</div>
+            <div class="activity-text">Note Dutreil archivée · Conformité MIF II ✓</div>
             <div class="activity-time">08/05</div>
           </div>
           <div class="activity-item">
@@ -1150,7 +1117,7 @@
               <div class="alert-title">🔴 Déclaration IFI 2026</div>
               <div class="alert-desc" style="margin-top:4px">Échéance légale 15 juin 2026. Valeur patrimoine imposable estimée ~1,2 M€ (RP non déductible). IFI brut ~85 k€ avant passif. Réduction possible : passif immobilier, dons.</div>
               <div style="display:flex;gap:8px;margin-top:10px">
-                <span class="alert-cta" onclick="askMarcel('Calcul IFI 2026 détaillé : barème, passif déductible, stratégies de réduction. Patrimoine imposable estimé 1,2 M€')">⚖ Analyse Codex →</span>
+                <span class="alert-cta" onclick="askMarcel('Calcul IFI 2026 détaillé : barème, passif déductible, stratégies de réduction. Patrimoine imposable estimé 1,2 M€')">⚡ Analyse approfondie →</span>
                 <span class="alert-tag" style="color:var(--red)">J-27</span>
               </div>
             </div>
@@ -1163,7 +1130,7 @@
               <div class="alert-title">🟠 Acompte IR — 15 juin</div>
               <div class="alert-desc" style="margin-top:4px">2e prélèvement mensuel 2026 : 4 200 €. Si vos revenus 2026 sont inférieurs à 2025, vous pouvez moduler à la baisse en ligne (impots.gouv.fr).</div>
               <div style="display:flex;gap:8px;margin-top:10px">
-                <span class="alert-cta" onclick="askMarcel('Puis-je moduler mon acompte IR du 15 juin à la baisse ? Conditions, procédure, délai sur impots.gouv.fr')">✦ Marcel →</span>
+                <span class="alert-cta" onclick="askMarcel('Puis-je moduler mon acompte IR du 15 juin à la baisse ? Conditions, procédure, délai sur impots.gouv.fr')">Analyser →</span>
                 <span class="alert-tag" style="color:var(--amber)">J-27</span>
               </div>
             </div>
@@ -1191,7 +1158,7 @@
               <div class="alert-title">✨ Donation 2027 à planifier</div>
               <div class="alert-desc" style="margin-top:4px">Abattement 100 k€ parent-enfant dernier utilisé en 2012. Délai 15 ans = fenêtre disponible depuis 2027. Préparer la donation maintenant pour optimiser.</div>
               <div style="display:flex;gap:8px;margin-top:10px">
-                <span class="alert-cta" onclick="askMarcel('Planifier une donation enfants pour 2027 : abattement 100k€, démembrement, calendrier optimal, acte notarié')">✦ Planifier avec Marcel</span>
+                <span class="alert-cta" onclick="askMarcel('Planifier une donation enfants pour 2027 : abattement 100k€, démembrement, calendrier optimal, acte notarié')">✦ Planifier →</span>
                 <span class="alert-tag" style="color:var(--gold)">Opportunité</span>
               </div>
             </div>
@@ -1204,7 +1171,7 @@
               <div class="alert-title">✅ Versement PER optimal</div>
               <div class="alert-desc" style="margin-top:4px">TMI 41 %. Plafond épargne retraite 2026 disponible : 24 800 €. Chaque 1 000 € versé = 410 € d'impôts économisés. Fenêtre : avant le 31 décembre.</div>
               <div style="display:flex;gap:8px;margin-top:10px">
-                <span class="alert-cta" onclick="askMarcel('Calculer le versement PER optimal avant le 31 décembre 2026 pour ma TMI à 41% et mes revenus 2026')">✦ Calculer avec Marcel</span>
+                <span class="alert-cta" onclick="askMarcel('Calculer le versement PER optimal avant le 31 décembre 2026 pour ma TMI à 41% et mes revenus 2026')">✦ Calculer →</span>
                 <span class="alert-tag" style="color:#4ADE80">Dec. 2026</span>
               </div>
             </div>
@@ -1217,7 +1184,7 @@
               <div class="alert-title">✅ Bilan Q2 2026 programmé</div>
               <div class="alert-desc" style="margin-top:4px">Bilan semestriel avec Maxime prévu le 30 juin 2026. Ordre du jour : performance H1, stratégie H2, mise à jour LM si évolution patrimoniale.</div>
               <div style="display:flex;gap:8px;margin-top:10px">
-                <span class="alert-cta" onclick="askMarcel('Préparer l\'ordre du jour du bilan Q2 avec Maxime : points clés à aborder, chiffres à compiler')">✦ Préparer avec Marcel</span>
+                <span class="alert-cta" onclick="askMarcel('Préparer l\'ordre du jour du bilan Q2 avec Maxime : points clés à aborder, chiffres à compiler')">✦ Préparer →</span>
                 <span class="alert-tag" style="color:#3ECC8A">30 juin</span>
               </div>
             </div>
@@ -1235,16 +1202,16 @@
 <button class="fab" id="fab-btn" onclick="toggleFab()" title="Actions rapides">✦</button>
 <div class="fab-menu" id="fab-menu">
   <div class="fab-action" onclick="showView('marcel');toggleFab()">
-    <span class="ico">✦</span><span class="lbl">Poser une question à Marcel</span>
+    <span class="ico">✦</span><span class="lbl">Poser une question</span>
   </div>
-  <div class="fab-action" onclick="askMarcel('Alerte urgente IFI 2026 : calcul et stratégies de réduction');toggleFab()">
-    <span class="ico">⚡</span><span class="lbl">IFI urgent — Codex</span>
+  <div class="fab-action" onclick="askMarcel('Analyse urgente IFI 2026 : calcul et stratégies de réduction');toggleFab()">
+    <span class="ico">⚡</span><span class="lbl">Analyse IFI urgente</span>
   </div>
-  <div class="fab-action" onclick="askMarcel('Cartographier mes entités via Pappers');toggleFab()">
-    <span class="ico">🗺</span><span class="lbl">Cartographie SIREN</span>
+  <div class="fab-action" onclick="askMarcel('Cartographier mes entités patrimoniales');toggleFab()">
+    <span class="ico">🗺</span><span class="lbl">Cartographie patrimoine</span>
   </div>
   <div class="fab-action" onclick="showView('alertes');toggleFab()">
-    <span class="ico">◉</span><span class="lbl">Voir mes alertes (3)</span>
+    <span class="ico">◉</span><span class="lbl">Mes alertes (3)</span>
   </div>
 </div>
 
@@ -1262,7 +1229,7 @@ function updateDate(){
 updateDate();
 
 // ─── VIEW SWITCH ───
-const BC_TITLES={dashboard:'Tableau de bord',marcel:'Marcel · Chat',agents:'Agents IA',univers:'Mes univers',docs:'Documents',alertes:'Alertes'};
+const BC_TITLES={dashboard:'Tableau de bord',marcel:'Mon conseiller',agents:'Mes services',univers:'Mes univers',docs:'Documents',alertes:'Alertes'};
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -1424,7 +1391,7 @@ function appendMessage(role,content,agentLabel){
     div.innerHTML=`
       <div class="msg-avatar m">✦</div>
       <div>
-        <div class="msg-agent-badge">${agentLabel||'✦ Marcel · Intelligence souveraine'}</div>
+        <div class="msg-agent-badge">✦ IKCP · Conseiller patrimonial</div>
         <div class="msg-bubble">${content.replace(/\n/g,'<br>')}</div>
         <div class="msg-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
       </div>`;
@@ -1464,7 +1431,7 @@ async function sendMessage(){
     const reply=data.reply||data.error||'Erreur de réponse.';
     setTyping(false);
     chatHistory.push({role:'assistant',content:reply});
-    appendMessage('marcel',reply,data.delegated_by==='Codex'?'⚖ Codex · Expert fiscal Opus':'✦ Marcel · Intelligence souveraine');
+    appendMessage('marcel',reply,'✦ IKCP · Conseiller patrimonial');
   }catch(e){
     setTyping(false);
     appendMessage('marcel','Service temporairement indisponible. Veuillez réessayer dans quelques instants.');
