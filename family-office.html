@@ -476,7 +476,7 @@ async function lookupSiren() {
       </div>
       <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6;">
         ✓ Cartographie offerte — votre <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">univers Patrimoine</b> est débloqué.<br>
-        Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, <a href="#beta" style="color:var(--gold-deep); font-weight:600;">demandez votre accès Bêta gratuit</a>.
+        Pour le <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">Deal Flow exclusif</b> (PE, club deals, immo off-market, passions-actifs) et les 11 autres univers, <a href="#beta" style="color:var(--gold-deep); font-weight:600;">demandez votre accès Bêta gratuit</a>.
       </div>
     `;
     btn.disabled = false;
@@ -1741,10 +1741,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
       <div class="tier-feats">
         <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Patrimoine</b> · cartographie SIREN auto (RNE)</span></div>
         <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Fiscalité</b> · Marcel + Codex (IR/IFI/Dutreil)</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>5 simulateurs déterministes</b> (calculs exacts CGI)</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>30 questions/mois à Marcel · pas de mémoire longue</span></div>
-        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>10 autres univers verrouillés (lifestyle, transmission, etc.)</span></div>
-        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>Pas de conseil personnalisé (nécessite lettre de mission)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Aperçu Deal Flow</b> · alertes immo off-market · opportunités passions-actifs</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>30 questions/mois à Marcel · accès aux alertes veille patrimoniale</span></div>
+        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span><b>Deal Flow complet</b> verrouillé · PE, club deals, co-investissement, passions exclusifs</span></div>
+        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>Coordination multi-experts + conseil personnalisé (lettre de mission requise)</span></div>
       </div>
       <a href="#siren-funnel" class="tier-cta tier-cta-light">Tester avec mon SIREN ↑</a>
     </div>
@@ -2211,7 +2211,295 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('marcel-panel').classList.contains('visible')) {
     toggleMarcelPanel();
   }
+  if (e.key === 'Escape') closeFeedback();
 });
+</script>
+
+<!-- ════════════════════════════════════════════════════
+     FEEDBACK BÊTA FONDATEURS — Widget flottant
+     Worker: ikcp-feedback.maxime-ead.workers.dev
+     ════════════════════════════════════════════════════ -->
+<style>
+  #fb-trigger {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg) translateX(50%);
+    transform-origin: right center;
+    background: var(--navy);
+    color: var(--gold);
+    border: none;
+    padding: 10px 22px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    z-index: 800;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    box-shadow: -3px 0 16px rgba(14,23,41,0.2);
+    transition: background 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+  #fb-trigger:hover { background: #243660; box-shadow: -4px 0 20px rgba(14,23,41,0.3); }
+
+  #fb-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(14,23,41,0.55);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(3px);
+  }
+  #fb-overlay.open { opacity: 1; pointer-events: all; }
+
+  #fb-panel {
+    position: fixed;
+    right: -500px;
+    top: 0;
+    bottom: 0;
+    width: min(460px, 100vw);
+    background: var(--cream);
+    z-index: 901;
+    overflow-y: auto;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -8px 0 48px rgba(14,23,41,0.22);
+  }
+  #fb-panel.open { right: 0; }
+
+  .fb-header {
+    background: var(--navy-deep);
+    padding: 26px 24px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+  .fb-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: #fff;
+    margin: 0 0 6px;
+    font-weight: 400;
+  }
+  .fb-header p { font-family:'Outfit',sans-serif; font-size:.8rem; color:rgba(255,255,255,.55); margin:0; line-height:1.5; }
+  .fb-close {
+    position: absolute; top: 18px; right: 18px;
+    background: rgba(255,255,255,.1); border: none; color: #fff;
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+    font-size: .9rem; display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .fb-close:hover { background: rgba(255,255,255,.2); }
+
+  .fb-body { padding: 22px 24px; }
+  .fb-section { margin-bottom: 22px; }
+  .fb-label {
+    font-family:'Outfit',sans-serif; font-size:.72rem; font-weight:700;
+    color:var(--navy); text-transform:uppercase; letter-spacing:.08em;
+    margin-bottom:10px; display:block;
+  }
+
+  .fb-cats { display:flex; flex-wrap:wrap; gap:7px; }
+  .fb-cat {
+    padding: 6px 13px;
+    border: 1.5px solid rgba(27,42,74,.18);
+    border-radius: 20px;
+    font-family: 'Outfit', sans-serif; font-size: .8rem; color: var(--ink);
+    background: #fff; cursor: pointer; transition: all .15s; user-select: none;
+  }
+  .fb-cat:hover { border-color: var(--gold); }
+  .fb-cat.selected { background: var(--navy); color: var(--gold); border-color: var(--navy); }
+
+  .fb-textarea {
+    width: 100%; min-height: 110px; padding: 12px;
+    border: 1.5px solid rgba(27,42,74,.18); border-radius: 8px;
+    font-family: 'Outfit', sans-serif; font-size: .88rem; color: var(--ink);
+    background: #fff; resize: vertical; outline: none;
+    transition: border-color .2s; box-sizing: border-box; line-height: 1.6;
+  }
+  .fb-textarea:focus { border-color: var(--gold); }
+  .fb-textarea.error { border-color: #c0392b; }
+
+  .fb-priorities { display: flex; gap: 8px; }
+  .fb-prio {
+    flex: 1; padding: 10px 6px;
+    border: 1.5px solid rgba(27,42,74,.18); border-radius: 8px;
+    font-family:'Outfit',sans-serif; font-size:.76rem; text-align:center;
+    cursor: pointer; background: #fff; transition: all .15s; user-select: none; line-height:1.3;
+  }
+  .fb-prio:hover { border-color: var(--gold); }
+  .fb-prio.selected { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .fb-prio .prio-ico { font-size: 1.1rem; display: block; margin-bottom: 5px; }
+
+  .fb-input {
+    width: 100%; padding: 11px 12px;
+    border: 1.5px solid rgba(27,42,74,.18); border-radius: 8px;
+    font-family:'Outfit',sans-serif; font-size:.88rem; color:var(--ink);
+    background: #fff; outline: none; transition: border-color .2s; box-sizing: border-box;
+  }
+  .fb-input:focus { border-color: var(--gold); }
+
+  .fb-divider { border:none; border-top:1px solid rgba(27,42,74,.1); margin:0; }
+
+  .fb-submit {
+    width: 100%; padding: 14px;
+    background: var(--navy); color: var(--gold);
+    border: none; border-radius: 8px;
+    font-family:'Outfit',sans-serif; font-size:.88rem; font-weight:700;
+    cursor: pointer; transition: all .2s; letter-spacing:.04em;
+  }
+  .fb-submit:hover:not(:disabled) { background:#243660; transform:translateY(-1px); box-shadow:0 6px 20px rgba(27,42,74,.25); }
+  .fb-submit:disabled { opacity:.55; cursor:not-allowed; }
+
+  .fb-success { text-align:center; padding:50px 24px; display:none; }
+  .fb-success .s-ico { font-size:2.8rem; margin-bottom:16px; }
+  .fb-success h4 { font-family:'Playfair Display',serif; color:var(--navy); font-size:1.35rem; font-weight:400; margin:0 0 12px; }
+  .fb-success p { font-family:'Outfit',sans-serif; color:var(--ink-mute); font-size:.85rem; line-height:1.7; margin:0; }
+
+  @media(max-width:520px) { #fb-panel { width:100vw; } }
+</style>
+
+<!-- Trigger tab (right edge) -->
+<button id="fb-trigger" onclick="openFeedback()">
+  💬 <span>Votre avis bêta</span>
+</button>
+
+<!-- Overlay -->
+<div id="fb-overlay" onclick="closeFeedback()"></div>
+
+<!-- Drawer panel -->
+<div id="fb-panel" role="dialog" aria-modal="true" aria-label="Feedback bêta fondateurs">
+  <div class="fb-header">
+    <button class="fb-close" onclick="closeFeedback()" aria-label="Fermer">✕</button>
+    <h3>Vos attentes fondateur</h3>
+    <p>Maxime lit chaque retour personnellement · Vos idées façonnent la roadmap IKCP</p>
+  </div>
+
+  <div class="fb-body">
+    <div id="fb-form-area">
+
+      <div class="fb-section">
+        <label class="fb-label">Ce que vous souhaitez accéder en priorité</label>
+        <div class="fb-cats" id="fb-cats">
+          <div class="fb-cat" data-val="Deal Flow · PE / Club deals" onclick="toggleCat(this)">💼 Deal Flow · PE</div>
+          <div class="fb-cat" data-val="Immo off-market" onclick="toggleCat(this)">🏠 Immo off-market</div>
+          <div class="fb-cat" data-val="Reporting consolidé" onclick="toggleCat(this)">📊 Reporting</div>
+          <div class="fb-cat" data-val="Coordination experts" onclick="toggleCat(this)">🤝 Coordination</div>
+          <div class="fb-cat" data-val="Fiscalité · Optimisation" onclick="toggleCat(this)">💰 Fiscalité</div>
+          <div class="fb-cat" data-val="Transmission · Succession" onclick="toggleCat(this)">📜 Transmission</div>
+          <div class="fb-cat" data-val="Passions · Actifs tangibles" onclick="toggleCat(this)">🎨 Passions</div>
+          <div class="fb-cat" data-val="Autre" onclick="toggleCat(this)">✦ Autre</div>
+        </div>
+      </div>
+
+      <div class="fb-section">
+        <label class="fb-label" for="fb-besoin">Décrivez votre besoin</label>
+        <textarea class="fb-textarea" id="fb-besoin"
+          placeholder="Ex : J'aimerais accéder à des club deals PE avec un ticket dès 50 k€, filtrés sur mon profil de risque. Ou encore : un tableau de bord qui centralise mes 3 SCI + assurance-vie + compte-titres en un seul endroit…"
+          oninput="this.classList.remove('error')"></textarea>
+      </div>
+
+      <div class="fb-section">
+        <label class="fb-label">Niveau de priorité pour vous</label>
+        <div class="fb-priorities">
+          <div class="fb-prio" data-val="Indispensable" onclick="selectPrio(this)">
+            <span class="prio-ico">⭐</span>Indispensable
+          </div>
+          <div class="fb-prio" data-val="Souhaitable" onclick="selectPrio(this)">
+            <span class="prio-ico">💡</span>Souhaitable
+          </div>
+          <div class="fb-prio" data-val="Bonus" onclick="selectPrio(this)">
+            <span class="prio-ico">🌿</span>Bonus
+          </div>
+        </div>
+      </div>
+
+      <hr class="fb-divider" style="margin-bottom:22px">
+
+      <div class="fb-section">
+        <label class="fb-label" for="fb-email">Email (optionnel) — pour un suivi personnalisé</label>
+        <input type="email" class="fb-input" id="fb-email" placeholder="votre@email.fr">
+      </div>
+
+      <button class="fb-submit" id="fb-btn" onclick="submitFeedback()">
+        Envoyer à Maxime →
+      </button>
+
+      <p style="font-family:'Outfit',sans-serif;font-size:.72rem;color:var(--ink-mute);text-align:center;margin:12px 0 0;line-height:1.6">
+        Hébergé France (Cloudflare D1 Paris) · Jamais vendu · RGPD ·
+        <a href="/politique-confidentialite.html" style="color:var(--gold-deep)">Confidentialité</a>
+      </p>
+    </div>
+
+    <div class="fb-success" id="fb-success">
+      <div class="s-ico">✉️</div>
+      <h4>Retour bien reçu</h4>
+      <p>Maxime intègre votre besoin à la roadmap IKCP.<br><br>
+      Les bêta fondateurs identifiés recevront un récapitulatif mensuel des fonctionnalités déployées grâce à leurs retours.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openFeedback() {
+  document.getElementById('fb-overlay').classList.add('open');
+  document.getElementById('fb-panel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFeedback() {
+  document.getElementById('fb-overlay').classList.remove('open');
+  document.getElementById('fb-panel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function toggleCat(el) { el.classList.toggle('selected'); }
+function selectPrio(el) {
+  document.querySelectorAll('.fb-prio').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+async function submitFeedback() {
+  const besoin = document.getElementById('fb-besoin').value.trim();
+  const email  = document.getElementById('fb-email').value.trim();
+  const cats   = [...document.querySelectorAll('#fb-cats .fb-cat.selected')].map(c => c.dataset.val);
+  const prioEl = document.querySelector('.fb-prio.selected');
+  const priorite = prioEl ? prioEl.dataset.val : '';
+  if (besoin.length < 10) {
+    document.getElementById('fb-besoin').classList.add('error');
+    document.getElementById('fb-besoin').focus();
+    return;
+  }
+  const btn = document.getElementById('fb-btn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+  try {
+    const res = await fetch('https://ikcp-feedback.maxime-ead.workers.dev/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        besoin, categories: cats, priorite, email,
+        page: window.location.pathname
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('fb-form-area').style.display = 'none';
+      document.getElementById('fb-success').style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Envoyer à Maxime →';
+      alert(data.error || 'Erreur. Réessayez dans quelques instants.');
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Envoyer à Maxime →';
+    alert('Connexion impossible. Vérifiez votre réseau.');
+  }
+}
 </script>
 
 </body>
