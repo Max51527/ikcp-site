@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<title>Marcel — Dashboard</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/marcel.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">
+    Marcel<em>.</em>
+    <span class="app-brand-sub">Family Office augmenté</span>
+  </a>
+  <div class="app-user">
+    <span class="tier" id="userTier">Découverte</span>
+    <div class="avatar" id="userAvatar">M</div>
+    <button class="logout" onclick="logout()">Déconnexion</button>
+  </div>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Bonjour <span id="userPrenom">Maxime</span></div>
+  <h1 class="app-h1">Votre Family Office, <em>en orbite.</em></h1>
+  <p class="app-lead" id="userGreeting">Chargement de votre tableau de bord…</p>
+
+  <!-- ── Marcel-Live champ sticky ── -->
+  <form class="marcel-live-bar" onsubmit="return askMarcel(event)">
+    <span class="label">Marcel</span>
+    <input id="qInput" type="text" placeholder="Posez votre question…" maxlength="280" autocomplete="off">
+    <button type="submit" aria-label="Envoyer">→</button>
+  </form>
+
+  <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
+  <div class="grid-3" style="margin-bottom:14px">
+    <article class="card" id="w-veille">
+      <div class="card-head"><span class="card-cat">Veille du jour</span><span class="pill warn" id="alertsCount">…</span></div>
+      <h3>Alertes Marcel</h3>
+      <div id="veille-body" class="loading">Marcel agrège votre veille…</div>
+      <a href="/app/veille.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
+    </article>
+
+    <article class="card" id="w-carto">
+      <div class="card-head"><span class="card-cat">Cartographie</span><span class="pill live" id="cartoStatus">SIREN</span></div>
+      <h3 id="cartoNom">Société principale</h3>
+      <div id="carto-body" class="loading">Lecture profil société…</div>
+    </article>
+
+    <article class="card" id="w-ifi">
+      <div class="card-head"><span class="card-cat">IFI 2026</span><span class="pill neutral">seuil 1,3 M€</span></div>
+      <h3>Position fiscale</h3>
+      <div id="ifi-body" class="empty" style="padding:20px;text-align:left">
+        <p>Déclarez vos biens immobiliers pour suivre votre position vis-à-vis du seuil IFI.</p>
+        <a href="/app/profil.html#patrimoine" class="btn btn-ghost btn-sm" style="margin-top:10px">+ Ajouter</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- ── Widgets row 2 : Watches + Carnet + Documents ── -->
+  <div class="grid-3" style="margin-bottom:14px">
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Vos veilles</span><span class="pill neutral" id="watchesCount">…</span></div>
+      <h3>Actifs surveillés</h3>
+      <div id="watches-body" class="loading">Chargement des veilles…</div>
+      <a href="/app/profil.html#watches" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">+ Nouvelle veille</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Carnet privé</span><span class="pill neutral" id="contactsCount">…</span></div>
+      <h3>Vos contacts</h3>
+      <div id="contacts-body" class="loading">Chargement carnet…</div>
+      <a href="/app/carnet.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Documents</span><span class="pill neutral" id="docsCount">…</span></div>
+      <h3>Signés eIDAS</h3>
+      <div id="docs-body" class="loading">Chargement documents…</div>
+      <a href="/app/documents.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
+    </article>
+  </div>
+
+  <!-- ── Widgets row 3 : Conversations + Transmission ── -->
+  <div class="grid-2">
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Conversations</span></div>
+      <h3>Vos derniers échanges</h3>
+      <div id="convs-body" class="loading">Chargement…</div>
+      <a href="/app/marcel.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Nouvelle conversation →</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Transmission</span><span class="pill neutral">à préparer</span></div>
+      <h3>État préparation</h3>
+      <div id="transmission-body" class="empty" style="padding:20px;text-align:left">
+        <p>Cartographie héritiers, Pacte Dutreil, donation, mandat de protection future…</p>
+        <a href="/app/marcel.html?topic=transmission" class="btn btn-ghost btn-sm" style="margin-top:10px">Activer Hermès →</a>
+      </div>
+    </article>
+  </div>
+</main>
+
+<!-- Bottom tabs -->
+<nav class="app-tabs">
+  <a href="/app/dashboard.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Profil
+  </a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+
+// Service Worker (offline)
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+
+// Vérif session + charge données
+let me = null;
+try {
+  me = await Marcel.Auth.me();
+} catch(_) {
+  location.href = '/app/index.html';
+}
+
+if(me){
+  document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
+  document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
+  const tierLbl = { discovery:'Découverte', premium_essentiel:'Premium', premium_fo:'Family Office' }[me.tier] || 'Découverte';
+  const tierEl = document.getElementById('userTier');
+  tierEl.textContent = tierLbl;
+  if(me.tier && me.tier !== 'discovery') tierEl.classList.add('premium');
+  const hour = new Date().getHours();
+  const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
+  document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+}
+
+// ─── Chargement parallèle des widgets ───
+Promise.allSettled([
+  Marcel.Me.alerts(true).catch(()=>[]),
+  Marcel.Me.contacts().catch(()=>[]),
+  Marcel.Me.documents().catch(()=>[]),
+  Marcel.Me.watches().catch(()=>[]),
+  Marcel.Me.conversations().catch(()=>[]),
+]).then(([alerts, contacts, docs, watches, convs]) => {
+  // Veille
+  const a = alerts.value || [];
+  document.getElementById('alertsCount').textContent = `${a.length} nouv.`;
+  const vbody = document.getElementById('veille-body');
+  if(a.length === 0){
+    vbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Aucune alerte ce matin. Marcel veille.</p>';
+  } else {
+    vbody.innerHTML = a.slice(0,3).map(x => `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div style="font-size:13px;color:var(--ink);font-weight:500;line-height:1.3">${x.title}</div><div style="font-size:11px;color:var(--mute);margin-top:3px">${new Date(x.created_at).toLocaleDateString('fr-FR')}</div></div>`).join('');
+  }
+
+  // Contacts
+  const c = contacts.value || [];
+  document.getElementById('contactsCount').textContent = `${c.length}/${me?.tier === 'discovery' ? '5' : '∞'}`;
+  const cbody = document.getElementById('contacts-body');
+  if(c.length === 0){
+    cbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez vos contacts (notaire, avocat, concierge).</p>';
+  } else {
+    cbody.innerHTML = c.slice(0,4).map(x => `<div style="font-size:13px;color:var(--ink);padding:6px 0">⭐ ${x.nom} <span style="color:var(--mute);font-size:11px"> · ${x.category}</span></div>`).join('');
+  }
+
+  // Documents
+  const d = docs.value || [];
+  document.getElementById('docsCount').textContent = `${d.length} doc.`;
+  const dbody = document.getElementById('docs-body');
+  if(d.length === 0){
+    dbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">DER bêta et Lettre de Mission à signer.</p>';
+  } else {
+    dbody.innerHTML = d.slice(0,3).map(x => `<div style="font-size:13px;padding:5px 0">📄 ${x.title} <span class="pill live" style="margin-left:6px;font-size:8px;padding:2px 6px">signé</span></div>`).join('');
+  }
+
+  // Watches
+  const w = watches.value || [];
+  document.getElementById('watchesCount').textContent = `${w.length} suivi${w.length > 1 ? 's' : ''}`;
+  const wbody = document.getElementById('watches-body');
+  if(w.length === 0){
+    wbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Surveillez vos actifs (montres, voitures, vins).</p>';
+  } else {
+    wbody.innerHTML = w.slice(0,3).map(x => `<div style="font-size:13px;padding:6px 0">👁 ${x.query} <span style="color:var(--mute);font-size:11px"> · cible ${Marcel.Utils.formatEUR(x.target_price)}</span></div>`).join('');
+  }
+
+  // Conversations
+  const cv = convs.value || [];
+  const cvbody = document.getElementById('convs-body');
+  if(cv.length === 0){
+    cvbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Pas encore de conversation. Tapez votre première question à Marcel.</p>';
+  } else {
+    cvbody.innerHTML = cv.slice(0,3).map(x => `<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="font-size:13.5px;color:var(--ink);font-weight:500">${x.title || 'Conversation'}</div><div style="font-size:11px;color:var(--mute);margin-top:2px">${x.agent_principal || 'Marcel'} · ${new Date(x.last_message_at).toLocaleDateString('fr-FR')}</div></div>`).join('');
+  }
+});
+
+// ─── Cartographie société principale ───
+if(me && me.primary_siren){
+  Marcel.cartographie(me.primary_siren).then(d => {
+    document.getElementById('cartoNom').textContent = d.nom || 'Société';
+    document.getElementById('carto-body').innerHTML = `
+      <div style="font-size:13px;line-height:1.7;color:var(--ink)">
+        <div><b>${d.forme_juridique?.split(',')[0] || '—'}</b> · ${d.ville || ''} · NAF ${d.code_naf || ''}</div>
+        <div style="margin-top:4px"><span style="color:var(--mute)">Capital</span> ${Marcel.Utils.formatEUR(d.capital || 0)} · <span style="color:var(--mute)">créée</span> ${new Date(d.date_creation).getFullYear()}</div>
+      </div>
+    `;
+  }).catch(_ => {
+    document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Cartographie indisponible.</p>';
+  });
+} else {
+  document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez votre SIREN dans le profil pour activer la cartographie.</p>';
+  document.getElementById('cartoNom').textContent = 'À configurer';
+}
+
+// ─── Marcel-Live ───
+window.askMarcel = function(e){
+  e.preventDefault();
+  const q = document.getElementById('qInput').value.trim();
+  if(!q) return false;
+  sessionStorage.setItem('marcel_q', q);
+  location.href = '/app/marcel.html?ask=1';
+  return false;
+}
+
+window.logout = async function(){
+  if(!confirm('Se déconnecter de Marcel ?')) return;
+  await Marcel.Auth.logout();
+}
+</script>
+
+</body>
+</html>
