@@ -21,11 +21,15 @@ const ALLOWED_ORIGINS = [
   'https://www.ikcp.eu',
   'https://app.ikcp.eu',
   'https://marcel.ikcp.eu',
+  'https://famille.ikcp.eu',
   'https://ikcp-chat.maxime-ead.workers.dev',
+  'https://ikcp-eu.pages.dev',        // Cloudflare Pages (prod)
   'http://localhost:3000',
   'http://localhost:5500',
   'http://localhost:8765',
   'http://localhost:8787',
+  'http://127.0.0.1:5500',
+  'null', '',  // file:// + navigateur direct (tests)
 ];
 
 function corsHeaders(origin) {

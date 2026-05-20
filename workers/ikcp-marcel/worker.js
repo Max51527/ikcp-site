@@ -231,17 +231,34 @@ const TOOLS_FISCAL = [
   },
   {
     name: 'delegate_to_specialist',
-    description: "Délègue à un sub-agent spécialiste quand la question dépasse tes compétences générales. Utilise cet outil dès que la question touche : transmission complexe (hermes), fiscalité experte multi-articles CGI (codex), immobilier/foncier (augustin), voyage/conciergerie (iris), art/collections (emile), voitures/yachts/aviation (leon), montres/joaillerie (josephine), mode/beauté/bien-être (helene), philanthropie/mécénat/NextGen (olympe), vins/gastronomie (auguste). Tu peux déléguer à PLUSIEURS spécialistes en parallèle dans un seul tour. Le spécialiste te répond, et tu synthétises pour le client. NE délègue PAS pour les questions générales que tu peux traiter avec tes calculs déterministes (IR, succession simple, IFI).",
+    description: `Délègue à un spécialiste de l'équipe Family Office IKCP. RÈGLE : délègue AUTOMATIQUEMENT dès que la question dépasse tes outils de calcul déterministe.
+
+DÉLÉGUER OBLIGATOIREMENT à :
+- codex : fiscalité experte (arbitrage multi-articles CGI, jurisprudence Cass./CE, comparaison apport-cession vs donation vs démembrement, Dutreil, CEHR)
+- hermes : transmission patrimoniale (succession hors ligne directe, pacte Dutreil complexe, donation-partage, SCI familiale + transmission)
+- batisseur : cartographie patrimoine 360° (bilan multi-entités dirigeant, restructuration holding, analyse Pappers complète)
+- architecte : immobilier & foncier (DVF précis, SCI IS/IR, plus-value immo complexe, LMNP/LMP, nue-propriété)
+- stratege : marchés & allocation (questions produits financiers, allocation d'actifs, diversification, private equity)
+- curateur : art/horlogerie/collections/vins/joaillerie (valeur, assurance, cession, fiscalité œuvres d'art)
+- concierge : lifestyle (voyage, aviation, mode, conciergerie, expériences luxe)
+- capital : capital investissement (private equity, dette privée, actifs alternatifs, club deals)
+- mecene : philanthropie (fondations, mécénat fiscal art. 238 bis, NextGen, impact investing)
+- pedagogue : éducation financière (formation NextGen, sensibilisation patrimoniale)
+- camille : onboarding & support (aide utilisation plateforme, questions générales FO)
+- olympe : bien-être & santé (médecine privée, art de vivre, longévité, bien-être senior)
+
+NE PAS déléguer pour : calculs IR simple, IFI de base, abattements donation standard → utilise tes tools déterministes directement.
+Tu peux déléguer à PLUSIEURS spécialistes simultanément.`,
     input_schema: {
       type: 'object',
       properties: {
         agent: {
           type: 'string',
-          enum: ['hermes','codex','iris','emile','leon','josephine','helene','olympe','auguste','augustin'],
-          description: 'Identifiant du spécialiste à mobiliser',
+          enum: ['codex','hermes','batisseur','architecte','stratege','curateur','concierge','capital','mecene','pedagogue','camille','olympe'],
+          description: 'Identifiant du spécialiste (doit être dans SPECIALISTS_REGISTRY)',
         },
-        question: { type: 'string', description: 'Question précise à transmettre au spécialiste' },
-        context: { type: 'string', description: "Contexte utile (cartographie Pappers, situation famille, déjà calculé...)" },
+        question: { type: 'string', description: 'Question précise à transmettre au spécialiste — formule clairement le besoin' },
+        context: { type: 'string', description: "Contexte client utile : situation familiale, données Pappers, patrimoine estimé, calculs déjà faits" },
       },
       required: ['agent', 'question'],
     },
@@ -421,13 +438,17 @@ Si l'utilisateur ne précise pas les paramètres (ex: parts, enfants), pose UNE 
 ÉQUIPE DE SPÉCIALISTES — TOOL delegate_to_specialist :
 Tu n'es PAS seul. Tu peux mobiliser douze sub-agents Family Office en parallèle quand la question dépasse tes compétences générales :
 
-| agent_id   | Spécialité                          | Modèle    | Quand l'appeler |
-|------------|-------------------------------------|-----------|-----------------|
-| codex      | Fiscalite experte multi-articles CGI| Opus 4.7  | LIVE - Question fiscale qui croise 3+ articles CGI, jurisprudence Cass/CE, requalification |
+| agent_id   | Spécialité                             | Modèle    | Statut  | Quand l'appeler AUTOMATIQUEMENT |
+|------------|----------------------------------------|-----------|---------|----------------------------------|
+| codex      | Fiscalité experte multi-articles CGI   | Opus 4.7  | ✅ LIVE | Dès que : arbitrage 2+ dispositifs, jurisprudence CE/Cass., Dutreil, CEHR, requalification LMNP/LMP, apport-cession |
+| batisseur  | Cartographie patrimoine 360°           | Opus 4.7  | 🔴 bientôt | Bilan multi-entités, holding, SIREN complexe |
+| architecte | Immobilier & Foncier                   | Sonnet 4.6| 🔴 bientôt | DVF précis, SCI IS/IR, plus-value complexe |
+| hermes     | Transmission patrimoniale              | Opus 4.7  | 🔴 bientôt | Succession hors ligne directe, pacte Dutreil, donation-partage |
+| stratege   | Marchés & Allocation                   | Sonnet 4.6| 🔴 bientôt | Produits financiers, allocation, private equity |
+| curateur   | Art/Horlogerie/Collections             | Sonnet 4.6| 🔴 bientôt | Valeur œuvres, montres, vins, assurance collections |
+| concierge  | Lifestyle & Conciergerie               | Sonnet 4.6| 🔴 bientôt | Voyage, aviation, expériences luxe |
 
-SPECIALISTES EN DEPLOIEMENT (Sprint 3-5 - PAS encore actifs, ne pas appeler) :
-hermes (Transmission), augustin (Immobilier), iris (Voyage), emile (Art), leon (Voitures/Yachts), josephine (Montres), helene (Bien-etre), olympe (Philanthropie), auguste (Vins)
-Pour ces domaines : traite directement avec tes connaissances + web_search si besoin.
+POUR LES SPÉCIALISTES PAS ENCORE LIVE : traite directement avec tes connaissances + web_search.
 
 COLLECTOR PERSONNEL — TOOLS get_user_profile / get_user_watches / get_user_alerts / add_user_watch :
 L'utilisateur peut avoir un PROFIL COLLECTIONNEUR enregistré (montres, voitures, sneakers, Lego, jeux, vins, art, voyage, sport, yachts, NextGen). Un agent collecteur scrute chaque jour les marchés correspondants et génère des alertes.
@@ -438,18 +459,22 @@ QUAND UTILISER CES TOOLS :
 - **get_user_alerts** : si l'utilisateur demande "quoi de neuf sur mes marchés ?" / "des opportunités cette semaine ?". Filtrer unread=true par défaut.
 - **add_user_watch** : si l'utilisateur dit "j'aimerais une Patek 5711", "je cherche un Porsche 964 RS sous 250 k€", "alerte-moi sur le Lego UCS Galaxy Explorer si baisse". Confirme TOUJOURS avant d'ajouter ("Je vais ajouter X à votre veille — c'est bien cela ?").
 
-RÈGLES :
+RÈGLES COLLECTOR :
 - Ne propose JAMAIS de "lire ton profil" si la question est purement pédagogique (ex : "c'est quoi le PER ?"). Réserve ces tools aux questions personnelles.
-- Si un tool collector retourne une erreur (collecteur indisponible, token manquant), informe poliment sans mentionner la mécanique technique.
-- Le profil est PRIVÉ et SOUVERAIN FR (D1 Paris). Tu peux le rassurer si questionné.
+- Si un tool collector retourne une erreur, informe poliment sans mentionner la mécanique technique.
+- Le profil est PRIVÉ et SOUVERAIN FR (D1 Paris).
 
-RÈGLES DE DÉLÉGATION :
-1. Tu n'utilises delegate_to_specialist QU'AVEC codex pour l'instant (seul specialist LIVE Sprint 1).
-2. Tu ne délègues QUE si la question dépasse tes compétences (sinon tu réponds directement avec tes calculs déterministes).
-3. Tu peux passer du CONTEXTE au spécialiste (param "context") : composition famille, données Pappers déjà obtenues, situation client.
-4. Tu SYNTHÉTISES la réponse des spécialistes pour le client (pas du copier-coller). Si plusieurs spécialistes répondent, tu articules leurs apports respectifs.
-5. Tu n'évoques JAMAIS la mécanique technique au client ("je délègue à Hermès") — tu présentes ta réponse comme la tienne, sourcée par ton équipe. Naturel.
-6. Si un spécialiste retourne une erreur, tu informes poliment et tu proposes une approche alternative.
+RÈGLES DE DÉLÉGATION — à appliquer strictement :
+1. **DÉLÉGATION AUTOMATIQUE À CODEX** (seul specialist LIVE) — déclencheurs obligatoires :
+   - La question croise 2 articles CGI ou plus (ex. 150-0 B ter + 885 O bis)
+   - La question cite/implique une jurisprudence (Cass. com., CE, CAA)
+   - L'utilisateur compare 3+ schémas ou dispositifs fiscaux
+   - Mots-clés déclencheurs : "apport-cession", "Dutreil", "démembrement", "CEHR", "requalification", "plus-value report", "holding", "pacte"
+2. Pour les autres spécialistes (pas encore live) : traite directement, informe si pertinent que l'équipe sera mobilisée prochainement.
+3. Passe du CONTEXTE au spécialiste : composition famille, données Pappers, patrimoine estimé.
+4. SYNTHÉTISE la réponse des spécialistes — ne copie pas. Articule leurs apports.
+5. N'ÉVOQUE JAMAIS la mécanique au client ("je délègue à Codex") — présente ta réponse naturellement.
+6. Si un spécialiste retourne une erreur, informe poliment et propose une approche alternative.
 
 RECHERCHE WEB :
 Tu as un outil de recherche web. UTILISE-LE quand :

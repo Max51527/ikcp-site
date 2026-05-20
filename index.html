@@ -4360,6 +4360,118 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 })();
 </script>
 
+<!-- ═══ VOICE MARCEL — TTS Premium via ikcp-voice (ElevenLabs) ════════════
+     Remplace le WebSpeech natif du chatbot-widget par ElevenLabs lorsque
+     le worker ikcp-voice est déployé. Fallback gracieux sur WebSpeech.
+     Les secrets ELEVENLABS_API_KEY + MISTRAL_API_KEY sont gérés par Maxime
+     via : npx wrangler secret put ... (dans workers/ikcp-voice/)
+═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function patchVoiceMarcel() {
+  var VOICE_WORKER = 'https://ikcp-voice.maxime-ead.workers.dev';
+  var _ttsAudio = null;   // instance Audio courante (pour interrompre)
+  var _ttsActive = false; // état lecture en cours
+
+  // Vérifie si le worker est déployé (appel /health silencieux)
+  var _voiceAvailable = null;
+  function checkVoiceWorker() {
+    if (_voiceAvailable !== null) return Promise.resolve(_voiceAvailable);
+    return fetch(VOICE_WORKER + '/health', { method: 'GET' })
+      .then(function(r) { _voiceAvailable = r.ok; return r.ok; })
+      .catch(function() { _voiceAvailable = false; return false; });
+  }
+
+  // TTS premium ElevenLabs via ikcp-voice
+  function speakPremium(text) {
+    if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
+    if (!text || text.length > 3000) return; // garde coût
+
+    return fetch(VOICE_WORKER + '/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text }),
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error('tts_' + r.status);
+      return r.blob();
+    })
+    .then(function(blob) {
+      var url = URL.createObjectURL(blob);
+      _ttsAudio = new Audio(url);
+      _ttsAudio.onended = function() { _ttsActive = false; URL.revokeObjectURL(url); };
+      _ttsAudio.onerror = function() { _ttsActive = false; };
+      _ttsActive = true;
+      return _ttsAudio.play();
+    })
+    .catch(function(err) {
+      console.warn('[ikcp-voice] TTS fallback WebSpeech', err.message);
+      // Fallback WebSpeech
+      if (window.speechSynthesis) {
+        var u = new SpeechSynthesisUtterance(text.slice(0, 200));
+        u.lang = 'fr-FR';
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      }
+    });
+  }
+
+  // Stop lecture en cours
+  function stopSpeak() {
+    if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    _ttsActive = false;
+  }
+
+  // Patch appliqué après chargement du chatbot-widget
+  function applyVoicePatch() {
+    // Surcharge window._ikcpToggleTTSBtn (bouton 🔊 dans le panel)
+    // pour utiliser ElevenLabs si disponible
+    var origTTSBtn = window._ikcpToggleTTSBtn;
+    window._ikcpToggleTTSBtn = function() {
+      if (_ttsActive) { stopSpeak(); return; }
+      // Cherche le dernier message Marcel dans le panel
+      var msgs = document.querySelectorAll('#ikcp-chat-msgs .ikcp-msg.ikcp-msg-a');
+      var lastMsg = msgs[msgs.length - 1];
+      var text = lastMsg ? (lastMsg.innerText || lastMsg.textContent || '') : '';
+      text = text.replace(/\s+/g, ' ').trim().slice(0, 2000);
+      if (!text) { if (origTTSBtn) origTTSBtn(); return; }
+
+      checkVoiceWorker().then(function(available) {
+        if (available) {
+          speakPremium(text);
+        } else {
+          // Worker pas encore déployé — fallback TTS natif
+          if (origTTSBtn) origTTSBtn();
+          else if (window.speechSynthesis) {
+            var u = new SpeechSynthesisUtterance(text.slice(0, 300));
+            u.lang = 'fr-FR';
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(u);
+          }
+        }
+      });
+    };
+
+    // Expose speakPremium pour usage externe (ex. auto-lecture après réponse)
+    window._ikcpSpeakMarcel = function(text) {
+      checkVoiceWorker().then(function(available) {
+        if (available) speakPremium(text);
+      });
+    };
+    window._ikcpStopSpeak = stopSpeak;
+  }
+
+  // Délai léger pour s'assurer que chatbot-widget.js est chargé
+  if (document.readyState !== 'loading') {
+    setTimeout(applyVoicePatch, 200);
+  } else {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(applyVoicePatch, 200);
+    });
+  }
+})();
+</script>
+
 <!-- CMS content loader — homepage.json -->
 <script>
 (function() {
