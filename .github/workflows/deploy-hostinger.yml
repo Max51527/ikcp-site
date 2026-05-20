@@ -1,20 +1,22 @@
 # ══════════════════════════════════════════════════════════════
 #  IKCP — Auto-deploy vers Hostinger via FTP
-#  Déclenchement : à chaque push sur main (commit CMS ou manuel)
+#  Déclenchement : push sur main OU déclenchement manuel
 #
-#  SECRETS À CONFIGURER (GitHub → Settings → Secrets → Actions) :
+#  AVANT DE POUSSER : configurer les 4 secrets GitHub
+#  → github.com/Max51527/ikcp-site/settings/secrets/actions
 #
-#  FTP_SERVER    → hPanel Hostinger → FTP Accounts → host
-#                  Ex : ftp.ikcp.eu  ou  files.000webhost.com
-#  FTP_USERNAME  → hPanel Hostinger → FTP Accounts → username
-#                  Ex : u123456789
-#  FTP_PASSWORD  → hPanel Hostinger → FTP Accounts → mot de passe
-#  FTP_PATH      → Chemin racine sur Hostinger
-#                  Ex : /public_html/  (avec slashes)
+#  FTP_SERVER    : hPanel Hostinger → Files → FTP Accounts → Host
+#                  Format exact : ftp.ikcp.eu  (sans ftp:// ni slash)
+#  FTP_USERNAME  : hPanel Hostinger → Files → FTP Accounts → Username
+#                  Format : u123456789.ikcp.eu  ou  u123456789
+#  FTP_PASSWORD  : mot de passe du compte FTP principal Hostinger
+#  FTP_PATH      : chemin racine PUBLIC sur Hostinger
+#                  Format : /public_html/  (slashes obligatoires)
+#                  → Si ikcp.eu est votre domaine PRINCIPAL : /public_html/
+#                  → Si c'est un addon domain : /domains/ikcp.eu/public_html/
 #
-#  Comment trouver ces infos sur Hostinger :
-#  hPanel → Files → FTP Accounts → voir les identifiants du compte principal
-#  (ou créer un sous-compte FTP dédié CI/CD)
+#  Pour trouver ces infos dans hPanel :
+#  Files → FTP Accounts → votre compte principal → Show Password
 # ══════════════════════════════════════════════════════════════
 
 name: Deploy → Hostinger FTP
@@ -22,29 +24,60 @@ name: Deploy → Hostinger FTP
 on:
   push:
     branches: [ main ]
-  # Permettre déclenchement manuel depuis GitHub Actions UI
-  workflow_dispatch:
+  workflow_dispatch:   # déclenchement manuel depuis GitHub Actions UI
 
 jobs:
   ftp-deploy:
     name: FTP Deploy to Hostinger
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2  # pour diff avec commit précédent
 
-      - name: Deploy via FTP (sync complet)
+      # ── 0. Vérification secrets configurés ──────────────────
+      - name: Vérifier que les secrets FTP sont configurés
+        env:
+          CHECK_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          if [ -z "$CHECK_SERVER" ]; then
+            echo ""
+            echo "════════════════════════════════════════════════"
+            echo "  ⚠️  SECRETS FTP NON CONFIGURÉS — DEPLOY IGNORÉ"
+            echo "════════════════════════════════════════════════"
+            echo ""
+            echo "  Pour activer le deploy automatique :"
+            echo "  github.com/Max51527/ikcp-site/settings/secrets/actions"
+            echo ""
+            echo "  Secrets à créer :"
+            echo "    FTP_SERVER   → host FTP Hostinger (ex: ftp.ikcp.eu)"
+            echo "    FTP_USERNAME → identifiant FTP"
+            echo "    FTP_PASSWORD → mot de passe FTP"
+            echo "    FTP_PATH     → /public_html/"
+            echo ""
+            echo "  Infos dans : hPanel → Files → FTP Accounts"
+            echo "════════════════════════════════════════════════"
+            exit 0
+          fi
+          echo "✅ Secrets FTP détectés — déploiement en cours..."
+
+      # ── 1. Checkout ──────────────────────────────────────────
+      - name: Checkout
+        if: ${{ env.CHECK_SERVER != '' }}
+        uses: actions/checkout@v4
+
+      # ── 2. Deploy FTP vers Hostinger ─────────────────────────
+      - name: Deploy vers Hostinger
+        if: ${{ secrets.FTP_SERVER != '' }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server:   ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PATH }}
-          # Exclure les fichiers non destinés à la prod
+          server:       ${{ secrets.FTP_SERVER }}
+          username:     ${{ secrets.FTP_USERNAME }}
+          password:     ${{ secrets.FTP_PASSWORD }}
+          server-dir:   ${{ secrets.FTP_PATH }}
+          # Protocole : FTPS (TLS) — standard Hostinger
+          protocol:     ftps
+          port:         21
+          # Fichiers à NE PAS déployer sur Hostinger
           exclude: |
             **/.git*
             **/.git*/**
@@ -53,32 +86,16 @@ jobs:
             docs/**
             proposals/_archive/**
             .github/**
-            *.md
-            _data/**
-          # Synchronisation stricte (supprime les fichiers supprimés du repo)
+          # Ne pas supprimer les fichiers existants non présents dans le repo
           dangerous-clean-slate: false
-          # Log verbeux pour debug
-          log-level: verbose
+          log-level:    standard
 
-      # Après déploiement FTP, on publie aussi les _data/ JSON
-      - name: Deploy _data/ JSON (contenu CMS)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server:   ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PATH }}_data/
-          local-dir: ./_data/
-          log-level: standard
-
-      - name: Notify deploy success
-        if: success()
+      # ── 3. Résumé ─────────────────────────────────────────────
+      - name: Résumé deploy
+        if: always()
         run: |
-          echo "✅ Deploy réussi — $(date '+%Y-%m-%d %H:%M:%S UTC')"
-          echo "Commit : ${{ github.sha }}"
-          echo "Auteur : ${{ github.actor }}"
-
-      - name: Notify deploy failure
-        if: failure()
-        run: |
-          echo "❌ Deploy échoué — vérifier les secrets FTP_SERVER, FTP_USERNAME, FTP_PASSWORD, FTP_PATH"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "  Commit : ${{ github.sha }}"
+          echo "  Auteur : ${{ github.actor }}"
+          echo "  Date   : $(date '+%Y-%m-%d %H:%M UTC')"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
