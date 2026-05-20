@@ -792,7 +792,7 @@ export default {
       return new Response(JSON.stringify({
         status: 'ok',
         service: 'ikcp-marcel-proxy',
-        version: '2.2',
+        version: '2.3',
         model: 'claude-sonnet-4-6',
         features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard'],
       }), {

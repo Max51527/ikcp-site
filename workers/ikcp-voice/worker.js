@@ -121,7 +121,7 @@ export default {
       return json({
         status: 'ok',
         service: 'ikcp-voice',
-        version: '0.1.0',
+        version: '0.2.0',
         stt: {
           voxtral: !!env.MISTRAL_API_KEY,
           whisper_cf: !!env.AI,

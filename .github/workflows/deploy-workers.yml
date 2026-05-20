@@ -4,26 +4,51 @@ on:
   push:
     branches: [main]
     paths:
-      - 'workers/**'
+      - 'workers/ikcp-marcel/**'
+      - 'workers/ikcp-voice/**'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Worker à déployer'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - ikcp-marcel
+          - ikcp-voice
 
 jobs:
-  deploy-ikcp-prospect:
-    name: Deploy ikcp-prospect
+  deploy-ikcp-marcel:
+    name: Deploy ikcp-chat (Marcel)
     runs-on: ubuntu-latest
-    if: contains(github.event.commits[0].modified, 'worker/index.js') || contains(github.event.commits[0].added, 'worker/index.js')
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-marcel') ||
+      github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
-      - uses: cloudflare/wrangler-action@v3
+
+      - name: Deploy ikcp-chat (Marcel chef d'orchestre)
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          workingDirectory: worker
-          wranglerVersion: '3'
-          command: deploy index.js --name ikcp-prospect --compatibility-date 2024-01-01
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-marcel
 
-  # NOTE 2026-05-07 : job retiré.
-  # Le Worker `ikcp-marcel` (worker/marcel-proxy.js) a été archivé dans _archive/.
-  # Le Marcel canonical est `ikcp-chat` déployé depuis workers/ikcp-marcel/worker.js
-  # via `npx wrangler deploy` manuel (cf workers/ikcp-marcel/README.md).
-  # Action côté Cloudflare : `npx wrangler delete --name ikcp-marcel` à exécuter
-  # une fois confirmé que plus aucun client n'appelle l'ancienne URL.
+  deploy-ikcp-voice:
+    name: Deploy ikcp-voice (TTS/STT Marcel)
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-voice') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy ikcp-voice (ElevenLabs + Voxtral)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-voice
