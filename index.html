@@ -1569,12 +1569,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           gap: 10px;
           flex-wrap: wrap;
         }
+        /* Bouton minimize — touch target 44×44 (WCAG 2.5.5) via padding compensé */
         .marcel-talk-minimize {
           background: transparent;
           border: 1px solid #d8d0c4;
           color: #907b65;
-          width: 28px;
-          height: 28px;
+          /* Taille visible 32px, touch target 44px via pseudo-element */
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           cursor: pointer;
           font-size: 18px;
@@ -1582,20 +1584,34 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.2s;
+          transition: border-color 0.2s, color 0.2s, background 0.2s;
           flex-shrink: 0;
           padding: 0;
+          position: relative;
+        }
+        /* Zone de clic étendue à 44×44 sans agrandir visuellement le bouton */
+        .marcel-talk-minimize::before {
+          content: '';
+          position: absolute;
+          inset: -6px;
+          border-radius: 50%;
         }
         .marcel-talk-minimize:hover {
           border-color: #b8956e;
           color: #1f1a16;
           background: #f9f6f0;
         }
+        .marcel-talk-minimize:active {
+          background: #f0e8d8;
+          border-color: #c9a96e;
+        }
         .marcel-talk-minimize .minimize-icon {
           display: inline-block;
-          transition: transform 0.3s;
+          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+          pointer-events: none;
         }
-        /* État réduit : pivote l'icône en + et masque le contenu */
+
+        /* ─── État RÉDUIT ─── */
         .marcel-talk-card.minimized .marcel-talk-collapsible {
           max-height: 0;
           opacity: 0;
@@ -1605,11 +1621,43 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           padding-top: 0 !important;
           padding-bottom: 0 !important;
         }
+        /* Masquer la bordure du header quand réduit (plus propre) */
+        .marcel-talk-card.minimized .marcel-talk-header {
+          margin-bottom: 0;
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+        /* Masquer le badge secondaire quand réduit */
+        .marcel-talk-card.minimized .marcel-talk-badge {
+          opacity: 0;
+          max-width: 0;
+          overflow: hidden;
+          padding: 0;
+          border: none;
+          margin: 0;
+          transition: opacity 0.25s, max-width 0.3s;
+        }
+        /* Icône pivotée quand réduit (− devient ×) */
         .marcel-talk-card.minimized .marcel-talk-minimize .minimize-icon {
           transform: rotate(45deg);
         }
+        /* Carte compacte quand réduite */
         .marcel-talk-card.minimized {
-          padding-bottom: 14px !important;
+          padding-bottom: 18px !important;
+          animation-play-state: paused; /* Stopper l'animation flottante si réduit */
+        }
+        /* Indicateur visuel "réduit" — petite barre colorée sous le header */
+        .marcel-talk-card.minimized::after {
+          content: 'Cliquez pour agrandir';
+          display: block;
+          text-align: center;
+          font-size: 9.5px;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          color: #b8956e;
+          opacity: 0.7;
+          margin-top: 6px;
+          font-weight: 600;
         }
         .marcel-talk-collapsible {
           transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
@@ -3689,6 +3737,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
       const minimized = card.classList.toggle('minimized');
       try { localStorage.setItem('ikcp-marcel-minimized', minimized ? '1' : '0'); } catch(_) {}
     }
+    // Exposition globale explicite — nécessaire pour les onclick= inline dans le HTML
+    window.toggleMarcelCard = toggleMarcelCard;
 
     // ─── Marcel modal autonome (appel direct worker, ne dépend plus du chatbot-widget) ───
     function askMarcel(question){
