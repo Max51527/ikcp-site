@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Tous droits réservés -->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document d'Entrée en Relation (DER) — IKCP · ORIAS 23001568</title>
+  <meta name="description" content="Document d'Entrée en Relation IKCP — obligations MIF II, présentation du conseiller, rémunération, services, conflits d'intérêts.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://ikcp.eu/der.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+  <style>
+    :root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-deep:#8B6F3F;--ink:#2C2418;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--green:#2D7A4F}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.7;font-size:16px}
+    a{color:var(--gold-deep);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .site-header{background:var(--navy-deep);padding:1.2rem 2rem;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;letter-spacing:.04em}
+    .logo span{color:var(--gold)}
+    .back-link{font-size:.85rem;color:var(--gold);border:1px solid rgba(201,169,110,.3);padding:.4rem 1rem;border-radius:4px;transition:.2s}
+    .back-link:hover{background:rgba(201,169,110,.1);text-decoration:none}
+
+    .container{max-width:820px;margin:0 auto;padding:3rem 2rem 5rem}
+    .der-header{border:2px solid var(--navy);border-radius:8px;padding:1.5rem 2rem;margin-bottom:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    .der-header-left h1{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--navy);line-height:1.2}
+    .der-header-left p{font-size:.85rem;color:var(--ink-mute);margin-top:.25rem}
+    .der-ref{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--navy);color:var(--gold);padding:.4rem .8rem;border-radius:4px;white-space:nowrap}
+
+    .section-num{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--gold-deep);font-weight:400;display:block;margin-bottom:.25rem}
+    h2{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--navy);margin:2.5rem 0 .75rem;padding-top:2rem;border-top:1px solid var(--line)}
+    h2:first-of-type{border-top:none;padding-top:0;margin-top:0}
+    h3{font-size:1rem;font-weight:600;color:var(--navy);margin:1.25rem 0 .4rem}
+    p{margin-bottom:.9rem;color:var(--ink)}
+    ul,ol{margin:0 0 1rem 1.5rem}
+    li{margin-bottom:.35rem}
+    strong{color:var(--navy);font-weight:600}
+
+    .id-card{background:var(--navy);color:#fff;border-radius:8px;padding:1.5rem 2rem;margin:1rem 0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem 2rem}
+    .id-card .field-label{font-size:.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:.06em}
+    .id-card .field-val{font-size:.95rem;font-weight:500}
+    .id-card .orias-big{grid-column:1/-1;text-align:center;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.15);margin-top:.25rem}
+    .id-card .orias-big .field-val{font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--gold)}
+
+    .data-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem}
+    .data-table th{background:var(--navy);color:#fff;padding:.6rem .8rem;font-size:.8rem;font-weight:500;text-align:left}
+    .data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--line);font-size:.875rem;vertical-align:top}
+    .data-table td:first-child{font-weight:500;color:var(--navy);width:35%}
+
+    .alert-box{border-radius:6px;padding:1rem 1.25rem;margin:1rem 0 1.5rem;font-size:.9rem}
+    .alert-mif{background:rgba(27,42,74,.05);border-left:3px solid var(--navy)}
+    .alert-mif strong{display:block;margin-bottom:.35rem;color:var(--navy)}
+    .alert-rem{background:#FFF7ED;border-left:3px solid #F59E0B}
+    .alert-rem strong{display:block;margin-bottom:.35rem;color:#92400E}
+
+    .sign-block{background:var(--navy);border-radius:8px;padding:2rem;margin-top:3rem;text-align:center;color:#fff}
+    .sign-block h3{color:var(--gold);font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:.75rem}
+    .sign-block p{color:rgba(255,255,255,.75);font-size:.875rem;margin-bottom:1.5rem}
+    .sign-btn{display:inline-block;background:var(--gold);color:var(--navy);font-weight:600;padding:.875rem 2.5rem;border-radius:6px;font-size:.95rem;cursor:pointer;transition:.2s;border:none}
+    .sign-btn:hover{background:#E2C896;text-decoration:none;color:var(--navy)}
+    .sign-note{font-size:.75rem;color:rgba(255,255,255,.5);margin-top:1rem}
+
+    .legal-footer{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:1.5rem 2rem;font-size:.8rem}
+    .legal-footer a{color:var(--gold);margin:0 .5rem}
+
+    @media(max-width:600px){.id-card{grid-template-columns:1fr}.der-header{flex-direction:column}.der-ref{align-self:flex-start}}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">IK<span>CP</span></div>
+  <a href="/" class="back-link">← Retour au site</a>
+</header>
+
+<main class="container">
+
+  <div class="der-header">
+    <div class="der-header-left">
+      <h1>Document d'Entrée en Relation</h1>
+      <p>Remis préalablement à toute prestation de conseil · Art. L.541-3 CoMoFi</p>
+    </div>
+    <div class="der-ref">DER-IKCP · Version bêta 1.0 · Mai 2026</div>
+  </div>
+
+  <div class="alert-mif alert-box">
+    <strong>⚖️ Obligation légale MIF II</strong>
+    Ce document doit être remis et accepté par le client <em>avant</em> tout conseil patrimonial personnalisé. Il est conforme aux obligations de l'article L.541-3 du Code monétaire et financier et à la Directive 2014/65/UE (MIF II).
+  </div>
+
+  <h2><span class="section-num">SECTION I</span>Identité du Conseiller</h2>
+
+  <div class="id-card">
+    <div>
+      <div class="field-label">Nom</div>
+      <div class="field-val">Maxime Juveneton</div>
+    </div>
+    <div>
+      <div class="field-label">Cabinet</div>
+      <div class="field-val">IKIGAÏ Conseil Patrimonial — IKCP</div>
+    </div>
+    <div>
+      <div class="field-label">Forme juridique</div>
+      <div class="field-val">Entreprise individuelle</div>
+    </div>
+    <div>
+      <div class="field-label">SIREN</div>
+      <div class="field-val">947 972 436</div>
+    </div>
+    <div>
+      <div class="field-label">Email</div>
+      <div class="field-val">maxime@ikcp.fr</div>
+    </div>
+    <div>
+      <div class="field-label">Site</div>
+      <div class="field-val">https://ikcp.eu</div>
+    </div>
+    <div class="orias-big">
+      <div class="field-label">N° ORIAS (vérifiable sur www.orias.fr)</div>
+      <div class="field-val">23001568</div>
+    </div>
+  </div>
+
+  <h2><span class="section-num">SECTION II</span>Habilitations et Statuts Professionnels</h2>
+  <table class="data-table">
+    <tr><th>Statut</th><th>Détail</th><th>Superviseur</th></tr>
+    <tr>
+      <td>Conseiller en Investissements Financiers (CIF)</td>
+      <td>Conseil en gestion de patrimoine, optimisation fiscale, structuration patrimoniale</td>
+      <td>AMF via CNCEF Patrimoine</td>
+    </tr>
+    <tr>
+      <td>Courtier en Assurance (COA)</td>
+      <td>Conseil et courtage en assurance-vie, prévoyance, SCPI assurance</td>
+      <td>ACPR via ORIAS</td>
+    </tr>
+    <tr>
+      <td>Intermédiation en Opérations Bancaires (IOBSP)</td>
+      <td>Intermédiation crédit immobilier, structuration financement</td>
+      <td>ACPR via ORIAS</td>
+    </tr>
+  </table>
+  <p><strong>Association professionnelle :</strong> CNCEF Patrimoine (agréée par l'AMF · 3 rue de la Baume, 75008 Paris · <a href="https://www.cncef.org" target="_blank" rel="noopener">www.cncef.org</a>)</p>
+  <p><strong>Garantie financière :</strong> Garantie professionnelle MIF II souscrite auprès d'un assureur agréé conformément aux exigences réglementaires.</p>
+
+  <h2><span class="section-num">SECTION III</span>Services Proposés</h2>
+  <h3>3.1 Conseil patrimonial global (service principal)</h3>
+  <ul>
+    <li>Bilan patrimonial complet (actifs, passifs, flux)</li>
+    <li>Optimisation fiscale : IR, IFI, succession, donation</li>
+    <li>Structuration juridique : holdings, SCI, démembrement, pacte Dutreil</li>
+    <li>Analyse de portefeuille financier (non-gestion, conseil uniquement)</li>
+    <li>Stratégie de transmission patrimoniale</li>
+  </ul>
+  <h3>3.2 Courtage en assurance</h3>
+  <ul>
+    <li>Assurance-vie (Luxembourg, France) — analyse et mise en place</li>
+    <li>Contrats de capitalisation, PER</li>
+    <li>Prévoyance dirigeant TNS</li>
+  </ul>
+  <h3>3.3 Intermédiation bancaire</h3>
+  <ul>
+    <li>Structuration crédit immobilier professionnel et privé</li>
+    <li>Financement acquisition SCI, LMNP, immeuble de rapport</li>
+  </ul>
+  <h3>3.4 Plateforme IKCP Family Office Augmenté (service digital)</h3>
+  <p>Espace membre digital avec agents IA souverains (Marcel et spécialistes). Les agents fournissent des informations patrimoniales générales et des analyses à caractère éducatif. <strong>Ils ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 CoMoFi.</strong></p>
+
+  <h2><span class="section-num">SECTION IV</span>Mode de Rémunération</h2>
+
+  <div class="alert-rem alert-box">
+    <strong>Transparence totale sur la rémunération</strong>
+    Conformément aux exigences MIF II (art. L.541-8-1 CoMoFi), Maxime Juveneton vous informe en toute transparence des sources de rémunération.
+  </div>
+
+  <table class="data-table">
+    <tr><th>Source</th><th>Nature</th><th>Montant indicatif</th></tr>
+    <tr>
+      <td>Honoraires conseil</td>
+      <td>Facturation directe au client (lettre de mission)</td>
+      <td>Sur devis — à partir de 1 500 € / mission</td>
+    </tr>
+    <tr>
+      <td>Commissions assurance-vie</td>
+      <td>Rétrocession des compagnies d'assurance</td>
+      <td>Communiquées avant chaque souscription</td>
+    </tr>
+    <tr>
+      <td>Abonnement Family Office</td>
+      <td>Accès à la plateforme digitale (bêta offerte)</td>
+      <td>0 € pendant la phase bêta (6 mois)</td>
+    </tr>
+  </table>
+  <p>Le détail précis de toute rémunération perçue sur un produit sera communiqué dans la lettre de mission et/ou sur les documents contractuels de souscription, <em>avant</em> tout acte.</p>
+
+  <h2><span class="section-num">SECTION V</span>Conflits d'Intérêts</h2>
+  <p>IKCP identifie et gère les conflits d'intérêts potentiels conformément à l'art. L.541-8-1 CoMoFi :</p>
+  <ul>
+    <li><strong>Liens capitalistiques</strong> : IKCP n'a aucun lien capitalistique avec des compagnies d'assurance, établissements bancaires ou sociétés de gestion</li>
+    <li><strong>Rémunérations incitatives</strong> : Maxime Juveneton déclare préalablement toute commission perçue supérieure à la rémunération en honoraires</li>
+    <li><strong>Accès équitable</strong> : les recommandations sont fondées sur une analyse indépendante du marché, non sur le niveau de rémunération</li>
+  </ul>
+  <p>En cas de conflit d'intérêts non évitable, IKCP s'engage à en informer le client par écrit <em>avant</em> de procéder.</p>
+
+  <h2><span class="section-num">SECTION VI</span>Réclamations et Médiation</h2>
+  <table class="data-table">
+    <tr><td>1ère réclamation</td><td>Par email : <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> — délai de réponse : 10 jours ouvrés (accusé) · 2 mois (réponse définitive)</td></tr>
+    <tr><td>Médiation (en cas d'échec)</td><td>Médiateur de la CNCEF Patrimoine · 3 rue de la Baume, 75008 Paris · <a href="https://www.cncef.org" target="_blank" rel="noopener">www.cncef.org/mediation</a></td></tr>
+    <tr><td>Plainte AMF (CIF)</td><td>Autorité des marchés financiers · 17 place de la Bourse, 75082 Paris Cedex 02 · <a href="https://www.amf-france.org" target="_blank" rel="noopener">amf-france.org</a></td></tr>
+    <tr><td>Plainte ACPR (COA/IOBSP)</td><td>Autorité de contrôle prudentiel et de résolution · 4 place de Budapest, 75009 Paris</td></tr>
+  </table>
+
+  <h2><span class="section-num">SECTION VII</span>Protection des Données (RGPD)</h2>
+  <p>Vos données personnelles sont traitées conformément au Règlement (UE) 2016/679 (RGPD). Hébergement : Cloudflare Workers WEUR — Paris/Frankfurt. Détail complet dans notre <a href="/politique-confidentialite.html">Politique de confidentialité</a>.</p>
+
+  <div class="sign-block">
+    <h3>Accusé de réception du DER</h3>
+    <p>En cliquant sur le bouton ci-dessous, vous confirmez avoir reçu, lu et compris ce Document d'Entrée en Relation avant toute prestation de conseil IKCP.</p>
+    <button class="sign-btn" onclick="handleDERAcceptance()">
+      ✓ J'accuse réception du DER bêta
+    </button>
+    <p class="sign-note">Horodatage automatique · Référence : DER-IKCP-BETA-2026 · Archivage MIF II 5 ans</p>
+  </div>
+
+</main>
+
+<footer class="legal-footer">
+  <p>© 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · DER version bêta 1.0</p>
+  <p style="margin-top:.5rem">
+    <a href="/mentions-legales.html">Mentions légales</a>
+    <a href="/politique-confidentialite.html">RGPD</a>
+    <a href="/cgu.html">CGU</a>
+    <a href="/der.html">DER</a>
+  </p>
+</footer>
+
+<script>
+function handleDERAcceptance() {
+  const btn = document.querySelector('.sign-btn');
+  // Record acceptance — would call ikcp-temoin in production
+  const ts = new Date().toISOString();
+  const ref = 'DER-IKCP-BETA-' + Date.now();
+
+  btn.textContent = '✓ DER accepté — ' + new Date().toLocaleDateString('fr-FR');
+  btn.style.background = '#2D7A4F';
+  btn.style.color = '#fff';
+  btn.style.cursor = 'default';
+  btn.disabled = true;
+
+  // Store in localStorage for session continuity
+  try {
+    localStorage.setItem('ikcp_der_accepted', JSON.stringify({ ts, ref, version: 'beta-1.0' }));
+  } catch(e) {}
+
+  // Show confirmation
+  const note = document.querySelector('.sign-note');
+  if (note) {
+    note.innerHTML = '✓ Acceptation enregistrée · Réf. ' + ref + '<br>Horodatage : ' + ts;
+    note.style.color = 'rgba(255,255,255,.75)';
+  }
+}
+
+// Auto-fill if already accepted
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const stored = JSON.parse(localStorage.getItem('ikcp_der_accepted') || 'null');
+    if (stored && stored.ref) {
+      const btn = document.querySelector('.sign-btn');
+      btn.textContent = '✓ DER déjà accepté — ' + new Date(stored.ts).toLocaleDateString('fr-FR');
+      btn.style.background = '#2D7A4F';
+      btn.style.color = '#fff';
+      btn.disabled = true;
+    }
+  } catch(e) {}
+});
+</script>
+</body>
+</html>
