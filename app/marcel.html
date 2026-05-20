@@ -116,7 +116,7 @@ Voice.checkPremiumStatus().then(s => {
   premiumVoiceAvailable = s.ok && (s.stt_voxtral || s.stt_whisper);
   if(premiumVoiceAvailable && (userTier === 'premium_essentiel' || userTier === 'premium_fo')){
     document.querySelector('.voice-bar')?.insertAdjacentHTML('beforeend',
-      `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium (Voxtral + ElevenLabs)</label>`);
+      `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium (Voxtral + VoxCPM2)</label>`);
     setTimeout(() => {
       const cb = document.getElementById('premiumVoiceMode');
       if(cb){
@@ -221,7 +221,7 @@ window.readMessage = async function(btnId, text){
 
   const mode = await Voice.smartSpeak(text, { tier: userTier });
   if(mode === 'premium'){
-    btn.textContent = '⏸ ElevenLabs (Marcel premium)';
+    btn.textContent = '⏸ VoxCPM2 (Marcel premium)';
   }
   // Détecte fin de lecture (toutes sources)
   const check = setInterval(() => {

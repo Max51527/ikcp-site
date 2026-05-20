@@ -162,7 +162,7 @@ const Voice = {
   },
 
   // ────────────────────────────────────────────────
-  // MODE PREMIUM — STT/TTS serveur (Mistral Voxtral + ElevenLabs)
+  // MODE PREMIUM — STT/TTS serveur (Mistral Voxtral + VoxCPM2)
   // ────────────────────────────────────────────────
 
   _audioRecorder: null,
@@ -228,7 +228,7 @@ const Voice = {
     return this._audioRecorder?.state === 'recording';
   },
 
-  /** TTS serveur premium : POST /tts → audio/mpeg → playback */
+  /** TTS serveur premium : POST /tts → audio/wav (VoxCPM2) → playback */
   async speakPremium(text, { voiceId } = {}) {
     this.stopSpeaking();
     if (!text || typeof text !== 'string') return false;
@@ -247,7 +247,9 @@ const Voice = {
         throw new Error(err.error || `HTTP ${r.status}`);
       }
       const buf = await r.arrayBuffer();
-      const audio = new Audio(URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' })));
+      // VoxCPM2 retourne audio/wav — Audio() gère wav et mp3 nativement
+      const mimeType = r.headers.get('Content-Type') || 'audio/wav';
+      const audio = new Audio(URL.createObjectURL(new Blob([buf], { type: mimeType })));
       this._audioPlayer = audio;
       audio.onended = () => { this._audioPlayer = null; URL.revokeObjectURL(audio.src); };
       await audio.play();
@@ -306,7 +308,7 @@ const Voice = {
         ok: r.ok,
         stt_voxtral: data.stt?.voxtral || false,
         stt_whisper: data.stt?.whisper_cf || false,
-        tts_elevenlabs: data.tts?.elevenlabs || false,
+        tts_voxcpm: data.tts?.configured || false,
       };
     } catch (_) {
       return { ok: false };

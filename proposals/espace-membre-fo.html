@@ -3204,13 +3204,13 @@ async function speak(text, btnEl) {
     if (btnEl) { btnEl.classList.remove('playing'); btnEl.textContent = '🔊 Écouter'; }
   };
 
-  // — Essai VoxCPM (auto-hébergé) —
+  // — Essai VoxCPM2 via ikcp-voice worker (API OpenAI-compatible) —
   if (VOXCPM_URL) {
     try {
-      const res = await fetch(VOXCPM_URL + '/synthesize', {
+      const res = await fetch(VOXCPM_URL + '/v1/audio/speech', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, language: 'fr', voice: 'fr_FR' })
+        body: JSON.stringify({ model: 'openbmb/VoxCPM2', input: clean, voice: 'default' })
       });
       if (res.ok) {
         const blob = await res.blob();

@@ -4360,11 +4360,10 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 })();
 </script>
 
-<!-- ═══ VOICE MARCEL — TTS Premium via ikcp-voice (ElevenLabs) ════════════
-     Remplace le WebSpeech natif du chatbot-widget par ElevenLabs lorsque
-     le worker ikcp-voice est déployé. Fallback gracieux sur WebSpeech.
-     Les secrets ELEVENLABS_API_KEY + MISTRAL_API_KEY sont gérés par Maxime
-     via : npx wrangler secret put ... (dans workers/ikcp-voice/)
+<!-- ═══ VOICE MARCEL — TTS Premium via ikcp-voice (VoxCPM2) ═════════════
+     Remplace le WebSpeech natif du chatbot-widget par VoxCPM2 lorsque
+     le worker ikcp-voice est déployé + VOXCPM_API_URL configurée.
+     Fallback gracieux sur WebSpeech. STT : Voxtral (FR) + Whisper CF.
 ═══════════════════════════════════════════════════════════════════════════ -->
 <script>
 (function patchVoiceMarcel() {
