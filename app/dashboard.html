@@ -134,6 +134,175 @@
   </a>
 </nav>
 
+<!-- ══════════════════════════════════════════════
+     WIDGET FEEDBACK BÊTA (fondateurs uniquement)
+     ══════════════════════════════════════════════ -->
+<style>
+#fb-app-trigger{
+  position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(-90deg);
+  transform-origin:right center;
+  background:var(--accent);color:#fff;
+  padding:8px 16px;
+  font-size:10.5px;letter-spacing:0.18em;font-weight:600;text-transform:uppercase;
+  border-radius:8px 8px 0 0;cursor:pointer;z-index:900;
+  box-shadow:-3px 0 18px rgba(194,71,34,0.28);
+  border:none;font-family:'Inter',sans-serif;
+  transition:background 0.2s;
+}
+#fb-app-trigger:hover{background:var(--ink)}
+#fb-app-overlay{display:none;position:fixed;inset:0;background:rgba(26,24,20,0.5);z-index:910;backdrop-filter:blur(4px)}
+#fb-app-overlay.open{display:block}
+#fb-app-panel{
+  position:fixed;right:-380px;top:0;bottom:0;width:360px;max-width:92vw;
+  background:var(--bg);border-left:1px solid var(--line);z-index:920;
+  display:flex;flex-direction:column;overflow-y:auto;
+  transition:right 0.32s cubic-bezier(0.16,1,0.3,1);
+  padding:28px 22px 40px;
+}
+#fb-app-panel.open{right:0}
+#fb-app-panel .fb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+#fb-app-panel .fb-title{font-family:'Fraunces',serif;font-size:20px;font-weight:500;letter-spacing:-0.01em}
+#fb-app-panel .fb-title em{font-style:italic;color:var(--accent)}
+#fb-app-panel .fb-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+#fb-app-panel .fb-close:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#fb-app-panel .fb-label{font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:10px;margin-top:18px}
+#fb-app-panel .fb-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+#fb-app-panel .fb-chip{padding:6px 12px;border:1.5px solid var(--line);border-radius:999px;font-size:12px;cursor:pointer;transition:all 0.18s;background:transparent;font-family:'Inter',sans-serif}
+#fb-app-panel .fb-chip:hover{border-color:var(--accent);color:var(--accent)}
+#fb-app-panel .fb-chip.on{background:rgba(194,71,34,0.08);border-color:var(--accent);color:var(--accent)}
+#fb-app-panel textarea{width:100%;min-height:90px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--ink);background:#fff}
+#fb-app-panel textarea:focus{border-color:var(--accent)}
+.fb-prio-row{display:flex;gap:8px;margin-bottom:4px}
+.fb-prio{flex:1;padding:8px 6px;text-align:center;border:1.5px solid var(--line);border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;background:transparent}
+.fb-prio:hover{border-color:var(--accent)}
+.fb-prio.on{background:rgba(194,71,34,0.08);border-color:var(--accent);color:var(--accent);font-weight:600}
+#fb-app-panel input[type=email]{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;color:var(--ink);background:#fff}
+#fb-app-panel input[type=email]:focus{border-color:var(--accent)}
+#fb-app-panel .fb-submit{width:100%;margin-top:18px;padding:14px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:0.04em;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+#fb-app-panel .fb-submit:hover{background:var(--accent);transform:translateY(-1px)}
+#fb-app-panel .fb-submit:disabled{opacity:0.55;cursor:wait;transform:none}
+#fb-app-success{display:none;text-align:center;padding:30px 10px}
+#fb-app-success .fb-ok-icon{font-size:46px;display:block;margin-bottom:14px}
+#fb-app-success h3{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:8px}
+#fb-app-success p{font-size:13.5px;color:var(--mute);line-height:1.6}
+</style>
+
+<button id="fb-app-trigger" onclick="openAppFeedback()">★ Feedback bêta</button>
+<div id="fb-app-overlay" onclick="closeAppFeedback()"></div>
+<div id="fb-app-panel">
+  <div class="fb-head">
+    <div class="fb-title">Votre <em>retour</em></div>
+    <button class="fb-close" onclick="closeAppFeedback()">✕</button>
+  </div>
+
+  <div id="fb-app-form">
+    <div class="fb-label">Catégorie (plusieurs ok)</div>
+    <div class="fb-chips">
+      <button class="fb-chip" data-v="bug" onclick="toggleChip(this)">🐛 Anomalie</button>
+      <button class="fb-chip" data-v="ux" onclick="toggleChip(this)">👁 Ergonomie</button>
+      <button class="fb-chip" data-v="manquant" onclick="toggleChip(this)">➕ Fonctionnalité</button>
+      <button class="fb-chip" data-v="deal" onclick="toggleChip(this)">🔑 Deal Flow</button>
+      <button class="fb-chip" data-v="marcel" onclick="toggleChip(this)">🎼 Marcel</button>
+      <button class="fb-chip" data-v="idee" onclick="toggleChip(this)">💡 Idée</button>
+      <button class="fb-chip" data-v="bravo" onclick="toggleChip(this)">⭐ Bravo</button>
+    </div>
+
+    <div class="fb-label">Votre retour</div>
+    <textarea id="fb-app-text" placeholder="Ce qui fonctionne, ce qui manque, une idée…" maxlength="600"></textarea>
+
+    <div class="fb-label">Priorité pour vous</div>
+    <div class="fb-prio-row">
+      <button class="fb-prio" data-p="basse" onclick="setPrio(this)">🟢 Basse</button>
+      <button class="fb-prio" data-p="moyenne" onclick="setPrio(this)">🟡 Moyenne</button>
+      <button class="fb-prio" data-p="haute" onclick="setPrio(this)">🔴 Haute</button>
+    </div>
+
+    <div class="fb-label" style="margin-top:16px">Email (optionnel — pour suivi)</div>
+    <input type="email" id="fb-app-email" placeholder="votre@email.fr">
+
+    <button class="fb-submit" onclick="submitAppFeedback()">Envoyer mon retour →</button>
+    <div id="fb-app-msg" style="margin-top:10px;font-size:13px;color:var(--mute)"></div>
+  </div>
+
+  <div id="fb-app-success">
+    <span class="fb-ok-icon">✦</span>
+    <h3>Merci pour votre retour</h3>
+    <p>Maxime l'a reçu et y répondra si vous avez laissé votre email. Votre feedback façonne directement la prochaine version.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  let selectedChips = [];
+  let selectedPrio = '';
+
+  window.openAppFeedback = function(){
+    document.getElementById('fb-app-panel').classList.add('open');
+    document.getElementById('fb-app-overlay').classList.add('open');
+  };
+  window.closeAppFeedback = function(){
+    document.getElementById('fb-app-panel').classList.remove('open');
+    document.getElementById('fb-app-overlay').classList.remove('open');
+  };
+  window.toggleChip = function(el){
+    el.classList.toggle('on');
+    const v = el.dataset.v;
+    selectedChips = selectedChips.includes(v)
+      ? selectedChips.filter(x => x !== v)
+      : [...selectedChips, v];
+  };
+  window.setPrio = function(el){
+    document.querySelectorAll('.fb-prio').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    selectedPrio = el.dataset.p;
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAppFeedback();
+  });
+
+  window.submitAppFeedback = async function(){
+    const besoin = document.getElementById('fb-app-text').value.trim();
+    if (!besoin) {
+      document.getElementById('fb-app-msg').textContent = 'Merci de décrire votre retour.';
+      return;
+    }
+    const email = document.getElementById('fb-app-email').value.trim();
+    const btn = document.querySelector('#fb-app-panel .fb-submit');
+    const msgEl = document.getElementById('fb-app-msg');
+    btn.disabled = true; btn.textContent = 'Envoi…';
+    msgEl.textContent = '';
+
+    try {
+      const r = await fetch('https://ikcp-feedback.maxime-ead.workers.dev/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          besoin,
+          categories: selectedChips,
+          priorite: selectedPrio || 'moyenne',
+          email: email || null,
+          page: window.location.pathname,
+          source: 'app-dashboard',
+        }),
+      });
+      if (!r.ok) throw new Error();
+
+      document.getElementById('fb-app-form').style.display = 'none';
+      document.getElementById('fb-app-success').style.display = 'block';
+    } catch(err) {
+      // Fallback : email direct si le worker n'est pas encore déployé
+      const subject = encodeURIComponent('[IKCP Bêta] Feedback ' + (selectedChips.join(', ') || 'général'));
+      const body = encodeURIComponent(besoin + (email ? '\n\n— ' + email : ''));
+      window.open('mailto:maxime@ikcp.fr?subject=' + subject + '&body=' + body);
+      btn.disabled = false;
+      btn.textContent = 'Envoyer mon retour →';
+      msgEl.textContent = 'Ouverture de votre messagerie email en secours.';
+    }
+  };
+})();
+</script>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">

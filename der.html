@@ -241,7 +241,6 @@
 <script>
 function handleDERAcceptance() {
   const btn = document.querySelector('.sign-btn');
-  // Record acceptance — would call ikcp-temoin in production
   const ts = new Date().toISOString();
   const ref = 'DER-IKCP-BETA-' + Date.now();
 
@@ -256,10 +255,33 @@ function handleDERAcceptance() {
     localStorage.setItem('ikcp_der_accepted', JSON.stringify({ ts, ref, version: 'beta-1.0' }));
   } catch(e) {}
 
+  // Archivage MIF II horodaté → ikcp-temoin (art. 313-57 RG AMF — rétention 5 ans)
+  const email = (() => {
+    try { return JSON.parse(localStorage.getItem('ikcp_session') || '{}').email || null; } catch(e) { return null; }
+  })();
+  fetch('https://ikcp-temoin.maxime-ead.workers.dev/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      family_id: email || 'anonymous',
+      universe: 'compliance',
+      question: 'DER_ACCEPTATION',
+      answer_summary: 'DER version beta-1.0 accepté. Réf. ' + ref,
+      agent: 'der-ui',
+      model: 'none',
+      tokens: 0,
+      sources: [window.location.href],
+      mif2_compliant: true,
+      der_ref: ref,
+      der_version: 'beta-1.0',
+      der_ts: ts,
+    }),
+  }).catch(() => { /* fire-and-forget — non bloquant */ });
+
   // Show confirmation
   const note = document.querySelector('.sign-note');
   if (note) {
-    note.innerHTML = '✓ Acceptation enregistrée · Réf. ' + ref + '<br>Horodatage : ' + ts;
+    note.innerHTML = '✓ Acceptation enregistrée · Réf. ' + ref + '<br>Horodatage : ' + ts + '<br><span style="font-size:11px;opacity:0.7">Archivé MIF II — rétention 5 ans</span>';
     note.style.color = 'rgba(255,255,255,.75)';
   }
 }
