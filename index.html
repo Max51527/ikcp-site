@@ -531,7 +531,7 @@ RÈGLES ABSOLUES :
 TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Comme un médecin de famille du patrimoine.`;
 
             // ══ Proxy endpoint — à remplacer par ton Cloudflare Worker ══
-            const PROXY_URL = 'https://ikcp-marcel.maxime-ead.workers.dev';
+            const PROXY_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
 
             return {
                 isOpen: false, isExpanded: false, isLoading: false, userInput: '',
@@ -561,23 +561,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                     this.$nextTick(() => { const c=document.getElementById('chat-messages'); if(c) c.scrollTop=c.scrollHeight; });
                     try {
                         let responseText = '';
-                        if (PROXY_URL === 'VOTRE_PROXY_CLAUDE_URL') {
-                            // ── Mode démo (pas de proxy configuré) ──
-                            await new Promise(r => setTimeout(r, 800));
-                            const demoResponses = {
-                                default: "C'est une excellente question. Pour vous donner une réponse vraiment adaptée à votre situation, je vous suggère d'essayer le diagnostic patrimonial juste au-dessus — il vous donnera un premier aperçu de vos enjeux. Si vous souhaitez approfondir, Maxime pourra vous accompagner personnellement.",
-                                succession: "La question de la transmission est centrale. Sans anticipation, les droits de succession en ligne directe peuvent atteindre 45% au-delà de 1,8 million d'euros (barème 2026, art. 777 du Code général des impôts). Mais avec un abattement de 100 000 € par enfant renouvelable tous les 15 ans, une assurance-vie bien structurée et une stratégie de donation progressive, l'impact peut être considérablement réduit. Chaque situation est unique — je vous invite à explorer le diagnostic patrimonial sur cette page.",
-                                protection: "Vous touchez au cœur de la spécialisation d'IKCP. La vraie question est : si demain il vous arrivait quelque chose, comment votre famille s'en sortirait-elle financièrement ? Prévoyance, mandat de protection future, donation au dernier vivant, clause bénéficiaire d'assurance-vie — ces outils coûtent très peu mais changent tout. Le diagnostic patrimonial ci-dessus vous donnera un premier état des lieux.",
-                                impot: "L'impôt sur le revenu en 2026 est calculé selon un barème progressif : 0% jusqu'à 11 600 €, puis 11%, 30%, 41% et 45% pour la tranche au-delà de 181 917 € (source : economie.gouv.fr, Loi de Finances 2026). Mais l'optimisation fiscale n'est jamais une fin en soi — elle doit s'intégrer dans une stratégie patrimoniale globale qui protège aussi votre famille.",
-                                rdv: "Si vous avez identifié des enjeux qui vous concernent, vous pouvez écrire à Maxime Juveneton à maxime@ikcp.fr en présentant brièvement votre situation. Les échanges se font sur recommandation ou suite à un bilan patrimonial — pas de prise de rendez-vous publique."
-                            };
-                            const lower = userText.toLowerCase();
-                            if (lower.match(/success|héritage|transm|donat|enfant.*hérit/)) responseText = demoResponses.succession;
-                            else if (lower.match(/protect|décès|conjoint|prévoy|invalid|mandat/)) responseText = demoResponses.protection;
-                            else if (lower.match(/impôt|fiscal|ir |tmi|barème|tax/)) responseText = demoResponses.impot;
-                            else if (lower.match(/rendez|rdv|contact|échange|maxime|calendly/)) responseText = demoResponses.rdv;
-                            else responseText = demoResponses.default;
-                        } else {
+                        {
                             // ── Mode production (proxy Claude API) ──
                             const response = await fetch(PROXY_URL, {
                                 method: 'POST',
