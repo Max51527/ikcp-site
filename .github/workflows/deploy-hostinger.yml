@@ -1,0 +1,84 @@
+# ══════════════════════════════════════════════════════════════
+#  IKCP — Auto-deploy vers Hostinger via FTP
+#  Déclenchement : à chaque push sur main (commit CMS ou manuel)
+#
+#  SECRETS À CONFIGURER (GitHub → Settings → Secrets → Actions) :
+#
+#  FTP_SERVER    → hPanel Hostinger → FTP Accounts → host
+#                  Ex : ftp.ikcp.eu  ou  files.000webhost.com
+#  FTP_USERNAME  → hPanel Hostinger → FTP Accounts → username
+#                  Ex : u123456789
+#  FTP_PASSWORD  → hPanel Hostinger → FTP Accounts → mot de passe
+#  FTP_PATH      → Chemin racine sur Hostinger
+#                  Ex : /public_html/  (avec slashes)
+#
+#  Comment trouver ces infos sur Hostinger :
+#  hPanel → Files → FTP Accounts → voir les identifiants du compte principal
+#  (ou créer un sous-compte FTP dédié CI/CD)
+# ══════════════════════════════════════════════════════════════
+
+name: Deploy → Hostinger FTP
+
+on:
+  push:
+    branches: [ main ]
+  # Permettre déclenchement manuel depuis GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    name: FTP Deploy to Hostinger
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # pour diff avec commit précédent
+
+      - name: Deploy via FTP (sync complet)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:   ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PATH }}
+          # Exclure les fichiers non destinés à la prod
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            workers/**
+            docs/**
+            proposals/_archive/**
+            .github/**
+            *.md
+            _data/**
+          # Synchronisation stricte (supprime les fichiers supprimés du repo)
+          dangerous-clean-slate: false
+          # Log verbeux pour debug
+          log-level: verbose
+
+      # Après déploiement FTP, on publie aussi les _data/ JSON
+      - name: Deploy _data/ JSON (contenu CMS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:   ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PATH }}_data/
+          local-dir: ./_data/
+          log-level: standard
+
+      - name: Notify deploy success
+        if: success()
+        run: |
+          echo "✅ Deploy réussi — $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "Commit : ${{ github.sha }}"
+          echo "Auteur : ${{ github.actor }}"
+
+      - name: Notify deploy failure
+        if: failure()
+        run: |
+          echo "❌ Deploy échoué — vérifier les secrets FTP_SERVER, FTP_USERNAME, FTP_PASSWORD, FTP_PATH"

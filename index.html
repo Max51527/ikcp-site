@@ -2264,9 +2264,9 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           </div>
         </div>
 
-        <h1>Protéger ce que vous êtes<br><em>en train de bâtir</em>.</h1>
+        <h1 id="idx-hero-h1">Protéger ce que vous êtes<br><em id="idx-hero-em">en train de bâtir</em>.</h1>
 
-        <p class="sub">
+        <p class="sub" id="idx-hero-sub">
           Un accompagnement sur-mesure — juridique, fiscal et financier.<br>
           <strong>Protéger, valoriser, transmettre</strong> — là où les enjeux se croisent.
         </p>
@@ -4191,5 +4191,34 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
       }, true);
     })();
     </script>
+
+<!-- CMS content loader — homepage.json -->
+<script>
+(function() {
+  'use strict';
+  function get(obj, path) {
+    return path.split('.').reduce((o, k) => o && o[k], obj);
+  }
+  fetch('/_data/homepage.json', { cache: 'no-cache' })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data) return;
+      [
+        ['idx-hero-em',  'hero.headline_em'],
+        ['idx-hero-sub', 'hero.subtitle'],
+      ].forEach(([id, path]) => {
+        const el = document.getElementById(id);
+        if (el) { const v = get(data, path); if (v) el.textContent = v; }
+      });
+      const h1 = document.getElementById('idx-hero-h1');
+      if (h1 && data.hero && data.hero.headline_1) {
+        const t = h1.childNodes[0];
+        if (t && t.nodeType === Node.TEXT_NODE) t.textContent = data.hero.headline_1 + '\n';
+      }
+      if (data.seo && data.seo.title) document.title = data.seo.title;
+    })
+    .catch(() => {});
+})();
+</script>
 </body>
 </html>

@@ -387,14 +387,14 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
 <!-- ═══ HERO PAPPERS FUNNEL — entrée magique gratuite ═══ -->
 <section class="hero">
   <div>
-    <div class="eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % France · RGPD souverain</div>
-    <h1>Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
-    <p class="lede">
+    <div class="eyebrow" id="fo-eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % France · RGPD souverain</div>
+    <h1 id="fo-hero-h1">Une porte. Une équipe.<br><em id="fo-hero-em">Votre patrimoine en orbite.</em></h1>
+    <p class="lede" id="fo-hero-lede">
       Vous avez un comptable, un banquier, un notaire — peut-être un CGP. <em>Personne ne voit votre patrimoine en entier.</em> Ni les arbitrages entre vos silos. Ni les échéances qui se croisent. Ni les opportunités que vous ratez parce que vos experts ne se parlent pas entre eux. IKCP est le <strong>chef d'orchestre</strong> que vos 5 experts n'ont jamais été ensemble. Saisissez votre SIREN&nbsp;: Marcel cartographie votre société en&nbsp;30&nbsp;secondes.
     </p>
     <div class="hero-actions">
-      <a href="#siren-funnel" class="btn-primary">Tester avec mon SIREN →</a>
-      <a href="#beta" class="btn-secondary">Demander un accès Bêta</a>
+      <a href="#siren-funnel" class="btn-primary" id="fo-cta-primary">Tester avec mon SIREN →</a>
+      <a href="#beta" class="btn-secondary" id="fo-cta-secondary">Demander un accès Bêta</a>
     </div>
   </div>
 
@@ -2213,6 +2213,58 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') closeFeedback();
 });
+</script>
+
+<!-- ════════════════════════════════════════════════════
+     CMS CONTENT LOADER — Décap CMS live content inject
+     Lit /_data/family-office.json et met à jour les éléments
+     avec id="fo-*". Fallback silencieux si JSON indisponible.
+     ════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+  // Map : id DOM → chemin dans le JSON (notation dot)
+  const CMS_MAP = {
+    'fo-eyebrow':      'hero.eyebrow',
+    'fo-hero-em':      'hero.headline_em',
+    'fo-hero-lede':    'hero.lede',
+    'fo-cta-primary':  'hero.cta_primary',
+    'fo-cta-secondary':'hero.cta_secondary',
+  };
+
+  function get(obj, path) {
+    return path.split('.').reduce((o, k) => o && o[k], obj);
+  }
+
+  // Chargement non-bloquant (fallback = contenu HTML statique)
+  fetch('/_data/family-office.json', { cache: 'no-cache' })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data) return;
+      Object.entries(CMS_MAP).forEach(([id, path]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          const val = get(data, path);
+          if (val) el.textContent = val;
+        }
+      });
+      // Titre <h1> ligne 1 (text node avant <em>)
+      const h1 = document.getElementById('fo-hero-h1');
+      if (h1 && data.hero && data.hero.headline_1) {
+        const firstChild = h1.childNodes[0];
+        if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
+          firstChild.textContent = data.hero.headline_1 + '\n';
+        }
+      }
+      // Meta SEO dynamique (pour partages réseaux)
+      if (data.seo) {
+        if (data.seo.title)       document.title = data.seo.title;
+        const desc = document.querySelector('meta[name="description"]');
+        if (desc && data.seo.description) desc.content = data.seo.description;
+      }
+    })
+    .catch(() => {}); // Silencieux — le contenu HTML statique reste intact
+})();
 </script>
 
 <!-- ════════════════════════════════════════════════════

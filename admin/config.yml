@@ -1,0 +1,177 @@
+# ══════════════════════════════════════════════════════════
+#  IKCP — Décap CMS config
+#  Accès : https://ikcp.eu/admin/
+#  Repo  : Max51527/ikcp-site
+#  Auth  : GitHub via Netlify Identity Gateway (gratuit)
+#
+#  SETUP EN 5 MINUTES (à faire une seule fois) :
+#  1. Créer compte gratuit sur netlify.com
+#  2. "Add new site" → "Deploy manually" (glisser n'importe quel fichier)
+#  3. Settings → Identity → Enable Identity
+#  4. Settings → Identity → Registration → Invite only
+#  5. Settings → Identity → External providers → GitHub → Enable
+#  6. Remplacer VOTRE-SITE-NETLIFY.netlify.app ci-dessous par votre URL Netlify
+#  7. Inviter maxime@ikcp.fr depuis Identity → Invite users
+#
+#  Résultat : login sur ikcp.eu/admin/ via votre compte GitHub
+# ══════════════════════════════════════════════════════════
+
+backend:
+  name: git-gateway
+  branch: main
+  # Remplacer par votre URL Netlify (juste pour l'auth GitHub — aucun hébergement)
+  # site_domain: votre-site.netlify.app
+
+# Dossier pour les images uploadées depuis le CMS
+media_folder: "assets/cms-uploads"
+public_folder: "/assets/cms-uploads"
+
+# Langue de l'interface admin
+locale: fr
+
+# ──────────────────────────────────────────────────────────
+#  COLLECTIONS — chaque collection = un fichier JSON éditable
+# ──────────────────────────────────────────────────────────
+collections:
+
+  # ── 1. Page Family Office (family-office.html) ──────────
+  - name: "family_office"
+    label: "🏛️ Page Family Office"
+    description: "Contenu de la page family-office.html — modifiable sans code"
+    files:
+      - name: "fo_content"
+        label: "Contenu principal"
+        file: "_data/family-office.json"
+        fields:
+
+          - label: "SEO"
+            name: "seo"
+            widget: "object"
+            fields:
+              - { label: "Titre de page", name: "title", widget: "string",
+                  hint: "Affiché dans l'onglet du navigateur" }
+              - { label: "Description (meta)", name: "description", widget: "text",
+                  hint: "Résumé Google — 155 caractères max" }
+
+          - label: "Hero — Section d'entrée"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Bandeau supérieur", name: "eyebrow", widget: "string",
+                  hint: "Ex : Family Office augmenté · 100 % France · RGPD souverain" }
+              - { label: "Titre ligne 1", name: "headline_1", widget: "string",
+                  hint: "Ex : Une porte. Une équipe." }
+              - { label: "Titre ligne 2 (italique doré)", name: "headline_em", widget: "string",
+                  hint: "Ex : Votre patrimoine en orbite." }
+              - { label: "Accroche (lede)", name: "lede", widget: "text",
+                  hint: "Le paragraphe de douleur/promesse sous le titre" }
+              - { label: "Bouton principal", name: "cta_primary", widget: "string",
+                  hint: "Ex : Tester avec mon SIREN →" }
+              - { label: "Bouton secondaire", name: "cta_secondary", widget: "string",
+                  hint: "Ex : Demander un accès Bêta" }
+
+          - label: "Bêta — Section invitation"
+            name: "beta"
+            widget: "object"
+            fields:
+              - { label: "Badge au-dessus du titre", name: "badge", widget: "string",
+                  hint: "Ex : ★ Bêta privée — 50 familles fondatrices" }
+              - { label: "Titre de section", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Bouton CTA", name: "cta", widget: "string",
+                  hint: "Ex : Demander mon accès fondateur →" }
+
+          - label: "Section 'Segment orphelin'"
+            name: "segment_orphelin"
+            widget: "object"
+            fields:
+              - { label: "Titre", name: "title", widget: "string",
+                  hint: "Ex : Trop riche pour un CGP classique. Pas assez pour un vrai Family Office." }
+              - { label: "Sous-titre", name: "subtitle", widget: "text" }
+
+          - label: "FAQ — Questions fréquentes"
+            name: "faq"
+            widget: "list"
+            label_singular: "Question"
+            fields:
+              - { label: "Question", name: "question", widget: "string" }
+              - { label: "Réponse", name: "answer", widget: "text" }
+
+  # ── 2. Page d'accueil (index.html) ──────────────────────
+  - name: "homepage"
+    label: "🏠 Page d'accueil (index.html)"
+    description: "Textes principaux de la page d'accueil"
+    files:
+      - name: "home_content"
+        label: "Contenu page d'accueil"
+        file: "_data/homepage.json"
+        fields:
+
+          - label: "SEO"
+            name: "seo"
+            widget: "object"
+            fields:
+              - { label: "Titre de page", name: "title", widget: "string" }
+              - { label: "Description (meta)", name: "description", widget: "text" }
+
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Titre ligne 1", name: "headline_1", widget: "string",
+                  hint: "Ex : Protéger ce que vous êtes" }
+              - { label: "Titre ligne 2 (italique)", name: "headline_em", widget: "string",
+                  hint: "Ex : en train de bâtir" }
+              - { label: "Sous-titre", name: "subtitle", widget: "text" }
+              - { label: "Texte bouton principal", name: "cta_primary", widget: "string",
+                  hint: "Ex : Faire mon bilan patrimonial →" }
+              - { label: "Texte bouton secondaire", name: "cta_secondary", widget: "string" }
+
+          - label: "Section services / IKCP"
+            name: "services"
+            widget: "object"
+            fields:
+              - { label: "Titre de section", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+
+  # ── 3. Paramètres globaux ────────────────────────────────
+  - name: "global"
+    label: "⚙️ Paramètres globaux"
+    description: "Footer, contact, réseaux — communs à toutes les pages"
+    files:
+      - name: "global_settings"
+        label: "Paramètres du site"
+        file: "_data/global.json"
+        fields:
+          - { label: "Email de contact", name: "contact_email", widget: "string" }
+          - { label: "ORIAS", name: "orias", widget: "string",
+              hint: "Ne pas modifier — réglementaire" }
+          - { label: "SIREN", name: "siren", widget: "string",
+              hint: "Ne pas modifier — réglementaire" }
+          - { label: "URL LinkedIn", name: "linkedin_url", widget: "string" }
+          - { label: "Slogan principal", name: "slogan", widget: "string",
+              hint: "Ex : Une porte. Une équipe. Votre patrimoine en orbite." }
+          - { label: "Baseline philosophique", name: "baseline", widget: "string",
+              hint: "Ex : Vous pilotez. Vous décidez. Sans démarche non sollicitée." }
+          - { label: "Texte footer copyright", name: "footer_copyright", widget: "string" }
+          - { label: "Texte association CIF", name: "cif_text", widget: "string",
+              hint: "Ex : CNCEF Patrimoine — association agréée AMF" }
+
+  # ── 4. Newsletter — paramètres UPPERCUT ─────────────────
+  - name: "newsletter"
+    label: "📬 Newsletter UPPERCUT"
+    description: "Paramètres section newsletter (toutes pages)"
+    files:
+      - name: "newsletter_settings"
+        label: "Newsletter"
+        file: "_data/newsletter.json"
+        fields:
+          - { label: "Titre section", name: "title", widget: "string",
+              hint: "Ex : UPPERCUT PATRIMOINE" }
+          - { label: "Sous-titre", name: "subtitle", widget: "text" }
+          - { label: "Bouton d'inscription", name: "cta", widget: "string",
+              hint: "Ex : Rejoindre 2 400 dirigeants →" }
+          - { label: "URL Beehiiv", name: "beehiiv_url", widget: "string",
+              default: "https://maximes-newsletter-b19c16.beehiiv.com/subscribe" }
+          - { label: "Fréquence", name: "frequency", widget: "string",
+              hint: "Ex : Chaque semaine · 5 minutes de lecture" }
