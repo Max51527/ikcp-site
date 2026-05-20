@@ -22,11 +22,11 @@
 
 ## 🟡 VOICE MARCEL (#7)
 
-- [!] **Maxime** : ajouter secret ElevenLabs (voir instructions ci-dessous)
 - [!] **Maxime** : `npx wrangler secret put MISTRAL_API_KEY` (optionnel — STT Voxtral)
-- [x] Déployer ikcp-voice worker v0.2.0 via GitHub Actions *(2026-05-20)*
-- [ ] Brancher TTS dans index.html : après réception réponse Marcel, appel ikcp-voice → lecture audio
-- [ ] Évaluer VoxCPM API (voxcpm.net) comme alternative à ElevenLabs
+- [!] **Maxime** : déployer serveur VoxCPM2 sur Modal.com (`modal deploy deploy-voxcpm-modal.py`) puis set `VOXCPM_API_URL`
+- [x] ElevenLabs → **VoxCPM2** (Apache 2.0, open-source) : worker + script Modal *(2026-05-20)*
+- [x] Déployer ikcp-voice worker v1.0.0 via GitHub Actions *(2026-05-20)*
+- [x] TTS VoxCPM2 branché dans index.html (WAV via blob URL) *(2026-05-20)*
 - [ ] Bouton 🔊 dans le chatbot-widget panel pour activer la lecture vocale
 
 ---

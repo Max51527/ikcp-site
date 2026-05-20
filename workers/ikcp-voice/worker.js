@@ -2,17 +2,20 @@
  * ikcp-voice — Voix Marcel premium (Sprint 3)
  *
  * STT : Mistral Voxtral (France) avec fallback Cloudflare Workers AI Whisper
- * TTS : ElevenLabs voix Marcel signature, cache KV 7j
+ * TTS : VoxCPM2 (OpenBMB, Apache 2.0) via endpoint OpenAI-compatible
+ *       Hébergement : Modal.com serverless GPU (voir deploy-voxcpm-modal.py)
+ *                  ou tout serveur vLLM-Omni exposant /v1/audio/speech
  *
  * Endpoints :
  *   GET  /health
  *   POST /stt       multipart audio → { text, lang, source, duration_ms }
- *   POST /tts       { text, voice? } → audio/mpeg stream (cached KV)
+ *   POST /tts       { text, voice? } → audio/wav stream (cached KV)
+ *   GET  /voices    → liste des voix VoxCPM disponibles
  *
  * Souveraineté :
  *   - Mistral Voxtral : France
  *   - Cloudflare Workers AI : WEUR (Paris/Frankfurt)
- *   - ElevenLabs : USA → préférer Voxtral pour STT, ElevenLabs en option Premium FO
+ *   - VoxCPM2 : open-source Apache 2.0, hébergement au choix (Modal WEUR recommandé)
  *   - Audio non stocké : transit uniquement
  */
 
@@ -23,7 +26,7 @@ const ALLOWED_ORIGINS = [
   'https://marcel.ikcp.eu',
   'https://famille.ikcp.eu',
   'https://ikcp-chat.maxime-ead.workers.dev',
-  'https://ikcp-eu.pages.dev',        // Cloudflare Pages (prod)
+  'https://ikcp-eu.pages.dev',
   'http://localhost:3000',
   'http://localhost:5500',
   'http://localhost:8765',
@@ -68,42 +71,43 @@ async function transcribeVoxtral(env, audioBlob, lang = 'fr') {
 }
 
 async function transcribeWhisperCF(env, audioBlob) {
-  // Workers AI Whisper (EU jurisdiction)
   const arr = new Uint8Array(await audioBlob.arrayBuffer());
   const result = await env.AI.run('@cf/openai/whisper', { audio: [...arr] });
   return { text: result.text || '', source: 'whisper-cf', lang: 'fr' };
 }
 
 // ────────────────────────────────────────────────
-// TTS — ElevenLabs voix Marcel signature
+// TTS — VoxCPM2 via API OpenAI-compatible
+// Endpoint : POST {VOXCPM_API_URL}/v1/audio/speech
+// Retourne : audio/wav 48kHz
 // ────────────────────────────────────────────────
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function speakElevenLabs(env, text, voiceId) {
-  const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`;
-  const r = await fetch(url, {
+async function speakVoxCPM(env, text, voice) {
+  const baseUrl = env.VOXCPM_API_URL?.replace(/\/$/, '');
+  if (!baseUrl) throw new Error('VOXCPM_API_URL not configured');
+
+  const body = {
+    model: env.VOXCPM_MODEL || 'openbmb/VoxCPM2',
+    input: text,
+  };
+  // Voice optionnel : nom de voix prédéfinie ou description textuelle (Voice Design)
+  if (voice && voice !== 'default') body.voice = voice;
+
+  const headers = { 'Content-Type': 'application/json' };
+  // Clé API optionnelle (si le serveur est protégé)
+  if (env.VOXCPM_API_KEY) headers['Authorization'] = `Bearer ${env.VOXCPM_API_KEY}`;
+
+  const r = await fetch(`${baseUrl}/v1/audio/speech`, {
     method: 'POST',
-    headers: {
-      'xi-api-key': env.ELEVENLABS_API_KEY,
-      'Content-Type': 'application/json',
-      'Accept': 'audio/mpeg',
-    },
-    body: JSON.stringify({
-      text,
-      model_id: 'eleven_multilingual_v2',  // supporte FR avec qualité haute
-      voice_settings: {
-        stability: 0.50,
-        similarity_boost: 0.75,
-        style: 0.30,
-        use_speaker_boost: true,
-      },
-    }),
+    headers,
+    body: JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`elevenlabs_${r.status}: ${(await r.text()).slice(0, 200)}`);
-  return r.body;  // ReadableStream audio/mpeg
+  if (!r.ok) throw new Error(`voxcpm_${r.status}: ${(await r.text()).slice(0, 200)}`);
+  return r.body; // ReadableStream audio/wav
 }
 
 // ────────────────────────────────────────────────
@@ -121,19 +125,23 @@ export default {
       return json({
         status: 'ok',
         service: 'ikcp-voice',
-        version: '0.2.0',
+        version: '1.0.0',
         stt: {
           voxtral: !!env.MISTRAL_API_KEY,
           whisper_cf: !!env.AI,
-          primary: env.STT_PRIMARY,
+          primary: env.STT_PRIMARY || 'voxtral',
         },
         tts: {
-          elevenlabs: !!env.ELEVENLABS_API_KEY,
-          voice_id: env.ELEVENLABS_VOICE_ID || 'default',
-          primary: env.TTS_PRIMARY,
+          provider: 'voxcpm2',
+          configured: !!env.VOXCPM_API_URL,
+          api_url: env.VOXCPM_API_URL ? env.VOXCPM_API_URL.replace(/\/.*$/, '/[...]') : null,
+          model: env.VOXCPM_MODEL || 'openbmb/VoxCPM2',
+          voice: env.VOXCPM_VOICE || 'default',
+          primary: 'voxcpm2',
         },
         cache: !!env.VOICE_CACHE,
         region: 'WEUR Paris/Frankfurt',
+        license: 'VoxCPM2 Apache 2.0 — open-source souverain',
       }, 200, origin);
     }
 
@@ -146,7 +154,6 @@ export default {
           const form = await request.formData();
           audioBlob = form.get('audio') || form.get('file');
         } else {
-          // Body brut (octet-stream)
           audioBlob = await request.blob();
         }
         if (!audioBlob || audioBlob.size === 0) return json({ error: 'audio_empty' }, 400, origin);
@@ -187,22 +194,27 @@ export default {
       const maxChars = parseInt(env.TTS_MAX_CHARS, 10) || 5000;
       if (text.length > maxChars) text = text.slice(0, maxChars);
 
-      const voiceId = voice || env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
+      const voiceId = voice || env.VOXCPM_VOICE || 'default';
 
-      if (!env.ELEVENLABS_API_KEY) {
-        return json({ error: 'tts_provider_not_configured', fallback_use_webspeech: true }, 503, origin);
+      if (!env.VOXCPM_API_URL) {
+        return json({
+          error: 'tts_provider_not_configured',
+          hint: 'Déployer VoxCPM2 via Modal.com (voir workers/ikcp-voice/deploy-voxcpm-modal.py), puis set VOXCPM_API_URL',
+          fallback_use_webspeech: true,
+        }, 503, origin);
       }
 
       // Cache KV par hash(text + voiceId)
-      const cacheKey = `tts:${voiceId}:${(await sha256Hex(text)).slice(0, 32)}`;
+      const cacheKey = `tts:voxcpm:${voiceId}:${(await sha256Hex(text)).slice(0, 32)}`;
       try {
         const cached = await env.VOICE_CACHE.get(cacheKey, 'arrayBuffer');
         if (cached) {
           return new Response(cached, {
             status: 200,
             headers: {
-              'Content-Type': 'audio/mpeg',
+              'Content-Type': 'audio/wav',
               'X-Cache': 'HIT',
+              'X-Provider': 'voxcpm2',
               'Cache-Control': 'private, max-age=604800',
               ...corsHeaders(origin),
             },
@@ -211,8 +223,7 @@ export default {
       } catch (_) { /* cache miss continue */ }
 
       try {
-        const audioStream = await speakElevenLabs(env, text, voiceId);
-        // Téléchargement complet pour caching (streaming pur ne permet pas le cache)
+        const audioStream = await speakVoxCPM(env, text, voiceId);
         const audioBuf = await new Response(audioStream).arrayBuffer();
         const ttl = parseInt(env.CACHE_TTL_HOURS, 10) * 3600 || 604800;
         try { await env.VOICE_CACHE.put(cacheKey, audioBuf, { expirationTtl: ttl }); } catch (_) {}
@@ -220,8 +231,9 @@ export default {
         return new Response(audioBuf, {
           status: 200,
           headers: {
-            'Content-Type': 'audio/mpeg',
+            'Content-Type': 'audio/wav',
             'X-Cache': 'MISS',
+            'X-Provider': 'voxcpm2',
             'Cache-Control': 'private, max-age=604800',
             ...corsHeaders(origin),
           },
@@ -232,30 +244,35 @@ export default {
     }
 
     // ─── GET /voices ──────────────────────────────
-    // Liste les voix ElevenLabs disponibles (pour panneau préférences front)
+    // VoxCPM2 : voix prédéfinies + Voice Design (description textuelle)
     if (url.pathname === '/voices' && request.method === 'GET') {
-      if (!env.ELEVENLABS_API_KEY) return json({ error: 'tts_not_configured' }, 503, origin);
-      try {
-        const r = await fetch('https://api.elevenlabs.io/v1/voices', {
-          headers: { 'xi-api-key': env.ELEVENLABS_API_KEY },
-        });
-        if (!r.ok) return json({ error: 'voices_fetch_failed', status: r.status }, 502, origin);
-        const data = await r.json();
-        // Filtre voix françaises ou multilingues
-        const voices = (data.voices || []).filter(v =>
-          (v.labels?.language === 'fr' || v.labels?.language === 'french') ||
-          (v.fine_tuning?.language === 'fr') ||
-          (v.preview_url && v.name)
-        ).map(v => ({
-          voice_id: v.voice_id,
-          name: v.name,
-          labels: v.labels,
-          preview_url: v.preview_url,
-        }));
-        return json({ voices }, 200, origin);
-      } catch (err) {
-        return json({ error: 'voices_error', detail: err.message }, 502, origin);
+      // Si le serveur VoxCPM expose un endpoint /v1/models, on l'interroge
+      // Sinon on retourne les voix prédéfinies (VoxCPM2 Voice Design)
+      const builtinVoices = [
+        { voice_id: 'default', name: 'Marcel (défaut)', description: 'Voix neutre française' },
+        { voice_id: 'formal', name: 'Formel', description: 'Ton sérieux, professionnel' },
+        { voice_id: 'warm', name: 'Chaleureux', description: 'Ton accueillant, rassurant' },
+        { voice_id: 'energetic', name: 'Dynamique', description: 'Ton vif, enthousiaste' },
+      ];
+
+      if (!env.VOXCPM_API_URL) {
+        return json({ voices: builtinVoices, source: 'builtin', configured: false }, 200, origin);
       }
+
+      try {
+        // Tenter de récupérer les modèles disponibles sur le serveur
+        const baseUrl = env.VOXCPM_API_URL?.replace(/\/$/, '');
+        const headers = {};
+        if (env.VOXCPM_API_KEY) headers['Authorization'] = `Bearer ${env.VOXCPM_API_KEY}`;
+        const r = await fetch(`${baseUrl}/v1/models`, { headers });
+        if (r.ok) {
+          const data = await r.json();
+          const models = (data.data || []).map(m => ({ voice_id: m.id, name: m.id, description: 'VoxCPM2 model' }));
+          return json({ voices: models.length ? models : builtinVoices, source: 'server' }, 200, origin);
+        }
+      } catch (_) { /* fallback builtins */ }
+
+      return json({ voices: builtinVoices, source: 'builtin', configured: true }, 200, origin);
     }
 
     return json({ error: 'not_found', path: url.pathname }, 404, origin);

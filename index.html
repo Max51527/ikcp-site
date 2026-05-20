@@ -4381,7 +4381,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
       .catch(function() { _voiceAvailable = false; return false; });
   }
 
-  // TTS premium ElevenLabs via ikcp-voice
+  // TTS premium VoxCPM2 (open-source) via ikcp-voice
   function speakPremium(text) {
     if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
     if (!text || text.length > 3000) return; // garde coût
@@ -4425,7 +4425,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
   // Patch appliqué après chargement du chatbot-widget
   function applyVoicePatch() {
     // Surcharge window._ikcpToggleTTSBtn (bouton 🔊 dans le panel)
-    // pour utiliser ElevenLabs si disponible
+    // pour utiliser VoxCPM2 si disponible
     var origTTSBtn = window._ikcpToggleTTSBtn;
     window._ikcpToggleTTSBtn = function() {
       if (_ttsActive) { stopSpeak(); return; }

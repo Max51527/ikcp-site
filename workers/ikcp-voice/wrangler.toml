@@ -1,6 +1,6 @@
 name = "ikcp-voice"
 main = "worker.js"
-compatibility_date = "2026-05-01"
+compatibility_date = "2026-05-20"
 workers_dev = true
 keep_vars = true
 
@@ -8,23 +8,26 @@ keep_vars = true
 [placement]
 mode = "smart"
 
-# Cloudflare Workers AI binding (Whisper fallback STT + futur TTS)
+# Cloudflare Workers AI binding (Whisper fallback STT)
 [ai]
 binding = "AI"
 
-# KV : cache TTS 7j (mêmes textes redemandés = pas de re-facturation)
+# KV : cache TTS 7j
 [[kv_namespaces]]
 binding = "VOICE_CACHE"
 id = "1adfd430021b4ea9aca4fdcbb846b752"
 
 [vars]
-ELEVENLABS_VOICE_ID = "EXAVITQu4vr4xnSDxMaL"  # Bella FR (placeholder, à customiser)
-TTS_MAX_CHARS = "5000"                          # plafond par requête
-STT_PRIMARY = "voxtral"                         # voxtral | whisper-cf
-TTS_PRIMARY = "elevenlabs"                      # elevenlabs | webspeech-fallback
-CACHE_TTL_HOURS = "168"                         # 7 jours
+# VoxCPM2 TTS (open-source, Apache 2.0)
+# Hébergement recommandé : Modal.com serverless GPU (voir deploy-voxcpm-modal.py)
+# Après déploiement Modal : copier l'URL ici (ou via wrangler secret put VOXCPM_API_URL)
+VOXCPM_API_URL = ""               # ex: https://xxx--voxcpm-tts.modal.run
+VOXCPM_MODEL = "openbmb/VoxCPM2"  # modèle à appeler
+VOXCPM_VOICE = "default"           # voix par défaut
+TTS_MAX_CHARS = "5000"             # plafond par requête TTS
+STT_PRIMARY = "voxtral"            # voxtral | whisper-cf
+CACHE_TTL_HOURS = "168"            # 7 jours
 
-# Secrets à set via wrangler secret put :
-# MISTRAL_API_KEY        — clé Voxtral STT (la-plateforme.mistral.ai)
-# ELEVENLABS_API_KEY     — clé TTS premium (elevenlabs.io)
-# TEMOIN_INTERNAL_TOKEN  — audit Témoin
+# Secrets à set via wrangler secret put (ou Dashboard Cloudflare → Workers → ikcp-voice → Settings → Variables) :
+# MISTRAL_API_KEY    — clé Voxtral STT (la-plateforme.mistral.ai) — optionnel, fallback Whisper CF
+# VOXCPM_API_KEY     — token d'auth du serveur VoxCPM si protégé — optionnel si serveur public
