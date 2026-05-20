@@ -16,15 +16,15 @@
 - [x] SPECIALISTS_REGISTRY aligné sur 12 noms FO (Bâtisseur, Codex, Architecte…) *(2026-05-20)*
 - [x] System prompt Marcel — noms spécialistes générés dynamiquement *(2026-05-20)*
 - [!] **DNS switch** : hPanel Hostinger → CNAME `@` = `ikcp-eu.pages.dev` *(attente Maxime)*
-- [ ] **Déployer Marcel** après registry update : `cd workers/ikcp-marcel && npx wrangler deploy`
+- [x] **Déployer Marcel** v2.3 via GitHub Actions (deploy-workers.yml réécrit) *(2026-05-20)*
 
 ---
 
 ## 🟡 VOICE MARCEL (#7)
 
-- [!] **Maxime** : `npx wrangler secret put ELEVENLABS_API_KEY` (dans workers/ikcp-voice/)
+- [!] **Maxime** : ajouter secret ElevenLabs (voir instructions ci-dessous)
 - [!] **Maxime** : `npx wrangler secret put MISTRAL_API_KEY` (optionnel — STT Voxtral)
-- [ ] Déployer ikcp-voice worker : `cd workers/ikcp-voice && npx wrangler deploy`
+- [x] Déployer ikcp-voice worker v0.2.0 via GitHub Actions *(2026-05-20)*
 - [ ] Brancher TTS dans index.html : après réception réponse Marcel, appel ikcp-voice → lecture audio
 - [ ] Évaluer VoxCPM API (voxcpm.net) comme alternative à ElevenLabs
 - [ ] Bouton 🔊 dans le chatbot-widget panel pour activer la lecture vocale
