@@ -43,20 +43,28 @@ const ALLOWED_ORIGINS = [
 // ──────────────────────────────────────────────────────────────
 // SPECIALISTS REGISTRY — workers vers lesquels Marcel delegue
 // ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────
+// SPECIALISTS REGISTRY — 12 agents alignés sur les univers Family Office
+// Noms synchronisés avec UNIVERS_DATA dans family-office.html
+// ──────────────────────────────────────────────────────────────
 const SPECIALISTS_REGISTRY = {
-  // ✅ LIVE Sprint 1 — workers déployés
-  codex: { url: 'https://ikcp-codex.maxime-ead.workers.dev/', role: 'Fiscalité experte', model: 'opus-4-7', live: true },
-  // 🔴 Sprint 5 — PAS encore déployé
-  hermes: { url: 'https://ikcp-hermes.maxime-ead.workers.dev/', role: 'Transmission patrimoniale', model: 'opus-4-7', live: false },
-  // 🔴 Sprint 3-4 — ikcp-lifestyle PAS encore déployé
-  iris:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voyage & Conciergerie',           model: 'sonnet-4-6', mutualisé: true, live: false },
-  emile:     { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Art & Collections',               model: 'sonnet-4-6', mutualisé: true, live: false },
-  leon:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voitures, Yachts & Aviation',     model: 'sonnet-4-6', mutualisé: true, live: false },
-  josephine: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Montres & Joaillerie',            model: 'sonnet-4-6', mutualisé: true, live: false },
-  helene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Mode, Beauté & Bien-être',        model: 'sonnet-4-6', mutualisé: true, live: false },
-  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Philanthropie & NextGen',         model: 'sonnet-4-6', mutualisé: true, live: false },
-  auguste:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Vins & Gastronomie',              model: 'sonnet-4-6', mutualisé: true, live: false },
-  augustin:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Immobilier & Foncier',            model: 'sonnet-4-6', mutualisé: true, live: false },
+  // ✅ LIVE Sprint 1
+  codex:     { url: 'https://ikcp-codex.maxime-ead.workers.dev/',     displayName: 'Codex',       role: 'Fiscalité experte · arbitrages CGI · jurisprudence fiscale',              model: 'opus-4-7',   live: true  },
+  // 🟡 Sprint 2 — worker existant (ikcp-batisseur), à déployer
+  batisseur: { url: 'https://ikcp-batisseur.maxime-ead.workers.dev/', displayName: 'Bâtisseur',   role: 'Cartographie patrimoine 360° · bilan dirigeant · holding · governance',    model: 'opus-4-7',   live: false },
+  // 🔴 Sprint 3 — mutualisé sur ikcp-lifestyle
+  architecte:{ url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Architecte',  role: 'Immobilier & Foncier · DVF · IFI · SCI · montages locatifs',              model: 'sonnet-4-6', live: false, mutualisé: true },
+  hermes:    { url: 'https://ikcp-hermes.maxime-ead.workers.dev/',    displayName: 'Hermès',      role: 'Transmission patrimoniale · succession · donation · pacte Dutreil',        model: 'opus-4-7',   live: false },
+  stratege:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Stratège',    role: 'Marchés · allocation · produits financiers · diversification',             model: 'sonnet-4-6', live: false, mutualisé: true },
+  // 🔴 Sprint 4 — lifestyle mutualisé
+  curateur:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Curateur',    role: 'Art · Horlogerie · Collections · Vins · Joaillerie · valeur & assurance',  model: 'sonnet-4-6', live: false, mutualisé: true },
+  concierge: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Concierge',   role: 'Voyage · Conciergerie · Mode · Bien-être · Aviation · expériences',        model: 'sonnet-4-6', live: false, mutualisé: true },
+  capital:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Capital',     role: 'Capital investissement · private equity · actifs alternatifs · dette privée', model: 'sonnet-4-6', live: false, mutualisé: true },
+  // 🔴 Sprint 5
+  mecene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Mécène',      role: 'Philanthropie · Fondations · mécénat fiscal · NextGen · impact',           model: 'sonnet-4-6', live: false, mutualisé: true },
+  pedagogue: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Pédagogue',   role: 'Éducation financière · sensibilisation patrimoniale · formation NextGen',   model: 'sonnet-4-6', live: false, mutualisé: true },
+  camille:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Camille',     role: 'Assistance & Onboarding · coordination · support familles fondatrices',    model: 'sonnet-4-6', live: false, mutualisé: true },
+  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Olympe',      role: 'Bien-être · santé · médecine privée · art de vivre & longévité',           model: 'sonnet-4-6', live: false, mutualisé: true },
 };
 // Filtre — Marcel ne peut déléguer qu'aux spécialistes déjà déployés
 const SPECIALISTS_IDS_LIVE = Object.entries(SPECIALISTS_REGISTRY).filter(([,v]) => v.live).map(([k]) => k);
@@ -364,7 +372,12 @@ function buildSystemPrompt(ctx) {
     nouvelle_annee: `CONTEXTE SAISONNIER : Début d'année. Bon moment pour planifier, prendre date, démarrer une stratégie progressive.`,
   };
 
-  return `Tu t'appelles Marcel. Tu es le chef d'orchestre du Family Office augmenté d'IKCP — IKIGAÏ Conseil Patrimonial, fondé par Maxime Juveneton. IKCP est un cabinet indépendant CIF (ORIAS 23001568) qui propose le **premier Family Office français 100 % digital et augmenté par intelligence souveraine**. Tu orchestres 12 spécialistes IA (Théodore, Augustin, Codex, Capital, Hermès, Iris, Émile, Léon, Joséphine, Hélène, Auguste, Olympe) et tu mobilises l'humain (Maxime) uniquement sur demande explicite du client.
+  // Génère la liste des spécialistes avec leurs noms d'affichage et rôles
+  const specialistsList = Object.values(SPECIALISTS_REGISTRY)
+    .map(s => `${s.displayName} (${s.role})`)
+    .join(', ');
+
+  return `Tu t'appelles Marcel. Tu es le chef d'orchestre du Family Office augmenté d'IKCP — IKIGAÏ Conseil Patrimonial, fondé par Maxime Juveneton. IKCP est un cabinet indépendant CIF (ORIAS 23001568) qui propose le **premier Family Office français 100 % digital et augmenté par intelligence souveraine**. Tu orchestres 12 spécialistes IA : ${specialistsList}. Tu mobilises l'humain (Maxime) uniquement sur demande explicite du client.
 
 DATE DU JOUR : ${ctx.dateStr}
 ${seasonalNote[ctx.season]}
