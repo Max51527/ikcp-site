@@ -505,7 +505,15 @@ window._ikcpBuildGallery=buildGallery;
 window._ikcpShowSchema=showSchema;
 })();
 (function(){
+// ── Endpoints Marcel ──────────────────────────────────────────────────────
+// CF Worker (prod, actif) :
 var PROXY='https://ikcp-chat.maxime-ead.workers.dev';
+// ikcp-agents Python FastAPI (Anthropic Managed Agents) :
+// → Remplacer PROXY par AGENTS_URL + '/api/chat' une fois la clé Anthropic configurée.
+// → URL éphémère ci-dessous (localhost.run) ; utiliser URL stable en prod.
+var AGENTS_URL='https://13a77103bd38dc.lhr.life';
+// var PROXY=AGENTS_URL; // ← décommenter pour basculer sur ikcp-agents
+// ─────────────────────────────────────────────────────────────────────────
 var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 
 // ──────────────────────────────────────────────────────────────
@@ -1102,10 +1110,15 @@ _pageCtxSent=true;
 var prefix=[pageLine,ctx].filter(Boolean).join('\n');
 var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
 var _abort=new AbortController();var _killTimer=setTimeout(function(){_abort.abort();},45000);
-var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf}),signal:_abort.signal});
+// Détecte si on utilise ikcp-agents (endpoint /api/chat) ou CF Worker (root)
+var isAgentsEndpoint=PROXY===AGENTS_URL||PROXY.includes('/api/chat');
+var chatUrl=isAgentsEndpoint?(PROXY.replace(/\/api\/chat$/,'')+'/api/chat'):PROXY;
+var chatBody=isAgentsEndpoint?JSON.stringify({message:txtWithCtx,user_id:profile.uuid||'anonymous'}):JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf});
+var r=await fetch(chatUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:chatBody,signal:_abort.signal});
 clearTimeout(_killTimer);
 var d=await r.json();
-var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
+// Compatibilité CF Worker (d.reply) + ikcp-agents (d.message) + Claude raw (d.content[])
+var reply=d.reply||d.message||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
 var followUps=Array.isArray(d.follow_ups)?d.follow_ups:[];
 history.push({role:'assistant',content:reply});
 var html=formatReply(reply);
