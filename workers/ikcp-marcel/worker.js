@@ -1,4 +1,4 @@
-/**
+﻿/**
  * IKCP Marcel Worker v2 — Cloudflare Worker
  *
  * Remplace ikcp-chat avec :
@@ -44,20 +44,22 @@ const ALLOWED_ORIGINS = [
 // SPECIALISTS REGISTRY — workers vers lesquels Marcel delegue
 // ──────────────────────────────────────────────────────────────
 const SPECIALISTS_REGISTRY = {
-  // Worker dedie Opus 4.7 - expertise fiscale critique
-  codex: { url: 'https://ikcp-codex.maxime-ead.workers.dev/', role: 'Fiscalité experte', model: 'opus-4-7' },
-  // Worker dedie Opus 4.7 - transmission critique
-  hermes: { url: 'https://ikcp-hermes.maxime-ead.workers.dev/', role: 'Transmission patrimoniale', model: 'opus-4-7' },
-  // Worker mutualise Sonnet 4.6 - 8 lifestyle / passions / immobilier
-  iris:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voyage & Conciergerie',           model: 'sonnet-4-6', mutualisé: true },
-  emile:     { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Art & Collections',               model: 'sonnet-4-6', mutualisé: true },
-  leon:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voitures, Yachts & Aviation',     model: 'sonnet-4-6', mutualisé: true },
-  josephine: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Montres & Joaillerie',            model: 'sonnet-4-6', mutualisé: true },
-  helene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Mode, Beauté & Bien-être',        model: 'sonnet-4-6', mutualisé: true },
-  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Philanthropie & NextGen',         model: 'sonnet-4-6', mutualisé: true },
-  auguste:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Vins & Gastronomie',              model: 'sonnet-4-6', mutualisé: true },
-  augustin:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Immobilier & Foncier',            model: 'sonnet-4-6', mutualisé: true },
+  // ✅ LIVE Sprint 1 — workers déployés
+  codex: { url: 'https://ikcp-codex.maxime-ead.workers.dev/', role: 'Fiscalité experte', model: 'opus-4-7', live: true },
+  // 🔴 Sprint 5 — PAS encore déployé
+  hermes: { url: 'https://ikcp-hermes.maxime-ead.workers.dev/', role: 'Transmission patrimoniale', model: 'opus-4-7', live: false },
+  // 🔴 Sprint 3-4 — ikcp-lifestyle PAS encore déployé
+  iris:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voyage & Conciergerie',           model: 'sonnet-4-6', mutualisé: true, live: false },
+  emile:     { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Art & Collections',               model: 'sonnet-4-6', mutualisé: true, live: false },
+  leon:      { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Voitures, Yachts & Aviation',     model: 'sonnet-4-6', mutualisé: true, live: false },
+  josephine: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Montres & Joaillerie',            model: 'sonnet-4-6', mutualisé: true, live: false },
+  helene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Mode, Beauté & Bien-être',        model: 'sonnet-4-6', mutualisé: true, live: false },
+  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Philanthropie & NextGen',         model: 'sonnet-4-6', mutualisé: true, live: false },
+  auguste:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Vins & Gastronomie',              model: 'sonnet-4-6', mutualisé: true, live: false },
+  augustin:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', role: 'Immobilier & Foncier',            model: 'sonnet-4-6', mutualisé: true, live: false },
 };
+// Filtre — Marcel ne peut déléguer qu'aux spécialistes déjà déployés
+const SPECIALISTS_IDS_LIVE = Object.entries(SPECIALISTS_REGISTRY).filter(([,v]) => v.live).map(([k]) => k);
 const SPECIALISTS_IDS = Object.keys(SPECIALISTS_REGISTRY);
 
 // ──────────────────────────────────────────────────────────────
@@ -112,7 +114,9 @@ async function fetchUserContextFromClient(request) {
 
 async function delegateToSpecialist(agentId, question, context) {
   const spec = SPECIALISTS_REGISTRY[agentId];
-  if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS.join(', ')}` };
+  if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS_LIVE.join(', ')}` };
+  // Guard — bloquer délégation vers workers pas encore déployés
+  if (!spec.live) return { error: `Specialiste ${agentId} (${spec.role}) n'est pas encore déployé (Sprint 3-5). Traite la question directement.` };
   try {
     const body = spec.mutualisé
       ? { agent: agentId, question, context }
@@ -406,16 +410,11 @@ Tu n'es PAS seul. Tu peux mobiliser douze sub-agents Family Office en parallèle
 
 | agent_id   | Spécialité                          | Modèle    | Quand l'appeler |
 |------------|-------------------------------------|-----------|-----------------|
-| hermes     | Transmission patrimoniale           | Opus 4.7  | Pacte Dutreil multi-étapes, donation-partage avec démembrement, OBO, apport-cession, transmission entreprise |
-| codex      | Fiscalité experte multi-articles CGI| Opus 4.7  | Question fiscale qui croise 3+ articles CGI, jurisprudence Cass/CE, requalification |
-| augustin   | Immobilier & Foncier                | Sonnet 4.6| LMNP, SCI, démembrement immo, déficit foncier, DPE/passoires, plus-values immo |
-| iris       | Voyage & Conciergerie               | Sonnet 4.6| Itinéraires premium, chalets Megève, jets privés, conciergerie internationale |
-| emile      | Art & Collections                   | Sonnet 4.6| Cote artiste, fiscalité œuvres (art. 885 H), mécénat (loi Aillagon), maisons de ventes |
-| leon       | Voitures, Yachts & Aviation         | Sonnet 4.6| Classic cars, yachts pavillon, jets privés, fiscalité véhicule collection (Histovec) |
-| josephine  | Montres & Joaillerie                | Sonnet 4.6| Patek/AP/Richard Mille, joaillerie haute, valorisation IFI montres |
-| helene     | Mode, Beauté & Bien-être            | Sonnet 4.6| Sur-mesure, Lanserhof, longévité, programmes NextGen wellness |
-| olympe     | Philanthropie & NextGen             | Sonnet 4.6| Fondation/fonds de dotation/FRUP, dons IR-IFI, Family Council, NextGen |
-| auguste    | Vins & Gastronomie                  | Sonnet 4.6| Cave fine wine, valorisation IFI, restaurants 3★, transmission cave |
+| codex      | Fiscalite experte multi-articles CGI| Opus 4.7  | LIVE - Question fiscale qui croise 3+ articles CGI, jurisprudence Cass/CE, requalification |
+
+SPECIALISTES EN DEPLOIEMENT (Sprint 3-5 - PAS encore actifs, ne pas appeler) :
+hermes (Transmission), augustin (Immobilier), iris (Voyage), emile (Art), leon (Voitures/Yachts), josephine (Montres), helene (Bien-etre), olympe (Philanthropie), auguste (Vins)
+Pour ces domaines : traite directement avec tes connaissances + web_search si besoin.
 
 COLLECTOR PERSONNEL — TOOLS get_user_profile / get_user_watches / get_user_alerts / add_user_watch :
 L'utilisateur peut avoir un PROFIL COLLECTIONNEUR enregistré (montres, voitures, sneakers, Lego, jeux, vins, art, voyage, sport, yachts, NextGen). Un agent collecteur scrute chaque jour les marchés correspondants et génère des alertes.
@@ -432,7 +431,7 @@ RÈGLES :
 - Le profil est PRIVÉ et SOUVERAIN FR (D1 Paris). Tu peux le rassurer si questionné.
 
 RÈGLES DE DÉLÉGATION :
-1. Tu PEUX déléguer en parallèle (ex : question "transmettre ma cave Pétrus" → délègue à hermes ET auguste ET codex en un seul tour).
+1. Tu n'utilises delegate_to_specialist QU'AVEC codex pour l'instant (seul specialist LIVE Sprint 1).
 2. Tu ne délègues QUE si la question dépasse tes compétences (sinon tu réponds directement avec tes calculs déterministes).
 3. Tu peux passer du CONTEXTE au spécialiste (param "context") : composition famille, données Pappers déjà obtenues, situation client.
 4. Tu SYNTHÉTISES la réponse des spécialistes pour le client (pas du copier-coller). Si plusieurs spécialistes répondent, tu articules leurs apports respectifs.
