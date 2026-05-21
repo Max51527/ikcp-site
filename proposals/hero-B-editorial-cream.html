@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!-- PROPOSITION B — "RAPPORT ÉDITORIAL"
+     Mood : double page de couverture NYT Magazine · France Soir Patrimoine.
+     Palette : cream pur + ink + gold discret.
+     Typographie : Playfair Display extra-large, asymétrie stricte.
+     Différenciateur : Le chiffre "384 365 €" d'abattements cumulables flotte comme
+     une accroche de journal — message immédiat, éducatif, impactant.
+     Question rhétorique sous le H1 : le prospect se reconnaît. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Proposition B · Éditorial Cream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#FAF7F0;
+  --cream-2:#F0EAD8;
+  --ink:#1A1410;
+  --ink-2:#2C2418;
+  --muted:#6B5D52;
+  --gold:#C9A96E;
+  --gold-deep:#8B6F3F;
+  --line:rgba(26,20,16,0.10);
+  --navy:#1B2A4A;
+}
+html,body{background:var(--cream);color:var(--ink);font-family:'Outfit',sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* ─── NAV ÉDITORIALE ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(250,247,240,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+  padding:0 56px;
+  display:flex;align-items:stretch;justify-content:space-between;
+  height:64px;
+}
+.nav-brand{display:flex;align-items:center;gap:16px;border-right:1px solid var(--line);padding-right:24px}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-0.02em}
+.nav-tagline{font-size:9.5px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;font-weight:500}
+.nav-links{display:flex;align-items:center;gap:0}
+.nav-links a{height:100%;display:flex;align-items:center;padding:0 20px;color:var(--muted);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:0.04em;border-right:1px solid var(--line);transition:all 0.2s}
+.nav-links a:hover{color:var(--ink);background:rgba(26,20,16,0.04)}
+.nav-cta-wrap{display:flex;align-items:center;padding-left:24px;border-left:1px solid var(--line)}
+.nav-cta{background:var(--ink);color:var(--cream);padding:10px 22px;font-size:11.5px;font-weight:600;letter-spacing:0.08em;text-decoration:none;border-radius:6px;text-transform:uppercase;transition:all 0.2s}
+.nav-cta:hover{background:var(--gold);color:var(--ink)}
+
+/* ─── HERO GRILLE ÉDITORIALE ─── */
+.hero{
+  min-height:100vh;
+  display:grid;
+  /* Colonne gauche : texte large / Colonne droite : bande verticale accent */
+  grid-template-columns:7fr 5fr;
+  padding-top:64px;
+}
+
+/* LEFT */
+.hero-left{
+  padding:80px 72px 80px 80px;
+  display:flex;flex-direction:column;justify-content:center;
+  border-right:1px solid var(--line);
+  position:relative;
+}
+
+/* Filet horizontal numérotation romaine style dossier */
+.section-mark{
+  display:flex;align-items:center;gap:12px;
+  font-family:'DM Mono',monospace;font-size:9.5px;color:var(--gold-deep);
+  font-weight:500;letter-spacing:0.25em;text-transform:uppercase;
+  margin-bottom:36px;
+}
+.section-mark::before{content:'—';color:var(--gold)}
+
+/* H1 massif */
+h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(44px,5.2vw,76px);
+  font-weight:400;line-height:1.0;letter-spacing:-0.03em;
+  color:var(--ink);
+  margin-bottom:8px;
+}
+h1 em{color:var(--gold-deep);font-style:italic}
+
+/* Question rhétorique — le vrai hook */
+.hook{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(16px,1.6vw,22px);
+  color:var(--muted);
+  line-height:1.5;
+  border-left:3px solid var(--gold);
+  padding-left:20px;
+  margin:28px 0 36px;
+  max-width:540px;
+}
+
+.sub{
+  font-size:15.5px;color:var(--muted);line-height:1.8;max-width:480px;margin-bottom:44px;
+  font-weight:300;
+}
+.sub strong{color:var(--ink-2);font-weight:500}
+
+.cta-group{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 30px;background:var(--ink);color:var(--cream);
+  border-radius:8px;font-size:13px;font-weight:600;letter-spacing:0.05em;
+  text-decoration:none;transition:all 0.25s;
+}
+.btn-primary:hover{background:var(--gold);color:var(--ink);transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,169,110,0.25)}
+.btn-siren{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 24px;background:transparent;color:var(--gold-deep);
+  border:1.5px solid rgba(139,111,63,0.35);border-radius:8px;
+  font-size:13px;font-weight:600;letter-spacing:0.05em;text-decoration:none;transition:all 0.25s;
+}
+.btn-siren:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,169,110,0.06)}
+.siren-input-hint{font-size:11px;color:var(--muted);font-style:italic;margin-top:8px;padding-left:4px}
+
+/* Numbers HORIZONTAL */
+.numbers{
+  display:flex;gap:0;
+  border-top:1px solid var(--line);
+  padding-top:32px;
+}
+.num-item{
+  flex:1;padding-right:28px;
+  border-right:1px solid var(--line);
+  margin-right:28px;
+}
+.num-item:last-child{border-right:none;margin-right:0}
+.num-big{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--ink);line-height:1}
+.num-label{font-size:10.5px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;font-weight:500;margin-top:5px}
+.num-sub{font-size:10px;color:var(--gold-deep);font-style:italic;font-family:'Playfair Display',serif;margin-top:3px}
+
+/* RIGHT */
+.hero-right{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:80px 48px;
+  background:var(--ink);
+  position:relative;overflow:hidden;
+}
+
+/* Texture fond droite */
+.hero-right::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 30%, rgba(201,169,110,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,169,110,0.05) 0%, transparent 60%);
+}
+
+/* Grand chiffre impact */
+.impact-number{
+  position:relative;z-index:1;text-align:center;margin-bottom:28px;
+}
+.impact-label{
+  font-size:9.5px;letter-spacing:0.3em;text-transform:uppercase;
+  color:rgba(201,169,110,0.7);font-weight:600;margin-bottom:12px;
+  font-family:'DM Mono',monospace;
+}
+.impact-value{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(48px,6vw,80px);font-weight:400;
+  color:#E2C896;line-height:1;
+  text-shadow:0 0 40px rgba(201,169,110,0.15);
+  animation:count-in 1.4s 0.5s ease both;
+}
+@keyframes count-in{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+.impact-desc{
+  font-size:13px;color:rgba(250,247,240,0.5);line-height:1.6;
+  max-width:260px;margin:0 auto;font-style:italic;font-family:'Playfair Display',serif;
+}
+
+/* Divider */
+.right-divider{width:60px;height:1px;background:rgba(201,169,110,0.3);margin:28px auto}
+
+/* SIREN demo */
+.siren-demo{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.2);
+  border-radius:14px;padding:20px 24px;width:100%;max-width:300px;
+  text-align:center;
+}
+.siren-demo-label{font-size:9.5px;letter-spacing:0.2em;color:rgba(201,169,110,0.6);text-transform:uppercase;margin-bottom:12px;font-family:'DM Mono',monospace}
+.siren-demo-input{
+  width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.25);
+  border-radius:8px;padding:12px 16px;font-size:15px;color:#E2C896;
+  font-family:'DM Mono',monospace;letter-spacing:0.15em;text-align:center;
+  outline:none;margin-bottom:12px;
+}
+.siren-demo-input::placeholder{color:rgba(201,169,110,0.35);letter-spacing:0.12em;font-size:12px}
+.siren-demo-btn{
+  width:100%;padding:11px;background:var(--gold);color:var(--ink);
+  border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+  letter-spacing:0.08em;text-transform:uppercase;transition:all 0.2s;
+}
+.siren-demo-btn:hover{background:#E2C896;transform:translateY(-1px)}
+.siren-demo-sub{font-size:10px;color:rgba(250,247,240,0.3);margin-top:10px;font-style:italic}
+
+/* AUTHOR CARD */
+.author-card{
+  position:relative;z-index:1;margin-top:20px;
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;background:rgba(255,255,255,0.05);
+  border-radius:10px;border:1px solid rgba(255,255,255,0.08);width:100%;max-width:300px;
+}
+.author-img{width:44px;height:44px;border-radius:50%;border:2px solid var(--gold);background:rgba(201,169,110,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.author-name{font-family:'Playfair Display',serif;font-size:14px;color:rgba(250,247,240,0.9);font-weight:500}
+.author-role{font-size:10.5px;color:rgba(250,247,240,0.4);margin-top:2px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero-left > *{animation:fadeUp 0.9s ease both}
+.hero-left > *:nth-child(1){animation-delay:0.05s}
+.hero-left > *:nth-child(2){animation-delay:0.15s}
+.hero-left > *:nth-child(3){animation-delay:0.25s}
+.hero-left > *:nth-child(4){animation-delay:0.35s}
+.hero-left > *:nth-child(5){animation-delay:0.45s}
+.hero-left > *:nth-child(6){animation-delay:0.55s}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .hero-left{padding:100px 28px 60px}
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  h1{font-size:clamp(36px,8vw,54px)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div>
+      <div class="nav-logo">IKCP.</div>
+      <div class="nav-tagline">Conseil Patrimonial Indépendant</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#">Diagnostic</a>
+    <a href="#">Cas concrets</a>
+    <a href="#">Sélection Privée</a>
+    <a href="#">Le Cabinet</a>
+  </div>
+  <div class="nav-cta-wrap">
+    <a href="#" class="nav-cta">Échanger →</a>
+  </div>
+</nav>
+
+<section class="hero">
+
+  <!-- LEFT -->
+  <div class="hero-left">
+
+    <div class="section-mark">IKCP · Family Office augmenté · ORIAS 23001568</div>
+
+    <h1>Protéger.<br>Optimiser.<br><em>Transmettre.</em></h1>
+
+    <div class="hook">
+      « Dans quelle mesure vos enfants hériteront-ils<br>
+      réellement de ce que vous construisez ? »
+    </div>
+
+    <p class="sub">
+      Un accompagnement patrimonial global — juridique, fiscal, financier.<br>
+      <strong>100 % indépendant.</strong> Zéro produit maison. Zéro quota de vente.<br>
+      Orchestré par Marcel, votre intelligence patrimoniale souveraine.
+    </p>
+
+    <div class="cta-group">
+      <a href="#" class="btn-primary">Faire mon bilan patrimonial →</a>
+      <a href="#" class="btn-siren">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Cartographier mon SIREN
+      </a>
+    </div>
+    <p class="siren-input-hint">Résultat en 30 secondes · Source RNE officielle</p>
+
+    <div class="numbers">
+      <div class="num-item">
+        <div class="num-big">10</div>
+        <div class="num-label">Ans d'exercice</div>
+        <div class="num-sub">Ancré en Ardèche</div>
+      </div>
+      <div class="num-item">
+        <div class="num-big">50</div>
+        <div class="num-label">Familles bêta</div>
+        <div class="num-sub">Sur invitation</div>
+      </div>
+      <div class="num-item">
+        <div class="num-big">12</div>
+        <div class="num-label">Univers patrimoniaux</div>
+        <div class="num-sub">Marcel + 11 agents</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT — IMPACT + SIREN DEMO -->
+  <div class="hero-right">
+
+    <div class="impact-number">
+      <div class="impact-label">Abattements cumulables · par enfant · par parent</div>
+      <div class="impact-value">384 365 €</div>
+      <p class="impact-desc">Sans droits de transmission — sous conditions légales 2026</p>
+    </div>
+
+    <div class="right-divider"></div>
+
+    <div class="siren-demo">
+      <div class="siren-demo-label">Cartographie en 30 secondes</div>
+      <input class="siren-demo-input" placeholder="Votre SIREN · 9 chiffres" maxlength="11" type="text">
+      <button class="siren-demo-btn">Marcel s'allume →</button>
+      <div class="siren-demo-sub">Source RNE officielle · Données temps réel</div>
+    </div>
+
+    <div class="author-card">
+      <div class="author-img">👤</div>
+      <div>
+        <div class="author-name">Maxime Juveneton</div>
+        <div class="author-role">Fondateur · ORIAS 23001568 · Lyon · Ardèche · Megève</div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<div style="position:fixed;bottom:20px;left:20px;z-index:999;background:rgba(26,20,16,0.08);border:1px solid rgba(139,111,63,0.25);border-radius:20px;padding:6px 14px;font-size:10px;color:#8B6F3F;font-family:'Outfit',sans-serif;letter-spacing:0.1em;font-weight:600;text-transform:uppercase">
+  Proposition B · Éditorial Cream
+</div>
+
+</body>
+</html>
