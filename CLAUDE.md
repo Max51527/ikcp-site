@@ -124,16 +124,29 @@ git push origin main
 - `feat(proposals):` nouvelle maquette
 - `chore:` config, gitignore, dépendances
 
-## 🚦 Statut Sprint 1 (au 14 mai 2026)
+## 🚦 Statut Sprint 1 → Sprint 2 (au 21 mai 2026)
 
 ```
 ✅ ikcp-pappers      LIVE  · cartographie SIREN réelle
 ✅ ikcp-chat (Marcel) LIVE  · Sonnet 4.6 · 3/3 tests qualité
 ✅ ikcp-temoin       LIVE  · audit log D1 Paris
 ✅ ikcp-codex        LIVE  · Opus 4.7 · expertise fiscale senior
-⏳ Marcel ↔ Codex    TODO  · branchement délégation auto
+✅ Marcel ↔ Codex    LIVE  · délégation auto (delegate_to_specialist tool)
 ⏸ ikcp-universign   PAUSE · signature eIDAS (à reprendre plus tard)
 ```
+
+### Sprint 2 (en cours)
+```
+✅ family-office.html LIVE · hero vidéo parallaxe + espace membre + redirect supprimée
+⏳ ikcp-batisseur     PRÊT · worker codé · en attente deploy + ANTHROPICAPIKEY
+⏳ ikcp-hermes        PRÊT · worker codé · en attente deploy + ANTHROPICAPIKEY
+✅ deploy-workers.yml MÀJ  · batisseur + hermes ajoutés (workflow_dispatch dispo)
+```
+
+→ **Action Maxime** : GitHub Actions → "Deploy Cloudflare Workers" → `workflow_dispatch` target `all`  
+→ Puis : `cd workers/ikcp-batisseur && npx wrangler secret put ANTHROPICAPIKEY`  
+→ Puis : `cd workers/ikcp-hermes && npx wrangler secret put ANTHROPICAPIKEY`  
+→ Enfin : flip `live: false` → `live: true` pour `batisseur` et `hermes` dans `workers/ikcp-marcel/worker.js`
 
 → **Voir `docs/INFRA-PRODUCTION.md`** pour les URLs et IDs ressources exacts.
 

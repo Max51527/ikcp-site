@@ -6,6 +6,8 @@ on:
     paths:
       - 'workers/ikcp-marcel/**'
       - 'workers/ikcp-voice/**'
+      - 'workers/ikcp-batisseur/**'
+      - 'workers/ikcp-hermes/**'
   workflow_dispatch:
     inputs:
       target:
@@ -17,6 +19,8 @@ on:
           - all
           - ikcp-marcel
           - ikcp-voice
+          - ikcp-batisseur
+          - ikcp-hermes
 
 jobs:
   deploy-ikcp-marcel:
@@ -56,3 +60,41 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-voice
+
+  deploy-ikcp-batisseur:
+    name: "Deploy ikcp-batisseur (Patrimoine 360\xB0)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-batisseur') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-batisseur (B\xE2tisseur Opus 4.7)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-batisseur
+
+  deploy-ikcp-hermes:
+    name: "Deploy ikcp-hermes (Transmission patrimoniale)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-hermes') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-hermes (Herm\xE8s Opus 4.7)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-hermes
