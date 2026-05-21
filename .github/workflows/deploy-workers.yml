@@ -9,6 +9,7 @@ on:
       - 'workers/ikcp-batisseur/**'
       - 'workers/ikcp-hermes/**'
       - 'workers/ikcp-veille/**'
+      - 'workers/ikcp-lifestyle/**'
   workflow_dispatch:
     inputs:
       target:
@@ -23,6 +24,7 @@ on:
           - ikcp-batisseur
           - ikcp-hermes
           - ikcp-veille
+          - ikcp-lifestyle
 
 jobs:
   deploy-ikcp-marcel:
@@ -119,3 +121,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-veille
+
+  deploy-ikcp-lifestyle:
+    name: "Deploy ikcp-lifestyle (8 agents Sonnet)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-lifestyle') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-lifestyle (Architecte/Curateur/Concierge/Stratege...)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-lifestyle
