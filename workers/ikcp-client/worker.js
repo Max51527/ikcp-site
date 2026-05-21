@@ -28,6 +28,7 @@ const MAGIC_TTL_MIN = 15;
 
 export default {
   async fetch(request, env) {
+    _reqOrigin = request.headers.get('Origin') || ''; // capture avant tout
     const url = new URL(request.url);
     const path = url.pathname;
     const method = request.method;
@@ -155,7 +156,7 @@ async function handleAuthVerify(request, env) {
   const cookieValue = `${COOKIE_NAME}=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL_DAYS * 86400}`;
   return new Response(null, {
     status: 302,
-    headers: { 'Location': `${env.APP_URL}/salon`, 'Set-Cookie': cookieValue },
+    headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html`, 'Set-Cookie': cookieValue },
   });
 }
 
@@ -163,7 +164,7 @@ async function handleLogout(session, env) {
   await env.D1.prepare('UPDATE sessions SET revoked_at = ? WHERE token_hash = ?').bind(Date.now(), session.token_hash).run();
   return new Response(null, {
     status: 302,
-    headers: { 'Location': `${env.APP_URL}/`, 'Set-Cookie': `${COOKIE_NAME}=; Path=/; Max-Age=0` },
+    headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/index.html`, 'Set-Cookie': `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax` },
   });
 }
 
@@ -187,11 +188,25 @@ async function requireSession(request, env) {
 // ──────────────────────────────────────────────────────────────
 async function handleMe(session, env) {
   const month = new Date().toISOString().slice(0, 7);
-  const usage = await env.D1.prepare('SELECT pappers_lookups, marcel_messages FROM usage WHERE user_id = ? AND year_month = ?')
-    .bind(session.user_id, month).first();
+  // Récupère les champs étendus en DB (prenom, display_name, profile_json)
+  const [userRow, usage] = await Promise.all([
+    env.D1.prepare('SELECT id, email, tier, display_name, prenom, profile_json, consents_json, created_at, last_login_at FROM users WHERE id = ?')
+      .bind(session.user_id).first(),
+    env.D1.prepare('SELECT pappers_lookups, marcel_messages FROM usage WHERE user_id = ? AND year_month = ?')
+      .bind(session.user_id, month).first(),
+  ]);
   const limits = TIER_LIMITS[session.tier] || TIER_LIMITS.free;
+  // Retourne les champs à la racine (compatible avec le front)
   return json({
-    user: { id: session.user_id, email: session.email, tier: session.tier },
+    id:           userRow?.id || session.user_id,
+    email:        userRow?.email || session.email,
+    tier:         userRow?.tier || session.tier,
+    display_name: userRow?.display_name || null,
+    prenom:       userRow?.prenom || null,
+    profile_json: userRow?.profile_json || null,
+    consents_json: userRow?.consents_json || null,
+    created_at:   userRow?.created_at || null,
+    last_login_at: userRow?.last_login_at || null,
     quota: {
       pappers: { used: usage?.pappers_lookups || 0, limit: limits.pappers },
       marcel:  { used: usage?.marcel_messages || 0, limit: limits.marcel_msgs },
@@ -267,8 +282,8 @@ async function handleStripeCheckout(request, session, env) {
   params.append('line_items[0][price]', priceId);
   params.append('line_items[0][quantity]', '1');
   params.append('customer_email', session.email);
-  params.append('success_url', `${env.APP_URL}/salon?upgraded=1`);
-  params.append('cancel_url', `${env.APP_URL}/salon`);
+  params.append('success_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html?upgraded=1`);
+  params.append('cancel_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html`);
   params.append('metadata[user_id]', session.user_id);
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
@@ -286,7 +301,7 @@ async function handleStripePortal(session, env) {
   if (!user?.stripe_customer_id) return json({ error: 'no_subscription' }, 400);
   const params = new URLSearchParams();
   params.append('customer', user.stripe_customer_id);
-  params.append('return_url', `${env.APP_URL}/salon`);
+  params.append('return_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/profil.html`);
   const res = await fetch('https://api.stripe.com/v1/billing_portal/sessions', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -390,18 +405,32 @@ function bindingsStatus(env) {
   };
 }
 
+// Origines autorisées (worker + pages.dev + domaine custom)
+const ALLOWED_ORIGINS = [
+  'https://ikcp.eu', 'https://www.ikcp.eu',
+  'https://ikcp-eu.pages.dev',
+  'https://ikcp-chat.maxime-ead.workers.dev',
+  'http://localhost:5500', 'http://localhost:3000', 'http://127.0.0.1:5500',
+  'null', '',
+];
+// Module-level origin — safe en CF Workers (chaque requête = isolat V8 dédié)
+let _reqOrigin = '';
+
+function corsHeaders(origin = '') {
+  const o = origin || _reqOrigin;
+  const ok = ALLOWED_ORIGINS.includes(o) || (o && (o.endsWith('.ikcp.eu') || o.endsWith('.workers.dev') || o.endsWith('.pages.dev')));
+  return {
+    'Access-Control-Allow-Origin': ok ? (o || 'https://ikcp.eu') : 'https://ikcp.eu',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+    'Vary': 'Origin',
+  };
+}
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json', ...corsHeaders() } });
 }
 function cors(status) { return new Response(null, { status, headers: corsHeaders() }); }
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': 'https://ikcp.eu',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Credentials': 'true',
-  };
-}
 
 async function sha256(text) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -461,7 +490,7 @@ function emailTemplateWelcome() {
   return `<div style="font-family:Georgia,serif;max-width:520px;margin:auto;padding:32px;background:#FAF6EE;color:#2D2520">
     <h1 style="font-size:24px;color:#D97757">Bienvenue dans votre Salon IKCP</h1>
     <p>Compte <b>Découverte</b> activé : 1 cartographie d'entreprise par mois (Pappers), 30 messages avec Marcel.</p>
-    <p>Pour aller plus loin : <a href="https://client.ikcp.eu/abonnement" style="color:#D97757">Premium 29 €/mois</a> — 10 lookups, Marcel personnalisé, cartographie auto.</p>
+    <p>Pour aller plus loin : <a href="https://ikcp.eu/app/profil.html" style="color:#D97757">Premium 29 €/mois</a> — 10 lookups, Marcel personnalisé, cartographie auto.</p>
   </div>`;
 }
 function emailTemplatePremiumWelcome() {
@@ -486,7 +515,7 @@ function emailTemplateCancelRetention() {
 
 async function handleSirensList(session, env) {
   const rows = await env.D1.prepare('SELECT id, siren, nom_societe, forme_juridique, capital, date_creation, ville, is_primary FROM user_sirens WHERE user_id = ? ORDER BY is_primary DESC, created_at DESC')
-    .bind(session.userId).all();
+    .bind(session.user_id).all();
   return json(rows.results || []);
 }
 
@@ -506,21 +535,21 @@ async function handleSirensAdd(request, session, env) {
   const id = crypto.randomUUID();
   const now = Date.now();
   await env.D1.prepare('INSERT INTO user_sirens (id, user_id, siren, nom_societe, forme_juridique, capital, date_creation, ville, cached_json, last_refreshed_at, is_primary, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
-    .bind(id, session.userId, s, data?.nom || null, data?.forme_juridique || null, data?.capital || null, data?.date_creation || null, data?.siege?.ville || null, data ? JSON.stringify(data) : null, now, 0, now)
+    .bind(id, session.user_id, s, data?.nom || null, data?.forme_juridique || null, data?.capital || null, data?.date_creation || null, data?.siege?.ville || null, data ? JSON.stringify(data) : null, now, 0, now)
     .run();
-  await audit(env, session.userId, 'siren_add', request, { siren: s });
+  await audit(env, session.user_id, 'siren_add', request, { siren: s });
   return json({ ok: true, id, data });
 }
 
 async function handleConvList(session, env) {
   const rows = await env.D1.prepare('SELECT id, title, sphere, agent_principal, messages_count, last_message_at FROM conversations WHERE user_id = ? ORDER BY last_message_at DESC LIMIT 50')
-    .bind(session.userId).all();
+    .bind(session.user_id).all();
   return json(rows.results || []);
 }
 
 async function handleContactsList(session, env) {
   const rows = await env.D1.prepare('SELECT id, category, nom, prenom, societe, email, telephone, ville, notes, is_favorite, last_interaction_at FROM user_contacts WHERE user_id = ? ORDER BY is_favorite DESC, nom ASC')
-    .bind(session.userId).all();
+    .bind(session.user_id).all();
   return json(rows.results || []);
 }
 
@@ -529,22 +558,22 @@ async function handleContactsAdd(request, session, env) {
   if (!body.nom || !body.category) return json({ error: 'missing_fields', required: ['nom', 'category'] }, 400);
 
   // Quota tier discovery : 5 contacts max
-  const count = await env.D1.prepare('SELECT COUNT(*) AS n FROM user_contacts WHERE user_id = ?').bind(session.userId).first();
-  if (session.tier === 'discovery' && (count?.n || 0) >= 5) {
-    return json({ error: 'tier_limit', max: 5, upgrade: 'premium_essentiel' }, 403);
+  const count = await env.D1.prepare('SELECT COUNT(*) AS n FROM user_contacts WHERE user_id = ?').bind(session.user_id).first();
+  if (session.tier === 'free' && (count?.n || 0) >= 5) {
+    return json({ error: 'tier_limit', max: 5, upgrade: 'premium' }, 403);
   }
 
   const id = crypto.randomUUID();
   const now = Date.now();
   await env.D1.prepare('INSERT INTO user_contacts (id, user_id, category, nom, prenom, societe, adresse, code_postal, ville, pays, telephone, email, site_web, notes, tags_json, is_favorite, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-    .bind(id, session.userId, body.category, body.nom, body.prenom || null, body.societe || null, body.adresse || null, body.code_postal || null, body.ville || null, body.pays || 'France', body.telephone || null, body.email || null, body.site_web || null, body.notes || null, body.tags_json || null, body.is_favorite ? 1 : 0, now, now)
+    .bind(id, session.user_id, body.category, body.nom, body.prenom || null, body.societe || null, body.adresse || null, body.code_postal || null, body.ville || null, body.pays || 'France', body.telephone || null, body.email || null, body.site_web || null, body.notes || null, body.tags_json || null, body.is_favorite ? 1 : 0, now, now)
     .run();
-  await audit(env, session.userId, 'contact_add', request, { category: body.category });
+  await audit(env, session.user_id, 'contact_add', request, { category: body.category });
   return json({ ok: true, id });
 }
 
 async function handleContactsDelete(id, session, env) {
-  await env.D1.prepare('DELETE FROM user_contacts WHERE id = ? AND user_id = ?').bind(id, session.userId).run();
+  await env.D1.prepare('DELETE FROM user_contacts WHERE id = ? AND user_id = ?').bind(id, session.user_id).run();
   return json({ ok: true });
 }
 
@@ -554,19 +583,19 @@ async function handleAlertsList(request, session, env) {
   const sql = unread
     ? 'SELECT id, sphere, source, title, body, url, importance, read_at, created_at FROM alerts WHERE user_id = ? AND read_at IS NULL ORDER BY importance DESC, created_at DESC LIMIT 50'
     : 'SELECT id, sphere, source, title, body, url, importance, read_at, created_at FROM alerts WHERE user_id = ? ORDER BY created_at DESC LIMIT 50';
-  const rows = await env.D1.prepare(sql).bind(session.userId).all();
+  const rows = await env.D1.prepare(sql).bind(session.user_id).all();
   return json(rows.results || []);
 }
 
 async function handleDocsList(session, env) {
   const rows = await env.D1.prepare('SELECT id, type, title, r2_key, hash_eidas, signed_at, size_bytes, created_at FROM user_documents WHERE user_id = ? ORDER BY created_at DESC LIMIT 100')
-    .bind(session.userId).all();
+    .bind(session.user_id).all();
   return json(rows.results || []);
 }
 
 async function handleWatchesList(session, env) {
   const rows = await env.D1.prepare('SELECT id, market, category, query, target_price, last_value, last_checked_at, active, created_at FROM user_watches WHERE user_id = ? AND active = 1 ORDER BY created_at DESC')
-    .bind(session.userId).all();
+    .bind(session.user_id).all();
   return json(rows.results || []);
 }
 
@@ -576,13 +605,13 @@ async function handleWatchesAdd(request, session, env) {
   const id = crypto.randomUUID();
   const now = Date.now();
   await env.D1.prepare('INSERT INTO user_watches (id, user_id, market, category, query, target_price, last_value, last_checked_at, active, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)')
-    .bind(id, session.userId, body.market, body.category || null, body.query, body.target_price || null, null, null, 1, now).run();
-  await audit(env, session.userId, 'watch_add', request, { market: body.market, query: body.query });
+    .bind(id, session.user_id, body.market, body.category || null, body.query, body.target_price || null, null, null, 1, now).run();
+  await audit(env, session.user_id, 'watch_add', request, { market: body.market, query: body.query });
   return json({ ok: true, id });
 }
 
 async function handleExportRgpd(session, env) {
-  const userId = session.userId;
+  const userId = session.user_id;
   const [user, sirens, conversations, contacts, alerts, documents, watches] = await Promise.all([
     env.D1.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first(),
     env.D1.prepare('SELECT * FROM user_sirens WHERE user_id = ?').bind(userId).all(),
@@ -606,8 +635,8 @@ async function handleProfileSave(request, session, env) {
   const { profile_json, prenom } = body;
   if (!profile_json) return json({ error: 'profile_json_required' }, 400);
   await env.D1.prepare('UPDATE users SET profile_json = ?, prenom = COALESCE(?, prenom), last_seen = ? WHERE id = ?')
-    .bind(profile_json, prenom || null, Date.now(), session.userId).run();
-  await audit(env, session.userId, 'profile_save', request, { has_prenom: !!prenom });
+    .bind(profile_json, prenom || null, Date.now(), session.user_id).run();
+  await audit(env, session.user_id, 'profile_save', request, { has_prenom: !!prenom });
   return json({ ok: true });
 }
 
@@ -616,14 +645,14 @@ async function handleConsentsSave(request, session, env) {
   const { consents } = body;
   if (typeof consents !== 'object' || consents === null) return json({ error: 'consents_required' }, 400);
   await env.D1.prepare('UPDATE users SET consents_json = ?, marketing_consent = ?, last_seen = ? WHERE id = ?')
-    .bind(JSON.stringify(consents), consents.marketing ? 1 : 0, Date.now(), session.userId).run();
-  await audit(env, session.userId, 'consents_update', request, { keys: Object.keys(consents) });
+    .bind(JSON.stringify(consents), consents.marketing ? 1 : 0, Date.now(), session.user_id).run();
+  await audit(env, session.user_id, 'consents_update', request, { keys: Object.keys(consents) });
   return json({ ok: true, saved: consents });
 }
 
 async function handleAuditLog(session, env) {
   const rows = await env.D1.prepare('SELECT id, action, ip, user_agent, metadata_json, ts FROM audit_log WHERE user_id = ? ORDER BY ts DESC LIMIT 30')
-    .bind(session.userId).all();
+    .bind(session.user_id).all();
   return json((rows.results || []).map(r => ({
     id: r.id,
     action: r.action,
@@ -643,7 +672,7 @@ function maskIp(ip) {
 function safeParseJson(s) { try { return JSON.parse(s); } catch (_) { return s; } }
 
 async function handleDeleteAccount(request, session, env) {
-  const userId = session.userId;
+  const userId = session.user_id;
   // Cascade — toutes les tables liées
   await Promise.all([
     env.D1.prepare('DELETE FROM user_sirens WHERE user_id = ?').bind(userId).run(),

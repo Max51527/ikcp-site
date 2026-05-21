@@ -45,10 +45,11 @@ binding = "CLIENT_KV"
 id = "88162ad75e474216b61a5fd74470124e"
 
 [vars]
-APP_URL = "https://client.ikcp.eu"
+APP_URL = "https://ikcp-client.maxime-ead.workers.dev"  # URL du worker (magic link verify)
+FRONT_URL = "https://ikcp.eu"                           # Front-end app (redirections post-auth)
 IKCP_PAPPERS_URL = "https://ikcp-pappers.maxime-ead.workers.dev"
-STRIPE_PRICE_PREMIUM_MONTHLY = "price_REPLACE_monthly"
-STRIPE_PRICE_PREMIUM_YEARLY = "price_REPLACE_yearly"
+STRIPE_PRICE_PREMIUM_MONTHLY = "price_REPLACE_monthly"  # À remplacer après création produit Stripe
+STRIPE_PRICE_PREMIUM_YEARLY = "price_REPLACE_yearly"    # À remplacer après création produit Stripe
 
 # Secrets (push via `wrangler secret put`) :
 #   JWT_SECRET            HS256 signing 32+ chars
