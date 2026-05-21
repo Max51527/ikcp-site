@@ -634,10 +634,10 @@ function renderAutomations(data, siren) {
         `).join('')}
       </div>
       <div style="padding:14px 20px 18px; border-top:1px solid rgba(201,169,110,0.12); text-align:center;">
-        <a href="#beta" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:var(--gold); color:var(--navy); border-radius:6px; font-size:11.5px; font-weight:700; letter-spacing:0.1em; text-decoration:none; text-transform:uppercase; transition:background 0.2s;">
-          Accéder à toutes ces automatisations →
+        <a href="/app/index.html" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:var(--gold); color:var(--navy); border-radius:6px; font-size:11.5px; font-weight:700; letter-spacing:0.1em; text-decoration:none; text-transform:uppercase; transition:background 0.2s;">
+          Accéder à votre espace privé →
         </a>
-        <p style="font-size:10.5px; color:rgba(250,250,248,0.4); margin-top:10px; margin-bottom:0; font-style:italic; font-family:'Playfair Display',serif;">Accès Bêta gratuit · 50 familles fondatrices · sans carte bancaire</p>
+        <p style="font-size:10.5px; color:rgba(250,250,248,0.4); margin-top:10px; margin-bottom:0; font-style:italic; font-family:'Playfair Display',serif;">Connexion par lien sécurisé · sans mot de passe · accès Bêta gratuit</p>
       </div>
     </div>
   `;
@@ -2674,6 +2674,50 @@ async function submitFeedback() {
     alert('Connexion impossible. Vérifiez votre réseau.');
   }
 }
+</script>
+
+<!-- ═══ Auth bubble — détecte session active → affiche lien Dashboard ═══ -->
+<style>
+#fo-auth-bubble{
+  position:fixed;top:16px;right:16px;z-index:10000;
+  display:none;align-items:center;gap:10px;
+  padding:8px 16px;background:#1B2A4A;border-radius:30px;
+  border:1px solid rgba(201,169,110,0.35);
+  box-shadow:0 4px 20px rgba(0,0,0,0.18);
+  font-family:'Outfit',sans-serif;font-size:12px;
+  animation:fo-bubble-in 0.4s ease;
+}
+@keyframes fo-bubble-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+#fo-auth-bubble .fo-auth-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
+#fo-auth-bubble .fo-auth-name{color:rgba(250,250,248,0.75);font-size:11.5px}
+#fo-auth-bubble .fo-auth-name strong{color:#E2C896}
+#fo-auth-bubble a{color:#C9A96E;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.3);padding-bottom:1px;font-size:11.5px}
+#fo-auth-bubble a:hover{color:#E2C896;border-color:#E2C896}
+</style>
+<div id="fo-auth-bubble">
+  <span class="fo-auth-dot"></span>
+  <span class="fo-auth-name">Connecté — <strong id="fo-auth-prenom">votre espace</strong></span>
+  <a href="/app/dashboard.html">Dashboard →</a>
+</div>
+<script>
+(function(){
+  // Vérifie silencieusement si l'utilisateur a une session active
+  fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', {
+    credentials: 'include',
+    method: 'GET',
+  }).then(function(r){
+    if(!r.ok) return;
+    return r.json();
+  }).then(function(me){
+    if(!me||!me.email) return;
+    var bubble = document.getElementById('fo-auth-bubble');
+    var prenomEl = document.getElementById('fo-auth-prenom');
+    if(bubble && prenomEl){
+      prenomEl.textContent = me.prenom || me.email.split('@')[0];
+      bubble.style.display = 'flex';
+    }
+  }).catch(function(){/* pas de session — silencieux */});
+})();
 </script>
 
 </body>

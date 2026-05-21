@@ -505,14 +505,8 @@ window._ikcpBuildGallery=buildGallery;
 window._ikcpShowSchema=showSchema;
 })();
 (function(){
-// ── Endpoints Marcel ──────────────────────────────────────────────────────
-// CF Worker (prod, actif) :
+// ── Endpoint Marcel (Cloudflare Worker — LIVE) ────────────────────────────
 var PROXY='https://ikcp-chat.maxime-ead.workers.dev';
-// ikcp-agents Python FastAPI (Anthropic Managed Agents) :
-// → Remplacer PROXY par AGENTS_URL + '/api/chat' une fois la clé Anthropic configurée.
-// → URL éphémère ci-dessous (localhost.run) ; utiliser URL stable en prod.
-var AGENTS_URL='https://13a77103bd38dc.lhr.life';
-// var PROXY=AGENTS_URL; // ← décommenter pour basculer sur ikcp-agents
 // ─────────────────────────────────────────────────────────────────────────
 var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 
@@ -918,6 +912,12 @@ css.textContent=`
 /* B5 — Preuve sociale */
 .ikcp-social-stat{margin-top:8px;padding:6px 10px;background:linear-gradient(90deg,rgba(184,149,110,0.08),transparent);border-left:2px solid #b8956e;border-radius:0 6px 6px 0;font-size:11px;color:#5f5248}
 .ikcp-social-stat em{font-style:italic;color:#3a2f24}
+.ikcp-app-cta{margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,#1B2A4A,#0E1729);border-radius:12px;display:flex;align-items:center;gap:12px;border:1px solid rgba(201,169,110,0.25)}
+.ikcp-app-cta-icon{font-size:22px;flex-shrink:0}
+.ikcp-app-cta-title{font-size:12.5px;font-weight:700;color:#E2C896;font-family:'DM Sans',system-ui,sans-serif;margin-bottom:2px}
+.ikcp-app-cta-text{font-size:10.5px;color:rgba(250,250,248,0.55);line-height:1.4}
+.ikcp-app-cta-btn{display:inline-block;background:#C9A96E;color:#1B2A4A;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:all 0.15s;font-family:'DM Sans',system-ui,sans-serif}
+.ikcp-app-cta-btn:hover{background:#E2C896;transform:translateY(-1px)}
 /* A2 — Bouton "Envoyer à Maxime" + B1 toggle TTS dans le header */
 #ikcp-export-conv{background:none;border:none;color:#b8956e;cursor:pointer;padding:4px 6px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all 0.15s}
 #ikcp-export-conv:hover{color:white;background:rgba(255,255,255,0.08)}
@@ -1110,10 +1110,9 @@ _pageCtxSent=true;
 var prefix=[pageLine,ctx].filter(Boolean).join('\n');
 var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
 var _abort=new AbortController();var _killTimer=setTimeout(function(){_abort.abort();},45000);
-// Détecte si on utilise ikcp-agents (endpoint /api/chat) ou CF Worker (root)
-var isAgentsEndpoint=PROXY===AGENTS_URL||PROXY.includes('/api/chat');
-var chatUrl=isAgentsEndpoint?(PROXY.replace(/\/api\/chat$/,'')+'/api/chat'):PROXY;
-var chatBody=isAgentsEndpoint?JSON.stringify({message:txtWithCtx,user_id:profile.uuid||'anonymous'}):JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf});
+// CF Worker Marcel (ikcp-chat)
+var chatUrl=PROXY;
+var chatBody=JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf});
 var r=await fetch(chatUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:chatBody,signal:_abort.signal});
 clearTimeout(_killTimer);
 var d=await r.json();
@@ -1156,8 +1155,19 @@ if(pCtx&&count===1){
 html+='<div class="ikcp-profile-pill">🧠 '+pCtx.replace('[Contexte du visiteur : ','').replace(']','')+' · mémorisé pour cette session</div>';
 }
 // Messages de rate limit
-if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges utilisés. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Poursuivre avec Maxime →</a></p>';
-else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
+if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges publics utilisés. <a href="/app/index.html" style="color:#b8956e;font-weight:700">Accéder à votre espace privé (illimité) →</a></p>';
+else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) gratuit(s) restant(s) · <a href="/app/index.html" style="color:#b8956e">Espace privé illimité</a></p>';
+// App upsell — après 3 échanges (premier point d'engagement)
+if(count===3){
+html+='<div class="ikcp-app-cta">'
++'<span class="ikcp-app-cta-icon">🔓</span>'
++'<div style="flex:1;min-width:0">'
++'<div class="ikcp-app-cta-title">Votre espace privé IKCP</div>'
++'<div class="ikcp-app-cta-text">Mémoire longue · SIREN cartographié · Marcel 24/7 · Veille patrimoniale</div>'
++'</div>'
++'<a href="/app/index.html" class="ikcp-app-cta-btn">Ouvrir →</a>'
++'</div>';
+}
 // Hot lead alert (non bloquant)
 maybeFireLeadAlert(reply);
 // B1 : Lecture vocale si TTS activé

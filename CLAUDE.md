@@ -138,8 +138,12 @@ git push origin main
 
 ### Sprint 2 — Code complet · ⏳ Deploy bloqué sur secrets Maxime
 ```
-✅ family-office.html LIVE  · hero vidéo parallaxe + espace membre
+✅ family-office.html LIVE  · hero vidéo parallaxe + funnel SIREN → /app/index.html
 ✅ app/* pages        LIVE  · nav SVG unifiée · veille active · carnet · profil
+✅ app/index.html     LIVE  · magic link auth · dev_verify_url mode dev
+✅ chatbot-widget.js  LIVE  · app upsell après 3 échanges · dead AGENTS_URL nettoyé
+✅ api.js             LIVE  · dead agentChat/agentStream supprimés · clean
+✅ ikcp-client/worker PRÊT  · auth sans Stripe/Resend · voir docs/DEPLOY-MINIMAL.md
 ✅ deploy-workers.yml PRÊT  · 6 workers dans CI/CD (workflow_dispatch + push auto)
 ✅ Marcel routing     LIVE  · SPECIALISTS_REGISTRY + agentKey + delegateToSpecialist
 ✅ ikcp-lifestyle     PRÊT  · 12 agents Sonnet prompts.js (stratege, curateur, capital…)

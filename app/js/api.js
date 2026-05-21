@@ -1,5 +1,5 @@
 /**
- * Marcel API — wrapper unifié pour tous les workers
+ * Marcel API — wrapper unifié pour tous les workers Cloudflare
  * Cabinet IKCP · ORIAS 23001568 · région Cloudflare WEUR Paris
  *
  * Usage :
@@ -7,21 +7,15 @@
  *   const r = await Marcel.chat("Pacte Dutreil sur ma holding ?");
  *   const c = await Marcel.cartographie("947972436");
  *
- * ikcp-agents (Python FastAPI — Anthropic Managed Agents SDK) :
- *   const r = await Marcel.agentChat("Quel est mon IFI ?", "user-123");
- *   // → routing auto Marcel / Codex / Hermès / Olympe / Auguste
- *   // → { message, domain, specialist, meta }
- *
- *   // Streaming SSE
- *   await Marcel.agentStream("Mon patrimoine foncier…", "user-123", chunk => console.log(chunk));
- *
- * ⚠  AGENTS_URL est éphémère (localhost.run) tant que la clé Anthropic n'est pas définie.
- *    Remplacer par une URL stable (Cloudflare Tunnel / Railway / Fly.io) une fois opérationnel.
+ * Architecture (Sprint 2) :
+ *   ikcp-chat    → Marcel chef d'orchestre (Sonnet 4.6) · LIVE
+ *   ikcp-codex   → Codex fiscal expert (Opus 4.7) · LIVE
+ *   ikcp-client  → Auth magic link + espace membre · À déployer
+ *   ikcp-pappers → Cartographie SIREN RNE · LIVE
+ *   ikcp-temoin  → Audit log MIF II · LIVE
+ *   ikcp-veille  → Veille Perplexity Pro · Sprint 2
+ *   ikcp-batisseur / ikcp-hermes / ikcp-lifestyle → Sprint 2
  */
-
-// ── URL du backend Python ikcp-agents ─────────────────────────────────────
-// → Mettre à jour ici quand le tunnel change, ou pointer vers l'URL de prod.
-const AGENTS_URL = 'https://13a77103bd38dc.lhr.life';
 
 const ENDPOINTS = {
   chat:        'https://ikcp-chat.maxime-ead.workers.dev',
@@ -197,57 +191,6 @@ export const Marcel = {
       await jsonFetch(`${ENDPOINTS.client}/api/v1/me`, { method: 'DELETE' });
       return true;
     },
-  },
-
-  // ─── ikcp-agents : Anthropic Managed Agents (Marcel + 4 spécialistes) ───
-  //     Routing automatique par domaine : fiscal / patrimoine / marchés / lifestyle
-  //     Session persistante par user_id côté serveur Python.
-
-  // Chat synchrone — attend la réponse complète
-  async agentChat(message, userId = 'anonymous') {
-    return jsonFetch(`${AGENTS_URL}/api/chat`, {
-      method: 'POST',
-      body: JSON.stringify({ message, user_id: userId }),
-    });
-    // Retourne : { message, domain, specialist, meta: { agent_id, channel } }
-  },
-
-  // Chat streaming SSE — callback appelé pour chaque chunk de texte
-  async agentStream(message, userId = 'anonymous', onChunk, onDone) {
-    const resp = await fetch(`${AGENTS_URL}/api/chat/stream`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, user_id: userId }),
-    });
-    if (!resp.ok) throw new Error(`ikcp-agents stream ${resp.status}`);
-
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop(); // keep incomplete line
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const payload = line.slice(6).trim();
-        if (payload === '[DONE]') { onDone?.(); return; }
-        try {
-          const obj = JSON.parse(payload);
-          if (obj.text && onChunk) onChunk(obj.text);
-          if (obj.error) throw new Error(obj.error);
-        } catch (e) { /* JSON parse error on partial chunk → skip */ }
-      }
-    }
-    onDone?.();
-  },
-
-  // Health check ikcp-agents
-  async agentHealth() {
-    return jsonFetch(`${AGENTS_URL}/api/health`);
   },
 
   // ─── Helpers utilitaires ────────────────────────────────────
