@@ -269,7 +269,8 @@ window.finishOnboarding = async function(skipSiren = false){
 
 window.skipAll = function(){
   if(confirm('Passer l\'onboarding ? Vous pourrez le compléter depuis votre profil.')){
-    localStorage.setItem('marcel_profile', JSON.stringify({ onboarding_completed: false, skipped_at: new Date().toISOString() }));
+    // ⚠ Must match check in dashboard.html : !localStorage.getItem('marcel_onboarding_skipped')
+    localStorage.setItem('marcel_onboarding_skipped', '1');
     location.href = '/app/dashboard.html';
   }
 }
