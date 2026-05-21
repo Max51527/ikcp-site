@@ -48,28 +48,40 @@
 
 ## 📦 Workers déployés
 
-### Production (validés sur le terrain)
+> Dernière MÀJ : **21 mai 2026** · Sprint 2 en cours.
+
+### ✅ Sprint 1 — Production (validés)
 
 | Worker | Rôle | Modèle | URL | Statut |
 |---|---|---|---|---|
-| **ikcp-pappers** | Cartographie SIREN (RNE) | — | `ikcp-pappers.maxime-ead.workers.dev` | 🟢 |
-| **ikcp-chat** | Marcel chef d'orchestre | Sonnet 4.6 | `ikcp-chat.maxime-ead.workers.dev` | 🟢 |
-| **ikcp-codex** | Sub-agent fiscal expert | Opus 4.7 | `ikcp-codex.maxime-ead.workers.dev` | 🟢 |
-| **ikcp-temoin** | Audit log MIF II | — | `ikcp-temoin.maxime-ead.workers.dev` | 🟢 |
-| **ikcp-universign** | Signature eIDAS | — | (déployé code, secret pause) | 🟡 |
-| **ikcp-client** | Magic link + Stripe | — | (existant) | 🟡 |
-| **ikcp-prospect** | Capture prospect | — | (existant) | 🟡 |
+| **ikcp-pappers** | Cartographie SIREN (RNE) | — | `ikcp-pappers.maxime-ead.workers.dev` | 🟢 LIVE |
+| **ikcp-chat** | Marcel chef d'orchestre | Sonnet 4.6 | `ikcp-chat.maxime-ead.workers.dev` | 🟢 LIVE |
+| **ikcp-codex** | Sub-agent fiscal expert | Opus 4.7 | `ikcp-codex.maxime-ead.workers.dev` | 🟢 LIVE |
+| **ikcp-temoin** | Audit log MIF II D1 Paris | — | `ikcp-temoin.maxime-ead.workers.dev` | 🟢 LIVE |
+| **ikcp-universign** | Signature eIDAS | — | (code présent, Universign pausé) | ⏸ PAUSE |
+| **ikcp-client** | Magic link auth + Stripe | — | `ikcp-client.maxime-ead.workers.dev` | 🟡 À auditer |
+| **ikcp-prospect** | Capture prospects | — | `ikcp-prospect.maxime-ead.workers.dev` | 🟡 À auditer |
 
-### À venir (planifiés Sprint 2-4)
+### ⏳ Sprint 2 — Codés, en attente secrets + deploy
 
-| Worker prévu | Rôle | Modèle | Sprint |
-|---|---|---|---|
-| **ikcp-batisseur** | Cartographie 360° patrimoine | Opus 4.7 | 2 |
-| **ikcp-architecte** | Immobilier · DVF · IFI | Sonnet 4.6 | 3 |
-| **ikcp-concierge** | Voyage · gastronomie · lifestyle | Sonnet 4.6 | 4 |
-| **ikcp-curateur** | Art · horlogerie · vins | Haiku 4.5 | 4 |
-| **ikcp-hermes** | Liaison externe (notaires, avocats) | Opus 4.7 | 5 |
-| **ikcp-strategie** | Marchés · allocation · drift | Sonnet 4.6 | 4 |
+| Worker | Rôle | Modèle | Secret requis | Statut |
+|---|---|---|---|---|
+| **ikcp-batisseur** | Patrimoine 360° multi-entités | Opus 4.7 | `ANTHROPICAPIKEY` | ⏳ Déployer + secret |
+| **ikcp-hermes** | Transmission patrimoniale | Opus 4.7 | `ANTHROPICAPIKEY` | ⏳ Déployer + secret |
+| **ikcp-lifestyle** | 12 agents mutualisés (Architecte, Stratège…) | Sonnet 4.6 | `ANTHROPICAPIKEY` | ⏳ Déployer + secret |
+| **ikcp-veille** | Veille Perplexity Pro | — | `PERPLEXITY_API_KEY` + `CLIENT_AUTH_PUBKEY` | ⏳ Déployer + secrets |
+
+**Action Maxime** : GitHub Actions → "Deploy Cloudflare Workers" → `workflow_dispatch` → target `all`  
+Puis `wrangler secret put ANTHROPICAPIKEY` dans chaque répertoire worker.
+
+### 🔴 Sprint 3+ — À coder
+
+| Worker prévu | Rôle | Sprint |
+|---|---|---|
+| **ikcp-feedback** | Feedback bêta + D1 | 3 |
+| **ikcp-feedback** | Feedback bêta + D1 | 3 |
+| **ikcp-collector** | Cotations collectionneur | 3 |
+| **ikcp-voice** | TTS/STT ElevenLabs | 3 |
 
 ## 🔑 Convention secrets (NON NÉGOCIABLE)
 

@@ -1,7 +1,7 @@
 # INFRA-PRODUCTION.md — État opérationnel infrastructure IKCP
 
 > **Source de vérité** sur l'état des workers déployés, ressources Cloudflare, secrets configurés.
-> Mise à jour : **14 mai 2026** · sauvegardé dans Git + OneDrive.
+> Mise à jour : **21 mai 2026** · Sprint 2 code complet · en attente deploy + secrets Maxime.
 
 ---
 
@@ -84,7 +84,50 @@
 - **Schéma D1** : table `audit_log` (id, hash, family_id, timestamp, universe, question, answer_summary, agent, model, tokens, sources, mif2_compliant)
 - **Rétention** : permanente en D1 · 10 ans en R2 (quand activé)
 
-### 5. ikcp-universign · signature eIDAS (PAUSE)
+### 5. ikcp-batisseur · Patrimoine 360° (⏳ PRÊT — en attente deploy + secret)
+
+- **URL cible** : https://ikcp-batisseur.maxime-ead.workers.dev
+- **Modèle** : `claude-opus-4-7`
+- **Endpoints** :
+  - `GET /health` · ping + `configured: { api_key: true/false }`
+  - `POST /` · `{ question, context? }` → `{ reply, agent, model, usage, delegated_by }`
+- **Secrets requis** :
+  - `ANTHROPICAPIKEY` ❌ non configuré — **ACTION : `cd workers/ikcp-batisseur && npx wrangler secret put ANTHROPICAPIKEY`**
+- **Bindings** : aucun (stateless)
+- **Délégation** : Marcel active `batisseur` quand `live: true` dans SPECIALISTS_REGISTRY
+- **Flip live** : `workers/ikcp-marcel/worker.js` → `batisseur: { ..., live: true }`
+
+### 6. ikcp-hermes · Transmission patrimoniale (⏳ PRÊT — en attente deploy + secret)
+
+- **URL cible** : https://ikcp-hermes.maxime-ead.workers.dev
+- **Modèle** : `claude-opus-4-7`
+- **Endpoints** : idem batisseur
+- **Secrets requis** :
+  - `ANTHROPICAPIKEY` ❌ non configuré — **ACTION : `cd workers/ikcp-hermes && npx wrangler secret put ANTHROPICAPIKEY`**
+- **Délégation** : Marcel active `hermes` quand `live: true` dans SPECIALISTS_REGISTRY
+
+### 7. ikcp-lifestyle · 12 agents Sonnet mutualisés (⏳ PRÊT — en attente deploy + secret)
+
+- **URL cible** : https://ikcp-lifestyle.maxime-ead.workers.dev
+- **Modèle** : `claude-sonnet-4-6` (tous les agents)
+- **Agents disponibles** dans `prompts.js` : `iris`, `emile`, `leon`, `josephine`, `helene`, `olympe`, `auguste`, `augustin`, `stratege`, `curateur`, `capital`, `pedagogue`, `camille`
+- **Endpoint** : `POST /` · `{ agent: "<key>", question, context? }`
+- **Secrets requis** :
+  - `ANTHROPICAPIKEY` ❌ non configuré — **ACTION : `cd workers/ikcp-lifestyle && npx wrangler secret put ANTHROPICAPIKEY`**
+- **Marcel → lifestyle** : via `agentKey` dans SPECIALISTS_REGISTRY (ex. `architecte` → `augustin`)
+
+### 8. ikcp-veille · Veille Perplexity Pro (⏳ PRÊT — en attente deploy + secrets)
+
+- **URL cible** : https://ikcp-veille.maxime-ead.workers.dev
+- **Endpoint** : `POST /search` · `{ query, mode: 'quick'|'deep', user_id, tier }`
+- **Secrets requis** :
+  - `PERPLEXITY_API_KEY` ❌ non configuré
+  - `CLIENT_AUTH_PUBKEY` ❌ non configuré
+- **Quota** : par utilisateur, journalier (quick: 10/j, deep: 3/j)
+
+---
+
+### 9. ikcp-universign · signature eIDAS (PAUSE)
 
 - **Code** : présent dans `workers/ikcp-universign/`
 - **Statut** : ⏸ pas déployé (Maxime a mis en pause Universign le 13 mai)

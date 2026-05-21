@@ -126,27 +126,36 @@ git push origin main
 
 ## 🚦 Statut Sprint 1 → Sprint 2 (au 21 mai 2026)
 
+### Sprint 1 — LIVE
 ```
 ✅ ikcp-pappers      LIVE  · cartographie SIREN réelle
-✅ ikcp-chat (Marcel) LIVE  · Sonnet 4.6 · 3/3 tests qualité
-✅ ikcp-temoin       LIVE  · audit log D1 Paris
+✅ ikcp-chat (Marcel) LIVE  · Sonnet 4.6 · MIF II validé
+✅ ikcp-temoin       LIVE  · audit log D1 Paris WEUR
 ✅ ikcp-codex        LIVE  · Opus 4.7 · expertise fiscale senior
 ✅ Marcel ↔ Codex    LIVE  · délégation auto (delegate_to_specialist tool)
-⏸ ikcp-universign   PAUSE · signature eIDAS (à reprendre plus tard)
+⏸ ikcp-universign   PAUSE · signature eIDAS (reprendre Sprint 3)
 ```
 
-### Sprint 2 (en cours)
+### Sprint 2 — Code complet · ⏳ Deploy bloqué sur secrets Maxime
 ```
-✅ family-office.html LIVE · hero vidéo parallaxe + espace membre + redirect supprimée
-⏳ ikcp-batisseur     PRÊT · worker codé · en attente deploy + ANTHROPICAPIKEY
-⏳ ikcp-hermes        PRÊT · worker codé · en attente deploy + ANTHROPICAPIKEY
-✅ deploy-workers.yml MÀJ  · batisseur + hermes ajoutés (workflow_dispatch dispo)
+✅ family-office.html LIVE  · hero vidéo parallaxe + espace membre
+✅ app/* pages        LIVE  · nav SVG unifiée · veille active · carnet · profil
+✅ deploy-workers.yml PRÊT  · 6 workers dans CI/CD (workflow_dispatch + push auto)
+✅ Marcel routing     LIVE  · SPECIALISTS_REGISTRY + agentKey + delegateToSpecialist
+✅ ikcp-lifestyle     PRÊT  · 12 agents Sonnet prompts.js (stratege, curateur, capital…)
+⏳ ikcp-batisseur     PRÊT  · worker Opus 4.7 codé · attente deploy + ANTHROPICAPIKEY
+⏳ ikcp-hermes        PRÊT  · worker Opus 4.7 codé · attente deploy + ANTHROPICAPIKEY
+⏳ ikcp-veille        PRÊT  · worker Perplexity codé · attente deploy + secrets
 ```
 
-→ **Action Maxime** : GitHub Actions → "Deploy Cloudflare Workers" → `workflow_dispatch` target `all`  
-→ Puis : `cd workers/ikcp-batisseur && npx wrangler secret put ANTHROPICAPIKEY`  
-→ Puis : `cd workers/ikcp-hermes && npx wrangler secret put ANTHROPICAPIKEY`  
-→ Enfin : flip `live: false` → `live: true` pour `batisseur` et `hermes` dans `workers/ikcp-marcel/worker.js`
+### Actions Maxime requises pour activer Sprint 2
+
+1. **GitHub Actions** → "Deploy Cloudflare Workers" → `workflow_dispatch` → target `all`
+2. `cd workers/ikcp-batisseur && npx wrangler secret put ANTHROPICAPIKEY`
+3. `cd workers/ikcp-hermes && npx wrangler secret put ANTHROPICAPIKEY`
+4. `cd workers/ikcp-lifestyle && npx wrangler secret put ANTHROPICAPIKEY`
+5. `cd workers/ikcp-veille && npx wrangler secret put PERPLEXITY_API_KEY`
+6. Confirmer `/health` OK sur chaque worker → flip `live: false → true` dans Marcel SPECIALISTS_REGISTRY
 
 → **Voir `docs/INFRA-PRODUCTION.md`** pour les URLs et IDs ressources exacts.
 
