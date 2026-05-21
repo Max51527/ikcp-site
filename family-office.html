@@ -2,11 +2,9 @@
   © 2026 IKCP · Maxime Juveneton · ORIAS 23001568
   Tous droits réservés — Proprietary & Confidential
   Reproduction interdite sans autorisation écrite — maxime@ikcp.fr
-  PAGE DÉSACTIVÉE — En cours de développement — Redirige vers l'accueil
+  PHASE BÊTA — Accessible en accès direct · ikcp.eu/family-office.html
 -->
-<!-- Redirection immédiate vers l'accueil tant que la page n'est pas opérationnelle -->
-<meta http-equiv="refresh" content="0;url=/">
-<script>window.location.replace('/');</script>
+<!-- Page Family Office · Phase Bêta · Accessible en accès direct · Non liée depuis la nav principale -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -151,15 +149,56 @@ nav.fo-nav{
 .beta-banner a:hover{color:#fff}
 
 /* ═══════════════════════════════════════════════════════════
-   HERO PRINCIPAL
+   HERO VIDEO PARALLAXE — plein écran · fond sombre · overlay navy
 ═══════════════════════════════════════════════════════════ */
-.hero{
-  background:linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
-  padding:80px 32px 100px;
-  display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px;
-  max-width:1280px; margin:0 auto; align-items:center;
-}
-@media (max-width:980px){.hero{grid-template-columns:1fr; padding:50px 24px 60px; gap:40px}}
+.hero{position:relative;width:100%;min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;background:var(--navy-deep)}
+/* Fallback gradient (visible quand pas de vidéo) */
+.hero__fallback{position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,#0b1420 0%,var(--navy-deep) 28%,var(--navy) 62%,#162038 100%)}
+.hero__fallback::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 45% at 72% 38%,rgba(201,169,110,0.10) 0%,transparent 62%),radial-gradient(ellipse 35% 25% at 18% 75%,rgba(27,42,74,0.7) 0%,transparent 55%)}
+/* Vidéo parallaxe (JS translate3d sur scroll) */
+.hero__video{position:absolute;top:-15%;left:0;width:100%;height:130%;object-fit:cover;will-change:transform;z-index:1;transform:translate3d(0,0,0) scale(1.005)}
+/* Overlay double dégradé pour lisibilité */
+.hero__overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(11,20,32,0.36) 0%,rgba(11,20,32,0.65) 58%,rgba(11,20,32,0.95) 100%),linear-gradient(90deg,rgba(11,20,32,0.56) 0%,transparent 60%)}
+/* Grille contenu sur le hero */
+.hero__content{position:relative;z-index:3;display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;max-width:1280px;margin:0 auto;padding:120px 40px 80px;align-items:center;width:100%}
+@media (max-width:980px){.hero__content{grid-template-columns:1fr;padding:80px 24px 60px;gap:36px}}
+/* Scroll indicator animé */
+.hero__scroll{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:7px;color:rgba(250,250,248,0.33);font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.24em;text-transform:uppercase;text-decoration:none}
+.hero__scroll-line{display:block;width:1px;height:36px;background:linear-gradient(to bottom,rgba(201,169,110,0.65),transparent);animation:scrollLine 2.2s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{transform:scaleY(0.2);opacity:0.35;transform-origin:top}50%{transform:scaleY(1);opacity:1;transform-origin:top}}
+/* Overrides couleurs sur fond sombre du hero */
+.hero .eyebrow{color:var(--gold-bright)}
+.hero .eyebrow::before{background:var(--gold-bright)}
+.hero h1{color:var(--cream)}
+.hero h1 em{color:var(--gold-bright)}
+.hero .lede{color:rgba(250,250,248,0.80)}
+.hero .lede em{font-style:italic;color:var(--gold-bright);font-family:'Playfair Display',serif;font-weight:500}
+.hero .btn-primary{background:var(--gold);color:var(--navy);box-shadow:0 6px 18px rgba(201,169,110,0.30)}
+.hero .btn-primary:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 10px 24px rgba(201,169,110,0.42)}
+.hero .btn-secondary{border-color:rgba(250,250,248,0.40);color:rgba(250,250,248,0.88)}
+.hero .btn-secondary:hover{background:rgba(250,250,248,0.09);border-color:var(--cream);color:var(--cream)}
+.hero .hero-card{box-shadow:0 28px 70px rgba(0,0,0,0.28)}
+/* ═══ ESPACE MEMBRE — section tableau de bord privé ═══ */
+.membre-section{padding:100px 40px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:var(--cream)}
+.membre-wrap{max-width:1100px;margin:0 auto}
+.membre-head{text-align:center;margin-bottom:56px}
+.membre-head h2{font-family:'Playfair Display',serif;font-size:clamp(30px,4.2vw,52px);line-height:1.06;color:var(--cream);font-weight:500;letter-spacing:-0.02em;margin-bottom:14px}
+.membre-head h2 em{color:var(--gold-bright);font-style:italic}
+.membre-head p{font-size:17px;color:rgba(250,250,248,0.75);max-width:600px;margin:0 auto;line-height:1.65;font-family:'Playfair Display',serif;font-style:italic}
+.membre-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:50px}
+@media (max-width:760px){.membre-feats{grid-template-columns:1fr}}
+.membre-feat{padding:26px 26px;background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.18);border-radius:14px;transition:all 0.25s}
+.membre-feat:hover{background:rgba(255,255,255,0.07);border-color:var(--gold)}
+.membre-feat-ico{font-size:28px;line-height:1;margin-bottom:13px}
+.membre-feat h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--cream);font-weight:600;margin-bottom:8px;line-height:1.2}
+.membre-feat h3 em{color:var(--gold-bright);font-style:italic}
+.membre-feat p{font-size:13.5px;color:rgba(250,250,248,0.70);line-height:1.62}
+.membre-cta-wrap{text-align:center}
+.btn-membre{display:inline-flex;align-items:center;gap:10px;padding:18px 44px;background:var(--gold);color:var(--navy);text-decoration:none;font-size:13.5px;font-weight:700;letter-spacing:0.10em;border-radius:8px;transition:all 0.25s;box-shadow:0 8px 24px rgba(201,169,110,0.28);text-transform:uppercase}
+.btn-membre:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 12px 32px rgba(201,169,110,0.40)}
+.membre-sub{margin-top:16px;font-size:13px;color:rgba(250,250,248,0.48);font-style:italic;font-family:'Playfair Display',serif}
+.membre-sub a{color:var(--gold-bright);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.32)}
+.membre-sub a:hover{color:#fff;border-color:rgba(250,250,248,0.55)}
 
 .eyebrow{
   font-family:'JetBrains Mono',monospace; font-size:11px;
@@ -388,8 +427,18 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
   <a href="#beta">Demander mon accès →</a>
 </div>
 
-<!-- ═══ HERO PAPPERS FUNNEL — entrée magique gratuite ═══ -->
-<section class="hero">
+<!-- ═══ HERO VIDEO PARALLAXE + SIREN FUNNEL ═══ -->
+<section class="hero" id="hero">
+  <!-- Fallback gradient sombre (visible avant chargement vidéo) -->
+  <div class="hero__fallback"></div>
+  <!-- Vidéo plein écran — placer /assets/hero-fo.mp4 pour activer le parallaxe -->
+  <video class="hero__video" autoplay muted loop playsinline>
+    <source src="/assets/hero-fo.mp4" type="video/mp4">
+  </video>
+  <!-- Overlay dégradé navy → transparent pour lisibilité -->
+  <div class="hero__overlay"></div>
+  <!-- Contenu du hero — grille 2 colonnes : accroche / SIREN funnel -->
+  <div class="hero__content">
   <div>
     <div class="eyebrow" id="fo-eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % France · RGPD souverain</div>
     <h1 id="fo-hero-h1">Une porte. Une équipe.<br><em id="fo-hero-em">Votre patrimoine en orbite.</em></h1>
@@ -433,6 +482,11 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       <div><div class="hero-stat-val">100<small style="font-size:13px">%</small></div><div class="hero-stat-lbl">RGPD France</div></div>
     </div>
   </div>
+  </div><!-- /.hero__content -->
+  <a href="#fo" class="hero__scroll" aria-label="Défiler vers le contenu">
+    <span class="hero__scroll-line"></span>
+    Découvrir
+  </a>
 </section>
 
 <!-- ═══ Script funnel Pappers — appelle le worker ikcp-pappers réel ═══ -->
@@ -1794,6 +1848,44 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
   </div>
 </section>
 
+<!-- ═══ ESPACE MEMBRE — tableau de bord privé Family Office ═══ -->
+<section class="membre-section" id="espace-membre">
+  <div class="membre-wrap">
+    <div class="membre-head">
+      <div class="section-mark" style="color:var(--gold-bright);">Votre espace privé IKCP</div>
+      <h2>Votre tableau de bord.<br><em>Vos données. Votre contrôle.</em></h2>
+      <p>Marcel, vos univers patrimoniaux, votre reporting — dans un espace sécurisé conçu pour les 50 familles fondatrices. Accès complet offert pendant la phase Bêta.</p>
+    </div>
+
+    <div class="membre-feats">
+      <div class="membre-feat">
+        <div class="membre-feat-ico">🎼</div>
+        <h3>Marcel <em>24/7</em></h3>
+        <p>Votre chef d'orchestre IA à toute heure. Questions fiscales, cartographie, simulations, alertes patrimoniales — réponse en quelques secondes, sans RDV.</p>
+      </div>
+      <div class="membre-feat">
+        <div class="membre-feat-ico">📊</div>
+        <h3>Dashboard <em>patrimonial</em></h3>
+        <p>Vue consolidée de vos entités, actifs, passifs. Cartographie SIREN auto, IFI estimé, opportunités Dutreil détectées. Synthèse trimestrielle PDF auto-générée.</p>
+      </div>
+      <div class="membre-feat">
+        <div class="membre-feat-ico">🔐</div>
+        <h3>Données <em>souveraines</em></h3>
+        <p>100 % hébergé en France. Cloudflare Paris, audit log eIDAS, archivage 10 ans. Vos données ne quittent jamais le territoire national.</p>
+      </div>
+    </div>
+
+    <div class="membre-cta-wrap">
+      <a href="/app/" class="btn-membre">Accéder à votre espace →</a>
+      <p class="membre-sub">
+        Déjà membre ? <a href="/app/">Se connecter →</a>
+        &nbsp;·&nbsp;
+        Pas encore inscrit ? <a href="mailto:maxime@ikcp.fr?subject=Demande%20acc%C3%A8s%20B%C3%AAta%20IKCP&body=Bonjour%20Maxime%2C%0A%0AJe%20souhaite%20un%20acc%C3%A8s%20%C3%A0%20la%20phase%20B%C3%AAta%20du%20Family%20Office%20IKCP.%0A%0ASIREN%20%3A%20">Demander un accès →</a>
+      </p>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ FAQ SEO ═══ -->
 <section class="faq">
   <div class="section-mark" style="text-align:center">Questions fréquentes</div>
@@ -1884,6 +1976,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
     Nous ouvrons la phase Bêta à 50 familles d'entrepreneurs sélectionnées sur le S2 2026 — accès complet gratuit pendant 6 mois, en échange d'un retour mensuel.
   </p>
   <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27acc%C3%A8s%20B%C3%AAta%20Family%20Office%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20un%20acc%C3%A8s%20%C3%A0%20la%20phase%20B%C3%AAta%20du%20Family%20Office%20Augment%C3%A9.%0D%0A%0D%0ASIREN%20de%20ma%20soci%C3%A9t%C3%A9%20%3A%20%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0ABien%20cordialement" class="final-cta-btn">Demander mon accès Bêta →</a>
+  <p style="margin-top:20px;font-size:14px;color:rgba(250,250,248,0.60);font-family:'Playfair Display',serif;font-style:italic;">
+    Déjà invité(e) ? <a href="/app/" style="color:var(--gold-bright);font-weight:600;font-style:normal;font-family:'Outfit',sans-serif;text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4);padding-bottom:1px;font-size:13px;">Accéder à votre espace →</a>
+  </p>
 </section>
 
 <!-- ═══ FOOTER ═══ -->
@@ -1898,6 +1993,29 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
     Marcel ne fournit pas de conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier — un conseil patrimonial complet nécessite une lettre de mission.
   </p>
 </footer>
+
+<!-- ═══ Parallaxe vidéo hero ═══
+     Translate la vidéo à 40 % de la vitesse de scroll.
+     passive:true + requestAnimationFrame → 60 fps sans bloquer le thread. -->
+<script>
+(function(){
+  var video = document.querySelector('.hero__video');
+  if (!video) return; // si pas de vidéo, rien à faire
+  var ticking = false;
+  var RATE = 0.38;
+  function applyParallax(){
+    var y = window.pageYOffset * RATE;
+    video.style.transform = 'translate3d(0,' + y + 'px,0) scale(1.005)';
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if (!ticking){
+      window.requestAnimationFrame(applyParallax);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+</script>
 
 <!-- ═══ Widget Marcel (médaillon FAB visible sur cette page) ═══ -->
 <script src="/chatbot-widget.js?v=19" defer></script>
