@@ -54,6 +54,7 @@
       <div class="card-head"><span class="card-cat">Cartographie</span><span class="pill live" id="cartoStatus">SIREN</span></div>
       <h3 id="cartoNom">Société principale</h3>
       <div id="carto-body" class="loading">Lecture profil société…</div>
+      <a href="/app/marcel.html?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
     </article>
 
     <article class="card" id="w-ifi">
@@ -444,6 +445,9 @@ if(me && me.primary_siren){
         <div style="margin-top:4px"><span style="color:var(--mute)">Capital</span> ${Marcel.Utils.formatEUR(d.capital || 0)} · <span style="color:var(--mute)">créée</span> ${new Date(d.date_creation).getFullYear()}</div>
       </div>
     `;
+    // Afficher le CTA Bâtisseur si une société est chargée
+    const batCta = document.getElementById('batisseur-cta');
+    if(batCta) batCta.style.display = 'inline-flex';
   }).catch(_ => {
     document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Cartographie indisponible.</p>';
   });
@@ -464,7 +468,15 @@ window.askMarcel = function(e){
 
 window.logout = async function(){
   if(!confirm('Se déconnecter de Marcel ?')) return;
-  await Marcel.Auth.logout();
+  try { await Marcel.Auth.logout(); } catch(_) {
+    // Fallback si ikcp-client pas encore live : nettoyage local
+    document.cookie.split(';').forEach(c => {
+      const k = c.trim().split('=')[0];
+      document.cookie = k + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.ikcp.eu';
+      document.cookie = k + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+    });
+    location.href = '/app/index.html';
+  }
 }
 </script>
 

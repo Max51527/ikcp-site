@@ -27,11 +27,13 @@ const ENDPOINTS = {
   chat:        'https://ikcp-chat.maxime-ead.workers.dev',
   pappers:     'https://ikcp-pappers.maxime-ead.workers.dev',
   codex:       'https://ikcp-codex.maxime-ead.workers.dev',
-  hermes:      'https://ikcp-hermes.maxime-ead.workers.dev',
+  batisseur:   'https://ikcp-batisseur.maxime-ead.workers.dev', // Sprint 2
+  hermes:      'https://ikcp-hermes.maxime-ead.workers.dev',    // Sprint 2
   lifestyle:   'https://ikcp-lifestyle.maxime-ead.workers.dev',
   veille:      'https://ikcp-veille.maxime-ead.workers.dev',
+  collector:   'https://ikcp-collector.maxime-ead.workers.dev',
   temoin:      'https://ikcp-temoin.maxime-ead.workers.dev',
-  client:      'https://ikcp-client.maxime-ead.workers.dev', // à créer Sprint 2 J2
+  client:      'https://ikcp-client.maxime-ead.workers.dev',
 };
 
 // ─── Helper fetch JSON avec timeout 45 s ────────────────────────
@@ -81,7 +83,15 @@ export const Marcel = {
     });
   },
 
-  // 4. Hermès — transmission
+  // 4. Bâtisseur — patrimoine 360° multi-entités (Sprint 2)
+  async batisseur(question, context = '') {
+    return jsonFetch(ENDPOINTS.batisseur, {
+      method: 'POST',
+      body: JSON.stringify({ question, context }),
+    });
+  },
+
+  // 5. Hermès — transmission patrimoniale (Sprint 2)
   async hermes(question, context = '') {
     return jsonFetch(ENDPOINTS.hermes, {
       method: 'POST',
