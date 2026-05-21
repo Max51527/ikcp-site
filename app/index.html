@@ -166,10 +166,19 @@ window.askLink = async function(e){
   btn.disabled = true; btn.textContent = 'Envoi en cours…';
   msg.innerHTML = '';
   try{
-    await Marcel.Auth.requestMagicLink(email);
-    msg.className = 'message ok';
-    msg.innerHTML = `✓ Lien envoyé à <b>${email}</b>. Vérifiez votre boîte (et vos spams). Valide 15 minutes.`;
+    const r = await Marcel.Auth.requestMagicLink(email);
     btn.textContent = 'Lien envoyé ✓';
+
+    // MODE DEV : si le worker renvoie le lien directement (Resend non configuré)
+    if(r?.dev_verify_url){
+      msg.className = 'message ok';
+      msg.innerHTML = `⚙️ <b>Mode dev</b> — Resend non configuré. Cliquez le lien ci-dessous pour vous connecter :<br><br>
+        <a href="${r.dev_verify_url}" style="word-break:break-all;color:#C24722;font-weight:600">${r.dev_verify_url}</a><br><br>
+        <small style="color:#6B655A">En production, ce lien sera envoyé par email.</small>`;
+    } else {
+      msg.className = 'message ok';
+      msg.innerHTML = `✓ Lien envoyé à <b>${email}</b>. Vérifiez votre boîte (et vos spams). Valide 15 minutes.`;
+    }
   }catch(err){
     msg.className = 'message err';
     msg.innerHTML = 'Une erreur est survenue. Réessayez dans un instant, ou contactez <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>.';

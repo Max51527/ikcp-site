@@ -2,18 +2,29 @@
  * IKCP Client Portal Worker — Cloudflare (freemium v2)
  *
  * Espace membre :
- *  - Auth magic link (zero password) · JWT cookie HttpOnly + Secure + SameSite=Strict
- *  - Stripe checkout + webhook (Premium 29€/mois)
+ *  - Auth magic link (zero password) · cookie HttpOnly Secure SameSite=Strict
  *  - Quota Pappers par tier (free 1/mois, premium 10, fo illimité)
+ *  - Stripe (optionnel — Sprint 3) : checkout, webhook, portal
  *  - Sync logiciel-gp (polling Bearer service token)
  *
- * Bindings (cf. wrangler.toml) :
- *  D1            ikcp-client-db    — schema.sql
- *  KV            CLIENT_KV         — magic tokens, rate limit
- *  Secret        JWT_SECRET, RESEND_API_KEY, STRIPE_SECRET_KEY,
- *                STRIPE_WEBHOOK_SECRET, CABINET_TOKEN
- *  Var           APP_URL, IKCP_PAPPERS_URL,
- *                STRIPE_PRICE_PREMIUM_MONTHLY, STRIPE_PRICE_PREMIUM_YEARLY
+ * Bindings REQUIS :
+ *  D1            ikcp-client-db    — npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
+ *  KV            CLIENT_KV         — npx wrangler kv namespace create CLIENT_KV
+ *
+ * Secrets :
+ *  RESEND_API_KEY      (requis pour envoi email — sans ça, lien affiché dans les logs)
+ *  CABINET_TOKEN       (optionnel — polling cabinet)
+ *  STRIPE_SECRET_KEY   (optionnel — Sprint 3 paiement)
+ *  STRIPE_WEBHOOK_SECRET (optionnel)
+ *
+ * Vars wrangler.toml :
+ *  APP_URL      = URL du worker (magic link verify)
+ *  FRONT_URL    = URL du front (post-auth redirect)
+ *  IKCP_PAPPERS_URL = https://ikcp-pappers.maxime-ead.workers.dev
+ *
+ * MODE SANS RESEND : si RESEND_API_KEY absent, le lien est affiché en console
+ *  → visible via : npx wrangler tail ikcp-client
+ *  → ou via Cloudflare Dashboard → Workers → ikcp-client → Logs
  */
 
 const TIER_LIMITS = {
@@ -112,10 +123,22 @@ async function handleAuthSend(request, env) {
   ).bind(tokenHash, email.toLowerCase(), now, expiresAt, request.headers.get('CF-Connecting-IP') || '').run();
 
   const verifyUrl = `${env.APP_URL}/auth/verify?token=${token}`;
-  await sendEmail(env, { to: email, subject: 'Votre lien de connexion · IKCP', html: emailTemplateMagic(verifyUrl) });
+  const emailSent = await sendEmail(env, { to: email, subject: 'Votre lien de connexion · IKCP', html: emailTemplateMagic(verifyUrl) });
+
+  // MODE SANS RESEND : log le lien en console (visible wrangler tail ou dashboard CF)
+  if (!emailSent) {
+    console.log(`[DEV] Magic link pour ${email} : ${verifyUrl}`);
+  }
 
   await audit(env, null, 'magic_sent', request, { email });
-  return json({ ok: true, message: 'Lien envoyé. Vérifiez votre boîte mail (TTL 15 min).' });
+  return json({
+    ok: true,
+    message: emailSent
+      ? 'Lien envoyé. Vérifiez votre boîte mail (et les spams). Valide 15 minutes.'
+      : 'Lien généré (mode dev — email non configuré). Consultez les logs worker.',
+    // En mode dev uniquement (sans Resend), renvoie le lien dans la réponse pour tests
+    ...((!emailSent && !env.PRODUCTION) ? { dev_verify_url: verifyUrl } : {}),
+  });
 }
 
 async function handleAuthVerify(request, env) {
@@ -399,9 +422,14 @@ async function handleCabinet(request, env) {
 // ──────────────────────────────────────────────────────────────
 function bindingsStatus(env) {
   return {
-    db: !!env.D1, kv: !!env.CLIENT_KV, jwt: !!env.JWT_SECRET, resend: !!env.RESEND_API_KEY,
-    stripe: !!env.STRIPE_SECRET_KEY, stripe_webhook: !!env.STRIPE_WEBHOOK_SECRET,
-    cabinet: !!env.CABINET_TOKEN, pappers_url: !!env.IKCP_PAPPERS_URL,
+    db:            !!env.D1,
+    kv:            !!env.CLIENT_KV,
+    resend:        !!env.RESEND_API_KEY,
+    resend_from:   env.RESEND_FROM || 'noreply@ikcp.eu (défaut)',
+    pappers_url:   !!env.IKCP_PAPPERS_URL,
+    cabinet:       !!env.CABINET_TOKEN,
+    stripe:        !!env.STRIPE_SECRET_KEY,      // optionnel Sprint 3
+    dev_mode:      !env.RESEND_API_KEY,          // true si pas de Resend
   };
 }
 
@@ -448,13 +476,23 @@ async function verifyStripeSignature(body, sigHeader, secret) {
 }
 
 async function sendEmail(env, { to, subject, html }) {
-  if (!env.RESEND_API_KEY) { console.warn('RESEND_API_KEY missing'); return; }
+  if (!env.RESEND_API_KEY) {
+    console.warn('[sendEmail] RESEND_API_KEY absent — email non envoyé');
+    return false; // indique l'échec proprement
+  }
+  // Sender : noreply@ikcp.eu si domaine vérifié Resend, sinon fallback domaine test
+  const from = env.RESEND_FROM || 'IKCP <noreply@ikcp.eu>';
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'IKCP <noreply@ikcp.eu>', to: [to], subject, html }),
+    body: JSON.stringify({ from, to: [to], subject, html }),
   });
-  if (!res.ok) console.error('Resend error:', await res.text());
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('[sendEmail] Resend error:', res.status, err.slice(0, 300));
+    return false;
+  }
+  return true; // succès
 }
 
 async function audit(env, userId, action, request, metadata = {}) {

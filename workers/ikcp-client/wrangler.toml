@@ -1,35 +1,42 @@
 # Wrangler config — IKCP Client Portal v2 (espace membre freemium)
 #
-# Setup en 8 étapes (~15 min) :
+# ══════════════════════════════════════════════════════════════
+# DÉPLOIEMENT MINIMAL (sans Stripe) — 4 étapes :
 #
-#  1. npx wrangler login
+# 1. Créer la D1 (si pas déjà fait) :
+#    npx wrangler d1 create ikcp-client-db
+#    → copier l'UUID dans [[d1_databases]].database_id ci-dessous
 #
-#  2. npx wrangler d1 create ikcp-client-db
-#     → copier l'ID dans [[d1_databases]] ci-dessous
+# 2. Créer le KV (si pas déjà fait) :
+#    npx wrangler kv namespace create CLIENT_KV
+#    → copier l'ID dans [[kv_namespaces]].id ci-dessous
 #
-#  3. npx wrangler kv namespace create CLIENT_KV
-#     → copier l'ID dans [[kv_namespaces]] ci-dessous
+# 3. Exécuter le schéma SQL :
+#    npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
 #
-#  4. npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
+# 4. Déployer :
+#    npx wrangler deploy
 #
-#  5. Pousser les secrets (un par un) :
-#     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" | npx wrangler secret put JWT_SECRET
-#     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" | npx wrangler secret put CABINET_TOKEN
-#     npx wrangler secret put RESEND_API_KEY          # depuis resend.com/api-keys
-#     npx wrangler secret put STRIPE_SECRET_KEY       # sk_test_... ou sk_live_...
-#     npx wrangler secret put STRIPE_WEBHOOK_SECRET   # whsec_... (après création webhook côté Stripe)
+# → L'auth magic link fonctionne immédiatement.
+# → SANS Resend : le lien apparaît dans les logs (wrangler tail ikcp-client)
+# → AVEC Resend (recommandé) : voir secrets ci-dessous
 #
-#  6. Créer Stripe products :
-#       - "IKCP Premium Mensuel" 29€/mois → copier price_xxx
-#       - "IKCP Premium Annuel" 290€/an  → copier price_xxx
-#     puis remplir [vars] ci-dessous
+# ══════════════════════════════════════════════════════════════
+# SECRETS (optionnels au démarrage, recommandés en prod) :
 #
-#  7. npx wrangler deploy
+#  npx wrangler secret put RESEND_API_KEY
+#    → re_xxx depuis resend.com/api-keys (compte gratuit 3000 emails/mois)
+#    → Vérifier domaine ikcp.eu dans Resend avant → envoi depuis noreply@ikcp.eu
+#    → Sans vérification : utiliser RESEND_FROM=IKCP <onboarding@resend.dev>
 #
-#  8. Côté Stripe Dashboard, créer le webhook :
-#     URL: https://ikcp-client.<sous-domaine>.workers.dev/stripe/webhook
-#     Events: checkout.session.completed · customer.subscription.deleted · invoice.payment_failed
-#     → récupérer le whsec_... et le pousser à l'étape 5
+#  npx wrangler secret put CABINET_TOKEN
+#    → 32 chars random : node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+#
+#  (Sprint 3 — paiement) :
+#  npx wrangler secret put STRIPE_SECRET_KEY
+#  npx wrangler secret put STRIPE_WEBHOOK_SECRET
+#
+# ══════════════════════════════════════════════════════════════
 
 name = "ikcp-client"
 main = "worker.js"
@@ -45,22 +52,19 @@ binding = "CLIENT_KV"
 id = "88162ad75e474216b61a5fd74470124e"
 
 [vars]
-APP_URL = "https://ikcp-client.maxime-ead.workers.dev"  # URL du worker (magic link verify)
-FRONT_URL = "https://ikcp.eu"                           # Front-end app (redirections post-auth)
+APP_URL   = "https://ikcp-client.maxime-ead.workers.dev"  # URL du worker (magic link verify)
+FRONT_URL = "https://ikcp.eu"                             # Front-end (redirections post-auth)
 IKCP_PAPPERS_URL = "https://ikcp-pappers.maxime-ead.workers.dev"
-STRIPE_PRICE_PREMIUM_MONTHLY = "price_REPLACE_monthly"  # À remplacer après création produit Stripe
-STRIPE_PRICE_PREMIUM_YEARLY = "price_REPLACE_yearly"    # À remplacer après création produit Stripe
 
-# Secrets (push via `wrangler secret put`) :
-#   JWT_SECRET            HS256 signing 32+ chars
-#   RESEND_API_KEY        re_xxx
-#   STRIPE_SECRET_KEY     sk_test_... ou sk_live_...
-#   STRIPE_WEBHOOK_SECRET whsec_...
-#   CABINET_TOKEN         32+ chars random — utilisé par logiciel-gp pour polling
+# Adresse expéditeur email (à changer si domaine non vérifié dans Resend) :
+# RESEND_FROM = "IKCP <onboarding@resend.dev>"   ← décommenter si ikcp.eu pas vérifié
+
+# (Sprint 3) Stripe products — à remplir après création dans Stripe Dashboard :
+# STRIPE_PRICE_PREMIUM_MONTHLY = "price_xxx"
+# STRIPE_PRICE_PREMIUM_YEARLY  = "price_xxx"
 
 [observability]
 enabled = true
 
-# Domaine custom (recommandé) :
+# Domaine custom (recommandé après bascule DNS) :
 # Cloudflare Dashboard → Workers → ikcp-client → Domains → Add → client.ikcp.eu
-# Puis DNS → CNAME `client` → `ikcp-client.<sous-domaine>.workers.dev`
