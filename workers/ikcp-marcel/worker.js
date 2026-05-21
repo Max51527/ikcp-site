@@ -266,10 +266,18 @@ Tu peux déléguer à PLUSIEURS spécialistes simultanément.`,
       required: ['agent', 'question'],
     },
   },
-  // TODO Sprint 2 : tool search_veille (Perplexity proxy via ikcp-veille)
-  // Bug identifié 2026-05-16 : conflit avec web_search natif Anthropic provoque API 400
-  // Fix : retirer web_search_20250305 du tools array OU renommer search_veille en consult_external
-  // Code prêt côté worker.js (branche exec ligne 879) et ikcp-veille déployé.
+  {
+    name: 'consult_veille',
+    description: "Lance une veille approfondie via Perplexity Pro sur un sujet patrimonial, fiscal, marché ou actualité récente. Utilise cet outil quand l'utilisateur demande une veille spécifique, les dernières actualités fiscales, l'évolution d'un marché ou une recherche documentaire récente (< 30 jours).",
+    input_schema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: "Requête de recherche précise (en français de préférence)" },
+        mode: { type: 'string', enum: ['quick', 'deep'], description: "'quick' pour une info rapide (< 10s), 'deep' pour une analyse approfondie (30-60s)" },
+      },
+      required: ['query'],
+    },
+  },
 ];
 
 // Barème IR 2026 (LF 2026, revenus 2025)
@@ -452,6 +460,9 @@ Tu n'es PAS seul. Tu peux mobiliser douze sub-agents Family Office en parallèle
 | concierge  | Lifestyle & Conciergerie               | Sonnet 4.6| 🔴 bientôt | Voyage, aviation, expériences luxe |
 
 POUR LES SPÉCIALISTES PAS ENCORE LIVE : traite directement avec tes connaissances + web_search.
+
+VEILLE AUGMENTÉE — TOOL consult_veille :
+Utilise **consult_veille** quand l'utilisateur demande une veille récente : "actualités sur X", "qu'est-ce qui a changé sur Y depuis 2 mois ?", "dernières jurisprudences sur Z", "évolution du marché de l'horlogerie cette semaine". Ce tool passe par Perplexity Pro (mode quick = réponse rapide, mode deep = analyse approfondie). S'il échoue, bascule sur tes connaissances + web_search.
 
 COLLECTOR PERSONNEL — TOOLS get_user_profile / get_user_watches / get_user_alerts / add_user_watch :
 L'utilisateur peut avoir un PROFIL COLLECTIONNEUR enregistré (montres, voitures, sneakers, Lego, jeux, vins, art, voyage, sport, yachts, NextGen). Un agent collecteur scrute chaque jour les marchés correspondants et génère des alertes.
@@ -937,6 +948,7 @@ export default {
           'get_user_watches',
           'get_user_alerts',
           'add_user_watch',
+          'consult_veille',
         ]);
         const toolUses = (data.content || []).filter(
           b => b.type === 'tool_use' && CLIENT_TOOLS.has(b.name)
@@ -969,7 +981,7 @@ export default {
               query: i.query,
               target_price: i.target_price,
             });
-          } else if (tu.name === 'search_veille') {
+          } else if (tu.name === 'consult_veille') {
             // Appel veille augmentée (worker ikcp-veille proxy)
             try {
               const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', {
@@ -979,7 +991,7 @@ export default {
                   query: i.query,
                   mode: i.mode || 'quick',
                   user_id: 'marcel_internal',
-                  tier: 'premium_fo', // Marcel a accès en interne
+                  tier: 'fo', // Marcel a accès en interne
                 }),
               });
               if (!vr.ok) {
