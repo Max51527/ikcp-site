@@ -7,7 +7,7 @@
  *   POST /watch   { query, target_price, user }  — surveillance quotidienne
  *
  * Auth : Bearer <session_token> validé contre ikcp-client
- * Tier check : seuls premium_essentiel / premium_fo peuvent appeler
+ * Tier check : seuls premium / fo peuvent appeler
  * Rate-limit : KV par user_id + day (quick) ou month (deep)
  * Audit : chaque appel loggué vers ikcp-temoin
  *
@@ -52,7 +52,7 @@ function json(data, status = 200, origin = '') {
 
 // ─── Rate-limit par tier ─────────────────────────────────────────
 async function checkRateLimit(env, userId, tier, mode) {
-  if (tier === 'premium_fo' && mode === 'quick') return { ok: true };  // illimité quick pour FO
+  if (tier === 'fo' && mode === 'quick') return { ok: true };  // illimité quick pour FO
   const today = new Date().toISOString().slice(0, 10);
   const month = today.slice(0, 7);
   const key = mode === 'deep'
@@ -66,7 +66,7 @@ async function checkRateLimit(env, userId, tier, mode) {
     return {
       ok: false,
       message: `Quota ${mode} atteint (${current}/${limit}). Réinitialisation ${mode === 'deep' ? 'mensuelle' : 'quotidienne'}.`,
-      upgrade_path: tier === 'premium_essentiel' ? 'premium_fo' : null,
+      upgrade_path: tier === 'premium' ? 'fo' : null,
     };
   }
   await env.VEILLE_CACHE.put(key, String(current + 1), {
@@ -77,8 +77,8 @@ async function checkRateLimit(env, userId, tier, mode) {
 
 // ─── Vérif tier via user payload (à durcir Sprint 2 avec JWT signé) ─
 function checkTier(tier, modeNeeded) {
-  if (modeNeeded === 'quick' && (tier === 'premium_essentiel' || tier === 'premium_fo')) return true;
-  if (modeNeeded === 'deep' && tier === 'premium_fo') return true;
+  if (modeNeeded === 'quick' && (tier === 'premium' || tier === 'fo')) return true;
+  if (modeNeeded === 'deep' && tier === 'fo') return true;
   return false;
 }
 
@@ -185,7 +185,7 @@ export default {
       }
       let body;
       try { body = await request.json(); } catch (_) { return json({ error: 'invalid_json' }, 400, origin); }
-      const { query, mode = 'quick', user_id, tier = 'discovery' } = body || {};
+      const { query, mode = 'quick', user_id, tier = 'free' } = body || {};
       if (!query || typeof query !== 'string') return json({ error: 'query_required' }, 400, origin);
       if (!user_id) return json({ error: 'user_id_required' }, 400, origin);
 
@@ -193,7 +193,7 @@ export default {
       if (!checkTier(tier, mode)) {
         return json({
           error: 'tier_insufficient',
-          required: mode === 'deep' ? 'premium_fo' : 'premium_essentiel',
+          required: mode === 'deep' ? 'fo' : 'premium',
           current: tier,
           upgrade_url: 'https://ikcp.eu/cassius/pricing',
         }, 403, origin);

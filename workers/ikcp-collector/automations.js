@@ -44,7 +44,7 @@ export async function runAutomation(cronExpression, env) {
 // ─── 1. Veille nocturne (6h UTC) ──────────────────────────────
 async function runVeilleNocturne(env) {
   const users = await env.IKCP_COLLECTOR_DB
-    .prepare(`SELECT id, email, prenom, tier FROM users WHERE tier IN ('premium_essentiel','premium_fo') AND deleted_at IS NULL`)
+    .prepare(`SELECT id, email, prenom, tier FROM users WHERE tier IN ('premium','fo') AND deleted_at IS NULL`)
     .all();
 
   const queries = [
@@ -66,7 +66,7 @@ async function runVeilleNocturne(env) {
   ];
 
   for (const user of users.results || []) {
-    if (user.tier !== 'premium_fo') continue; // veille nocturne réservée Family Office
+    if (user.tier !== 'fo') continue; // veille nocturne réservée Family Office
 
     for (const query of queries) {
       try {
@@ -124,7 +124,7 @@ async function runCoteActifs(env) {
       const r = await fetch(VEILLE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: q, mode: 'quick', user_id: w.user_id, tier: 'premium_fo' }),
+        body: JSON.stringify({ query: q, mode: 'quick', user_id: w.user_id, tier: 'fo' }),
       });
       const data = await r.json();
       if (!data.summary) continue;
@@ -164,7 +164,7 @@ async function runCoteActifs(env) {
 async function runDailyDigest(env) {
   const today = Date.now() - 24 * 3600 * 1000;
   const users = await env.IKCP_COLLECTOR_DB
-    .prepare(`SELECT id, email, prenom, tier FROM users WHERE tier = 'premium_fo' AND deleted_at IS NULL AND marketing_consent = 1`)
+    .prepare(`SELECT id, email, prenom, tier FROM users WHERE tier = 'fo' AND deleted_at IS NULL AND marketing_consent = 1`)
     .all();
 
   for (const user of users.results || []) {
