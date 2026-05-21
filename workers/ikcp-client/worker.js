@@ -236,7 +236,7 @@ async function handlePappersLookup(request, session, env) {
       error: 'quota_exceeded',
       tier: session.tier, limit: limits.pappers, used,
       reset_at: nextMonthFirst(),
-      upgrade_url: `${env.APP_URL}/abonnement`,
+      upgrade_url: `${env.FRONT_URL || 'https://ikcp.eu'}/app/profil.html`,
     }, 402);
   }
 
