@@ -343,7 +343,7 @@ try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; 
 
 if(me){
   document.getElementById('meEmail').textContent = me.email || '—';
-  const tierLbl = {discovery:'Découverte (0 €/mois)',premium_essentiel:'Premium Essentiel (49 €/mois)',premium_fo:'Premium Family Office (149 €/mois)','sur_mesure':'Sur-mesure IKCP (lettre de mission)'}[me.tier] || 'Découverte';
+  const tierLbl = {free:'Découverte (0 €/mois)',premium:'Premium Essentiel (49 €/mois)',fo:'Premium Family Office (149 €/mois)','sur_mesure':'Sur-mesure IKCP (lettre de mission)'}[me.tier] || 'Découverte';
   document.getElementById('meTier').textContent = tierLbl;
   document.getElementById('sessionDevice').textContent = navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge)/)?.[0] || 'Navigateur' + ' · IP masquée RGPD';
 }

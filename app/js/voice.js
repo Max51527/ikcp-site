@@ -278,7 +278,7 @@ const Voice = {
   /** Sélection automatique : premium si dispo + autorisé, fallback Web Speech */
   async smartSpeak(text, { tier, voiceId } = {}) {
     const prefs = this.getPreferences();
-    if (prefs.premiumMode && (tier === 'premium_essentiel' || tier === 'premium_fo')) {
+    if (prefs.premiumMode && (tier === 'premium' || tier === 'fo')) {
       return await this.speakPremium(text, { voiceId });
     }
     this.speak(text, { rate: prefs.rate || 1.0 });

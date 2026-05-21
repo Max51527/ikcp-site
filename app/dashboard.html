@@ -368,10 +368,10 @@ if(me){
 if(me){
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
-  const tierLbl = { discovery:'Découverte', premium_essentiel:'Premium', premium_fo:'Family Office' }[me.tier] || 'Découverte';
+  const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
   const tierEl = document.getElementById('userTier');
   tierEl.textContent = tierLbl;
-  if(me.tier && me.tier !== 'discovery') tierEl.classList.add('premium');
+  if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
   document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
@@ -397,7 +397,7 @@ Promise.allSettled([
 
   // Contacts
   const c = contacts.value || [];
-  document.getElementById('contactsCount').textContent = `${c.length}/${me?.tier === 'discovery' ? '5' : '∞'}`;
+  document.getElementById('contactsCount').textContent = `${c.length}/${me?.tier === 'free' ? '5' : '∞'}`;
   const cbody = document.getElementById('contacts-body');
   if(c.length === 0){
     cbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez vos contacts (notaire, avocat, concierge).</p>';

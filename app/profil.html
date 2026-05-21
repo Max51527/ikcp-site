@@ -98,10 +98,10 @@ try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; 
 if(me){
   document.getElementById('profilNom').textContent = me.display_name || me.prenom || me.email;
   document.getElementById('profilEmail').textContent = me.email;
-  const lbl = {discovery:'Découverte',premium_essentiel:'Premium Essentiel',premium_fo:'Premium Family Office'}[me.tier] || 'Découverte';
+  const lbl = {free:'Découverte',premium:'Premium Essentiel',fo:'Premium Family Office'}[me.tier] || 'Découverte';
   const t = document.getElementById('profilTier');
   t.textContent = lbl;
-  t.classList.add(me.tier === 'discovery' ? 'neutral' : 'live');
+  t.classList.add(me.tier === 'free' ? 'neutral' : 'live');
 }
 
 // SIRENS

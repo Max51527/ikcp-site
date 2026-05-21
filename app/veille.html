@@ -164,10 +164,10 @@ let me = null;
 try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
 
 if(me){
-  const tierLbl = { discovery:'Découverte', premium_essentiel:'Premium', premium_fo:'Family Office' }[me.tier] || 'Découverte';
+  const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
   document.getElementById('veilTier').textContent = tierLbl;
   // Désactiver recherche approfondie pour les tiers inférieurs
-  if(me.tier === 'discovery'){
+  if(me.tier === 'free'){
     document.getElementById('searchMode').innerHTML = '<option value="quick">Rapide (lecture seule)</option>';
     document.getElementById('searchBtn').disabled = true;
     document.getElementById('searchBtn').textContent = 'Premium requis';
@@ -216,7 +216,7 @@ window.doSearch = async function(e){
   resultDiv.style.display = 'none';
 
   try {
-    const r = await Marcel.veille(query, mode, me?.id, me?.tier || 'premium_fo');
+    const r = await Marcel.veille(query, mode, me?.id, me?.tier || 'fo');
 
     // Afficher résultat
     resultDiv.style.display = 'block';

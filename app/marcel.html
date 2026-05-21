@@ -16,7 +16,7 @@
 /* ── fallback variables manquantes dans marcel.css ── */
 :root{--faint:rgba(0,0,0,0.18);--cream:#FAFAF8;--bad:#E53E3E}
 body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
-.chat-wrap{flex:1;display:flex;flex-direction:column;max-width:780px;margin:0 auto;width:100%;padding:24px 22px 100px}
+.chat-wrap{flex:1;display:flex;flex-direction:column;max-width:780px;margin:0 auto;width:100%;padding:24px 22px 164px}
 .chat-head{text-align:center;padding:16px 0 24px;border-bottom:1px solid var(--line);margin-bottom:24px}
 .chat-head h1{font-family:'Fraunces',serif;font-size:32px;font-style:italic;color:var(--ink);font-weight:400;letter-spacing:-0.018em;margin:14px 0 4px}
 .chat-head .tagline{font-family:'Fraunces',serif;font-style:italic;font-size:12.5px;color:var(--mute);letter-spacing:0.04em}
@@ -38,7 +38,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 .msg.loading{align-self:flex-start;color:var(--mute);font-style:italic;padding:10px 16px;display:flex;align-items:center;gap:10px}
 .msg.loading::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent);animation:livePulse 1.4s ease-in-out infinite}
 .chat-input{
-  position:fixed;bottom:0;left:0;right:0;
+  position:fixed;bottom:60px;left:0;right:0;
   background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   padding:14px 22px max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--line);
 }
@@ -52,7 +52,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 .chat-input .mic:hover{border-color:var(--accent);color:var(--accent)}
 .chat-input .mic.listening{background:var(--accent);color:var(--bg);border-color:var(--accent);animation:micPulse 1.2s ease-in-out infinite}
 @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(194,71,34,0.6)}50%{box-shadow:0 0 0 8px rgba(194,71,34,0)}}
-.voice-bar{position:fixed;bottom:80px;left:0;right:0;background:rgba(250,247,240,0.96);backdrop-filter:blur(8px);padding:8px 22px;border-top:1px solid var(--line);display:none;align-items:center;justify-content:center;gap:14px;z-index:30;font-size:12px}
+.voice-bar{position:fixed;bottom:140px;left:0;right:0;background:rgba(250,247,240,0.96);backdrop-filter:blur(8px);padding:8px 22px;border-top:1px solid var(--line);display:none;align-items:center;justify-content:center;gap:14px;z-index:30;font-size:12px}
 .voice-bar.show{display:flex}
 .voice-bar .auto-read{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--mute);font-weight:500}
 .voice-bar .auto-read input{accent-color:var(--accent)}
@@ -61,14 +61,10 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 .msg .read-btn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--mute);font-size:11px;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:0.02em;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px}
 .msg .read-btn:hover{border-color:var(--accent);color:var(--accent)}
 .msg .read-btn.speaking{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-.back-link{position:absolute;left:22px;top:22px;color:var(--mute);text-decoration:none;font-size:12px;letter-spacing:0.04em}
-.back-link:hover{color:var(--accent)}
 @media(max-width:680px){.chat-head h1{font-size:26px}}
 </style>
 </head>
 <body>
-
-<a href="/app/dashboard.html" class="back-link">← Dashboard</a>
 
 <div class="chat-wrap">
   <div class="chat-head">
@@ -92,6 +88,29 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
   <button class="stop" onclick="stopReading()" id="stopReadBtn" style="display:none">⏹ Stop lecture</button>
 </div>
 
+<nav class="app-tabs">
+  <a href="/app/dashboard.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+    Profil
+  </a>
+</nav>
+
 <div class="chat-input">
   <form onsubmit="return send(event)">
     <button type="button" class="mic" id="micBtn" onclick="toggleMic()" aria-label="Parler à Marcel" title="Parler à Marcel">🎤</button>
@@ -106,15 +125,15 @@ import { Voice } from '/app/js/voice.js';
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
 let history = [];
-let userTier = 'discovery';
+let userTier = 'free';
 let me;
-try { me = await Marcel.Auth.me(); userTier = me?.tier || 'discovery'; } catch(_){ location.href = '/app/index.html'; }
+try { me = await Marcel.Auth.me(); userTier = me?.tier || 'free'; } catch(_){ location.href = '/app/index.html'; }
 
 // Vérifie statut voix premium en arrière-plan
 let premiumVoiceAvailable = false;
 Voice.checkPremiumStatus().then(s => {
   premiumVoiceAvailable = s.ok && (s.stt_voxtral || s.stt_whisper);
-  if(premiumVoiceAvailable && (userTier === 'premium_essentiel' || userTier === 'premium_fo')){
+  if(premiumVoiceAvailable && (userTier === 'premium' || userTier === 'fo')){
     document.querySelector('.voice-bar')?.insertAdjacentHTML('beforeend',
       `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium (Voxtral + VoxCPM2)</label>`);
     setTimeout(() => {
@@ -146,7 +165,7 @@ autoReadInput?.addEventListener('change', e => Voice.setAutoRead(e.target.checke
 window.toggleMic = async function(){
   const input = document.getElementById('q');
   const prefs = Voice.getPreferences();
-  const usePremium = prefs.premiumMode && premiumVoiceAvailable && (userTier === 'premium_essentiel' || userTier === 'premium_fo');
+  const usePremium = prefs.premiumMode && premiumVoiceAvailable && (userTier === 'premium' || userTier === 'fo');
 
   // Mode premium (Voxtral/Whisper serveur)
   if(usePremium){
