@@ -11,40 +11,176 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+.veille-search {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0 28px;
+}
+.veille-search input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.veille-search input:focus { border-color: var(--accent); }
+.veille-search select {
+  padding: 12px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  cursor: pointer;
+}
+.veille-search button {
+  padding: 12px 20px;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.veille-search button:hover { background: var(--accent); }
+.veille-search button:disabled { opacity: 0.5; cursor: wait; }
+.veille-result {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.veille-result h3 { font-family: 'Fraunces', serif; font-weight: 500; margin-bottom: 12px; font-size: 16px; }
+.veille-result p { margin: 8px 0; }
+.veille-result strong { font-weight: 600; }
+.veille-result em { font-style: italic; color: var(--accent); }
+.veille-result .sources {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--mute);
+}
+.veille-result .sources a { color: var(--accent); text-decoration: none; }
+.veille-result .disclaimer {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--mute);
+  font-style: italic;
+}
+.quota-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--mute);
+  margin-bottom: 20px;
+}
+.quota-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
+</style>
 </head>
 <body>
 
 <header class="app-header">
   <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Veille augmentée</span></a>
-  <div class="app-user"><span class="tier">Premium</span></div>
+  <div class="app-user">
+    <span class="tier" id="veilTier">Premium</span>
+  </div>
 </header>
 
 <main class="app-main">
-  <div class="section-label">Veille du jour</div>
+  <div class="section-label">Veille augmentée</div>
   <h1 class="app-h1">Ce qui touche <em>vos actifs</em>.</h1>
-  <p class="app-lead">Marcel scanne chaque nuit la Loi de Finances, la jurisprudence, la cote de vos collections et le deal flow Private Equity. Sources datées et cliquables.</p>
+  <p class="app-lead">Recherche instantanée via Perplexity Pro. Sources datées et cliquables. Votre veille nocturne ci-dessous.</p>
 
+  <!-- ── Barre de recherche ── -->
+  <form class="veille-search" id="searchForm" onsubmit="doSearch(event)">
+    <input type="text" id="searchInput" placeholder="Ex : Pacte Dutreil 2026, PLF ISF, cote Rolex Daytona…" maxlength="200" autocomplete="off">
+    <select id="searchMode">
+      <option value="quick">Rapide</option>
+      <option value="deep">Approfondie</option>
+    </select>
+    <button type="submit" id="searchBtn">Rechercher →</button>
+  </form>
+  <div class="quota-bar" id="quotaBar" style="display:none">
+    <span class="quota-dot"></span>
+    <span id="quotaText"></span>
+  </div>
+
+  <!-- ── Résultat de recherche ── -->
+  <div id="search-result" style="display:none"></div>
+
+  <!-- ── Alertes nocturnes ── -->
+  <div class="section-label" style="margin-top:24px">Alertes Marcel</div>
   <div id="alerts-list" class="loading">Chargement de votre veille…</div>
 </main>
 
 <nav class="app-tabs">
-  <a href="/app/dashboard.html">Dashboard</a>
-  <a href="/app/marcel.html">Marcel</a>
-  <a href="/app/veille.html" class="active">Veille</a>
-  <a href="/app/collections.html">Collections</a>
-  <a href="/app/profil.html">Profil</a>
+  <a href="/app/dashboard.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+    Profil
+  </a>
 </nav>
 
 <script type="module">
 import { Marcel } from '/app/js/api.js';
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
-try { await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
 
+let me = null;
+try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+if(me){
+  const tierLbl = { discovery:'Découverte', premium_essentiel:'Premium', premium_fo:'Family Office' }[me.tier] || 'Découverte';
+  document.getElementById('veilTier').textContent = tierLbl;
+  // Désactiver recherche approfondie pour les tiers inférieurs
+  if(me.tier === 'discovery'){
+    document.getElementById('searchMode').innerHTML = '<option value="quick">Rapide (lecture seule)</option>';
+    document.getElementById('searchBtn').disabled = true;
+    document.getElementById('searchBtn').textContent = 'Premium requis';
+    document.getElementById('searchBtn').title = 'La recherche active est disponible à partir du tier Premium.';
+  }
+}
+
+// ── Alertes nocturnes ────────────────────────────────────────────
 const list = document.getElementById('alerts-list');
 try {
   const alerts = await Marcel.Me.alerts();
   if(alerts.length === 0){
-    list.innerHTML = '<div class="empty"><h4>Aucune alerte aujourd\'hui.</h4><p>Marcel scanne pendant la nuit. Vous recevrez un email matin avec les nouveautés qui touchent vos actifs.</p></div>';
+    list.innerHTML = '<div class="empty"><h4>Aucune alerte aujourd\'hui.</h4><p>Marcel scanne chaque nuit la Loi de Finances, la jurisprudence et la cote de vos collections. Vous recevrez un email le matin avec les nouveautés qui touchent vos actifs.</p></div>';
   } else {
     list.classList.remove('loading');
     list.innerHTML = alerts.map(a => {
@@ -54,14 +190,85 @@ try {
         <article class="card" style="margin-bottom:14px">
           <div class="card-head"><span class="card-cat">${a.sphere || 'général'}</span><span class="meta">${date}</span></div>
           <h3>${imp} ${a.title}</h3>
-          <p>${a.body || ''}</p>
+          <p style="font-size:13.5px;line-height:1.6">${a.body || ''}</p>
           ${a.url ? `<a href="${a.url}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" style="align-self:flex-start">Source →</a>` : ''}
         </article>
       `;
     }).join('');
   }
-}catch(_){
+} catch(_) {
   list.innerHTML = '<div class="empty"><h4>Veille temporairement indisponible.</h4><p>Réessayez dans un instant.</p></div>';
+}
+
+// ── Recherche active ─────────────────────────────────────────────
+window.doSearch = async function(e){
+  e.preventDefault();
+  const query = document.getElementById('searchInput').value.trim();
+  if(!query) return;
+
+  const mode = document.getElementById('searchMode').value;
+  const btn = document.getElementById('searchBtn');
+  const resultDiv = document.getElementById('search-result');
+  const quotaBar = document.getElementById('quotaBar');
+
+  btn.disabled = true;
+  btn.textContent = mode === 'deep' ? 'Recherche approfondie…' : 'Recherche…';
+  resultDiv.style.display = 'none';
+
+  try {
+    const r = await Marcel.veille(query, mode, me?.id, me?.tier || 'premium_fo');
+
+    // Afficher résultat
+    resultDiv.style.display = 'block';
+    const sourcesHtml = (r.sources || []).slice(0,5).map((s,i) =>
+      `<a href="${s.url || s}" target="_blank" rel="noopener">[${i+1}] ${(s.title || s).slice(0,60)}…</a>`
+    ).join(' · ');
+
+    resultDiv.innerHTML = `
+      <div class="veille-result">
+        <h3>🔍 ${query}</h3>
+        <div>${markdownToHtml(r.summary || '')}</div>
+        ${sourcesHtml ? `<div class="sources"><strong>Sources :</strong> ${sourcesHtml}</div>` : ''}
+        <div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 CoMoFi.</div>
+      </div>
+    `;
+
+    // Quota restant
+    if(typeof r.remaining !== 'undefined'){
+      quotaBar.style.display = 'flex';
+      document.getElementById('quotaText').textContent = `${r.remaining} recherche${r.remaining > 1 ? 's' : ''} ${mode} restante${r.remaining > 1 ? 's' : ''} ce ${mode === 'deep' ? 'mois' : 'jour'}`;
+    }
+    resultDiv.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  } catch(err) {
+    resultDiv.style.display = 'block';
+    const msg = err.message || '';
+    if(msg.includes('401') || msg.includes('403')){
+      resultDiv.innerHTML = '<div class="card" style="margin-bottom:0"><h3>Accès Premium requis</h3><p>La recherche active est disponible à partir du tier Premium Essentiel. <a href="mailto:maxime@ikcp.fr?subject=Demande upgrade Premium">Contactez Maxime →</a></p></div>';
+    } else if(msg.includes('quota') || msg.includes('Quota')){
+      resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Quota atteint</h3><p>${msg}</p></div>`;
+    } else if(msg.includes('502') || msg.includes('upstream')){
+      // Fallback gracieux si ikcp-veille pas encore déployé → rediriger vers Marcel
+      resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Veille indisponible</h3><p>Le service de veille est temporairement indisponible. <a href="/app/marcel.html?topic=veille&q=${encodeURIComponent(query)}">Posez la question à Marcel →</a></p></div>`;
+    } else {
+      resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Erreur technique</h3><p>Réessayez dans un instant. Si le problème persiste, <a href="mailto:maxime@ikcp.fr">contactez Maxime</a>.</p></div>`;
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Rechercher →';
+  }
+};
+
+function markdownToHtml(s){
+  return s
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^### (.+)$/gm,'<h4 style="font-family:Fraunces,serif;font-weight:500;margin:14px 0 6px">$1</h4>')
+    .replace(/^## (.+)$/gm,'<h3 style="font-family:Fraunces,serif;font-weight:500;margin:16px 0 8px">$1</h3>')
+    .replace(/^\- (.+)$/gm,'<li style="margin:4px 0">$1</li>')
+    .replace(/(<li.*<\/li>)/gs,'<ul style="margin:8px 0 8px 18px">$1</ul>')
+    .replace(/\n\n/g,'</p><p style="margin:8px 0">')
+    .replace(/^(<[^/])/, '<p style="margin:8px 0">$1').replace(/([^>])$/, '$1</p>');
 }
 </script>
 </body>

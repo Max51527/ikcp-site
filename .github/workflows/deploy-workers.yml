@@ -8,6 +8,7 @@ on:
       - 'workers/ikcp-voice/**'
       - 'workers/ikcp-batisseur/**'
       - 'workers/ikcp-hermes/**'
+      - 'workers/ikcp-veille/**'
   workflow_dispatch:
     inputs:
       target:
@@ -21,6 +22,7 @@ on:
           - ikcp-voice
           - ikcp-batisseur
           - ikcp-hermes
+          - ikcp-veille
 
 jobs:
   deploy-ikcp-marcel:
@@ -98,3 +100,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-hermes
+
+  deploy-ikcp-veille:
+    name: "Deploy ikcp-veille (Veille Perplexity)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-veille') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-veille (Perplexity Pro Proxy)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-veille

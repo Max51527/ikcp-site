@@ -234,9 +234,14 @@ window.readMessage = async function(btnId, text){
   }, 500);
 }
 
-// Routing par topic (depuis dashboard CTA)
+// Routing par topic (depuis dashboard CTA) et ?q= (depuis veille fallback)
 const _urlP = new URLSearchParams(location.search);
 const _topic = _urlP.get('topic');
+const _qParam = _urlP.get('q');
+if(_qParam && !_topic){
+  document.getElementById('q').value = _qParam;
+  document.getElementById('q').focus();
+}
 const _topicPrompts = {
   batisseur:    'Je souhaite réaliser une cartographie patrimoniale 360° : actifs immobiliers, sociétés, liquidités, contrats. Pouvez-vous orchestrer Bâtisseur ?',
   hermes:       'Je souhaite travailler ma stratégie de transmission patrimoniale (succession, donation, Pacte Dutreil, démembrement). Pouvez-vous mobiliser Hermès ?',
