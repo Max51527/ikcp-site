@@ -52,20 +52,20 @@ const SPECIALISTS_REGISTRY = {
   codex:     { url: 'https://ikcp-codex.maxime-ead.workers.dev/',     displayName: 'Codex',       role: 'Fiscalité experte · arbitrages CGI · jurisprudence fiscale',              model: 'opus-4-7',   live: true  },
   // 🟡 Sprint 2 — workers dédiés (ikcp-batisseur / ikcp-hermes), déployables via CI/CD
   batisseur: { url: 'https://ikcp-batisseur.maxime-ead.workers.dev/', displayName: 'Bâtisseur',   role: 'Cartographie patrimoine 360° · bilan dirigeant · holding · governance',    model: 'opus-4-7',   live: false },
-  hermes:    { url: 'https://ikcp-hermes.maxime-ead.workers.dev/',    displayName: 'Hermès',      role: 'Transmission patrimoniale · succession · donation · pacte Dutreil',        model: 'opus-4-7',   live: false },
+  hermes:    { url: 'https://ikcp-hermes.maxime-ead.workers.dev/',    displayName: 'Hermès',      role: 'Transmission patrimoniale · succession · donation · pacte Dutreil',        model: 'opus-4-7',   live: true  },
   // 🔴 Sprint 3 — mutualisé sur ikcp-lifestyle
   // agentKey = clé réelle dans ikcp-lifestyle/prompts.js (≠ registry key)
-  architecte:{ url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Architecte',  role: 'Immobilier & Foncier · DVF · IFI · SCI · montages locatifs',              model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'augustin'   },
-  stratege:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Stratège',    role: 'Marchés · allocation · produits financiers · diversification',             model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'stratege'   },
+  architecte:{ url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Architecte',  role: 'Immobilier & Foncier · DVF · IFI · SCI · montages locatifs',              model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'augustin'   },
+  stratege:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Stratège',    role: 'Marchés · allocation · produits financiers · diversification',             model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'stratege'   },
   // 🔴 Sprint 4 — lifestyle mutualisé
-  curateur:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Curateur',    role: 'Art · Horlogerie · Collections · Vins · Joaillerie · valeur & assurance',  model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'curateur'   },
-  concierge: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Concierge',   role: 'Voyage · Conciergerie · Mode · Bien-être · Aviation · expériences',        model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'iris'       },
-  capital:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Capital',     role: 'Capital investissement · private equity · actifs alternatifs · dette privée', model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'capital'   },
+  curateur:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Curateur',    role: 'Art · Horlogerie · Collections · Vins · Joaillerie · valeur & assurance',  model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'curateur'   },
+  concierge: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Concierge',   role: 'Voyage · Conciergerie · Mode · Bien-être · Aviation · expériences',        model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'iris'       },
+  capital:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Capital',     role: 'Capital investissement · private equity · actifs alternatifs · dette privée', model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'capital'   },
   // 🔴 Sprint 5
-  mecene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Mécène',      role: 'Philanthropie · Fondations · mécénat fiscal · NextGen · impact',           model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'olympe'     },
-  pedagogue: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Pédagogue',   role: 'Éducation financière · sensibilisation patrimoniale · formation NextGen',   model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'pedagogue'  },
-  camille:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Camille',     role: 'Assistance & Onboarding · coordination · support familles fondatrices',    model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'camille'    },
-  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Olympe',      role: 'Bien-être · santé · médecine privée · art de vivre & longévité',           model: 'sonnet-4-6', live: false, mutualisé: true, agentKey: 'helene'     },
+  mecene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Mécène',      role: 'Philanthropie · Fondations · mécénat fiscal · NextGen · impact',           model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'olympe'     },
+  pedagogue: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Pédagogue',   role: 'Éducation financière · sensibilisation patrimoniale · formation NextGen',   model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'pedagogue'  },
+  camille:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Camille',     role: 'Assistance & Onboarding · coordination · support familles fondatrices',    model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'camille'    },
+  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Olympe',      role: 'Bien-être · santé · médecine privée · art de vivre & longévité',           model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'helene'     },
 };
 // Filtre — Marcel ne peut déléguer qu'aux spécialistes déjà déployés
 const SPECIALISTS_IDS_LIVE = Object.entries(SPECIALISTS_REGISTRY).filter(([,v]) => v.live).map(([k]) => k);
