@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
 ═══════════════════════════════════════════════════════════════════════
   IKCP — IKIGAÏ Conseil Patrimonial
@@ -13,7 +13,7 @@
 
   Articles L.111-1, L.122-4 et L.335-2 du Code de la Propriété Intellectuelle.
 
-  Contact : maxime@ikcp.fr · https://ikcp.eu
+  Contact : maxime@ikcp.eu · https://ikcp.eu
 ═══════════════════════════════════════════════════════════════════════
 -->
 <html lang="fr" class="scroll-smooth">
@@ -359,7 +359,7 @@
                     <div class="cta">
                         <p style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px;">Aller plus loin ensemble.</p>
                         <p style="font-size:12px;opacity:0.5;margin-bottom:16px;">Identifier vos leviers concrets ensemble.</p>
-                        <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A">Demander un échange →</a>
+                        <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A">Demander un échange →</a>
                     </div>
                     <div class="footer">
                         <p><strong>IKCP</strong> — IKIGAÏ Conseil Patrimonial · Ardèche · Combloux · Megève</p>
@@ -513,7 +513,7 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - Conjoint survivant : exonéré de droits de succession (art. 796-0 bis CGI)
 
 IMPLANTATIONS : Ardèche · Combloux · Megève
-CONTACT MAXIME : maxime@ikcp.fr (échange sur recommandation ou demande motivée — pas de prise de RDV publique)
+CONTACT MAXIME : maxime@ikcp.eu (échange sur recommandation ou demande motivée — pas de prise de RDV publique)
 ORIAS : 23001568 | SIREN : 947 972 436
 
 RÈGLES ABSOLUES :
@@ -531,7 +531,7 @@ RÈGLES ABSOLUES :
 TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Comme un médecin de famille du patrimoine.`;
 
             // ══ Proxy endpoint — à remplacer par ton Cloudflare Worker ══
-            const PROXY_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
+            const PROXY_URL = 'https://ikcp-marcel.maxime-ead.workers.dev';
 
             return {
                 isOpen: false, isExpanded: false, isLoading: false, userInput: '',
@@ -561,7 +561,23 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                     this.$nextTick(() => { const c=document.getElementById('chat-messages'); if(c) c.scrollTop=c.scrollHeight; });
                     try {
                         let responseText = '';
-                        {
+                        if (PROXY_URL === 'VOTRE_PROXY_CLAUDE_URL') {
+                            // ── Mode démo (pas de proxy configuré) ──
+                            await new Promise(r => setTimeout(r, 800));
+                            const demoResponses = {
+                                default: "C'est une excellente question. Pour vous donner une réponse vraiment adaptée à votre situation, je vous suggère d'essayer le diagnostic patrimonial juste au-dessus — il vous donnera un premier aperçu de vos enjeux. Si vous souhaitez approfondir, Maxime pourra vous accompagner personnellement.",
+                                succession: "La question de la transmission est centrale. Sans anticipation, les droits de succession en ligne directe peuvent atteindre 45% au-delà de 1,8 million d'euros (barème 2026, art. 777 du Code général des impôts). Mais avec un abattement de 100 000 € par enfant renouvelable tous les 15 ans, une assurance-vie bien structurée et une stratégie de donation progressive, l'impact peut être considérablement réduit. Chaque situation est unique — je vous invite à explorer le diagnostic patrimonial sur cette page.",
+                                protection: "Vous touchez au cœur de la spécialisation d'IKCP. La vraie question est : si demain il vous arrivait quelque chose, comment votre famille s'en sortirait-elle financièrement ? Prévoyance, mandat de protection future, donation au dernier vivant, clause bénéficiaire d'assurance-vie — ces outils coûtent très peu mais changent tout. Le diagnostic patrimonial ci-dessus vous donnera un premier état des lieux.",
+                                impot: "L'impôt sur le revenu en 2026 est calculé selon un barème progressif : 0% jusqu'à 11 600 €, puis 11%, 30%, 41% et 45% pour la tranche au-delà de 181 917 € (source : economie.gouv.fr, Loi de Finances 2026). Mais l'optimisation fiscale n'est jamais une fin en soi — elle doit s'intégrer dans une stratégie patrimoniale globale qui protège aussi votre famille.",
+                                rdv: "Si vous avez identifié des enjeux qui vous concernent, vous pouvez écrire à Maxime Juveneton à maxime@ikcp.eu en présentant brièvement votre situation. Les échanges se font sur recommandation ou suite à un bilan patrimonial — pas de prise de rendez-vous publique."
+                            };
+                            const lower = userText.toLowerCase();
+                            if (lower.match(/success|héritage|transm|donat|enfant.*hérit/)) responseText = demoResponses.succession;
+                            else if (lower.match(/protect|décès|conjoint|prévoy|invalid|mandat/)) responseText = demoResponses.protection;
+                            else if (lower.match(/impôt|fiscal|ir |tmi|barème|tax/)) responseText = demoResponses.impot;
+                            else if (lower.match(/rendez|rdv|contact|échange|maxime|calendly/)) responseText = demoResponses.rdv;
+                            else responseText = demoResponses.default;
+                        } else {
                             // ── Mode production (proxy Claude API) ──
                             const response = await fetch(PROXY_URL, {
                                 method: 'POST',
@@ -579,7 +595,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                         this.history.push({ role: 'assistant', content: responseText });
                         this.messages.push({ role: 'assistant', html: marked.parse(String(responseText)) });
                     } catch(e) {
-                        this.messages.push({ role:'assistant', html:"<p>Un problème technique est survenu. Vous pouvez réessayer ou <a href='mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A' target='_blank' class='underline font-bold'>échanger directement avec Maxime</a>.</p>" });
+                        this.messages.push({ role:'assistant', html:"<p>Un problème technique est survenu. Vous pouvez réessayer ou <a href='mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A' target='_blank' class='underline font-bold'>échanger directement avec Maxime</a>.</p>" });
                     }
                     finally { this.isLoading=false; this.$nextTick(()=>{const c=document.getElementById('chat-messages');if(c)c.scrollTop=c.scrollHeight;}); }
                 }
@@ -588,56 +604,97 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </script>
 
 <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "LocalBusiness",
-          "@id": "https://ikcp.eu/#business",
-          "name": "IKCP — IKIGAÏ Conseil Patrimonial",
-          "description": "Cabinet indépendant spécialisé en protection patrimoniale en Ardèche. CGP Ardèche — conseil en gestion de patrimoine pour particuliers, dirigeants et TNS.",
-          "url": "https://ikcp.eu",
-          "telephone": "+33667537979",
-          "email": "maxime@ikcp.eu",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Saint-Marcel-lès-Annonay",
-            "addressLocality": "Annonay",
-            "addressRegion": "Ardèche",
-            "postalCode": "07100",
-            "addressCountry": "FR"
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "45.2404",
-            "longitude": "4.6716"
-          },
-          "areaServed": ["Ardèche", "Annonay", "Nord Ardèche", "Tournon-sur-Rhône", "Aubenas", "Privas", "Combloux", "Megève"],
-          "priceRange": "$$",
-          "sameAs": [
-            "https://www.linkedin.com/in/maxime-juveneton-27913a150/",
-            "https://www.instagram.com/ikcp.patrimoine/"
-          ]
-        },
-        {
-          "@type": "Person",
-          "@id": "https://ikcp.eu/#maxime",
-          "name": "Maxime Juveneton",
-          "jobTitle": "Conseiller en gestion de patrimoine — CGP Ardèche",
-          "worksFor": {"@id": "https://ikcp.eu/#business"},
-          "url": "https://ikcp.eu",
-          "sameAs": "https://www.linkedin.com/in/maxime-juveneton-27913a150/"
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://ikcp.eu/#website",
-          "url": "https://ikcp.eu",
-          "name": "IKCP — Cabinet patrimoine Ardèche",
-          "publisher": {"@id": "https://ikcp.eu/#business"}
-        }
+      "@type": ["FinancialService", "LocalBusiness"],
+      "@id": "https://ikcp.eu/#business",
+      "name": "IKCP — IKIGAÏ Conseil Patrimonial",
+      "alternateName": ["IKCP", "IKIGAÏ Conseil Patrimonial", "Cabinet IKCP", "IKIGAI Conseil Patrimonial"],
+      "description": "Cabinet indépendant de conseil en gestion de patrimoine en Ardèche, spécialisé en protection, transmission et optimisation fiscale pour particuliers, dirigeants et TNS.",
+      "url": "https://ikcp.eu",
+      "logo": "https://ikcp.eu/icons/logo-ikcp.png",
+      "image": "https://ikcp.eu/icons/og-image.png",
+      "telephone": "+33667537979",
+      "email": "maxime@ikcp.eu",
+      "vatID": "FR00947972436",
+      "taxID": "947972436",
+      "iso6523Code": "0002:947972436",
+      "identifier": [
+        {"@type": "PropertyValue", "propertyID": "ORIAS", "value": "23001568"},
+        {"@type": "PropertyValue", "propertyID": "SIREN", "value": "947972436"}
+      ],
+      "founder": {"@id": "https://ikcp.eu/#maxime"},
+      "foundingDate": "2023-01-06",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2 Route du Lac",
+        "addressLocality": "Saint-Marcel-lès-Annonay",
+        "addressRegion": "Auvergne-Rhône-Alpes",
+        "postalCode": "07100",
+        "addressCountry": "FR"
+      },
+      "geo": {"@type": "GeoCoordinates", "latitude": "45.2404", "longitude": "4.6716"},
+      "areaServed": [
+        {"@type": "AdministrativeArea", "name": "Ardèche"},
+        {"@type": "City", "name": "Annonay"},
+        {"@type": "City", "name": "Aubenas"},
+        {"@type": "City", "name": "Privas"},
+        {"@type": "City", "name": "Tournon-sur-Rhône"},
+        {"@type": "City", "name": "Le Teil"},
+        {"@type": "City", "name": "Combloux"},
+        {"@type": "City", "name": "Megève"}
+      ],
+      "priceRange": "€€",
+      "openingHoursSpecification": [{
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+        "opens": "09:00",
+        "closes": "19:00"
+      }],
+      "sameAs": [
+        "https://www.linkedin.com/in/maxime-juveneton-27913a150/",
+        "https://www.instagram.com/ikcp.patrimoine/",
+        "https://www.facebook.com/ikcp.patrimoine/",
+        "https://www.cncef.org/annuaire/ikigai-conseil-patrimonial/",
+        "https://www.pappers.fr/entreprise/ikigai-conseil-patrimonial-947972436"
       ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://ikcp.eu/#maxime",
+      "name": "Maxime Juveneton",
+      "jobTitle": "Conseiller en gestion de patrimoine — CGP Ardèche",
+      "worksFor": {"@id": "https://ikcp.eu/#business"},
+      "url": "https://ikcp.eu",
+      "image": "https://ikcp.eu/icons/maxime.jpg",
+      "sameAs": [
+        "https://www.linkedin.com/in/maxime-juveneton-27913a150/",
+        "https://www.linkedin.com/in/maxime-juveneton-53762413/"
+      ],
+      "knowsAbout": [
+        "Gestion de patrimoine","Optimisation fiscale","Succession","Donation",
+        "Assurance-vie","IFI","Pacte Dutreil","LMNP","Plan d'Épargne Retraite",
+        "Transmission d'entreprise","Prévoyance","SCPI","SCI familiale"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ikcp.eu/#website",
+      "url": "https://ikcp.eu",
+      "name": "IKCP — Cabinet patrimoine Ardèche",
+      "publisher": {"@id": "https://ikcp.eu/#business"},
+      "inLanguage": "fr-FR",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://ikcp.eu/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
-    </script>
+  ]
+}
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.3/dist/cdn.min.js" defer></script>
     <script>
@@ -1569,14 +1626,12 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           gap: 10px;
           flex-wrap: wrap;
         }
-        /* Bouton minimize — touch target 44×44 (WCAG 2.5.5) via padding compensé */
         .marcel-talk-minimize {
           background: transparent;
           border: 1px solid #d8d0c4;
           color: #907b65;
-          /* Taille visible 32px, touch target 44px via pseudo-element */
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
           cursor: pointer;
           font-size: 18px;
@@ -1584,34 +1639,20 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: border-color 0.2s, color 0.2s, background 0.2s;
+          transition: all 0.2s;
           flex-shrink: 0;
           padding: 0;
-          position: relative;
-        }
-        /* Zone de clic étendue à 44×44 sans agrandir visuellement le bouton */
-        .marcel-talk-minimize::before {
-          content: '';
-          position: absolute;
-          inset: -6px;
-          border-radius: 50%;
         }
         .marcel-talk-minimize:hover {
           border-color: #b8956e;
           color: #1f1a16;
           background: #f9f6f0;
         }
-        .marcel-talk-minimize:active {
-          background: #f0e8d8;
-          border-color: #c9a96e;
-        }
         .marcel-talk-minimize .minimize-icon {
           display: inline-block;
-          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-          pointer-events: none;
+          transition: transform 0.3s;
         }
-
-        /* ─── État RÉDUIT ─── */
+        /* État réduit : pivote l'icône en + et masque le contenu */
         .marcel-talk-card.minimized .marcel-talk-collapsible {
           max-height: 0;
           opacity: 0;
@@ -1621,43 +1662,11 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           padding-top: 0 !important;
           padding-bottom: 0 !important;
         }
-        /* Masquer la bordure du header quand réduit (plus propre) */
-        .marcel-talk-card.minimized .marcel-talk-header {
-          margin-bottom: 0;
-          padding-bottom: 0;
-          border-bottom: none;
-        }
-        /* Masquer le badge secondaire quand réduit */
-        .marcel-talk-card.minimized .marcel-talk-badge {
-          opacity: 0;
-          max-width: 0;
-          overflow: hidden;
-          padding: 0;
-          border: none;
-          margin: 0;
-          transition: opacity 0.25s, max-width 0.3s;
-        }
-        /* Icône pivotée quand réduit (− devient ×) */
         .marcel-talk-card.minimized .marcel-talk-minimize .minimize-icon {
           transform: rotate(45deg);
         }
-        /* Carte compacte quand réduite */
         .marcel-talk-card.minimized {
-          padding-bottom: 18px !important;
-          animation-play-state: paused; /* Stopper l'animation flottante si réduit */
-        }
-        /* Indicateur visuel "réduit" — petite barre colorée sous le header */
-        .marcel-talk-card.minimized::after {
-          content: 'Cliquez pour agrandir';
-          display: block;
-          text-align: center;
-          font-size: 9.5px;
-          letter-spacing: 1.2px;
-          text-transform: uppercase;
-          color: #b8956e;
-          opacity: 0.7;
-          margin-top: 6px;
-          font-weight: 600;
+          padding-bottom: 14px !important;
         }
         .marcel-talk-collapsible {
           transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
@@ -1697,31 +1706,24 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           top: 6%;
           left: 50%;
           transform: translateX(-50%);
-          width: 78px;
-          max-width: 78px;
+          width: 115px;
           z-index: 2;
           animation: balloonFly 8s ease-in-out infinite;
         }
         .balloon-svg {
-          width: 78px;
-          max-width: 78px;
+          width: 115px;
           height: auto;
           display: block;
-          filter: drop-shadow(0 12px 18px rgba(31, 26, 22, 0.22)) drop-shadow(0 3px 6px rgba(184, 149, 110, 0.14));
+          filter: drop-shadow(0 18px 24px rgba(31, 26, 22, 0.25)) drop-shadow(0 4px 8px rgba(184, 149, 110, 0.15));
           animation: balloonSway 4.5s ease-in-out infinite;
           transform-origin: 50% 90%;
         }
-        /* Mobile : encore plus petit */
-        @media (max-width: 640px) {
-          .balloon-stage, .balloon-svg { width: 56px !important; max-width: 56px !important; }
-        }
         /* Compat ancienne classe (au cas où) */
         .balloon {
-          width: 78px;
-          max-width: 78px;
+          width: 130px;
           height: auto;
           display: block;
-          filter: drop-shadow(0 12px 18px rgba(31, 26, 22, 0.22));
+          filter: drop-shadow(0 18px 24px rgba(31, 26, 22, 0.22));
           animation: balloonSway 4.5s ease-in-out infinite;
         }
         .balloon-shadow {
@@ -1783,47 +1785,6 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           0%, 100% { opacity: 1; transform: scale(1); }
           50%      { opacity: 0.6; transform: scale(0.85); }
         }
-
-        /* ═══ Hero minimaliste : montgolfière cliquable, carte questions masquée ═══ */
-        .marcel-talk-card { display: none !important; }
-        .balloon-stage { cursor: pointer; top: 24%; }
-        .balloon-label { top: 13%; }
-        .balloon-stage:hover .balloon-svg {
-          filter: drop-shadow(0 16px 26px rgba(31, 26, 22, 0.30))
-                  drop-shadow(0 4px 10px rgba(184, 149, 110, 0.28))
-                  brightness(1.05);
-        }
-        .balloon-cta {
-          position: absolute;
-          bottom: 15%;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 5;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 13px 24px;
-          background: rgba(31, 26, 22, 0.9);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(184, 149, 110, 0.45);
-          border-radius: 100px;
-          color: #fff;
-          font-family: inherit;
-          font-size: 13.5px;
-          font-weight: 600;
-          letter-spacing: 0.2px;
-          cursor: pointer;
-          white-space: nowrap;
-          transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
-          box-shadow: 0 10px 28px -8px rgba(31, 26, 22, 0.45);
-        }
-        .balloon-cta:hover {
-          transform: translateX(-50%) translateY(-3px);
-          background: rgba(31, 26, 22, 1);
-          box-shadow: 0 16px 38px -10px rgba(31, 26, 22, 0.55);
-        }
-        .balloon-cta-arrow { transition: transform .25s ease; }
-        .balloon-cta:hover .balloon-cta-arrow { transform: translateX(4px); }
 
         /* ═══ Le launcher du bilan ═══ */
         .bilan-launcher {
@@ -2250,14 +2211,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="hidden lg:flex items-center space-x-6">
                 <a href="#bilan-patrimonial" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Diagnostic</a>
                 <a href="#besoins" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Cas concrets</a>
-
+                <a href="/family-office.html" class="text-sm font-medium transition flex items-center gap-1.5 relative" :class="scrolled?'text-[#1f1a16] hover:text-[#b8956e]':'text-[#1f1a16]/90 hover:text-[#b8956e]'">
+                  <span>Family Office</span>
+                  <span class="text-[8px] font-bold bg-[#b8956e] text-white px-1.5 py-0.5 rounded-full tracking-wider">NEW</span>
+                </a>
                 <a href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-sm font-medium transition flex items-center gap-1.5" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">⭐Sélection Privée</a>
                 <a href="#philosophie" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Le Cabinet</a>
-                <a href="/app/" class="text-sm font-medium transition flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border" :class="scrolled?'text-[#1f1a16] border-[#1f1a16]/25 hover:bg-[#1f1a16] hover:text-white hover:border-[#1f1a16]':'text-[#1f1a16]/80 border-[#1f1a16]/20 hover:bg-[#1f1a16]/90 hover:text-white'" title="Espace Fondateurs Bêta">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  <span>Mon Espace</span>
-                </a>
-                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="px-5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-sm font-bold rounded-lg hover:bg-[#f9f6f0] transition-all shadow-lg hover:-translate-y-0.5">Échanger →</a>
+                <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="px-5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-sm font-bold rounded-lg hover:bg-[#f9f6f0] transition-all shadow-lg hover:-translate-y-0.5">Échanger →</a>
             </div>
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-xl p-2" :class="scrolled?'text-[#1f1a16]':'text-white'">☰</button>
         </div>
@@ -2265,13 +2225,13 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <button @click="mobileMenuOpen=false" class="absolute top-5 right-5 text-[#1f1a16] text-2xl p-2">✕</button>
             <a @click="mobileMenuOpen=false" href="#bilan-patrimonial" class="text-xl font-serif text-[#1f1a16]">Diagnostic</a>
             <a @click="mobileMenuOpen=false" href="#besoins" class="text-xl font-serif text-[#1f1a16]">Cas concrets</a>
-
+            <a @click="mobileMenuOpen=false" href="/family-office.html" class="text-xl font-serif text-[#1f1a16] flex items-center gap-2">
+              Family Office
+              <span class="text-[10px] font-bold bg-[#b8956e] text-white px-2 py-0.5 rounded-full tracking-wider">NEW</span>
+            </a>
             <a @click="mobileMenuOpen=false" href="https://ikcp-selection-privee-cui8f0o.gamma.site/" target="_blank" class="text-xl font-serif gold-text">Sélection Privée</a>
             <a @click="mobileMenuOpen=false" href="#philosophie" class="text-xl font-serif text-[#1f1a16]">Le Cabinet</a>
-            <a @click="mobileMenuOpen=false" href="/app/" class="text-xl font-serif text-[#1f1a16] flex items-center gap-2 border border-[#1f1a16]/20 px-6 py-2 rounded-lg">
-              🔑 Mon Espace
-            </a>
-            <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="mt-4 px-8 py-3 bg-[#b8956e] text-[#1f1a16] font-bold rounded-lg">Échanger →</a>
+            <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="mt-4 px-8 py-3 bg-[#b8956e] text-[#1f1a16] font-bold rounded-lg">Échanger →</a>
         </div>
     </nav>
 
@@ -2354,9 +2314,9 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           </div>
         </div>
 
-        <h1 id="idx-hero-h1">Protéger ce que vous êtes<br><em id="idx-hero-em">en train de bâtir</em>.</h1>
+        <h1>Protéger ce que vous êtes<br><em>en train de bâtir</em>.</h1>
 
-        <p class="sub" id="idx-hero-sub">
+        <p class="sub">
           Un accompagnement sur-mesure — juridique, fiscal et financier.<br>
           <strong>Protéger, valoriser, transmettre</strong> — là où les enjeux se croisent.
         </p>
@@ -2397,8 +2357,8 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           <div class="cloud cloud-2"></div>
           <div class="cloud cloud-3"></div>
 
-          <!-- Marcel : la VRAIE montgolfière SVG qui vole — cliquable, ouvre le chat -->
-          <div class="balloon-stage" onclick="openMarcelChat()" role="button" tabindex="0" aria-label="Ouvrir Marcel, votre agent IA patrimonial" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMarcelChat();}">
+          <!-- Marcel : la VRAIE montgolfière SVG qui vole -->
+          <div class="balloon-stage" aria-label="Marcel — agent IA patrimonial IKCP">
             <svg class="balloon-svg" viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <defs>
                 <linearGradient id="blueStripe" x1="0%" x2="0%" y1="0%" y2="100%">
@@ -2495,13 +2455,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             Marcel · En ligne
           </div>
 
-          <!-- CTA minimaliste : la montgolfière ouvre Marcel (carte questions masquée) -->
-          <button type="button" class="balloon-cta" onclick="openMarcelChat()">
-            <span class="balloon-cta-text">Discutez avec Marcel</span>
-            <span class="balloon-cta-arrow">→</span>
-          </button>
-
-          <!-- CARTE questions masquée (conservée dormante, voir CSS .marcel-talk-card) -->
+          <!-- LA CARTE INTERACTIVE Marcel — questions cliquables qui ouvrent le chat -->
           <div class="marcel-talk-card" id="marcel-talk-card">
 
             <div class="marcel-talk-header">
@@ -2729,7 +2683,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             <!-- Contact direct (mailto) — sur recommandation / motivé -->
                             <div class="mt-4 pt-4 border-t border-[#e5ded2] text-center">
                                 <p class="text-xs text-[#9e9080] mb-2">Vous préférez écrire directement à Maxime ?</p>
-                                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 text-sm font-semibold text-[#b8956e] hover:text-[#1f1a16] transition-colors">
+                                <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 text-sm font-semibold text-[#b8956e] hover:text-[#1f1a16] transition-colors">
                                     Écrire à Maxime →
                                 </a>
                                 <p class="text-[10px] text-[#9e9080] mt-2 italic">Sur recommandation ou suite à un bilan patrimonial.</p>
@@ -2891,7 +2845,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <div class="bg-gradient-to-br from-[#1f1a16] to-[#2e2520] rounded-xl p-6 sm:p-8 text-center text-white shadow-lg max-w-2xl mx-auto">
                 <p class="font-serif text-xl mb-2">Aller plus loin ensemble.</p>
                 <p class="text-sm text-[#9e9080] mb-5">Explorez les 5 étapes du diagnostic, identifiez vos leviers et réservez un échange.</p>
-                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-block px-8 py-3.5 bg-[#b8956e] text-[#1f1a16] font-bold text-sm rounded-lg hover:scale-105 transition-transform shadow-lg">Demander un échange →</a>
+                <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-block px-8 py-3.5 bg-[#b8956e] text-[#1f1a16] font-bold text-sm rounded-lg hover:scale-105 transition-transform shadow-lg">Demander un échange →</a>
                 <p class="text-[10px] text-[#6d5c4a] mt-4">IKCP — Ardèche · Combloux · Megève</p>
             </div>
         </div>
@@ -3387,7 +3341,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                                     </div>
                                 </div>
                                 <div class="text-center mt-5">
-                                    <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A"
+                                    <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A"
                                        class="inline-flex items-center gap-2 px-6 py-3 bg-[#1f1a16] text-white text-xs font-bold rounded-xl hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-lg hover:-translate-y-0.5">
                                         Découvrir les solutions adaptées à ma situation →
                                     </a>
@@ -3531,7 +3485,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             </div>
 
             <div class="text-center">
-                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-xl hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-lg">
+                <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-xl hover:bg-[#b8956e] hover:text-[#1f1a16] transition-all shadow-lg">
                     Demander un échange →
                 </a>
                 <p class="text-[10px] text-[#ad9578] mt-3">Sur recommandation ou suite à un bilan patrimonial.</p>
@@ -3583,7 +3537,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
             <p class="text-[#907b65] text-sm mb-8 max-w-md mx-auto">Un premier échange pour comprendre ce que vous êtes en train de bâtir — et comment le protéger.</p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
-                <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-lg hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all shadow-xl hover:-translate-y-0.5">
+                <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" class="inline-flex items-center gap-2 px-8 py-4 bg-[#1f1a16] text-white text-sm font-bold rounded-lg hover:bg-[#a8854e] hover:text-[#1f1a16] transition-all shadow-xl hover:-translate-y-0.5">
                     ✉️ Écrire à Maxime
                 </a>
                 <a href="tel:0667537979" class="inline-flex items-center gap-2 px-8 py-4 border border-[#d8d0c4] text-[#4d3f33] text-sm font-medium rounded-lg hover:bg-[#1f1a16] hover:text-white hover:border-slate-900 transition">
@@ -3658,7 +3612,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                         </li>
                         <li class="flex items-start gap-2.5">
                             <span class="text-[#b8956e] mt-0.5">✉️</span>
-                            <a href="mailto:maxime@ikcp.fr" class="text-[#c8bfb5] hover:text-[#b8956e] transition">maxime@ikcp.fr</a>
+                            <a href="mailto:maxime@ikcp.eu" class="text-[#c8bfb5] hover:text-[#b8956e] transition">maxime@ikcp.eu</a>
                         </li>
                         <li class="flex items-start gap-2.5">
                             <span class="text-[#b8956e] mt-0.5">📞</span>
@@ -3706,7 +3660,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 <span class="text-[#4d3f33]">·</span>
                 <a href="/sitemap.xml" class="text-[#9e9080] hover:text-[#b8956e] transition">Plan du site</a>
                 <span class="text-[#4d3f33]">·</span>
-                <a href="mailto:maxime@ikcp.fr?subject=Demande%20RGPD" class="text-[#9e9080] hover:text-[#b8956e] transition">Exercer mes droits RGPD</a>
+                <a href="mailto:maxime@ikcp.eu?subject=Demande%20RGPD" class="text-[#9e9080] hover:text-[#b8956e] transition">Exercer mes droits RGPD</a>
             </div>
 
             <p class="text-center text-[10px] text-[#6d5c4a] mt-6 leading-relaxed">© 2026 IKCP — IKIGAÏ Conseil Patrimonial — EURL.<br class="sm:hidden"> Les informations présentées ne constituent pas un conseil en investissement personnalisé au sens de l'art. L533-13 du Code monétaire et financier.</p>
@@ -3785,106 +3739,24 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
       const minimized = card.classList.toggle('minimized');
       try { localStorage.setItem('ikcp-marcel-minimized', minimized ? '1' : '0'); } catch(_) {}
     }
-    // Exposition globale explicite — nécessaire pour les onclick= inline dans le HTML
-    window.toggleMarcelCard = toggleMarcelCard;
 
-    // ─── Marcel modal autonome (appel direct worker, ne dépend plus du chatbot-widget) ───
     function askMarcel(question){
-      openMarcelModal();
-      const input = document.getElementById('marcel-modal-input');
-      if(input){ input.value = question; }
-      submitMarcelModal(question);
+      // Ouvre le widget Marcel et soumet la question
+      document.body.classList.add('marcel-open');
+      if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
+      setTimeout(function(){
+        if(typeof window._ikcpAskFollow==='function'){window._ikcpAskFollow(question);}
+        else{
+          var inp=document.getElementById('ikcp-inp');
+          if(inp){inp.value=question;}
+          if(typeof window._ikcpSend==='function'){window._ikcpSend();}
+        }
+      },300);
     }
     function openMarcelChat(){
-      openMarcelModal();
-      const input = document.getElementById('marcel-modal-input');
-      if(input){ input.focus(); }
+      document.body.classList.add('marcel-open');
+      if(typeof window._ikcpToggle==='function'){window._ikcpToggle();}
     }
-    function openMarcelModal(){
-      let modal = document.getElementById('marcel-modal');
-      if(!modal){
-        modal = document.createElement('div');
-        modal.id = 'marcel-modal';
-        modal.style.cssText = 'display:flex;position:fixed;inset:0;z-index:9997;background:rgba(31,26,22,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;font-family:"Outfit","Inter",sans-serif';
-        modal.innerHTML = `
-          <div style="background:#FAF7F0;max-width:680px;width:100%;border-radius:18px;padding:26px 28px 22px;box-shadow:0 40px 90px -20px rgba(31,26,22,0.45);position:relative">
-            <button onclick="closeMarcelModal()" aria-label="Fermer" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(31,26,22,0.12);font-size:18px;cursor:pointer;color:#1f1a16;display:flex;align-items:center;justify-content:center">×</button>
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-              <div style="width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f0b89b,#c24722 55%,#8b2f18);display:flex;align-items:center;justify-content:center;color:#FAF7F0;font-family:'Playfair Display',serif;font-style:italic;font-size:22px;font-weight:500">M</div>
-              <div>
-                <div style="font-family:'Playfair Display','Fraunces',serif;font-style:italic;font-size:20px;font-weight:500;color:#1f1a16;letter-spacing:-0.012em">Marcel <span style="font-size:12px;color:#3F7A3F;font-style:normal;letter-spacing:0.04em">● en ligne</span></div>
-                <div style="font-size:10.5px;letter-spacing:0.22em;color:#9b8f80;text-transform:uppercase;font-weight:600;margin-top:2px">Agent IA Patrimonial · IKCP</div>
-              </div>
-            </div>
-            <form onsubmit="submitMarcelModal(); return false" style="display:flex;gap:8px;margin-bottom:14px">
-              <input id="marcel-modal-input" type="text" placeholder="Posez votre question patrimoniale…" maxlength="500" style="flex:1;padding:13px 16px;background:#fff;border:1.5px solid rgba(31,26,22,0.12);border-radius:10px;font-family:inherit;font-size:14px;color:#1f1a16;outline:none" autocomplete="off">
-              <button type="submit" id="marcel-modal-btn" style="padding:13px 22px;background:#1f1a16;color:#FAF7F0;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Envoyer →</button>
-            </form>
-            <div id="marcel-modal-body" style="min-height:80px;font-size:14px;line-height:1.7;color:#1f1a16;white-space:pre-wrap;max-height:55vh;overflow-y:auto;padding:4px"></div>
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(31,26,22,0.10);font-size:10.5px;color:#9b8f80;font-style:italic;line-height:1.5">Cette analyse ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. IKCP — ORIAS 23001568.</div>
-          </div>
-        `;
-        document.body.appendChild(modal);
-        modal.addEventListener('click', e => { if(e.target === modal) closeMarcelModal(); });
-        document.addEventListener('keydown', e => {
-          if(e.key === 'Escape' && document.getElementById('marcel-modal')?.style.display === 'flex') closeMarcelModal();
-        });
-      }
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-    function closeMarcelModal(){
-      const m = document.getElementById('marcel-modal');
-      if(m){ m.style.display = 'none'; }
-      document.body.style.overflow = '';
-    }
-    let _marcelHistory = [];
-    async function submitMarcelModal(forcedQ){
-      const input = document.getElementById('marcel-modal-input');
-      const btn = document.getElementById('marcel-modal-btn');
-      const body = document.getElementById('marcel-modal-body');
-      const q = (forcedQ || input.value || '').trim();
-      if(!q) return;
-      btn.disabled = true; btn.textContent = 'Marcel réfléchit…';
-      input.disabled = true;
-      // Ajoute la question en bulle user
-      body.innerHTML += `<div style="margin:10px 0;padding:10px 14px;background:#1f1a16;color:#FAF7F0;border-radius:12px 12px 4px 12px;max-width:85%;margin-left:auto;font-size:13.5px">${q.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div><div id="marcel-loading" style="margin:8px 0;padding:10px 14px;color:#9b8f80;font-style:italic;font-size:13px">Marcel mobilise ses spécialistes…</div>`;
-      body.scrollTop = body.scrollHeight;
-      _marcelHistory.push({role:'user', content:q});
-      try {
-        const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 45000);
-        const r = await fetch('https://ikcp-chat.maxime-ead.workers.dev', {
-          method:'POST', signal: ctrl.signal,
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({message:q, history:_marcelHistory.slice(-10)})
-        });
-        clearTimeout(tid);
-        const data = await r.json();
-        const reply = data.reply || data.message || 'Marcel n\'a pas pu traiter votre demande.';
-        _marcelHistory.push({role:'assistant', content:reply});
-        const html = reply
-          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-          .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-          .replace(/\*(.+?)\*/g,'<em>$1</em>')
-          .replace(/^### (.+)$/gm,'<h3 style="font-family:Playfair Display,serif;font-weight:500;margin:14px 0 6px;font-size:15px">$1</h3>')
-          .replace(/^## (.+)$/gm,'<h2 style="font-family:Playfair Display,serif;font-weight:500;margin:16px 0 8px;font-size:17px">$1</h2>')
-          .replace(/\n/g,'<br>');
-        document.getElementById('marcel-loading')?.remove();
-        body.innerHTML += `<div style="margin:10px 0;padding:14px 16px;background:#fff;border:1px solid rgba(31,26,22,0.10);border-left:3px solid #c24722;border-radius:12px 12px 12px 4px;font-size:13.5px;line-height:1.65">${html}</div>`;
-      } catch(err){
-        document.getElementById('marcel-loading')?.remove();
-        body.innerHTML += `<div style="margin:10px 0;padding:14px 16px;background:#fff;border-left:3px solid #B91C1C;border-radius:12px;font-size:13px;color:#1f1a16"><b>Erreur technique.</b> Marcel est momentanément indisponible. <a href="mailto:maxime@ikcp.fr" style="color:#c24722">Contactez Maxime directement</a>.</div>`;
-      } finally {
-        btn.disabled = false; btn.textContent = 'Envoyer →';
-        input.disabled = false; input.value = ''; input.focus();
-        body.scrollTop = body.scrollHeight;
-      }
-    }
-    window.askMarcel = askMarcel;
-    window.openMarcelChat = openMarcelChat;
-    window.closeMarcelModal = closeMarcelModal;
-    window.submitMarcelModal = submitMarcelModal;
 
     // ───────── PLAYER MUSICAL ambient (top-right) ─────────
     (function(){
@@ -4022,8 +3894,9 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
       const playlistEmbed = document.getElementById('playlist-embed-wrap');
       const playlistClose = document.getElementById('playlist-close');
 
-      // Playlist Spotify de Maxime — embed officiel
-      const SPOTIFY_PLAYLIST_URL = 'https://open.spotify.com/embed/playlist/7rGzxlLgjaqoq3bbPzwF6O?utm_source=generator';
+      // À remplacer par l'URL de la playlist Spotify de Maxime quand créée
+      // Format : https://open.spotify.com/embed/playlist/<ID>?utm_source=generator
+      const SPOTIFY_PLAYLIST_URL = ''; // ← coller l'URL Spotify embed ici
 
       function openPlaylist(){
         if(!playlistEmbed || !playlistOver) return;
@@ -4072,7 +3945,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </script>
 
     <!-- ══════════ CHATBOT MARCEL (widget externe) ══════════ -->
-    <script src="/chatbot-widget.js?v=20"></script>
+    <script src="/chatbot-widget.js?v=19"></script>
     <!-- ══════════ PWA INSTALL PROMPT ══════════ -->
     <div id="pwa-install" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#1f1a16;color:white;padding:14px 24px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);font-size:14px;font-family:Inter,sans-serif;max-width:380px;width:calc(100% - 32px);">
         <div style="display:flex;align-items:center;gap:14px;">
@@ -4133,412 +4006,5 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         });
     }
     </script>
-
-    <!-- ─── MODAL SPOTIFY PLAYLIST ─── -->
-    <div id="ikcp-spotify-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(31,26,22,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;font-family:'Outfit','Inter',sans-serif">
-      <div style="background:#FAF7F0;max-width:520px;width:100%;border-radius:18px;padding:26px 26px 22px;box-shadow:0 40px 90px -20px rgba(31,26,22,0.5);position:relative">
-        <button onclick="ikcpCloseSpotify()" aria-label="Fermer" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(31,26,22,0.12);font-size:18px;cursor:pointer;color:#1f1a16;display:flex;align-items:center;justify-content:center;z-index:2">×</button>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-          <span style="font-size:24px">🎧</span>
-          <div>
-            <h3 style="font-family:'Playfair Display','Fraunces',serif;font-style:italic;font-size:18px;font-weight:500;color:#1f1a16;letter-spacing:-0.005em;line-height:1">La sélection Maxime <span style="color:#b8956e">— playlist complète</span></h3>
-            <p style="font-size:11px;color:#9b8f80;margin-top:3px;letter-spacing:0.02em">Bossa nova · jazz · ambiance cabinet · 100% Spotify</p>
-          </div>
-        </div>
-        <!-- IFRAME SPOTIFY — remplace PLAYLIST_ID par ton vrai ID -->
-        <iframe
-          id="ikcp-spotify-iframe"
-          src="about:blank"
-          width="100%" height="380"
-          frameborder="0"
-          allowfullscreen=""
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-          style="border-radius:12px;display:block"></iframe>
-        <p style="margin-top:14px;font-size:11px;color:#9b8f80;font-style:italic;text-align:center;letter-spacing:0.02em">Le streaming complet nécessite un compte Spotify · les non-abonnés entendent les 30 premières secondes</p>
-      </div>
-    </div>
-
-    <script>
-    (function(){
-      // ⚠️ À REMPLACER PAR TON VRAI ID PLAYLIST SPOTIFY
-      // Trouve-le via : Spotify → click droit playlist → Partager → Copier lien
-      // L'ID est entre /playlist/ et ?si= dans l'URL
-      const SPOTIFY_PLAYLIST_ID = '7rGzxlLgjaqoq3bbPzwF6O';
-
-      const modal = document.getElementById('ikcp-spotify-modal');
-      const iframe = document.getElementById('ikcp-spotify-iframe');
-
-      window.ikcpOpenSpotify = function(){
-        if(SPOTIFY_PLAYLIST_ID === 'REMPLACE_MOI_PAR_TON_ID'){
-          alert('Configure SPOTIFY_PLAYLIST_ID dans index.html (cherche "REMPLACE_MOI").');
-          return;
-        }
-        // Lazy load iframe seulement à l'ouverture (perf)
-        iframe.src = `https://open.spotify.com/embed/playlist/${SPOTIFY_PLAYLIST_ID}?utm_source=ikcp_site&theme=0`;
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      };
-      window.ikcpCloseSpotify = function(){
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-        // Stoppe la lecture en vidant le src
-        setTimeout(() => { iframe.src = 'about:blank'; }, 300);
-      };
-      modal.addEventListener('click', e => { if(e.target === modal) ikcpCloseSpotify(); });
-      document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.style.display === 'flex') ikcpCloseSpotify(); });
-
-      // Injecte le bouton "Toute la playlist" dans le music-panel existant
-      function injectSpotifyBtn(){
-        const panel = document.querySelector('.music-panel');
-        if(!panel || document.getElementById('ikcp-spotify-cta')) return;
-        const btn = document.createElement('button');
-        btn.id = 'ikcp-spotify-cta';
-        btn.innerHTML = '🎧 Toute la playlist sur Spotify →';
-        btn.style.cssText = 'margin-top:10px;width:100%;padding:11px 14px;background:#1DB954;color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:0.02em;cursor:pointer;transition:all 0.2s';
-        btn.onmouseenter = () => btn.style.background = '#1ed760';
-        btn.onmouseleave = () => btn.style.background = '#1DB954';
-        btn.onclick = () => ikcpOpenSpotify();
-        panel.appendChild(btn);
-      }
-      // Retry plusieurs fois car le music-panel est rendu dynamiquement
-      let tries = 0;
-      const ti = setInterval(() => {
-        injectSpotifyBtn();
-        if(document.getElementById('ikcp-spotify-cta') || ++tries > 10) clearInterval(ti);
-      }, 500);
-    })();
-    </script>
-
-    <!-- ─── MODAL CONTACT INTELLIGENT — fix boutons Échanger ─── -->
-    <div id="ikcp-contact-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(31,26,22,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;font-family:'Outfit','Inter',sans-serif">
-      <div style="background:#FAF7F0;max-width:480px;width:100%;border-radius:18px;padding:32px 30px;box-shadow:0 40px 90px -20px rgba(31,26,22,0.45);position:relative;text-align:center">
-        <button onclick="ikcpCloseContact()" aria-label="Fermer" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid rgba(31,26,22,0.12);font-size:18px;cursor:pointer;color:#1f1a16;display:flex;align-items:center;justify-content:center">×</button>
-        <div style="font-size:38px;line-height:1;margin-bottom:14px">✍️</div>
-        <h3 style="font-family:'Playfair Display','Fraunces',serif;font-style:italic;font-size:24px;font-weight:500;color:#1f1a16;margin-bottom:10px;letter-spacing:-0.012em">Comment souhaitez-vous échanger&nbsp;?</h3>
-        <p style="font-size:14px;color:#6b5d52;margin-bottom:24px;line-height:1.55">Maxime vous répond personnellement sous 24h ouvrées. Cabinet ORIAS 23001568.</p>
-
-        <div style="display:flex;flex-direction:column;gap:10px">
-
-          <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A"
-             style="display:flex;align-items:center;justify-content:space-between;background:#1f1a16;color:#FAF7F0;text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:600;letter-spacing:0.02em;transition:all 0.2s">
-            <span>✉️ Email · ouvrir mon client mail</span>
-            <span style="opacity:0.6">→</span>
-          </a>
-
-          <button onclick="ikcpCopyEmail()" id="ikcp-copy-btn"
-             style="display:flex;align-items:center;justify-content:space-between;background:#fff;color:#1f1a16;border:1px solid rgba(31,26,22,0.12);text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:600;letter-spacing:0.02em;cursor:pointer;font-family:inherit;text-align:left">
-            <span>📋 Copier <code style="font-family:monospace;color:#b8956e;background:rgba(184,149,110,0.12);padding:2px 6px;border-radius:4px;font-size:12.5px">maxime@ikcp.fr</code></span>
-            <span style="opacity:0.6">→</span>
-          </button>
-
-          <a href="tel:+33786428850"
-             style="display:flex;align-items:center;justify-content:space-between;background:#fff;color:#1f1a16;border:1px solid rgba(31,26,22,0.12);text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:600;letter-spacing:0.02em;transition:all 0.2s">
-            <span>📞 Appeler · <span style="font-family:monospace;color:#b8956e">07 86 42 88 50</span></span>
-            <span style="opacity:0.6">→</span>
-          </a>
-
-          <a href="https://calendly.com/ikcp-maxime" target="_blank" rel="noopener"
-             style="display:flex;align-items:center;justify-content:space-between;background:#b8956e;color:#1f1a16;text-decoration:none;padding:14px 20px;border-radius:10px;font-size:13.5px;font-weight:700;letter-spacing:0.02em;transition:all 0.2s">
-            <span>📅 Prendre RDV directement (Calendly)</span>
-            <span>→</span>
-          </a>
-
-        </div>
-
-        <p style="margin-top:18px;font-size:11px;color:#9b8f80;font-style:italic;letter-spacing:0.02em">Premier échange offert · sans engagement · cabinet 100% indépendant</p>
-      </div>
-    </div>
-
-    <script>
-    // Intercepte TOUS les clicks sur mailto:maxime et propose une modal multi-options
-    (function(){
-      const modal = document.getElementById('ikcp-contact-modal');
-      function openContact(e){
-        if(e){ e.preventDefault(); e.stopPropagation(); }
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
-      window.ikcpCloseContact = function(){
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      };
-      window.ikcpCopyEmail = async function(){
-        const btn = document.getElementById('ikcp-copy-btn');
-        try {
-          await navigator.clipboard.writeText('maxime@ikcp.fr');
-          const original = btn.innerHTML;
-          btn.innerHTML = '<span style="color:#3F7A3F">✓ Email copié dans le presse-papiers</span><span style="opacity:0.6">✓</span>';
-          setTimeout(() => { btn.innerHTML = original; }, 2200);
-        } catch(_){
-          alert('Email à copier manuellement : maxime@ikcp.fr');
-        }
-      };
-      // Fermer au click sur le fond
-      modal.addEventListener('click', e => { if(e.target === modal) ikcpCloseContact(); });
-      document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.style.display === 'flex') ikcpCloseContact(); });
-
-      // Capture tous les clics sur mailto:maxime
-      document.addEventListener('click', function(e){
-        const a = e.target.closest('a[href^="mailto:maxime"]');
-        if(a){
-          // Sur mobile, on laisse passer le mailto natif (souvent configuré)
-          if(/iPhone|iPad|Android/i.test(navigator.userAgent)) return;
-          openContact(e);
-        }
-      }, true);
-    })();
-    </script>
-
-<!-- ═══ MARCEL UNIFICATION PATCH — doit charger APRÈS chatbot-widget.js ═══
-     1. body.marcel-open : la classe CSS qui masque le hero card quand le panel
-        est ouvert n'était jamais settée. On patche window._ikcpToggle.
-     2. askMarcel() redirigé vers le panel chatbot-widget (UI riche : historique,
-        schémas pédagogiques, TTS, PDF upload) au lieu de l'inline modal allégé.
-     3. Markdown complet dans l'inline modal (fallback) via marked.parse().
-═══════════════════════════════════════════════════════════════════════════ -->
-<script>
-(function patchMarcel() {
-  function onReady(fn) {
-    if (document.readyState !== 'loading') fn();
-    else document.addEventListener('DOMContentLoaded', fn);
-  }
-
-  onReady(function () {
-
-    // ── Patch 1 : body.marcel-open ─────────────────────────────────────────
-    // chatbot-widget.js toggle() ajoute .open sur #ikcp-chat-panel mais jamais
-    // body.marcel-open. Ce class CSS cache la hero card quand le panel est ouvert.
-    var origToggle = window._ikcpToggle;
-    if (origToggle) {
-      window._ikcpToggle = function () {
-        origToggle();
-        var panel = document.getElementById('ikcp-chat-panel');
-        if (panel) {
-          document.body.classList.toggle('marcel-open', panel.classList.contains('open'));
-        }
-      };
-    }
-
-    // ── Patch 2 : askMarcel() → chatbot-widget panel ────────────────────────
-    // Les boutons de la hero card appellent askMarcel(question).
-    // On redirige vers le panel complet (chatbot-widget) plutôt que l'inline modal.
-    window.askMarcel = function (question) {
-      var panel = document.getElementById('ikcp-chat-panel');
-      var inp   = document.getElementById('ikcp-inp');
-      if (panel && inp && window._ikcpToggle && window._ikcpAskFollow) {
-        // Ouvrir le panel si fermé
-        if (!panel.classList.contains('open')) {
-          window._ikcpToggle();
-        }
-        // Laisser l'animation du panel se terminer (~80ms) avant d'envoyer
-        setTimeout(function () {
-          window._ikcpAskFollow(question);
-        }, 80);
-      } else {
-        // Fallback : inline modal si chatbot-widget pas encore disponible
-        if (typeof openMarcelModal === 'function') openMarcelModal();
-        var input = document.getElementById('marcel-modal-input');
-        if (input) input.value = question;
-        if (typeof submitMarcelModal === 'function') submitMarcelModal(question);
-      }
-    };
-
-    // openMarcelChat → panel principal
-    window.openMarcelChat = function () {
-      var panel = document.getElementById('ikcp-chat-panel');
-      if (panel && !panel.classList.contains('open') && window._ikcpToggle) {
-        window._ikcpToggle();
-      }
-      setTimeout(function () {
-        var i = document.getElementById('ikcp-inp');
-        if (i) i.focus();
-      }, 100);
-    };
-
-    // ── Patch 3 : Markdown complet dans l'inline modal (fallback) ───────────
-    // L'inline modal convertissait manuellement bold/italic mais ignorait
-    // les listes, liens, tableaux. On utilise marked.parse() si disponible.
-    var origSubmit = window.submitMarcelModal;
-    if (origSubmit && window.marked) {
-      window.submitMarcelModal = async function (forcedQ) {
-        // Appel original mais on override le rendu Markdown après
-        var input  = document.getElementById('marcel-modal-input');
-        var btn    = document.getElementById('marcel-modal-btn');
-        var body   = document.getElementById('marcel-modal-body');
-        var q = (forcedQ || (input && input.value) || '').trim();
-        if (!q) return;
-        if (btn) { btn.disabled = true; btn.textContent = 'Marcel réfléchit…'; }
-        if (input) input.disabled = true;
-        body.innerHTML += '<div style="margin:10px 0;padding:10px 14px;background:#1f1a16;color:#FAF7F0;border-radius:12px 12px 4px 12px;max-width:85%;margin-left:auto;font-size:13.5px">' + q.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</div><div id="marcel-loading" style="margin:8px 0;padding:10px 14px;color:#9b8f80;font-style:italic;font-size:13px">Marcel mobilise ses spécialistes…</div>';
-        body.scrollTop = body.scrollHeight;
-        try {
-          var ctrl = new AbortController();
-          var tid  = setTimeout(function(){ctrl.abort();}, 45000);
-          var r = await fetch('https://ikcp-chat.maxime-ead.workers.dev', {
-            method: 'POST', signal: ctrl.signal,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: q, history: [] })
-          });
-          clearTimeout(tid);
-          var data  = await r.json();
-          var reply = data.reply || data.message || 'Marcel n\'a pas pu traiter votre demande.';
-          // Markdown complet via marked.parse()
-          var html = window.marked.parse(reply);
-          document.getElementById('marcel-loading') && document.getElementById('marcel-loading').remove();
-          body.innerHTML += '<div style="margin:10px 0;padding:14px 16px;background:#fff;border:1px solid rgba(31,26,22,0.10);border-left:3px solid #c24722;border-radius:12px 12px 12px 4px;font-size:13.5px;line-height:1.65" class="marcel-md-reply">' + html + '</div>';
-        } catch (err) {
-          document.getElementById('marcel-loading') && document.getElementById('marcel-loading').remove();
-          body.innerHTML += '<div style="margin:10px 0;padding:14px 16px;background:#fff;border-left:3px solid #B91C1C;border-radius:12px;font-size:13px;color:#1f1a16"><b>Erreur technique.</b> Marcel est momentanément indisponible. <a href="mailto:maxime@ikcp.fr" style="color:#c24722">Contactez Maxime directement</a>.</div>';
-        } finally {
-          if (btn) { btn.disabled = false; btn.textContent = 'Envoyer →'; }
-          if (input) { input.disabled = false; input.value = ''; input.focus(); }
-          body.scrollTop = body.scrollHeight;
-        }
-      };
-    }
-  });
-})();
-</script>
-
-<!-- ═══ VOICE MARCEL — TTS Premium via ikcp-voice (VoxCPM2) ═════════════
-     Remplace le WebSpeech natif du chatbot-widget par VoxCPM2 lorsque
-     le worker ikcp-voice est déployé + VOXCPM_API_URL configurée.
-     Fallback gracieux sur WebSpeech. STT : Voxtral (FR) + Whisper CF.
-═══════════════════════════════════════════════════════════════════════════ -->
-<script>
-(function patchVoiceMarcel() {
-  var VOICE_WORKER = 'https://ikcp-voice.maxime-ead.workers.dev';
-  var _ttsAudio = null;   // instance Audio courante (pour interrompre)
-  var _ttsActive = false; // état lecture en cours
-
-  // Vérifie si le worker est déployé (appel /health silencieux)
-  var _voiceAvailable = null;
-  function checkVoiceWorker() {
-    if (_voiceAvailable !== null) return Promise.resolve(_voiceAvailable);
-    return fetch(VOICE_WORKER + '/health', { method: 'GET' })
-      .then(function(r) { _voiceAvailable = r.ok; return r.ok; })
-      .catch(function() { _voiceAvailable = false; return false; });
-  }
-
-  // TTS premium VoxCPM2 (open-source) via ikcp-voice
-  function speakPremium(text) {
-    if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
-    if (!text || text.length > 3000) return; // garde coût
-
-    return fetch(VOICE_WORKER + '/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text }),
-    })
-    .then(function(r) {
-      if (!r.ok) throw new Error('tts_' + r.status);
-      return r.blob();
-    })
-    .then(function(blob) {
-      var url = URL.createObjectURL(blob);
-      _ttsAudio = new Audio(url);
-      _ttsAudio.onended = function() { _ttsActive = false; URL.revokeObjectURL(url); };
-      _ttsAudio.onerror = function() { _ttsActive = false; };
-      _ttsActive = true;
-      return _ttsAudio.play();
-    })
-    .catch(function(err) {
-      console.warn('[ikcp-voice] TTS fallback WebSpeech', err.message);
-      // Fallback WebSpeech
-      if (window.speechSynthesis) {
-        var u = new SpeechSynthesisUtterance(text.slice(0, 200));
-        u.lang = 'fr-FR';
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(u);
-      }
-    });
-  }
-
-  // Stop lecture en cours
-  function stopSpeak() {
-    if (_ttsAudio) { _ttsAudio.pause(); _ttsAudio = null; }
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    _ttsActive = false;
-  }
-
-  // Patch appliqué après chargement du chatbot-widget
-  function applyVoicePatch() {
-    // Surcharge window._ikcpToggleTTSBtn (bouton 🔊 dans le panel)
-    // pour utiliser VoxCPM2 si disponible
-    var origTTSBtn = window._ikcpToggleTTSBtn;
-    window._ikcpToggleTTSBtn = function() {
-      if (_ttsActive) { stopSpeak(); return; }
-      // Cherche le dernier message Marcel dans le panel
-      var msgs = document.querySelectorAll('#ikcp-chat-msgs .ikcp-msg.ikcp-msg-a');
-      var lastMsg = msgs[msgs.length - 1];
-      var text = lastMsg ? (lastMsg.innerText || lastMsg.textContent || '') : '';
-      text = text.replace(/\s+/g, ' ').trim().slice(0, 2000);
-      if (!text) { if (origTTSBtn) origTTSBtn(); return; }
-
-      checkVoiceWorker().then(function(available) {
-        if (available) {
-          speakPremium(text);
-        } else {
-          // Worker pas encore déployé — fallback TTS natif
-          if (origTTSBtn) origTTSBtn();
-          else if (window.speechSynthesis) {
-            var u = new SpeechSynthesisUtterance(text.slice(0, 300));
-            u.lang = 'fr-FR';
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(u);
-          }
-        }
-      });
-    };
-
-    // Expose speakPremium pour usage externe (ex. auto-lecture après réponse)
-    window._ikcpSpeakMarcel = function(text) {
-      checkVoiceWorker().then(function(available) {
-        if (available) speakPremium(text);
-      });
-    };
-    window._ikcpStopSpeak = stopSpeak;
-  }
-
-  // Délai léger pour s'assurer que chatbot-widget.js est chargé
-  if (document.readyState !== 'loading') {
-    setTimeout(applyVoicePatch, 200);
-  } else {
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(applyVoicePatch, 200);
-    });
-  }
-})();
-</script>
-
-<!-- CMS content loader — homepage.json -->
-<script>
-(function() {
-  'use strict';
-  function get(obj, path) {
-    return path.split('.').reduce((o, k) => o && o[k], obj);
-  }
-  fetch('/_data/homepage.json', { cache: 'no-cache' })
-    .then(r => r.ok ? r.json() : null)
-    .then(data => {
-      if (!data) return;
-      [
-        ['idx-hero-em',  'hero.headline_em'],
-        ['idx-hero-sub', 'hero.subtitle'],
-      ].forEach(([id, path]) => {
-        const el = document.getElementById(id);
-        if (el) { const v = get(data, path); if (v) el.textContent = v; }
-      });
-      const h1 = document.getElementById('idx-hero-h1');
-      if (h1 && data.hero && data.hero.headline_1) {
-        const t = h1.childNodes[0];
-        if (t && t.nodeType === Node.TEXT_NODE) t.textContent = data.hero.headline_1 + '\n';
-      }
-      if (data.seo && data.seo.title) document.title = data.seo.title;
-    })
-    .catch(() => {});
-})();
-</script>
 </body>
 </html>

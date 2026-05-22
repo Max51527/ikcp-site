@@ -1,11 +1,4 @@
-﻿<!--
-  © 2026 IKCP · Maxime Juveneton · ORIAS 23001568
-  Tous droits réservés — Proprietary & Confidential
-  Reproduction interdite sans autorisation écrite — maxime@ikcp.fr
-  PHASE BÊTA — Accessible en accès direct · ikcp.eu/family-office.html
--->
-<!-- Page Family Office · Phase Bêta · Accessible en accès direct · Non liée depuis la nav principale -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +6,7 @@
 
 <!-- ═══ SEO META — optimisé Family Office digitalisé ═══ -->
 <title>Family Office Augmenté · 100 % digital · Marcel IA — IKCP</title>
-<meta name="description" content="Le premier Family Office augmenté par intelligence artificielle souveraine. 100 % digital · 12 univers patrimoniaux · cartographie automatique · conseil 24/7 par Marcel · Bêta privée 50 familles fondatrices · accès offert.">
+<meta name="description" content="Le premier Family Office augmenté par intelligence artificielle souveraine en Ardèche. 12 univers patrimoniaux, cartographie automatique, conseil 24/7 par Marcel · Bêta privée 50 familles fondatrices · 290 €/mois.">
 <meta name="keywords" content="family office, family office digital, family office Ardèche, family office IA, conseil patrimonial premium, dirigeant entreprise familiale, transmission patrimoine, IKCP, Marcel agent IA patrimonial">
 <meta name="author" content="Maxime Juveneton — IKCP">
 <meta name="robots" content="index, follow">
@@ -23,15 +16,15 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ikcp.eu/family-office.html">
 <meta property="og:title" content="Family Office Augmenté · 100 % digital · IKCP">
-<meta property="og:description" content="Le premier Family Office augmenté par intelligence artificielle souveraine. 100 % digital · 12 univers patrimoniaux · cartographie automatique · conseil 24/7. Bêta privée 50 familles fondatrices.">
-<meta property="og:image" content="https://ikcp.eu/icons/og-image.png">
+<meta property="og:description" content="Le premier Family Office augmenté par intelligence artificielle souveraine en Ardèche. 12 univers patrimoniaux, cartographie automatique, conseil 24/7. Bêta privée 50 familles fondatrices.">
+<meta property="og:image" content="https://ikcp.eu/og-family-office.jpg">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="IKCP — IKIGAÏ Conseil Patrimonial">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Family Office Augmenté · 100 % digital · IKCP">
-<meta name="twitter:description" content="Premier Family Office augmenté par IA souveraine. 100 % digital · 12 univers · Marcel 24/7 · Bêta privée 50 familles · accès offert.">
+<meta name="twitter:description" content="Premier Family Office augmenté par IA souveraine en Ardèche. 12 univers · Marcel 24/7 · Bêta 50 familles · 290 €/mois.">
 
 <!-- Schema.org · Service + LocalBusiness -->
 <script type="application/ld+json">
@@ -59,7 +52,7 @@
     },
     "serviceArea": ["Lyon", "Annonay", "Megève", "France"],
     "telephone": "+33667537979",
-    "email": "maxime@ikcp.fr"
+    "email": "maxime@ikcp.eu"
   },
   "description": "Family Office digital augmenté par intelligence artificielle souveraine. 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Conçu pour dirigeants d'entreprise familiale.",
   "areaServed": "FR",
@@ -78,11 +71,11 @@
     },
     {
       "@type": "Offer",
-      "name": "Bêta fondateur (gratuit pendant la phase Bêta)",
-      "price": "0",
+      "name": "Family Office Augmenté",
+      "price": "290",
       "priceCurrency": "EUR",
-      "priceValidUntil": "2026-12-31",
-      "description": "Accès complet · 12 univers · Marcel illimité · RDV inclus · tarification post-Bêta co-construite avec les 50 fondateurs"
+      "priceValidUntil": "2027-12-31",
+      "description": "12 univers actifs · Marcel illimité · École NextGen · 1 RDV mensuel inclus · 6 mois offerts en Bêta"
     },
     {
       "@type": "Offer",
@@ -149,56 +142,15 @@ nav.fo-nav{
 .beta-banner a:hover{color:#fff}
 
 /* ═══════════════════════════════════════════════════════════
-   HERO VIDEO PARALLAXE — plein écran · fond sombre · overlay navy
+   HERO PRINCIPAL
 ═══════════════════════════════════════════════════════════ */
-.hero{position:relative;width:100%;min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;background:var(--navy-deep)}
-/* Fallback gradient (visible quand pas de vidéo) */
-.hero__fallback{position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,#0b1420 0%,var(--navy-deep) 28%,var(--navy) 62%,#162038 100%)}
-.hero__fallback::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 45% at 72% 38%,rgba(201,169,110,0.10) 0%,transparent 62%),radial-gradient(ellipse 35% 25% at 18% 75%,rgba(27,42,74,0.7) 0%,transparent 55%)}
-/* Vidéo parallaxe (JS translate3d sur scroll) */
-.hero__video{position:absolute;top:-15%;left:0;width:100%;height:130%;object-fit:cover;will-change:transform;z-index:1;transform:translate3d(0,0,0) scale(1.005)}
-/* Overlay double dégradé pour lisibilité */
-.hero__overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(11,20,32,0.36) 0%,rgba(11,20,32,0.65) 58%,rgba(11,20,32,0.95) 100%),linear-gradient(90deg,rgba(11,20,32,0.56) 0%,transparent 60%)}
-/* Grille contenu sur le hero */
-.hero__content{position:relative;z-index:3;display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;max-width:1280px;margin:0 auto;padding:120px 40px 80px;align-items:center;width:100%}
-@media (max-width:980px){.hero__content{grid-template-columns:1fr;padding:80px 24px 60px;gap:36px}}
-/* Scroll indicator animé */
-.hero__scroll{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:7px;color:rgba(250,250,248,0.33);font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.24em;text-transform:uppercase;text-decoration:none}
-.hero__scroll-line{display:block;width:1px;height:36px;background:linear-gradient(to bottom,rgba(201,169,110,0.65),transparent);animation:scrollLine 2.2s ease-in-out infinite}
-@keyframes scrollLine{0%,100%{transform:scaleY(0.2);opacity:0.35;transform-origin:top}50%{transform:scaleY(1);opacity:1;transform-origin:top}}
-/* Overrides couleurs sur fond sombre du hero */
-.hero .eyebrow{color:var(--gold-bright)}
-.hero .eyebrow::before{background:var(--gold-bright)}
-.hero h1{color:var(--cream)}
-.hero h1 em{color:var(--gold-bright)}
-.hero .lede{color:rgba(250,250,248,0.80)}
-.hero .lede em{font-style:italic;color:var(--gold-bright);font-family:'Playfair Display',serif;font-weight:500}
-.hero .btn-primary{background:var(--gold);color:var(--navy);box-shadow:0 6px 18px rgba(201,169,110,0.30)}
-.hero .btn-primary:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 10px 24px rgba(201,169,110,0.42)}
-.hero .btn-secondary{border-color:rgba(250,250,248,0.40);color:rgba(250,250,248,0.88)}
-.hero .btn-secondary:hover{background:rgba(250,250,248,0.09);border-color:var(--cream);color:var(--cream)}
-.hero .hero-card{box-shadow:0 28px 70px rgba(0,0,0,0.28)}
-/* ═══ ESPACE MEMBRE — section tableau de bord privé ═══ */
-.membre-section{padding:100px 40px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:var(--cream)}
-.membre-wrap{max-width:1100px;margin:0 auto}
-.membre-head{text-align:center;margin-bottom:56px}
-.membre-head h2{font-family:'Playfair Display',serif;font-size:clamp(30px,4.2vw,52px);line-height:1.06;color:var(--cream);font-weight:500;letter-spacing:-0.02em;margin-bottom:14px}
-.membre-head h2 em{color:var(--gold-bright);font-style:italic}
-.membre-head p{font-size:17px;color:rgba(250,250,248,0.75);max-width:600px;margin:0 auto;line-height:1.65;font-family:'Playfair Display',serif;font-style:italic}
-.membre-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:50px}
-@media (max-width:760px){.membre-feats{grid-template-columns:1fr}}
-.membre-feat{padding:26px 26px;background:rgba(255,255,255,0.04);border:1px solid rgba(201,169,110,0.18);border-radius:14px;transition:all 0.25s}
-.membre-feat:hover{background:rgba(255,255,255,0.07);border-color:var(--gold)}
-.membre-feat-ico{font-size:28px;line-height:1;margin-bottom:13px}
-.membre-feat h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--cream);font-weight:600;margin-bottom:8px;line-height:1.2}
-.membre-feat h3 em{color:var(--gold-bright);font-style:italic}
-.membre-feat p{font-size:13.5px;color:rgba(250,250,248,0.70);line-height:1.62}
-.membre-cta-wrap{text-align:center}
-.btn-membre{display:inline-flex;align-items:center;gap:10px;padding:18px 44px;background:var(--gold);color:var(--navy);text-decoration:none;font-size:13.5px;font-weight:700;letter-spacing:0.10em;border-radius:8px;transition:all 0.25s;box-shadow:0 8px 24px rgba(201,169,110,0.28);text-transform:uppercase}
-.btn-membre:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 12px 32px rgba(201,169,110,0.40)}
-.membre-sub{margin-top:16px;font-size:13px;color:rgba(250,250,248,0.48);font-style:italic;font-family:'Playfair Display',serif}
-.membre-sub a{color:var(--gold-bright);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.32)}
-.membre-sub a:hover{color:#fff;border-color:rgba(250,250,248,0.55)}
+.hero{
+  background:linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+  padding:80px 32px 100px;
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px;
+  max-width:1280px; margin:0 auto; align-items:center;
+}
+@media (max-width:980px){.hero{grid-template-columns:1fr; padding:50px 24px 60px; gap:40px}}
 
 .eyebrow{
   font-family:'JetBrains Mono',monospace; font-size:11px;
@@ -427,27 +379,17 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
   <a href="#beta">Demander mon accès →</a>
 </div>
 
-<!-- ═══ HERO VIDEO PARALLAXE + SIREN FUNNEL ═══ -->
-<section class="hero" id="hero">
-  <!-- Fallback gradient sombre (visible avant chargement vidéo) -->
-  <div class="hero__fallback"></div>
-  <!-- Vidéo plein écran — placer /assets/hero-fo.mp4 pour activer le parallaxe -->
-  <video class="hero__video" autoplay muted loop playsinline>
-    <source src="/assets/hero-fo.mp4" type="video/mp4">
-  </video>
-  <!-- Overlay dégradé navy → transparent pour lisibilité -->
-  <div class="hero__overlay"></div>
-  <!-- Contenu du hero — grille 2 colonnes : accroche / SIREN funnel -->
-  <div class="hero__content">
+<!-- ═══ HERO PAPPERS FUNNEL — entrée magique gratuite ═══ -->
+<section class="hero">
   <div>
-    <div class="eyebrow" id="fo-eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % France · RGPD souverain</div>
-    <h1 id="fo-hero-h1">Une porte. Une équipe.<br><em id="fo-hero-em">Votre patrimoine en orbite.</em></h1>
-    <p class="lede" id="fo-hero-lede">
-      Vous avez un comptable, un banquier, un notaire — peut-être un CGP. <em>Personne ne voit votre patrimoine en entier.</em> Ni les arbitrages entre vos silos. Ni les échéances qui se croisent. Ni les opportunités que vous ratez parce que vos experts ne se parlent pas entre eux. IKCP est le <strong>chef d'orchestre</strong> que vos 5 experts n'ont jamais été ensemble. Saisissez votre SIREN&nbsp;: Marcel cartographie votre société en&nbsp;30&nbsp;secondes.
+    <div class="eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % France · RGPD souverain</div>
+    <h1>Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
+    <p class="lede">
+      Cabinet indépendant <em>IKCP</em> · douze univers branchés sur intelligence souveraine · application disponible sur iOS et Android. <em>Conçue pour les dirigeant(e)s d'entreprise familiale.</em> Saisissez votre SIREN ci-contre, Marcel cartographie automatiquement votre société depuis le Registre National des Entreprises — gratuitement, en 30 secondes.
     </p>
     <div class="hero-actions">
-      <a href="#siren-funnel" class="btn-primary" id="fo-cta-primary">Tester avec mon SIREN →</a>
-      <a href="#beta" class="btn-secondary" id="fo-cta-secondary">Demander un accès Bêta</a>
+      <a href="#siren-funnel" class="btn-primary">Tester avec mon SIREN →</a>
+      <a href="#beta" class="btn-secondary">Demander un accès Bêta</a>
     </div>
   </div>
 
@@ -457,7 +399,7 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
     <div class="hero-card-title">Donnez votre <em>SIREN</em>.<br>Marcel s'allume.</div>
 
     <div style="display:flex; gap:8px; margin:18px 0 12px;">
-      <input type="text" id="siren-input" placeholder="Votre SIREN — 9 chiffres" maxlength="11"
+      <input type="text" id="siren-input" placeholder="9 chiffres — ex : 947972436" maxlength="11"
         style="flex:1; padding:14px 16px; background:var(--cream-2); border:1.5px solid var(--gold-deep); border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--navy); outline:none; font-weight:600; letter-spacing:0.05em;">
       <button onclick="lookupSiren()" id="siren-btn"
         style="padding:14px 20px; background:var(--navy); color:var(--cream); border:none; border-radius:10px; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; box-shadow:0 4px 12px rgba(27,42,74,0.20);">
@@ -465,7 +407,7 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       </button>
     </div>
     <p style="font-size:12px; color:var(--ink-faint); font-style:italic; line-height:1.55;">
-      Vos données ne quittent pas la France — hébergement souverain Paris.
+      Essayez avec <b onclick="document.getElementById('siren-input').value='947972436';lookupSiren()" style="cursor:pointer; color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif; font-weight:600">947972436</b> (IKCP démo). Vos données ne quittent pas la France — hébergement Cloudflare Paris.
     </p>
 
     <!-- Résultat Pappers + simulateurs -->
@@ -473,8 +415,6 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       <div id="siren-loading" style="text-align:center; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif;">Marcel interroge le RNE…</div>
       <div id="siren-data" style="display:none;"></div>
     </div>
-    <!-- Automatisations IKCP détectées pour cette entreprise -->
-    <div id="automations-result" style="display:none; margin-top:14px;"></div>
 
     <div class="hero-card-stats" style="margin-top:18px;">
       <div><div class="hero-stat-val">2/12</div><div class="hero-stat-lbl">Univers LIVE</div></div>
@@ -482,11 +422,6 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
       <div><div class="hero-stat-val">100<small style="font-size:13px">%</small></div><div class="hero-stat-lbl">RGPD France</div></div>
     </div>
   </div>
-  </div><!-- /.hero__content -->
-  <a href="#fo" class="hero__scroll" aria-label="Défiler vers le contenu">
-    <span class="hero__scroll-line"></span>
-    Découvrir
-  </a>
 </section>
 
 <!-- ═══ Script funnel Pappers — appelle le worker ikcp-pappers réel ═══ -->
@@ -534,186 +469,20 @@ async function lookupSiren() {
       </div>
       <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6;">
         ✓ Cartographie offerte — votre <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">univers Patrimoine</b> est débloqué.<br>
-        Pour le <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">Deal Flow exclusif</b> (PE, club deals, immo off-market, passions-actifs) et les 11 autres univers, <a href="#beta" style="color:var(--gold-deep); font-weight:600;">demandez votre accès Bêta gratuit</a>.
+        Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, activez <a href="#tarifs" style="color:var(--gold-deep); font-weight:600;">Premium (290 €/mois)</a>.
       </div>
     `;
     btn.disabled = false;
     btn.textContent = 'Activer Marcel';
-    renderAutomations(data, siren);
   } catch(e) {
     loading.innerHTML = `<span style="color:var(--ink-mute);">⚠ ${e.message}</span><br><span style="font-size:11px;">Essayez avec un SIREN existant en France (9 chiffres).</span>`;
     btn.disabled = false;
     btn.textContent = 'Activer Marcel';
-    const autoBox = document.getElementById('automations-result');
-    if (autoBox) autoBox.style.display = 'none';
   }
 }
-
-function renderAutomations(data, siren) {
-  const box = document.getElementById('automations-result');
-  if (!box) return;
-
-  const nafCode = (data.code_naf || '').toUpperCase().replace(/\s/g,'');
-  const forme   = (data.forme_juridique || '').toLowerCase();
-  const capital = parseFloat(data.capital) || 0;
-  const nom     = (data.nom || 'CETTE SOCIÉTÉ').toUpperCase().substring(0, 36);
-
-  // Detect creation year for age-based rules
-  const dateStr = data.date_creation || '';
-  const yrMatch = dateStr.match(/(\d{4})/);
-  const age = yrMatch ? (2026 - parseInt(yrMatch[1])) : 3;
-
-  const isHolding  = /^(6420|6430|6499|7010)/.test(nafCode);
-  const isImmo     = /^68/.test(nafCode) || forme.includes('sci') || forme.includes('civile immo');
-  const hasCapital = capital >= 200000;
-  const isMature   = age >= 3;
-
-  const automations = [];
-
-  // 1. Cartographie — toujours
-  automations.push({ icon:'🗺', label:'Cartographie auto', universe:'Patrimoine', live:true,
-    desc:'Capital, dirigeants, BEs, forme — synchronisés avec le RNE officiel chaque nuit.' });
-
-  // 2. Holding → optimisation structurelle
-  if (isHolding) {
-    automations.push({ icon:'🏛', label:'Optimisation holding', universe:'Fiscalité', live:true,
-      desc:'Remontée de dividendes, intégration fiscale, OBO — schémas chiffrés sur vos comptes.' });
-  }
-
-  // 3. Capital significatif → Dutreil + IFI
-  if (hasCapital || isHolding) {
-    automations.push({ icon:'⚖', label:'Pacte Dutreil', universe:'Fiscalité', live:true,
-      desc:'Abattement 75 % sur transmission d\'entreprise. Éligibilité détectée automatiquement.' });
-    automations.push({ icon:'📊', label:'Simulation IFI', universe:'Fiscalité', live:true,
-      desc:'Calcul IFI sur titres de société. Seuils, assiette, optimisations — résultat instantané.' });
-  }
-
-  // 4. Société ancienne → succession / donation
-  if (isMature) {
-    automations.push({ icon:'🎁', label:'Calcul donation', universe:'Fiscalité', live:true,
-      desc:'Donation d\'entreprise avec abattements légaux. Calcul exact selon barème CGI.' });
-  }
-
-  // 5. Immobilier / SCI
-  if (isImmo) {
-    automations.push({ icon:'🏠', label:'Stratégie SCI & immo', universe:'Immobilier', live:false,
-      desc:'IS vs IR, LMNP, démembrement de propriété. Agent Architecte — disponible Q3 2026.' });
-  }
-
-  // 6. Audit MIF II — toujours
-  automations.push({ icon:'🔐', label:'Audit log MIF II', universe:'Conformité', live:true,
-    desc:'Chaque échange horodaté et haché en base Paris. Inviolable, traçabilité eIDAS.' });
-
-  // 7. Marcel — toujours
-  automations.push({ icon:'🎼', label:'Marcel 24/7', universe:'Intelligence', live:true,
-    desc:'Chef d\'orchestre patrimonial. Réponse en quelques secondes, à toute heure, sans RDV.' });
-
-  const liveCount = automations.filter(a => a.live).length;
-
-  box.style.display = 'block';
-  box.innerHTML = `
-    <div style="background:var(--navy); border-radius:14px; border:1px solid rgba(201,169,110,0.25); overflow:hidden;">
-      <div style="padding:16px 20px 12px; border-bottom:1px solid rgba(201,169,110,0.15); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-        <div>
-          <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold-bright); font-weight:700;">⚡ ${liveCount} AUTOMATISATIONS ACTIVES</span>
-          <div style="font-family:'Playfair Display',serif; font-size:15px; color:var(--cream); margin-top:4px; font-weight:500; line-height:1.2;">Détectées pour <em style="color:var(--gold-bright);">${nom}</em></div>
-        </div>
-        <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; padding:5px 12px; border-radius:20px; background:rgba(63,160,63,0.2); color:#6dcc6d; font-weight:700; white-space:nowrap;">● Analyse temps réel</span>
-      </div>
-      <div style="padding:16px 20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px;">
-        ${automations.map(a => `
-          <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(201,169,110,${a.live ? '0.28' : '0.10'}); border-radius:10px; padding:13px 14px; display:flex; flex-direction:column; gap:5px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">
-              <span style="font-size:18px; line-height:1;">${a.icon}</span>
-              <span style="font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.15em; font-weight:700; text-transform:uppercase; padding:2px 7px; border-radius:20px; ${a.live ? 'background:rgba(63,160,63,0.2); color:#6dcc6d;' : 'background:rgba(201,169,110,0.12); color:var(--gold-bright);'}">${a.live ? '● LIVE' : '◌ Q3 2026'}</span>
-            </div>
-            <div style="font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; color:var(--cream); line-height:1.2;">${a.label}</div>
-            <div style="font-size:9.5px; font-family:'JetBrains Mono',monospace; letter-spacing:0.1em; color:var(--gold-bright); opacity:0.75; margin-bottom:2px;">${a.universe}</div>
-            <div style="font-size:11px; color:rgba(250,250,248,0.55); line-height:1.55;">${a.desc}</div>
-          </div>
-        `).join('')}
-      </div>
-      <div style="padding:14px 20px 18px; border-top:1px solid rgba(201,169,110,0.12); text-align:center;">
-        <a href="/app/index.html" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; background:var(--gold); color:var(--navy); border-radius:6px; font-size:11.5px; font-weight:700; letter-spacing:0.1em; text-decoration:none; text-transform:uppercase; transition:background 0.2s;">
-          Accéder à votre espace privé →
-        </a>
-        <p style="font-size:10.5px; color:rgba(250,250,248,0.4); margin-top:10px; margin-bottom:0; font-style:italic; font-family:'Playfair Display',serif;">Connexion par lien sécurisé · sans mot de passe · accès Bêta gratuit</p>
-      </div>
-    </div>
-  `;
-}
-
 document.getElementById('siren-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') lookupSiren(); });
 </script>
 
-
-<!-- === SEGMENT ORPHELIN + 5 FONCTIONS FO === -->
-<section style="background:var(--navy);padding:64px 24px">
-  <div style="max-width:960px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:48px">
-      <div style="display:inline-block;background:rgba(201,169,110,.12);border:1px solid rgba(201,169,110,.3);border-radius:30px;padding:6px 18px;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:20px">Le segment orphelin</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);color:#fff;font-weight:400;line-height:1.25;margin-bottom:16px">Trop riche pour un CGP classique.<br><em style="color:var(--gold)">Pas assez pour un vrai Family Office.</em></h2>
-      <p style="color:rgba(255,255,255,.6);font-size:1rem;max-width:640px;margin:0 auto;line-height:1.65">Le Family Office traditionnel commence a 30 M€+ et coute 150-300 K€/an. Le segment <strong style="color:rgba(255,255,255,.85)">1 M€&ndash;30 M€</strong> est orphelin. Trop structure pour un CGP classique, pas encore assez pour un vrai FO. IKCP comble ce gap par l'intelligence artificielle souveraine.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;margin-bottom:48px">
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px 24px">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:14px">Ce que vous avez aujourd'hui</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.65);font-size:.9rem;align-items:flex-start"><span style="color:#E53E3E;font-weight:700;flex-shrink:0">x</span> Comptable &mdash; silo fiscal</div>
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.65);font-size:.9rem;align-items:flex-start"><span style="color:#E53E3E;font-weight:700;flex-shrink:0">x</span> Banquier &mdash; silo financier</div>
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.65);font-size:.9rem;align-items:flex-start"><span style="color:#E53E3E;font-weight:700;flex-shrink:0">x</span> Notaire &mdash; silo transmission</div>
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.65);font-size:.9rem;align-items:flex-start"><span style="color:#E53E3E;font-weight:700;flex-shrink:0">x</span> CGP &mdash; silo placement</div>
-          <div style="margin-top:12px;padding:12px 14px;background:rgba(229,62,62,.08);border:1px solid rgba(229,62,62,.25);border-radius:8px;font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.5">Chacun optimise son silo.<br><strong style="color:rgba(255,255,255,.75)">Personne ne voit l'ensemble.</strong></div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.8rem;font-weight:300">&rarr;</div>
-      <div style="background:rgba(201,169,110,.07);border:1px solid rgba(201,169,110,.3);border-radius:16px;padding:28px 24px">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:14px">Ce qu'IKCP apporte</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.85);font-size:.9rem;align-items:flex-start"><span style="color:var(--gold);font-weight:700;flex-shrink:0">v</span> Vision consolidee de tout</div>
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.85);font-size:.9rem;align-items:flex-start"><span style="color:var(--gold);font-weight:700;flex-shrink:0">v</span> Coordination de vos experts</div>
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.85);font-size:.9rem;align-items:flex-start"><span style="color:var(--gold);font-weight:700;flex-shrink:0">v</span> Veille proactive &amp; alertes</div>
-          <div style="display:flex;gap:10px;color:rgba(255,255,255,.85);font-size:.9rem;align-items:flex-start"><span style="color:var(--gold);font-weight:700;flex-shrink:0">v</span> Gouvernance familiale</div>
-          <div style="margin-top:12px;padding:12px 14px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.25);border-radius:8px;font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.5">Marcel orchestre. <strong style="color:var(--gold)">Vous pilotez. Vous decidez.</strong></div>
-        </div>
-      </div>
-    </div>
-    <div style="text-align:center;margin-bottom:24px"><div style="font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase">Les 5 fonctions d'un Family Office &mdash; deployees par IKCP</div></div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,169,110,.2);border-radius:12px;padding:20px 16px;text-align:center">
-        <div style="font-size:1.6rem;margin-bottom:8px">&#x1F4CA;</div>
-        <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.3">Consolidated<br>Reporting</div>
-        <div style="font-size:.74rem;color:rgba(255,255,255,.45);line-height:1.4;margin-bottom:10px">Tous actifs dans un seul tableau de bord</div>
-        <div style="font-size:.7rem;color:var(--gold);font-weight:600">LIVE</div>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,169,110,.2);border-radius:12px;padding:20px 16px;text-align:center">
-        <div style="font-size:1.6rem;margin-bottom:8px">&#x1F514;</div>
-        <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.3">Veille<br>Proactive</div>
-        <div style="font-size:.74rem;color:rgba(255,255,255,.45);line-height:1.4;margin-bottom:10px">Echeances, lois, opportunites, alertes</div>
-        <div style="font-size:.7rem;color:var(--gold);font-weight:600">LIVE</div>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px 16px;text-align:center">
-        <div style="font-size:1.6rem;margin-bottom:8px">&#x1F91D;</div>
-        <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.3">Coordination<br>Multi-Experts</div>
-        <div style="font-size:.74rem;color:rgba(255,255,255,.45);line-height:1.4;margin-bottom:10px">Notaire, avocat, comptable orchestres</div>
-        <div style="font-size:.7rem;color:rgba(255,255,255,.3);font-weight:600">Sprint 2</div>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px 16px;text-align:center">
-        <div style="font-size:1.6rem;margin-bottom:8px">&#x1F46A;</div>
-        <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.3">Gouvernance<br>Familiale</div>
-        <div style="font-size:.74rem;color:rgba(255,255,255,.45);line-height:1.4;margin-bottom:10px">Charte, transmission, education NextGen</div>
-        <div style="font-size:.7rem;color:rgba(255,255,255,.3);font-weight:600">Sprint 4</div>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px 16px;text-align:center">
-        <div style="font-size:1.6rem;margin-bottom:8px">&#x1F4BC;</div>
-        <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.3">Acces<br>Deal Flow</div>
-        <div style="font-size:.74rem;color:rgba(255,255,255,.45);line-height:1.4;margin-bottom:10px">PE, club deals, immo off-market, co-invest</div>
-        <div style="font-size:.7rem;color:rgba(255,255,255,.3);font-weight:600">Sprint 3</div>
-      </div>
-    </div>
-    <p style="text-align:center;margin-top:36px;font-family:'Playfair Display',serif;font-style:italic;color:rgba(255,255,255,.45);font-size:.92rem">"Le Family Office traditionnel commence a 30 M€. IKCP le rend accessible des 1 M€, a cout marginal quasi nul."</p>
-  </div>
-</section>
 <!-- ═══ POSITIONNEMENT — au-delà du patrimoine classique ═══ -->
 <section class="beyond-section">
   <div class="beyond-wrap">
@@ -767,9 +536,9 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
   <div class="passions-wrap">
     <div class="passions-head">
       <div class="passions-mark">★ Vos 9 univers Lifestyle</div>
-      <h2>Vos passions, <em>dans un seul espace.</em></h2>
+      <h2>Vos passions <em>structurées intelligemment.</em></h2>
       <p class="passions-deck">
-        Automobiles, horlogerie, yachting, équestre, golf, arts, voyages, gastronomie — vos 9 univers lifestyle centralisés dans votre espace privé, pour une vision patrimoniale globale.
+        Une cave Pétrus devient un <em>actif IFI déclaré</em>. Un yacht devient une <em>SCI fiscalisée</em>. Une collection auto devient un <em>levier de transmission</em>. Marcel vous aide à <em>vivre</em> ces passions — et à les <em>structurer</em>.
       </p>
     </div>
 
@@ -822,11 +591,8 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
     </div>
 
     <div class="passions-cta">
-      <div style="display:inline-flex;align-items:center;gap:10px;padding:11px 18px;background:rgba(139,111,63,0.08);border:1px solid var(--gold-deep);border-radius:8px;margin-bottom:12px;">
-        <span style="font-size:14px;">🔨</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-deep);">En cours de développement · Application disponible Q4 2026</span>
-      </div>
-      <p style="font-size:13px;color:var(--ink-faint);font-style:italic;margin:0;">L'application mobile iOS &amp; Android &amp; PWA est en cours de développement. Les univers Lifestyle seront accessibles à l'ouverture de la bêta.</p>
+      <p>Voir l'expérience complète sur <em>l'application mobile dédiée Lifestyle</em> :</p>
+      <a href="/proposals/family-office-passions.html" class="btn-passion">Découvrir l'app Passions →</a>
     </div>
   </div>
 </section>
@@ -835,12 +601,8 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
 <section class="bookings-section">
   <div class="bookings-wrap">
     <div class="bookings-head">
-      <div class="bookings-mark">★ Réservations exclusives · Q4 2026</div>
+      <div class="bookings-mark">★ Réservations exclusives · depuis l'app</div>
       <h2>Vous demandez. <em>L'IA réserve.</em><br>Marcel négocie. Vous profitez.</h2>
-      <div style="display:inline-flex;align-items:center;gap:10px;padding:9px 16px;background:rgba(139,111,63,0.08);border:1px solid var(--gold-deep);border-radius:8px;margin-bottom:16px;">
-        <span style="font-size:13px;">🔨</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-deep);">Module en cours de développement · Disponible Q4 2026</span>
-      </div>
       <p class="bookings-deck">
         Marcel ne se contente pas de répondre — <em>il agit pour vous</em>. Réservations hôtelières, tables 3 étoiles, jets privés, expéditions sur-mesure. Avec votre <em>statut membre IKCP Family Office</em>, vous accédez à des tarifs et services inaccessibles au grand public.
       </p>
@@ -1206,7 +968,7 @@ const UNIVERS_DATA = {
       'Mise à jour automatique chaque nuit'
     ],
     examples: [
-      'Saisissez un SIREN → fiche entreprise complète en 2 secondes',
+      '« Cartographie 947972436 » → fiche IKCP complète en 2 secondes',
       '« Mes filiales et participations » → arbre patrimonial structuré',
       '« Ma valorisation Dutreil estimée » → calcul brut sur les comptes'
     ],
@@ -1475,7 +1237,7 @@ function openUnivModal(univKey){
   const body = document.getElementById('univ-modal-body');
   const accessBadge = data.access === 'freemium'
     ? '<span class="access-badge freemium">🎁 Inclus en Freemium</span>'
-    : '<span class="access-badge premium">★ Accès Bêta fondateur</span>';
+    : '<span class="access-badge premium">★ Premium 290 €/mois</span>';
   const statusBadge = data.status === 'live'
     ? '<span class="status-badge live">'+data.statusLabel+'</span>'
     : '<span class="status-badge soon">'+data.statusLabel+'</span>';
@@ -1507,7 +1269,7 @@ function openUnivModal(univKey){
 
     ${data.access === 'premium' ? `
       <div class="modal-cta">
-        <p>Cet univers est <strong>débloqué pour les 50 familles fondatrices</strong> de la phase Bêta. Accès complet offert pendant toute la durée de la Bêta.</p>
+        <p>Cet univers est <strong>débloqué en formule Premium</strong> à 290 €/mois (6 mois offerts en phase Bêta).</p>
         <a href="#beta" class="modal-cta-btn" onclick="closeUnivModal()">Demander un accès Bêta →</a>
       </div>
     ` : `
@@ -1799,29 +1561,29 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
       <div class="tier-feats">
         <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Patrimoine</b> · cartographie SIREN auto (RNE)</span></div>
         <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Fiscalité</b> · Marcel + Codex (IR/IFI/Dutreil)</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Aperçu Deal Flow</b> · alertes immo off-market · opportunités passions-actifs</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>30 questions/mois à Marcel · accès aux alertes veille patrimoniale</span></div>
-        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span><b>Deal Flow complet</b> verrouillé · PE, club deals, co-investissement, passions exclusifs</span></div>
-        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>Coordination multi-experts + conseil personnalisé (lettre de mission requise)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>5 simulateurs déterministes</b> (calculs exacts CGI)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>30 questions/mois à Marcel · pas de mémoire longue</span></div>
+        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>10 autres univers verrouillés (lifestyle, transmission, etc.)</span></div>
+        <div class="tier-feat" style="opacity:0.6"><span class="tier-feat-ico" style="background:#e5ded2;">—</span><span>Pas de conseil personnalisé (nécessite lettre de mission)</span></div>
       </div>
       <a href="#siren-funnel" class="tier-cta tier-cta-light">Tester avec mon SIREN ↑</a>
     </div>
 
     <div class="tier recommended">
-      <div class="tier-icon" style="color:var(--gold-bright)">★</div>
-      <div class="tier-name">Bêta <em>fondateur</em></div>
-      <div class="tier-tagline">50 familles · accès complet offert</div>
+      <div class="tier-icon" style="color:var(--gold-bright)">⬡</div>
+      <div class="tier-name">Family Office <em>Augmenté</em></div>
+      <div class="tier-tagline">Paiement mensuel · résiliable</div>
       <div class="tier-price">
-        <div class="tier-price-num"><em>0 €</em> <span class="small">pendant la Bêta</span></div>
-        <div class="tier-price-note">— Sans carte bancaire · sans engagement</div>
+        <div class="tier-price-num"><em>290 €</em> <span class="small">/ mois</span></div>
+        <div class="tier-price-note">— Sans engagement · 6 mois offerts en Bêta</div>
       </div>
       <div class="tier-feats">
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Tous les univers</b> disponibles activés au fil des Sprints</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Marcel chef d'orchestre + 12 spécialistes IA souverains</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Cartographie SIREN auto · audit MIF II eIDAS · D1 Paris</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Mail prioritaire</b> à Maxime · RDV inclus pendant la Bêta</span></div>
-        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Retour mensuel structuré attendu en échange (5 questions)</span></div>
-        <div class="tier-feat" style="background:rgba(201,169,110,0.10); border-radius:8px; padding:10px 12px; margin-top:6px"><span class="tier-feat-ico" style="background:var(--gold-bright); color:var(--navy)">i</span><span><b>Tarification post-Bêta annoncée Q4 2026</b>, co-construite avec les 50 familles fondatrices.</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Univers Patrimoine</b> live · cartographie SIREN auto (RNE officiel)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Univers Fiscalité</b> live · Marcel + Codex Opus 4.7 expertise</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>5 simulateurs déterministes (IR, IFI, Dutreil, donation, succession)</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Audit log immutable <b>eIDAS</b> · D1 Paris · MIF II conforme</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Mail prioritaire à Maxime · 1 RDV mensuel inclus</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico" style="background:var(--gold-bright); color:var(--navy)">↗</span><span><b>+10 univers</b> déployés au fil des Sprints 2-5 (accès inclus dès activation)</span></div>
       </div>
       <a href="#beta" class="tier-cta tier-cta-recommended">Demander un accès Bêta →</a>
     </div>
@@ -1848,44 +1610,6 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
   </div>
 </section>
 
-<!-- ═══ ESPACE MEMBRE — tableau de bord privé Family Office ═══ -->
-<section class="membre-section" id="espace-membre">
-  <div class="membre-wrap">
-    <div class="membre-head">
-      <div class="section-mark" style="color:var(--gold-bright);">Votre espace privé IKCP</div>
-      <h2>Votre tableau de bord.<br><em>Vos données. Votre contrôle.</em></h2>
-      <p>Marcel, vos univers patrimoniaux, votre reporting — dans un espace sécurisé conçu pour les 50 familles fondatrices. Accès complet offert pendant la phase Bêta.</p>
-    </div>
-
-    <div class="membre-feats">
-      <div class="membre-feat">
-        <div class="membre-feat-ico">🎼</div>
-        <h3>Marcel <em>24/7</em></h3>
-        <p>Votre chef d'orchestre IA à toute heure. Questions fiscales, cartographie, simulations, alertes patrimoniales — réponse en quelques secondes, sans RDV.</p>
-      </div>
-      <div class="membre-feat">
-        <div class="membre-feat-ico">📊</div>
-        <h3>Dashboard <em>patrimonial</em></h3>
-        <p>Vue consolidée de vos entités, actifs, passifs. Cartographie SIREN auto, IFI estimé, opportunités Dutreil détectées. Synthèse trimestrielle PDF auto-générée.</p>
-      </div>
-      <div class="membre-feat">
-        <div class="membre-feat-ico">🔐</div>
-        <h3>Données <em>souveraines</em></h3>
-        <p>100 % hébergé en France. Cloudflare Paris, audit log eIDAS, archivage 10 ans. Vos données ne quittent jamais le territoire national.</p>
-      </div>
-    </div>
-
-    <div class="membre-cta-wrap">
-      <a href="/app/" class="btn-membre">Accéder à votre espace →</a>
-      <p class="membre-sub">
-        Déjà membre ? <a href="/app/">Se connecter →</a>
-        &nbsp;·&nbsp;
-        Pas encore inscrit ? <a href="mailto:maxime@ikcp.fr?subject=Demande%20acc%C3%A8s%20B%C3%AAta%20IKCP&body=Bonjour%20Maxime%2C%0A%0AJe%20souhaite%20un%20acc%C3%A8s%20%C3%A0%20la%20phase%20B%C3%AAta%20du%20Family%20Office%20IKCP.%0A%0ASIREN%20%3A%20">Demander un accès →</a>
-      </p>
-    </div>
-  </div>
-</section>
-
 <!-- ═══ FAQ SEO ═══ -->
 <section class="faq">
   <div class="section-mark" style="text-align:center">Questions fréquentes</div>
@@ -1893,11 +1617,11 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
 
   <div class="faq-item">
     <div class="faq-q">Qu'est-ce qu'un Family Office augmenté ?</div>
-    <div class="faq-a">Un <b>Family Office</b> est traditionnellement une structure réservée aux grandes fortunes (≥ 50 M€) qui centralise la gestion patrimoniale d'une famille. Le Family Office <b>augmenté par IA souveraine</b> d'IKCP démocratise cette approche : <em>douze univers patrimoniaux</em> (immobilier, fiscalité, transmission, marchés, art, voyage…) orchestrés par Marcel, votre agent IA dédié. Actuellement en <b>phase Bêta privée</b> avec accès complet offert aux 50 familles fondatrices · tarification post-Bêta co-construite avec elles.</div>
+    <div class="faq-a">Un <b>Family Office</b> est traditionnellement une structure réservée aux grandes fortunes (≥ 50 M€) qui centralise la gestion patrimoniale d'une famille. Le Family Office <b>augmenté par IA souveraine</b> d'IKCP démocratise cette approche : <em>douze univers patrimoniaux</em> (immobilier, fiscalité, transmission, marchés, art, voyage…) orchestrés par Marcel, votre agent IA dédié. Accessible à partir de 290 €/mois, soit 4 fois moins cher qu'un CGP traditionnel pour 12 fois plus de fonctionnalités.</div>
   </div>
 
   <div class="faq-q">Pourquoi un Family Office <em>100 % digital</em> ?</div>
-    <div class="faq-a">Les Family Offices traditionnels sont <b>réservés aux très grandes fortunes</b> (≥ 50 M€) avec des coûts d'équipe à 6 chiffres. Notre approche : <em>digitaliser ce qui peut l'être</em> (cartographie auto, simulateurs, conseil IA souverain, réservations) et <em>réserver l'humain à ce qui compte vraiment</em> (validation Maxime, RDV mensuels, arbitrages stratégiques). Résultat : un service de qualité Family Office <b>accessible à un coût marginal</b> au lieu de 50 k€/an de Single Family Office. Tarification post-Bêta annoncée Q4 2026.</div>
+    <div class="faq-a">Les Family Offices traditionnels sont <b>réservés aux très grandes fortunes</b> (≥ 50 M€) avec des coûts d'équipe à 6 chiffres. Notre approche : <em>digitaliser ce qui peut l'être</em> (cartographie auto, simulateurs, conseil IA souverain, réservations) et <em>réserver l'humain à ce qui compte vraiment</em> (validation Maxime, RDV mensuels, arbitrages stratégiques). Résultat : un service de qualité Family Office <b>accessible à 290 €/mois</b> au lieu de 50 k€/an.</div>
   </div>
 
   <div class="faq-item">
@@ -1917,12 +1641,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
 
   <div class="faq-item">
     <div class="faq-q">À qui s'adresse le Family Office Augmenté ?</div>
-    <div class="faq-a">Aux <b>dirigeant(e)s d'entreprise familiale</b>, professions libérales, et familles entrepreneuriales avec un patrimoine entre 500 k€ et 50 M€. La <em>Bêta fondateur</em> (gratuite) est ouverte à 50 familles. Le tier <em>Sur-mesure</em> sera réservé aux familles ≥ 5 M€ multi-business après la Bêta.</div>
+    <div class="faq-a">Aux <b>dirigeant(e)s d'entreprise familiale</b>, professions libérales, et familles entrepreneuriales avec un patrimoine entre 500 k€ et 50 M€. Le tier <em>Family Office Augmenté</em> (290 €/mois) cible les patrimoines 500 k€ à 5 M€. Le tier <em>Sur-mesure</em> est réservé aux familles ≥ 5 M€ multi-business.</div>
   </div>
 
   <div class="faq-item">
     <div class="faq-q">Comment accéder au Family Office en Bêta ?</div>
-    <div class="faq-a">Trois options : (1) <b>Saisir votre SIREN</b> sur la page Découverte pour obtenir une cartographie gratuite + 1 observation, (2) <b>Demander un code d'invitation</b> par email à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> (réponse personnelle sous 48h), (3) <b>Candidater au Cercle Fondateurs</b> en validant les 3 étapes (SIREN + KBIS récent + code).</div>
+    <div class="faq-a">Trois options : (1) <b>Saisir votre SIREN</b> sur la page Découverte pour obtenir une cartographie gratuite + 1 observation, (2) <b>Demander un code d'invitation</b> par email à <a href="mailto:maxime@ikcp.eu">maxime@ikcp.eu</a> (réponse personnelle sous 48h), (3) <b>Candidater au Cercle Fondateurs</b> en validant les 3 étapes (SIREN + KBIS récent + code).</div>
   </div>
 </section>
 
@@ -1958,7 +1682,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
       <div style="background:var(--cream-2); padding:22px 24px; border-radius:14px; border:1px solid var(--line);">
         <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:8px;">Droits RGPD</div>
         <div style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; line-height:1.25; margin-bottom:6px;">DPO + droit oubli 1-clic</div>
-        <p style="font-size:12.5px; color:var(--ink-mute); line-height:1.55;">DPO : maxime@ikcp.fr · suppression complète sur demande.</p>
+        <p style="font-size:12.5px; color:var(--ink-mute); line-height:1.55;">DPO : maxime@ikcp.eu · suppression complète sur demande.</p>
       </div>
 
     </div>
@@ -1975,18 +1699,15 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
   <p>
     Nous ouvrons la phase Bêta à 50 familles d'entrepreneurs sélectionnées sur le S2 2026 — accès complet gratuit pendant 6 mois, en échange d'un retour mensuel.
   </p>
-  <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27acc%C3%A8s%20B%C3%AAta%20Family%20Office%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20un%20acc%C3%A8s%20%C3%A0%20la%20phase%20B%C3%AAta%20du%20Family%20Office%20Augment%C3%A9.%0D%0A%0D%0ASIREN%20de%20ma%20soci%C3%A9t%C3%A9%20%3A%20%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0ABien%20cordialement" class="final-cta-btn">Demander mon accès Bêta →</a>
-  <p style="margin-top:20px;font-size:14px;color:rgba(250,250,248,0.60);font-family:'Playfair Display',serif;font-style:italic;">
-    Déjà invité(e) ? <a href="/app/" style="color:var(--gold-bright);font-weight:600;font-style:normal;font-family:'Outfit',sans-serif;text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4);padding-bottom:1px;font-size:13px;">Accéder à votre espace →</a>
-  </p>
+  <a href="mailto:maxime@ikcp.eu?subject=Demande%20d%27acc%C3%A8s%20B%C3%AAta%20Family%20Office%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20un%20acc%C3%A8s%20%C3%A0%20la%20phase%20B%C3%AAta%20du%20Family%20Office%20Augment%C3%A9.%0D%0A%0D%0ASIREN%20de%20ma%20soci%C3%A9t%C3%A9%20%3A%20%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0ABien%20cordialement" class="final-cta-btn">Demander mon accès Bêta →</a>
 </section>
 
 <!-- ═══ FOOTER ═══ -->
 <footer class="fo">
   <p>
     <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
-    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
-    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.eu">maxime@ikcp.eu</a> · <a href="tel:0667537979">06 67 53 79 79</a>
   </p>
   <p class="legal">
     Site créé par Maxime Juveneton · Tous droits réservés · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)<br>
@@ -1994,31 +1715,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
   </p>
 </footer>
 
-<!-- ═══ Parallaxe vidéo hero ═══
-     Translate la vidéo à 40 % de la vitesse de scroll.
-     passive:true + requestAnimationFrame → 60 fps sans bloquer le thread. -->
-<script>
-(function(){
-  var video = document.querySelector('.hero__video');
-  if (!video) return; // si pas de vidéo, rien à faire
-  var ticking = false;
-  var RATE = 0.38;
-  function applyParallax(){
-    var y = window.pageYOffset * RATE;
-    video.style.transform = 'translate3d(0,' + y + 'px,0) scale(1.005)';
-    ticking = false;
-  }
-  window.addEventListener('scroll', function(){
-    if (!ticking){
-      window.requestAnimationFrame(applyParallax);
-      ticking = true;
-    }
-  }, { passive: true });
-})();
-</script>
-
 <!-- ═══ Widget Marcel (médaillon FAB visible sur cette page) ═══ -->
-<script src="/chatbot-widget.js?v=20" defer></script>
+<script src="/chatbot-widget.js?v=19" defer></script>
 
 <!-- ═══ Schema.org FAQ pour SEO ═══ -->
 <script type="application/ld+json">
@@ -2031,7 +1729,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
       "name": "Qu'est-ce qu'un Family Office augmenté ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Un Family Office est traditionnellement une structure réservée aux grandes fortunes qui centralise la gestion patrimoniale. Le Family Office augmenté par IA souveraine d'IKCP démocratise cette approche : 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Actuellement en phase Bêta privée avec accès complet offert aux 50 familles fondatrices."
+        "text": "Un Family Office est traditionnellement une structure réservée aux grandes fortunes qui centralise la gestion patrimoniale. Le Family Office augmenté par IA souveraine d'IKCP démocratise cette approche : 12 univers patrimoniaux orchestrés par Marcel, agent IA dédié. Accessible à partir de 290 €/mois."
       }
     },
     {
@@ -2060,664 +1758,6 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
     }
   ]
 }
-</script>
-
-<!-- ═══════════════════════════════════════════════════════════
-     MARCEL CHAT WIDGET — floating, public page
-     Wired to ikcp-chat.maxime-ead.workers.dev (Sonnet 4.6 · MIF II)
-═══════════════════════════════════════════════════════════ -->
-<style>
-/* ── Chat float button ── */
-#marcel-fab{
-  position:fixed; bottom:28px; right:28px; z-index:9000;
-  display:flex; align-items:center; gap:10px;
-  padding:13px 20px 13px 16px;
-  background:var(--navy); color:var(--cream);
-  border:none; border-radius:40px; cursor:pointer;
-  font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:600; letter-spacing:0.02em;
-  box-shadow:0 8px 28px rgba(27,42,74,0.30);
-  transition:transform 0.2s, box-shadow 0.2s, background 0.2s;
-}
-#marcel-fab:hover{transform:translateY(-2px); box-shadow:0 12px 36px rgba(27,42,74,0.38); background:var(--navy-2)}
-#marcel-fab .fab-orb{
-  width:30px; height:30px; background:var(--gold); border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:14px; color:var(--navy); font-weight:700; flex-shrink:0;
-  transition:transform 0.3s;
-}
-#marcel-fab.open .fab-orb{transform:rotate(45deg)}
-#marcel-fab .fab-pulse{
-  position:absolute; top:8px; right:8px; width:9px; height:9px;
-  background:#3ECC8A; border-radius:50%; border:2px solid var(--cream);
-}
-#marcel-fab .fab-pulse::after{
-  content:''; position:absolute; inset:-3px; border-radius:50%;
-  background:rgba(62,204,138,0.35); animation:fab-ring 2s infinite;
-}
-@keyframes fab-ring{0%{transform:scale(1);opacity:0.8}100%{transform:scale(2.2);opacity:0}}
-
-/* ── Chat panel ── */
-#marcel-panel{
-  position:fixed; bottom:90px; right:28px; z-index:8999;
-  width:380px; max-width:calc(100vw - 40px);
-  height:520px; max-height:calc(100vh - 120px);
-  background:var(--cream); border:1.5px solid var(--line-strong);
-  border-radius:18px; box-shadow:0 20px 60px rgba(27,42,74,0.22);
-  display:none; flex-direction:column; overflow:hidden;
-  animation:panel-in 0.22s cubic-bezier(0.34,1.56,0.64,1);
-}
-#marcel-panel.visible{display:flex}
-@keyframes panel-in{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:none}}
-
-/* Panel header */
-.mc-header{
-  padding:14px 16px 12px; background:var(--navy);
-  display:flex; align-items:center; gap:11px; flex-shrink:0;
-}
-.mc-header-orb{
-  width:36px; height:36px; background:var(--gold); border-radius:50%;
-  display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--navy);
-  font-weight:700; flex-shrink:0;
-}
-.mc-header-info{flex:1; min-width:0}
-.mc-header-name{font-family:'Playfair Display',serif; font-size:15px; color:var(--cream); font-weight:600; line-height:1.2}
-.mc-header-status{font-size:10.5px; color:var(--gold-bright); letter-spacing:0.05em; opacity:0.85; display:flex; align-items:center; gap:5px}
-.mc-header-status::before{content:''; display:inline-block; width:6px; height:6px; background:#3ECC8A; border-radius:50%; animation:pulse 1.6s infinite}
-.mc-close{background:none; border:none; color:rgba(250,250,248,0.5); font-size:18px; cursor:pointer; padding:4px 6px; border-radius:6px; line-height:1; transition:color 0.15s}
-.mc-close:hover{color:var(--cream)}
-
-/* Messages */
-.mc-msgs{
-  flex:1; overflow-y:auto; padding:14px 14px 8px;
-  display:flex; flex-direction:column; gap:10px;
-  scroll-behavior:smooth;
-}
-.mc-msgs::-webkit-scrollbar{width:4px}
-.mc-msgs::-webkit-scrollbar-thumb{background:var(--line-strong); border-radius:4px}
-
-.mc-msg{display:flex; gap:8px; align-items:flex-start}
-.mc-msg.user{flex-direction:row-reverse}
-.mc-msg-av{
-  width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:700;
-}
-.mc-msg.bot .mc-msg-av{background:var(--gold); color:var(--navy)}
-.mc-msg.user .mc-msg-av{background:var(--navy); color:var(--cream)}
-.mc-msg-body{max-width:82%; display:flex; flex-direction:column; gap:4px}
-.mc-msg-bubble{
-  padding:9px 12px; border-radius:12px; font-size:13px; line-height:1.55;
-  word-break:break-word;
-}
-.mc-msg.bot .mc-msg-bubble{background:var(--cream-2); color:var(--ink); border-radius:4px 12px 12px 12px}
-.mc-msg.user .mc-msg-bubble{background:var(--navy); color:var(--cream); border-radius:12px 4px 12px 12px}
-.mc-disclaimer{font-size:9.5px; color:var(--ink-faint); font-style:italic; line-height:1.4; margin-top:2px; padding-left:2px}
-
-/* Typing indicator */
-.mc-typing{display:none; gap:8px; align-items:center}
-.mc-typing.show{display:flex}
-.mc-typing-dots{display:flex; gap:4px; padding:9px 12px; background:var(--cream-2); border-radius:4px 12px 12px 12px}
-.mc-typing-dots span{width:6px; height:6px; background:var(--ink-mute); border-radius:50%; animation:dot-bounce 1.4s infinite}
-.mc-typing-dots span:nth-child(2){animation-delay:.2s}
-.mc-typing-dots span:nth-child(3){animation-delay:.4s}
-@keyframes dot-bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
-
-/* Input area */
-.mc-input-row{
-  padding:10px 12px; border-top:1px solid var(--line); flex-shrink:0;
-  display:flex; align-items:center; gap:8px; background:var(--cream);
-}
-.mc-input{
-  flex:1; padding:9px 12px; background:var(--cream-2); border:1.5px solid var(--line);
-  border-radius:20px; font-family:'Outfit',sans-serif; font-size:13px; color:var(--ink);
-  outline:none; resize:none; line-height:1.4; transition:border-color 0.15s;
-}
-.mc-input:focus{border-color:var(--gold)}
-.mc-send{
-  width:34px; height:34px; background:var(--navy); color:var(--cream); border:none;
-  border-radius:50%; cursor:pointer; font-size:14px; display:flex; align-items:center;
-  justify-content:center; flex-shrink:0; transition:background 0.2s, transform 0.15s;
-}
-.mc-send:hover{background:var(--gold); color:var(--navy); transform:scale(1.08)}
-.mc-send:active{transform:scale(0.95)}
-
-/* Suggestions chips */
-.mc-suggestions{
-  padding:8px 12px 4px; display:flex; flex-wrap:wrap; gap:6px; flex-shrink:0;
-  border-bottom:1px solid var(--line);
-}
-.mc-chip{
-  font-size:11px; padding:5px 11px; border:1px solid var(--line-strong); border-radius:20px;
-  background:var(--cream); color:var(--ink-mute); cursor:pointer; white-space:nowrap;
-  transition:all 0.15s; font-family:'Outfit',sans-serif;
-}
-.mc-chip:hover{border-color:var(--gold); color:var(--ink); background:var(--cream-2)}
-</style>
-
-<!-- Floating button -->
-<button id="marcel-fab" onclick="toggleMarcelPanel()" aria-label="Parler à Marcel">
-  <div class="fab-orb">✦</div>
-  <span>Parler à Marcel</span>
-  <div class="fab-pulse"></div>
-</button>
-
-<!-- Chat panel -->
-<div id="marcel-panel" role="dialog" aria-label="Conversation avec Marcel">
-  <div class="mc-header">
-    <div class="mc-header-orb">✦</div>
-    <div class="mc-header-info">
-      <div class="mc-header-name">Marcel — Conseiller patrimonial</div>
-      <div class="mc-header-status">Disponible · IKCP Family Office</div>
-    </div>
-    <button class="mc-close" onclick="toggleMarcelPanel()" aria-label="Fermer">✕</button>
-  </div>
-
-  <!-- Quick suggestion chips -->
-  <div class="mc-suggestions" id="mc-chips">
-    <span class="mc-chip" onclick="mcSend(this.textContent)">IFI 2026 — seuil & calcul</span>
-    <span class="mc-chip" onclick="mcSend(this.textContent)">Transmission Dutreil</span>
-    <span class="mc-chip" onclick="mcSend(this.textContent)">Holding patrimoniale</span>
-    <span class="mc-chip" onclick="mcSend(this.textContent)">Optimiser retraite TNS</span>
-  </div>
-
-  <!-- Messages -->
-  <div class="mc-msgs" id="mc-messages">
-    <div class="mc-msg bot">
-      <div class="mc-msg-av">✦</div>
-      <div class="mc-msg-body">
-        <div class="mc-msg-bubble">Bonjour. Je suis Marcel, votre conseiller patrimonial IA. Je peux analyser votre situation, répondre à vos questions fiscales et patrimoniales, et vous orienter vers Maxime pour toute mise en œuvre.<br><br>Par où souhaitez-vous commencer ?</div>
-        <div class="mc-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
-      </div>
-    </div>
-    <!-- Typing indicator -->
-    <div class="mc-msg bot mc-typing" id="mc-typing">
-      <div class="mc-msg-av">✦</div>
-      <div class="mc-typing-dots"><span></span><span></span><span></span></div>
-    </div>
-  </div>
-
-  <!-- Input -->
-  <div class="mc-input-row">
-    <textarea class="mc-input" id="mc-input" rows="1" placeholder="Votre question patrimoniale…"
-      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mcSend()}"
-      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"
-    ></textarea>
-    <button class="mc-send" onclick="mcSend()" aria-label="Envoyer">➤</button>
-  </div>
-</div>
-
-<script>
-/* ── Marcel widget ── */
-const MC_WORKER = 'https://ikcp-chat.maxime-ead.workers.dev';
-let mc_history = [];
-
-function toggleMarcelPanel() {
-  const panel = document.getElementById('marcel-panel');
-  const fab = document.getElementById('marcel-fab');
-  const isOpen = panel.classList.contains('visible');
-  panel.classList.toggle('visible', !isOpen);
-  fab.classList.toggle('open', !isOpen);
-  if (!isOpen) setTimeout(() => document.getElementById('mc-input')?.focus(), 250);
-}
-
-function mcSend(text) {
-  const input = document.getElementById('mc-input');
-  const msg = (text ?? input?.value ?? '').trim();
-  if (!msg) return;
-
-  // Hide chips after first message
-  const chips = document.getElementById('mc-chips');
-  if (chips) chips.style.display = 'none';
-
-  if (input) { input.value = ''; input.style.height = 'auto'; }
-  mcAppend('user', msg);
-  mc_history.push({ role: 'user', content: msg });
-
-  // Show typing
-  const typing = document.getElementById('mc-typing');
-  if (typing) { typing.classList.add('show'); mcScrollBottom(); }
-
-  fetch(MC_WORKER + '/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      messages: mc_history,
-      context: 'family-office-public'
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (typing) typing.classList.remove('show');
-    const reply = data.response || data.content || data.message || 'Je rencontre une difficulté technique. Veuillez réessayer ou contacter Maxime directement.';
-    mcAppend('bot', reply);
-    mc_history.push({ role: 'assistant', content: reply });
-  })
-  .catch(() => {
-    if (typing) typing.classList.remove('show');
-    const fallback = 'Je rencontre une difficulté de connexion. Vous pouvez contacter Maxime directement à maxime@ikcp.fr ou reprendre dans quelques instants.';
-    mcAppend('bot', fallback);
-  });
-}
-
-function mcAppend(role, text) {
-  const msgs = document.getElementById('mc-messages');
-  const typing = document.getElementById('mc-typing');
-  const div = document.createElement('div');
-  div.className = 'mc-msg ' + role;
-  const clean = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-  if (role === 'bot') {
-    div.innerHTML = `
-      <div class="mc-msg-av">✦</div>
-      <div class="mc-msg-body">
-        <div class="mc-msg-bubble">${clean}</div>
-        <div class="mc-disclaimer">Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
-      </div>`;
-  } else {
-    div.innerHTML = `
-      <div class="mc-msg-body" style="align-items:flex-end">
-        <div class="mc-msg-bubble">${clean}</div>
-      </div>
-      <div class="mc-msg-av">M</div>`;
-  }
-  msgs.insertBefore(div, typing);
-  mcScrollBottom();
-}
-
-function mcScrollBottom() {
-  const msgs = document.getElementById('mc-messages');
-  if (msgs) setTimeout(() => { msgs.scrollTop = msgs.scrollHeight; }, 50);
-}
-
-// Keyboard: Escape closes panel
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.getElementById('marcel-panel').classList.contains('visible')) {
-    toggleMarcelPanel();
-  }
-  if (e.key === 'Escape') closeFeedback();
-});
-</script>
-
-<!-- ════════════════════════════════════════════════════
-     CMS CONTENT LOADER — Décap CMS live content inject
-     Lit /_data/family-office.json et met à jour les éléments
-     avec id="fo-*". Fallback silencieux si JSON indisponible.
-     ════════════════════════════════════════════════════ -->
-<script>
-(function() {
-  'use strict';
-  // Map : id DOM → chemin dans le JSON (notation dot)
-  const CMS_MAP = {
-    'fo-eyebrow':      'hero.eyebrow',
-    'fo-hero-em':      'hero.headline_em',
-    'fo-hero-lede':    'hero.lede',
-    'fo-cta-primary':  'hero.cta_primary',
-    'fo-cta-secondary':'hero.cta_secondary',
-  };
-
-  function get(obj, path) {
-    return path.split('.').reduce((o, k) => o && o[k], obj);
-  }
-
-  // Chargement non-bloquant (fallback = contenu HTML statique)
-  fetch('/_data/family-office.json', { cache: 'no-cache' })
-    .then(r => r.ok ? r.json() : null)
-    .then(data => {
-      if (!data) return;
-      Object.entries(CMS_MAP).forEach(([id, path]) => {
-        const el = document.getElementById(id);
-        if (el) {
-          const val = get(data, path);
-          if (val) el.textContent = val;
-        }
-      });
-      // Titre <h1> ligne 1 (text node avant <em>)
-      const h1 = document.getElementById('fo-hero-h1');
-      if (h1 && data.hero && data.hero.headline_1) {
-        const firstChild = h1.childNodes[0];
-        if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
-          firstChild.textContent = data.hero.headline_1 + '\n';
-        }
-      }
-      // Meta SEO dynamique (pour partages réseaux)
-      if (data.seo) {
-        if (data.seo.title)       document.title = data.seo.title;
-        const desc = document.querySelector('meta[name="description"]');
-        if (desc && data.seo.description) desc.content = data.seo.description;
-      }
-    })
-    .catch(() => {}); // Silencieux — le contenu HTML statique reste intact
-})();
-</script>
-
-<!-- ════════════════════════════════════════════════════
-     FEEDBACK BÊTA FONDATEURS — Widget flottant
-     Worker: ikcp-feedback.maxime-ead.workers.dev
-     ════════════════════════════════════════════════════ -->
-<style>
-  #fb-trigger {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%) rotate(-90deg) translateX(50%);
-    transform-origin: right center;
-    background: var(--navy);
-    color: var(--gold);
-    border: none;
-    padding: 10px 22px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    border-radius: 8px 8px 0 0;
-    z-index: 800;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    box-shadow: -3px 0 16px rgba(14,23,41,0.2);
-    transition: background 0.2s, box-shadow 0.2s;
-    white-space: nowrap;
-  }
-  #fb-trigger:hover { background: #243660; box-shadow: -4px 0 20px rgba(14,23,41,0.3); }
-
-  #fb-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(14,23,41,0.55);
-    z-index: 900;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    backdrop-filter: blur(3px);
-  }
-  #fb-overlay.open { opacity: 1; pointer-events: all; }
-
-  #fb-panel {
-    position: fixed;
-    right: -500px;
-    top: 0;
-    bottom: 0;
-    width: min(460px, 100vw);
-    background: var(--cream);
-    z-index: 901;
-    overflow-y: auto;
-    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: -8px 0 48px rgba(14,23,41,0.22);
-  }
-  #fb-panel.open { right: 0; }
-
-  .fb-header {
-    background: var(--navy-deep);
-    padding: 26px 24px 22px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    border-bottom: 1px solid rgba(201,169,110,0.2);
-  }
-  .fb-header h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    color: #fff;
-    margin: 0 0 6px;
-    font-weight: 400;
-  }
-  .fb-header p { font-family:'Outfit',sans-serif; font-size:.8rem; color:rgba(255,255,255,.55); margin:0; line-height:1.5; }
-  .fb-close {
-    position: absolute; top: 18px; right: 18px;
-    background: rgba(255,255,255,.1); border: none; color: #fff;
-    width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
-    font-size: .9rem; display: flex; align-items: center; justify-content: center;
-    transition: background .2s;
-  }
-  .fb-close:hover { background: rgba(255,255,255,.2); }
-
-  .fb-body { padding: 22px 24px; }
-  .fb-section { margin-bottom: 22px; }
-  .fb-label {
-    font-family:'Outfit',sans-serif; font-size:.72rem; font-weight:700;
-    color:var(--navy); text-transform:uppercase; letter-spacing:.08em;
-    margin-bottom:10px; display:block;
-  }
-
-  .fb-cats { display:flex; flex-wrap:wrap; gap:7px; }
-  .fb-cat {
-    padding: 6px 13px;
-    border: 1.5px solid rgba(27,42,74,.18);
-    border-radius: 20px;
-    font-family: 'Outfit', sans-serif; font-size: .8rem; color: var(--ink);
-    background: #fff; cursor: pointer; transition: all .15s; user-select: none;
-  }
-  .fb-cat:hover { border-color: var(--gold); }
-  .fb-cat.selected { background: var(--navy); color: var(--gold); border-color: var(--navy); }
-
-  .fb-textarea {
-    width: 100%; min-height: 110px; padding: 12px;
-    border: 1.5px solid rgba(27,42,74,.18); border-radius: 8px;
-    font-family: 'Outfit', sans-serif; font-size: .88rem; color: var(--ink);
-    background: #fff; resize: vertical; outline: none;
-    transition: border-color .2s; box-sizing: border-box; line-height: 1.6;
-  }
-  .fb-textarea:focus { border-color: var(--gold); }
-  .fb-textarea.error { border-color: #c0392b; }
-
-  .fb-priorities { display: flex; gap: 8px; }
-  .fb-prio {
-    flex: 1; padding: 10px 6px;
-    border: 1.5px solid rgba(27,42,74,.18); border-radius: 8px;
-    font-family:'Outfit',sans-serif; font-size:.76rem; text-align:center;
-    cursor: pointer; background: #fff; transition: all .15s; user-select: none; line-height:1.3;
-  }
-  .fb-prio:hover { border-color: var(--gold); }
-  .fb-prio.selected { background: var(--navy); color: #fff; border-color: var(--navy); }
-  .fb-prio .prio-ico { font-size: 1.1rem; display: block; margin-bottom: 5px; }
-
-  .fb-input {
-    width: 100%; padding: 11px 12px;
-    border: 1.5px solid rgba(27,42,74,.18); border-radius: 8px;
-    font-family:'Outfit',sans-serif; font-size:.88rem; color:var(--ink);
-    background: #fff; outline: none; transition: border-color .2s; box-sizing: border-box;
-  }
-  .fb-input:focus { border-color: var(--gold); }
-
-  .fb-divider { border:none; border-top:1px solid rgba(27,42,74,.1); margin:0; }
-
-  .fb-submit {
-    width: 100%; padding: 14px;
-    background: var(--navy); color: var(--gold);
-    border: none; border-radius: 8px;
-    font-family:'Outfit',sans-serif; font-size:.88rem; font-weight:700;
-    cursor: pointer; transition: all .2s; letter-spacing:.04em;
-  }
-  .fb-submit:hover:not(:disabled) { background:#243660; transform:translateY(-1px); box-shadow:0 6px 20px rgba(27,42,74,.25); }
-  .fb-submit:disabled { opacity:.55; cursor:not-allowed; }
-
-  .fb-success { text-align:center; padding:50px 24px; display:none; }
-  .fb-success .s-ico { font-size:2.8rem; margin-bottom:16px; }
-  .fb-success h4 { font-family:'Playfair Display',serif; color:var(--navy); font-size:1.35rem; font-weight:400; margin:0 0 12px; }
-  .fb-success p { font-family:'Outfit',sans-serif; color:var(--ink-mute); font-size:.85rem; line-height:1.7; margin:0; }
-
-  @media(max-width:520px) { #fb-panel { width:100vw; } }
-</style>
-
-<!-- Trigger tab (right edge) -->
-<button id="fb-trigger" onclick="openFeedback()">
-  💬 <span>Votre avis bêta</span>
-</button>
-
-<!-- Overlay -->
-<div id="fb-overlay" onclick="closeFeedback()"></div>
-
-<!-- Drawer panel -->
-<div id="fb-panel" role="dialog" aria-modal="true" aria-label="Feedback bêta fondateurs">
-  <div class="fb-header">
-    <button class="fb-close" onclick="closeFeedback()" aria-label="Fermer">✕</button>
-    <h3>Vos attentes fondateur</h3>
-    <p>Maxime lit chaque retour personnellement · Vos idées façonnent la roadmap IKCP</p>
-  </div>
-
-  <div class="fb-body">
-    <div id="fb-form-area">
-
-      <div class="fb-section">
-        <label class="fb-label">Ce que vous souhaitez accéder en priorité</label>
-        <div class="fb-cats" id="fb-cats">
-          <div class="fb-cat" data-val="Deal Flow · PE / Club deals" onclick="toggleCat(this)">💼 Deal Flow · PE</div>
-          <div class="fb-cat" data-val="Immo off-market" onclick="toggleCat(this)">🏠 Immo off-market</div>
-          <div class="fb-cat" data-val="Reporting consolidé" onclick="toggleCat(this)">📊 Reporting</div>
-          <div class="fb-cat" data-val="Coordination experts" onclick="toggleCat(this)">🤝 Coordination</div>
-          <div class="fb-cat" data-val="Fiscalité · Optimisation" onclick="toggleCat(this)">💰 Fiscalité</div>
-          <div class="fb-cat" data-val="Transmission · Succession" onclick="toggleCat(this)">📜 Transmission</div>
-          <div class="fb-cat" data-val="Passions · Actifs tangibles" onclick="toggleCat(this)">🎨 Passions</div>
-          <div class="fb-cat" data-val="Autre" onclick="toggleCat(this)">✦ Autre</div>
-        </div>
-      </div>
-
-      <div class="fb-section">
-        <label class="fb-label" for="fb-besoin">Décrivez votre besoin</label>
-        <textarea class="fb-textarea" id="fb-besoin"
-          placeholder="Ex : J'aimerais accéder à des club deals PE avec un ticket dès 50 k€, filtrés sur mon profil de risque. Ou encore : un tableau de bord qui centralise mes 3 SCI + assurance-vie + compte-titres en un seul endroit…"
-          oninput="this.classList.remove('error')"></textarea>
-      </div>
-
-      <div class="fb-section">
-        <label class="fb-label">Niveau de priorité pour vous</label>
-        <div class="fb-priorities">
-          <div class="fb-prio" data-val="Indispensable" onclick="selectPrio(this)">
-            <span class="prio-ico">⭐</span>Indispensable
-          </div>
-          <div class="fb-prio" data-val="Souhaitable" onclick="selectPrio(this)">
-            <span class="prio-ico">💡</span>Souhaitable
-          </div>
-          <div class="fb-prio" data-val="Bonus" onclick="selectPrio(this)">
-            <span class="prio-ico">🌿</span>Bonus
-          </div>
-        </div>
-      </div>
-
-      <hr class="fb-divider" style="margin-bottom:22px">
-
-      <div class="fb-section">
-        <label class="fb-label" for="fb-email">Email (optionnel) — pour un suivi personnalisé</label>
-        <input type="email" class="fb-input" id="fb-email" placeholder="votre@email.fr">
-      </div>
-
-      <button class="fb-submit" id="fb-btn" onclick="submitFeedback()">
-        Envoyer à Maxime →
-      </button>
-
-      <p style="font-family:'Outfit',sans-serif;font-size:.72rem;color:var(--ink-mute);text-align:center;margin:12px 0 0;line-height:1.6">
-        Hébergé France (Cloudflare D1 Paris) · Jamais vendu · RGPD ·
-        <a href="/politique-confidentialite.html" style="color:var(--gold-deep)">Confidentialité</a>
-      </p>
-    </div>
-
-    <div class="fb-success" id="fb-success">
-      <div class="s-ico">✉️</div>
-      <h4>Retour bien reçu</h4>
-      <p>Maxime intègre votre besoin à la roadmap IKCP.<br><br>
-      Les bêta fondateurs identifiés recevront un récapitulatif mensuel des fonctionnalités déployées grâce à leurs retours.</p>
-    </div>
-  </div>
-</div>
-
-<script>
-function openFeedback() {
-  document.getElementById('fb-overlay').classList.add('open');
-  document.getElementById('fb-panel').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeFeedback() {
-  document.getElementById('fb-overlay').classList.remove('open');
-  document.getElementById('fb-panel').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function toggleCat(el) { el.classList.toggle('selected'); }
-function selectPrio(el) {
-  document.querySelectorAll('.fb-prio').forEach(p => p.classList.remove('selected'));
-  el.classList.add('selected');
-}
-async function submitFeedback() {
-  const besoin = document.getElementById('fb-besoin').value.trim();
-  const email  = document.getElementById('fb-email').value.trim();
-  const cats   = [...document.querySelectorAll('#fb-cats .fb-cat.selected')].map(c => c.dataset.val);
-  const prioEl = document.querySelector('.fb-prio.selected');
-  const priorite = prioEl ? prioEl.dataset.val : '';
-  if (besoin.length < 10) {
-    document.getElementById('fb-besoin').classList.add('error');
-    document.getElementById('fb-besoin').focus();
-    return;
-  }
-  const btn = document.getElementById('fb-btn');
-  btn.disabled = true;
-  btn.textContent = 'Envoi en cours…';
-  try {
-    const res = await fetch('https://ikcp-feedback.maxime-ead.workers.dev/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        besoin, categories: cats, priorite, email,
-        page: window.location.pathname
-      })
-    });
-    const data = await res.json();
-    if (data.ok) {
-      document.getElementById('fb-form-area').style.display = 'none';
-      document.getElementById('fb-success').style.display = 'block';
-    } else {
-      btn.disabled = false;
-      btn.textContent = 'Envoyer à Maxime →';
-      alert(data.error || 'Erreur. Réessayez dans quelques instants.');
-    }
-  } catch {
-    btn.disabled = false;
-    btn.textContent = 'Envoyer à Maxime →';
-    alert('Connexion impossible. Vérifiez votre réseau.');
-  }
-}
-</script>
-
-<!-- ═══ Auth bubble — détecte session active → affiche lien Dashboard ═══ -->
-<style>
-#fo-auth-bubble{
-  position:fixed;top:16px;right:16px;z-index:10000;
-  display:none;align-items:center;gap:10px;
-  padding:8px 16px;background:#1B2A4A;border-radius:30px;
-  border:1px solid rgba(201,169,110,0.35);
-  box-shadow:0 4px 20px rgba(0,0,0,0.18);
-  font-family:'Outfit',sans-serif;font-size:12px;
-  animation:fo-bubble-in 0.4s ease;
-}
-@keyframes fo-bubble-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-#fo-auth-bubble .fo-auth-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
-#fo-auth-bubble .fo-auth-name{color:rgba(250,250,248,0.75);font-size:11.5px}
-#fo-auth-bubble .fo-auth-name strong{color:#E2C896}
-#fo-auth-bubble a{color:#C9A96E;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.3);padding-bottom:1px;font-size:11.5px}
-#fo-auth-bubble a:hover{color:#E2C896;border-color:#E2C896}
-</style>
-<div id="fo-auth-bubble">
-  <span class="fo-auth-dot"></span>
-  <span class="fo-auth-name">Connecté — <strong id="fo-auth-prenom">votre espace</strong></span>
-  <a href="/app/dashboard.html">Dashboard →</a>
-</div>
-<script>
-(function(){
-  // Vérifie silencieusement si l'utilisateur a une session active
-  fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', {
-    credentials: 'include',
-    method: 'GET',
-  }).then(function(r){
-    if(!r.ok) return;
-    return r.json();
-  }).then(function(me){
-    if(!me||!me.email) return;
-    var bubble = document.getElementById('fo-auth-bubble');
-    var prenomEl = document.getElementById('fo-auth-prenom');
-    if(bubble && prenomEl){
-      prenomEl.textContent = me.prenom || me.email.split('@')[0];
-      bubble.style.display = 'flex';
-    }
-  }).catch(function(){/* pas de session — silencieux */});
-})();
 </script>
 
 </body>
