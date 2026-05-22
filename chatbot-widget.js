@@ -1148,7 +1148,6 @@ fuHtml+='</div></div>';
 html+=fuHtml;
 }
 // (Calendly désactivé — contact via recommandation, voir email mailto en footer)
-}
 // Badge profil mémorisé
 var pCtx=profileAsContext();
 if(pCtx&&count===1){
