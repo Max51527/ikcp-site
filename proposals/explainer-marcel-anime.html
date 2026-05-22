@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Explainer animé Marcel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1B2A4A; --navy-deep:#0E1729; --cream:#FAFAF8; --cream-2:#F2EDE4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F; --ink:#1C1612; --ink-mute:#6B5D52;
+}
+body{background:#2a2622;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Outfit',sans-serif;padding:24px}
+
+/* ░░ STAGE — cadre type lecteur vidéo 16:9 ░░ */
+.explainer{
+  position:relative;width:100%;max-width:920px;aspect-ratio:16/9;
+  border-radius:18px;overflow:hidden;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%,#16233f 0%,var(--navy-deep) 70%);
+  box-shadow:0 40px 100px -20px rgba(0,0,0,.6),0 0 0 1px rgba(201,169,110,.18);
+  font-family:'Outfit',sans-serif;
+}
+/* grain */
+.explainer::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.04;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* halo doré ambiant */
+.glow{position:absolute;width:60%;height:60%;left:50%;top:30%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(201,169,110,.16),transparent 65%);filter:blur(20px);pointer-events:none}
+
+/* ░░ SCENES ░░ */
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;text-align:center;padding:6%}
+.scene.active{opacity:1}
+
+.eyebrow{font-size:clamp(9px,1.4vw,12px);letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:18px}
+.headline{font-family:'Playfair Display',serif;color:var(--cream);font-size:clamp(22px,4.4vw,46px);line-height:1.12;font-weight:500}
+.headline em{font-style:italic;color:var(--gold-bright)}
+.sub{color:rgba(250,250,248,.62);font-size:clamp(12px,1.8vw,17px);margin-top:16px;max-width:80%;line-height:1.6}
+
+/* — SCENE 1 : silos — */
+.silos{display:flex;gap:clamp(10px,3vw,34px);margin-top:8px}
+.silo{display:flex;flex-direction:column;align-items:center;gap:10px;opacity:.85}
+.silo-ic{width:clamp(48px,8vw,76px);height:clamp(48px,8vw,76px);border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(22px,4vw,34px);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.silo-lbl{font-size:clamp(10px,1.5vw,13px);color:rgba(250,250,248,.5);font-weight:500}
+.silo-x{position:absolute;font-size:clamp(20px,3vw,30px);color:#c9554a;opacity:0}
+
+/* — montgolfière (réutilisée) — */
+.balloon{width:clamp(70px,11vw,110px);height:auto;display:block;
+  filter:drop-shadow(0 18px 28px rgba(0,0,0,.45));}
+.balloon-wrap{position:relative;animation:floaty 5s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+
+/* — SCENE 3 : agents en orbite — */
+.orbit-stage{position:relative;width:min(74%,520px);aspect-ratio:1.7/1;display:flex;align-items:center;justify-content:center}
+.orbit-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px}
+.orbit-center .ocname{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-bright);font-size:clamp(13px,2vw,19px)}
+.agent-chip{position:absolute;left:50%;top:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(201,169,110,.3);border-radius:100px;
+  padding:5px 12px 5px 9px;display:flex;align-items:center;gap:6px;white-space:nowrap;
+  font-size:clamp(9px,1.3vw,12px);color:var(--cream);font-weight:500;
+  opacity:0;transform:translate(-50%,-50%) scale(.6);
+  backdrop-filter:blur(6px)}
+.agent-chip .dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80}
+.agent-chip .em{font-size:13px}
+
+/* lignes de connexion */
+.orbit-line{position:absolute;left:50%;top:50%;height:1px;transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(201,169,110,.5),transparent);opacity:0}
+
+/* — SCENE 4 : SIREN flow — */
+.flow{display:flex;align-items:center;gap:clamp(8px,2vw,20px);margin-top:18px;flex-wrap:wrap;justify-content:center}
+.flow-step{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(10px)}
+.flow-box{background:rgba(255,255,255,.05);border:1px solid rgba(201,169,110,.25);border-radius:12px;
+  padding:12px 16px;color:var(--cream);font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.6vw,15px);min-width:90px;text-align:center}
+.flow-box.gold{background:var(--gold);color:var(--navy-deep);font-weight:700;font-family:'Outfit',sans-serif;border-color:var(--gold)}
+.flow-cap{font-size:clamp(9px,1.3vw,11px);color:rgba(250,250,248,.45);letter-spacing:.05em}
+.flow-arrow{color:var(--gold);font-size:clamp(16px,2.4vw,22px);opacity:0}
+
+/* — SCENE 5 : CTA — */
+.cta-pill{margin-top:24px;display:inline-flex;align-items:center;gap:9px;padding:13px 26px;border-radius:100px;
+  background:var(--gold);color:var(--navy-deep);font-weight:700;font-size:clamp(12px,1.7vw,15px);
+  box-shadow:0 14px 34px -10px rgba(201,169,110,.6)}
+
+/* ░░ Progress bar + controls ░░ */
+.progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.08);z-index:20}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-bright))}
+.controls{position:absolute;bottom:14px;right:16px;z-index:21;display:flex;gap:8px}
+.ctrl{width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,169,110,.35);background:rgba(14,23,41,.7);
+  color:var(--gold-bright);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(6px);transition:background .2s}
+.ctrl:hover{background:rgba(201,169,110,.2)}
+.brand{position:absolute;top:16px;left:18px;z-index:21;font-weight:600;color:var(--cream);letter-spacing:.04em;font-size:14px}
+.brand span{color:var(--gold)}
+.scene-tag{position:absolute;top:18px;right:18px;z-index:21;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(250,250,248,.4);letter-spacing:.1em}
+
+.label-note{position:fixed;bottom:14px;left:14px;background:var(--navy);color:var(--gold);padding:6px 14px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.06em}
+</style>
+</head>
+<body>
+
+<div class="explainer" id="explainer">
+  <div class="glow"></div>
+  <div class="brand">IKCP<span>.</span></div>
+  <div class="scene-tag" id="sceneTag">01 / 05</div>
+
+  <!-- SCÈNE 1 — Patrimoine dispersé -->
+  <div class="scene" data-scene="0">
+    <div class="eyebrow">Le constat</div>
+    <div class="headline">Votre patrimoine,<br><em>dispersé.</em></div>
+    <div class="silos">
+      <div class="silo"><div class="silo-ic">📊</div><div class="silo-lbl">Comptable</div></div>
+      <div class="silo"><div class="silo-ic">🏦</div><div class="silo-lbl">Banquier</div></div>
+      <div class="silo"><div class="silo-ic">⚖️</div><div class="silo-lbl">Notaire</div></div>
+      <div class="silo"><div class="silo-ic">📁</div><div class="silo-lbl">CGP</div></div>
+    </div>
+    <div class="sub">Chacun gère son silo. Personne ne voit l'ensemble.</div>
+  </div>
+
+  <!-- SCÈNE 2 — Marcel apparaît -->
+  <div class="scene" data-scene="1">
+    <div class="eyebrow">La réponse</div>
+    <div class="balloon-wrap">
+      <svg class="balloon" viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="bl" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3661a8"/><stop offset="1" stop-color="#0a2855"/></linearGradient>
+          <linearGradient id="rd" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d05a4a"/><stop offset="1" stop-color="#7c2418"/></linearGradient>
+          <linearGradient id="wh" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e8e4dc"/></linearGradient>
+          <linearGradient id="bk" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9a7a58"/><stop offset="1" stop-color="#3e2818"/></linearGradient>
+          <clipPath id="bc"><path d="M120 8C195 8 220 70 220 130C220 175 200 210 165 220C158 222 150 224 138 224C130 230 130 235 130 240L110 240C110 235 110 230 102 224C90 224 82 222 75 220C40 210 20 175 20 130C20 70 45 8 120 8Z"/></clipPath>
+        </defs>
+        <g clip-path="url(#bc)">
+          <rect x="0" y="0" width="80" height="240" fill="url(#bl)"/>
+          <rect x="80" y="0" width="80" height="240" fill="url(#wh)"/>
+          <rect x="160" y="0" width="80" height="240" fill="url(#rd)"/>
+          <ellipse cx="80" cy="60" rx="50" ry="80" fill="#fff" opacity=".18"/>
+        </g>
+        <rect x="108" y="220" width="24" height="22" fill="#3e2818" opacity=".5"/>
+        <line x1="105" y1="240" x2="92" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+        <line x1="135" y1="240" x2="148" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+        <line x1="115" y1="240" x2="108" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+        <line x1="125" y1="240" x2="132" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+        <rect x="78" y="270" width="84" height="50" rx="6" fill="url(#bk)"/>
+        <rect x="76" y="270" width="88" height="6" rx="2" fill="#b08868"/>
+      </svg>
+    </div>
+    <div class="headline" style="margin-top:18px">Marcel,<br>votre <em>chef d'orchestre.</em></div>
+    <div class="sub">Un interlocuteur unique. Une intelligence souveraine.</div>
+  </div>
+
+  <!-- SCÈNE 3 — 11 agents en orbite -->
+  <div class="scene" data-scene="2">
+    <div class="eyebrow">L'équipe</div>
+    <div class="headline" style="margin-bottom:6px">11 spécialistes IA, <em>orchestrés.</em></div>
+    <div class="orbit-stage" id="orbitStage">
+      <div class="orbit-center">
+        <div class="balloon-wrap"><svg class="balloon" style="width:54px" viewBox="0 0 240 340"><use href="#bc-noop"/>
+          <g clip-path="url(#bc)"><rect x="0" width="80" height="240" fill="url(#bl)"/><rect x="80" width="80" height="240" fill="url(#wh)"/><rect x="160" width="80" height="240" fill="url(#rd)"/></g>
+          <rect x="78" y="270" width="84" height="50" rx="6" fill="url(#bk)"/></svg></div>
+        <div class="ocname">Marcel</div>
+      </div>
+      <!-- agents injectés par JS -->
+    </div>
+  </div>
+
+  <!-- SCÈNE 4 — SIREN flow -->
+  <div class="scene" data-scene="3">
+    <div class="eyebrow">En 30 secondes</div>
+    <div class="headline">De votre SIREN<br>à votre <em>bilan complet.</em></div>
+    <div class="flow" id="flow">
+      <div class="flow-step"><div class="flow-box">947 972 436</div><div class="flow-cap">Votre SIREN</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flow-box">Cartographie</div><div class="flow-cap">RNE · Pappers</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flow-box gold">Bilan 360°</div><div class="flow-cap">Fiscal · Transmission</div></div>
+    </div>
+    <div class="sub">Marcel mobilise ses spécialistes. Vous découvrez vos leviers.</div>
+  </div>
+
+  <!-- SCÈNE 5 — CTA -->
+  <div class="scene" data-scene="4">
+    <div class="eyebrow">Bêta sur invitation</div>
+    <div class="headline">Rejoignez les<br><em>50 familles fondatrices.</em></div>
+    <div class="cta-pill">Activer Marcel →</div>
+    <div class="sub" style="margin-top:20px;font-size:12px">IKCP · ORIAS 23001568 · Family Office augmenté · IA &amp; Humain</div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl" id="btnPlay" title="Lecture/Pause">⏸</button>
+    <button class="ctrl" id="btnReplay" title="Recommencer">↻</button>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="label-note">EXPLAINER ANIMÉ · MARCEL — proposition v1</div>
+
+<script>
+(function(){
+  const scenes = Array.from(document.querySelectorAll('.scene'));
+  const tag = document.getElementById('sceneTag');
+  const fill = document.getElementById('progressFill');
+  const btnPlay = document.getElementById('btnPlay');
+  const btnReplay = document.getElementById('btnReplay');
+  const SCENE_MS = [3200, 3400, 4200, 3800, 3600];
+  let idx = 0, playing = true, t0 = 0, raf = null, sceneTimer = null;
+
+  // ── Agents orbite (scène 3) ──
+  const AGENTS = [
+    {n:'Codex',e:'⚖️'},{n:'Hermès',e:'🌿'},{n:'Bâtisseur',e:'🏛️'},
+    {n:'Architecte',e:'🏡'},{n:'Stratège',e:'📈'},{n:'Curateur',e:'🎨'},
+    {n:'Concierge',e:'✨'},{n:'Capital',e:'💎'},{n:'Pédagogue',e:'📚'},
+    {n:'Camille',e:'🤝'},{n:'Olympe',e:'🧘'}
+  ];
+  const stage = document.getElementById('orbitStage');
+  AGENTS.forEach((a,i)=>{
+    const ang = (i/AGENTS.length)*Math.PI*2 - Math.PI/2;
+    const rx=44, ry=40; // % rayons
+    const x=50+Math.cos(ang)*rx, y=50+Math.sin(ang)*ry;
+    const chip=document.createElement('div');
+    chip.className='agent-chip';
+    chip.style.left=x+'%'; chip.style.top=y+'%';
+    chip.dataset.delay=(i*120);
+    chip.innerHTML='<span class="dot"></span><span class="em">'+a.e+'</span>'+a.n;
+    stage.appendChild(chip);
+    // ligne
+    const len=Math.hypot((x-50),(y-50));
+    const line=document.createElement('div');
+    line.className='orbit-line';
+    line.style.width=len+'%';
+    line.style.transform='rotate('+(ang*180/Math.PI)+'deg)';
+    line.dataset.delay=(i*120);
+    stage.appendChild(line);
+  });
+  const chips=Array.from(stage.querySelectorAll('.agent-chip'));
+  const lines=Array.from(stage.querySelectorAll('.orbit-line'));
+
+  function animateScene(i){
+    // reset scene-specific
+    if(i===0){
+      scenes[0].querySelectorAll('.silo').forEach((s,k)=>{s.animate([{opacity:0,transform:'translateY(14px)'},{opacity:.85,transform:'translateY(0)'}],{duration:500,delay:k*180,fill:'both',easing:'cubic-bezier(.2,.7,.3,1)'});});
+    }
+    if(i===2){
+      chips.forEach(c=>{c.style.opacity=0;c.style.transform='translate(-50%,-50%) scale(.6)';});
+      lines.forEach(l=>{l.style.opacity=0;});
+      chips.forEach((c,k)=>{c.animate([{opacity:0,transform:'translate(-50%,-50%) scale(.6)'},{opacity:1,transform:'translate(-50%,-50%) scale(1)'}],{duration:420,delay:300+k*110,fill:'both',easing:'cubic-bezier(.2,.9,.3,1.2)'});});
+      lines.forEach((l,k)=>{l.animate([{opacity:0},{opacity:.6}],{duration:400,delay:300+k*110,fill:'both'});});
+    }
+    if(i===3){
+      const steps=scenes[3].querySelectorAll('.flow-step');
+      const arrows=scenes[3].querySelectorAll('.flow-arrow');
+      steps.forEach((s,k)=>s.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],{duration:480,delay:200+k*500,fill:'both',easing:'cubic-bezier(.2,.7,.3,1)'}));
+      arrows.forEach((a,k)=>a.animate([{opacity:0},{opacity:1}],{duration:300,delay:480+k*500,fill:'both'}));
+    }
+  }
+
+  function show(i){
+    scenes.forEach((s,k)=>s.classList.toggle('active',k===i));
+    tag.textContent=String(i+1).padStart(2,'0')+' / 0'+scenes.length;
+    animateScene(i);
+  }
+
+  function tick(now){
+    if(!playing) return;
+    if(!t0) t0=now;
+    const el=now-t0, dur=SCENE_MS[idx];
+    fill.style.width=Math.min(100,(el/dur)*100)+'%';
+    if(el>=dur){
+      idx=(idx+1)%scenes.length; t0=now;
+      if(idx===0){/* loop */}
+      show(idx);
+    }
+    raf=requestAnimationFrame(tick);
+  }
+
+  function play(){playing=true;btnPlay.textContent='⏸';t0=performance.now()-0;raf=requestAnimationFrame(tick);}
+  function pause(){playing=false;btnPlay.textContent='▶';cancelAnimationFrame(raf);}
+  btnPlay.onclick=()=>{playing?pause():play();};
+  btnReplay.onclick=()=>{idx=0;t0=performance.now();show(0);if(!playing)play();};
+
+  show(0);
+  play();
+})();
+</script>
+</body>
+</html>
