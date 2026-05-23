@@ -1091,15 +1091,18 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
         /* ═══ HERO ═══ */
         .hero {
-          min-height: 100vh;
-          padding: 110px 40px 40px;
+          min-height: 88vh;
+          padding: 110px 40px 60px;
           display: grid;
-          grid-template-columns: 1.05fr 1fr;
+          grid-template-columns: 1fr;
           gap: 56px;
           align-items: center;
           max-width: 1480px;
           margin: 0 auto;
         }
+        /* Hero épuré : panneau montgolfière retiré — accès Marcel via la bulle flottante (widget) */
+        .hero-right { display: none !important; }
+        .hero-left { max-width: 840px; }
 
         /* ─── LEFT COLUMN ─── */
         .hero-left {
