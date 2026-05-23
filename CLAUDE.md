@@ -104,8 +104,17 @@ ikcp-site/
 
 ## 🌿 Workflow Git
 
+### 🔐 RÈGLE CLONE UNIQUE — NON NÉGOCIABLE (anti-perte de travail)
+
+- **Clone canonique unique** : `C:\Users\juven\ikcp-site`. C'est LE seul endroit où travailler.
+- **TOUJOURS `git pull --ff-only origin main` AVANT toute session/modif** — manuelle ou automatisée (SEO inclus).
+- **Incident 2026-05-22** : une session SEO lancée depuis un 2e clone en retard a écrasé le hero minimaliste (commit 48ba1f3). Récupéré via git, clones resynchronisés.
+- **Ne jamais committer depuis un clone sans avoir pull d'abord.** Si tu détectes deux clones divergents → STOP, signale à Maxime, resync avant tout.
+- L'ancien clone `Desktop\A RANGER\UPPERCUT\ikcp-site` est **déprécié** (à supprimer par Maxime une fois confirmé).
+
 ```bash
 # Avant tout commit
+git pull --ff-only origin main # TOUJOURS d'abord — sync clone canonique
 git status                    # vérifier les changements
 grep -r "sk-ant-" workers/    # vérifier qu'aucune clé n'est dans le code
 
