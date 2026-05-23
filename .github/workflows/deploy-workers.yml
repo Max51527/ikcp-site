@@ -10,6 +10,7 @@ on:
       - 'workers/ikcp-hermes/**'
       - 'workers/ikcp-veille/**'
       - 'workers/ikcp-lifestyle/**'
+      - 'workers/ikcp-client/**'
   workflow_dispatch:
     inputs:
       target:
@@ -25,6 +26,7 @@ on:
           - ikcp-hermes
           - ikcp-veille
           - ikcp-lifestyle
+          - ikcp-client
 
 jobs:
   deploy-ikcp-marcel:
@@ -140,3 +142,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-lifestyle
+
+  deploy-ikcp-client:
+    name: "Deploy ikcp-client (Auth + tiers + quotas)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-client') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-client (portail membre freemium)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-client

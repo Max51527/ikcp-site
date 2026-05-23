@@ -27,8 +27,12 @@
  *  → ou via Cloudflare Dashboard → Workers → ikcp-client → Logs
  */
 
+// Règle Maxime : le FREE ne consomme AUCUN token LLM.
+// free = simulateurs (JS local, 0 token) + 1 cartographie SIREN/mois (Pappers, 0 token LLM).
+// Marcel conversationnel (LLM) = Premium. Le teaser Marcel public reste géré par
+// le widget plafonné sur les pages publiques (séparé de l'espace membre).
 const TIER_LIMITS = {
-  free:    { pappers: 1,        marcel_msgs: 30,    marcel_memory_days: 0 },
+  free:    { pappers: 1,        marcel_msgs: 0,        marcel_memory_days: 0 },
   premium: { pappers: 10,       marcel_msgs: Infinity, marcel_memory_days: 90 },
   fo:      { pappers: Infinity, marcel_msgs: Infinity, marcel_memory_days: Infinity },
 };
