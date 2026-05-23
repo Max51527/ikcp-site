@@ -1033,7 +1033,13 @@ export default {
         // Retirer le commentaire du texte visible
         fullText = fullText.replace(followUpsMatch[0], '').trim();
       }
-      const reply = fullText;
+      // Garantie MIF II — le disclaimer doit TOUJOURS être présent, même si le
+      // modèle l'a omis ou que la réponse a été tronquée (max_tokens). Anti-risque conformité.
+      const MIF2_DISCLAIMER = "*Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Vous interagissez avec un assistant IA — Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande.*";
+      let reply = fullText;
+      if (!/L\.?\s*541[-\s]?1/i.test(reply)) {
+        reply = reply.trimEnd() + "\n\n---\n\n" + MIF2_DISCLAIMER;
+      }
 
       const webSearchUsed = (data.content || []).some(
         b => b.type === 'web_search_tool_use' || b.type === 'server_tool_use'
