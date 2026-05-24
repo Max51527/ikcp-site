@@ -888,6 +888,11 @@ css.textContent=`
 .ikcp-msg .ikcp-calendly-link{display:inline-block;margin:8px 0 4px;padding:8px 16px;background:linear-gradient(135deg,#b8956e,#a07b54);color:#fff!important;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none}
 .ikcp-msg .ikcp-disclaimer{font-size:10px;color:#a09080;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px dashed #e5ded2;line-height:1.5}
 .ikcp-msg em{color:#5f5248;font-style:italic}
+.ikcp-detail-toggle{display:inline-flex;align-items:center;gap:6px;margin:10px 0 2px;padding:7px 14px;background:#1f1a16;color:#f5efe3;border:none;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.ikcp-detail-toggle:hover{background:#2c2418}
+.ikcp-detail-toggle .ikcp-dt-arrow{font-size:11px}
+.ikcp-msg .ikcp-detail{margin-top:8px;padding-top:10px;border-top:1px dashed #e5ded2;animation:ikcpDetailIn .3s ease}
+@keyframes ikcpDetailIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 /* ═══ Affichage des schémas pédagogiques (SVG bibliothèque Marcel) ═══ */
 .ikcp-msg .ikcp-schema-block{margin:6px 0}
 .ikcp-msg .ikcp-schema-title{font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:600;color:#1f1a16;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e5ded2}
@@ -1190,7 +1195,7 @@ msgs.push({role:'assistant',html:errMsg});saveConv(msgs,count);
 function typeOutMessage(plainReply,fullHtml){
 // Extraire la partie "réponse" du HTML (avant les blocs enrichis)
 // Chercher le début des blocs à préserver (follow-ups, schema, calendly, profile, rate limit)
-var markers=['<div class="ikcp-schema-hint"','<div class="ikcp-followups"','<div class="ikcp-calendly-inline"','<div class="ikcp-profile-pill"','<p class="ikcp-meta"'];
+var markers=['<button type="button" class="ikcp-detail-toggle"','<div class="ikcp-schema-hint"','<div class="ikcp-followups"','<div class="ikcp-calendly-inline"','<div class="ikcp-profile-pill"','<p class="ikcp-meta"'];
 var splitIdx=fullHtml.length;
 markers.forEach(function(m){var i=fullHtml.indexOf(m);if(i>=0&&i<splitIdx)splitIdx=i;});
 var replyHtml=fullHtml.substring(0,splitIdx);
@@ -1269,8 +1274,26 @@ html=html.replace(/\(?(art\.?\s*[\d]+(?:[\s-][\dIVXAaberis]+)*\s*(?:du\s)?(?:CGI
 html=html.replace(/(https:\/\/calendly\.com\/[^\s<"]+)/g,'<a href="$1" target="_blank" class="ikcp-calendly-link">📅 Prendre rendez-vous →</a>');
 // Disclaimer MIF II : style discret
 html=html.replace(/(Ces informations sont pédagogiques[^<]*MIF\s*II[^<]*\.)/gi,'<p class="ikcp-disclaimer">$1</p>');
+// #1 — Réponse courte : synthèse (avant le 1er <hr>) visible, détail replié.
+var hrIdx=html.search(/<hr\s*\/?>/i);
+if(hrIdx>40){
+var synth=html.substring(0,hrIdx);
+var detail=html.substring(hrIdx);
+if(detail.replace(/<[^>]+>/g,'').trim().length>220){
+html=synth
++'<button type="button" class="ikcp-detail-toggle" onclick="window._ikcpToggleDetail(this)">📖 Voir le détail <span class="ikcp-dt-arrow">↓</span></button>'
++'<div class="ikcp-detail" style="display:none">'+detail+'</div>';
+}
+}
 return html;
 }
+window._ikcpToggleDetail=function(btn){
+var d=btn.nextElementSibling;
+if(!d||!d.classList.contains('ikcp-detail'))return;
+var open=d.style.display==='none';
+d.style.display=open?'block':'none';
+btn.innerHTML=open?'Masquer le détail <span class="ikcp-dt-arrow">↑</span>':'📖 Voir le détail <span class="ikcp-dt-arrow">↓</span>';
+};
 
 function quick(key){
 var txt=QS[key];
