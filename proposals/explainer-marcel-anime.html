@@ -281,6 +281,9 @@ body{background:#2a2622;display:flex;align-items:center;justify-content:center;m
 
   show(0);
   play();
+
+  // Masque le label quand l'explainer est intégré en iframe (hero / FO)
+  if(window.self!==window.top){var ln=document.querySelector('.label-note');if(ln)ln.style.display='none';document.body.style.background='transparent';document.body.style.padding='0';}
 })();
 </script>
 </body>
