@@ -451,6 +451,9 @@ async function lookupSiren() {
     if (!res.ok) throw new Error('SIREN introuvable au RNE');
     const data = await res.json();
 
+    // #4 — Contexte société transmis à Marcel (→ délègue à Codex fiscal + Hermès transmission)
+    window._ikcpSirenCtx = `Voici ma société (source RNE) : ${data.nom || ''}, ${data.forme_juridique || ''}, capital ${data.capital ? Math.round(data.capital).toLocaleString('fr-FR') + ' €' : 'n.c.'}, activité ${data.libelle_code_naf || data.code_naf || 'n.c.'}, siège ${data.siege?.ville || ''}. Quels sont les principaux leviers fiscaux ET de transmission à étudier pour cette structure ?`;
+
     loading.style.display = 'none';
     dataDiv.style.display = 'block';
     dataDiv.innerHTML = `
@@ -472,6 +475,10 @@ async function lookupSiren() {
         ✓ Cartographie offerte — votre <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">univers Patrimoine</b> est débloqué.<br>
         Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, activez <a href="#tarifs" style="color:var(--gold-deep); font-weight:600;">Premium (offert en Bêta)</a>.
       </div>
+      <button type="button" onclick="analyserAvecMarcel()" style="margin-top:14px; width:100%; padding:13px 18px; background:var(--navy); color:var(--cream); border:none; border-radius:10px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.04em; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(27,42,74,0.22);">
+        🤝 Analyser ma structure avec Marcel <span style="font-size:15px;">→</span>
+      </button>
+      <div style="text-align:center; font-size:10.5px; color:var(--ink-mute); margin-top:7px; font-style:italic;">Marcel mobilise 2 spécialistes : fiscalité (Codex) &amp; transmission (Hermès)</div>
     `;
     btn.disabled = false;
     btn.textContent = 'Activer Marcel';
@@ -481,6 +488,21 @@ async function lookupSiren() {
     btn.textContent = 'Activer Marcel';
   }
 }
+// #4 — Lien SIREN → 2 agents : ouvre Marcel avec le contexte société.
+// Marcel délègue à Codex (fiscal) et Hermès (transmission) selon la question.
+function analyserAvecMarcel(){
+  var q = window._ikcpSirenCtx || "Analyse ma structure : quels leviers fiscaux et de transmission étudier ?";
+  if (window._ikcpToggle && window._ikcpAskFollow) {
+    var panel = document.getElementById('ikcp-chat-panel');
+    if (panel && !panel.classList.contains('open')) window._ikcpToggle();
+    setTimeout(function(){ window._ikcpAskFollow(q); }, 200);
+  } else {
+    var b = document.getElementById('ikcp-chat-btn');
+    if (b) b.click();
+    setTimeout(function(){ if (window._ikcpAskFollow) window._ikcpAskFollow(q); }, 600);
+  }
+}
+window.analyserAvecMarcel = analyserAvecMarcel;
 document.getElementById('siren-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') lookupSiren(); });
 </script>
 
