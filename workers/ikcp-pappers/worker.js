@@ -21,6 +21,7 @@
 const ALLOWED_ORIGINS = [
   'https://ikcp.eu',
   'https://www.ikcp.eu',
+  'https://ikcp-eu.pages.dev', // Cloudflare Pages (preview + prod)
   'http://localhost:3000',
   'http://127.0.0.1:5500',
   'null', // file:// (test local)
@@ -32,7 +33,8 @@ const CACHE_TTL_SECONDS = 3600; // 1 heure
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
-    const allowed = ALLOWED_ORIGINS.includes(origin) || origin === '';
+    const allowed = ALLOWED_ORIGINS.includes(origin) || origin === ''
+      || (origin && (origin.endsWith('.ikcp.eu') || origin.endsWith('.pages.dev') || origin.endsWith('.workers.dev')));
 
     // CORS preflight
     if (request.method === 'OPTIONS') {

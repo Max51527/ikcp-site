@@ -11,6 +11,7 @@ on:
       - 'workers/ikcp-veille/**'
       - 'workers/ikcp-lifestyle/**'
       - 'workers/ikcp-client/**'
+      - 'workers/ikcp-pappers/**'
   workflow_dispatch:
     inputs:
       target:
@@ -27,6 +28,7 @@ on:
           - ikcp-veille
           - ikcp-lifestyle
           - ikcp-client
+          - ikcp-pappers
 
 jobs:
   deploy-ikcp-marcel:
@@ -161,3 +163,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-client
+
+  deploy-ikcp-pappers:
+    name: "Deploy ikcp-pappers (Cartographie SIREN)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-pappers') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-pappers (RNE / Pappers)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-pappers

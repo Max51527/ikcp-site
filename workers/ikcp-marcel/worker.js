@@ -915,7 +915,7 @@ export default {
           },
           body: JSON.stringify({
             model: 'claude-sonnet-4-6',
-            max_tokens: 1200,
+            max_tokens: 2048,
             system: systemParam,
             messages: workingMessages,
             tools,
@@ -1032,6 +1032,15 @@ export default {
         } catch (e) { /* ignore malformed */ }
         // Retirer le commentaire du texte visible
         fullText = fullText.replace(followUpsMatch[0], '').trim();
+      }
+      // Filet de sécurité : si le bloc follow-ups a été tronqué (réponse longue),
+      // on garantit 3 questions de relance (UX + esprit MIF II « termine par une question »).
+      if (followUps.length === 0) {
+        followUps = [
+          'Faire un mini-bilan patrimonial',
+          'Quels leviers pour réduire mes impôts ?',
+          'Comment anticiper ma transmission ?',
+        ];
       }
       // Garantie MIF II — le disclaimer doit TOUJOURS être présent, même si le
       // modèle l'a omis ou que la réponse a été tronquée (max_tokens). Anti-risque conformité.
