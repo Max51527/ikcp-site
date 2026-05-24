@@ -73,6 +73,11 @@
 
 **Lire d'abord** : ce fichier + `CLAUDE.md` (règle clone unique). Travailler dans `C:\Users\juven\ikcp-site`, `git pull --ff-only` avant tout.
 
+### 🎯 PLAN DE DEMAIN (validé par Maxime)
+1. **B — Construire le CMS visuel (Sveltia)** : édition du site dans le navigateur (type Webflow) → commit Git → Pages publie. Sans rien casser de l'archi Workers/Marcel. Cible : `ikcp.eu/admin`.
+2. **C — Développer l'espace membre + les agents** : tester le parcours connecté (login magic link), enrichir les pages app/, clé Bâtisseur + flip live.
+*(Prérequis idéal : le fix DNS fait, ikcp.eu en ligne — voir Action n°1 ci-dessous.)*
+
 ### 🔑 Action n°1 (Maxime, débloque TOUT — 2 min, sans IA)
 La bascule Cloudflare est bloquée : l'enregistrement **A racine de ikcp.eu pointe encore vers Hostinger**.
 → CF Dashboard → Websites → ikcp.eu → DNS → supprimer l'enreg. **A `@`** (vers Hostinger) → Pages → ikcp-eu → Custom domains → re-déclencher `ikcp.eu` (+ `www`). CF recrée le CNAME Pages. ikcp.eu sert alors la nouvelle version.
