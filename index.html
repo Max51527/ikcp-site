@@ -1137,6 +1137,18 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           border: 2px solid #b8956e;
           box-shadow: 0 4px 14px rgba(184, 149, 110, 0.25);
         }
+        .hero-author .mono {
+          width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+          border: 2px solid #b8956e; box-shadow: 0 4px 14px rgba(184, 149, 110, 0.25);
+          align-items: center; justify-content: center;
+          background: linear-gradient(135deg, #1B2A4A, #0E1729);
+          color: #E2C896; font-family: 'Playfair Display', Georgia, serif;
+          font-style: italic; font-size: 23px; font-weight: 600;
+        }
+        .seg-label {
+          font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+          color: #8a7560; font-weight: 600; margin-bottom: 2px;
+        }
         .hero-author-name {
           font-family: 'Playfair Display', Georgia, serif;
           font-size: 15px;
@@ -2346,10 +2358,11 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
              Si fichier absent, le bloc se masque automatiquement (onerror) -->
         <div class="hero-author">
           <img src="/icons/maxime.jpg" alt="Maxime Juveneton, fondateur IKCP"
-               onerror="this.parentElement.style.display='none'">
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <span class="mono" style="display:none" aria-hidden="true">MJ</span>
           <div class="hero-author-meta">
             <div class="hero-author-name">Maxime Juveneton</div>
-            <div class="hero-author-role">Fondateur · ORIAS 23001568</div>
+            <div class="hero-author-role">Fondateur · CIF — CNCEF Patrimoine · ORIAS 23001568</div>
           </div>
         </div>
 
@@ -2374,6 +2387,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           <strong>Protéger, valoriser, transmettre</strong> — là où les enjeux se croisent.
         </p>
 
+        <div class="seg-label">Pensé pour vous, dirigeant(e)s &amp; familles</div>
         <div class="segments">
           <span class="seg"><span class="emoji">👨‍👩‍👧‍👦</span> Parents & jeunes parents</span>
           <span class="seg"><span class="emoji">💼</span> Entrepreneurs & TNS</span>
