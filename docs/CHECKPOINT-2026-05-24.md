@@ -69,4 +69,25 @@
 
 ---
 
+## 🔁 REPRISE SESSION SUIVANTE — commencer ici
+
+**Lire d'abord** : ce fichier + `CLAUDE.md` (règle clone unique). Travailler dans `C:\Users\juven\ikcp-site`, `git pull --ff-only` avant tout.
+
+### 🔑 Action n°1 (Maxime, débloque TOUT — 2 min, sans IA)
+La bascule Cloudflare est bloquée : l'enregistrement **A racine de ikcp.eu pointe encore vers Hostinger**.
+→ CF Dashboard → Websites → ikcp.eu → DNS → supprimer l'enreg. **A `@`** (vers Hostinger) → Pages → ikcp-eu → Custom domains → re-déclencher `ikcp.eu` (+ `www`). CF recrée le CNAME Pages. ikcp.eu sert alors la nouvelle version.
+
+### 🎨 Décision édition en ligne (actée)
+- ❌ PAS Webflow (casserait l'intégration Workers/Marcel).
+- ✅ CMS visuel léger (**Sveltia/Decap**) sur le repo → édition navigateur → commit Git → Pages publie. À construire (point #7).
+- ✅ En attendant : édition via GitHub web (crayon → commit → live 30 s).
+
+### 🔜 Dev à poursuivre
+- Espace membre : tester parcours connecté (login Maxime), enrichir.
+- Agents : clé `ANTHROPICAPIKEY` sur ikcp-batisseur → flip live:true.
+- #4 déjà fait : bouton « Analyser avec Marcel » post-SIREN (→ Codex + Hermès).
+- #1 déjà fait : Marcel réponse courte + « Voir le détail » (widget v=21).
+
+---
+
 © 2026 IKCP · checkpoint session bêta-readiness
