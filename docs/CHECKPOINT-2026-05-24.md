@@ -111,4 +111,24 @@ La bascule Cloudflare est bloquée : l'enregistrement **A racine de ikcp.eu poin
 
 ---
 
+## ✅ Session 2026-05-25 — FAIT
+
+- **🚀 ikcp.eu EN LIGNE sur Cloudflare Pages** : zone ikcp.eu créée dans CF (zone ID d0a45e43...), NS basculés (frida/harlan.ns.cloudflare.com), A racine supprimé, CNAME `@ → ikcp-eu.pages.dev` (proxied). Emails @ikcp.eu + Resend intacts (MX/DKIM en DNS only, les 5 CNAME mail passés en DNS only). www actif aussi.
+- **CMS Sveltia étendu** : homepage édite désormais **titre + sous-titre (data-cms-html) + CTA bilan** (en plus du hero FO). Login = token GitHub (PAT scope repo) ou OAuth App.
+  → `ikcp.eu/admin/#/collections/homepage` = éditeur de la page d'accueil : modifie les textes sans code → Publish → commit Git → site à jour ~1 min. Le « Webflow » du contenu.
+- **Archi IA clarifiée** : Claude = cerveau (Marcel + Codex/Hermès/Lifestyle), Perplexity Pro = veille temps réel (tool `consult_veille`). Déjà reliés. Perplexity ne « crée » pas Marcel — c'est un outil que Marcel appelle.
+- **4 options hero** proposées (`proposals/hero-fill-options.html`) pour meubler l'espace droit : 1·Score patrimonial 2·Chiffre signature 3·Montgolfière raffinée 4·Vidéo. **En attente du choix de Maxime.**
+
+## ⏳ EN ATTENTE Maxime
+- Choisir l'**option hero** (1/2/3/4) à intégrer dans index.html.
+- Donner le **lien Spotify** playlist (bug : `SPOTIFY_PLAYLIST_URL=''` vide ligne ~3973 index.html) → à brancher.
+- Clé **ANTHROPICAPIKEY** sur ikcp-batisseur → flip live:true.
+
+## 🎯 PLAN DE DEMAIN (C — espace membre / agents)
+1. **Mise en place agents IA** : activer Bâtisseur (clé), vérifier la délégation Marcel→tous les agents en live, tester un appel Perplexity veille via Marcel.
+2. **Tier par utilisateur** : dans l'espace membre, Marcel doit passer le **tier réel du membre connecté** à la veille (`consult_veille`) au lieu du défaut « max ». Petit branchement : récupérer le tier via la session ikcp-client (/api/v1/me) et le transmettre dans l'appel veille. → cœur de C.
+3. Tester le parcours connecté de bout en bout (login magic link Maxime).
+
+---
+
 © 2026 IKCP · checkpoint session bêta-readiness
