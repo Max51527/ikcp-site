@@ -95,4 +95,20 @@ La bascule Cloudflare est bloquée : l'enregistrement **A racine de ikcp.eu poin
 
 ---
 
+## ✅ CMS Sveltia — FAIT (session 2026-05-25)
+
+- **admin/** = Sveltia CMS · backend GitHub direct · worker `ikcp-cms-auth` (OAuth, in CI/CD).
+- **Auth** : soit GitHub OAuth App (SETUP-CMS.md), soit "Sign In Using Access Token" (PAT scope repo) — testé OK.
+- **Moteur** : `cms-hydrate.js` lit `_data/*.json` → applique aux éléments `[data-cms="prefix.chemin"]` (préfixes : home, fo, global, news). HTML garde le texte par défaut (SEO/fallback).
+- **Champs déjà câblés** (édition CMS → visible sur site) :
+  - Accueil : `home.hero.headline_1`, `home.hero.headline_em`
+  - Family Office : `fo.hero.headline_1`, `fo.hero.headline_em`, `fo.hero.cta_primary`, `fo.hero.cta_secondary`
+
+### 🔧 Recette pour câbler un nouveau champ (2 gestes)
+1. Dans le HTML : ajouter `data-cms="prefix.chemin.cle"` sur l'élément (texte simple). Pour du HTML riche : ajouter aussi l'attribut `data-cms-html`.
+2. Vérifier que `_data/<fichier>.json` contient la clé AVEC le texte ACTUEL du HTML (sinon l'hydratation changerait le contenu).
+⚠️ Champs NON câblés car JSON ≠ HTML actuel : `fo.hero.lede`, `fo.faq`, `home.hero.subtitle`, SEO meta → aligner le JSON sur le live AVANT de tagger.
+
+---
+
 © 2026 IKCP · checkpoint session bêta-readiness
