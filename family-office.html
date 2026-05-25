@@ -383,13 +383,13 @@ footer.fo .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic
 <section class="hero">
   <div>
     <div class="eyebrow"><span class="live-dot"></span>Family Office augmenté · 100 % France · RGPD souverain</div>
-    <h1>Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
+    <h1><span data-cms="fo.hero.headline_1">Une porte. Une équipe.</span><br><em data-cms="fo.hero.headline_em">Votre patrimoine en orbite.</em></h1>
     <p class="lede">
       Cabinet indépendant <em>IKCP</em> · douze univers branchés sur intelligence souveraine · application disponible sur iOS et Android. <em>Conçue pour les dirigeant(e)s d'entreprise familiale.</em> Saisissez votre SIREN ci-contre, Marcel cartographie automatiquement votre société depuis le Registre National des Entreprises — gratuitement, en 30 secondes.
     </p>
     <div class="hero-actions">
-      <a href="#siren-funnel" class="btn-primary">Tester avec mon SIREN →</a>
-      <a href="#beta" class="btn-secondary">Demander un accès Bêta</a>
+      <a href="#siren-funnel" class="btn-primary" data-cms="fo.hero.cta_primary">Tester avec mon SIREN →</a>
+      <a href="#beta" class="btn-secondary" data-cms="fo.hero.cta_secondary">Demander un accès Bêta</a>
       <button type="button" class="btn-watch-fo" onclick="openExplainer()">▶&nbsp; Voir en 90 s</button>
     </div>
   </div>
@@ -1760,6 +1760,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
   window.openExplainer=openExplainer;window.closeExplainer=closeExplainer;
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeExplainer();});
 </script>
+<script src="/cms-hydrate.js?v=1" defer></script>
 <script src="/chatbot-widget.js?v=21" defer></script>
 
 <!-- ═══ Schema.org FAQ pour SEO ═══ -->
