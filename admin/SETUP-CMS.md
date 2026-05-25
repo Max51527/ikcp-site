@@ -1,104 +1,59 @@
-# IKCP Admin — Guide d'activation en 5 minutes
+# IKCP Admin — Activation du CMS (Sveltia + GitHub direct)
 
-> Une seule fois. Ensuite tu édites le site depuis ikcp.eu/admin/ sans toucher au code.
-
----
-
-## ÉTAPE 1 — Créer un compte Netlify gratuit (2 min)
-
-1. Aller sur **netlify.com** → Sign up (gratuit, pas besoin de carte)
-2. "Add new site" → "Deploy manually" → glisser **n'importe quel fichier** (ex: un PNG)
-3. Note l'URL Netlify de ton site : `ton-site.netlify.app`
+> Une seule fois. Ensuite tu édites le site depuis **ikcp.eu/admin/** sans toucher au code.
+> 100 % Cloudflare — pas de Netlify. Auth via une GitHub OAuth App + le worker `ikcp-cms-auth`.
 
 ---
 
-## ÉTAPE 2 — Activer l'authentification GitHub sur Netlify (2 min)
+## ÉTAPE 1 — Créer la GitHub OAuth App (2 min)
 
-1. Dans le dashboard Netlify, aller dans ton site → **Site settings → Identity**
-2. Cliquer **Enable Identity**
-3. Aller dans **Registration → Invite only** (sécurité)
-4. Aller dans **External providers → GitHub → Enable**
-5. Cliquer **Invite users** → taper `maxime@ikcp.fr` → Invite
+1. **github.com/settings/developers** → **OAuth Apps** → **New OAuth App**
+2. Remplir :
+   | Champ | Valeur |
+   |---|---|
+   | Application name | `IKCP CMS` |
+   | Homepage URL | `https://ikcp.eu` |
+   | Authorization callback URL | `https://ikcp-cms-auth.maxime-ead.workers.dev/callback` |
+3. **Register application** → note le **Client ID** → **Generate a new client secret** → note le **Client Secret**
 
----
+## ÉTAPE 2 — Pousser les 2 secrets sur le worker (1 min)
 
-## ÉTAPE 3 — Mettre à jour la config CMS (30 sec)
-
-Ouvrir `admin/config.yml` et remplacer cette ligne :
-
-```yaml
-# site_domain: votre-site.netlify.app
+```bash
+cd workers/ikcp-cms-auth
+npx wrangler secret put GITHUB_CLIENT_ID       # colle le Client ID
+npx wrangler secret put GITHUB_CLIENT_SECRET   # colle le Client Secret
 ```
+*(Le worker `ikcp-cms-auth` se déploie automatiquement via GitHub Actions au push.)*
 
-Par :
+## ÉTAPE 3 — Test (30 sec)
 
-```yaml
-site_domain: ton-site.netlify.app   # ← ton URL Netlify réelle
-```
-
-Commit → push → le deploy FTP se lance automatiquement.
-
----
-
-## ÉTAPE 4 — Configurer les secrets FTP GitHub (1 min)
-
-1. Aller sur **github.com/Max51527/ikcp-site → Settings → Secrets → Actions**
-2. Ajouter ces 4 secrets (infos dans hPanel Hostinger → Files → FTP Accounts) :
-
-| Secret | Valeur |
-|--------|--------|
-| `FTP_SERVER` | `ftp.ikcp.eu` (ou l'host affiché dans hPanel) |
-| `FTP_USERNAME` | ton identifiant FTP Hostinger |
-| `FTP_PASSWORD` | ton mot de passe FTP Hostinger |
-| `FTP_PATH` | `/public_html/` (avec les slashes) |
-
----
-
-## ÉTAPE 5 — Premier test (30 sec)
-
-1. Aller sur **ikcp.eu/admin/**
-2. Cliquer "Login with GitHub"
-3. Accepter l'autorisation Netlify → GitHub
-4. Tu vois l'interface CMS avec 4 collections :
-   - 🏛️ Page Family Office
-   - 🏠 Page d'accueil
-   - ⚙️ Paramètres globaux
-   - 📬 Newsletter UPPERCUT
-
-**C'est prêt.** Modifie un texte → "Publish" → le site se met à jour automatiquement en ~30s.
+1. Va sur **ikcp.eu/admin/** (ou `ikcp-eu.pages.dev/admin/` avant la bascule DNS)
+2. **Login with GitHub** → autorise → tu vois les 4 collections :
+   🏛️ Family Office · 🏠 Accueil · ⚙️ Global · 📬 Newsletter
+3. Modifie un texte → **Publish** → commit Git → Cloudflare Pages publie (~1 min).
 
 ---
 
 ## Comment ça marche
 
 ```
-Tu modifies dans /admin/
+Tu édites dans /admin/ (Sveltia CMS)
+        ↓ commit dans GitHub (branche main)
+Cloudflare Pages détecte le push → publie (~1 min)
         ↓
-Decap CMS commit dans GitHub (branche main)
+Le script cms-hydrate.js lit les _data/*.json et applique le contenu
         ↓
-GitHub Actions déclenche le déploiement FTP
-        ↓
-Hostinger reçoit les fichiers mis à jour (~30 secondes)
-        ↓
-ikcp.eu affiche le nouveau contenu
+ikcp.eu affiche le nouveau texte
 ```
 
----
+## Ce qui est éditable (data-cms câblés)
 
-## Ce que tu peux modifier sans code
+✅ **Homepage — titre du hero** (preuve câblée : `home.hero.headline_1` / `headline_em`)
+🔜 À étendre : sous-titres, CTA, FAQ, prix, paramètres globaux (tagger les éléments `data-cms` page par page)
 
-✅ Tous les textes des pages Family Office et Accueil  
-✅ Les FAQ (ajouter, modifier, supprimer des questions)  
-✅ Les titres, sous-titres, accroche hero  
-✅ Les CTAs (textes des boutons)  
-✅ Les meta SEO (title + description Google)  
-✅ Les paramètres newsletter (titre, sous-titre, CTA)  
-✅ Les paramètres globaux (email, slogan, baseline)
+❌ Toujours du code : layout/design, Workers/agents, nouvelles fonctionnalités.
 
-❌ Ce qui nécessite toujours du code :  
-- Layout / design (couleurs, polices, espacements)  
-- Nouveaux Workers / agents IA  
-- Nouvelles fonctionnalités applicatives
+> **Principe** : chaque texte éditable = un élément HTML tagué `data-cms="prefix.chemin"` + une clé dans `_data/*.json`. Le CMS édite le JSON, `cms-hydrate.js` l'applique. On étend champ par champ selon les besoins.
 
 ---
 

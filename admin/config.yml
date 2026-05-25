@@ -17,10 +17,11 @@
 # ══════════════════════════════════════════════════════════
 
 backend:
-  name: git-gateway
+  name: github
+  repo: Max51527/ikcp-site
   branch: main
-  # Remplacer par votre URL Netlify (juste pour l'auth GitHub — aucun hébergement)
-  # site_domain: votre-site.netlify.app
+  # Auth GitHub via worker Cloudflare (zéro Netlify) — voir workers/ikcp-cms-auth
+  base_url: https://ikcp-cms-auth.maxime-ead.workers.dev
 
 # Dossier pour les images uploadées depuis le CMS
 media_folder: "assets/cms-uploads"
