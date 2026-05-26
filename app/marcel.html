@@ -129,6 +129,29 @@ let userTier = 'free';
 let me;
 try { me = await Marcel.Auth.me(); userTier = me?.tier || 'free'; } catch(_){ location.href = '/app/index.html'; }
 
+// ── Avant-goût gratuit : 3 échanges Marcel pour le tier Découverte ──
+// (premium / fo = illimité). Compteur local par membre — l'enforcement
+// serveur définitif viendra côté ikcp-client.
+const FREE_TASTE_LIMIT = 3;
+const _freeKey = 'marcel_free_count_' + (me?.id || me?.email || 'anon');
+function freeCount(){ return parseInt(localStorage.getItem(_freeKey) || '0', 10) || 0; }
+function bumpFreeCount(){ localStorage.setItem(_freeKey, String(freeCount() + 1)); }
+function showUpgradeGate(){
+  const msgs = document.getElementById('msgs');
+  if(document.getElementById('upgrade-gate')) return; // une seule fois
+  const g = document.createElement('div');
+  g.className = 'msg a'; g.id = 'upgrade-gate';
+  g.innerHTML = '<strong>Vous avez utilisé vos 3 échanges découverte avec Marcel.</strong><br>'
+    + 'L\'accès illimité à Marcel et à ses 11 spécialistes fait partie des offres <strong>Premium</strong> et <strong>Family Office</strong>.'
+    + '<div style="margin-top:14px"><a href="/family-office" style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:100px;background:#C9A96E;color:#0E1729;font-weight:700;font-size:14px;text-decoration:none">Découvrir les offres →</a></div>';
+  msgs.appendChild(g);
+  const inp = document.getElementById('q');
+  if(inp){ inp.disabled = true; inp.placeholder = 'Passez en Premium pour continuer avec Marcel'; }
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+// Quota déjà épuisé à l'ouverture → on affiche le gate d'emblée
+if(userTier === 'free' && freeCount() >= FREE_TASTE_LIMIT){ showUpgradeGate(); }
+
 // Vérifie statut voix premium en arrière-plan
 let premiumVoiceAvailable = false;
 Voice.checkPremiumStatus().then(s => {
@@ -297,6 +320,13 @@ window.send = async function(e){
   const inp = document.getElementById('q');
   const q = inp.value.trim();
   if(!q) return false;
+
+  // Avant-goût gratuit (tier Découverte) : au-delà de 3 échanges → upgrade
+  if(userTier === 'free' && freeCount() >= FREE_TASTE_LIMIT){
+    showUpgradeGate();
+    return false;
+  }
+
   inp.value=''; inp.disabled=true;
   const msgs = document.getElementById('msgs');
 
@@ -306,6 +336,7 @@ window.send = async function(e){
   u.textContent = q;
   msgs.appendChild(u);
   history.push({role:'user',content:q});
+  if(userTier === 'free') bumpFreeCount();
 
   // Loading
   const ld = document.createElement('div');

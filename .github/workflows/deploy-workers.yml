@@ -13,6 +13,7 @@ on:
       - 'workers/ikcp-client/**'
       - 'workers/ikcp-pappers/**'
       - 'workers/ikcp-cms-auth/**'
+      - 'workers/ikcp-feedback/**'
   workflow_dispatch:
     inputs:
       target:
@@ -31,6 +32,7 @@ on:
           - ikcp-client
           - ikcp-pappers
           - ikcp-cms-auth
+          - ikcp-feedback
 
 jobs:
   deploy-ikcp-marcel:
@@ -203,3 +205,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-cms-auth
+
+  deploy-ikcp-feedback:
+    name: "Deploy ikcp-feedback (retours bêta fondateurs)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-feedback') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-feedback (collecte attentes bêta)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-feedback
