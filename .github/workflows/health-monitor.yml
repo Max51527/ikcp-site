@@ -1,0 +1,40 @@
+name: Health Monitor — Agents IKCP
+
+# Surveille la santé des agents/workers IKCP.
+# Chaque matin (9h Paris) on ping le /health de chaque worker.
+# Si l'un répond autre chose que 200 → le job ÉCHOUE → GitHub envoie
+# automatiquement un email d'alerte au propriétaire du dépôt (Maxime).
+# Aucun secret requis (les /health sont publics). Lançable aussi à la main.
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 07:00 UTC = 09:00 Paris
+  workflow_dispatch:
+
+jobs:
+  health:
+    name: Ping /health de tous les agents
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier la santé des workers
+        run: |
+          set -u
+          # Workers déployés à surveiller (cms-auth/feedback exclus tant que non déployés)
+          WORKERS="ikcp-chat ikcp-codex ikcp-hermes ikcp-batisseur ikcp-lifestyle ikcp-veille ikcp-client ikcp-temoin ikcp-collector ikcp-voice ikcp-pappers"
+          DOWN=""
+          echo "── Health check $(date -u +'%Y-%m-%d %H:%M UTC') ──"
+          for w in $WORKERS; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 12 "https://$w.maxime-ead.workers.dev/health" || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "✅ $w [$code]"
+            else
+              echo "❌ $w [$code]"
+              DOWN="$DOWN $w"
+            fi
+          done
+          echo "────────────────────────────"
+          if [ -n "$DOWN" ]; then
+            echo "::error::Agents IKCP indisponibles :$DOWN"
+            exit 1
+          fi
+          echo "Tous les agents sont en ligne. ✅"
