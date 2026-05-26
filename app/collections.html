@@ -232,6 +232,24 @@ section.col-hero{padding:26px 0 14px;border-bottom:1px solid var(--line);margin-
 import { Marcel } from '/app/js/api.js';
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
+// ─── Garde d'authentification (alignée sur les autres pages app/) ───
+let me = null;
+try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+// ─── Bandeau démonstration ───
+// ⚠️ Les données ci-dessous sont un EXEMPLE de présentation, pas le
+// patrimoine réel du membre. Le branchement /api/v1/me/collections est à
+// venir (Sprint suivant). On l'affiche clairement pour éviter toute confusion.
+document.addEventListener('DOMContentLoaded', () => {
+  const hero = document.querySelector('section.col-hero');
+  if(hero){
+    const note = document.createElement('div');
+    note.style.cssText = 'margin-top:16px;padding:10px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;background:var(--bg-2);font-size:12.5px;color:var(--mute);line-height:1.5';
+    note.innerHTML = '<strong style="color:var(--ink)">Aperçu de démonstration.</strong> Les pièces affichées illustrent la présentation de votre futur carnet de collections. Le suivi de vos actifs réels sera activé prochainement.';
+    hero.appendChild(note);
+  }
+});
+
 // ─── DONNÉES DEMO (à remplacer par fetch /api/v1/me/collections) ───
 const DEMO_COLLECTIONS = {
   horlogerie: {

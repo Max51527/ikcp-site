@@ -4,11 +4,13 @@
  * Région : Cloudflare Pages (souveraineté France)
  */
 
-const CACHE_VERSION = 'marcel-v1.0.0';
+const CACHE_VERSION = 'marcel-v1.0.1';
 const STATIC_CACHE = `marcel-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `marcel-runtime-${CACHE_VERSION}`;
 
-// Assets critiques pré-cachés à l'installation
+// Assets critiques pré-cachés à l'installation.
+// ⚠️ Ne lister que des fichiers RÉELLEMENT présents : sinon cache.addAll()
+// rejette en bloc et l'installation du service worker échoue entièrement.
 const PRECACHE_URLS = [
   '/app/',
   '/app/index.html',
@@ -20,17 +22,19 @@ const PRECACHE_URLS = [
   '/app/profil.html',
   '/app/css/marcel.css',
   '/app/js/api.js',
-  '/app/js/auth.js',
   '/app/manifest.json',
-  '/app/icons/marcel-192.png',
-  '/app/icons/marcel-512.png',
+  '/app/icons/marcel.svg',
 ];
 
 // ───────────── INSTALLATION ─────────────
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then(cache => cache.addAll(PRECACHE_URLS))
+      // Résilient : on cache chaque asset indépendamment pour qu'un 404
+      // isolé ne fasse jamais échouer toute l'installation du SW.
+      .then(cache => Promise.allSettled(
+        PRECACHE_URLS.map(u => cache.add(u))
+      ))
       .then(() => self.skipWaiting())
   );
 });
@@ -90,8 +94,8 @@ self.addEventListener('push', event => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'Marcel', {
       body: data.body || 'Nouvelle alerte de veille',
-      icon: '/app/icons/marcel-192.png',
-      badge: '/app/icons/marcel-badge.png',
+      icon: '/app/icons/marcel.svg',
+      badge: '/app/icons/marcel.svg',
       tag: data.tag || 'marcel-alert',
       data: { url: data.url || '/app/veille.html' },
       actions: [

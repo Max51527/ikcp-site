@@ -908,9 +908,34 @@ export default {
         cache_control: { type: 'ephemeral' },
       }];
 
+      // ── Outils filtrés par tier + par spécialistes réellement déployés ──
+      // 1) consult_veille (Perplexity Pro) réservé aux membres premium/fo :
+      //    inutile de l'exposer à un visiteur free/anon → sinon 403 stérile.
+      // 2) delegate_to_specialist : on régénère l'enum à partir des
+      //    spécialistes LIVE pour ne jamais proposer un worker non déployé
+      //    (ex. Bâtisseur tant que sa clé n'est pas posée).
+      const veilleAllowed = memberTier === 'premium' || memberTier === 'fo';
+      const dynamicTools = TOOLS_FISCAL
+        .filter(t => !(t.name === 'consult_veille' && !veilleAllowed))
+        .map(t => {
+          if (t.name === 'delegate_to_specialist') {
+            return {
+              ...t,
+              input_schema: {
+                ...t.input_schema,
+                properties: {
+                  ...t.input_schema.properties,
+                  agent: { ...t.input_schema.properties.agent, enum: SPECIALISTS_IDS_LIVE },
+                },
+              },
+            };
+          }
+          return t;
+        });
+
       const tools = [
         { type: 'web_search_20250305', name: 'web_search', max_uses: 2 },
-        ...TOOLS_FISCAL,
+        ...dynamicTools,
       ];
 
       const workingMessages = messages.slice(); // copie pour loop tool_use

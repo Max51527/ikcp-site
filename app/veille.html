@@ -166,12 +166,18 @@ try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; 
 if(me){
   const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
   document.getElementById('veilTier').textContent = tierLbl;
-  // Désactiver recherche approfondie pour les tiers inférieurs
+  // Gating par tier (aligné sur ikcp-veille) :
+  //  • free    → pas de recherche active (lecture des alertes uniquement)
+  //  • premium → recherche rapide seulement (mode quick)
+  //  • fo      → rapide + approfondie (mode deep)
   if(me.tier === 'free'){
     document.getElementById('searchMode').innerHTML = '<option value="quick">Rapide (lecture seule)</option>';
     document.getElementById('searchBtn').disabled = true;
     document.getElementById('searchBtn').textContent = 'Premium requis';
     document.getElementById('searchBtn').title = 'La recherche active est disponible à partir du tier Premium.';
+  } else if(me.tier === 'premium'){
+    document.getElementById('searchMode').innerHTML = '<option value="quick">Rapide</option>';
+    document.getElementById('searchMode').title = 'La recherche approfondie est réservée au tier Family Office.';
   }
 }
 
@@ -216,7 +222,7 @@ window.doSearch = async function(e){
   resultDiv.style.display = 'none';
 
   try {
-    const r = await Marcel.veille(query, mode, me?.id, me?.tier || 'fo');
+    const r = await Marcel.veille(query, mode, me?.id, me?.tier || 'free');
 
     // Afficher résultat
     resultDiv.style.display = 'block';
