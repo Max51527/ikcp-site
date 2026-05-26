@@ -1100,9 +1100,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           max-width: 1480px;
           margin: 0 auto;
         }
-        /* Hero épuré : panneau montgolfière retiré — accès Marcel via la bulle flottante (widget) */
-        .hero-right { display: none !important; }
+        /* Hero : visuel « IA × Humain » (concept B) dans la colonne droite */
         .hero-left { max-width: 840px; }
+        @media (min-width: 980px){
+          .hero { grid-template-columns: 1.05fr 0.92fr; gap: 48px; }
+          .hero-left { max-width: 720px; }
+        }
+        /* l'ancien panneau montgolfière reste dormant — on affiche le nouveau visuel orbital */
+        .hero-right .sky-block { display: none !important; }
 
         /* ─── LEFT COLUMN ─── */
         .hero-left {
@@ -1410,6 +1415,45 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           animation-delay: 0.3s;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ═══ Hero visuel — IA × Humain (concept B) ═══ */
+        .hero-orbit{
+          position:relative;width:100%;aspect-ratio:4/5;border-radius:20px;overflow:hidden;
+          background:radial-gradient(ellipse 75% 60% at 50% 38%,#16233f,#0E1729 78%);
+          box-shadow:0 40px 90px -30px rgba(14,23,41,.55),0 0 0 1px rgba(201,169,110,.18);
+          display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px 26px;
+        }
+        .ho-eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#C9A96E;font-weight:600;text-align:center}
+        .ho-stage{position:relative;display:flex;align-items:center;justify-content:center;width:100%;max-width:380px}
+        .ho-link{position:absolute;left:34%;right:34%;top:50%;height:2px;
+          background:linear-gradient(90deg,transparent,#E2C896,transparent);animation:hoBreathe 3s ease-in-out infinite}
+        @keyframes hoBreathe{0%,100%{opacity:.25;transform:scaleX(.8)}50%{opacity:.95;transform:scaleX(1)}}
+        .ho-side{flex:1;display:flex;flex-direction:column;align-items:center;gap:11px;z-index:3}
+        .ho-orbit-ic{position:relative;width:clamp(90px,26vw,128px);aspect-ratio:1;cursor:pointer}
+        .ho-ring{position:absolute;inset:0;border:1px solid rgba(201,169,110,.35);border-radius:50%;transition:border-color .3s}
+        .ho-ring.r2{inset:16%;border-style:dashed;border-color:rgba(201,169,110,.22)}
+        .ho-spin{position:absolute;inset:0;animation:hoSpin 14s linear infinite}
+        .ho-spin.rev{animation-duration:20s;animation-direction:reverse}
+        @keyframes hoSpin{to{transform:rotate(360deg)}}
+        .ho-dot{position:absolute;top:-4px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:#E2C896;box-shadow:0 0 10px #E2C896}
+        .ho-dot.d2{top:auto;bottom:-4px}.ho-dot.d3{top:50%;left:-4px;margin-top:-4.5px;margin-left:0}
+        .ho-pulse{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.4),transparent 70%);animation:hoPulse 3s ease-in-out infinite}
+        @keyframes hoPulse{0%,100%{transform:scale(.8);opacity:.4}50%{transform:scale(1.25);opacity:.9}}
+        .ho-core{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-style:italic;color:#E2C896;font-size:clamp(14px,4vw,18px)}
+        .ho-orbit-ic:hover .ho-ring{border-color:rgba(201,169,110,.65)}
+        .ho-mono{width:clamp(74px,22vw,112px);aspect-ratio:1;border-radius:50%;border:1.5px solid #C9A96E;
+          background:linear-gradient(160deg,rgba(201,169,110,.18),rgba(255,255,255,.03));overflow:hidden;
+          display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;
+          font-size:clamp(24px,7vw,40px);color:#FAFAF8;box-shadow:inset 0 0 26px rgba(201,169,110,.2)}
+        .ho-mono img{width:100%;height:100%;object-fit:cover}
+        .ho-cap{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,250,248,.55);font-weight:600;text-align:center}
+        .ho-tagline{font-family:'Playfair Display',serif;color:#FAFAF8;font-size:clamp(15px,4.4vw,21px);line-height:1.25;text-align:center;font-weight:500}
+        .ho-tagline em{font-style:italic;color:#E2C896}
+        .ho-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:100px;background:#C9A96E;color:#0E1729;font-weight:700;font-size:13.5px;border:none;cursor:pointer;box-shadow:0 12px 30px -10px rgba(201,169,110,.6);transition:transform .2s}
+        .ho-cta:hover{transform:translateY(-2px)}
+        @media (max-width:979px){
+          .hero-right{ order:1 !important; max-width:420px !important; aspect-ratio:auto !important; margin:0 auto !important; }
+        }
 
         /* ═══ Sky block (fond pour Marcel qui vole) ═══ */
         .sky-block {
@@ -2416,6 +2460,34 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
       <!-- ═══ RIGHT ═══ -->
       <div class="hero-right">
+
+        <!-- ═══ Concept B — IA × Humain (le trait d'union) ═══ -->
+        <div class="hero-orbit">
+          <div class="ho-eyebrow">100 % digital · sans oublier l'humain</div>
+          <div class="ho-stage">
+            <div class="ho-link"></div>
+            <div class="ho-side">
+              <div class="ho-orbit-ic" onclick="openMarcelChat()" role="button" tabindex="0" aria-label="Ouvrir Marcel, votre agent IA patrimonial" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMarcelChat();}">
+                <div class="ho-pulse"></div>
+                <div class="ho-ring"></div><div class="ho-ring r2"></div>
+                <div class="ho-spin"><span class="ho-dot"></span><span class="ho-dot d2"></span></div>
+                <div class="ho-spin rev"><span class="ho-dot d3"></span></div>
+                <div class="ho-core">Marcel</div>
+              </div>
+              <div class="ho-cap">Intelligence souveraine</div>
+            </div>
+            <div class="ho-side">
+              <div class="ho-mono">
+                <img src="/icons/maxime.jpg" alt="Maxime Juveneton, conseiller humain"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <span style="display:none;width:100%;height:100%;align-items:center;justify-content:center" aria-hidden="true">MJ</span>
+              </div>
+              <div class="ho-cap">Conseiller humain · CIF</div>
+            </div>
+          </div>
+          <div class="ho-tagline">Une intelligence souveraine.<br>Un <em>conseiller humain.</em></div>
+          <button type="button" class="ho-cta" onclick="openMarcelChat()">Discutez avec Marcel <span>→</span></button>
+        </div>
 
         <div class="sky-block">
           <!-- Ciel dégradé : Marcel vole en haut, chat en bas -->
