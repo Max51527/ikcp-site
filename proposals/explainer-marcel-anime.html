@@ -106,17 +106,17 @@ body{background:#2a2622;display:flex;align-items:center;justify-content:center;m
   <div class="brand">IKCP<span>.</span></div>
   <div class="scene-tag" id="sceneTag">01 / 05</div>
 
-  <!-- SCÈNE 1 — Patrimoine dispersé -->
+  <!-- SCÈNE 1 — Le principe (ouverture positive, slogan de marque) -->
   <div class="scene" data-scene="0">
-    <div class="eyebrow">Le constat</div>
-    <div class="headline">Votre patrimoine,<br><em>dispersé.</em></div>
+    <div class="eyebrow">Le principe</div>
+    <div class="headline">Une porte.<br>Une <em>équipe.</em></div>
     <div class="silos">
-      <div class="silo"><div class="silo-ic">📊</div><div class="silo-lbl">Comptable</div></div>
-      <div class="silo"><div class="silo-ic">🏦</div><div class="silo-lbl">Banquier</div></div>
-      <div class="silo"><div class="silo-ic">⚖️</div><div class="silo-lbl">Notaire</div></div>
-      <div class="silo"><div class="silo-ic">📁</div><div class="silo-lbl">CGP</div></div>
+      <div class="silo"><div class="silo-ic">🎯</div><div class="silo-lbl">Stratégie</div></div>
+      <div class="silo"><div class="silo-ic">⚖️</div><div class="silo-lbl">Fiscalité</div></div>
+      <div class="silo"><div class="silo-ic">🌿</div><div class="silo-lbl">Transmission</div></div>
+      <div class="silo"><div class="silo-ic">💎</div><div class="silo-lbl">Art de vivre</div></div>
     </div>
-    <div class="sub">Chacun gère son silo. Personne ne voit l'ensemble.</div>
+    <div class="sub">Votre patrimoine en orbite — piloté depuis un point unique.</div>
   </div>
 
   <!-- SCÈNE 2 — Marcel apparaît -->
@@ -188,13 +188,14 @@ body{background:#2a2622;display:flex;align-items:center;justify-content:center;m
   </div>
 
   <div class="controls">
+    <button class="ctrl" id="btnSpeed" title="Vitesse de lecture" style="width:auto;padding:0 12px;border-radius:18px;font-family:'JetBrains Mono',monospace;font-size:12px">1×</button>
     <button class="ctrl" id="btnPlay" title="Lecture/Pause">⏸</button>
     <button class="ctrl" id="btnReplay" title="Recommencer">↻</button>
   </div>
   <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
 </div>
 
-<div class="label-note">EXPLAINER ANIMÉ · MARCEL — proposition v1</div>
+<div class="label-note">EXPLAINER ANIMÉ · MARCEL — proposition v2 (Family Office)</div>
 
 <script>
 (function(){
@@ -203,7 +204,11 @@ body{background:#2a2622;display:flex;align-items:center;justify-content:center;m
   const fill = document.getElementById('progressFill');
   const btnPlay = document.getElementById('btnPlay');
   const btnReplay = document.getElementById('btnReplay');
+  const btnSpeed = document.getElementById('btnSpeed');
   const SCENE_MS = [3200, 3400, 4200, 3800, 3600];
+  // Réglage de vitesse de propagation : facteur appliqué à la durée des scènes.
+  const SPEEDS = [{f:1, lbl:'1×'},{f:1.5, lbl:'1.5×'},{f:0.5, lbl:'0.5×'}];
+  let speedIdx = 0, speed = SPEEDS[0].f;
   let idx = 0, playing = true, t0 = 0, raf = null, sceneTimer = null;
 
   // ── Agents orbite (scène 3) ──
@@ -264,7 +269,7 @@ body{background:#2a2622;display:flex;align-items:center;justify-content:center;m
   function tick(now){
     if(!playing) return;
     if(!t0) t0=now;
-    const el=now-t0, dur=SCENE_MS[idx];
+    const el=now-t0, dur=SCENE_MS[idx]/speed;
     fill.style.width=Math.min(100,(el/dur)*100)+'%';
     if(el>=dur){
       idx=(idx+1)%scenes.length; t0=now;
@@ -278,6 +283,7 @@ body{background:#2a2622;display:flex;align-items:center;justify-content:center;m
   function pause(){playing=false;btnPlay.textContent='▶';cancelAnimationFrame(raf);}
   btnPlay.onclick=()=>{playing?pause():play();};
   btnReplay.onclick=()=>{idx=0;t0=performance.now();show(0);if(!playing)play();};
+  btnSpeed.onclick=()=>{speedIdx=(speedIdx+1)%SPEEDS.length;speed=SPEEDS[speedIdx].f;btnSpeed.textContent=SPEEDS[speedIdx].lbl;};
 
   show(0);
   play();
