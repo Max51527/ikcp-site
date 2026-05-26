@@ -117,7 +117,13 @@ async function fetchUserContextFromClient(request) {
       me.sirens.slice(0, 3).forEach(s => lines.push(`  • ${s.nom_societe} · ${s.siren} · ${s.forme_juridique || ''}`));
     }
     if (me.tier) lines.push(`Tier abonnement : ${me.tier}`);
-    return lines.length ? lines.join('\n') : null;
+    // On expose aussi le tier + identifiant réels pour propager les quotas
+    // (ex. veille Perplexity) au lieu d'un défaut « fo » servi à tout le monde.
+    return {
+      context: lines.length ? lines.join('\n') : null,
+      tier: me.tier || null,
+      userId: me.id || me.email || null,
+    };
   } catch (_) { return null; }
 }
 
@@ -463,6 +469,7 @@ POUR LES SPÉCIALISTES PAS ENCORE LIVE : traite directement avec tes connaissanc
 
 VEILLE AUGMENTÉE — TOOL consult_veille :
 Utilise **consult_veille** quand l'utilisateur demande une veille récente : "actualités sur X", "qu'est-ce qui a changé sur Y depuis 2 mois ?", "dernières jurisprudences sur Z", "évolution du marché de l'horlogerie cette semaine". Ce tool passe par Perplexity Pro (mode quick = réponse rapide, mode deep = analyse approfondie). S'il échoue, bascule sur tes connaissances + web_search.
+La veille augmentée temps réel est réservée aux membres Premium (mode quick) et Family Office (mode deep). Si le tool renvoie "tier_insufficient", réponds quand même utilement avec tes connaissances + web_search, puis mentionne avec tact que la veille personnalisée en continu fait partie de l'accompagnement Premium / Family Office — sans insister.
 
 COLLECTOR PERSONNEL — TOOLS get_user_profile / get_user_watches / get_user_alerts / add_user_watch :
 L'utilisateur peut avoir un PROFIL COLLECTIONNEUR enregistré (montres, voitures, sneakers, Lego, jeux, vins, art, voyage, sport, yachts, NextGen). Un agent collecteur scrute chaque jour les marchés correspondants et génère des alertes.
@@ -875,12 +882,20 @@ export default {
       // ── Mémoire conversationnelle Sprint 2 ──
       // Si l'utilisateur est authentifié (cookie session), on enrichit
       // le system prompt avec son profil + ses sociétés. Marcel se souvient.
+      // On garde aussi le tier réel + l'identifiant pour propager les quotas
+      // (ex. veille) au lieu d'un accès « fo » servi par défaut.
+      let memberTier = null;   // null = visiteur non connecté
+      let memberId = null;
       const cookieHeader = request.headers.get('Cookie') || '';
       if (cookieHeader.includes('ikcp_session')) {
         try {
-          const userCtx = await fetchUserContextFromClient(request);
-          if (userCtx) {
-            systemPromptText += `\n\n# CLIENT CONNECTÉ — MÉMOIRE PERSISTANTE\n` + userCtx + `\nTu connais ce client. Salue-le par son prénom si pertinent. Ne lui demande JAMAIS d'informations déjà connues (situation familiale, profession, sociétés rattachées). Adapte tes réponses à son profil.`;
+          const userInfo = await fetchUserContextFromClient(request);
+          if (userInfo) {
+            memberTier = userInfo.tier || null;
+            memberId = userInfo.userId || null;
+            if (userInfo.context) {
+              systemPromptText += `\n\n# CLIENT CONNECTÉ — MÉMOIRE PERSISTANTE\n` + userInfo.context + `\nTu connais ce client. Salue-le par son prénom si pertinent. Ne lui demande JAMAIS d'informations déjà connues (situation familiale, profession, sociétés rattachées). Adapte tes réponses à son profil.`;
+            }
           }
         } catch (_) { /* mémoire non bloquante */ }
       }
@@ -990,8 +1005,11 @@ export default {
                 body: JSON.stringify({
                   query: i.query,
                   mode: i.mode || 'quick',
-                  user_id: 'marcel_internal',
-                  tier: 'fo', // Marcel a accès en interne
+                  // Tier par utilisateur : on propage le tier RÉEL du membre
+                  // connecté (free / premium / fo) pour que les quotas veille
+                  // s'appliquent par personne. Visiteur non connecté = free.
+                  user_id: memberId || 'anon',
+                  tier: memberTier || 'free',
                 }),
               });
               if (!vr.ok) {
