@@ -1004,7 +1004,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           box-shadow: 0 4px 12px rgba(184, 153, 104, 0.4);
         }
 
-        /* ═══ Overlay Playlist Maxime ═══ */
+        /* ═══ Overlay Playlist IKCP ═══ */
         .playlist-overlay {
           position: fixed;
           inset: 0;
@@ -2329,19 +2329,19 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           </button>
         </div>
         <button class="music-off-btn" id="music-off-btn">Couper la musique</button>
-        <button class="music-playlist-btn" id="music-playlist-btn">🎵 Playlist Maxime</button>
+        <button class="music-playlist-btn" id="music-playlist-btn">🎵 Playlist IKCP</button>
         <div class="music-credits">Kevin MacLeod (incompetech) · CC-BY 4.0<br>Khachaturian / Django Reinhardt / Bob Nolan — enregistrements domaine public</div>
       </div>
       <audio id="music-audio" loop preload="none"></audio>
     </div>
 
-    <!-- ═══ Overlay Playlist Maxime ═══ -->
+    <!-- ═══ Overlay Playlist IKCP ═══ -->
     <div class="playlist-overlay" id="playlist-overlay" aria-hidden="true">
       <div class="playlist-modal">
         <button class="playlist-close" id="playlist-close" aria-label="Fermer">×</button>
         <div class="playlist-header">
-          <div class="playlist-title">Playlist Maxime</div>
-          <div class="playlist-sub">Sélection personnelle — écoute libre</div>
+          <div class="playlist-title">Playlist IKCP</div>
+          <div class="playlist-sub">Sélection IKCP — écoute libre</div>
         </div>
         <div class="playlist-embed" id="playlist-embed-wrap">
           <!-- Spotify embed sera injecté ici à l'ouverture -->
@@ -3962,7 +3962,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
         stopMusic(false);
       });
 
-      // ═══ Playlist Maxime overlay ═══
+      // ═══ Playlist IKCP overlay ═══
       const playlistBtn   = document.getElementById('music-playlist-btn');
       const playlistOver  = document.getElementById('playlist-overlay');
       const playlistEmbed = document.getElementById('playlist-embed-wrap');
