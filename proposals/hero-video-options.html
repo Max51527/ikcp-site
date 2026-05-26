@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Hero : 3 concepts vidéo (aperçu animé)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1B2A4A; --navy-deep:#0E1729; --cream:#FAFAF8; --cream-2:#F2EDE4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F; --ink:#1C1612; --ink-mute:#6B5D52;
+}
+body{font-family:'Outfit',sans-serif;background:#26221e;color:var(--cream);padding:30px 18px 80px}
+.page-head{max-width:980px;margin:0 auto 26px;text-align:center}
+.page-head h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(22px,3.4vw,32px);color:var(--cream)}
+.page-head p{color:rgba(250,250,248,.6);font-size:14px;margin-top:8px}
+
+.block{max-width:980px;margin:0 auto 44px}
+.lbl{display:inline-flex;align-items:center;gap:9px;background:var(--navy);color:var(--gold-bright);
+  font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:8px 16px;border-radius:100px;margin-bottom:14px}
+.lbl .n{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--gold)}
+.note{color:rgba(250,250,248,.55);font-size:13px;line-height:1.6;margin-top:12px;max-width:760px}
+.note b{color:var(--cream)}
+
+/* ░░ Cadre vidéo 16:9 commun ░░ */
+.stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;
+  box-shadow:0 40px 100px -24px rgba(0,0,0,.6),0 0 0 1px rgba(201,169,110,.18)}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.brand{position:absolute;top:18px;left:20px;z-index:9;font-weight:600;color:var(--cream);letter-spacing:.04em;font-size:15px}
+.brand span{color:var(--gold)}
+.eyebrow{font-size:clamp(9px,1.3vw,12px);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.h-title{font-family:'Playfair Display',serif;color:var(--cream);font-weight:500;line-height:1.1}
+.h-title em{font-style:italic;color:var(--gold-bright)}
+
+/* ───────────────── A — L'ASCENSION ───────────────── */
+.A{background:radial-gradient(ellipse 90% 70% at 60% 18%,#f0d9a8 0%,#caa66e 14%,#5a4a6e 42%,var(--navy-deep) 80%)}
+.A .hills{position:absolute;left:0;right:0;bottom:0;width:100%}
+.A .hill1{fill:#172murl;fill:#14213d;opacity:.9}
+.A .hill2{fill:#0d1830;opacity:.95}
+.A .grid{position:absolute;inset:0;opacity:0;background-image:linear-gradient(rgba(201,169,110,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,.25) 1px,transparent 1px);background-size:42px 42px;
+  -webkit-mask-image:radial-gradient(ellipse 60% 50% at 50% 40%,#000,transparent 70%);mask-image:radial-gradient(ellipse 60% 50% at 50% 40%,#000,transparent 70%);
+  animation:gridIn 9s ease-in-out infinite}
+@keyframes gridIn{0%,20%{opacity:0}55%,80%{opacity:.5}100%{opacity:0}}
+.A .balloonA{position:absolute;left:58%;top:50%;width:clamp(58px,9vw,96px);transform:translate(-50%,0);
+  filter:drop-shadow(0 18px 26px rgba(0,0,0,.5));animation:riseA 9s ease-in-out infinite}
+@keyframes riseA{0%{transform:translate(-50%,40px) rotate(-3deg);opacity:.4}
+  25%{opacity:1}50%{transform:translate(-50%,-18px) rotate(2deg)}75%{transform:translate(-50%,-6px) rotate(-1deg)}100%{transform:translate(-50%,40px) rotate(-3deg);opacity:.4}}
+.A .copy{position:absolute;left:7%;bottom:11%;z-index:8;max-width:62%}
+.A .copy .eyebrow{margin-bottom:12px;display:block;opacity:0;animation:fadeUp 9s ease-in-out infinite}
+.A .copy .h-title{font-size:clamp(20px,3.6vw,40px);opacity:0;animation:fadeUp 9s ease-in-out infinite .3s}
+@keyframes fadeUp{0%,12%{opacity:0;transform:translateY(14px)}30%,82%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(14px)}}
+
+/* ───────────────── B — IA × HUMAIN ───────────────── */
+.B{background:radial-gradient(ellipse 70% 60% at 50% 40%,#16233f,var(--navy-deep) 75%)}
+.B .row{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 9%}
+.B .side{display:flex;flex-direction:column;align-items:center;gap:12px;z-index:6}
+/* orbite Marcel */
+.B .orbit{position:relative;width:clamp(96px,16vw,150px);aspect-ratio:1}
+.B .orbit .ring{position:absolute;inset:0;border:1px solid rgba(201,169,110,.35);border-radius:50%}
+.B .orbit .ring.r2{inset:16%;border-style:dashed;border-color:rgba(201,169,110,.22)}
+.B .orbit .spin{position:absolute;inset:0;animation:spin 14s linear infinite}
+.B .orbit .spin.rev{animation-duration:20s;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.B .orbit .dot{position:absolute;top:-4px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+  background:var(--gold-bright);box-shadow:0 0 10px var(--gold-bright)}
+.B .orbit .dot.d2{top:auto;bottom:-4px}
+.B .orbit .dot.d3{top:50%;left:-4px;margin-top:-4.5px;margin-left:0}
+.B .orbit .core{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-style:italic;color:var(--gold-bright);font-size:clamp(13px,2vw,18px)}
+.B .orbit .pulse{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.4),transparent 70%);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.8);opacity:.4}50%{transform:scale(1.25);opacity:.9}}
+/* monogramme humain */
+.B .mono{width:clamp(78px,13vw,118px);aspect-ratio:1;border-radius:50%;border:1.5px solid var(--gold);
+  background:linear-gradient(160deg,rgba(201,169,110,.16),rgba(255,255,255,.03));
+  display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;
+  font-size:clamp(26px,4.6vw,42px);color:var(--cream);letter-spacing:.04em;box-shadow:inset 0 0 24px rgba(201,169,110,.18)}
+.B .caplbl{font-size:clamp(9px,1.3vw,12px);letter-spacing:.14em;text-transform:uppercase;color:rgba(250,250,248,.55);font-weight:600}
+/* trait d'union */
+.B .link{position:absolute;left:33%;right:33%;top:50%;height:2px;z-index:2;
+  background:linear-gradient(90deg,transparent,var(--gold-bright),transparent);
+  animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.25;transform:scaleX(.85)}50%{opacity:.95;transform:scaleX(1)}}
+.B .copy{position:absolute;left:0;right:0;bottom:9%;text-align:center;z-index:7}
+.B .copy .eyebrow{display:block;margin-bottom:8px}
+.B .copy .h-title{font-size:clamp(16px,2.8vw,30px)}
+
+/* ───────────────── C — CE QUE VOUS BÂTISSEZ ───────────────── */
+.C{background:radial-gradient(ellipse 80% 70% at 40% 35%,#16233f,var(--navy-deep) 78%)}
+.C svg{position:absolute;inset:0;width:100%;height:100%}
+.C .edge{stroke:var(--gold);stroke-width:1.2;fill:none;opacity:.55;
+  stroke-dasharray:240;stroke-dashoffset:240;animation:draw 8s ease-in-out infinite}
+.C .edge.e2{animation-delay:.5s}.C .edge.e3{animation-delay:1s}.C .edge.e4{animation-delay:1.5s}
+.C .edge.e5{animation-delay:2s}.C .edge.e6{animation-delay:2.5s}
+@keyframes draw{0%{stroke-dashoffset:240}35%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:240}}
+.C .node{fill:var(--gold-bright);opacity:0;animation:pop 8s ease-in-out infinite}
+.C .node.n2{animation-delay:.4s}.C .node.n3{animation-delay:.8s}.C .node.n4{animation-delay:1.2s}
+.C .node.n5{animation-delay:1.6s}.C .node.n6{animation-delay:2s}
+@keyframes pop{0%,8%{opacity:0;r:0}30%,82%{opacity:1}100%{opacity:0}}
+.C .fig{position:absolute;left:50%;top:30%;transform:translateX(-50%);text-align:center;z-index:7;opacity:0;animation:fadeUp 8s ease-in-out infinite 1.2s}
+.C .fig .num{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(28px,5vw,52px);color:var(--gold-bright);line-height:1}
+.C .fig .cap{font-size:clamp(10px,1.4vw,13px);color:rgba(250,250,248,.6);margin-top:6px}
+.C .copy{position:absolute;left:0;right:0;bottom:9%;text-align:center;z-index:7}
+.C .copy .eyebrow{display:block;margin-bottom:8px}
+.C .copy .h-title{font-size:clamp(17px,2.9vw,32px)}
+
+.flag{position:fixed;bottom:12px;left:12px;background:var(--navy);color:var(--gold);padding:6px 14px;border-radius:100px;font-size:11px;font-weight:600;z-index:99}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Hero ikcp.eu — 3 concepts vidéo</h1>
+  <p>Aperçus animés en boucle · CSS/SVG léger · au clic sur le site (pas d'autoplay lourd)</p>
+</div>
+
+<!-- ════════ A ════════ -->
+<div class="block">
+  <div class="lbl"><span class="n">A</span> L'Ascension · héritage Montgolfier</div>
+  <div class="stage A">
+    <div class="brand">IKCP<span>.</span></div>
+    <div class="grid"></div>
+    <svg class="hills" viewBox="0 0 960 200" preserveAspectRatio="none" aria-hidden="true">
+      <path class="hill1" d="M0 120 Q200 70 420 110 T960 95 V200 H0 Z" fill="#14213d" opacity=".85"/>
+      <path class="hill2" d="M0 150 Q260 110 520 145 T960 135 V200 H0 Z" fill="#0a1428" opacity=".95"/>
+    </svg>
+    <svg class="balloonA" viewBox="0 0 240 340" aria-hidden="true">
+      <defs>
+        <linearGradient id="bl" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3661a8"/><stop offset="1" stop-color="#0a2855"/></linearGradient>
+        <linearGradient id="rd" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d05a4a"/><stop offset="1" stop-color="#7c2418"/></linearGradient>
+        <linearGradient id="wh" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e8e4dc"/></linearGradient>
+        <linearGradient id="bk" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9a7a58"/><stop offset="1" stop-color="#3e2818"/></linearGradient>
+        <clipPath id="bc"><path d="M120 8C195 8 220 70 220 130C220 175 200 210 165 220C158 222 150 224 138 224C130 230 130 235 130 240L110 240C110 235 110 230 102 224C90 224 82 222 75 220C40 210 20 175 20 130C20 70 45 8 120 8Z"/></clipPath>
+      </defs>
+      <g clip-path="url(#bc)">
+        <rect x="0" width="80" height="240" fill="url(#bl)"/><rect x="80" width="80" height="240" fill="url(#wh)"/><rect x="160" width="80" height="240" fill="url(#rd)"/>
+        <ellipse cx="80" cy="60" rx="50" ry="80" fill="#fff" opacity=".18"/>
+      </g>
+      <line x1="105" y1="240" x2="92" y2="270" stroke="#1f1a16" stroke-width="1.5"/><line x1="135" y1="240" x2="148" y2="270" stroke="#1f1a16" stroke-width="1.5"/>
+      <rect x="78" y="270" width="84" height="48" rx="6" fill="url(#bk)"/>
+    </svg>
+    <div class="copy">
+      <span class="eyebrow">IKCP · Conseil patrimonial indépendant</span>
+      <div class="h-title">Protéger ce que vous êtes <em>en train de bâtir.</em></div>
+    </div>
+  </div>
+  <p class="note"><b>Émotion :</b> élévation, héritage 1783, prendre de la hauteur sur son patrimoine. La signature la plus mémorable et différenciante. <b>Variante premium :</b> remplacer l'animation par une cinématique IA (Runway/Sora) pour un rendu filmique réel.</p>
+</div>
+
+<!-- ════════ B ════════ -->
+<div class="block">
+  <div class="lbl"><span class="n">B</span> IA × Humain · le trait d'union</div>
+  <div class="stage B">
+    <div class="brand">IKCP<span>.</span></div>
+    <div class="link"></div>
+    <div class="row">
+      <div class="side">
+        <div class="orbit">
+          <div class="pulse"></div>
+          <div class="ring"></div><div class="ring r2"></div>
+          <div class="spin"><span class="dot"></span><span class="dot d2"></span></div>
+          <div class="spin rev"><span class="dot d3"></span></div>
+          <div class="core">Marcel</div>
+        </div>
+        <div class="caplbl">Intelligence souveraine</div>
+      </div>
+      <div class="side">
+        <div class="mono">MJ</div>
+        <div class="caplbl">Conseiller humain · CIF</div>
+      </div>
+    </div>
+    <div class="copy">
+      <span class="eyebrow">100 % digital · sans oublier l'humain</span>
+      <div class="h-title">Une intelligence souveraine.<br>Un <em>conseiller humain.</em></div>
+    </div>
+  </div>
+  <p class="note"><b>Émotion :</b> confiance, équilibre. Met en scène ton <b>différenciateur unique</b> en une image (vs CGP classiques et vs robo-advisors). Le plus efficace pour la conversion. Le « MJ » deviendra ta photo si tu en fournis une.</p>
+</div>
+
+<!-- ════════ C ════════ -->
+<div class="block">
+  <div class="lbl"><span class="n">C</span> Ce que vous bâtissez · construction éditoriale</div>
+  <div class="stage C">
+    <div class="brand">IKCP<span>.</span></div>
+    <svg viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <!-- arêtes qui se tracent -->
+      <path class="edge"    d="M300 360 L480 150"/>
+      <path class="edge e2" d="M480 150 L660 360"/>
+      <path class="edge e3" d="M300 360 L660 360"/>
+      <path class="edge e4" d="M480 150 L480 360"/>
+      <path class="edge e5" d="M300 360 L480 460"/>
+      <path class="edge e6" d="M660 360 L480 460"/>
+      <!-- noeuds -->
+      <circle class="node"    cx="300" cy="360" r="6"/>
+      <circle class="node n2" cx="480" cy="150" r="6"/>
+      <circle class="node n3" cx="660" cy="360" r="6"/>
+      <circle class="node n4" cx="480" cy="360" r="5"/>
+      <circle class="node n5" cx="480" cy="460" r="6"/>
+    </svg>
+    <div class="fig">
+      <div class="num">7 territoires</div>
+      <div class="cap">une vision patrimoniale d'ensemble</div>
+    </div>
+    <div class="copy">
+      <span class="eyebrow">IKCP · sur-mesure</span>
+      <div class="h-title">Ce que vous bâtissez mérite une <em>architecture.</em></div>
+    </div>
+  </div>
+  <p class="note"><b>Émotion :</b> maîtrise, sur-mesure, « entraîneur d'élite ». Abstrait et éditorial → jamais « SaaS générique ». Reprend l'idée de structurer le patrimoine, mais en <b>positif</b> (ça se construit).</p>
+</div>
+
+<div class="flag">APERÇU · 3 CONCEPTS VIDÉO HERO</div>
+</body>
+</html>
