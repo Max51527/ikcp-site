@@ -472,6 +472,7 @@ async function lookupSiren() {
         <div><b style="color:var(--navy);">Siège :</b> ${data.siege?.ville || '—'} (${data.siege?.code_postal || '—'})</div>
       </div>
       ${schemaPatrimonial(data, siren)}
+      ${leviersDetectes(data)}
       <div style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; line-height:1.6;">
         ✓ Cartographie offerte — votre <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">univers Patrimoine</b> est débloqué.<br>
         Pour les <b style="color:var(--gold-deep); font-style:normal; font-family:'Outfit',sans-serif;">simulateurs personnalisés (IR, Dutreil, IFI)</b> et les 11 autres univers, activez <a href="#tarifs" style="color:var(--gold-deep); font-weight:600;">Premium (offert en Bêta)</a>.
@@ -518,10 +519,64 @@ function schemaPatrimonial(data, siren){
 }
 window.schemaPatrimonial = schemaPatrimonial;
 
+// ═══ Leviers détectés (axes à étudier) — selon la structure réelle ═══
+// MIF II : on liste des AXES à étudier (information), jamais une reco
+// produit ni un montant promis. Le chiffrage du cas précis est produit
+// EN DIRECT par Marcel (qui conclut toujours par une question + disclaimer).
+function leviersDetectes(data){
+  var ax = [
+    {i:'⚖️', t:'Structuration de la rémunération du dirigeant', d:'Arbitrage salaire / dividendes / cotisations selon votre forme sociale.'},
+    {i:'🌿', t:'Transmission anticipée des titres', d:'Pacte Dutreil, donation, démembrement de propriété.'},
+    {i:'🏛️', t:'Détention & holding', d:'Holding animatrice, apport-cession (150-0 B ter), trésorerie.'}
+  ];
+  var items = ax.map(function(a){
+    return '<div style="display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line);">'
+      + '<span style="font-size:16px;">'+a.i+'</span>'
+      + '<div><div style="font-weight:600; font-size:12.5px; color:var(--navy);">'+a.t+'</div>'
+      + '<div style="font-size:11px; color:var(--ink-mute); line-height:1.5;">'+a.d+'</div></div></div>';
+  }).join('');
+  return '<div style="margin-top:16px; padding:16px; background:var(--cream-2); border:1px solid var(--line); border-radius:12px;">'
+    + '<div style="display:flex; align-items:center; gap:8px;"><span style="font-size:18px;">⚡</span>'
+    + '<div style="font-family:\'Playfair Display\',serif; font-size:15px; color:var(--navy); font-weight:600;">'+ax.length+' axes d\'optimisation à étudier</div></div>'
+    + '<div style="font-size:11px; color:var(--ink-mute); font-style:italic; margin:5px 0 4px;">Détectés pour votre structure. Marcel chiffre votre cas précis en direct, sources à l\'appui.</div>'
+    + items + '</div>';
+}
+window.leviersDetectes = leviersDetectes;
+
+// ═══ Orchestration visible — les agents « en live direct » ═══
+function playOrchestration(){
+  var host = document.getElementById('siren-data');
+  if (!host) return;
+  var old = document.getElementById('mo-orch'); if (old) old.remove();
+  var agents = [
+    {n:'Marcel',  r:'orchestre votre dossier', e:'🎼'},
+    {n:'Codex',   r:'analyse la fiscalité',     e:'⚖️'},
+    {n:'Hermès',  r:'étudie la transmission',   e:'🌿'}
+  ];
+  var box = document.createElement('div');
+  box.id = 'mo-orch';
+  box.style.cssText = 'margin-top:14px; padding:14px 16px; background:var(--navy); border-radius:12px;';
+  box.innerHTML = '<div style="font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-bright); font-weight:700; margin-bottom:10px;">● Agents en direct</div>'
+    + agents.map(function(a,i){
+        return '<div id="mo-ag-'+i+'" style="display:flex; align-items:center; gap:10px; padding:6px 0; opacity:.35; transition:opacity .35s;">'
+          + '<span style="font-size:15px;">'+a.e+'</span>'
+          + '<span style="color:var(--cream); font-size:13px; font-weight:600;">'+a.n+'</span>'
+          + '<span style="color:rgba(250,250,248,.6); font-size:11.5px;">'+a.r+'…</span>'
+          + '<span id="mo-st-'+i+'" style="margin-left:auto; font-size:12px;">⏳</span></div>';
+      }).join('');
+  host.appendChild(box);
+  agents.forEach(function(a,i){
+    setTimeout(function(){ var el=document.getElementById('mo-ag-'+i); if(el) el.style.opacity='1'; }, 250 + i*850);
+    setTimeout(function(){ var st=document.getElementById('mo-st-'+i); if(st){ st.textContent='✓'; st.style.color='#7BCCA2'; } }, 250 + i*850 + 750);
+  });
+}
+window.playOrchestration = playOrchestration;
+
 // #4 — Lien SIREN → 2 agents : ouvre Marcel avec le contexte société.
 // Marcel délègue à Codex (fiscal) et Hermès (transmission) selon la question.
 function analyserAvecMarcel(){
   var q = window._ikcpSirenCtx || "Analyse ma structure : quels leviers fiscaux et de transmission étudier ?";
+  playOrchestration();
   if (window._ikcpToggle && window._ikcpAskFollow) {
     var panel = document.getElementById('ikcp-chat-panel');
     if (panel && !panel.classList.contains('open')) window._ikcpToggle();
