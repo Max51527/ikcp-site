@@ -588,8 +588,39 @@ function analyserAvecMarcel(){
   }
 }
 window.analyserAvecMarcel = analyserAvecMarcel;
+
+// ═══ Conciergerie — l'agent Concierge prépare, vous validez ═══
+// Réutilise le chemin live : Marcel délègue à l'agent Concierge (Iris).
+function conciergerie(req){
+  if (window._ikcpToggle && window._ikcpAskFollow) {
+    var panel = document.getElementById('ikcp-chat-panel');
+    if (panel && !panel.classList.contains('open')) window._ikcpToggle();
+    setTimeout(function(){ window._ikcpAskFollow(req); }, 200);
+  } else {
+    var b = document.getElementById('ikcp-chat-btn');
+    if (b) b.click();
+    setTimeout(function(){ if (window._ikcpAskFollow) window._ikcpAskFollow(req); }, 600);
+  }
+}
+window.conciergerie = conciergerie;
+
 document.getElementById('siren-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') lookupSiren(); });
 </script>
+
+<!-- ═══ CONCIERGERIE — démo agent Concierge en direct ═══ -->
+<section style="max-width:1080px; margin:0 auto; padding:48px 24px;">
+  <div style="text-align:center; margin-bottom:26px;">
+    <div style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold-deep); font-weight:700; margin-bottom:9px;">Conciergerie · art de vivre</div>
+    <h2 style="font-family:'Playfair Display',serif; font-size:clamp(24px,3.6vw,36px); color:var(--navy); font-weight:500; line-height:1.12;">Votre concierge <em style="color:var(--gold-deep); font-style:italic;">prépare. Vous validez.</em></h2>
+    <p style="color:var(--ink-mute); font-size:14px; line-height:1.6; max-width:580px; margin:12px auto 0;">Au-delà du patrimoine, Marcel mobilise l'agent <b style="color:var(--navy);">Concierge</b> pour vos déplacements, tables et expériences. Essayez en direct :</p>
+  </div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+    <button type="button" onclick="conciergerie('Organise-moi un week-end en famille à Megève le mois prochain — hôtel de charme, une table d_exception et une activité. Prépare une proposition complète.')" style="padding:13px 20px; background:#fff; color:var(--navy); border:1px solid var(--line); border-radius:12px; font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(27,42,74,.08);">✈️ Week-end à Megève</button>
+    <button type="button" onclick="conciergerie('Propose-moi un dîner d_exception à Lyon pour 4 personnes ce mois-ci : un restaurant étoilé adapté et la logistique. Prépare une proposition.')" style="padding:13px 20px; background:#fff; color:var(--navy); border:1px solid var(--line); border-radius:12px; font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(27,42,74,.08);">🍽️ Dîner étoilé à Lyon</button>
+    <button type="button" onclick="conciergerie('Prépare un aller-retour Annonay → Genève la semaine prochaine : options de transport, timing optimal et estimation.')" style="padding:13px 20px; background:#fff; color:var(--navy); border:1px solid var(--line); border-radius:12px; font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer; box-shadow:0 4px 14px rgba(27,42,74,.08);">🚁 Déplacement Genève</button>
+  </div>
+  <div style="text-align:center; font-size:11px; color:var(--ink-mute); font-style:italic; margin-top:16px;">Démo : propositions préparées en direct par l'IA, à confirmer. Réservations partenaires en cours d'intégration (Sprints 2-4).</div>
+</section>
 
 <!-- ═══ POSITIONNEMENT — au-delà du patrimoine classique ═══ -->
 <section class="beyond-section">
