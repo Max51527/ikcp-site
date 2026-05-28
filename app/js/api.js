@@ -167,6 +167,9 @@ export const Marcel = {
         body: JSON.stringify(payload),
       });
     },
+    async referralCode() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/referral`);
+    },
     async collections() {
       return jsonFetch(`${ENDPOINTS.client}/api/v1/me/collections`);
     },
@@ -202,6 +205,22 @@ export const Marcel = {
       if (!ok) return false;
       await jsonFetch(`${ENDPOINTS.client}/api/v1/me`, { method: 'DELETE' });
       return true;
+    },
+  },
+
+  // ─── Accès gouverné : invitation / parrainage (public) ──────
+  Invite: {
+    async check(code) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/invite/check`, {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+      });
+    },
+    async apply(payload) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/invite/apply`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
     },
   },
 

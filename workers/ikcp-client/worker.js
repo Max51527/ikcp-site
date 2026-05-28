@@ -60,9 +60,18 @@ export default {
       // ─── CABINET POLLING (Bearer service token) ────────
       if (path.startsWith('/api/v1/cabinet/')) return await handleCabinet(request, env);
 
+      // ─── ACCÈS GOUVERNÉ — invitation + parrainage (public) ──
+      if (path === '/api/v1/invite/check' && method === 'POST') return await handleInviteCheck(request, env);
+      if (path === '/api/v1/invite/apply' && method === 'POST') return await handleInviteApply(request, env);
+
+      // ─── ADMIN (x-admin-secret) — validation des candidatures ──
+      if (path.startsWith('/api/v1/admin/')) return await handleAdmin(request, env, path, method);
+
       // ─── AUTHENTICATED ROUTES ──────────────────────────
       const session = await requireSession(request, env);
       if (!session) return json({ error: 'unauthorized' }, 401);
+
+      if (path === '/api/v1/me/referral' && method === 'GET') return await handleReferralCode(session, env);
 
       if (path === '/api/v1/me' && method === 'GET') return await handleMe(session, env);
       if (path === '/api/v1/usage' && method === 'GET') return await handleUsage(session, env);
@@ -722,6 +731,131 @@ async function handleCollectionsDelete(id, session, env) {
   await env.D1.prepare('DELETE FROM user_collection_items WHERE id = ? AND user_id = ?').bind(id, session.user_id).run();
   await audit(env, session.user_id, 'collection_delete', null, { id });
   return json({ ok: true });
+}
+
+// ════════════════════════════════════════════════════════════════
+// ACCÈS GOUVERNÉ — invitation (clients directs) + parrainage (membres)
+// + candidature soumise à la validation de Maxime.
+// NB : ne modifie PAS le login actuel — c'est une couche additionnelle.
+// Le hard-gate (bloquer un signup sans candidature approuvée) viendra
+// derrière le flag env.GATE_SIGNUPS quand Maxime le décidera.
+// ════════════════════════════════════════════════════════════════
+async function ensureGovernanceTables(env) {
+  await env.D1.prepare(`
+    CREATE TABLE IF NOT EXISTS invitations (
+      id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL,
+      type TEXT NOT NULL,                         -- 'direct' | 'parrainage'
+      created_by TEXT,                            -- 'admin' ou user_id du parrain
+      email TEXT,                                 -- destinataire éventuel
+      status TEXT DEFAULT 'active',               -- 'active' | 'revoked'
+      max_uses INTEGER DEFAULT 1, uses INTEGER DEFAULT 0,
+      created_at INTEGER, expires_at INTEGER
+    )
+  `).run();
+  await env.D1.prepare(`
+    CREATE TABLE IF NOT EXISTS member_applications (
+      id TEXT PRIMARY KEY, email TEXT NOT NULL, code TEXT,
+      referrer_user_id TEXT, prenom TEXT, profile_json TEXT, siren TEXT,
+      patrimoine_declare TEXT,
+      status TEXT DEFAULT 'pending',              -- 'pending' | 'approved' | 'rejected'
+      note TEXT, created_at INTEGER, reviewed_at INTEGER, reviewed_by TEXT
+    )
+  `).run();
+}
+
+function genInviteCode() {
+  const a = crypto.randomUUID().replace(/[^a-z0-9]/gi, '').toUpperCase();
+  return 'IKCP-' + a.slice(0, 6);
+}
+
+async function findActiveInvite(env, code) {
+  if (!code) return null;
+  const inv = await env.D1.prepare('SELECT * FROM invitations WHERE code = ?').bind(String(code).trim().toUpperCase()).first();
+  if (!inv) return null;
+  if (inv.status !== 'active') return null;
+  if (inv.expires_at && Date.now() > inv.expires_at) return null;
+  if (inv.max_uses && inv.uses >= inv.max_uses) return null;
+  return inv;
+}
+
+async function handleInviteCheck(request, env) {
+  await ensureGovernanceTables(env);
+  const { code } = await request.json().catch(() => ({}));
+  const inv = await findActiveInvite(env, code);
+  if (!inv) return json({ valid: false }, 200);
+  return json({ valid: true, type: inv.type });
+}
+
+async function handleInviteApply(request, env) {
+  await ensureGovernanceTables(env);
+  const b = await request.json().catch(() => ({}));
+  const email = (b.email || '').trim().toLowerCase();
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: 'invalid_email' }, 400);
+  const inv = await findActiveInvite(env, b.code);
+  if (!inv) return json({ error: 'invite_invalid' }, 403);
+
+  // Une seule candidature en cours par email
+  const existing = await env.D1.prepare("SELECT id, status FROM member_applications WHERE email = ? AND status = 'pending'").bind(email).first();
+  if (existing) return json({ ok: true, application_id: existing.id, already: true });
+
+  const id = crypto.randomUUID();
+  await env.D1.prepare(
+    `INSERT INTO member_applications (id, email, code, referrer_user_id, prenom, profile_json, siren, patrimoine_declare, status, created_at)
+     VALUES (?,?,?,?,?,?,?,?, 'pending', ?)`
+  ).bind(id, email, inv.code, inv.type === 'parrainage' ? inv.created_by : null,
+    b.prenom || null, b.profile_json || null, b.siren || null, b.patrimoine_declare || null, Date.now()).run();
+  await env.D1.prepare('UPDATE invitations SET uses = uses + 1 WHERE id = ?').bind(inv.id).run();
+  await emitEvent(env, null, 'application_submitted', { email, code: inv.code, type: inv.type });
+  return json({ ok: true, application_id: id });
+}
+
+async function handleReferralCode(session, env) {
+  await ensureGovernanceTables(env);
+  // Le parrainage est réservé aux membres premium / fo.
+  if (session.tier === 'free') return json({ error: 'tier_limit', upgrade: 'premium' }, 403);
+  let inv = await env.D1.prepare("SELECT code, uses, max_uses FROM invitations WHERE type = 'parrainage' AND created_by = ? AND status = 'active' ORDER BY created_at DESC LIMIT 1")
+    .bind(session.user_id).first();
+  if (!inv) {
+    const code = genInviteCode();
+    await env.D1.prepare('INSERT INTO invitations (id, code, type, created_by, status, max_uses, uses, created_at) VALUES (?,?,?,?,?,?,?,?)')
+      .bind(crypto.randomUUID(), code, 'parrainage', session.user_id, 'active', 10, 0, Date.now()).run();
+    inv = { code, uses: 0, max_uses: 10 };
+  }
+  return json({ code: inv.code, uses: inv.uses, max_uses: inv.max_uses, link: `https://ikcp.eu/app/beta-invite.html?code=${inv.code}` });
+}
+
+// ─── Admin (header x-admin-secret) ───
+async function handleAdmin(request, env, path, method) {
+  if (!env.ADMIN_SECRET) return json({ error: 'admin_not_configured' }, 503);
+  if (request.headers.get('x-admin-secret') !== env.ADMIN_SECRET) return json({ error: 'forbidden' }, 403);
+  await ensureGovernanceTables(env);
+
+  // Lister les candidatures
+  if (path === '/api/v1/admin/applications' && method === 'GET') {
+    const u = new URL(request.url);
+    const status = u.searchParams.get('status') || 'pending';
+    const rows = await env.D1.prepare('SELECT * FROM member_applications WHERE status = ? ORDER BY created_at DESC LIMIT 200').bind(status).all();
+    return json(rows.results || []);
+  }
+  // Décision sur une candidature
+  const dm = path.match(/^\/api\/v1\/admin\/applications\/([a-f0-9-]+)\/decision$/);
+  if (dm && method === 'POST') {
+    const b = await request.json().catch(() => ({}));
+    const decision = b.decision === 'approve' ? 'approved' : 'rejected';
+    await env.D1.prepare('UPDATE member_applications SET status = ?, note = ?, reviewed_at = ?, reviewed_by = ? WHERE id = ?')
+      .bind(decision, b.note || null, Date.now(), 'maxime', dm[1]).run();
+    return json({ ok: true, status: decision });
+  }
+  // Générer un code d'invitation direct
+  if (path === '/api/v1/admin/invitations' && method === 'POST') {
+    const b = await request.json().catch(() => ({}));
+    const code = genInviteCode();
+    const expires = b.expires_days ? Date.now() + b.expires_days * 86_400_000 : null;
+    await env.D1.prepare('INSERT INTO invitations (id, code, type, created_by, email, status, max_uses, uses, created_at, expires_at) VALUES (?,?,?,?,?,?,?,?,?,?)')
+      .bind(crypto.randomUUID(), code, 'direct', 'admin', b.email || null, 'active', b.max_uses || 1, 0, Date.now(), expires).run();
+    return json({ ok: true, code, link: `https://ikcp.eu/app/beta-invite.html?code=${code}` });
+  }
+  return json({ error: 'not_found' }, 404);
 }
 
 async function handleExportRgpd(session, env) {
