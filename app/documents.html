@@ -84,7 +84,7 @@ try {
         <div class="card-head"><span class="card-cat">${d.type}</span>${d.signed_at ? '<span class="pill live">signé eIDAS</span>' : '<span class="pill warn">en attente</span>'}</div>
         <h3>📄 ${d.title}</h3>
         <p class="meta">${d.signed_at ? 'Signé le ' + Marcel.Utils.formatDate(d.signed_at) : 'Créé le ' + Marcel.Utils.formatDate(d.created_at)}</p>
-        <a href="${d.r2_key ? '/api/docs/' + d.id : '#'}" class="btn btn-ghost btn-sm" style="align-self:flex-start">Télécharger PDF →</a>
+        <span class="btn btn-ghost btn-sm" style="align-self:flex-start;opacity:.55;cursor:default" title="Le téléchargement sécurisé sera activé prochainement">Téléchargement bientôt disponible</span>
       </article>
     `).join('') + '</div>';
   }

@@ -167,6 +167,18 @@ export const Marcel = {
         body: JSON.stringify(payload),
       });
     },
+    async collections() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/collections`);
+    },
+    async addCollectionItem(payload) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/collections`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    },
+    async deleteCollectionItem(id) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/collections/${id}`, { method: 'DELETE' });
+    },
     async exportRgpd() {
       return jsonFetch(`${ENDPOINTS.client}/api/v1/me/export`);
     },

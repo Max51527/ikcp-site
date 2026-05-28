@@ -89,6 +89,11 @@ export default {
       if (path === '/api/v1/me/watches' && method === 'GET') return await handleWatchesList(session, env);
       if (path === '/api/v1/me/watches' && method === 'POST') return await handleWatchesAdd(request, session, env);
 
+      if (path === '/api/v1/me/collections' && method === 'GET') return await handleCollectionsList(session, env);
+      if (path === '/api/v1/me/collections' && method === 'POST') return await handleCollectionsAdd(request, session, env);
+      const colm = path.match(/^\/api\/v1\/me\/collections\/([a-f0-9-]+)$/);
+      if (colm && method === 'DELETE') return await handleCollectionsDelete(colm[1], session, env);
+
       if (path === '/api/v1/me/export' && method === 'GET') return await handleExportRgpd(session, env);
       if (path === '/api/v1/me' && method === 'DELETE') return await handleDeleteAccount(request, session, env);
 
@@ -500,9 +505,10 @@ async function sendEmail(env, { to, subject, html }) {
 }
 
 async function audit(env, userId, action, request, metadata = {}) {
+  const ip = request ? (request.headers.get('CF-Connecting-IP') || '') : '';
+  const ua = request ? (request.headers.get('User-Agent') || '').slice(0, 500) : '';
   await env.D1.prepare('INSERT INTO audit_log (id, user_id, action, ip, user_agent, metadata_json, ts) VALUES (?, ?, ?, ?, ?, ?, ?)')
-    .bind(crypto.randomUUID(), userId, action, request.headers.get('CF-Connecting-IP') || '',
-      (request.headers.get('User-Agent') || '').slice(0, 500), JSON.stringify(metadata), Date.now()).run();
+    .bind(crypto.randomUUID(), userId, action, ip, ua, JSON.stringify(metadata), Date.now()).run();
 }
 
 async function emitEvent(env, userId, type, payload) {
@@ -650,6 +656,72 @@ async function handleWatchesAdd(request, session, env) {
     .bind(id, session.user_id, body.market, body.category || null, body.query, body.target_price || null, null, null, 1, now).run();
   await audit(env, session.user_id, 'watch_add', request, { market: body.market, query: body.query });
   return json({ ok: true, id });
+}
+
+// ─── Collections (montres, autos, vins, art, joaillerie…) ──────────
+// Table user_collection_items (schema-collections.sql). On crée la table
+// à la volée si absente, pour ne pas dépendre d'une migration manuelle.
+async function ensureCollectionsTable(env) {
+  await env.D1.prepare(`
+    CREATE TABLE IF NOT EXISTS user_collection_items (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      category TEXT NOT NULL,
+      brand TEXT, model TEXT, reference TEXT, year_made INTEGER, quantity INTEGER DEFAULT 1,
+      acquired_at TEXT, acquired_from TEXT, acquired_price REAL, acquired_currency TEXT DEFAULT 'EUR',
+      current_value REAL, current_value_at INTEGER, current_value_source TEXT,
+      photo_r2_key TEXT, certificate_r2_key TEXT, invoice_r2_key TEXT,
+      notes TEXT, tags_json TEXT, status TEXT DEFAULT 'in_collection',
+      surveillance_active INTEGER DEFAULT 1,
+      created_at INTEGER, updated_at INTEGER
+    )
+  `).run();
+}
+
+async function handleCollectionsList(session, env) {
+  await ensureCollectionsTable(env);
+  const rows = await env.D1.prepare(
+    `SELECT id, category, brand, model, reference, year_made, quantity,
+            acquired_at, acquired_from, acquired_price, acquired_currency,
+            current_value, current_value_at, current_value_source,
+            notes, tags_json, status, surveillance_active, created_at, updated_at
+     FROM user_collection_items WHERE user_id = ? ORDER BY category ASC, created_at DESC`
+  ).bind(session.user_id).all();
+  return json(rows.results || []);
+}
+
+async function handleCollectionsAdd(request, session, env) {
+  await ensureCollectionsTable(env);
+  const body = await request.json().catch(() => ({}));
+  if (!body.category) return json({ error: 'missing_fields', required: ['category'] }, 400);
+  // Le suivi de collections est une fonctionnalité Premium / Family Office.
+  if (session.tier === 'free') return json({ error: 'tier_limit', upgrade: 'premium' }, 403);
+
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  await env.D1.prepare(
+    `INSERT INTO user_collection_items
+       (id, user_id, category, brand, model, reference, year_made, quantity,
+        acquired_at, acquired_from, acquired_price, acquired_currency,
+        current_value, current_value_at, current_value_source,
+        notes, tags_json, status, surveillance_active, created_at, updated_at)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+  ).bind(
+    id, session.user_id, body.category, body.brand || null, body.model || null,
+    body.reference || null, body.year_made || null, body.quantity || 1,
+    body.acquired_at || null, body.acquired_from || null, body.acquired_price || null, body.acquired_currency || 'EUR',
+    body.current_value || null, body.current_value ? now : null, body.current_value_source || null,
+    body.notes || null, body.tags_json || null, body.status || 'in_collection',
+    body.surveillance_active === 0 ? 0 : 1, now, now
+  ).run();
+  await audit(env, session.user_id, 'collection_add', request, { category: body.category });
+  return json({ ok: true, id });
+}
+
+async function handleCollectionsDelete(id, session, env) {
+  await env.D1.prepare('DELETE FROM user_collection_items WHERE id = ? AND user_id = ?').bind(id, session.user_id).run();
+  await audit(env, session.user_id, 'collection_delete', null, { id });
+  return json({ ok: true });
 }
 
 async function handleExportRgpd(session, env) {

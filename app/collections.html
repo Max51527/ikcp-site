@@ -236,22 +236,55 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').
 let me = null;
 try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
 
-// ─── Bandeau démonstration ───
-// ⚠️ Les données ci-dessous sont un EXEMPLE de présentation, pas le
-// patrimoine réel du membre. Le branchement /api/v1/me/collections est à
-// venir (Sprint suivant). On l'affiche clairement pour éviter toute confusion.
-document.addEventListener('DOMContentLoaded', () => {
+// ─── Bandeau démonstration (affiché uniquement si on montre la démo) ───
+function showDemoBanner(){
   const hero = document.querySelector('section.col-hero');
-  if(hero){
-    const note = document.createElement('div');
-    note.style.cssText = 'margin-top:16px;padding:10px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;background:var(--bg-2);font-size:12.5px;color:var(--mute);line-height:1.5';
-    note.innerHTML = '<strong style="color:var(--ink)">Aperçu de démonstration.</strong> Les pièces affichées illustrent la présentation de votre futur carnet de collections. Le suivi de vos actifs réels sera activé prochainement.';
-    hero.appendChild(note);
-  }
-});
+  if(!hero || document.getElementById('demo-collections-note')) return;
+  const note = document.createElement('div');
+  note.id = 'demo-collections-note';
+  note.style.cssText = 'margin-top:16px;padding:10px 14px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;background:var(--bg-2);font-size:12.5px;color:var(--mute);line-height:1.5';
+  note.innerHTML = '<strong style="color:var(--ink)">Aperçu de démonstration.</strong> Les pièces affichées illustrent la présentation de votre carnet de collections. Ajoutez vos premières pièces pour suivre vos actifs réels.';
+  hero.appendChild(note);
+}
 
-// ─── DONNÉES DEMO (à remplacer par fetch /api/v1/me/collections) ───
-const DEMO_COLLECTIONS = {
+// Métadonnées d'affichage par catégorie (emoji + libellé)
+const CAT_META = {
+  horlogerie:{emoji:'⌚', name:'Horlogerie'}, automobile:{emoji:'🏎️', name:'Automobile'},
+  vins:{emoji:'🍷', name:'Vins'}, art:{emoji:'🎨', name:'Art & Œuvres'},
+  joaillerie:{emoji:'💎', name:'Joaillerie'}, rare:{emoji:'📜', name:'Pièces rares'},
+};
+
+// Transforme les lignes D1 (/api/v1/me/collections) en structure d'affichage
+function buildCollectionsFromRows(rows){
+  const out = {};
+  for(const key of Object.keys(CAT_META)){
+    out[key] = { emoji:CAT_META[key].emoji, name:CAT_META[key].name, total:0, delta:0, items:[] };
+  }
+  let acquiredSum = {}, currentSum = {};
+  for(const r of rows){
+    const key = CAT_META[r.category] ? r.category : 'rare';
+    const cur = Number(r.current_value || r.acquired_price || 0);
+    const acq = Number(r.acquired_price || 0);
+    const itemDelta = acq > 0 ? ((cur - acq) / acq) * 100 : 0;
+    out[key].items.push({
+      id:r.id, brand:r.brand||'—', model:r.model||'', ref:r.reference||'',
+      year:r.year_made||'', acquired_price:acq, current_value:cur,
+      delta:Math.round(itemDelta*10)/10, source:r.current_value_source||'—', emoji:CAT_META[key].emoji,
+    });
+    out[key].total += cur;
+    acquiredSum[key] = (acquiredSum[key]||0) + acq;
+    currentSum[key] = (currentSum[key]||0) + cur;
+  }
+  for(const key of Object.keys(out)){
+    const a = acquiredSum[key]||0, c = currentSum[key]||0;
+    out[key].delta = a > 0 ? Math.round(((c - a)/a)*1000)/10 : 0;
+    if(key === 'rare' && out[key].items.length === 0) out[key].empty = 'Ajoutez vos manuscrits, livres anciens, autographes, pièces de famille';
+  }
+  return out;
+}
+
+// ─── DONNÉES DEMO (repli si le membre n'a pas encore de pièces) ───
+let DEMO_COLLECTIONS = {
   horlogerie: {
     emoji:'⌚', name:'Horlogerie', total: 410000, delta: 4.2,
     items: [
@@ -615,6 +648,18 @@ window.askMarcelAbout = function(query){
 }
 
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeCatDetail(); });
+
+// ─── Données réelles : si le membre a des pièces, on remplace la démo ───
+try {
+  const items = await Marcel.Me.collections();
+  if (Array.isArray(items) && items.length) {
+    DEMO_COLLECTIONS = buildCollectionsFromRows(items);
+  } else {
+    showDemoBanner();   // aucun actif réel → on montre la démo + bandeau
+  }
+} catch(_) {
+  showDemoBanner();     // backend indisponible → repli démo
+}
 
 renderStats();
 renderCategories();
