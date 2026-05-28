@@ -168,8 +168,8 @@ h1 em{font-style:italic;color:var(--gold-bright)}
 }
 .input-row{display:flex;gap:10px}
 @media(max-width:500px){.input-row{flex-direction:column}}
-input[type=email]{
-  flex:1;padding:14px 18px;
+input[type=email],input[type=text]{
+  flex:1;width:100%;padding:14px 18px;
   background:rgba(250,247,240,0.07);
   border:1.5px solid rgba(201,169,110,0.22);
   border-radius:10px;color:var(--cream);
@@ -177,8 +177,14 @@ input[type=email]{
   outline:none;transition:border-color 0.2s;
   -webkit-appearance:none;
 }
-input[type=email]:focus{border-color:var(--gold)}
-input[type=email]::placeholder{color:rgba(250,247,240,0.28)}
+input[type=email]:focus,input[type=text]:focus{border-color:var(--gold)}
+input[type=email]::placeholder,input[type=text]::placeholder{color:rgba(250,247,240,0.28)}
+.fld-col{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.check-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--mute);line-height:1.5;margin:4px 0 14px;cursor:pointer}
+.check-row input{margin-top:2px;accent-color:var(--gold);width:16px;height:16px;flex-shrink:0}
+.code-banner{padding:11px 14px;border-radius:10px;font-size:13px;line-height:1.4;margin-bottom:18px;display:none}
+.code-banner.ok{display:block;background:rgba(45,122,79,0.16);color:#7BCCA2;border:1px solid rgba(45,122,79,0.3)}
+.code-banner.err{display:block;background:rgba(200,60,60,0.14);color:#F0A0A0;border:1px solid rgba(200,60,60,0.3)}
 .btn-invite{
   padding:14px 24px;
   background:var(--gold);color:var(--navy-deep);
@@ -263,21 +269,29 @@ input[type=email]::placeholder{color:rgba(250,247,240,0.28)}
     </div>
   </div>
 
-  <!-- Formulaire -->
+  <!-- Formulaire candidature (accès gouverné : invitation / parrainage) -->
   <div class="form-box">
-    <span class="form-label">Créer mon accès fondateur</span>
+    <div class="code-banner" id="codeBanner"></div>
+    <span class="form-label">Votre candidature fondateur</span>
     <p class="form-subtitle">
-      Connexion par lien sécurisé (aucun mot de passe). Un lien d'accès valable 15 minutes est envoyé à votre adresse email.
+      L'accès se fait sur <strong>invitation</strong> ou <strong>recommandation</strong>. Renseignez votre candidature : Maxime Juveneton la valide personnellement avant l'ouverture de votre espace.
     </p>
-    <form id="inviteForm" onsubmit="return requestAccess(event)">
-      <div class="input-row">
+    <form id="applyForm" onsubmit="return submitApplication(event)">
+      <div class="fld-col">
+        <input type="text" id="codeInput" placeholder="Code d'invitation (ex. IKCP-AB12CD)" autocomplete="off">
+        <input type="text" id="prenomInput" placeholder="Votre prénom" autocomplete="given-name">
         <input type="email" id="emailInput" placeholder="votre@email.fr" required autocomplete="email">
-        <button type="submit" class="btn-invite" id="submitBtn">Accéder à mon espace →</button>
+        <input type="text" id="sirenInput" placeholder="SIREN de votre société (facultatif)" inputmode="numeric" autocomplete="off">
       </div>
+      <label class="check-row" for="seuilInput">
+        <input type="checkbox" id="seuilInput">
+        <span>Je déclare un patrimoine global supérieur à 1 M€ (critère d'éligibilité de la bêta fondateurs).</span>
+      </label>
+      <button type="submit" class="btn-invite" id="submitBtn" style="width:100%">Soumettre ma candidature →</button>
       <div id="formMsg"></div>
     </form>
     <p class="form-note">
-      En accédant, vous acceptez la <a href="/der.html" target="_blank">DER bêta IKCP</a> (Document d'Entrée en Relation, MIF II art. L.541-1 CoMoFi). Données hébergées France · <a href="/politique-confidentialite.html" target="_blank">RGPD</a>
+      Candidature soumise à validation — aucun engagement. En soumettant, vous acceptez la <a href="/der.html" target="_blank">DER bêta IKCP</a> (MIF II art. L.541-1 CoMoFi). Données hébergées France · <a href="/politique-confidentialite.html" target="_blank">RGPD</a>
     </p>
   </div>
 
@@ -317,49 +331,69 @@ window.addEventListener('DOMContentLoaded', () => {
     }).catch(() => {});
 });
 
-window.requestAccess = async function(e) {
+// ── Pré-remplir + valider le code d'invitation depuis l'URL (?code=) ──
+const params = new URLSearchParams(location.search);
+const urlCode = (params.get('code') || '').trim().toUpperCase();
+if (urlCode) document.getElementById('codeInput').value = urlCode;
+
+async function validateCode(code) {
+  const banner = document.getElementById('codeBanner');
+  if (!code) { banner.className = 'code-banner'; return; }
+  try {
+    const r = await Marcel.Invite.check(code);
+    if (r && r.valid) {
+      banner.className = 'code-banner ok';
+      banner.innerHTML = r.type === 'parrainage'
+        ? '✓ Invitation par recommandation valide — bienvenue.'
+        : '✓ Invitation valide — bienvenue parmi les familles fondatrices.';
+    } else {
+      banner.className = 'code-banner err';
+      banner.innerHTML = 'Ce code d\'invitation est invalide ou expiré. Demandez à être recommandé(e) par un membre, ou écrivez à maxime@ikcp.fr.';
+    }
+  } catch(_) { banner.className = 'code-banner'; }
+}
+if (urlCode) validateCode(urlCode);
+document.getElementById('codeInput').addEventListener('change', e => validateCode(e.target.value.trim().toUpperCase()));
+
+window.submitApplication = async function(e) {
   e.preventDefault();
+  const code = document.getElementById('codeInput').value.trim().toUpperCase();
   const email = document.getElementById('emailInput').value.trim().toLowerCase();
+  const prenom = document.getElementById('prenomInput').value.trim();
+  const siren = document.getElementById('sirenInput').value.replace(/\s/g, '');
+  const seuil = document.getElementById('seuilInput').checked;
   const btn = document.getElementById('submitBtn');
   const msg = document.getElementById('formMsg');
+
+  if (!code) { msg.className = 'msg err'; msg.innerHTML = 'Un code d\'invitation est requis (lien reçu ou recommandation d\'un membre).'; return false; }
   if (!email) return false;
 
   btn.disabled = true;
-  btn.textContent = 'Envoi en cours…';
+  btn.textContent = 'Envoi de la candidature…';
   msg.innerHTML = '';
 
   try {
-    await Marcel.Auth.requestMagicLink(email);
+    const r = await Marcel.Invite.apply({
+      code, email, prenom,
+      siren: siren || null,
+      profile_json: JSON.stringify({ prenom, source: 'beta-invite' }),
+      patrimoine_declare: seuil ? '>1M€' : 'non_declare',
+    });
+    if (r && r.error) throw new Error(r.error);
     msg.className = 'msg ok';
     msg.innerHTML = `
-      ✓ Lien d'accès envoyé à <strong>${email}</strong><br>
-      Vérifiez votre boîte mail (et vos spams). Le lien expire dans 15 minutes.<br>
-      <span style="font-size:12px;opacity:0.7;margin-top:4px;display:block">Si vous ne recevez rien d'ici 2 minutes : maxime@ikcp.fr</span>
+      ✓ Candidature reçue${r.already ? ' (déjà enregistrée)' : ''}, <strong>${prenom || email}</strong>.<br>
+      Maxime Juveneton l'examine personnellement et reviendra vers vous par email.<br>
+      <span style="font-size:12px;opacity:0.7;margin-top:4px;display:block">Une question ? maxime@ikcp.fr</span>
     `;
-    btn.textContent = 'Lien envoyé ✓';
-
-    // Log bêta invite acceptance vers Témoin (MIF II)
-    fetch('https://ikcp-temoin.maxime-ead.workers.dev/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        family_id: email,
-        universe: 'onboarding',
-        question: 'BETA_ACCESS_REQUEST',
-        answer_summary: 'Demande d\'accès bêta fondateur depuis beta-invite.html',
-        agent: 'beta-invite-ui',
-        model: 'none',
-        tokens: 0,
-        sources: [window.location.href],
-        mif2_compliant: true,
-      }),
-    }).catch(() => {});
-
+    btn.textContent = 'Candidature envoyée ✓';
   } catch(err) {
     msg.className = 'msg err';
-    msg.innerHTML = `Une erreur est survenue. Réessayez ou écrivez directement à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>`;
+    msg.innerHTML = (String(err.message).includes('invite_invalid'))
+      ? 'Ce code d\'invitation est invalide ou expiré. Écrivez à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>.'
+      : 'Une erreur est survenue. Réessayez ou écrivez à <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a>.';
     btn.disabled = false;
-    btn.textContent = 'Accéder à mon espace →';
+    btn.textContent = 'Soumettre ma candidature →';
   }
   return false;
 };
