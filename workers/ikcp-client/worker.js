@@ -174,10 +174,17 @@ async function handleAuthVerify(request, env) {
 
   let user = await env.D1.prepare('SELECT * FROM users WHERE email = ?').bind(row.email).first();
   if (!user) {
+    // Accès gouverné : si une candidature a été APPROUVÉE pour cet email,
+    // on crée le compte directement au tier accordé (bêta). Sinon 'free'.
+    let grantedTier = 'free', src = 'organic';
+    try {
+      const appr = await env.D1.prepare("SELECT grant_tier FROM member_applications WHERE email = ? AND status = 'approved' ORDER BY reviewed_at DESC LIMIT 1").bind(row.email).first();
+      if (appr && appr.grant_tier) { grantedTier = appr.grant_tier; src = 'invitation'; }
+    } catch (_) { /* table absente = pas de candidature, on reste free */ }
     const id = crypto.randomUUID();
     await env.D1.prepare('INSERT INTO users (id, email, tier, created_at, last_login_at, source) VALUES (?, ?, ?, ?, ?, ?)')
-      .bind(id, row.email, 'free', Date.now(), Date.now(), 'organic').run();
-    user = { id, email: row.email, tier: 'free' };
+      .bind(id, row.email, grantedTier, Date.now(), Date.now(), src).run();
+    user = { id, email: row.email, tier: grantedTier };
     await audit(env, id, 'signup', request);
     await emitEvent(env, id, 'signup', { email: row.email });
     await sendEmail(env, { to: row.email, subject: 'Bienvenue · IKCP', html: emailTemplateWelcome() });
@@ -758,9 +765,12 @@ async function ensureGovernanceTables(env) {
       referrer_user_id TEXT, prenom TEXT, profile_json TEXT, siren TEXT,
       patrimoine_declare TEXT,
       status TEXT DEFAULT 'pending',              -- 'pending' | 'approved' | 'rejected'
+      grant_tier TEXT,                            -- tier accordé à l'approbation (premium | fo)
       note TEXT, created_at INTEGER, reviewed_at INTEGER, reviewed_by TEXT
     )
   `).run();
+  // Migration douce si la table existait avant l'ajout de grant_tier
+  try { await env.D1.prepare('ALTER TABLE member_applications ADD COLUMN grant_tier TEXT').run(); } catch (_) { /* colonne déjà présente */ }
 }
 
 function genInviteCode() {
@@ -837,14 +847,23 @@ async function handleAdmin(request, env, path, method) {
     const rows = await env.D1.prepare('SELECT * FROM member_applications WHERE status = ? ORDER BY created_at DESC LIMIT 200').bind(status).all();
     return json(rows.results || []);
   }
-  // Décision sur une candidature
+  // Décision sur une candidature (approve → accorde un tier bêta)
   const dm = path.match(/^\/api\/v1\/admin\/applications\/([a-f0-9-]+)\/decision$/);
   if (dm && method === 'POST') {
     const b = await request.json().catch(() => ({}));
     const decision = b.decision === 'approve' ? 'approved' : 'rejected';
-    await env.D1.prepare('UPDATE member_applications SET status = ?, note = ?, reviewed_at = ?, reviewed_by = ? WHERE id = ?')
-      .bind(decision, b.note || null, Date.now(), 'maxime', dm[1]).run();
-    return json({ ok: true, status: decision });
+    const grantTier = decision === 'approved'
+      ? (['premium', 'fo'].includes(b.grant_tier) ? b.grant_tier : 'fo')   // fondateurs = FO par défaut
+      : null;
+    const appRow = await env.D1.prepare('SELECT email FROM member_applications WHERE id = ?').bind(dm[1]).first();
+    await env.D1.prepare('UPDATE member_applications SET status = ?, grant_tier = ?, note = ?, reviewed_at = ?, reviewed_by = ? WHERE id = ?')
+      .bind(decision, grantTier, b.note || null, Date.now(), 'maxime', dm[1]).run();
+    // Si le client a déjà un compte → on applique le tier tout de suite.
+    if (decision === 'approved' && appRow?.email) {
+      await env.D1.prepare('UPDATE users SET tier = ? WHERE email = ?').bind(grantTier, appRow.email).run();
+      await emitEvent(env, null, 'application_approved', { email: appRow.email, tier: grantTier });
+    }
+    return json({ ok: true, status: decision, grant_tier: grantTier });
   }
   // Générer un code d'invitation direct
   if (path === '/api/v1/admin/invitations' && method === 'POST') {
