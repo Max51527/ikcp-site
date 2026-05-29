@@ -32,7 +32,10 @@
 // Marcel conversationnel (LLM) = Premium. Le teaser Marcel public reste géré par
 // le widget plafonné sur les pages publiques (séparé de l'espace membre).
 const TIER_LIMITS = {
-  free:    { pappers: 1,        marcel_msgs: 0,        marcel_memory_days: 0 },
+  // Freemium « outil 100% complet » : tous les univers VISIBLES pour tous,
+  // usage rationné par tier. Free = avant-goût (largeur Sonnet) ; profondeur
+  // (Opus + veille Perplexity) réservée aux payants (gérée côté Marcel).
+  free:    { pappers: 1,        marcel_msgs: 5,        marcel_memory_days: 0 },
   premium: { pappers: 10,       marcel_msgs: Infinity, marcel_memory_days: 90 },
   fo:      { pappers: Infinity, marcel_msgs: Infinity, marcel_memory_days: Infinity },
 };
@@ -75,6 +78,7 @@ export default {
 
       if (path === '/api/v1/me' && method === 'GET') return await handleMe(session, env);
       if (path === '/api/v1/usage' && method === 'GET') return await handleUsage(session, env);
+      if (path === '/api/v1/usage/marcel' && method === 'POST') return await handleMarcelUsage(session, env);
       if (path === '/api/v1/pappers/lookup' && method === 'POST') return await handlePappersLookup(request, session, env);
       if (path === '/api/v1/stripe/checkout' && method === 'POST') return await handleStripeCheckout(request, session, env);
       if (path === '/api/v1/stripe/portal' && method === 'POST') return await handleStripePortal(session, env);
@@ -272,6 +276,35 @@ async function handleUsage(session, env) {
     'SELECT year_month, pappers_lookups, marcel_messages FROM usage WHERE user_id = ? ORDER BY year_month DESC LIMIT 12'
   ).bind(session.user_id).all();
   return json({ history: rows.results || [] });
+}
+
+// ──────────────────────────────────────────────────────────────
+// MARCEL — quota mensuel (freemium) check + incrément
+// Appelé par le worker Marcel AVANT de répondre (utilisateur connecté).
+// premium/fo = illimité ; free = TIER_LIMITS.free.marcel_msgs / mois.
+// ──────────────────────────────────────────────────────────────
+async function handleMarcelUsage(session, env) {
+  const month = new Date().toISOString().slice(0, 7);
+  const limit = (TIER_LIMITS[session.tier] || TIER_LIMITS.free).marcel_msgs;
+  if (limit === Infinity) {
+    // payant : on incrémente pour les stats, jamais de blocage
+    await env.D1.prepare(
+      'INSERT INTO usage (user_id, year_month, marcel_messages) VALUES (?, ?, 1) ' +
+      'ON CONFLICT(user_id, year_month) DO UPDATE SET marcel_messages = marcel_messages + 1'
+    ).bind(session.user_id, month).run();
+    return json({ allowed: true, unlimited: true });
+  }
+  const usage = await env.D1.prepare('SELECT marcel_messages FROM usage WHERE user_id = ? AND year_month = ?').bind(session.user_id, month).first();
+  const used = usage?.marcel_messages || 0;
+  if (used >= limit) {
+    return json({ allowed: false, tier: session.tier, used, limit, reset_at: nextMonthFirst(),
+      upgrade_url: `${env.FRONT_URL || 'https://ikcp.eu'}/app/profil.html` });
+  }
+  await env.D1.prepare(
+    'INSERT INTO usage (user_id, year_month, marcel_messages) VALUES (?, ?, 1) ' +
+    'ON CONFLICT(user_id, year_month) DO UPDATE SET marcel_messages = marcel_messages + 1'
+  ).bind(session.user_id, month).run();
+  return json({ allowed: true, used: used + 1, limit, remaining: limit - used - 1 });
 }
 
 // ──────────────────────────────────────────────────────────────

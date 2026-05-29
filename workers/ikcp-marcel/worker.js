@@ -907,6 +907,29 @@ export default {
         } catch (_) { /* mémoire non bloquante */ }
       }
 
+      // ── Quota freemium (anti-triche, côté serveur) ──
+      // Pour un membre CONNECTÉ, on demande à ikcp-client de vérifier+incrémenter
+      // son quota mensuel Marcel. free = 5/mois ; premium/fo = illimité. Si le
+      // quota est dépassé, on répond un message d'upsell SANS appeler le modèle
+      // (= zéro coût). Visiteur non connecté = funnel prospect (pas de quota ici).
+      if (memberTier) {
+        try {
+          const qr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/usage/marcel', {
+            method: 'POST', headers: { Cookie: cookieHeader },
+          });
+          if (qr.ok) {
+            const q = await qr.json();
+            if (q && q.allowed === false) {
+              return new Response(JSON.stringify({
+                reply: `**Vous avez utilisé vos ${q.limit} échanges Découverte ce mois-ci.**\n\nL'accès illimité à Marcel et à ses 11 spécialistes — analyses fiscales approfondies, transmission, veille de marché — fait partie de l'offre **Premium**. Vos simulateurs restent accessibles sans limite.\n\n*Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.*`,
+                quota_reached: true, tier: q.tier, limit: q.limit,
+                follow_ups: ['Que comprend l\'offre Premium ?', 'Quand mon quota se réinitialise-t-il ?', 'Puis-je tester encore un simulateur ?'],
+              }), { headers: { ...corsHeaders(request), 'Content-Type': 'application/json' } });
+            }
+          }
+        } catch (_) { /* quota non bloquant : en cas d'erreur réseau, on laisse passer */ }
+      }
+
       // Prompt caching : le system prompt est stable, on le marque pour cache
       // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)
       const systemParam = [{
