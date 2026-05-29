@@ -84,4 +84,21 @@ Le « lancement » = inviter les 2-3 premiers clients fondateurs → retours →
 
 ---
 
+## ⚖️ MODÈLE LÉGAL & PAIEMENT (décision 2026-05-28)
+**PAS de DER ni de Lettre de Mission** — il n'y a pas de souscription à un produit régulé.
+Modèle **SaaS « à la Finary »** :
+- **Contrat d'utilisation (CGU) + CGV + Politique de confidentialité + Mentions légales**, **acceptés à l'inscription**.
+- **Disclaimers MIF II conservés** (renforcent « outil d'information, pas de conseil »).
+- ✅ **Consentement MIF II déjà posé à l'onboarding** (commit 9c39c2d) — à relier au futur « contrat d'utilisation ».
+- ⚠️ **Nuance CIF** : le contrat doit tracer la ligne NETTE — l'outil = info/analyses/cartographie, **pas** de conseil perso ni de gestion ; le conseil régulé = **mission CGP distincte** (là, DER/LM réapparaissent). C'est ce qui distingue le SaaS du conseil régulé pour l'AMF.
+- **Paiement = Stripe Checkout hébergé** dans `ikcp-client` (aucune donnée carte dans notre code ; PCI géré par Stripe). Stripe actuellement `false`. Maxime : crée le compte Stripe (compte PRO) + produits/prix Premium/FO + **pose `STRIPE_SECRET_KEY` en secret lui-même** (Claude ne touche jamais aux identifiants de paiement).
+
+### Prochaine session (Opus 4.8) — file conformité/paiement
+1. Rédiger un **projet** de Contrat d'utilisation + CGV + Politique de confidentialité (**à valider**, pas une garantie juridique) + acceptation à l'inscription.
+2. **Câbler Stripe Checkout** (abonnement Premium/FO) dans `ikcp-client` — prêt dès que la clé est posée.
+3. Modéliser le **coût IA/client + grille tarifaire rentable** (`docs/COUTS-COMPLETS.md`) avant de fixer les prix.
+*(Rappel honnête : revue avocat unique recommandée au 1ᵉʳ client payant ; Claude n'est pas avocat, ne garantit pas la conformité juridique.)*
+
+---
+
 © 2026 IKCP · ORIAS 23001568 · checkpoint avant bascule Opus 4.8
