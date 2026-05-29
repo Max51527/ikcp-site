@@ -70,4 +70,18 @@ Marcel (ikcp-chat), Codex, Hermès, Lifestyle (9), Veille, Pappers, Client, Tém
 
 ---
 
+## 🚀 LANCEMENT (ouverture privée gouvernée, pas public)
+Le « lancement » = inviter les 2-3 premiers clients fondateurs → retours → itérer → élargir vers 50.
+
+**Pré-vol :**
+- ✅ #5 **Polish PWA mobile** : vraies icônes PNG (192/512/180), manifest + apple-touch-icon. L'espace membre s'installe comme une app (iOS/Android).
+- ✅ #6 **QA espace membre** : toutes les pages protégées ont garde d'auth + SW + API ; 10 workers bien câblés. (mineur : SW absent sur onboarding.html.)
+- ⏳ #1 **Test parcours connecté A→Z** (Maxime + moi) — LE point critique avant d'inviter.
+- ⏳ #2 clé Bâtisseur · #3 base D1 feedback (coller l'ID) · #4 photo maxime.jpg — Maxime.
+- ⏳ #7 1ᵉʳ client payant → RDV avocat AMF (trigger Maxime).
+
+**App mobile** : la **PWA installable EST l'app** pour la bêta (0 €, souverain). **Vraie app stores plus tard via Capacitor** (réutilise la PWA) : ~99 €/an Apple + 25 € Google + temps. App native repartie de zéro = ❌ (10-30 k€, doublon).
+
+---
+
 © 2026 IKCP · ORIAS 23001568 · checkpoint avant bascule Opus 4.8
