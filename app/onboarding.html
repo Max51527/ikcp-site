@@ -163,6 +163,14 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
       <input id="siren" type="text" inputmode="numeric" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="552 032 534" autocomplete="off">
     </div>
     <div class="siren-status" id="sirenStatus"></div>
+
+    <!-- ─── Consentement & cadre MIF II (objectif, sans surpromesse) ─── -->
+    <label id="consentWrap" style="display:flex; gap:10px; align-items:flex-start; margin:20px 0 4px; padding:14px 16px; background:var(--bg-2); border:1px solid var(--line); border-radius:10px; font-size:12px; line-height:1.55; color:var(--mute); cursor:pointer;">
+      <input type="checkbox" id="consentChk" style="margin-top:3px; flex-shrink:0; accent-color:var(--accent);">
+      <span>Je comprends que Marcel et ses agents fournissent une <b style="color:var(--ink)">information patrimoniale et des analyses neutres</b> — <b style="color:var(--ink)">pas un conseil en investissement personnalisé</b> au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton (CIF · ORIAS 23001568) reste mon interlocuteur humain, disponible sur demande. Outil en phase <b style="color:var(--ink)">bêta</b> · données hébergées en France (RGPD souverain). <a href="/app/securite.html" target="_blank" style="color:var(--accent)">Cadre &amp; confidentialité</a></span>
+    </label>
+    <div id="consentErr" style="display:none; color:var(--bad,#E53E3E); font-size:11.5px; margin:4px 0 8px;">Merci de cocher cette case pour continuer.</div>
+
     <div class="progress"><span class="done"></span><span class="done"></span><span class="done"></span><span class="active"></span></div>
     <div class="nav-actions">
       <button class="btn-back" onclick="next(3)">← Retour</button>
@@ -236,6 +244,14 @@ document.getElementById('siren').addEventListener('input', (e) => {
 });
 
 window.finishOnboarding = async function(skipSiren = false){
+  // Consentement MIF II obligatoire avant d'accéder à l'espace
+  const consent = document.getElementById('consentChk');
+  if(consent && !consent.checked){
+    const err = document.getElementById('consentErr'); if(err) err.style.display = 'block';
+    document.getElementById('consentWrap')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
   const btn = document.getElementById('finishBtn');
   if(btn){ btn.disabled = true; btn.textContent = 'Enregistrement…'; }
 
@@ -247,6 +263,10 @@ window.finishOnboarding = async function(skipSiren = false){
     spheres: data.spheres,
     onboarding_completed: true,
     onboarded_at: new Date().toISOString(),
+    // Trace du consentement (preuve de cadre MIF II accepté)
+    consent_mif2: true,
+    consent_at: new Date().toISOString(),
+    consent_version: '2026-05',
   };
 
   try {
