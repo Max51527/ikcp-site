@@ -93,11 +93,17 @@ Modèle **SaaS « à la Finary »** :
 - ⚠️ **Nuance CIF** : le contrat doit tracer la ligne NETTE — l'outil = info/analyses/cartographie, **pas** de conseil perso ni de gestion ; le conseil régulé = **mission CGP distincte** (là, DER/LM réapparaissent). C'est ce qui distingue le SaaS du conseil régulé pour l'AMF.
 - **Paiement = Stripe Checkout hébergé** dans `ikcp-client` (aucune donnée carte dans notre code ; PCI géré par Stripe). Stripe actuellement `false`. Maxime : crée le compte Stripe (compte PRO) + produits/prix Premium/FO + **pose `STRIPE_SECRET_KEY` en secret lui-même** (Claude ne touche jamais aux identifiants de paiement).
 
-### Prochaine session (Opus 4.8) — file conformité/paiement
-1. Rédiger un **projet** de Contrat d'utilisation + CGV + Politique de confidentialité (**à valider**, pas une garantie juridique) + acceptation à l'inscription.
-2. **Câbler Stripe Checkout** (abonnement Premium/FO) dans `ikcp-client` — prêt dès que la clé est posée.
-3. Modéliser le **coût IA/client + grille tarifaire rentable** (`docs/COUTS-COMPLETS.md`) avant de fixer les prix.
-*(Rappel honnête : revue avocat unique recommandée au 1ᵉʳ client payant ; Claude n'est pas avocat, ne garantit pas la conformité juridique.)*
+### File conformité/paiement — AVANCEMENT (session Opus 4.8, 2026-05-28)
+1. ✅ **Modèle coûts + grille tarifaire** → `docs/PRICING-2026.md` (Premium reco **59 €**, FO sur reco, coût IA Découverte 0 € / Premium ~5 € / FO ~30 €, marge ~90 %).
+2. ✅ **CGV** créées → `cgv.html` (+ liens footers). CGU/mentions/confidentialité existaient déjà et sont solides (CGU Art.3 = ligne MIF II). DER retiré du footer espace membre (reste pour mission CGP distincte).
+3. ✅ **Stripe Checkout** : backend (Checkout/Portal/Webhook) déjà codé + schema OK ; ajouté front (`Marcel.Billing` dans api.js + carte Abonnement dans profil.html par tier). Guide : `docs/SETUP-STRIPE.md`.
+4. ⏳ **Consentement** : déjà posé à l'onboarding (commit 9c39c2d) — couvre l'acceptation du cadre.
+
+### Reste à faire
+- **Maxime** : activer Stripe (compte PRO + produits/prix + 4 secrets + webhook) → voir `docs/SETUP-STRIPE.md`. Décider prix Premium (reco 59 €).
+- **Maxime** : clé Bâtisseur, base D1 feedback (coller l'ID), photo maxime.jpg.
+- **Ensemble** : test du parcours connecté A→Z (brique 4) + test paiement Stripe en mode Test.
+*(Rappel honnête : revue avocat unique recommandée au 1ᵉʳ client payant ; Claude n'est pas avocat, ne garantit pas la conformité juridique. CGU/CGV = projets à valider.)*
 
 ---
 
