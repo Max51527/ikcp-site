@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Créé par IKCP.EU -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investir — comprendre les styles d'investissement · IKCP</title>
+<meta name="description" content="Module éducatif IKCP : comprendre les styles d'investissement (indiciel, value, growth, dividende, ISR…), évaluer son profil, simuler les intérêts composés. Information, pas un conseil.">
+<link rel="canonical" href="https://ikcp.eu/investir.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;
+  --gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;
+  --line:rgba(27,42,74,.12);--ok:#2D6A4F;--risk1:#3F7A3F;--risk2:#C9A96E;--risk3:#C0612A;--risk4:#B23A2E;
+}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;font-size:16px}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* Header */
+.hd{background:var(--navy-deep);padding:16px 0}
+.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:22px;color:#fff;letter-spacing:.04em}
+.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:7px 14px;border-radius:6px}
+
+/* Hero */
+.hero{padding:60px 0 36px;text-align:center;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:16px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(30px,5.5vw,52px);line-height:1.08;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:640px;margin:18px auto 0;font-size:16.5px}
+.disclaimer-top{max-width:760px;margin:26px auto 0;padding:13px 18px;background:rgba(27,42,74,.04);border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:0 8px 8px 0;font-size:13px;color:var(--ink-mute);text-align:left;line-height:1.55}
+.disclaimer-top b{color:var(--navy)}
+
+/* Sections */
+.sec{padding:54px 0}
+.sec-label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:10px}
+.sec h2{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(24px,3.6vw,36px);color:var(--navy);line-height:1.14}
+.sec h2 em{font-style:italic;color:var(--gold-deep)}
+.sec .lead{color:var(--ink-mute);max-width:620px;margin-top:12px;font-size:15px}
+
+/* Styles cards */
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+@media(max-width:860px){.styles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.styles{grid-template-columns:1fr}}
+.style-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.style-card:hover{transform:translateY(-4px);box-shadow:0 18px 44px -20px rgba(27,42,74,.25);border-color:var(--gold)}
+.style-card .ic{font-size:30px;display:block;margin-bottom:12px}
+.style-card h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.style-card .phil{font-size:13.5px;color:var(--ink);line-height:1.55;margin-bottom:14px}
+.style-card .meta{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--ink-mute);border-top:1px dashed var(--line);padding-top:12px}
+.style-card .meta .r{display:flex;justify-content:space-between;gap:8px}
+.style-card .meta b{color:var(--navy);font-weight:600}
+.risk-dots{display:inline-flex;gap:3px;align-items:center}
+.risk-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.risk-dots i.on1{background:var(--risk1)}.risk-dots i.on2{background:var(--risk2)}
+.risk-dots i.on3{background:var(--risk3)}.risk-dots i.on4{background:var(--risk4)}
+
+/* Echelle de risque (classes d'actifs) */
+.ladder{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;overflow:hidden}
+.ladder-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:1px solid var(--line)}
+.ladder-row:first-child{border-top:none}
+.ladder-row .nm{flex:0 0 160px;font-weight:600;color:var(--navy);font-size:14px}
+.ladder-row .bar{flex:1;height:10px;border-radius:6px;background:linear-gradient(90deg,var(--risk1),var(--risk2),var(--risk3),var(--risk4))}
+.ladder-row .bar span{display:block;height:100%;border-radius:6px;background:var(--cream-2);margin-left:auto;width:0}
+.ladder-row .lv{flex:0 0 90px;font-size:11.5px;color:var(--ink-mute);text-align:right}
+
+/* Quiz */
+.quiz{background:var(--navy-deep);border-radius:18px;padding:34px;margin-top:30px;color:var(--cream)}
+.quiz h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold-bright);font-weight:500;margin-bottom:6px}
+.quiz .qsub{color:rgba(250,250,248,.6);font-size:13.5px;margin-bottom:22px}
+.q{margin-bottom:20px}
+.q .ql{font-size:14.5px;color:var(--cream);margin-bottom:10px;font-weight:500}
+.q .opts{display:flex;gap:8px;flex-wrap:wrap}
+.q .opt{background:rgba(255,255,255,.05);border:1px solid rgba(201,169,110,.3);color:var(--cream);border-radius:100px;padding:9px 16px;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s}
+.q .opt:hover{border-color:var(--gold-bright)}
+.q .opt.sel{background:var(--gold);color:var(--navy-deep);border-color:var(--gold);font-weight:600}
+.quiz-result{display:none;margin-top:20px;padding:20px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.3);border-radius:12px}
+.quiz-result.show{display:block;animation:fade .4s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.quiz-result h4{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold-bright);margin-bottom:8px}
+.quiz-result .styles-out{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.quiz-result .chip{background:rgba(255,255,255,.08);border:1px solid rgba(201,169,110,.4);border-radius:100px;padding:6px 14px;font-size:12.5px;color:var(--gold-bright)}
+.quiz-result .q-final{margin-top:14px;font-style:italic;color:var(--cream);font-size:14px}
+.quiz-result .disc{margin-top:12px;font-size:11.5px;color:rgba(250,250,248,.5);font-style:italic}
+
+/* Simulateur */
+.sim{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px;margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+@media(max-width:760px){.sim{grid-template-columns:1fr}}
+.sim .ctrl{margin-bottom:18px}
+.sim .ctrl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-mute);margin-bottom:7px;font-weight:500}
+.sim .ctrl label b{color:var(--navy);font-family:'JetBrains Mono',monospace}
+.sim input[type=range]{width:100%;accent-color:var(--gold-deep);height:5px}
+.sim-out{text-align:center}
+.sim-out .big{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(34px,6vw,54px);color:var(--gold-deep);line-height:1}
+.sim-out .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);font-weight:600;margin-top:6px}
+.sim-out .split{display:flex;gap:14px;justify-content:center;margin-top:20px;font-size:13px}
+.sim-out .split div{flex:1}
+.sim-out .split .v{font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--navy);font-weight:600}
+.sim-out .split .k{font-size:11px;color:var(--ink-mute)}
+.sim-curve{margin-top:18px}
+
+/* CTA */
+.cta{text-align:center;padding:50px 0}
+.cta a{display:inline-flex;align-items:center;gap:9px;background:var(--navy);color:var(--cream);padding:15px 30px;border-radius:100px;font-weight:600;font-size:15px;box-shadow:0 14px 34px -12px rgba(27,42,74,.5)}
+.cta .micro{font-size:12.5px;color:var(--ink-mute);margin-top:14px;font-style:italic}
+
+/* Footer */
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:26px;font-size:12px;line-height:1.8}
+.ft a{color:var(--gold);margin:0 6px}
+.ft .disc{max-width:780px;margin:0 auto 14px;font-size:11.5px;color:rgba(255,255,255,.45);font-style:italic;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div class="wrap">
+    <div class="logo">IK<span>CP</span></div>
+    <a class="back" href="/">← Site IKCP</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Module éducatif · Investir</div>
+    <h1>Investir, c'est d'abord <em>se comprendre.</em></h1>
+    <p>Avant les produits, les styles. Avant les styles, votre horizon et votre tempérament. Cet outil vous aide à comprendre — pour décider par vous-même, en connaissance de cause.</p>
+    <div class="disclaimer-top">
+      <b>⚖️ Information, pas un conseil.</b> Ce module est <b>éducatif</b>. Il ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni une recommandation d'achat. Les performances passées ne préjugent pas des performances futures. Tout investissement comporte un risque de perte en capital.
+    </div>
+  </div>
+</section>
+
+<!-- LES STYLES -->
+<section class="sec wrap">
+  <div class="sec-label">Comprendre</div>
+  <h2>Les grands <em>styles d'investissement</em></h2>
+  <p class="lead">Chaque style est une philosophie : une façon de choisir où placer son capital. Aucun n'est « le meilleur » — ils répondent à des horizons et des tempéraments différents.</p>
+  <div class="styles" id="styles"></div>
+</section>
+
+<!-- ECHELLE DE RISQUE -->
+<section class="sec wrap">
+  <div class="sec-label">Repère</div>
+  <h2>Classes d'actifs &amp; <em>niveau de risque</em></h2>
+  <p class="lead">Le rendement espéré va de pair avec le risque. Diversifier entre classes, c'est lisser ce risque.</p>
+  <div class="ladder" id="ladder"></div>
+</section>
+
+<!-- QUIZ -->
+<section class="sec wrap">
+  <div class="sec-label">Se situer</div>
+  <h2>Quel <em>investisseur</em> êtes-vous ?</h2>
+  <p class="lead">Un court questionnaire d'auto-connaissance. Il ne vous recommande rien : il éclaire les styles cohérents avec votre profil, à explorer.</p>
+  <div class="quiz">
+    <h3>Profil investisseur — auto-évaluation</h3>
+    <div class="qsub">3 questions · aucune donnée enregistrée · résultat indicatif</div>
+    <div id="quizBody"></div>
+    <div class="quiz-result" id="quizResult"></div>
+  </div>
+</section>
+
+<!-- SIMULATEUR -->
+<section class="sec wrap">
+  <div class="sec-label">Visualiser</div>
+  <h2>La force des <em>intérêts composés</em></h2>
+  <p class="lead">Le temps est le premier levier d'un investisseur. Faites varier les curseurs.</p>
+  <div class="sim">
+    <div>
+      <div class="ctrl"><label>Capital de départ <b id="vCap">10 000 €</b></label><input type="range" id="cap" min="0" max="200000" step="1000" value="10000"></div>
+      <div class="ctrl"><label>Versement mensuel <b id="vMth">300 €</b></label><input type="range" id="mth" min="0" max="3000" step="50" value="300"></div>
+      <div class="ctrl"><label>Durée <b id="vYr">20 ans</b></label><input type="range" id="yr" min="1" max="40" step="1" value="20"></div>
+      <div class="ctrl"><label>Rendement annuel moyen <b id="vRt">5 %</b></label><input type="range" id="rt" min="0" max="12" step="0.5" value="5"></div>
+    </div>
+    <div class="sim-out">
+      <div class="big" id="simFinal">—</div>
+      <div class="lbl">Capital estimé au terme</div>
+      <div class="split">
+        <div><div class="v" id="simInvested">—</div><div class="k">Total versé</div></div>
+        <div><div class="v" id="simGains">—</div><div class="k">Intérêts générés</div></div>
+      </div>
+      <svg class="sim-curve" id="simCurve" viewBox="0 0 320 90" preserveAspectRatio="none" width="100%" height="90"></svg>
+    </div>
+  </div>
+  <p class="lead" style="font-size:12.5px;margin-top:14px;font-style:italic">Simulation purement pédagogique à rendement constant. La réalité des marchés est volatile (hausses et baisses). Hors fiscalité et frais réels.</p>
+</section>
+
+<!-- CTA Marcel -->
+<section class="cta wrap">
+  <a href="/family-office.html#siren-funnel">Explorer avec Marcel, votre agent IA →</a>
+  <div class="micro">Marcel et l'agent Stratège répondent à vos questions de marché — en information, jamais en recommandation.</div>
+</section>
+
+<footer class="ft">
+  <div class="disc">Ce module est fourni à titre informatif et éducatif par IKCP (IKIGAÏ Conseil Patrimonial). Il ne constitue ni un conseil en investissement personnalisé (art. L.541-1 CoMoFi), ni une incitation à acheter ou vendre un instrument financier. Tout investissement présente un risque de perte en capital. Pour une analyse adaptée à votre situation, échangez avec un professionnel habilité.</div>
+  © 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
+  <div style="margin-top:8px"><a href="/cgu.html">CGU</a> · <a href="/mentions-legales.html">Mentions</a> · <a href="/politique-confidentialite.html">RGPD</a></div>
+</footer>
+
+<script>
+// ── Styles d'investissement (data) ──
+var STYLES = [
+  {ic:'📊',n:'Indiciel / ETF',phil:"Répliquer un indice (ex. marché mondial) à frais réduits, sans sélectionner de titres. La gestion passive.",hz:'Long terme',pr:'Tous profils',risk:2},
+  {ic:'💎',n:'Value',phil:"Acheter des sociétés solides jugées décotées par le marché, en pariant sur le retour à leur juste valeur.",hz:'Long terme',pr:'Patient',risk:3},
+  {ic:'🚀',n:'Growth',phil:"Miser sur des entreprises à forte croissance (souvent tech), quitte à payer cher aujourd'hui pour demain.",hz:'Long terme',pr:'Offensif',risk:4},
+  {ic:'💶',n:'Dividende / Rendement',phil:"Privilégier les sociétés qui versent des dividendes réguliers, pour un revenu passif récurrent.",hz:'Moyen-long',pr:'Prudent-équilibré',risk:2},
+  {ic:'⚖️',n:'GARP',phil:"« Growth at a Reasonable Price » : croissance ET valorisation raisonnable. Le compromis value/growth.",hz:'Long terme',pr:'Équilibré',risk:3},
+  {ic:'📈',n:'Momentum',phil:"Suivre les tendances : acheter ce qui monte, vendre ce qui retourne. Discipline et réactivité.",hz:'Court-moyen',pr:'Actif/averti',risk:4},
+  {ic:'🌱',n:'ISR / ESG / Impact',phil:"Investir selon des critères environnementaux, sociaux et de gouvernance. Sens + performance.",hz:'Long terme',pr:'Engagé',risk:3},
+  {ic:'🔄',n:'Contrarian',phil:"Aller à contre-courant du consensus : acheter quand les autres vendent. Conviction et sang-froid.",hz:'Long terme',pr:'Aguerri',risk:4},
+  {ic:'🛡️',n:'Patrimonial / Prudent',phil:"Préserver le capital avant de le faire croître : fonds euros, obligations, immobilier, diversification large.",hz:'Tous',pr:'Sécuritaire',risk:1}
+];
+function riskDots(n){var s='';for(var i=1;i<=4;i++){s+='<i class="'+(i<=n?'on'+n:'')+'"></i>';}return '<span class="risk-dots">'+s+'</span>';}
+document.getElementById('styles').innerHTML = STYLES.map(function(s){
+  return '<div class="style-card"><span class="ic">'+s.ic+'</span><h3>'+s.n+'</h3>'
+    +'<div class="phil">'+s.phil+'</div>'
+    +'<div class="meta"><div class="r"><span>Horizon</span><b>'+s.hz+'</b></div>'
+    +'<div class="r"><span>Profil type</span><b>'+s.pr+'</b></div>'
+    +'<div class="r"><span>Risque</span>'+riskDots(s.risk)+'</div></div></div>';
+}).join('');
+
+// ── Echelle de risque (classes d'actifs) ──
+var ASSETS = [
+  {n:'Fonds euros / Monétaire',w:18,lv:'Très faible'},
+  {n:'Obligations',w:35,lv:'Faible'},
+  {n:'Immobilier / SCPI',w:50,lv:'Modéré'},
+  {n:'Actions diversifiées',w:72,lv:'Élevé'},
+  {n:'Private equity',w:86,lv:'Élevé+'},
+  {n:'Crypto-actifs',w:100,lv:'Très élevé'}
+];
+document.getElementById('ladder').innerHTML = ASSETS.map(function(a){
+  return '<div class="ladder-row"><div class="nm">'+a.n+'</div>'
+    +'<div class="bar"><span style="width:'+(100-a.w)+'%"></span></div>'
+    +'<div class="lv">'+a.lv+'</div></div>';
+}).join('');
+
+// ── Quiz profil ──
+var QUIZ = [
+  {q:"Votre horizon d'investissement ?",o:[{t:'< 3 ans',s:1},{t:'3 à 8 ans',s:2},{t:'8 ans et +',s:3}]},
+  {q:"Si votre portefeuille perd 20 % en un an, vous…",o:[{t:'Vendez, ça m\'angoisse',s:1},{t:'Attendez, c\'est le jeu',s:2},{t:'Rachetez, c\'est une occasion',s:3}]},
+  {q:"Ce que vous cherchez avant tout ?",o:[{t:'Préserver mon capital',s:1},{t:'Un équilibre rendement/risque',s:2},{t:'Maximiser la croissance',s:3}]}
+];
+var answers = [null,null,null];
+function renderQuiz(){
+  document.getElementById('quizBody').innerHTML = QUIZ.map(function(item,qi){
+    return '<div class="q"><div class="ql">'+(qi+1)+'. '+item.q+'</div><div class="opts">'
+      + item.o.map(function(opt,oi){return '<button class="opt" data-q="'+qi+'" data-s="'+opt.s+'" data-oi="'+oi+'">'+opt.t+'</button>';}).join('')
+      + '</div></div>';
+  }).join('');
+  document.querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click',function(){
+      var qi=+b.dataset.q;
+      document.querySelectorAll('.opt[data-q="'+qi+'"]').forEach(function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); answers[qi]=+b.dataset.s; maybeResult();
+    });
+  });
+}
+function maybeResult(){
+  if(answers.indexOf(null)!==-1) return;
+  var score = answers.reduce(function(a,b){return a+b;},0); // 3..9
+  var profile, styles, q;
+  if(score<=4){ profile='Prudent · préservation'; styles=['Patrimonial / Prudent','Dividende / Rendement','Indiciel / ETF']; q='Votre priorité semble la sécurité du capital — jusqu\'où accepteriez-vous un peu de volatilité pour un rendement supérieur ?'; }
+  else if(score<=7){ profile='Équilibré'; styles=['Indiciel / ETF','GARP','ISR / ESG','Dividende / Rendement']; q='Un équilibre rendement/risque vous correspond — quelle part de votre épargne pourriez-vous bloquer 8 ans et plus ?'; }
+  else { profile='Offensif · croissance'; styles=['Growth','Value','Momentum','Contrarian']; q='Vous tolérez le risque pour la croissance — comment réagiriez-vous à 2 ou 3 années consécutives de baisse ?'; }
+  var r=document.getElementById('quizResult');
+  r.className='quiz-result show';
+  r.innerHTML='<h4>Profil indicatif : '+profile+'</h4>'
+    +'<div style="font-size:13.5px;color:rgba(250,250,248,.7)">Styles cohérents à <b style="color:var(--gold-bright)">explorer</b> (et non à appliquer tels quels) :</div>'
+    +'<div class="styles-out">'+styles.map(function(s){return '<span class="chip">'+s+'</span>';}).join('')+'</div>'
+    +'<div class="q-final">'+q+'</div>'
+    +'<div class="disc">Résultat indicatif, non personnalisé. Ne constitue pas un conseil en investissement (art. L.541-1 CoMoFi). Pour une analyse adaptée, échangez avec un professionnel habilité.</div>';
+  r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+renderQuiz();
+
+// ── Simulateur intérêts composés ──
+function eur(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);}
+function calcSim(){
+  var cap=+document.getElementById('cap').value, mth=+document.getElementById('mth').value,
+      yr=+document.getElementById('yr').value, rt=+document.getElementById('rt').value/100;
+  document.getElementById('vCap').textContent=eur(cap);
+  document.getElementById('vMth').textContent=eur(mth);
+  document.getElementById('vYr').textContent=yr+' ans';
+  document.getElementById('vRt').textContent=rt*100+' %';
+  var months=yr*12, mrate=Math.pow(1+rt,1/12)-1, bal=cap, pts=[bal];
+  for(var i=0;i<months;i++){ bal=bal*(1+mrate)+mth; if(i%12===11)pts.push(bal); }
+  var invested=cap+mth*months, gains=bal-invested;
+  document.getElementById('simFinal').textContent=eur(bal);
+  document.getElementById('simInvested').textContent=eur(invested);
+  document.getElementById('simGains').textContent=eur(gains);
+  // courbe SVG (area)
+  var max=Math.max.apply(null,pts), w=320, h=90, n=pts.length;
+  var d=pts.map(function(p,i){return (i===0?'M':'L')+(i/(n-1)*w).toFixed(1)+','+(h-p/max*(h-6)).toFixed(1);}).join(' ');
+  document.getElementById('simCurve').innerHTML='<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9A96E" stop-opacity=".35"/><stop offset="1" stop-color="#C9A96E" stop-opacity="0"/></linearGradient></defs>'
+    +'<path d="'+d+' L'+w+','+h+' L0,'+h+' Z" fill="url(#g)"/>'
+    +'<path d="'+d+'" fill="none" stroke="#8B6F3F" stroke-width="2"/>';
+}
+['cap','mth','yr','rt'].forEach(function(id){document.getElementById(id).addEventListener('input',calcSim);});
+calcSim();
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
