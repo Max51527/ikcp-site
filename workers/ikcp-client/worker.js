@@ -201,7 +201,11 @@ async function handleAuthVerify(request, env) {
 
   await audit(env, user.id, 'login', request);
 
-  const cookieValue = `${COOKIE_NAME}=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL_DAYS * 86400}`;
+  // SameSite=None requis : le front (ikcp.eu) et l'API (…workers.dev) sont
+  // sur des domaines différents → un cookie Strict/Lax ne serait jamais
+  // renvoyé sur les fetch cross-site, d'où la boucle de login. None+Secure
+  // permet l'envoi cross-site (durcissement api.ikcp.eu prévu ensuite).
+  const cookieValue = `${COOKIE_NAME}=${sessionToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${SESSION_TTL_DAYS * 86400}`;
   return new Response(null, {
     status: 302,
     headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html`, 'Set-Cookie': cookieValue },
@@ -212,7 +216,7 @@ async function handleLogout(session, env) {
   await env.D1.prepare('UPDATE sessions SET revoked_at = ? WHERE token_hash = ?').bind(Date.now(), session.token_hash).run();
   return new Response(null, {
     status: 302,
-    headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/index.html`, 'Set-Cookie': `${COOKIE_NAME}=; Path=/; Max-Age=0; SameSite=Lax` },
+    headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/index.html`, 'Set-Cookie': `${COOKIE_NAME}=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0` },
   });
 }
 
