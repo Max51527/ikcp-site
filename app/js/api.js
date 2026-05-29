@@ -126,6 +126,21 @@ export const Marcel = {
     },
   },
 
+  // ─── Abonnement (Stripe Checkout hébergé) ──────────────────
+  Billing: {
+    // plan = 'monthly' | 'yearly' → renvoie une URL Stripe à ouvrir
+    async checkout(plan = 'monthly') {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/stripe/checkout`, {
+        method: 'POST',
+        body: JSON.stringify({ plan }),
+      });
+    },
+    // Portail client Stripe (gérer / résilier l'abonnement)
+    async portal() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/stripe/portal`, { method: 'POST' });
+    },
+  },
+
   // ─── Données utilisateur (toutes routes /api/v1/me/*) ──────
   Me: {
     async sirens() {

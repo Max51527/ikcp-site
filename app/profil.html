@@ -31,6 +31,14 @@
       <p>Tier : <span class="pill" id="profilTier">…</span></p>
     </article>
 
+    <article class="card" id="billingCard" style="display:none">
+      <span class="card-cat">Abonnement</span>
+      <h3 id="billingTitle">Votre formule</h3>
+      <p id="billingDesc" class="meta" style="margin-bottom:14px"></p>
+      <div id="billingActions"></div>
+      <p class="meta" style="margin-top:12px;font-size:11px;font-style:italic">Paiement sécurisé via Stripe. <a href="/cgv.html" target="_blank" style="color:var(--accent)">CGV</a> · sans engagement, résiliable à tout moment.</p>
+    </article>
+
     <article class="card">
       <span class="card-cat">Sociétés rattachées</span>
       <h3>Vos SIREN</h3>
@@ -102,6 +110,43 @@ if(me){
   const t = document.getElementById('profilTier');
   t.textContent = lbl;
   t.classList.add(me.tier === 'free' ? 'neutral' : 'live');
+
+  // ── Carte abonnement (Stripe) ──
+  const card = document.getElementById('billingCard');
+  const desc = document.getElementById('billingDesc');
+  const actions = document.getElementById('billingActions');
+  const btn = (label, fn, primary=true) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    b.className = 'btn ' + (primary ? 'btn-primary' : 'btn-ghost');
+    b.style.cssText = 'padding:11px 18px;border-radius:9px;font-weight:600;font-size:13.5px;cursor:pointer;border:none;' + (primary ? 'background:var(--accent);color:#fff;' : 'background:transparent;border:1px solid var(--line);color:var(--ink);');
+    b.onclick = fn;
+    return b;
+  };
+  card.style.display = '';
+  if(me.tier === 'free'){
+    desc.innerHTML = 'Vous êtes en <b>Découverte</b> (gratuit). Passez en <b>Premium</b> pour Marcel en illimité + la veille augmentée.';
+    const go = async (plan, el) => {
+      el.disabled = true; el.textContent = 'Redirection…';
+      try { const r = await Marcel.Billing.checkout(plan); if(r.checkout_url) location.href = r.checkout_url; else throw 0; }
+      catch(_){ el.disabled = false; el.textContent = 'Réessayer'; alert('Paiement momentanément indisponible. Réessayez plus tard.'); }
+    };
+    const bM = btn('Passer Premium · mensuel', e => go('monthly', e.target));
+    const bY = btn('Premium · annuel (2 mois offerts)', e => go('yearly', e.target), false);
+    actions.append(bM, document.createTextNode(' '), bY);
+  } else if(me.tier === 'premium'){
+    desc.innerHTML = 'Vous êtes en <b>Premium</b>. Gérez votre abonnement (facture, moyen de paiement, résiliation) via le portail sécurisé.';
+    const bP = btn('Gérer mon abonnement', async e => {
+      e.target.disabled = true; e.target.textContent = 'Ouverture…';
+      try { const r = await Marcel.Billing.portal(); if(r.portal_url) location.href = r.portal_url; else throw 0; }
+      catch(_){ e.target.disabled = false; e.target.textContent = 'Réessayer'; alert('Portail momentanément indisponible.'); }
+    });
+    actions.append(bP);
+  } else { // fo
+    desc.innerHTML = 'Vous êtes en <b>Family Office</b> — accès complet aux 11 spécialistes. Pour toute question sur votre formule, contactez Maxime.';
+    const bC = btn('Contacter Maxime', () => location.href = 'mailto:maxime@ikcp.eu?subject=Mon%20abonnement%20Family%20Office', false);
+    actions.append(bC);
+  }
 }
 
 // SIRENS
