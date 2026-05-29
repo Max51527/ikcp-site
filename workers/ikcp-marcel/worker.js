@@ -127,11 +127,18 @@ async function fetchUserContextFromClient(request) {
   } catch (_) { return null; }
 }
 
-async function delegateToSpecialist(agentId, question, context) {
+async function delegateToSpecialist(agentId, question, context, isPaidMember = false) {
   const spec = SPECIALISTS_REGISTRY[agentId];
   if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS_LIVE.join(', ')}` };
   // Guard — bloquer délégation vers workers pas encore déployés
   if (!spec.live) return { error: `Specialiste ${agentId} (${spec.role}) n'est pas encore déployé (Sprint 3-5). Traite la question directement.` };
+  // Garde-fou COÛTS (défense en profondeur) : agents Opus = payant + connecté.
+  // Si non payant, on refuse l'appel coûteux → Marcel répond avec ses moyens
+  // (Sonnet) et invite à l'accompagnement Premium/FO, sans message d'erreur brut.
+  if ((spec.model || '').includes('opus') && !isPaidMember) {
+    return { gated: true, reason: 'premium_required',
+      message: `L'analyse approfondie par ${spec.displayName} (expertise senior) fait partie de l'accompagnement Premium / Family Office. Traite la question avec tes propres moyens (information générale + question), puis mentionne avec tact que l'analyse experte détaillée est réservée aux membres.` };
+  }
   try {
     // Pour les workers mutualisés (ikcp-lifestyle), utiliser agentKey (clé dans PROMPTS)
     // sinon agentId — évite les mismatch si le registry key ≠ clé dans prompts.js
@@ -909,14 +916,24 @@ export default {
       }];
 
       // ── Outils filtrés par tier + par spécialistes réellement déployés ──
-      // 1) consult_veille (Perplexity Pro) réservé aux membres premium/fo :
-      //    inutile de l'exposer à un visiteur free/anon → sinon 403 stérile.
-      // 2) delegate_to_specialist : on régénère l'enum à partir des
-      //    spécialistes LIVE pour ne jamais proposer un worker non déployé
-      //    (ex. Bâtisseur tant que sa clé n'est pas posée).
-      const veilleAllowed = memberTier === 'premium' || memberTier === 'fo';
+      // CONTRÔLE DES COÛTS : les IA coûteuses (Opus + Perplexity) ne
+      // s'activent QUE pour un membre PAYANT et CONNECTÉ (premium/fo).
+      // Le tier provient de la session → « payant » implique « rattaché au profil ».
+      //  • consult_veille (Perplexity)         → premium/fo
+      //  • délégation aux agents Opus           → premium/fo (EXPENSIVE_AGENTS)
+      //  • Marcel (Sonnet) + agents Sonnet      → tout le monde (prospects inclus)
+      const isPaidMember = memberTier === 'premium' || memberTier === 'fo';
+      const veilleAllowed = isPaidMember;
+      // Agents Opus = coûteux (~0,15 €/question) → réservés aux payants.
+      const allowedAgents = SPECIALISTS_IDS_LIVE.filter(id => {
+        const m = (SPECIALISTS_REGISTRY[id]?.model || '');
+        const isExpensive = m.includes('opus');
+        return isPaidMember || !isExpensive;
+      });
       const dynamicTools = TOOLS_FISCAL
         .filter(t => !(t.name === 'consult_veille' && !veilleAllowed))
+        // si aucun spécialiste autorisé (prospect sans agent Sonnet déployé) on retire l'outil
+        .filter(t => !(t.name === 'delegate_to_specialist' && allowedAgents.length === 0))
         .map(t => {
           if (t.name === 'delegate_to_specialist') {
             return {
@@ -925,7 +942,7 @@ export default {
                 ...t.input_schema,
                 properties: {
                   ...t.input_schema.properties,
-                  agent: { ...t.input_schema.properties.agent, enum: SPECIALISTS_IDS_LIVE },
+                  agent: { ...t.input_schema.properties.agent, enum: allowedAgents },
                 },
               },
             };
@@ -1004,7 +1021,7 @@ export default {
           let result;
           const i = tu.input || {};
           if (tu.name === 'delegate_to_specialist') {
-            result = await delegateToSpecialist(i.agent, i.question, i.context);
+            result = await delegateToSpecialist(i.agent, i.question, i.context, isPaidMember);
           } else if (tu.name === 'get_user_profile') {
             result = await collectorFetch(env, `/profile?user_id=${encodeURIComponent(i.user_id || 'max')}`);
           } else if (tu.name === 'get_user_watches') {
