@@ -80,4 +80,21 @@ Backlog : espace membre sur-mesure (après login OK), OCR avis d'imposition, int
 
 ---
 
+## ✅ AJOUTS (fin de session — login validé + features addictives)
+- **LOGIN VALIDÉ DE BOUT EN BOUT** : testé par Claude via compte technique (hook retiré). Cause réelle du reboucle trouvée + corrigée = **`/me` plantait** (`D1_ERROR: no such column: prenom`, base D1 antérieure) → 500 → boucle. Fix : `handleMe` résilient (jamais 500) + `ensureUserColumns()` (ALTER auto à la connexion). Commits de61e04 / 639a02e. **Le login fonctionne.**
+- **QA parcours** : bugs corrigés (collections `askSpecialist` non exposée = bouton mort ; doublon `askMarcelAbout` ; libellé securite ; ancre #abonnement ; prix en dur neutralisés). Commit e535dd2.
+- **App téléphone** : `pwa-install.js` (invite installation Android/iOS) liée au compte (jeton persistant). Commit c1f390b.
+- **SCORE PATRIMONIAL** (`score.html`) — lead magnet addictif : diagnostic 360° 7 territoires → jauge animée 0-100 + sous-scores + 3 leviers prioritaires → chaque levier ouvre Marcel (`family-office?q=`). Partage viral + en hero + dans aperçu. MIF II (diagnostic, pas conseil). Commits ab9fb2e / e41afc0 / 2e184b1.
+- **CLAUDE.md** remis à l'état réel (commit 8ef8b03).
+
+## 🔜 ROADMAP ADDICTIVE (à poursuivre)
+- **Score persistant connecté** : sauvegarder le score du membre + suivi dans le temps (progression = rétention).
+- **Chantiers patrimoniaux** : checklist de complétion (% par territoire) dans le dashboard → biais de complétion.
+- **Push PWA** (sw.js prêt) : re-engagement (veille du jour, alertes).
+- **OCR avis d'imposition** (Tesseract client-side) → pré-remplit Score + simulateurs.
+- **Interface FO à photos** (espace-membre-fo.html) → expérience membre réelle.
+- **Mémoire Marcel** (doc dédié).
+
+---
+
 © 2026 IKCP · ORIAS 23001568 · checkpoint session Opus 4.8
