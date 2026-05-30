@@ -175,6 +175,7 @@ async function handleAuthSend(request, env) {
 }
 
 async function handleAuthVerify(request, env) {
+  await ensureUserColumns(env); // auto-répare le schéma users (colonnes étendues)
   const url = new URL(request.url);
   const token = url.searchParams.get('token');
   if (!token) return json({ error: 'token_required' }, 400);
@@ -268,15 +269,34 @@ async function requireSession(request, env) {
 // ──────────────────────────────────────────────────────────────
 // USER API
 // ──────────────────────────────────────────────────────────────
+async function ensureUserColumns(env) {
+  // Auto-réparation du schéma : ajoute les colonnes étendues si la base date
+  // d'une version antérieure (SQLite n'a pas ADD COLUMN IF NOT EXISTS → try/catch).
+  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT']) {
+    try { await env.D1.prepare(`ALTER TABLE users ADD COLUMN ${col}`).run(); } catch (_) { /* colonne déjà présente */ }
+  }
+}
+
 async function handleMe(session, env) {
   const month = new Date().toISOString().slice(0, 7);
-  // Récupère les champs étendus en DB (prenom, display_name, profile_json)
-  const [userRow, usage] = await Promise.all([
-    env.D1.prepare('SELECT id, email, tier, display_name, prenom, profile_json, consents_json, created_at, last_login_at FROM users WHERE id = ?')
-      .bind(session.user_id).first(),
-    env.D1.prepare('SELECT pappers_lookups, marcel_messages FROM usage WHERE user_id = ? AND year_month = ?')
-      .bind(session.user_id, month).first(),
-  ]);
+  // Requête étendue ; si une colonne manque (vieille base), on auto-répare
+  // puis on retombe sur les colonnes garanties → /me ne renvoie JAMAIS 500.
+  let userRow = null;
+  try {
+    userRow = await env.D1.prepare('SELECT id, email, tier, display_name, prenom, profile_json, consents_json, created_at, last_login_at FROM users WHERE id = ?')
+      .bind(session.user_id).first();
+  } catch (_) {
+    await ensureUserColumns(env);
+    try {
+      userRow = await env.D1.prepare('SELECT id, email, tier, display_name, prenom, profile_json, consents_json, created_at, last_login_at FROM users WHERE id = ?')
+        .bind(session.user_id).first();
+    } catch (_) {
+      userRow = await env.D1.prepare('SELECT id, email, tier, created_at, last_login_at FROM users WHERE id = ?')
+        .bind(session.user_id).first();
+    }
+  }
+  const usage = await env.D1.prepare('SELECT pappers_lookups, marcel_messages FROM usage WHERE user_id = ? AND year_month = ?')
+    .bind(session.user_id, month).first().catch(() => null);
   const limits = TIER_LIMITS[session.tier] || TIER_LIMITS.free;
   // Retourne les champs à la racine (compatible avec le front)
   return json({
