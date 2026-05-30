@@ -527,6 +527,8 @@ function buildAgentContext(catKey){
 }
 
 // ─── Appel DIRECT au sub-agent (court-circuite Marcel orchestrateur) ───
+// Exposée sur window : appelée depuis des onclick inline générés (insight catégorie).
+window.askSpecialist = askSpecialist;
 async function askSpecialist(catKey, question, itemContext){
   const agent = CATEGORY_AGENT[catKey];
   if(!agent){
@@ -642,10 +644,7 @@ window.closeCatDetail = function(){
 window.addItem = function(){
   alert('Ajouter une pièce — formulaire à brancher Sprint 2.\n\nChamps : marque, modèle, référence, année, photo, prix d\'achat, source.');
 }
-window.askMarcelAbout = function(query){
-  sessionStorage.setItem('marcel_q', `Quelles sont les perspectives sur ${query} sur 5-10 ans ? Cote actuelle, fiscalité IFI, conseil transmission.`);
-  location.href = '/app/marcel.html?ask=1';
-}
+// (doublon askMarcelAbout retiré — la version « agent dédié » l.592 fait foi)
 
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeCatDetail(); });
 
