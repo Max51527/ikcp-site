@@ -205,6 +205,22 @@ function finish(){
   else { verdict='Votre patrimoine est exposé.'; sub='Des leviers simples et prioritaires peuvent changer la donne rapidement.'; }
   document.getElementById('verdict').textContent=verdict;
   document.getElementById('verdictSub').textContent=sub;
+  // Rétention : compare au dernier diagnostic + mémorise (client only, RGPD-friendly)
+  try {
+    var prev = JSON.parse(localStorage.getItem('ikcp_score') || 'null');
+    if (prev && typeof prev.score === 'number') {
+      var delta = global - prev.score;
+      var since = prev.date ? new Date(prev.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}) : '';
+      var txt = delta > 0 ? ('📈 +' + delta + ' points depuis le ' + since + '. Continuez sur cette lancée.')
+        : delta < 0 ? ('📉 ' + delta + ' points depuis le ' + since + '. Des leviers se sont relâchés.')
+        : ('Stable depuis le ' + since + '.');
+      var ev = document.createElement('div');
+      ev.style.cssText = 'margin-top:14px;display:inline-block;background:rgba(201,169,110,.16);border:1px solid rgba(201,169,110,.4);color:var(--gold-bright);padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600';
+      ev.textContent = txt;
+      document.getElementById('verdictSub').insertAdjacentElement('afterend', ev);
+    }
+    localStorage.setItem('ikcp_score', JSON.stringify({ score: global, date: new Date().toISOString() }));
+  } catch (_) {}
   // barres par territoire
   document.getElementById('terrBars').innerHTML = Q.map(function(item,i){
     var v=answers[i];
