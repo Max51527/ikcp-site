@@ -67,6 +67,9 @@ export default {
       if (path === '/api/v1/invite/check' && method === 'POST') return await handleInviteCheck(request, env);
       if (path === '/api/v1/invite/apply' && method === 'POST') return await handleInviteApply(request, env);
 
+      // ─── FEEDBACK bêta (public) → email Maxime via Resend ──
+      if (path === '/api/v1/feedback' && method === 'POST') return await handleFeedback(request, env);
+
       // ─── ADMIN (x-admin-secret) — validation des candidatures ──
       if (path.startsWith('/api/v1/admin/')) return await handleAdmin(request, env, path, method);
 
@@ -276,6 +279,30 @@ async function handleUsage(session, env) {
     'SELECT year_month, pappers_lookups, marcel_messages FROM usage WHERE user_id = ? ORDER BY year_month DESC LIMIT 12'
   ).bind(session.user_id).all();
   return json({ history: rows.results || [] });
+}
+
+// ──────────────────────────────────────────────────────────────
+// FEEDBACK bêta → email Maxime (Resend déjà actif). Pas de stockage requis.
+// ──────────────────────────────────────────────────────────────
+async function handleFeedback(request, env) {
+  const b = await request.json().catch(() => ({}));
+  const besoin = (b.besoin || '').toString().trim();
+  if (besoin.length < 5) return json({ ok: false, error: 'feedback_trop_court' }, 400);
+  const cats = Array.isArray(b.categories) ? b.categories.join(', ') : (b.categories || '');
+  const prio = (b.priorite || 'moyenne').toString();
+  const email = (b.email || '').toString().slice(0, 254);
+  const page = (b.page || '').toString().slice(0, 200);
+  const source = (b.source || '').toString().slice(0, 60);
+  const esc = s => (s == null ? '' : String(s)).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+  const html = `<div style="font-family:Arial,sans-serif;max-width:560px">
+    <h2 style="color:#1B2A4A">📨 Retour bêta IKCP</h2>
+    <p><b>Priorité :</b> ${esc(prio)} &nbsp;·&nbsp; <b>Catégories :</b> ${esc(cats) || '—'}</p>
+    <p style="background:#F4EFE7;border-left:3px solid #C9A96E;padding:12px 14px;white-space:pre-wrap">${esc(besoin)}</p>
+    <p style="font-size:13px;color:#6B5D52"><b>De :</b> ${esc(email) || 'anonyme'} &nbsp;·&nbsp; <b>Page :</b> ${esc(page)} &nbsp;·&nbsp; <b>Source :</b> ${esc(source)}</p>
+  </div>`;
+  const sent = await sendEmail(env, { to: 'maxime@ikcp.fr', subject: `[IKCP Bêta] Retour ${prio}${cats ? ' · ' + cats : ''}`, html });
+  await emitEvent(env, null, 'beta_feedback', { categories: cats, priorite: prio, email, page, source }).catch(() => {});
+  return json({ ok: true, emailed: !!sent });
 }
 
 // ──────────────────────────────────────────────────────────────

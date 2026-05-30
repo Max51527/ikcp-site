@@ -275,7 +275,7 @@
     msgEl.textContent = '';
 
     try {
-      const r = await fetch('https://ikcp-feedback.maxime-ead.workers.dev/feedback', {
+      const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
