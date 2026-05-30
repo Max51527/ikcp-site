@@ -605,6 +605,25 @@ function conciergerie(req){
 window.conciergerie = conciergerie;
 
 document.getElementById('siren-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') lookupSiren(); });
+
+// Arrivée depuis un levier du Score Patrimonial (?q=) → ouvre Marcel avec la question.
+(function(){
+  try {
+    var q = new URLSearchParams(location.search).get('q');
+    if (!q) return;
+    var fire = function(){
+      if (window._ikcpToggle && window._ikcpAskFollow) {
+        var panel = document.getElementById('ikcp-chat-panel');
+        if (panel && !panel.classList.contains('open')) window._ikcpToggle();
+        setTimeout(function(){ window._ikcpAskFollow(q); }, 300);
+      } else {
+        var b = document.getElementById('ikcp-chat-btn'); if (b) b.click();
+        setTimeout(function(){ if (window._ikcpAskFollow) window._ikcpAskFollow(q); }, 700);
+      }
+    };
+    setTimeout(fire, 1400); // laisse le widget Marcel se charger
+  } catch (_) {}
+})();
 </script>
 
 <!-- ═══ CONCIERGERIE — démo agent Concierge en direct ═══ -->
