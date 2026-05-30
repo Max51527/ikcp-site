@@ -148,6 +148,11 @@ async function handleAuthSend(request, env) {
   ).bind(tokenHash, email.toLowerCase(), now, expiresAt, request.headers.get('CF-Connecting-IP') || '').run();
 
   const verifyUrl = `${env.APP_URL}/auth/verify?token=${token}`;
+  // [E2E-TEST TEMPORAIRE] compte de test technique : renvoie le lien sans email.
+  // Gated sur un email factice unique — à retirer après validation du parcours.
+  if (email.toLowerCase() === 'e2e-test@ikcp.eu') {
+    return json({ ok: true, e2e: true, dev_verify_url: verifyUrl });
+  }
   const emailSent = await sendEmail(env, { to: email, subject: 'Votre lien de connexion · IKCP', html: emailTemplateMagic(verifyUrl) });
 
   // MODE SANS RESEND : log le lien en console (visible wrangler tail ou dashboard CF)
