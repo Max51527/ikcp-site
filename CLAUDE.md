@@ -133,44 +133,45 @@ git push origin main
 - `feat(proposals):` nouvelle maquette
 - `chore:` config, gitignore, dépendances
 
-## 🚦 Statut Sprint 1 → Sprint 2 (au 21 mai 2026)
+## 🚦 ÉTAT RÉEL (au 28 mai 2026 — session Opus 4.8)
 
-### Sprint 1 — LIVE
-```
-✅ ikcp-pappers      LIVE  · cartographie SIREN réelle
-✅ ikcp-chat (Marcel) LIVE  · Sonnet 4.6 · MIF II validé
-✅ ikcp-temoin       LIVE  · audit log D1 Paris WEUR
-✅ ikcp-codex        LIVE  · Opus 4.7 · expertise fiscale senior
-✅ Marcel ↔ Codex    LIVE  · délégation auto (delegate_to_specialist tool)
-⏸ ikcp-universign   PAUSE · signature eIDAS (reprendre Sprint 3)
-```
+> Détail complet : `docs/CHECKPOINT-2026-05-28-opus48.md`.
 
-### Sprint 2 — Code complet · ⏳ Deploy bloqué sur secrets Maxime
+### Agents IA & workers — LIVE
 ```
-✅ family-office.html LIVE  · hero vidéo parallaxe + funnel SIREN → /app/index.html
-✅ app/* pages        LIVE  · nav SVG unifiée · veille active · carnet · profil
-✅ app/index.html     LIVE  · magic link auth · dev_verify_url mode dev
-✅ chatbot-widget.js  LIVE  · app upsell après 3 échanges · dead AGENTS_URL nettoyé
-✅ api.js             LIVE  · dead agentChat/agentStream supprimés · clean
-✅ ikcp-client/worker PRÊT  · auth sans Stripe/Resend · voir docs/DEPLOY-MINIMAL.md
-✅ deploy-workers.yml PRÊT  · 6 workers dans CI/CD (workflow_dispatch + push auto)
-✅ Marcel routing     LIVE  · SPECIALISTS_REGISTRY + agentKey + delegateToSpecialist
-✅ ikcp-lifestyle     PRÊT  · 12 agents Sonnet prompts.js (stratege, curateur, capital…)
-⏳ ikcp-batisseur     PRÊT  · worker Opus 4.7 codé · attente deploy + ANTHROPICAPIKEY
-⏳ ikcp-hermes        PRÊT  · worker Opus 4.7 codé · attente deploy + ANTHROPICAPIKEY
-⏳ ikcp-veille        PRÊT  · worker Perplexity codé · attente deploy + secrets
+✅ ikcp-chat (Marcel)  LIVE · Sonnet · expertise patrimoniale renforcée + MIF II garanti serveur
+✅ ikcp-codex          LIVE · Opus · fiscal (api_key OK)
+✅ ikcp-hermes         LIVE · Opus · transmission (api_key OK)
+✅ ikcp-lifestyle      LIVE · 9 agents Sonnet
+✅ ikcp-veille         LIVE · Perplexity · gating tier + CRON digest quotidien 6h UTC
+✅ ikcp-pappers        LIVE · cartographie SIREN (testé : DANONE)
+✅ ikcp-client         LIVE · auth JETON (Bearer, contourne cookie tiers) + tiers + quotas + feedback email + admin cockpit
+✅ ikcp-temoin         LIVE · audit log D1 Paris
+✅ ikcp-collector      LIVE · CRON marchés collection 6h
+✅ ikcp-voice          LIVE · STT Whisper OK · TTS premium non configuré
+🔴 ikcp-batisseur      déployé mais ANTHROPICAPIKEY MANQUANTE (live:false dans Marcel)
+⏸ ikcp-universign     PAUSE · eIDAS
+🟡 ikcp-api/prospect   legacy (Notion/PISTE) — à nettoyer
 ```
 
-### Actions Maxime requises pour activer Sprint 2
+### Plateforme — LIVE
+```
+✅ Site public : index (hero IA×Humain), family-office (Révélation : schéma+orchestration+leviers+conciergerie), investir (éducatif)
+✅ Espace membre app/ : 11 pages, PWA installable (pwa-install.js), login JETON ~30j
+✅ Freemium : tous univers visibles, quota serveur (free = 5 Marcel/mois), Opus+veille = payant
+✅ Accès gouverné : beta-invite + console admin /app/admin (cockpit : stats, membres, candidatures, feedback, set-tier, tour de contrôle)
+✅ Légal : CGU + CGV (SaaS) + mentions + RGPD
+✅ Stripe : code Checkout/Portal/Webhook + UI profil PRÊTS (manque compte+secrets)
+✅ Protection : protect.js (anti-copie + filigrane, 84 pages) · reveal.js (mouvement) · CMS Sveltia /admin
+✅ ikcp.eu LIVE sur Cloudflare Pages · CI/CD auto (deploy-workers + deploy-pages)
+```
 
-1. **GitHub Actions** → "Deploy Cloudflare Workers" → `workflow_dispatch` → target `all`
-2. `cd workers/ikcp-batisseur && npx wrangler secret put ANTHROPICAPIKEY`
-3. `cd workers/ikcp-hermes && npx wrangler secret put ANTHROPICAPIKEY`
-4. `cd workers/ikcp-lifestyle && npx wrangler secret put ANTHROPICAPIKEY`
-5. `cd workers/ikcp-veille && npx wrangler secret put PERPLEXITY_API_KEY`
-6. Confirmer `/health` OK sur chaque worker → flip `live: false → true` dans Marcel SPECIALISTS_REGISTRY
-
-→ **Voir `docs/INFRA-PRODUCTION.md`** pour les URLs et IDs ressources exacts.
+### ⏳ Actions Maxime restantes
+1. **Test login** (clic lien email → reste sur dashboard ? — login jeton déployé).
+2. `ikcp-batisseur` → secret `ANTHROPICAPIKEY` (CF dashboard) → flip `live:true` dans Marcel (→ 11ᵉ agent).
+3. **Stripe** (quand monétisation) : compte + produits + secrets — voir `docs/SETUP-STRIPE.md`.
+4. **Charges mensuelles** → seuil de rentabilité (`docs/PRICING-2026.md`, Premium reco 59 €).
+5. *(option robustesse)* custom domains `api.ikcp.eu` + `chat.ikcp.eu` (cookie 1ʳᵉ partie).
 
 ## 📞 Liens critiques
 
