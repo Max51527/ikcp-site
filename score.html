@@ -124,6 +124,12 @@ a{color:var(--gold-deep);text-decoration:none}
   <div class="cta-final">
     <a href="/family-office.html#siren-funnel">Approfondir avec Marcel & Maxime →</a>
   </div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap">
+    <span style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:600">Partager</span>
+    <button onclick="ikcpShare('linkedin')" aria-label="LinkedIn" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-weight:700;font-size:13px">in</button>
+    <button onclick="ikcpShare('email')" aria-label="Email" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-size:15px">✉</button>
+    <button onclick="ikcpShare('copy');this.textContent='✓';setTimeout(()=>this.textContent='🔗',1500)" aria-label="Copier" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-size:14px">🔗</button>
+  </div>
   <button class="replay" onclick="location.reload()">↻ Refaire le diagnostic</button>
   <div class="disc">Diagnostic indicatif et pédagogique fondé sur vos déclarations. Il ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni un audit complet. Pour une analyse adaptée, échangez avec Maxime Juveneton (CIF · ORIAS 23001568).</div>
 </div>
