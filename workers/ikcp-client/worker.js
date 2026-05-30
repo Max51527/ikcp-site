@@ -938,6 +938,45 @@ async function handleAdmin(request, env, path, method) {
       .bind(crypto.randomUUID(), code, 'direct', 'admin', b.email || null, 'active', b.max_uses || 1, 0, Date.now(), expires).run();
     return json({ ok: true, code, link: `https://ikcp.eu/app/beta-invite.html?code=${code}` });
   }
+  // Statistiques de pilotage (cockpit)
+  if (path === '/api/v1/admin/stats' && method === 'GET') {
+    const month = new Date().toISOString().slice(0, 7);
+    const safe = async (q, ...b) => { try { return (await env.D1.prepare(q).bind(...b).first())?.n || 0; } catch (_) { return 0; } };
+    const [free, premium, fo, pending, marcelMonth, signups7d] = await Promise.all([
+      safe("SELECT COUNT(*) n FROM users WHERE tier='free'"),
+      safe("SELECT COUNT(*) n FROM users WHERE tier='premium'"),
+      safe("SELECT COUNT(*) n FROM users WHERE tier='fo'"),
+      safe("SELECT COUNT(*) n FROM member_applications WHERE status='pending'"),
+      safe('SELECT SUM(marcel_messages) n FROM usage WHERE year_month=?', month),
+      safe('SELECT COUNT(*) n FROM users WHERE created_at > ?', Date.now() - 7 * 86400000),
+    ]);
+    const members = free + premium + fo;
+    // Estimation coût IA du mois (Premium ~5€/client, FO ~30€ — voir PRICING-2026)
+    const coutIA = Math.round(premium * 5 + fo * 30);
+    const revenu = premium * 59; // Premium 59€ (FO sur devis, non compté)
+    return json({ members, by_tier: { free, premium, fo }, pending_applications: pending,
+      marcel_messages_month: marcelMonth, signups_7d: signups7d,
+      revenu_premium_estime: revenu, cout_ia_estime: coutIA, marge_estimee: revenu - coutIA });
+  }
+  // Liste des membres
+  if (path === '/api/v1/admin/members' && method === 'GET') {
+    const month = new Date().toISOString().slice(0, 7);
+    try {
+      const rows = await env.D1.prepare(
+        'SELECT u.id, u.email, u.tier, u.prenom, u.created_at, u.last_login_at, u.source, ' +
+        '(SELECT marcel_messages FROM usage WHERE user_id = u.id AND year_month = ?) AS marcel_month ' +
+        'FROM users u ORDER BY u.created_at DESC LIMIT 200'
+      ).bind(month).all();
+      return json(rows.results || []);
+    } catch (e) { return json({ error: 'members_failed', detail: e.message }, 500); }
+  }
+  // Retours bêta récents (events)
+  if (path === '/api/v1/admin/feedback' && method === 'GET') {
+    try {
+      const rows = await env.D1.prepare("SELECT id, payload_json, ts FROM events WHERE type='beta_feedback' ORDER BY ts DESC LIMIT 100").all();
+      return json(rows.results || []);
+    } catch (_) { return json([]); }
+  }
   return json({ error: 'not_found' }, 404);
 }
 

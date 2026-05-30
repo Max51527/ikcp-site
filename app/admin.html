@@ -63,6 +63,14 @@ button:disabled{opacity:.5;cursor:wait}
 <!-- Console (cachée tant que non déverrouillé) -->
 <div id="console" style="display:none">
 
+  <!-- Cockpit : statistiques -->
+  <div class="card">
+    <h2>Tableau de bord <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadStats()">↻</button></h2>
+    <div id="stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div class="empty" style="grid-column:1/-1">Chargement…</div>
+    </div>
+  </div>
+
   <!-- Générer un code -->
   <div class="card">
     <h2>Générer une invitation</h2>
@@ -89,6 +97,18 @@ button:disabled{opacity:.5;cursor:wait}
     <h2>Candidatures en attente <span class="pill" id="appCount">…</span></h2>
     <div id="apps"><div class="empty">Chargement…</div></div>
     <div style="margin-top:8px"><button class="ghost" onclick="loadApps()">↻ Rafraîchir</button></div>
+  </div>
+
+  <!-- Membres -->
+  <div class="card">
+    <h2>Membres <span class="pill" id="memCount">…</span> <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadMembers()">↻</button></h2>
+    <div id="members" style="overflow-x:auto"><div class="empty">Chargement…</div></div>
+  </div>
+
+  <!-- Retours bêta -->
+  <div class="card">
+    <h2>Retours bêta <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadFeedback()">↻</button></h2>
+    <div id="feedback"><div class="empty">Chargement…</div></div>
   </div>
 
 </div>
@@ -120,6 +140,65 @@ async function unlock(){
   document.getElementById('console').style.display='block';
   const data = await r.json();
   renderApps(data);
+  loadStats(); loadMembers(); loadFeedback();
+}
+
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
+
+async function loadStats(){
+  const el = document.getElementById('stats');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/stats`, { headers: hdr() });
+    const s = await r.json();
+    const stat = (val,lbl,sub) => `<div style="background:rgba(201,169,110,.07);border:1px solid var(--line);border-radius:10px;padding:14px 16px">
+      <div style="font-family:'Fraunces',serif;font-style:italic;font-size:26px;color:var(--gold-bright);line-height:1">${val}</div>
+      <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:6px">${lbl}</div>
+      ${sub?`<div style="font-size:11px;color:var(--mute);margin-top:3px">${sub}</div>`:''}</div>`;
+    el.innerHTML =
+      stat(s.members, 'Membres', `${s.by_tier.free} free · ${s.by_tier.premium} prem · ${s.by_tier.fo} FO`)
+      + stat(s.pending_applications, 'Candidatures', 'en attente')
+      + stat(s.marcel_messages_month||0, 'Messages Marcel', 'ce mois')
+      + stat('+'+s.signups_7d, 'Inscrits', '7 derniers jours')
+      + stat(eur(s.revenu_premium_estime), 'Revenu Premium', 'estimé/mois')
+      + stat(eur(s.cout_ia_estime), 'Coût IA', 'estimé/mois')
+      + stat(eur(s.marge_estimee), 'Marge', 'estimée/mois')
+      + stat(s.by_tier.fo, 'Family Office', 'sur devis');
+  }catch(_){ el.innerHTML='<div class="msg err" style="grid-column:1/-1">Stats indisponibles.</div>'; }
+}
+
+async function loadMembers(){
+  const el = document.getElementById('members');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/members`, { headers: hdr() });
+    const list = await r.json();
+    document.getElementById('memCount').textContent = list.length;
+    if(!list.length){ el.innerHTML='<div class="empty">Aucun membre.</div>'; return; }
+    const d = ts => ts ? new Date(ts).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '—';
+    el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:var(--gold)">'
+      + '<th style="padding:8px 6px">Email</th><th>Tier</th><th>Inscrit</th><th>Dernier accès</th><th>Marcel/mois</th></tr>'
+      + list.map(m=>`<tr style="border-top:1px solid var(--line)">
+          <td style="padding:8px 6px">${esc(m.prenom?m.prenom+' · ':'')}${esc(m.email)}</td>
+          <td><span class="pill">${esc(m.tier||'free')}</span></td>
+          <td>${d(m.created_at)}</td><td>${d(m.last_login_at)}</td>
+          <td>${m.marcel_month||0}</td></tr>`).join('')
+      + '</table>';
+  }catch(_){ el.innerHTML='<div class="msg err">Liste indisponible.</div>'; }
+}
+
+async function loadFeedback(){
+  const el = document.getElementById('feedback');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/feedback`, { headers: hdr() });
+    const list = await r.json();
+    if(!list.length){ el.innerHTML='<div class="empty">Aucun retour pour l\'instant.</div>'; return; }
+    el.innerHTML = list.map(f=>{
+      let p={}; try{ p=JSON.parse(f.payload_json||'{}'); }catch(_){}
+      const d = new Date(f.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+      return `<div style="border-top:1px solid var(--line);padding:10px 0;font-size:13px">
+        <b>${esc(p.priorite||'')}</b> ${esc(p.categories||'')} <span style="color:var(--mute);float:right">${d}</span>
+        <div style="color:var(--mute);font-size:12px">${esc(p.email||'anonyme')} · ${esc(p.page||'')}</div></div>`;
+    }).join('');
+  }catch(_){ el.innerHTML='<div class="empty">Retours envoyés par email (historique structuré dès activation D1).</div>'; }
 }
 
 async function genCode(){
