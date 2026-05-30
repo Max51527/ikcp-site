@@ -99,6 +99,18 @@ button:disabled{opacity:.5;cursor:wait}
     <div style="margin-top:8px"><button class="ghost" onclick="loadApps()">↻ Rafraîchir</button></div>
   </div>
 
+  <!-- Mode test : définir le tier d'un membre -->
+  <div class="card">
+    <h2>🧪 Espace test — définir un tier</h2>
+    <div class="sub" style="margin:-8px 0 14px">Pour vivre l'expérience « comme un client » : connecte-toi (lien magique), puis passe ton email en Family Office ici, et rafraîchis l'espace membre.</div>
+    <div class="row">
+      <div><label>Email du membre</label><input type="email" id="stEmail" placeholder="maxime@ikcp.fr"></div>
+      <div><label>Tier</label><select id="stTier"><option value="fo">Family Office (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
+    </div>
+    <div style="margin-top:14px"><button onclick="setTier()">Appliquer le tier →</button></div>
+    <div id="stMsg"></div>
+  </div>
+
   <!-- Membres -->
   <div class="card">
     <h2>Membres <span class="pill" id="memCount">…</span> <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadMembers()">↻</button></h2>
@@ -164,6 +176,18 @@ async function loadStats(){
       + stat(eur(s.marge_estimee), 'Marge', 'estimée/mois')
       + stat(s.by_tier.fo, 'Family Office', 'sur devis');
   }catch(_){ el.innerHTML='<div class="msg err" style="grid-column:1/-1">Stats indisponibles.</div>'; }
+}
+
+async function setTier(){
+  const email = document.getElementById('stEmail').value.trim();
+  const tier = document.getElementById('stTier').value;
+  const msg = document.getElementById('stMsg');
+  if(!email){ msg.className='msg err'; msg.textContent='Email requis.'; return; }
+  const r = await fetch(`${API}/api/v1/admin/set-tier`, { method:'POST', headers: hdr(), body: JSON.stringify({ email, tier }) });
+  const d = await r.json().catch(()=>({}));
+  if(!r.ok){ msg.className='msg err'; msg.textContent = d.error==='membre_introuvable' ? 'Membre introuvable — il doit s\'être connecté au moins une fois.' : ('Erreur '+r.status); return; }
+  msg.className='msg ok'; msg.textContent = `✓ ${email} est maintenant ${tier.toUpperCase()}. Rafraîchis l'espace membre.`;
+  loadMembers(); loadStats();
 }
 
 async function loadMembers(){

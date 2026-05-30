@@ -30,16 +30,39 @@ const ENDPOINTS = {
   client:      'https://ikcp-client.maxime-ead.workers.dev',
 };
 
+// ─── Session par JETON (robuste cross-domaine, contourne cookies tiers) ──
+// Au retour du lien magique, le worker redirige vers .../dashboard.html#s=<token>.
+// On capte le token du fragment, on le stocke, et on le retire de l'URL.
+const TOKEN_KEY = 'ikcp_token';
+(function captureToken() {
+  try {
+    if (typeof location === 'undefined') return;
+    const m = (location.hash || '').match(/[#&]s=([^&]+)/);
+    if (m) {
+      localStorage.setItem(TOKEN_KEY, decodeURIComponent(m[1]));
+      // retire le token de l'URL (sans recharger)
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  } catch (_) {}
+})();
+function getToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (_) { return ''; } }
+function clearToken() { try { localStorage.removeItem(TOKEN_KEY); } catch (_) {} }
+
 // ─── Helper fetch JSON avec timeout 45 s ────────────────────────
 async function jsonFetch(url, options = {}) {
   const ctrl = new AbortController();
   const tid = setTimeout(() => ctrl.abort(), options.timeout || 45000);
+  const tok = getToken();
   try {
     const r = await fetch(url, {
-      credentials: 'include', // session cookie *.ikcp.eu
+      credentials: 'include', // cookie de secours (si api.ikcp.eu un jour)
       ...options,
       signal: ctrl.signal,
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(tok ? { 'Authorization': 'Bearer ' + tok } : {}),
+        ...(options.headers || {}),
+      },
     });
     if (!r.ok) {
       const txt = await r.text().catch(() => '');
@@ -118,7 +141,8 @@ export const Marcel = {
       });
     },
     async logout() {
-      await jsonFetch(`${ENDPOINTS.client}/auth/logout`, { method: 'GET' });
+      try { await jsonFetch(`${ENDPOINTS.client}/auth/logout`, { method: 'GET' }); } catch (_) {}
+      clearToken();
       location.href = '/app/index.html';
     },
     async me() {

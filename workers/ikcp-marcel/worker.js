@@ -99,8 +99,13 @@ async function collectorFetch(env, path, method = 'GET', body = null) {
 
 async function fetchUserContextFromClient(request) {
   try {
+    // Transmet le cookie ET le jeton (Authorization) reçus du navigateur,
+    // pour identifier le membre quelle que soit la méthode de session.
     const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', {
-      headers: { Cookie: request.headers.get('Cookie') || '' },
+      headers: {
+        Cookie: request.headers.get('Cookie') || '',
+        Authorization: request.headers.get('Authorization') || '',
+      },
     });
     if (!r.ok) return null;
     const me = await r.json();
@@ -770,7 +775,8 @@ function corsHeaders(request) {
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age': '86400',
     'Vary': 'Origin',
   };
@@ -903,7 +909,8 @@ export default {
       let memberTier = null;   // null = visiteur non connecté
       let memberId = null;
       const cookieHeader = request.headers.get('Cookie') || '';
-      if (cookieHeader.includes('ikcp_session')) {
+      const authHeader = request.headers.get('Authorization') || '';
+      if (cookieHeader.includes('ikcp_session') || authHeader.startsWith('Bearer ')) {
         try {
           const userInfo = await fetchUserContextFromClient(request);
           if (userInfo) {
@@ -924,7 +931,7 @@ export default {
       if (memberTier) {
         try {
           const qr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/usage/marcel', {
-            method: 'POST', headers: { Cookie: cookieHeader },
+            method: 'POST', headers: { Cookie: cookieHeader, Authorization: authHeader },
           });
           if (qr.ok) {
             const q = await qr.json();

@@ -213,9 +213,15 @@ async function handleAuthVerify(request, env) {
   // renvoyé sur les fetch cross-site, d'où la boucle de login. None+Secure
   // permet l'envoi cross-site (durcissement api.ikcp.eu prévu ensuite).
   const cookieValue = `${COOKIE_NAME}=${sessionToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${SESSION_TTL_DAYS * 86400}`;
+  // On passe AUSSI le token dans le fragment d'URL (#s=...) : le fragment
+  // n'est jamais envoyé au serveur, et le front le récupère puis le retire
+  // de l'URL immédiatement → session par jeton, robuste cross-domaine.
   return new Response(null, {
     status: 302,
-    headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html`, 'Set-Cookie': cookieValue },
+    headers: {
+      'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html#s=${sessionToken}`,
+      'Set-Cookie': cookieValue,
+    },
   });
 }
 
@@ -228,10 +234,19 @@ async function handleLogout(session, env) {
 }
 
 async function requireSession(request, env) {
-  const cookie = request.headers.get('Cookie') || '';
-  const m = cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
-  if (!m) return null;
-  const tokenHash = await sha256(m[1]);
+  // Session par JETON (contourne le blocage des cookies tiers cross-domaine) :
+  // on accepte le token soit dans l'en-tête Authorization: Bearer, soit dans
+  // le cookie ikcp_session. Le front (api.js) envoie le Bearer en priorité.
+  let token = null;
+  const auth = request.headers.get('Authorization') || '';
+  if (auth.startsWith('Bearer ')) token = auth.slice(7).trim();
+  if (!token) {
+    const cookie = request.headers.get('Cookie') || '';
+    const m = cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
+    if (m) token = m[1];
+  }
+  if (!token) return null;
+  const tokenHash = await sha256(token);
   const row = await env.D1.prepare(
     'SELECT s.token_hash, s.user_id, s.expires_at, s.revoked_at, u.email, u.tier ' +
     'FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?'
@@ -969,6 +984,18 @@ async function handleAdmin(request, env, path, method) {
       ).bind(month).all();
       return json(rows.results || []);
     } catch (e) { return json({ error: 'members_failed', detail: e.message }, 500); }
+  }
+  // Définir le tier d'un membre (test / gestion manuelle)
+  if (path === '/api/v1/admin/set-tier' && method === 'POST') {
+    const b = await request.json().catch(() => ({}));
+    const email = (b.email || '').toString().trim().toLowerCase();
+    const tier = ['free', 'premium', 'fo'].includes(b.tier) ? b.tier : null;
+    if (!email || !tier) return json({ error: 'email_et_tier_requis' }, 400);
+    const u = await env.D1.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
+    if (!u) return json({ error: 'membre_introuvable', hint: 'Le membre doit s\'être connecté au moins une fois.' }, 404);
+    await env.D1.prepare('UPDATE users SET tier = ? WHERE id = ?').bind(tier, u.id).run();
+    await emitEvent(env, u.id, 'tier_set_admin', { email, tier }).catch(() => {});
+    return json({ ok: true, email, tier });
   }
   // Retours bêta récents (events)
   if (path === '/api/v1/admin/feedback' && method === 'GET') {
