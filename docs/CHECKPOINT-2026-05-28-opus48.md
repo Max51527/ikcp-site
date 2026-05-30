@@ -58,4 +58,26 @@ Le login **reboucle** (confirmé Maxime) : cookie posé sur `…workers.dev`, si
 
 ---
 
+## ✅ AJOUTS (suite session Opus 4.8)
+- **Login par jeton** (commit b1788f8) : `requireSession` accepte `Authorization: Bearer` ; verify renvoie `#s=<token>` ; api.js capte/stocke/envoie le jeton ; Marcel transmet l'auth. → **contourne le cookie tiers, plus de reboucle, ~30j**. CORS +Authorization (client + chat). *Vérifié : rejets 401/403 OK ; succès = nécessite 1 clic email (test Maxime).*
+- **Espace test client** : endpoint admin `/set-tier` + carte 🧪 dans admin → Maxime se passe en FO pour tester l'expérience client.
+- **Tour de contrôle** (admin) : santé système live (10 services), accès rapides (CMS/site/app/Cloudflare/GitHub), état automatisations. = la page « tout gérer ».
+- **Cron veille nocturne** (ikcp-veille, commit 52d77aa) : `scheduled()` 6h UTC → digest patrimonial Perplexity → KV 36h + GET `/digest` ; veille.html affiche « Veille du jour ». Comble le gap automatisation.
+- **Feedback email**, **module Investir**, **protection 84 pages**, **reveal.js (mouvement)**, **icônes partage**, **aperçu.html**, **expertise Marcel**, **freemium quota serveur** — tous live.
+
+## 🔎 AUDIT IA/AUTO/API (28/05)
+- **IA** : Marcel/Codex/Hermès/Lifestyle/Veille 🟢 ; Bâtisseur 🔴 clé ; Voice 🟡 TTS off.
+- **Automatisations** : Collector (6h) + Veille nocturne (6h, nouvelle). SEO = poste Maxime.
+- **API actives souveraines** : Pappers, INSEE, Resend (FR) + Anthropic/Perplexity (DPA). Stripe prêt (clé). Legacy à nettoyer : ikcp-api/prospect (Notion/PISTE), Universign (pausé), Brevo (contourné).
+
+## 🎛️ GESTION = 4 couches (pas un nouveau site)
+Cockpit `/app/admin` (business) · Sveltia `/admin` (contenu) · Cloudflare (infra) · Claude+GitHub (code). La **Tour de contrôle** dans /app/admin les réunit.
+
+## ⏳ RESTE (Maxime)
+1. **Test login** (clic email → reste sur dashboard ?) — débloque l'espace membre.
+2. **Clé Bâtisseur** (→ 11ᵉ agent). 3. **Stripe** (compte+secrets, quand monétisation). 4. **Charges mensuelles** (→ seuil rentabilité).
+Backlog : espace membre sur-mesure (après login OK), OCR avis d'imposition, interface FO à photos en réel, mémoire Marcel.
+
+---
+
 © 2026 IKCP · ORIAS 23001568 · checkpoint session Opus 4.8
