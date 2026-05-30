@@ -237,6 +237,35 @@ export default {
       }
     }
 
+    // ─── /digest : veille patrimoniale du jour (générée par le cron) ──
+    if (url.pathname === '/digest' && request.method === 'GET') {
+      const cached = await env.VEILLE_CACHE.get('daily_digest');
+      if (cached) return new Response(cached, { headers: { ...corsHeaders(origin), 'Content-Type': 'application/json' } });
+      return json({ digest: null, note: 'Digest pas encore généré (cron quotidien 6h UTC).' }, 200, origin);
+    }
+
     return json({ error: 'not_found', path: url.pathname }, 404, origin);
+  },
+
+  // ─── CRON quotidien (06:00 UTC) — veille patrimoniale du jour ──
+  // Génère un digest général via Perplexity (1 appel quick ≈ coût négligeable)
+  // et le stocke 36 h en KV. Comble le « gap automatisation » : les membres
+  // voient une veille fraîche chaque jour sans appel personnalisé coûteux.
+  async scheduled(event, env, ctx) {
+    if (!env.PERPLEXITY_API_KEY) return;
+    const q = "Quelles sont les principales actualités PATRIMONIALES et FISCALES françaises des dernières 48 heures pour un dirigeant ou une famille fortunée ? (loi de finances, jurisprudence, dispositifs : transmission, IFI, assurance-vie, PER, holding, immobilier). 3 à 5 points concis, sourcés, datés.";
+    try {
+      const res = await callPerplexity(env, q, 'quick');
+      const payload = JSON.stringify({
+        date: new Date(event.scheduledTime).toISOString().slice(0, 10),
+        summary: res.summary,
+        sources: (res.sources || []).slice(0, 6),
+        generated_at: event.scheduledTime,
+      });
+      await env.VEILLE_CACHE.put('daily_digest', payload, { expirationTtl: 129600 }); // 36 h
+      await auditLog(env, 'cron', 'daily_digest', { len: res.summary.length });
+    } catch (e) {
+      await auditLog(env, 'cron', 'daily_digest_error', { error: String(e).slice(0, 200) });
+    }
   },
 };

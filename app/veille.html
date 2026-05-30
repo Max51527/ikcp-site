@@ -181,6 +181,26 @@ if(me){
   }
 }
 
+// ── Veille du jour IKCP (digest généré par le cron quotidien) ─────
+(async () => {
+  try {
+    const r = await fetch('https://ikcp-veille.maxime-ead.workers.dev/digest', { cache:'no-store' });
+    const d = await r.json();
+    if (d && d.summary) {
+      const wrap = document.createElement('div');
+      wrap.className = 'veille-result';
+      wrap.style.cssText = 'margin-bottom:22px';
+      const dd = d.date ? new Date(d.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}) : '';
+      wrap.innerHTML = `<h3>📰 Veille patrimoniale du jour <span style="font-weight:400;color:var(--mute);font-size:12px">· ${dd}</span></h3>`
+        + `<div>${markdownToHtml(d.summary)}</div>`
+        + `<div class="disclaimer">Information générale, pas un conseil personnalisé (art. L.541-1 CoMoFi).</div>`;
+      const main = document.querySelector('main.app-main');
+      const anchor = document.querySelector('.section-label');
+      if (main && anchor) main.insertBefore(wrap, anchor.nextSibling); else if (main) main.prepend(wrap);
+    }
+  } catch (_) { /* digest non bloquant */ }
+})();
+
 // ── Alertes nocturnes ────────────────────────────────────────────
 const list = document.getElementById('alerts-list');
 try {

@@ -44,6 +44,11 @@ button:disabled{opacity:.5;cursor:wait}
 .gate{max-width:420px}
 .foot{margin-top:30px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px}
 .foot a{color:var(--mute)}
+.lnk{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:rgba(250,247,240,.06);border:1px solid var(--line);border-radius:9px;color:var(--cream);text-decoration:none;font-size:13px;font-weight:500;transition:all .2s}
+.lnk:hover{border-color:var(--gold);background:rgba(201,169,110,.1)}
+.hpill{display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:9px;font-size:12.5px}
+.hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#888}
+.hdot.up{background:#4ade80}.hdot.down{background:#e06161}.hdot.warn{background:var(--gold-bright)}
 </style>
 </head>
 <body>
@@ -62,6 +67,25 @@ button:disabled{opacity:.5;cursor:wait}
 
 <!-- Console (cachée tant que non déverrouillé) -->
 <div id="console" style="display:none">
+
+  <!-- TOUR DE CONTRÔLE : santé système + accès rapides -->
+  <div class="card">
+    <h2>🗼 Tour de contrôle <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadHealth()">↻ Santé</button></h2>
+    <div id="health" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px">
+      <div class="empty" style="grid-column:1/-1">Vérification des services…</div>
+    </div>
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:6px 0 8px">Accès rapides</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="/admin/" target="_blank" class="lnk">✏️ CMS contenu</a>
+      <a href="/" target="_blank" class="lnk">🌐 Site public</a>
+      <a href="/app/dashboard.html" target="_blank" class="lnk">👤 Espace membre</a>
+      <a href="/apercu.html" target="_blank" class="lnk">🗂️ Aperçu complet</a>
+      <a href="https://dash.cloudflare.com" target="_blank" class="lnk">☁️ Cloudflare (infra)</a>
+      <a href="https://github.com/Max51527/ikcp-site" target="_blank" class="lnk">💻 Code (GitHub)</a>
+    </div>
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Automatisations</div>
+    <div id="autos" style="font-size:13px;color:var(--mute);line-height:1.7"></div>
+  </div>
 
   <!-- Cockpit : statistiques -->
   <div class="card">
@@ -152,7 +176,42 @@ async function unlock(){
   document.getElementById('console').style.display='block';
   const data = await r.json();
   renderApps(data);
-  loadStats(); loadMembers(); loadFeedback();
+  loadStats(); loadMembers(); loadFeedback(); loadHealth();
+}
+
+async function loadHealth(){
+  const el = document.getElementById('health');
+  const services = [
+    {n:'Marcel',u:'https://ikcp-chat.maxime-ead.workers.dev/health'},
+    {n:'Codex',u:'https://ikcp-codex.maxime-ead.workers.dev/health'},
+    {n:'Hermès',u:'https://ikcp-hermes.maxime-ead.workers.dev/health'},
+    {n:'Bâtisseur',u:'https://ikcp-batisseur.maxime-ead.workers.dev/health'},
+    {n:'Lifestyle',u:'https://ikcp-lifestyle.maxime-ead.workers.dev/health'},
+    {n:'Veille',u:'https://ikcp-veille.maxime-ead.workers.dev/health'},
+    {n:'Voice',u:'https://ikcp-voice.maxime-ead.workers.dev/health'},
+    {n:'Pappers',u:'https://ikcp-pappers.maxime-ead.workers.dev/health'},
+    {n:'Auth/Client',u:'https://ikcp-client.maxime-ead.workers.dev/health'},
+    {n:'Témoin',u:'https://ikcp-temoin.maxime-ead.workers.dev/health'},
+  ];
+  el.innerHTML = services.map((s,i)=>`<div class="hpill" id="h${i}"><span class="hdot"></span>${s.n}</div>`).join('');
+  services.forEach(async (s,i)=>{
+    const pill = document.getElementById('h'+i); const dot = pill.querySelector('.hdot');
+    try{
+      const r = await fetch(s.u, {cache:'no-store'}); const d = await r.json().catch(()=>({}));
+      let cls='up', note='';
+      const cfg = d.configured||{};
+      if(cfg.api_key===false){ cls='down'; note=' · clé manquante'; }
+      else if(s.n==='Voice' && d.tts && d.tts.configured===false){ cls='warn'; note=' · TTS off'; }
+      dot.className='hdot '+(r.ok?cls:'down');
+      pill.innerHTML = `<span class="hdot ${r.ok?cls:'down'}"></span>${s.n}<span style="color:var(--mute);font-size:11px">${note}</span>`;
+    }catch(_){ pill.innerHTML = `<span class="hdot down"></span>${s.n}<span style="color:var(--mute);font-size:11px"> · injoignable</span>`; }
+  });
+  // Automatisations
+  const autos = document.getElementById('autos');
+  if(autos) autos.innerHTML =
+    '🟢 <b style="color:var(--cream)">Collector</b> — scan marchés collection · tous les jours 6h<br>'
+    + '🟢 <b style="color:var(--cream)">Veille nocturne</b> — digest patrimonial quotidien · 7h<br>'
+    + '⚪ <b style="color:var(--cream)">SEO</b> — sur le poste de Maxime (hors plateforme)';
 }
 
 function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }

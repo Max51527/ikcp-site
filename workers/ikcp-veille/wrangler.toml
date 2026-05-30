@@ -8,6 +8,10 @@ keep_vars = true
 [placement]
 mode = "smart"
 
+# ─── Automatisation : veille patrimoniale quotidienne (06:00 UTC) ─
+[triggers]
+crons = ["0 6 * * *"]
+
 # ─── KV — rate limit + cache 24 h des recherches ────────────────
 [[kv_namespaces]]
 binding = "VEILLE_CACHE"
