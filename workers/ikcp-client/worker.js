@@ -133,13 +133,10 @@ async function handleAuthSend(request, env) {
   const { email } = await request.json().catch(() => ({}));
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: 'invalid_email' }, 400);
 
-  const isE2E = email.toLowerCase() === 'e2e-test@ikcp.eu'; // [E2E-TEST] exempté du rate-limit
   const rlKey = `rl:magic:${email.toLowerCase()}`;
-  if (!isE2E) {
-    const count = parseInt((await env.CLIENT_KV.get(rlKey)) || '0');
-    if (count >= 3) return json({ error: 'rate_limited', retry_after_minutes: 60 }, 429);
-    await env.CLIENT_KV.put(rlKey, String(count + 1), { expirationTtl: 3600 });
-  }
+  const count = parseInt((await env.CLIENT_KV.get(rlKey)) || '0');
+  if (count >= 3) return json({ error: 'rate_limited', retry_after_minutes: 60 }, 429);
+  await env.CLIENT_KV.put(rlKey, String(count + 1), { expirationTtl: 3600 });
 
   const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
   const tokenHash = await sha256(token);
@@ -151,11 +148,6 @@ async function handleAuthSend(request, env) {
   ).bind(tokenHash, email.toLowerCase(), now, expiresAt, request.headers.get('CF-Connecting-IP') || '').run();
 
   const verifyUrl = `${env.APP_URL}/auth/verify?token=${token}`;
-  // [E2E-TEST TEMPORAIRE] compte de test technique : renvoie le lien sans email.
-  // Gated sur un email factice unique — à retirer après validation du parcours.
-  if (email.toLowerCase() === 'e2e-test@ikcp.eu') {
-    return json({ ok: true, e2e: true, dev_verify_url: verifyUrl });
-  }
   const emailSent = await sendEmail(env, { to: email, subject: 'Votre lien de connexion · IKCP', html: emailTemplateMagic(verifyUrl) });
 
   // MODE SANS RESEND : log le lien en console (visible wrangler tail ou dashboard CF)
