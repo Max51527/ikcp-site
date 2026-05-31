@@ -65,23 +65,25 @@ Ainsi ancré, **même 50-150 €/mois passe pour une affaire** tout en restant p
 
 ## 4️⃣ Grille tarifaire proposée (post-bêta)
 
+> **Décision 2026 : Premium DISRUPTIF.** Marcel (Sonnet) coûte ~5 €/client/mois → on peut casser les prix du conseil patrimonial et ouvrir à un MAX de dirigeants. Premium = volume + accessibilité. Le FO (Cassius) = premium d'élite, où se fait la marge en valeur.
+
 | Tier | Prix | Coût IA | Marge brute | Cible |
 |---|---|---|---|---|
 | **Découverte** | 0 € | 0 € | — (acquisition) | Prospects, aimant à leads |
-| **Premium** | **49-79 €/mois** | ~5 € | **~90-94 %** | Dirigeants, autonomes, veille + Marcel |
-| **Family Office** | **sur recommandation** (indicatif 290-490 €/mois ou forfait annuel) | ~30 € | **~90 %+** | 1-30 M€, accompagnement complet 11 agents |
+| **Premium** | **29 €/mois** (disruptif) | ~5 € | **~80 %** | Dirigeants en nombre — Marcel illimité + veille + outils |
+| **Family Office** | **sur recommandation** (forfait mensuel élevé, indicatif 290-490 €/mois) | ~30 € (Cassius/Opus) | **~90 %+** | Cercle restreint — Cassius white-glove + conciergerie + humain |
 
-### Scénarios Premium (marge à l'unité)
-| Prix Premium | Coût IA | Marge €/client | Marge % |
-|---|---|---|---|
-| 39 € | 5 € | 34 € | 87 % |
-| **59 €** (reco) | 5 € | **54 €** | **92 %** |
-| 79 € | 5 € | 74 € | 94 % |
+### Scénarios Premium (marge à l'unité, coût IA ~5 € + Stripe ~0,7 €)
+| Prix Premium | Marge €/client | Marge % |
+|---|---|---|
+| **29 €** (reco — disruptif, volume) | **~23 €** | **~80 %** |
+| 39 € | ~33 € | ~85 % |
+| 19 € (agressif) | ~13 € | ~70 % |
 
-**Reco : Premium à 59 €/mois** (ou ~590 €/an avec 2 mois offerts) — accessible, marge confortable, signal premium préservé. FO **sans prix public** (« sur recommandation », forfait négocié) → préserve le positionnement sur-mesure + couvre les usages intensifs.
+**Reco : Premium à 29 €/mois** (ou ~290 €/an avec 2 mois offerts) — assez bas pour **ouvrir à de nombreux dirigeants** (disruptif vs un CGP classique), marge encore ~80 %. La stratégie : **Premium = acquisition de masse ; FO (Cassius) = marge en valeur**. FO **sans prix public** (sur recommandation, forfait négocié) → couvre Cassius/Opus + conciergerie + temps humain Maxime + marge.
 
 ### Frais Stripe (à intégrer)
-~1,5 % + 0,25 € par transaction EU → sur 59 € = ~1,15 €. Marge nette Premium ≈ **53 €/client**.
+~1,5 % + 0,25 € par transaction EU → sur 29 € = ~0,70 €. Marge nette Premium ≈ **23 €/client**.
 
 ---
 
