@@ -87,7 +87,23 @@ Backlog : espace membre sur-mesure (après login OK), OCR avis d'imposition, int
 - **SCORE PATRIMONIAL** (`score.html`) — lead magnet addictif : diagnostic 360° 7 territoires → jauge animée 0-100 + sous-scores + 3 leviers prioritaires → chaque levier ouvre Marcel (`family-office?q=`). Partage viral + en hero + dans aperçu. MIF II (diagnostic, pas conseil). Commits ab9fb2e / e41afc0 / 2e184b1.
 - **CLAUDE.md** remis à l'état réel (commit 8ef8b03).
 
+## 🧰 OUTILS ADDICTIFS LIVE (lead magnets, éducatifs, branchés Marcel)
+- `/score.html` — Score Patrimonial 360° (7 territoires) + évolution.
+- `/transmission.html` — transmission intergénérationnelle (droits sans/avec anticipation, barèmes 2026).
+- `/remuneration.html` — salaire vs dividendes selon forme sociale (SAS/TNS).
+- `/epargne-salariale.html` — PEE+PER+abondement, sortie quasi-franchise dirigeant.
+- `/investir.html` — styles d'investissement + quiz + simulateur.
+Tous : MIF II (info, pas conseil), `?q=` → ouvre Marcel, dans `/apercu.html`.
+
+## 🗼 PASSERELLE WEBMASTER (pilotage sans tout coder)
+- `/webmaster.html` — console : flux Brouillon→Prévisualiser→Publier + lancements (CMS, staging, prod, cockpit, GitHub publish, Cloudflare).
+- Branche **`staging`** → preview Cloudflare `staging.ikcp-eu.pages.dev` (vérifier preview deployments activés dans CF Pages).
+- Publier = merge `staging`→`main` (2 clics GitHub). Doc : `docs/WORKFLOW-WEBMASTER.md`.
+- Règle Claude : push `main` par défaut ; « sur staging » → push branche `staging`.
+
 ## 🔜 ROADMAP ADDICTIVE (à poursuivre)
+- **Conciergerie réelle** : Cal.com (RDV Maxime, gratuit/souverain) → Booking/TheFork.
+- **Veille API utile** : DVF (prix immo par adresse, gratuit 🇫🇷) = le plus « waouh ».
 - **Score persistant connecté** : sauvegarder le score du membre + suivi dans le temps (progression = rétention).
 - **Chantiers patrimoniaux** : checklist de complétion (% par territoire) dans le dashboard → biais de complétion.
 - **Push PWA** (sw.js prêt) : re-engagement (veille du jour, alertes).
