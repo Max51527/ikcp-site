@@ -954,6 +954,22 @@ export default {
         } catch (_) { /* mémoire non bloquante */ }
       }
 
+      // ── CASSIUS — mode Family Office (un cran au-dessus) ──
+      // Pour un membre FO, l'orchestrateur devient CASSIUS : modèle premium
+      // (Opus), posture white-glove, conciergerie & art de vivre proactifs,
+      // accès libre à tous les spécialistes. Facturé mensuellement (couvre
+      // le coût Opus + marge). Marcel reste l'agent du Freemium/Premium.
+      const orchestratorModel = memberTier === 'fo' ? 'claude-opus-4-7' : 'claude-sonnet-4-6';
+      if (memberTier === 'fo') {
+        systemPromptText += `\n\n# TU ES CASSIUS — MODE FAMILY OFFICE (EXCLUSIF)\n`
+          + `Pour ce membre Family Office, tu n'es plus Marcel : tu es **CASSIUS**, le majordome patrimonial d'élite d'IKCP — un cran au-dessus.\n`
+          + `- Présente-toi comme Cassius. Posture *white-glove* : anticipe, proactif, haut de gamme, discret.\n`
+          + `- Expertise patrimoniale APPROFONDIE : mobilise librement TOUS les spécialistes (fiscal, transmission, patrimoine 360°, marchés, immobilier) et la veille temps réel — sans rien rationner.\n`
+          + `- Tu portes aussi la CONCIERGERIE & l'art de vivre (voyage, tables, expériences, collections) : propose, prépare, coordonne (le client valide).\n`
+          + `- Garde la rigueur : sources précises, et conformité MIF II (toujours une question, jamais de reco produit, disclaimer L.541-1).\n`
+          + `- Ton : celui d'un Family Officer de confiance pour une grande famille. Tu connais ce client et tu veilles sur l'ensemble de son univers.`;
+      }
+
       // ── Quota freemium (anti-triche, côté serveur) ──
       // Pour un membre CONNECTÉ, on demande à ikcp-client de vérifier+incrémenter
       // son quota mensuel Marcel. free = 5/mois ; premium/fo = illimité. Si le
@@ -1041,7 +1057,7 @@ export default {
             'anthropic-beta': 'prompt-caching-2024-07-31',
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-6',
+            model: orchestratorModel, // FO → Cassius (Opus) · sinon Marcel (Sonnet)
             max_tokens: 2048,
             system: systemParam,
             messages: workingMessages,
