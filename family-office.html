@@ -1425,6 +1425,11 @@ function openUnivModal(univKey){
       <p class="modal-sources">${data.sources}</p>
     </div>
 
+    <div class="modal-section" id="testerZone">
+      <button class="modal-cta-btn" style="width:100%;background:var(--gold);color:var(--navy-deep);" onclick="testerUnivers('${univKey}')">✨ Tester cet univers — 1 essai offert →</button>
+      <p style="font-size:11.5px;color:var(--ink-mute);text-align:center;margin-top:7px;font-style:italic">Posez une vraie question à l'intelligence souveraine, sans inscription.</p>
+    </div>
+
     ${data.access === 'premium' ? `
       <div class="modal-cta">
         <p>Cet univers est <strong>débloqué en formule Premium</strong> (6 mois offerts en phase Bêta).</p>
@@ -1448,6 +1453,45 @@ function closeUnivModal(){
   modal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
 }
+
+// « Tester 1 fois » — ouvre Marcel avec une vraie question de l'univers.
+// 1 essai offert au prospect (compteur local) puis invitation à créer un accès.
+function testerUnivers(univKey){
+  const data = UNIVERS_DATA[univKey];
+  if (!data) return;
+  const used = parseInt(localStorage.getItem('ikcp_univ_test') || '0', 10) || 0;
+  closeUnivModal();
+  if (used >= 1) {
+    // essai déjà consommé → susciter la conversion
+    var q = "J'ai déjà testé un univers et je veux aller plus loin sur « " + data.name + " ». Comment accéder à l'ensemble des univers et à l'expertise approfondie ?";
+    openMarcelWith(q);
+    setTimeout(function(){
+      var p = document.getElementById('ikcp-chat-panel');
+      if (p) {
+        var note = document.createElement('div');
+        note.style.cssText = 'margin:10px 16px;padding:12px 14px;background:#1B2A4A;color:#FAF7F0;border-radius:10px;font-size:13px;line-height:1.5';
+        note.innerHTML = '🔓 <b>Vous avez utilisé votre essai gratuit.</b><br>Créez votre accès pour explorer les 12 univers en illimité. <a href="#beta" style="color:#E2C896;font-weight:600" onclick="window._ikcpToggle&&window._ikcpToggle()">Demander un accès →</a>';
+        var msgs = p.querySelector('.ikcp-chat-messages') || p;
+        msgs.appendChild(note);
+      }
+    }, 900);
+    return;
+  }
+  localStorage.setItem('ikcp_univ_test', String(used + 1));
+  var question = (data.examples && data.examples[0]) ? data.examples[0].replace(/^[«»\s"]+|[«»\s"]+$/g,'') : ('Présentez l\'univers ' + data.name + ' et comment il m\'aiderait.');
+  openMarcelWith(question);
+}
+function openMarcelWith(q){
+  if (window._ikcpToggle && window._ikcpAskFollow) {
+    var panel = document.getElementById('ikcp-chat-panel');
+    if (panel && !panel.classList.contains('open')) window._ikcpToggle();
+    setTimeout(function(){ window._ikcpAskFollow(q); }, 300);
+  } else {
+    var b = document.getElementById('ikcp-chat-btn'); if (b) b.click();
+    setTimeout(function(){ if (window._ikcpAskFollow) window._ikcpAskFollow(q); }, 700);
+  }
+}
+window.testerUnivers = testerUnivers;
 
 // Brancher le clic sur tous les univers
 document.querySelectorAll('.orbit-univ').forEach(btn => {
@@ -1665,16 +1709,16 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUnivMod
   <div class="univ-grid">
     <div class="univ-card live-card"><div class="univ-ico">💼</div><div class="univ-name">Patrimoine</div><div class="univ-tagline">Cartographie SIREN auto · données RNE officielles</div><span class="univ-status live">✓ LIVE</span></div>
     <div class="univ-card live-card"><div class="univ-ico">🏛</div><div class="univ-name">Fiscalité</div><div class="univ-tagline">IR · IFI · arbitrages · Codex · expertise fiscale</div><span class="univ-status live">✓ LIVE</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">🌱</div><div class="univ-name">Transmission</div><div class="univ-tagline">Dutreil · donation · succession (calculs OK, agent Hermès Sprint 4)</div><span class="univ-status sprint2">⏳ Sprint 4</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">🤲</div><div class="univ-name">Philanthropie</div><div class="univ-tagline">Don défiscalisé IR/IFI · agent Mécène à venir</div><span class="univ-status sprint2">⏳ Sprint 4</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">🏠</div><div class="univ-name">Immobilier</div><div class="univ-tagline">DVF live · prix m² · agent Architecte</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🌱</div><div class="univ-name">Transmission</div><div class="univ-tagline">Dutreil · donation · succession · agent Hermès</div><span class="univ-status live">✓ Agent IA actif</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🤲</div><div class="univ-name">Philanthropie</div><div class="univ-tagline">Don défiscalisé IR/IFI · agent Mécène</div><span class="univ-status live">✓ Agent IA actif</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🏠</div><div class="univ-name">Immobilier</div><div class="univ-tagline">SCI · plus-value · agent Architecte (data DVF à venir)</div><span class="univ-status live">✓ Agent IA actif</span></div>
     <div class="univ-card locked-card"><div class="univ-ico">📊</div><div class="univ-name">Reporting</div><div class="univ-tagline">Synthèse trimestrielle PDF · agent Olympe</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
     <div class="univ-card locked-card"><div class="univ-ico">📋</div><div class="univ-name">Administration</div><div class="univ-tagline">Échéances · courriers · signature eIDAS (Universign)</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-tagline">6 modules pour vos enfants · agent Pédagogue</div><span class="univ-status sprint2">⏳ Sprint 2</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">📈</div><div class="univ-name">Marchés</div><div class="univ-tagline">CAC 40 · S&P 500 · allocation drift · agent Stratège</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">💎</div><div class="univ-name">Voyage</div><div class="univ-tagline">Conciergerie premium · Booking + Mr&Mrs Smith</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">🎨</div><div class="univ-name">Art</div><div class="univ-tagline">Côte artistes · Artprice · agent Curateur</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
-    <div class="univ-card locked-card"><div class="univ-ico">🪴</div><div class="univ-name">Private Equity</div><div class="univ-tagline">Deal flow · co-investissement · agent Capital</div><span class="univ-status sprint3">⏳ Sprint 3</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🎓</div><div class="univ-name">Formation NextGen</div><div class="univ-tagline">éducation financière · agent Pédagogue</div><span class="univ-status live">✓ Agent IA actif</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">📈</div><div class="univ-name">Marchés</div><div class="univ-tagline">allocation · diversification · agent Stratège (cours live à venir)</div><span class="univ-status live">✓ Agent IA actif</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">💎</div><div class="univ-name">Voyage</div><div class="univ-tagline">conciergerie · agent Concierge (réservations partenaires à venir)</div><span class="univ-status live">✓ Agent IA actif</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🎨</div><div class="univ-name">Art</div><div class="univ-tagline">collections · assurance · agent Curateur (cote Artprice à venir)</div><span class="univ-status live">✓ Agent IA actif</span></div>
+    <div class="univ-card live-card"><div class="univ-ico">🪴</div><div class="univ-name">Private Equity</div><div class="univ-tagline">actifs alternatifs · co-investissement · agent Capital</div><span class="univ-status live">✓ Agent IA actif</span></div>
   </div>
 
   <!-- Bandeau honnêteté -->
