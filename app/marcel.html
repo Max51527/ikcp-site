@@ -144,7 +144,7 @@ Voice.checkPremiumStatus().then(s => {
   premiumVoiceAvailable = s.ok && (s.stt_voxtral || s.stt_whisper);
   if(premiumVoiceAvailable && (userTier === 'premium' || userTier === 'fo')){
     document.querySelector('.voice-bar')?.insertAdjacentHTML('beforeend',
-      `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium (Voxtral + VoxCPM2)</label>`);
+      `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium</label>`);
     setTimeout(() => {
       const cb = document.getElementById('premiumVoiceMode');
       if(cb){
@@ -176,7 +176,7 @@ window.toggleMic = async function(){
   const prefs = Voice.getPreferences();
   const usePremium = prefs.premiumMode && premiumVoiceAvailable && (userTier === 'premium' || userTier === 'fo');
 
-  // Mode premium (Voxtral/Whisper serveur)
+  // Mode premium (transcription serveur)
   if(usePremium){
     if(Voice.isRecordingPremium()){
       Voice.stopRecordingPremium();
@@ -186,11 +186,11 @@ window.toggleMic = async function(){
     input.placeholder = 'Enregistrement en cours… (10s max recommandé)';
     Voice.startRecordingPremium({
       onStart: () => { micBtn.classList.add('listening'); micBtn.textContent = '⏹'; },
-      onStop: () => { input.placeholder = 'Transcription Voxtral…'; },
+      onStop: () => { input.placeholder = 'Transcription…'; },
       onFinal: (text, meta) => {
         input.value = text;
         micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
-        input.placeholder = `Posez votre question à Marcel… (${meta?.source || 'voxtral'})`;
+        input.placeholder = `Posez votre question à Marcel… `;
         setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
       },
       onError: (err) => {
