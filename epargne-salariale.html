@@ -85,32 +85,36 @@ a{color:var(--gold-deep);text-decoration:none}
 <div class="lev"><span class="ic">🏢</span><div class="bd"><h4>Déductible pour la société</h4><p>Les sommes versées réduisent le résultat imposable à l'IS. Double gain : entreprise + dirigeant.</p></div></div>
 
 <div class="cta-final wrap"><a href="/family-office.html?q=Comment%20mettre%20en%20place%20PEE%20%2B%20PER%20collectif%20%2B%20int%C3%A9ressement%20pour%20optimiser%20ma%20r%C3%A9mun%C3%A9ration%20de%20dirigeant%20%3F">Mettre en place mon dispositif avec Marcel & Codex →</a></div>
-<div class="disc wrap">Estimation pédagogique 2026 (plafonds indexés sur le PASS ~47 100 € : PEE 8% ≈ 3 770 €, PER collectif 16% ≈ 7 540 € par bénéficiaire/an ; forfait social 0% &lt; 50 salariés). Hors conditions de mise en place (accord, règlement), CSG/CRDS, cas particuliers. Ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi). À cadrer avec votre expert-comptable et Maxime (CIF · ORIAS 23001568).</div>
+<div class="disc wrap">Plafonds officiels 2026 (PASS <b>48 060 €</b>, arrêté du 22/12/2025) : abondement PEE max <b>3 844,80 €</b> (8% PASS), PER collectif max <b>7 689,60 €</b> (16% PASS, dont abondement unilatéral ≤ 6 000 €), intéressement/participation jusqu'à <b>36 045 €</b> (75% PASS) ; forfait social 0% &lt; 50 salariés. Hors conditions de mise en place (accord, règlement), CSG/CRDS, cas particuliers. Estimation pédagogique — ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi). À cadrer avec votre expert-comptable et Maxime (CIF · ORIAS 23001568).</div>
 
 <footer class="ft">© 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
   <div style="margin-top:6px"><a href="/remuneration.html">Rémunération</a> · <a href="/score.html">Score</a> · <a href="/transmission.html">Transmission</a></div>
 </footer>
 
 <script>
-var PASS=47100; // plafond annuel sécu sociale 2026 (indicatif)
+var PASS=48060; // PASS 2026 officiel (arrêté 22/12/2025)
 function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
 function compute(){
   var ben=+document.getElementById('ben').value, yr=+document.getElementById('yr').value, tmi=+document.getElementById('tmi').value/100;
   var pee=document.getElementById('pee').checked, per=document.getElementById('per').checked, inte=document.getElementById('inte').checked;
   document.getElementById('vBen').textContent=ben; document.getElementById('vYr').textContent=yr+' ans'; document.getElementById('vTmi').textContent=Math.round(tmi*100)+' %';
-  var peeAb = pee ? PASS*0.08 : 0;            // abondement PEE max
-  var perAb = per ? PASS*0.16 : 0;            // abondement PER collectif max
-  var inteV = inte ? PASS*0.75*0.0 + 6000 : 0; // intéressement placé (estimation prudente ~6 000€)
-  var parBen = peeAb + perAb + inteV;
-  var parAn = parBen * ben;
-  document.getElementById('parAn').textContent=eur(parAn);
-  document.getElementById('brk').innerHTML =
+  // Plafonds officiels 2026 (PASS 48 060 €, arrêté 22/12/2025 · source ERES)
+  var peeAb = pee ? PASS*0.08 : 0;            // abondement PEE max : 3 844,80 €
+  var perAb = per ? PASS*0.16 : 0;            // abondement PER collectif max : 7 689,60 €
+  // Abondement = "argent libre" versé par la société (gain pur, hors charges, hors IR).
+  var abondParBen = peeAb + perAb;
+  var abondAn = abondParBen * ben;
+  document.getElementById('parAn').textContent=eur(abondAn);
+  var rows =
     (pee?'<div class="r"><span>Abondement PEE (8% PASS ×'+ben+')</span><b>'+eur(peeAb*ben)+'</b></div>':'')
-    +(per?'<div class="r"><span>Abondement PER coll. (16% PASS ×'+ben+')</span><b>'+eur(perAb*ben)+'</b></div>':'')
-    +(inte?'<div class="r"><span>Intéressement placé (×'+ben+')</span><b>'+eur(inteV*ben)+'</b></div>':'')
-    +'<div class="r" style="border-top:1px solid rgba(255,255,255,.12);padding-top:8px;margin-top:6px"><span>Impôt + charges évités (~vs salaire)</span><b>'+eur(parAn*(0.45+tmi*0.55))+'</b></div>';
-  document.getElementById('proj').textContent=eur(parAn*yr);
-  document.getElementById('projL').textContent='cumulé sur '+yr+' ans (hors performance du placement)';
+    +(per?'<div class="r"><span>Abondement PER coll. (16% PASS ×'+ben+')</span><b>'+eur(perAb*ben)+'</b></div>':'');
+  if(inte){
+    rows += '<div class="r"><span>+ Intéressement / participation plaçables</span><b>jusqu\'à '+eur(36045)+' / pers.</b></div>';
+  }
+  rows += '<div class="r" style="border-top:1px solid rgba(255,255,255,.12);padding-top:8px;margin-top:6px"><span>Impôt + charges évités sur l\'abondement (~vs salaire)</span><b>'+eur(abondAn*(0.45+tmi*0.55))+'</b></div>';
+  document.getElementById('brk').innerHTML = rows;
+  document.getElementById('proj').textContent=eur(abondAn*yr);
+  document.getElementById('projL').textContent='abondement cumulé sur '+yr+' ans (hors intéressement & performance)';
 }
 ['ben','yr','tmi','pee','per','inte'].forEach(function(id){var e=document.getElementById(id);e.addEventListener('input',compute);e.addEventListener('change',compute);});
 compute();
