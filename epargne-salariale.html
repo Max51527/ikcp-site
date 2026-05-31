@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Créé par IKCP.EU -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Épargne salariale du dirigeant — sortir de sa société en quasi-franchise · IKCP</title>
+<meta name="description" content="PEE + PER collectif + abondement : combien un dirigeant (et son conjoint) peut sortir de sa société chaque année quasi sans charges ni impôt. Estimation 2026. IKCP · ORIAS 23001568.">
+<link rel="canonical" href="https://ikcp.eu/epargne-salariale.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:15px 0}.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:21px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:48px 0 18px}
+.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(26px,4.4vw,42px);line-height:1.1;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:600px;margin:15px auto 0}
+.panel{display:grid;grid-template-columns:1fr 1.1fr;gap:24px;max-width:820px;margin:28px auto 0;align-items:start}
+@media(max-width:760px){.panel{grid-template-columns:1fr}}
+.controls{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}
+.ctrl{margin-bottom:18px}
+.ctrl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-mute);margin-bottom:7px;font-weight:500}
+.ctrl label b{color:var(--navy);font-family:'JetBrains Mono',monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--gold-deep);height:5px}
+.chk{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink);cursor:pointer;padding:8px 0}
+.chk input{width:18px;height:18px;accent-color:var(--gold-deep)}
+.out{background:var(--navy-deep);border-radius:16px;padding:26px;color:var(--cream)}
+.out .big{text-align:center;margin-bottom:16px}
+.out .big .lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(250,250,248,.55);font-weight:600}
+.out .big .v{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(32px,6vw,48px);color:var(--gold-bright);line-height:1.1;margin-top:4px}
+.brk{border-top:1px dashed rgba(255,255,255,.15);padding-top:12px;margin-top:8px}
+.brk .r{display:flex;justify-content:space-between;font-size:13px;margin:6px 0}
+.brk .r b{font-family:'JetBrains Mono',monospace;color:var(--gold-bright)}
+.proj{margin-top:14px;text-align:center;background:rgba(45,122,79,.18);border:1px solid rgba(123,204,162,.3);border-radius:12px;padding:12px}
+.proj .v{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;color:#7BCCA2}
+.proj .l{font-size:12px;color:rgba(250,250,248,.6)}
+.lev{display:flex;gap:13px;align-items:flex-start;background:var(--cream-2);border:1px solid var(--line);border-radius:13px;padding:15px 17px;margin-bottom:11px;max-width:820px;margin-left:auto;margin-right:auto}
+.lev .ic{font-size:22px}.lev .bd{flex:1}.lev .bd h4{font-size:14.5px;font-weight:600;color:var(--navy)}.lev .bd p{font-size:12.5px;color:var(--ink-mute);line-height:1.5;margin-top:2px}
+.sec-t{max-width:820px;margin:30px auto 12px;font-family:'Playfair Display',serif;font-size:20px;color:var(--navy)}
+.cta-final{text-align:center;margin:26px 0 8px}
+.cta-final a{display:inline-flex;gap:8px;background:var(--gold);color:var(--navy-deep);padding:14px 28px;border-radius:100px;font-weight:700;font-size:15px}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:660px;margin:18px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:12px;margin-top:38px}.ft a{color:var(--gold);margin:0 6px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap"><div class="logo">IK<span>CP</span></div><a class="back" href="/">← Site IKCP</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Boost rémunération · épargne salariale</div>
+  <h1>Sortir de votre société <em>en quasi-franchise</em></h1>
+  <p>Le levier que la plupart des dirigeants ignorent : PEE + PER collectif + abondement. Quasi aucune charge sociale, aucun impôt sur le revenu — pour vous <strong>et</strong> votre conjoint.</p>
+</section>
+
+<div class="panel wrap">
+  <div class="controls">
+    <div class="ctrl"><label>Bénéficiaires (vous + conjoint co-travailleur) <b id="vBen">2</b></label><input type="range" id="ben" min="1" max="2" step="1" value="2"></div>
+    <label class="chk"><input type="checkbox" id="pee" checked> PEE — abondement jusqu'à 8% du PASS</label>
+    <label class="chk"><input type="checkbox" id="per" checked> PER collectif — abondement jusqu'à 16% du PASS</label>
+    <label class="chk"><input type="checkbox" id="inte" checked> Intéressement placé (exonéré d'IR si versé sur le plan)</label>
+    <div class="ctrl" style="margin-top:14px"><label>Horizon <b id="vYr">10 ans</b></label><input type="range" id="yr" min="1" max="25" step="1" value="10"></div>
+    <div class="ctrl"><label>Votre TMI (impôt évité estimé) <b id="vTmi">41 %</b></label><input type="range" id="tmi" min="0" max="45" step="11" value="41"></div>
+  </div>
+
+  <div class="out">
+    <div class="big"><div class="lbl">Sorti en quasi-franchise / an</div><div class="v" id="parAn">—</div></div>
+    <div class="brk" id="brk"></div>
+    <div class="proj"><div class="v" id="proj">—</div><div class="l" id="projL">sur l'horizon (hors performance du placement)</div></div>
+  </div>
+</div>
+
+<div class="sec-t wrap">Pourquoi c'est si efficace</div>
+<div class="lev"><span class="ic">🚫</span><div class="bd"><h4>Pas de charges sociales (TPE &lt; 50 salariés)</h4><p>L'abondement échappe au forfait social (supprimé pour les entreprises de moins de 50 salariés). Là où un salaire perd ~45-54% en cotisations.</p></div></div>
+<div class="lev"><span class="ic">🧾</span><div class="bd"><h4>Pas d'impôt sur le revenu</h4><p>Abondement et intéressement placés sont exonérés d'IR (seuls CSG/CRDS s'appliquent). À la sortie : plus-values au PFU.</p></div></div>
+<div class="lev"><span class="ic">👫</span><div class="bd"><h4>Vous ET votre conjoint</h4><p>Le conjoint collaborateur/associé peut bénéficier des mêmes plans → l'enveloppe double.</p></div></div>
+<div class="lev"><span class="ic">🏢</span><div class="bd"><h4>Déductible pour la société</h4><p>Les sommes versées réduisent le résultat imposable à l'IS. Double gain : entreprise + dirigeant.</p></div></div>
+
+<div class="cta-final wrap"><a href="/family-office.html?q=Comment%20mettre%20en%20place%20PEE%20%2B%20PER%20collectif%20%2B%20int%C3%A9ressement%20pour%20optimiser%20ma%20r%C3%A9mun%C3%A9ration%20de%20dirigeant%20%3F">Mettre en place mon dispositif avec Marcel & Codex →</a></div>
+<div class="disc wrap">Estimation pédagogique 2026 (plafonds indexés sur le PASS ~47 100 € : PEE 8% ≈ 3 770 €, PER collectif 16% ≈ 7 540 € par bénéficiaire/an ; forfait social 0% &lt; 50 salariés). Hors conditions de mise en place (accord, règlement), CSG/CRDS, cas particuliers. Ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi). À cadrer avec votre expert-comptable et Maxime (CIF · ORIAS 23001568).</div>
+
+<footer class="ft">© 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
+  <div style="margin-top:6px"><a href="/remuneration.html">Rémunération</a> · <a href="/score.html">Score</a> · <a href="/transmission.html">Transmission</a></div>
+</footer>
+
+<script>
+var PASS=47100; // plafond annuel sécu sociale 2026 (indicatif)
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
+function compute(){
+  var ben=+document.getElementById('ben').value, yr=+document.getElementById('yr').value, tmi=+document.getElementById('tmi').value/100;
+  var pee=document.getElementById('pee').checked, per=document.getElementById('per').checked, inte=document.getElementById('inte').checked;
+  document.getElementById('vBen').textContent=ben; document.getElementById('vYr').textContent=yr+' ans'; document.getElementById('vTmi').textContent=Math.round(tmi*100)+' %';
+  var peeAb = pee ? PASS*0.08 : 0;            // abondement PEE max
+  var perAb = per ? PASS*0.16 : 0;            // abondement PER collectif max
+  var inteV = inte ? PASS*0.75*0.0 + 6000 : 0; // intéressement placé (estimation prudente ~6 000€)
+  var parBen = peeAb + perAb + inteV;
+  var parAn = parBen * ben;
+  document.getElementById('parAn').textContent=eur(parAn);
+  document.getElementById('brk').innerHTML =
+    (pee?'<div class="r"><span>Abondement PEE (8% PASS ×'+ben+')</span><b>'+eur(peeAb*ben)+'</b></div>':'')
+    +(per?'<div class="r"><span>Abondement PER coll. (16% PASS ×'+ben+')</span><b>'+eur(perAb*ben)+'</b></div>':'')
+    +(inte?'<div class="r"><span>Intéressement placé (×'+ben+')</span><b>'+eur(inteV*ben)+'</b></div>':'')
+    +'<div class="r" style="border-top:1px solid rgba(255,255,255,.12);padding-top:8px;margin-top:6px"><span>Impôt + charges évités (~vs salaire)</span><b>'+eur(parAn*(0.45+tmi*0.55))+'</b></div>';
+  document.getElementById('proj').textContent=eur(parAn*yr);
+  document.getElementById('projL').textContent='cumulé sur '+yr+' ans (hors performance du placement)';
+}
+['ben','yr','tmi','pee','per','inte'].forEach(function(id){var e=document.getElementById(id);e.addEventListener('input',compute);e.addEventListener('change',compute);});
+compute();
+</script>
+<script src="/protect.js?v=1" defer></script>
+<script src="/reveal.js?v=1" defer></script>
+</body>
+</html>
