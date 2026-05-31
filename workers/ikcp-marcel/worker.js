@@ -132,6 +132,37 @@ async function fetchUserContextFromClient(request) {
   } catch (_) { return null; }
 }
 
+// ── SECOURS SOUVERAIN — Mistral (FR, tier free) ──
+// Utilisé UNIQUEMENT si l'appel Claude échoue (résilience). Réponse texte
+// simple (sans outils), conforme MIF II. Gated par MISTRAL_API_KEY ; si la
+// clé est absente, renvoie null → Marcel garde son message d'erreur normal.
+async function callMistralFallback(env, systemText, messages) {
+  if (!env.MISTRAL_API_KEY) return null;
+  try {
+    const lastUser = [...(messages || [])].reverse().find(m => m.role === 'user');
+    const userText = typeof lastUser?.content === 'string'
+      ? lastUser.content
+      : (Array.isArray(lastUser?.content) ? lastUser.content.map(c => c.text || '').join(' ') : '');
+    if (!userText) return null;
+    const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: env.MISTRAL_MODEL || 'mistral-small-latest',
+        max_tokens: 1200,
+        temperature: 0.3,
+        messages: [
+          { role: 'system', content: (systemText || '').slice(0, 6000) + "\n\nRéponds en français, de façon utile et pédagogue. Termine TOUJOURS par une question (jamais une recommandation produit). Ajoute en fin : \"Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.\"" },
+          { role: 'user', content: userText },
+        ],
+      }),
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content || null;
+  } catch (_) { return null; }
+}
+
 async function delegateToSpecialist(agentId, question, context, isPaidMember = false) {
   const spec = SPECIALISTS_REGISTRY[agentId];
   if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS_LIVE.join(', ')}` };
@@ -1021,6 +1052,16 @@ export default {
         if (!anthropicRes.ok) {
           const errText = await anthropicRes.text();
           console.error('Anthropic error:', anthropicRes.status, errText);
+          // SECOURS SOUVERAIN — Mistral (FR, free) : si Claude est indisponible,
+          // Marcel répond quand même (dégradé, sans outils) plutôt qu'une erreur.
+          const fb = await callMistralFallback(env, systemPromptText, workingMessages);
+          if (fb) {
+            return new Response(JSON.stringify({
+              reply: fb,
+              follow_ups: ['Pouvez-vous préciser votre situation ?', 'Souhaitez-vous échanger avec Maxime ?', 'Voulez-vous un autre point patrimonial ?'],
+              fallback: true,
+            }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+          }
           return new Response(JSON.stringify({
             reply: "Un problème technique est survenu. Vous pouvez réessayer ou échanger directement avec Maxime.",
             error: `API ${anthropicRes.status}`,
