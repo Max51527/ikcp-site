@@ -3,7 +3,7 @@
 // Cache-first pour assets, network-first pour API
 // ══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'ikcp-v6';
+const CACHE_NAME = 'ikcp-v7';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

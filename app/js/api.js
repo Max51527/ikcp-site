@@ -53,6 +53,11 @@ async function jsonFetch(url, options = {}) {
   const ctrl = new AbortController();
   const tid = setTimeout(() => ctrl.abort(), options.timeout || 45000);
   const tok = getToken();
+  // Le jeton de session n'est envoyé QU'aux workers qui le valident et
+  // l'autorisent en CORS (client = auth/tiers ; chat = Marcel pour le tier).
+  // Les autres workers (Pappers, veille directe…) n'autorisent pas l'en-tête
+  // Authorization → l'ajouter casserait le pré-vol CORS ("Société introuvable").
+  const sendAuth = tok && (url.indexOf(ENDPOINTS.client) === 0 || url.indexOf(ENDPOINTS.chat) === 0);
   try {
     const r = await fetch(url, {
       credentials: 'include', // cookie de secours (si api.ikcp.eu un jour)
@@ -60,7 +65,7 @@ async function jsonFetch(url, options = {}) {
       signal: ctrl.signal,
       headers: {
         'Content-Type': 'application/json',
-        ...(tok ? { 'Authorization': 'Bearer ' + tok } : {}),
+        ...(sendAuth ? { 'Authorization': 'Bearer ' + tok } : {}),
         ...(options.headers || {}),
       },
     });

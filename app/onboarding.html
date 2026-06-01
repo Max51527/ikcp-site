@@ -229,19 +229,40 @@ document.getElementById('siren').addEventListener('input', (e) => {
   if(!/^\d{9}$/.test(v)){ status.classList.remove('show'); return; }
   status.className = 'siren-status show';
   status.innerHTML = '<b>Cartographie en cours…</b><span class="meta">Marcel consulte les sources officielles</span>';
-  sirenT = setTimeout(async () => {
-    try{
-      const d = await Marcel.cartographie(v);
-      data.siren_data = d;
-      status.className = 'siren-status show ok';
-      status.innerHTML = `<b>✓ ${d.nom || 'Société identifiée'}</b><span class="meta">${d.forme_juridique?.split(',')[0] || ''} · ${d.siege?.ville || ''} · Capital ${d.capital ? Marcel.Utils.formatEUR(d.capital) : '—'} · Créée ${d.date_creation ? new Date(d.date_creation).getFullYear() : '—'}</span>`;
-    }catch(err){
-      status.className = 'siren-status show err';
-      status.innerHTML = `<b>Société introuvable</b><span class="meta">Vérifiez votre SIREN (9 chiffres exacts)</span>`;
-      data.siren_data = null;
-    }
-  }, 600);
+  sirenT = setTimeout(() => tryCartographie(v, status), 600);
 });
+
+// Cartographie robuste : ne bloque JAMAIS l'onboarding.
+// - SIREN inexistant (404) → message « vérifiez le numéro » + on peut continuer
+// - bug technique (réseau/CORS/timeout) → on n'accuse pas l'utilisateur, on propose
+//   de réessayer OU de continuer sans (la société sera ajoutée plus tard).
+window.tryCartographie = async function(v, status){
+  status = status || document.getElementById('sirenStatus');
+  status.className = 'siren-status show';
+  status.innerHTML = '<b>Cartographie en cours…</b><span class="meta">Marcel consulte les sources officielles</span>';
+  try{
+    const d = await Marcel.cartographie(v);
+    if(!d || !d.siren){ throw new Error('API 404: empty'); }
+    data.siren_data = d;
+    status.className = 'siren-status show ok';
+    status.innerHTML = `<b>✓ ${d.nom || 'Société identifiée'}</b><span class="meta">${d.forme_juridique?.split(',')[0] || ''} · ${d.siege?.ville || ''} · Capital ${d.capital ? Marcel.Utils.formatEUR(d.capital) : '—'} · Créée ${d.date_creation ? new Date(d.date_creation).getFullYear() : '—'}</span>`;
+  }catch(err){
+    data.siren_data = null;
+    const msg = String(err && err.message || '');
+    const notFound = /\b404\b/.test(msg); // SIREN réellement inexistant
+    status.className = 'siren-status show err';
+    if(notFound){
+      status.innerHTML = `<b>SIREN introuvable dans les bases officielles</b>`
+        + `<span class="meta">Vérifiez le numéro (9 chiffres exacts, sans le SIRET). Vous pouvez aussi continuer et l'ajouter plus tard.</span>`;
+    }else{
+      // bug technique : on ne culpabilise pas l'utilisateur
+      status.innerHTML = `<b>Service de cartographie momentanément indisponible</b>`
+        + `<span class="meta">Pas de souci — `
+        + `<a href="#" onclick="tryCartographie('${v}');return false;" style="color:var(--accent);text-decoration:underline">réessayer</a>`
+        + ` ou continuez : vous ajouterez votre société en 1 clic depuis votre espace.</span>`;
+    }
+  }
+};
 
 window.finishOnboarding = async function(skipSiren = false){
   // Consentement MIF II obligatoire avant d'accéder à l'espace
