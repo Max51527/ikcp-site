@@ -253,12 +253,24 @@ export default {
   // voient une veille fraîche chaque jour sans appel personnalisé coûteux.
   async scheduled(event, env, ctx) {
     if (!env.PERPLEXITY_API_KEY) return;
-    const q = "Quelles sont les principales actualités PATRIMONIALES et FISCALES françaises des dernières 48 heures pour un dirigeant ou une famille fortunée ? (loi de finances, jurisprudence, dispositifs : transmission, IFI, assurance-vie, PER, holding, immobilier). 3 à 5 points concis, sourcés, datés.";
+    const q = "Tu rédiges la « veille patrimoniale du jour » pour un CLIENT QUI N'EST PAS un professionnel de la finance (un dirigeant, une famille). "
+      + "Donne les 3 actualités patrimoniales ou fiscales françaises les plus importantes du moment (loi de finances, transmission, immobilier, holding, placements). "
+      + "RÈGLES STRICTES : "
+      + "1) Français simple, clair et rassurant — on s'adresse à quelqu'un d'intelligent mais non spécialiste. "
+      + "2) Pour chaque point : un titre court en gras (## ), puis UNE phrase commençant par « Concrètement pour vous : » qui explique l'impact sans jargon. Si un terme technique est indispensable, explique-le en 3 mots entre parenthèses. "
+      + "3) INTERDIT : les numéros de référence type [1], tout commentaire sur les sources, toute question à la fin, tout préambule (« je ne vois pas… », « voici… »). "
+      + "Commence DIRECTEMENT par le titre du premier point. Maximum 130 mots au total.";
     try {
       const res = await callPerplexity(env, q, 'quick');
+      // Nettoyage serveur : retire les renvois [n] et tout préambule/question méta résiduels.
+      const cleanSummary = (res.summary || '')
+        .replace(/\[\d+\](?:\s*\[\d+\])*/g, '')
+        .replace(/^\s*(je ne vois pas|je n['’]ai pas trouvé|en revanche,? les résultats)[^\n]*\n?/gim, '')
+        .replace(/^\s*(souhaitez-vous|voulez-vous)[^\n]*\?\s*$/gim, '')
+        .trim();
       const payload = JSON.stringify({
         date: new Date(event.scheduledTime).toISOString().slice(0, 10),
-        summary: res.summary,
+        summary: cleanSummary,
         sources: (res.sources || []).slice(0, 6),
         generated_at: event.scheduledTime,
       });

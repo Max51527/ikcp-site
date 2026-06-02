@@ -286,7 +286,11 @@ window.doSearch = async function(e){
 };
 
 function markdownToHtml(s){
-  return s
+  return (s||'')
+    // ── Nettoyage veille : rendre lisible pour un non-spécialiste ──
+    .replace(/\[\d+\](?:\s*\[\d+\])*/g,'')                                   // renvois [1][3]
+    .replace(/^\s*(je ne vois pas|je n['’]ai pas trouvé|en revanche,? les résultats)[^\n]*\n?/gim,'') // préambule "sources"
+    .replace(/^\s*(souhaitez-vous|voulez-vous)[^\n]*\?\s*$/gim,'')           // question méta finale
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
     .replace(/^### (.+)$/gm,'<h4 style="font-family:Fraunces,serif;font-weight:500;margin:14px 0 6px">$1</h4>')
