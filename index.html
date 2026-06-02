@@ -578,7 +578,7 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             else if (lower.match(/rendez|rdv|contact|échange|maxime|calendly/)) responseText = demoResponses.rdv;
                             else responseText = demoResponses.default;
                         } else {
-                            // ── Mode production (proxy Claude API) ──
+                            // ── Mode production (proxy intelligence souveraine) ──
                             const response = await fetch(PROXY_URL, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
