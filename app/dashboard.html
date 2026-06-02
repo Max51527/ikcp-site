@@ -41,6 +41,15 @@
     <button type="submit" aria-label="Envoyer">→</button>
   </form>
 
+  <!-- ── Vos univers (personnalisé selon vos passions cochées à l'onboarding) ── -->
+  <section id="univers-section" style="margin:4px 0 22px;display:none">
+    <div class="card-head" style="margin-bottom:12px">
+      <span class="card-cat">Vos univers</span>
+      <span class="pill neutral" id="universCount"></span>
+    </div>
+    <div id="univers-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px"></div>
+  </section>
+
   <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
   <div class="grid-3" style="margin-bottom:14px">
     <article class="card" id="w-veille">
@@ -363,6 +372,8 @@ if(me){
   }
   // Surcharge prenom si disponible
   if(profile?.prenom) me.prenom = profile.prenom;
+  // Personnalisation : relie les passions cochées aux univers / agents
+  renderUnivers(profile);
 }
 
 if(me){
@@ -375,6 +386,43 @@ if(me){
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
   document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+}
+
+// ─── Vos univers : relie les passions cochées (onboarding) aux agents Marcel ───
+function renderUnivers(profile){
+  const sec = document.getElementById('univers-section');
+  const grid = document.getElementById('univers-grid');
+  if(!sec || !grid) return;
+  const MAP = {
+    patrimoine:   {em:'🏛️', nom:'Patrimoine 360°',        agent:'Bâtisseur', blurb:'Vue consolidée de tout votre patrimoine.',           q:'Fais-moi un bilan patrimonial 360° de ma situation.'},
+    immobilier:   {em:'🏠', nom:'Immobilier',             agent:'Architecte',blurb:'Arbitrages, IFI, SCI, montages locatifs.',            q:'Analyse ma stratégie immobilière et ma position IFI.'},
+    fiscalite:    {em:'📜', nom:'Fiscalité',              agent:'Codex',     blurb:'Optimisation de l’impôt, arbitrages, dispositifs.',   q:'Comment optimiser ma fiscalité cette année ?'},
+    transmission: {em:'🌳', nom:'Transmission',           agent:'Hermès',    blurb:'Succession, donation, Pacte Dutreil.',                q:'Comment préparer ma transmission sereinement ?'},
+    marches:      {em:'📊', nom:'Marchés & non coté',     agent:'Stratège',  blurb:'Allocation, placements, investissement non coté.',    q:'Comment diversifier mon allocation patrimoniale ?'},
+    voyage:       {em:'✈️', nom:'Voyage & conciergerie',  agent:'Concierge', blurb:'Voyages, tables, expériences sur-mesure.',            q:'Organisez-moi une expérience de voyage d’exception.'},
+    art:          {em:'🎨', nom:'Art & collections',      agent:'Curateur',  blurb:'Valeur, assurance, acquisition.',                     q:'Aidez-moi à évaluer et assurer ma collection d’art.'},
+    vehicules:    {em:'🏎️', nom:'Véhicules',              agent:'Curateur',  blurb:'Voitures, yachts : cote & assurance.',                q:'Quelle est la cote d’un véhicule de collection ?'},
+    horlogerie:   {em:'⌚', nom:'Horlogerie & joaillerie', agent:'Curateur',  blurb:'Montres, pièces : valeur & suivi.',                   q:'Évaluez une montre ou une pièce de joaillerie.'},
+    vins:         {em:'🍷', nom:'Vins & gastronomie',     agent:'Curateur',  blurb:'Cave, vins d’investissement.',                        q:'Conseillez-moi pour ma cave et les vins d’investissement.'},
+    bienetre:     {em:'🌸', nom:'Bien-être & longévité',  agent:'Olympe',    blurb:'Médecine privée, longévité, art de vivre.',           q:'Conseils en santé privée et longévité.'},
+    philanthropie:{em:'🌱', nom:'Philanthropie',          agent:'Mécène',    blurb:'Mécénat, fondation, impact.',                         q:'Comment structurer mon mécénat ou une fondation ?'},
+  };
+  let keys = (profile && Array.isArray(profile.spheres) && profile.spheres.length) ? profile.spheres.slice() : Object.keys(MAP);
+  keys = keys.filter(k => MAP[k]);
+  if(!keys.length) return;
+  const cnt = document.getElementById('universCount');
+  if(cnt) cnt.textContent = keys.length + (keys.length > 1 ? ' univers' : ' univers');
+  grid.innerHTML = keys.map(k => {
+    const u = MAP[k];
+    const href = '/app/marcel.html?q=' + encodeURIComponent(u.q);
+    return `<a class="card" href="${href}" style="text-decoration:none;display:flex;flex-direction:column;transition:all .18s">
+      <div style="font-size:26px;line-height:1">${u.em}</div>
+      <h3 style="margin:8px 0 2px;font-size:16px">${u.nom}</h3>
+      <p style="font-size:12.5px;color:var(--mute);line-height:1.45;margin:0;flex:1">${u.blurb}</p>
+      <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:10px">✦ ${u.agent} · Demander à Marcel →</div>
+    </a>`;
+  }).join('');
+  sec.style.display = 'block';
 }
 
 // ─── Chargement parallèle des widgets ───
