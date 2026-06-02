@@ -66,12 +66,12 @@
       <a href="/app/marcel.html?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
     </article>
 
-    <article class="card" id="w-ifi">
-      <div class="card-head"><span class="card-cat">IFI 2026</span><span class="pill neutral">seuil 1,3 M€</span></div>
-      <h3>Position fiscale</h3>
-      <div id="ifi-body" class="empty" style="padding:20px;text-align:left">
-        <p>Déclarez vos biens immobiliers pour suivre votre position vis-à-vis du seuil IFI.</p>
-        <a href="/app/profil.html#patrimoine" class="btn btn-ghost btn-sm" style="margin-top:10px">+ Ajouter</a>
+    <article class="card" id="w-patrimoine">
+      <div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill neutral" id="patCount">à compléter</span></div>
+      <h3 id="patNet">Vue consolidée</h3>
+      <div id="pat-body" class="empty" style="padding:16px 0;text-align:left">
+        <p>Cartographiez vos biens : répartition visuelle, position IFI, leviers Marcel.</p>
+        <a href="/app/patrimoine.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir →</a>
       </div>
     </article>
   </div>
@@ -386,6 +386,18 @@ if(me){
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
   document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+  // Résumé « Mon patrimoine » (module patrimoine, stockage local)
+  try {
+    const _pb = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + (me.email||'invite')) || '[]');
+    if(_pb.length){
+      const _t = _pb.reduce((s,b)=>s+(+b.value||0),0);
+      const _net = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(_t);
+      const pn = document.getElementById('patNet'); if(pn) pn.textContent = _net;
+      const pc = document.getElementById('patCount'); if(pc) pc.textContent = _pb.length + ' bien' + (_pb.length>1?'s':'');
+      const pbody = document.getElementById('pat-body');
+      if(pbody) pbody.innerHTML = '<p style="font-size:13px;color:var(--mute)">Patrimoine net estimé — répartition &amp; leviers dans le module.</p><a href="/app/patrimoine.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Voir le détail →</a>';
+    }
+  } catch(_){}
 }
 
 // ─── Vos univers : relie les passions cochées (onboarding) aux agents Marcel ───

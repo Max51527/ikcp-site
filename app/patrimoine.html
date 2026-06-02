@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 — Espace membre : Mon patrimoine -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<meta name="robots" content="noindex, nofollow">
+<title>Mon patrimoine — Marcel · IKCP</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+  /* ─── Module patrimoine ─── */
+  .pat-hero{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:30px;align-items:center;
+    background:linear-gradient(150deg,var(--bg-2),var(--bg));border:1px solid var(--line);border-radius:20px;padding:28px;margin-bottom:22px}
+  @media(max-width:720px){.pat-hero{grid-template-columns:1fr;gap:18px;text-align:center}}
+  .donut-wrap{position:relative;width:100%;max-width:260px;margin:0 auto;aspect-ratio:1}
+  .donut{width:100%;height:100%;transform:rotate(-90deg)}
+  .donut circle{fill:none;stroke-width:26;transition:stroke-dasharray .9s cubic-bezier(.2,.7,.2,1)}
+  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .donut-center .net{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(22px,4.6vw,30px);color:var(--ink);line-height:1}
+  .donut-center .lbl{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:6px;max-width:120px}
+  .legend{display:flex;flex-direction:column;gap:9px}
+  .legend-row{display:flex;align-items:center;gap:10px;font-size:13.5px}
+  .legend-dot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+  .legend-row .lg-lbl{color:var(--ink);font-weight:500}
+  .legend-row .lg-val{margin-left:auto;color:var(--mute);font-variant-numeric:tabular-nums}
+  .legend-row .lg-pct{color:var(--faint);font-size:11.5px;width:42px;text-align:right}
+  .pat-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .ifi-flag{margin-top:14px;font-size:12px;padding:9px 13px;border-radius:9px;background:rgba(184,128,31,.1);border:1px solid rgba(184,128,31,.3);color:var(--warn)}
+
+  .pat-head{display:flex;align-items:center;gap:12px;margin:26px 0 14px}
+  .pat-head h2{font-family:'Fraunces',serif;font-weight:500;font-size:21px}
+  .pat-head .btn{margin-left:auto}
+
+  .biens-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .bien{background:var(--cream);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}
+  .bien:hover{transform:translateY(-3px);box-shadow:0 14px 30px -16px rgba(26,24,20,.3)}
+  .bien-photo{height:130px;background-size:cover;background-position:center;position:relative;display:flex;align-items:center;justify-content:center}
+  .bien-photo .ph-em{font-size:42px;opacity:.85}
+  .bien-cat{position:absolute;top:10px;left:10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:99px;background:rgba(250,250,248,.92);color:var(--ink)}
+  .bien-body{padding:14px 15px;display:flex;flex-direction:column;flex:1}
+  .bien-body h3{font-family:'Fraunces',serif;font-weight:500;font-size:16px;margin-bottom:2px}
+  .bien-val{font-size:20px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+  .bien-actions{display:flex;gap:6px;margin-top:12px;align-items:center}
+  .bien-actions .mini{background:var(--bg-2);border:1px solid var(--line);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--mute)}
+  .bien-actions .mini:hover{border-color:var(--accent);color:var(--accent)}
+  .bien-actions .analyze{margin-left:auto;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;text-decoration:none}
+
+  .empty-pat{text-align:center;padding:46px 24px;border:1.5px dashed var(--line-strong);border-radius:18px;color:var(--mute)}
+  .empty-pat .big{font-size:46px;margin-bottom:10px}
+  .empty-pat h3{font-family:'Fraunces',serif;font-weight:500;font-size:20px;color:var(--ink);margin-bottom:6px}
+
+  /* Form panel */
+  .form-panel{background:var(--cream);border:1px solid var(--line-strong);border-radius:16px;padding:20px;margin-bottom:20px;display:none}
+  .form-panel.open{display:block;animation:slidedown .3s ease}
+  @keyframes slidedown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  .form-panel h3{font-family:'Fraunces',serif;font-weight:500;font-size:18px;margin-bottom:14px}
+  .fp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.fp-grid{grid-template-columns:1fr}}
+  .fp-grid label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600;display:block;margin-bottom:5px}
+  .fp-grid .full{grid-column:1/-1}
+  .form-panel input,.form-panel select{width:100%;padding:11px 13px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;color:var(--ink);font-family:'Inter';font-size:14px;outline:none}
+  .form-panel input:focus,.form-panel select:focus{border-color:var(--accent)}
+  .form-panel select option{background:var(--cream)}
+  .fp-actions{display:flex;gap:10px;margin-top:16px}
+
+  .disc{font-size:11px;color:var(--mute);font-style:italic;margin:22px 0 8px;line-height:1.6}
+  .btn-sm2{padding:9px 16px;font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Family Office augmenté</span></a>
+  <div class="app-user">
+    <span class="tier" id="userTier">Découverte</span>
+    <div class="avatar" id="userAvatar">M</div>
+    <button class="logout" onclick="logout()">Déconnexion</button>
+  </div>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Espace membre</div>
+  <h1 class="app-h1" style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(26px,5vw,38px);letter-spacing:-0.01em;margin-bottom:6px">Mon patrimoine, <em style="font-style:italic;color:var(--accent)">en clair.</em></h1>
+  <p class="app-lead" style="color:var(--mute);margin-bottom:22px;max-width:640px">Une vue consolidée et visuelle de ce que vous possédez. Ajoutez vos biens, Marcel s'occupe d'en tirer les leviers — fiscalité, transmission, arbitrages.</p>
+
+  <!-- Overview -->
+  <section class="pat-hero" id="overview" style="display:none">
+    <div class="donut-wrap">
+      <svg class="donut" viewBox="0 0 200 200" id="donut"></svg>
+      <div class="donut-center">
+        <div class="net" id="netTotal">—</div>
+        <div class="lbl">Patrimoine net estimé</div>
+      </div>
+    </div>
+    <div>
+      <div class="legend" id="legend"></div>
+      <div class="ifi-flag" id="ifiFlag" style="display:none"></div>
+      <div class="pat-actions">
+        <button class="btn" onclick="openForm()">+ Ajouter un bien</button>
+        <button class="btn btn-ghost" onclick="analyzeAll()">✦ Analyser avec Marcel</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form -->
+  <section class="form-panel" id="formPanel">
+    <h3 id="formTitle">Ajouter un bien</h3>
+    <div class="fp-grid">
+      <div class="full">
+        <label>Intitulé</label>
+        <input type="text" id="f-label" placeholder="Résidence principale, Appartement locatif Lyon, Holding…" maxlength="60">
+      </div>
+      <div>
+        <label>Catégorie</label>
+        <select id="f-cat"></select>
+      </div>
+      <div>
+        <label>Valeur estimée (€)</label>
+        <input type="number" id="f-value" placeholder="350000" min="0" step="1000">
+      </div>
+      <div class="full">
+        <label>Photo (lien d'image, optionnel)</label>
+        <input type="url" id="f-photo" placeholder="https://… (photo de votre bien)">
+      </div>
+    </div>
+    <div class="fp-actions">
+      <button class="btn btn-sm2" onclick="submitForm()" id="formSave">Enregistrer</button>
+      <button class="btn btn-ghost btn-sm2" onclick="closeForm()">Annuler</button>
+      <button class="btn btn-ghost btn-sm2" id="formDelete" style="margin-left:auto;color:var(--bad);border-color:rgba(185,28,28,.4);display:none" onclick="deleteCurrent()">Supprimer</button>
+    </div>
+  </section>
+
+  <!-- Biens -->
+  <div class="pat-head">
+    <h2>Mes biens</h2>
+    <button class="btn btn-ghost btn-sm2" onclick="openForm()" id="addTop" style="display:none">+ Ajouter</button>
+  </div>
+  <div class="biens-grid" id="biensGrid"></div>
+
+  <!-- Empty state -->
+  <div class="empty-pat" id="emptyState">
+    <div class="big">🗺️</div>
+    <h3>Cartographions votre patrimoine</h3>
+    <p style="max-width:420px;margin:0 auto 16px">Ajoutez votre premier bien (résidence, locatif, société, placements, collection…). La répartition se dessine automatiquement.</p>
+    <button class="btn" onclick="openForm()">+ Ajouter mon premier bien</button>
+  </div>
+
+  <p class="disc">Les valeurs saisies sont déclaratives et restent sur votre appareil pour cette phase bêta. Cette vue est une aide à la décision — elle ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton (CIF · ORIAS 23001568) reste votre interlocuteur.</p>
+</main>
+
+<nav class="app-tabs">
+  <a href="/app/dashboard.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+  <a href="/app/marcel.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>Marcel</a>
+  <a href="/app/veille.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>Veille</a>
+  <a href="/app/patrimoine.html" class="active"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.5 12 4l9 9.5"/><path d="M5 12v8h14v-8"/><path d="M9 20v-5h6v5"/></svg>Patrimoine</a>
+  <a href="/app/profil.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Profil</a>
+</nav>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+
+let me = null, userEmail = 'invite';
+try { me = await Marcel.Auth.me(); } catch(_){ location.href = '/app/index.html'; }
+if(me){
+  userEmail = me.email || 'invite';
+  document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
+  const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
+  const tEl = document.getElementById('userTier'); tEl.textContent = tierLbl;
+  if(me.tier && me.tier!=='free') tEl.classList.add('premium');
+}
+window.logout = function(){ try{ localStorage.removeItem('ikcp_token'); }catch(_){}; location.href='/app/index.html'; };
+
+const CATS = {
+  immobilier: { label:'Immobilier',              color:'#C24722', em:'🏠' },
+  financier:  { label:'Placements financiers',   color:'#C9A96E', em:'📈' },
+  societe:    { label:'Sociétés / professionnel',color:'#1B2A4A', em:'🏢' },
+  non_cote:   { label:'Investissement non coté', color:'#3F7A3F', em:'🪴' },
+  liquidites: { label:'Liquidités',              color:'#6B655A', em:'💧' },
+  collection: { label:'Collections & passions',  color:'#B8801F', em:'🎨' },
+};
+const STORE_KEY = 'ikcp_patrimoine_' + userEmail;
+let biens = [];
+let editingId = null;
+
+function load(){ try{ biens = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }catch(_){ biens = []; } }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(biens)); }catch(_){} }
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
+function uid(){ return 'b' + (biens.reduce((m,b)=>Math.max(m, +String(b.id).slice(1)||0),0) + 1); }
+
+// Remplit le select catégorie
+const fcat = document.getElementById('f-cat');
+fcat.innerHTML = Object.entries(CATS).map(([k,c]) => `<option value="${k}">${c.em} ${c.label}</option>`).join('');
+
+function render(){
+  const total = biens.reduce((s,b)=> s + (+b.value||0), 0);
+  const has = biens.length > 0;
+  document.getElementById('overview').style.display = has ? 'grid' : 'none';
+  document.getElementById('emptyState').style.display = has ? 'none' : 'block';
+  document.getElementById('addTop').style.display = has ? 'inline-flex' : 'none';
+  document.getElementById('biensGrid').style.display = has ? 'grid' : 'none';
+  if(has){ renderDonut(total); renderLegend(total); renderIFI(); countUp(total); }
+  renderBiens();
+}
+
+function renderDonut(total){
+  const svg = document.getElementById('donut');
+  const r = 80, C = 2 * Math.PI * r;
+  // agrégation par catégorie
+  const byCat = {};
+  biens.forEach(b => { byCat[b.cat] = (byCat[b.cat]||0) + (+b.value||0); });
+  let offset = 0;
+  svg.innerHTML = `<circle cx="100" cy="100" r="${r}" stroke="var(--bg-3)" stroke-width="26"></circle>` +
+    Object.keys(CATS).filter(k => byCat[k] > 0).map(k => {
+      const frac = total ? byCat[k]/total : 0;
+      const dash = frac * C;
+      const seg = `<circle cx="100" cy="100" r="${r}" stroke="${CATS[k].color}" stroke-dasharray="${dash} ${C-dash}" stroke-dashoffset="${-offset}" stroke-linecap="butt"></circle>`;
+      offset += dash;
+      return seg;
+    }).join('');
+}
+
+function renderLegend(total){
+  const byCat = {};
+  biens.forEach(b => { byCat[b.cat] = (byCat[b.cat]||0) + (+b.value||0); });
+  const el = document.getElementById('legend');
+  el.innerHTML = Object.keys(CATS).filter(k => byCat[k] > 0)
+    .sort((a,b)=> byCat[b]-byCat[a])
+    .map(k => {
+      const pct = total ? Math.round(byCat[k]/total*100) : 0;
+      return `<div class="legend-row"><span class="legend-dot" style="background:${CATS[k].color}"></span>
+        <span class="lg-lbl">${CATS[k].em} ${CATS[k].label}</span>
+        <span class="lg-val">${eur(byCat[k])}</span><span class="lg-pct">${pct}%</span></div>`;
+    }).join('');
+}
+
+function renderIFI(){
+  const immo = biens.filter(b=>b.cat==='immobilier').reduce((s,b)=>s+(+b.value||0),0);
+  const flag = document.getElementById('ifiFlag');
+  if(immo >= 1300000){
+    flag.style.display = 'block';
+    flag.innerHTML = `⚠️ Votre immobilier déclaré (${eur(immo)}) dépasse le seuil IFI de 1,3 M€. <a href="/app/marcel.html?q=${encodeURIComponent('Mon patrimoine immobilier dépasse le seuil IFI. Quels leviers pour optimiser ma position ?')}" style="color:var(--warn);text-decoration:underline">Demander à Marcel →</a>`;
+  } else { flag.style.display = 'none'; }
+}
+
+let _countTimer = null;
+function countUp(target){
+  const el = document.getElementById('netTotal');
+  clearInterval(_countTimer);
+  const start = 0, dur = 800, t0 = performance.now();
+  _countTimer = setInterval(()=>{
+    const p = Math.min(1, (performance.now()-t0)/dur);
+    const v = Math.round((start + (target-start) * (1-Math.pow(1-p,3))) / 1000) * 1000;
+    el.textContent = eur(v);
+    if(p >= 1){ el.textContent = eur(target); clearInterval(_countTimer); }
+  }, 16);
+}
+
+function renderBiens(){
+  const grid = document.getElementById('biensGrid');
+  grid.innerHTML = biens.map(b => {
+    const c = CATS[b.cat] || CATS.immobilier;
+    const photo = b.photo
+      ? `<div class="bien-photo" style="background-image:url('${String(b.photo).replace(/'/g,'')}')"><span class="bien-cat">${c.label}</span></div>`
+      : `<div class="bien-photo" style="background:linear-gradient(150deg,${c.color}22,${c.color}0a)"><span class="ph-em">${c.em}</span><span class="bien-cat">${c.label}</span></div>`;
+    return `<div class="bien" data-id="${b.id}">
+      ${photo}
+      <div class="bien-body">
+        <h3>${escapeHtml(b.label)}</h3>
+        <div class="bien-val">${eur(b.value)}</div>
+        <div class="bien-actions">
+          <button class="mini" data-act="edit" title="Modifier">✎</button>
+          <button class="mini" data-act="del" title="Supprimer">🗑️</button>
+          <a class="analyze" data-act="analyze">Analyser →</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function escapeHtml(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// Délégation d'événements sur les cartes
+document.getElementById('biensGrid').addEventListener('click', e => {
+  const card = e.target.closest('.bien'); if(!card) return;
+  const id = card.dataset.id; const act = e.target.closest('[data-act]')?.dataset.act;
+  const b = biens.find(x=>x.id===id); if(!b) return;
+  if(act==='edit') openForm(b);
+  else if(act==='del'){ if(confirm(`Supprimer « ${b.label} » ?`)){ biens = biens.filter(x=>x.id!==id); save(); render(); } }
+  else if(act==='analyze') analyzeBien(b);
+});
+
+// ─── Formulaire ───
+window.openForm = function(bien){
+  editingId = bien ? bien.id : null;
+  document.getElementById('formTitle').textContent = bien ? 'Modifier le bien' : 'Ajouter un bien';
+  document.getElementById('f-label').value = bien ? bien.label : '';
+  document.getElementById('f-cat').value = bien ? bien.cat : 'immobilier';
+  document.getElementById('f-value').value = bien ? bien.value : '';
+  document.getElementById('f-photo').value = bien ? (bien.photo||'') : '';
+  document.getElementById('formDelete').style.display = bien ? 'inline-flex' : 'none';
+  const p = document.getElementById('formPanel'); p.classList.add('open');
+  p.scrollIntoView({behavior:'smooth',block:'center'});
+  document.getElementById('f-label').focus();
+};
+window.closeForm = function(){ document.getElementById('formPanel').classList.remove('open'); editingId = null; };
+window.submitForm = function(){
+  const label = document.getElementById('f-label').value.trim();
+  const cat = document.getElementById('f-cat').value;
+  const value = Math.max(0, parseInt(document.getElementById('f-value').value,10) || 0);
+  const photo = document.getElementById('f-photo').value.trim();
+  if(!label){ document.getElementById('f-label').focus(); return; }
+  if(editingId){
+    const b = biens.find(x=>x.id===editingId);
+    if(b){ b.label=label; b.cat=cat; b.value=value; b.photo=photo; }
+  } else {
+    biens.push({ id: uid(), label, cat, value, photo });
+  }
+  save(); closeForm(); render();
+};
+window.deleteCurrent = function(){
+  if(editingId && confirm('Supprimer ce bien ?')){ biens = biens.filter(x=>x.id!==editingId); save(); closeForm(); render(); }
+};
+
+// ─── Analyse Marcel ───
+function goMarcel(q){ try{ sessionStorage.setItem('marcel_q', q); }catch(_){}; location.href = '/app/marcel.html?q=' + encodeURIComponent(q); }
+function analyzeBien(b){
+  const c = CATS[b.cat] || {};
+  goMarcel(`Analyse ce bien de mon patrimoine : « ${b.label} » (${c.label}), valeur estimée ${eur(b.value)}. Quels leviers patrimoniaux, fiscaux ou de transmission dois-je considérer ?`);
+}
+window.analyzeAll = function(){
+  const total = biens.reduce((s,b)=>s+(+b.value||0),0);
+  const byCat = {}; biens.forEach(b=>{ byCat[b.cat]=(byCat[b.cat]||0)+(+b.value||0); });
+  const repart = Object.keys(byCat).map(k => `${(CATS[k]||{}).label||k} ${eur(byCat[k])}`).join(', ');
+  goMarcel(`Voici mon patrimoine (valeur nette estimée ${eur(total)}) réparti ainsi : ${repart}. Quels sont mes 3 leviers prioritaires (fiscalité, transmission, diversification) ?`);
+};
+
+load();
+render();
+</script>
+</body>
+</html>
