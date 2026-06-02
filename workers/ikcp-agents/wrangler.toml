@@ -1,0 +1,52 @@
+# Cloudflare Worker — ikcp-agents (orchestrateur Managed Agents)
+# © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+name = "ikcp-agents"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+
+# Région EU pour cohérence souveraineté (le worker reste EU, seul Anthropic
+# voit les payloads filtrés en sortie)
+[placement]
+mode = "smart"
+
+# Routes — sous-domaine dédié
+[[routes]]
+pattern = "agents.ikcp.eu/*"
+zone_name = "ikcp.eu"
+
+# D1 binding — partage la base avec ikcp-client (table agent_sessions ajoutée
+# via migrations/006_agent_sessions.sql)
+[[d1_databases]]
+binding = "DB"
+database_name = "ikcp-prod"
+database_id = "VOTRE_D1_DATABASE_ID"
+
+# R2 buckets — réutilise ceux d'ikcp-client
+[[r2_buckets]]
+binding = "DOCS"
+bucket_name = "ikcp-docs-private"
+
+[[r2_buckets]]
+binding = "TEMPLATES"
+bucket_name = "ikcp-templates"
+
+# KV — sessions tracking (TTL 24h, pour idempotency + dedup webhook)
+[[kv_namespaces]]
+binding = "AGENT_KV"
+id = "VOTRE_KV_ID"
+
+# Secrets à provisionner via wrangler secret put :
+#   ANTHROPICAPIKEY                  — clé API Anthropic Enterprise (DPA signé)
+#   ANTHROPIC_WEBHOOK_SIGNING_KEY    — whsec_… depuis Console Anthropic
+#   HMAC_SECRET                      — partagé avec les MCP sub-agents
+#   MARCEL_ENV_ID                    — env_… créé via ant beta:environments create
+#   MARCEL_REPORTING_AGENT_ID        — agent_… reporting
+#   MARCEL_DOCUMENTS_AGENT_ID        — agent_… documents
+#   MARCEL_SUIVI_AGENT_ID            — agent_… suivi
+#   RESEND_API_KEY                   — pour magic-link notifications (partagé)
+#   IKCP_CLIENT_BASE_URL             — https://client.ikcp.eu (pour redirect)
+
+[observability]
+enabled = true

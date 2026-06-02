@@ -1,0 +1,24 @@
+# Environnement Managed Agents — IKCP Marcel
+# Apply: ant beta:environments create < agents/marcel-environment.yaml
+# Update: ant beta:environments update --environment-id $ENV_ID < agents/marcel-environment.yaml
+name: marcel-env-prod
+description: |
+  Environnement cloud Anthropic pour les agents asynchrones Marcel
+  (reporting, documents, suivi). PII brut filtré côté workers EU avant
+  envoi ; le container ne voit que des outputs déjà structurés.
+config:
+  type: cloud
+  networking:
+    type: limited
+    # Active pip/npm pour permettre l'install à la volée (python-docx etc.)
+    allow_package_managers: true
+    # Active les MCP servers qu'on déclare sur les agents (vide ici, pas de MCP officiel)
+    allow_mcp_servers: false
+    # Hosts strictement nécessaires aux sub-agents IKCP — Pattern 9
+    # NB: les sub-agents ne sont PAS appelés depuis le container directement,
+    # le worker ikcp-agents fait le dispatch. Cette liste est défensive.
+    allowed_hosts: []
+metadata:
+  owner: maxime@ikcp.fr
+  project: ikcp-family-office
+  cost_center: beta-2026-s2
