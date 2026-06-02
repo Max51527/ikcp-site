@@ -62,6 +62,11 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 .msg .read-btn:hover{border-color:var(--accent);color:var(--accent)}
 .msg .read-btn.speaking{background:var(--accent);color:var(--bg);border-color:var(--accent)}
 @media(max-width:680px){.chat-head h1{font-size:26px}}
+.starters{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;animation:stIn .4s ease}
+@keyframes stIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.starters .st-lead{width:100%;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:2px}
+.starters .st-chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;line-height:1.3;transition:all .18s}
+.starters .st-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 </style>
 </head>
 <body>
@@ -80,6 +85,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
       Posez-moi une question — patrimoine, fiscalité, transmission, voyage, art, mécénat. Je mobilise le bon spécialiste parmi mes 12 univers.
       <div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
     </div>
+    <div id="starters" class="starters"></div>
   </div>
 </div>
 
@@ -138,6 +144,9 @@ if (userTier === 'fo') {
   var hello = document.querySelector('.chat-msgs .msg.a');
   if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Cassius</em>, votre Family Officer. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
 }
+
+// ── Suggestions de démarrage personnalisées (selon le profil de l'utilisateur) ──
+(function(){ let _p=null; try{ _p = me && me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){} renderStarters(_p, userTier); })();
 
 // ── Avant-goût gratuit : 3 échanges Marcel pour le tier Découverte ──
 // (premium / fo = illimité). Le QUOTA est désormais enforcé CÔTÉ SERVEUR
@@ -321,6 +330,43 @@ function md(s){
     .replace(/^/,'<p>').replace(/$/,'</p>');
 }
 
+// ─── Suggestions de démarrage personnalisées ───
+function sendQuick(text){
+  const inp = document.getElementById('q'); if(!inp) return;
+  inp.value = text;
+  const f = document.querySelector('.chat-input form');
+  if(f && f.requestSubmit) f.requestSubmit(); else send(new Event('submit'));
+}
+function renderStarters(profile, tier){
+  const wrap = document.getElementById('starters'); if(!wrap) return;
+  const p = profile || {};
+  const chips = [];
+  const hasSiren = !!(p.siren_data && p.siren_data.siren);
+  let patCount = 0; try{ patCount = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + ((me&&me.email)||'invite')) || '[]').length; }catch(_){}
+  if(!hasSiren) chips.push('Cartographiez ma société à partir de mon SIREN.');
+  if(patCount === 0) chips.push('Aidez-moi à évaluer ma position IFI 2026.');
+  const SPH = {
+    transmission: 'Comment préparer ma transmission (donation, Pacte Dutreil) ?',
+    fiscalite:    'Quels leviers pour optimiser ma fiscalité cette année ?',
+    immobilier:   'Détention directe ou SCI pour mon immobilier : que choisir ?',
+    marches:      'Comment diversifier mon allocation, y compris en non coté ?',
+    voyage:       'Organisez-moi une expérience de voyage d’exception.',
+    art:          'Comment évaluer et assurer ma collection ?',
+    vehicules:    'Quelle est la cote de mon véhicule de collection ?',
+    horlogerie:   'Comment suivre la valeur de mes montres ?',
+    vins:         'Conseillez-moi pour ma cave et les vins d’investissement.',
+    bienetre:     'Médecine privée et longévité : par où commencer ?',
+    philanthropie:'Comment structurer un projet de mécénat ?',
+    patrimoine:   'Faites-moi un bilan patrimonial 360°.',
+  };
+  (p.spheres || []).forEach(s => { if(SPH[s] && !chips.includes(SPH[s]) && chips.length < 5) chips.push(SPH[s]); });
+  ['Faites-moi un bilan patrimonial 360°.', 'Quelles priorités patrimoniales pour un dirigeant comme moi ?', 'Comment réduire mes droits de succession ?'].forEach(q => { if(chips.length < 3 && !chips.includes(q)) chips.push(q); });
+  const top = chips.slice(0, 5);
+  wrap.innerHTML = '<div class="st-lead">Pour démarrer, une suggestion ?</div>' +
+    top.map(q => `<button type="button" class="st-chip">${q.replace(/</g,'&lt;')}</button>`).join('');
+  wrap.querySelectorAll('.st-chip').forEach(b => b.addEventListener('click', () => sendQuick(b.textContent)));
+}
+
 window.send = async function(e){
   e.preventDefault();
   const inp = document.getElementById('q');
@@ -329,6 +375,7 @@ window.send = async function(e){
   if(inp.disabled) return false; // quota atteint (gate actif)
 
   inp.value=''; inp.disabled=true;
+  const _st = document.getElementById('starters'); if(_st) _st.remove();
   const msgs = document.getElementById('msgs');
 
   // Message user

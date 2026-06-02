@@ -191,8 +191,10 @@ if(me){
       wrap.className = 'veille-result';
       wrap.style.cssText = 'margin-bottom:22px';
       const dd = d.date ? new Date(d.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}) : '';
+      window._ikcpDigest = d.summary;
       wrap.innerHTML = `<h3>📰 Veille patrimoniale du jour <span style="font-weight:400;color:var(--mute);font-size:12px">· ${dd}</span></h3>`
         + `<div>${markdownToHtml(d.summary)}</div>`
+        + `<div style="margin-top:14px"><button onclick="veilleConcerne()" style="background:var(--accent);color:#fff;border:none;border-radius:999px;padding:9px 17px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">✦ Qu'est-ce qui me concerne ?</button></div>`
         + `<div class="disclaimer">Information générale, pas un conseil personnalisé (art. L.541-1 CoMoFi).</div>`;
       const main = document.querySelector('main.app-main');
       const anchor = document.querySelector('.section-label');
@@ -226,6 +228,26 @@ try {
   list.innerHTML = '<div class="empty"><h4>Veille temporairement indisponible.</h4><p>Réessayez dans un instant.</p></div>';
 }
 
+// ── Personnalisation veille selon le profil ──
+function getProfile(){ try{ return me && me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){ return null; } }
+function profileContext(){
+  const pr = getProfile(); if(!pr) return '';
+  const parts = [];
+  if(pr.profession) parts.push(pr.profession);
+  if(pr.situation) parts.push('situation : ' + pr.situation);
+  if(Array.isArray(pr.spheres) && pr.spheres.length) parts.push('intérêts patrimoniaux : ' + pr.spheres.join(', '));
+  if(pr.siren_data && pr.siren_data.siren) parts.push('dirigeant de société');
+  return parts.length ? ` — (Contexte du demandeur : ${parts.join(' ; ')}. Priorise ce qui le concerne directement.)` : '';
+}
+window.veilleConcerne = function(){
+  const dg = window._ikcpDigest || '';
+  const q = dg
+    ? `Voici la veille patrimoniale du jour : « ${dg.slice(0,700)} ». Au vu de ma situation, qu'est-ce qui me concerne vraiment et quelle action envisager ?`
+    : `Au vu de ma situation patrimoniale, quelles actualités fiscales ou patrimoniales récentes me concernent le plus ?`;
+  try{ sessionStorage.setItem('marcel_q', q); }catch(_){}
+  location.href = '/app/marcel.html';
+};
+
 // ── Recherche active ─────────────────────────────────────────────
 window.doSearch = async function(e){
   e.preventDefault();
@@ -242,7 +264,7 @@ window.doSearch = async function(e){
   resultDiv.style.display = 'none';
 
   try {
-    const r = await Marcel.veille(query, mode, me?.id, me?.tier || 'free');
+    const r = await Marcel.veille(query + profileContext(), mode, me?.id, me?.tier || 'free');
 
     // Afficher résultat
     resultDiv.style.display = 'block';
