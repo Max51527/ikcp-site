@@ -63,6 +63,9 @@
   // Activé par défaut ; désactivable via data-no-watermark sur <body>.
   function addWatermark() {
     if (!document.body || document.body.hasAttribute('data-no-watermark')) return;
+    // Espace membre connecté (/app/) : AUCUN filigrane visible — rendu premium
+    // pour les clients. L'anti-copie (copier/clic droit) reste actif partout.
+    try { if (location.pathname.indexOf('/app/') === 0) return; } catch (_) {}
     if (document.getElementById('ikcp-wm')) return;
     var txt = 'IKCP.EU · IKCP.EU · IKCP.EU · ';
     var svg =
