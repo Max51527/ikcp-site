@@ -530,8 +530,8 @@ RÈGLES ABSOLUES :
 
 TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Comme un médecin de famille du patrimoine.`;
 
-            // ══ Proxy endpoint — à remplacer par ton Cloudflare Worker ══
-            const PROXY_URL = 'https://ikcp-marcel.maxime-ead.workers.dev';
+            // ══ Worker Marcel actuel (v2.3) — même endpoint que l'espace membre ══
+            const PROXY_URL = 'https://ikcp-chat.maxime-ead.workers.dev';
 
             return {
                 isOpen: false, isExpanded: false, isLoading: false, userInput: '',
@@ -578,19 +578,19 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                             else if (lower.match(/rendez|rdv|contact|échange|maxime|calendly/)) responseText = demoResponses.rdv;
                             else responseText = demoResponses.default;
                         } else {
-                            // ── Mode production (proxy intelligence souveraine) ──
+                            // ── Mode production (intelligence souveraine) ──
+                            // Contrat worker Marcel : { message, history } → { reply }
+                            // (history = tours précédents, sans le message courant déjà empilé)
                             const response = await fetch(PROXY_URL, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    model: 'claude-sonnet-4-20250514',
-                                    max_tokens: 800,
-                                    system: SYSTEM_PROMPT,
-                                    messages: this.history.slice(-20)
+                                    message: userText,
+                                    history: this.history.slice(0, -1).slice(-20)
                                 })
                             });
                             const data = await response.json();
-                            responseText = data.content?.[0]?.text || data.error?.message || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
+                            responseText = data.reply || "Je n'ai pas pu traiter votre demande. N'hésitez pas à réessayer.";
                         }
                         this.history.push({ role: 'assistant', content: responseText });
                         this.messages.push({ role: 'assistant', html: marked.parse(String(responseText)) });
