@@ -84,6 +84,17 @@ section li{margin-bottom:8px;color:#2A3A56}
 .city h4{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:6px;color:var(--navy)}
 .city p{font-size:13px;color:var(--grey);line-height:1.5;margin:0}
 .city__cp{font-size:11px;color:var(--gold);letter-spacing:.1em;font-weight:500}
+.city a{text-decoration:none;color:inherit;display:block}
+.city:has(a){cursor:pointer}
+.topic-link{display:block;background:white;border:1px solid var(--grey-soft);border-radius:10px;padding:16px 18px;text-decoration:none;transition:all .25s}
+.topic-link:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,26,48,.08)}
+.topic-link__cat{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.15em;font-weight:600;margin-bottom:5px}
+.topic-link h4{font-size:15px;color:var(--navy);margin:0;font-family:'Playfair Display',serif;font-weight:600}
+.tools-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:24px}
+.tool-card{display:block;background:var(--navy);border-radius:10px;padding:20px 22px;text-decoration:none;transition:all .25s}
+.tool-card:hover{background:var(--navy-dark);transform:translateY(-2px)}
+.tool-card__label{font-size:10px;color:rgba(201,169,110,.9);text-transform:uppercase;letter-spacing:.15em;font-weight:600;margin-bottom:6px}
+.tool-card h4{font-size:16px;color:white;margin:0;font-family:'Playfair Display',serif}
 .dispositifs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:24px}
 .dispositif{background:white;border-left:3px solid var(--gold);padding:20px 22px;border-radius:8px;box-shadow:0 4px 12px rgba(15,26,48,.05)}
 .dispositif h4{font-size:17px;margin-bottom:8px;font-family:'Outfit',sans-serif;font-weight:600;color:var(--navy)}
@@ -190,18 +201,58 @@ details > div{padding:0 24px 22px;color:#2A3A56;font-size:15px;line-height:1.7}
       <h2>Les <em>villes d'Ardèche</em> où nous accompagnons nos clients</h2>
     </div>
     <div class="cities">
-      <div class="city"><div class="city__cp">07100</div><h4>Annonay</h4><p>Bassin industriel. Forte densité de dirigeants TNS.</p></div>
-      <div class="city"><div class="city__cp">07100</div><h4>Saint-Marcel-lès-Annonay</h4><p>Siège IKCP. Accès A7/A47.</p></div>
-      <div class="city"><div class="city__cp">07300</div><h4>Tournon-sur-Rhône</h4><p>AOC Saint-Joseph. Viticulture.</p></div>
-      <div class="city"><div class="city__cp">07000</div><h4>Privas</h4><p>Préfecture, professions libérales.</p></div>
-      <div class="city"><div class="city__cp">07200</div><h4>Aubenas</h4><p>Sud Ardèche, tourisme, LMNP.</p></div>
-      <div class="city"><div class="city__cp">07600</div><h4>Vals-les-Bains</h4><p>Thermalisme, foncier touristique.</p></div>
-      <div class="city"><div class="city__cp">07130</div><h4>Saint-Péray</h4><p>AOC Saint-Péray, viticulture.</p></div>
-      <div class="city"><div class="city__cp">07160</div><h4>Le Cheylard</h4><p>Industrie haut-vivarais.</p></div>
-      <div class="city"><div class="city__cp">07240</div><h4>Vernoux-en-Vivarais</h4><p>Plateau central, foncier rural.</p></div>
-      <div class="city"><div class="city__cp">07110</div><h4>Largentière</h4><p>Sud Ardèche rural.</p></div>
-      <div class="city"><div class="city__cp">07430</div><h4>Davézieux</h4><p>Zone industrielle Annonay.</p></div>
-      <div class="city"><div class="city__cp">07290</div><h4>Satillieu</h4><p>Plateau, résidences secondaires.</p></div>
+      <div class="city"><a href="/annonay-patrimoine"><div class="city__cp">07100</div><h4>Annonay</h4><p>Bassin industriel. Forte densité de dirigeants TNS.</p></a></div>
+      <div class="city"><a href="/saint-marcel-les-annonay-patrimoine"><div class="city__cp">07100</div><h4>Saint-Marcel-lès-Annonay</h4><p>Siège IKCP. Accès A7/A47.</p></a></div>
+      <div class="city"><a href="/tournon-patrimoine"><div class="city__cp">07300</div><h4>Tournon-sur-Rhône</h4><p>AOC Saint-Joseph. Viticulture.</p></a></div>
+      <div class="city"><a href="/privas-patrimoine"><div class="city__cp">07000</div><h4>Privas</h4><p>Préfecture, professions libérales.</p></a></div>
+      <div class="city"><a href="/aubenas-patrimoine"><div class="city__cp">07200</div><h4>Aubenas</h4><p>Sud Ardèche, tourisme, LMNP.</p></a></div>
+      <div class="city"><a href="/vals-les-bains-patrimoine"><div class="city__cp">07600</div><h4>Vals-les-Bains</h4><p>Thermalisme, foncier touristique.</p></a></div>
+      <div class="city"><a href="/saint-peray-patrimoine"><div class="city__cp">07130</div><h4>Saint-Péray</h4><p>AOC Saint-Péray, viticulture.</p></a></div>
+      <div class="city"><a href="/le-cheylard-patrimoine"><div class="city__cp">07160</div><h4>Le Cheylard</h4><p>Industrie haut-vivarais.</p></a></div>
+      <div class="city"><a href="/lamastre-patrimoine"><div class="city__cp">07270</div><h4>Lamastre</h4><p>Haut-Vivarais, artisans, résidences.</p></a></div>
+      <div class="city"><a href="/largentiere-patrimoine"><div class="city__cp">07110</div><h4>Largentière</h4><p>Sud Ardèche rural.</p></a></div>
+      <div class="city"><a href="/davezieux-patrimoine"><div class="city__cp">07430</div><h4>Davézieux</h4><p>Zone industrielle Annonay.</p></a></div>
+      <div class="city"><a href="/satillieu-patrimoine"><div class="city__cp">07290</div><h4>Satillieu</h4><p>Plateau, résidences secondaires.</p></a></div>
+      <div class="city"><a href="/saint-agreve-patrimoine"><div class="city__cp">07320</div><h4>Saint-Agrève</h4><p>Plateau central ardéchois.</p></a></div>
+      <div class="city"><a href="/viviers-patrimoine"><div class="city__cp">07220</div><h4>Viviers</h4><p>Sud Ardèche, cité médiévale.</p></a></div>
+      <div class="city"><a href="/ruoms-patrimoine"><div class="city__cp">07120</div><h4>Ruoms</h4><p>Gorges de l'Ardèche, tourisme.</p></a></div>
+      <div class="city"><a href="/guilherand-granges-patrimoine"><div class="city__cp">07500</div><h4>Guilherand-Granges</h4><p>1ère ville Ardèche, rive Rhône.</p></a></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="narrow">
+      <span class="section__eyebrow">Thématiques patrimoniales en Ardèche</span>
+      <h2>Votre situation en <em>Ardèche</em> : trouvez votre page</h2>
+      <p>Chaque profil a ses leviers. Sélectionnez votre situation pour accéder à l'analyse détaillée.</p>
+    </div>
+    <div class="cities" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+      <div class="city"><a href="/ardeche-dirigeant-tns"><div class="city__cp">Transmission · Retraite</div><h4>Dirigeant TNS Ardèche</h4><p>Gérant, président SAS, artisan. Pacte Dutreil, PER, apport-cession.</p></a></div>
+      <div class="city"><a href="/ardeche-succession"><div class="city__cp">Succession · Donation</div><h4>Succession en Ardèche</h4><p>Abattements 2026, barèmes, stratégies de transmission familiale.</p></a></div>
+      <div class="city"><a href="/ardeche-retraite"><div class="city__cp">Retraite · Capitalisation</div><h4>Retraite en Ardèche</h4><p>PER, PERP, assurance-vie, rente. Optimisation régimes TNS et salariés.</p></a></div>
+      <div class="city"><a href="/transmission-entreprise-ardeche"><div class="city__cp">Cession · Dutreil</div><h4>Transmission d'entreprise</h4><p>Pacte Dutreil, apport-cession, holding familiale. Exonérations 2026.</p></a></div>
+      <div class="city"><a href="/ardeche-ifi"><div class="city__cp">IFI · Immobilier</div><h4>IFI en Ardèche</h4><p>Calcul, abattements, SCI, foncier rural. Seuil 1,3 M€.</p></a></div>
+      <div class="city"><a href="/ardeche-viticulteur"><div class="city__cp">Agriculture · Vigne</div><h4>Viticulteur ardéchois</h4><p>DPI/DPA, GFA, transmission exploitation viticole Côtes du Vivarais.</p></a></div>
+      <div class="city"><a href="/ardeche-medecin-liberal"><div class="city__cp">Médecin · Kiné · Dentiste</div><h4>Profession libérale</h4><p>BNC, SEL, retraite CARMF, prévoyance, cession cabinet.</p></a></div>
+      <div class="city"><a href="/ardeche-famille-recomposee"><div class="city__cp">Famille · Héritage</div><h4>Famille recomposée</h4><p>Droits du beau-parent, enfants non-communs, protection du conjoint.</p></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="container">
+    <div class="narrow">
+      <span class="section__eyebrow">Outils gratuits IKCP</span>
+      <h2>Simulez votre situation <em>en 30 secondes</em></h2>
+      <p>Barèmes fiscaux officiels 2026. Aucune donnée conservée. Résultat immédiat.</p>
+    </div>
+    <div class="tools-row">
+      <a href="/simulateur-succession" class="tool-card"><div class="tool-card__label">Droits · Abattements · Barème</div><h4>Simulateur de succession 2026</h4></a>
+      <a href="/simulateur-ifi" class="tool-card"><div class="tool-card__label">IFI ex-ISF · Seuil 1,3 M€</div><h4>Simulateur IFI 2026</h4></a>
+      <a href="/simulateur-donation" class="tool-card"><div class="tool-card__label">Donation · DMTG · Abattements</div><h4>Simulateur de donation 2026</h4></a>
+      <a href="/bilan-patrimonial-gratuit" class="tool-card"><div class="tool-card__label">Bilan complet · 10 min · IA</div><h4>Bilan patrimonial gratuit</h4></a>
     </div>
   </div>
 </section>
