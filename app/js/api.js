@@ -151,7 +151,15 @@ export const Marcel = {
       location.href = '/app/index.html';
     },
     async me() {
-      return jsonFetch(`${ENDPOINTS.client}/api/v1/me`);
+      const data = await jsonFetch(`${ENDPOINTS.client}/api/v1/me`);
+      // Thème par tier : on cache le tier + on l'applique sur <html data-tier>
+      try {
+        if (data && data.tier) {
+          localStorage.setItem('ikcp_tier', data.tier);
+          if (typeof document !== 'undefined') document.documentElement.setAttribute('data-tier', data.tier);
+        }
+      } catch (_) {}
+      return data;
     },
   },
 

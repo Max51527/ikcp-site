@@ -27,6 +27,32 @@
   --cream:#FAFAF8;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   THÈME PAR TIER — l'ambiance récompense l'upgrade
+   • Découverte (free)  → terracotta chaleureux (défaut ci-dessus)
+   • Premium / Family Office → sobre navy + or « gestion de fortune »
+   Piloté par <html data-tier="premium|fo"> (cache localStorage + Auth.me).
+   ════════════════════════════════════════════════════════════════ */
+:root[data-tier="premium"], :root[data-tier="fo"]{
+  --bg:#F2F0EA;
+  --bg-2:#EAE6DC;
+  --bg-3:#DCD6C9;
+  --ink:#1B2A4A;            /* texte principal : navy */
+  --mute:#6E7689;
+  --faint:#A6ABB8;
+  --accent:#A8884D;         /* or profond : CTA, états actifs, accents */
+  --accent-soft:rgba(168,136,77,0.12);
+  --line:rgba(27,42,74,0.12);
+  --line-strong:rgba(27,42,74,0.20);
+}
+:root[data-tier="premium"] .app-header, :root[data-tier="fo"] .app-header,
+:root[data-tier="premium"] .app-tabs,  :root[data-tier="fo"] .app-tabs{
+  background:rgba(242,240,234,0.92);
+}
+:root[data-tier="premium"] .app-user .avatar, :root[data-tier="fo"] .app-user .avatar{
+  background:var(--navy);color:var(--gold-bright);box-shadow:0 0 0 1px rgba(201,169,110,.5);
+}
+
 html,body{
   background:var(--bg);color:var(--ink);
   font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;
