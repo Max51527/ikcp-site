@@ -599,7 +599,8 @@ async function loadDigest(){
     const d = await r.json().catch(()=>({}));
     if(d.summary){
       const html = esc(d.summary).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
-      const when = d.updated ? new Date(d.updated).toLocaleString('fr-FR') : '';
+      const ts = d.generated_at || d.date;
+      const when = ts ? new Date(ts).toLocaleString('fr-FR') : '';
       el.innerHTML = (when?`<div style="font-size:11px;color:var(--mute);margin-bottom:10px">Mis à jour : ${when}</div>`:'') + html;
     } else el.innerHTML = '<div class="empty">Pas encore de digest — il se génère chaque matin à 6h UTC.</div>';
   }catch(_){ el.innerHTML='<div class="empty">Digest indisponible.</div>'; }
