@@ -48,6 +48,28 @@ const TOKEN_KEY = 'ikcp_token';
 function getToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (_) { return ''; } }
 function clearToken() { try { localStorage.removeItem(TOKEN_KEY); } catch (_) {} }
 
+// ─── Studio design : applique le thème choisi (polices + couleur d'accent) ──
+// Le Studio (/app/studio.html) écrit 'ikcp_theme' ; toutes les pages membre qui
+// importent api.js l'appliquent en direct → "je teste, je vois sur le site".
+(function applyTheme() {
+  try {
+    if (typeof document === 'undefined') return;
+    const t = JSON.parse(localStorage.getItem('ikcp_theme') || 'null');
+    if (!t) return;
+    const fams = [t.titleFont, t.bodyFont].filter(Boolean).map(f => f.replace(/ /g, '+'));
+    if (fams.length) {
+      const l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=' + fams.join('&family=') + '&display=swap';
+      document.head.appendChild(l);
+    }
+    const css = [];
+    if (t.bodyFont)  css.push(`body{font-family:'${t.bodyFont}',sans-serif !important}`);
+    if (t.titleFont) css.push(`h1,h2,h3,h4,.app-h1,.app-brand,.chat-head h1,.section-label,.wordmark{font-family:'${t.titleFont}',serif !important}`);
+    if (css.length) { const s = document.createElement('style'); s.id = 'ikcp-theme-style'; s.textContent = css.join('\n'); document.head.appendChild(s); }
+    if (t.accent) document.documentElement.style.setProperty('--accent', t.accent);
+  } catch (_) {}
+})();
+
 // ─── Helper fetch JSON avec timeout 45 s ────────────────────────
 async function jsonFetch(url, options = {}) {
   const ctrl = new AbortController();
