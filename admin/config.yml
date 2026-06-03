@@ -1,0 +1,156 @@
+# Sveltia CMS — configuration des collections éditables par Maxime
+# Doc Sveltia : https://github.com/sveltia/sveltia-cms
+#
+# Auth : OAuth GitHub via workers/ikcp-cms-auth (auth.ikcp.eu)
+# Commits : direct sur main (à passer en editorial_workflow + PR plus tard
+#           si on veut une review obligatoire)
+
+backend:
+  name: github
+  repo: max51527/ikcp-site
+  branch: main
+  base_url: https://auth.ikcp.eu          # Worker OAuth proxy
+  auth_endpoint: /auth                     # → redirige vers GitHub
+  # site_domain pour la postMessage origin check
+  site_domain: admin.ikcp.eu
+
+# Toutes les images uploadées via le CMS atterrissent ici
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+# UI
+locale: fr
+site_url: https://ikcp.eu
+display_url: https://ikcp.eu
+logo_url: https://ikcp.eu/icons/icon-192.png
+
+# ─────────────────────────────────────────────────────────────
+# COLLECTIONS — ce que Maxime peut éditer
+# ─────────────────────────────────────────────────────────────
+collections:
+
+  # 1) TARIFS — 3 tiers + bespoke (singleton, fichier unique)
+  - name: tariffs
+    label: "Tarifs des espaces"
+    label_singular: "Tarif"
+    description: "Prix et features des 3 espaces IKCP (Freemium / Augmenté / Bespoke)."
+    files:
+      - name: tariffs
+        label: "Grille tarifaire"
+        file: "content/tariffs.json"
+        format: json
+        fields:
+          - { name: updated_at, label: "Dernière mise à jour", widget: datetime }
+          - name: tiers
+            label: "Espaces"
+            widget: list
+            min: 1
+            max: 4
+            fields:
+              - { name: id, label: "ID technique", widget: string, hint: "ex: freemium, augmente, bespoke" }
+              - { name: name, label: "Nom affiché", widget: string }
+              - { name: price_eur, label: "Prix annuel (€, 0 = gratuit, null = sur devis)", widget: number, required: false, value_type: int }
+              - { name: price_label, label: "Libellé prix (ex: '6 800€/an', 'Sur devis')", widget: string }
+              - { name: tagline, label: "Accroche courte", widget: string }
+              - { name: highlight, label: "Mettre en avant ?", widget: boolean, default: false }
+              - name: features
+                label: "Features incluses"
+                widget: list
+                field: { name: feature, label: "Feature", widget: string }
+              - { name: cta_label, label: "Libellé du bouton CTA", widget: string }
+              - { name: cta_href, label: "Lien du CTA", widget: string }
+
+  # 2) CAS CONCRETS — utilisés sur landing-beta + dashboard
+  - name: cases
+    label: "Cas concrets famille"
+    label_singular: "Cas"
+    description: "Témoignages des familles en beta (noms anonymisés)."
+    folder: "content/cases"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { name: title, label: "Nom affiché (ex: Emma D.)", widget: string }
+      - { name: age, label: "Âge", widget: number, value_type: int }
+      - { name: context, label: "Contexte (ex: entreprise familiale Logiciel)", widget: string }
+      - { name: quote, label: "Citation", widget: text }
+      - { name: module, label: "Module IKCP suivi", widget: string }
+      - { name: order, label: "Ordre d'affichage", widget: number, value_type: int, default: 99 }
+      - { name: published, label: "Publié ?", widget: boolean, default: true }
+      - { name: body, label: "Contexte détaillé (Markdown)", widget: markdown }
+
+  # 3) CITATIONS / FAQ — blocs réutilisables
+  - name: quotes
+    label: "Citations & témoignages"
+    files:
+      - name: quotes
+        label: "Citations clés"
+        file: "content/quotes.json"
+        format: json
+        fields:
+          - name: items
+            label: "Citations"
+            widget: list
+            fields:
+              - { name: id, label: "ID", widget: string }
+              - { name: quote, label: "Texte de la citation", widget: text }
+              - { name: author, label: "Auteur", widget: string }
+              - { name: context, label: "Contexte (ex: 32 ans · NextGen IKCP)", widget: string }
+              - { name: featured, label: "Mettre en hero ?", widget: boolean, default: false }
+
+  # 4) FAQ — pages landing
+  - name: faq
+    label: "FAQ"
+    files:
+      - name: faq
+        label: "Questions fréquentes"
+        file: "content/faq.json"
+        format: json
+        fields:
+          - name: items
+            label: "Questions"
+            widget: list
+            fields:
+              - { name: question, label: "Question", widget: string }
+              - { name: answer, label: "Réponse", widget: markdown }
+              - { name: category, label: "Catégorie", widget: select, options: ["beta", "tarifs", "compliance", "marcel"] }
+              - { name: order, label: "Ordre", widget: number, value_type: int }
+
+  # 5) ROADMAP PUBLIQUE — section transparence
+  - name: roadmap
+    label: "Roadmap publique"
+    files:
+      - name: roadmap
+        label: "Items roadmap"
+        file: "content/roadmap.json"
+        format: json
+        fields:
+          - { name: updated_at, label: "Dernière mise à jour", widget: datetime }
+          - name: items
+            label: "Items"
+            widget: list
+            fields:
+              - { name: title, label: "Titre", widget: string }
+              - { name: status, label: "Statut", widget: select, options: ["live", "in_progress", "planned", "considering"] }
+              - { name: target_date, label: "Date cible", widget: string, required: false }
+              - { name: description, label: "Description", widget: text }
+
+  # 6) ARTICLES CONVICTION (markdown) — futur blog
+  - name: conviction
+    label: "Articles conviction"
+    label_singular: "Article"
+    folder: "content/conviction"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { name: title, label: "Titre", widget: string }
+      - { name: date, label: "Date de publication", widget: datetime }
+      - { name: excerpt, label: "Résumé (200 car.)", widget: text }
+      - { name: cover, label: "Image de couverture", widget: image, required: false }
+      - { name: published, label: "Publié ?", widget: boolean, default: false }
+      - { name: body, label: "Contenu Markdown", widget: markdown }

@@ -1,16 +1,93 @@
 name: Deploy Cloudflare Workers
 
+# Auto-déploiement de chaque Worker dont le code change, sur push vers main.
+#
+# Secrets GitHub requis (déjà provisionnés) :
+#   CF_API_TOKEN  — token "Edit Workers Scripts" (dash.cloudflare.com/profile/api-tokens)
+#   CF_ACCOUNT_ID — account ID Cloudflare
+#
+# Architecture :
+#   - workers/<name>/{worker.js, wrangler.toml} = chaque Worker auto-déployé
+#   - worker/{index.js, marcel-proxy.js}        = ancienne structure (legacy, à terme déprécier)
+
 on:
   push:
     branches: [main]
     paths:
+      - 'workers/**'
       - 'worker/**'
+  workflow_dispatch:
 
 jobs:
-  deploy-ikcp-prospect:
-    name: Deploy ikcp-prospect
+  detect-changes:
     runs-on: ubuntu-latest
-    if: contains(github.event.commits[0].modified, 'worker/index.js') || contains(github.event.commits[0].added, 'worker/index.js')
+    outputs:
+      marcel:    ${{ steps.filter.outputs.marcel }}
+      client:    ${{ steps.filter.outputs.client }}
+      agents:    ${{ steps.filter.outputs.agents }}
+      cms-auth:  ${{ steps.filter.outputs.cms-auth }}
+      documents: ${{ steps.filter.outputs.documents }}
+      suivi:     ${{ steps.filter.outputs.suivi }}
+      reporting: ${{ steps.filter.outputs.reporting }}
+      api:       ${{ steps.filter.outputs.api }}
+      legacy_prospect: ${{ steps.filter.outputs.legacy_prospect }}
+      legacy_marcel:   ${{ steps.filter.outputs.legacy_marcel }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            marcel:    'workers/ikcp-marcel/**'
+            client:    'workers/ikcp-client/**'
+            agents:    'workers/ikcp-agents/**'
+            cms-auth:  'workers/ikcp-cms-auth/**'
+            documents: 'workers/documents-mcp-server/**'
+            suivi:     'workers/suivi-mcp-server/**'
+            reporting: 'workers/reporting-mcp-server/**'
+            api:       'workers/ikcp-api/**'
+            legacy_prospect: 'worker/index.js'
+            legacy_marcel:   'worker/marcel-proxy.js'
+
+  deploy-monorepo:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { worker: ikcp-marcel,          cond: marcel }
+          - { worker: ikcp-client,          cond: client }
+          - { worker: ikcp-agents,          cond: agents }
+          - { worker: ikcp-cms-auth,        cond: cms-auth }
+          - { worker: documents-mcp-server, cond: documents }
+          - { worker: suivi-mcp-server,     cond: suivi }
+          - { worker: reporting-mcp-server, cond: reporting }
+          - { worker: ikcp-api,             cond: api }
+    steps:
+      - name: Should deploy?
+        id: check
+        run: |
+          val="${{ needs.detect-changes.outputs[matrix.cond] }}"
+          echo "deploy=$val" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.deploy == 'true'
+
+      - name: Deploy ${{ matrix.worker }}
+        if: steps.check.outputs.deploy == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: workers/${{ matrix.worker }}
+          wranglerVersion: 'latest'
+
+  # ─── LEGACY (ancien dossier worker/, à migrer progressivement) ───
+  deploy-legacy-prospect:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.legacy_prospect == 'true'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: cloudflare/wrangler-action@v3
@@ -21,10 +98,10 @@ jobs:
           wranglerVersion: '3'
           command: deploy index.js --name ikcp-prospect --compatibility-date 2024-01-01
 
-  deploy-ikcp-marcel:
-    name: Deploy ikcp-marcel
+  deploy-legacy-marcel:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.legacy_marcel == 'true'
     runs-on: ubuntu-latest
-    if: contains(github.event.commits[0].modified, 'worker/marcel-proxy.js') || contains(github.event.commits[0].added, 'worker/marcel-proxy.js')
     steps:
       - uses: actions/checkout@v4
       - uses: cloudflare/wrangler-action@v3
