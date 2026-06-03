@@ -45,14 +45,9 @@
   <!-- ── Activation guidée (remplit le dashboard vide, % de progression) ── -->
   <section id="activation" style="margin:4px 0 18px;display:none"></section>
 
-  <!-- ── Vos univers (personnalisé selon vos passions cochées à l'onboarding) ── -->
-  <section id="univers-section" style="margin:4px 0 22px;display:none">
-    <div class="card-head" style="margin-bottom:12px">
-      <span class="card-cat">Vos univers</span>
-      <span class="pill neutral" id="universCount"></span>
-    </div>
-    <div id="univers-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px"></div>
-  </section>
+  <!-- ════ ESPACE 1 — Mon patrimoine & mes questions ════ -->
+  <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:8px 0 3px">Mon patrimoine <em style="font-style:italic;color:var(--accent)">&amp; mes questions</em></h2>
+  <p style="color:var(--mute);font-size:13.5px;margin-bottom:16px">Votre situation, vos sociétés, votre veille — et Marcel pour décider.</p>
 
   <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
   <div class="grid-3" style="margin-bottom:14px">
@@ -120,6 +115,27 @@
         <p>Cartographie héritiers, Pacte Dutreil, donation, mandat de protection future…</p>
         <a href="/app/marcel.html?topic=transmission" class="btn btn-ghost btn-sm" style="margin-top:10px">Activer Hermès →</a>
       </div>
+    </article>
+  </div>
+
+  <!-- ════ ESPACE 2 — Mes passions & services ════ -->
+  <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:34px 0 3px">Mes passions <em style="font-style:italic;color:var(--accent)">&amp; services</em></h2>
+  <p style="color:var(--mute);font-size:13.5px;margin-bottom:16px">Vos univers d'art de vivre, vos actifs-passion et la conciergerie.</p>
+  <section id="univers-section" style="margin:0 0 14px;display:none">
+    <div id="univers-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px"></div>
+  </section>
+  <div class="grid-2">
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Art de vivre</span><span class="pill neutral">collections</span></div>
+      <h3>Vos passions, suivies</h3>
+      <div class="empty" style="padding:14px 0;text-align:left"><p>Art, montres, voitures, vins, voyages — valeur, veille et conciergerie.</p>
+      <a href="/app/collections.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir →</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Conciergerie</span><span class="pill neutral">sur demande</span></div>
+      <h3>Une demande d'exception ?</h3>
+      <div class="empty" style="padding:14px 0;text-align:left"><p>Voyage, table, accès rare — Marcel prépare, vous validez.</p>
+      <a href="/app/marcel.html?q=Organisez-moi%20une%20exp%C3%A9rience%20d%27exception%20(voyage%2C%20table%2C%20acc%C3%A8s%20rare)." class="btn btn-ghost btn-sm" style="margin-top:10px">Demander à Marcel →</a></div>
     </article>
   </div>
 </main>
