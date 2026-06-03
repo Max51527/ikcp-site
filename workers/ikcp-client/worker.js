@@ -92,6 +92,8 @@ export default {
       if (path === '/api/v1/me/sirens' && method === 'GET') return await handleSirensList(session, env);
 
       if (path === '/api/v1/me/conversations' && method === 'GET') return await handleConvList(session, env);
+      if (path === '/api/v1/me/memory' && method === 'GET') return await handleGetMemory(session, env);
+      if (path === '/api/v1/me/memory' && method === 'POST') return await handleSaveMemory(request, session, env);
 
       if (path === '/api/v1/me/contacts' && method === 'GET') return await handleContactsList(session, env);
       if (path === '/api/v1/me/contacts' && method === 'POST') return await handleContactsAdd(request, session, env);
@@ -264,9 +266,39 @@ async function requireSession(request, env) {
 async function ensureUserColumns(env) {
   // Auto-réparation du schéma : ajoute les colonnes étendues si la base date
   // d'une version antérieure (SQLite n'a pas ADD COLUMN IF NOT EXISTS → try/catch).
-  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT']) {
+  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT', 'memory_json TEXT']) {
     try { await env.D1.prepare(`ALTER TABLE users ADD COLUMN ${col}`).run(); } catch (_) { /* colonne déjà présente */ }
   }
+}
+
+// ─── Mémoire conversationnelle Marcel (Premium/FO uniquement) ───────
+// free = pas de mémoire (incitation upgrade). Stockée dans users.memory_json.
+async function handleGetMemory(session, env) {
+  const limits = TIER_LIMITS[session.tier] || TIER_LIMITS.free;
+  if (!limits.marcel_memory_days) return json({ messages: [], memory: false });
+  try {
+    const row = await env.D1.prepare('SELECT memory_json FROM users WHERE id = ?').bind(session.user_id).first();
+    const mem = row && row.memory_json ? JSON.parse(row.memory_json) : { messages: [] };
+    return json({ messages: Array.isArray(mem.messages) ? mem.messages : [], memory: true });
+  } catch (_) {
+    await ensureUserColumns(env);
+    return json({ messages: [], memory: true });
+  }
+}
+async function handleSaveMemory(request, session, env) {
+  const limits = TIER_LIMITS[session.tier] || TIER_LIMITS.free;
+  if (!limits.marcel_memory_days) return json({ ok: false, memory: false });
+  let body = {};
+  try { body = await request.json(); } catch (_) {}
+  const messages = Array.isArray(body.messages) ? body.messages.slice(-24) : [];
+  const payload = JSON.stringify({ messages, updated_at: Date.now() });
+  try {
+    await env.D1.prepare('UPDATE users SET memory_json = ? WHERE id = ?').bind(payload, session.user_id).run();
+  } catch (_) {
+    await ensureUserColumns(env);
+    try { await env.D1.prepare('UPDATE users SET memory_json = ? WHERE id = ?').bind(payload, session.user_id).run(); } catch (_) {}
+  }
+  return json({ ok: true });
 }
 
 async function handleMe(session, env) {

@@ -151,6 +151,9 @@ if (userTier === 'fo') {
 // ── Suggestions de démarrage personnalisées (selon le profil de l'utilisateur) ──
 (function(){ let _p=null; try{ _p = me && me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){} renderStarters(_p, userTier); })();
 
+// ── Mémoire : Marcel/Cassius se souvient du dernier échange (Premium/FO) ──
+if(userTier === 'premium' || userTier === 'fo'){ loadMemory(); }
+
 // ── Avant-goût gratuit : 3 échanges Marcel pour le tier Découverte ──
 // (premium / fo = illimité). Le QUOTA est désormais enforcé CÔTÉ SERVEUR
 // (ikcp-client : free = 5 échanges/mois). Le widget se contente de réagir à
@@ -370,6 +373,29 @@ function renderStarters(profile, tier){
   wrap.querySelectorAll('.st-chip').forEach(b => b.addEventListener('click', () => sendQuick(b.textContent)));
 }
 
+// ── Mémoire conversationnelle : recharge le dernier échange ──
+async function loadMemory(){
+  try{
+    const r = await Marcel.Me.getMemory();
+    const msgs = (r && r.messages) || [];
+    if(!msgs.length) return;
+    history = msgs.slice();
+    const cont = document.getElementById('msgs');
+    const st = document.getElementById('starters'); if(st) st.remove();
+    const div = document.createElement('div');
+    div.style.cssText = 'text-align:center;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:10px 0';
+    div.textContent = '↑ reprise de votre dernier échange';
+    cont.appendChild(div);
+    msgs.forEach(m => {
+      const el = document.createElement('div');
+      if(m.role === 'user'){ el.className = 'msg u'; el.textContent = m.content; }
+      else { el.className = 'msg a'; el.innerHTML = md(m.content); }
+      cont.appendChild(el);
+    });
+    window.scrollTo({ top: document.body.scrollHeight });
+  }catch(_){}
+}
+
 window.send = async function(e){
   e.preventDefault();
   const inp = document.getElementById('q');
@@ -400,6 +426,7 @@ window.send = async function(e){
     ld.remove();
     const reply = r.reply || r.message || 'Marcel n\'a pas pu traiter votre demande.';
     history.push({role:'assistant',content:reply});
+    if(userTier === 'premium' || userTier === 'fo') Marcel.Me.saveMemory(history.slice(-24)).catch(()=>{});
 
     // Quota free atteint (enforcé serveur) → on affiche la réponse + on bloque la saisie
     if(r.quota_reached){ showUpgradeGate(); }

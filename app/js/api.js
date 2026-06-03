@@ -214,6 +214,16 @@ export const Marcel = {
     async conversations() {
       return jsonFetch(`${ENDPOINTS.client}/api/v1/me/conversations`);
     },
+    // Mémoire conversationnelle Marcel (Premium/FO) — {messages, memory}
+    async getMemory() {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/memory`);
+    },
+    async saveMemory(messages) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/memory`, {
+        method: 'POST',
+        body: JSON.stringify({ messages }),
+      });
+    },
     async contacts() {
       return jsonFetch(`${ENDPOINTS.client}/api/v1/me/contacts`);
     },
