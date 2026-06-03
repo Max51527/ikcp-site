@@ -1,0 +1,11 @@
+# Wrangler — IKCP Watchdog (surveillance santé + alerte email)
+name = "ikcp-watchdog"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+
+# Vérification toutes les 6 heures
+[triggers]
+crons = ["0 */6 * * *"]
+
+[observability]
+enabled = true
