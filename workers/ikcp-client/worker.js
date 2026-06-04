@@ -251,12 +251,16 @@ async function requireSession(request, env) {
   if (!token) return null;
   const tokenHash = await sha256(token);
   const row = await env.D1.prepare(
-    'SELECT s.token_hash, s.user_id, s.expires_at, s.revoked_at, u.email, u.tier ' +
+    'SELECT s.token_hash, s.user_id, s.expires_at, s.revoked_at, u.email, u.tier, u.created_at ' +
     'FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?'
   ).bind(tokenHash).first();
   if (!row) return null;
   if (row.revoked_at) return null;
   if (Date.now() > row.expires_at) return null;
+  // Essai gratuit : un compte 'free' récent est traité comme 'premium' (tier effectif).
+  // Se propage à tous les handlers (Marcel, mémoire, quotas, thème).
+  row.stored_tier = row.tier;
+  row.tier = effectiveTier(row.tier, row.created_at);
   return row;
 }
 
@@ -301,6 +305,22 @@ async function handleSaveMemory(request, session, env) {
   return json({ ok: true });
 }
 
+// ─── Essai gratuit limité dans le temps (14 jours de Premium offert) ───
+const TRIAL_DAYS = 14;
+function effectiveTier(storedTier, createdAt) {
+  if (storedTier && storedTier !== 'free') return storedTier; // membre payant : inchangé
+  const c = typeof createdAt === 'number' ? createdAt : Date.parse(createdAt || 0);
+  if (!c) return 'free';
+  return (Date.now() - c) < TRIAL_DAYS * 86400000 ? 'premium' : 'free';
+}
+function trialInfo(storedTier, createdAt) {
+  if (storedTier && storedTier !== 'free') return { active: false, member: true };
+  const c = typeof createdAt === 'number' ? createdAt : Date.parse(createdAt || 0);
+  if (!c) return { active: false };
+  const left = Math.ceil((c + TRIAL_DAYS * 86400000 - Date.now()) / 86400000);
+  return left > 0 ? { active: true, days_left: left } : { active: false, expired: true };
+}
+
 async function handleMe(session, env) {
   const month = new Date().toISOString().slice(0, 7);
   // Requête étendue ; si une colonne manque (vieille base), on auto-répare
@@ -326,7 +346,9 @@ async function handleMe(session, env) {
   return json({
     id:           userRow?.id || session.user_id,
     email:        userRow?.email || session.email,
-    tier:         userRow?.tier || session.tier,
+    tier:         session.tier,                                          // tier EFFECTIF (essai = premium)
+    stored_tier:  session.stored_tier || userRow?.tier || 'free',
+    trial:        trialInfo(session.stored_tier || userRow?.tier, userRow?.created_at),
     display_name: userRow?.display_name || null,
     prenom:       userRow?.prenom || null,
     profile_json: userRow?.profile_json || null,

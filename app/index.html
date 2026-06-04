@@ -154,6 +154,9 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/app/sw.js
 // Déjà connecté → dashboard
 Marcel.Auth.me().then(() => location.href = '/app/dashboard.html').catch(() => {});
 
+// Pré-remplit l'email si l'utilisateur vient de la page d'accès (essai)
+try { const _pf = localStorage.getItem('ikcp_prefill_email'); if(_pf){ const _e = document.getElementById('email'); if(_e) _e.value = _pf; localStorage.removeItem('ikcp_prefill_email'); } } catch(_) {}
+
 window.toggleHelp = function(){ document.getElementById('helpText').classList.toggle('show'); };
 
 window.askLink = async function(e){

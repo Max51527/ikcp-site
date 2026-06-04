@@ -401,7 +401,8 @@ if(me){
 if(me){
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
-  const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
+  let tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
+  if(me.trial && me.trial.active){ tierLbl = 'Premium · essai ' + me.trial.days_left + ' j'; }
   const tierEl = document.getElementById('userTier');
   tierEl.textContent = tierLbl;
   if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
