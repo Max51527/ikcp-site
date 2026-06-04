@@ -414,16 +414,19 @@ window.send = async function(e){
   msgs.appendChild(u);
   history.push({role:'user',content:q});
 
-  // Loading
+  // Loading — étapes rotatives (attente active : profondeur Opus des spécialistes)
+  const who = userTier === 'fo' ? 'Cassius' : 'Marcel';
   const ld = document.createElement('div');
   ld.className = 'msg loading';
-  ld.textContent = 'Marcel mobilise ses spécialistes…';
+  const ldSteps = [`${who} analyse votre question…`, `${who} mobilise ses spécialistes…`, `${who} vérifie les barèmes 2026…`, `${who} rédige votre réponse…`];
+  let ldI = 0; ld.textContent = ldSteps[0];
   msgs.appendChild(ld);
   window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  const ldTimer = setInterval(() => { ldI = (ldI + 1) % ldSteps.length; ld.textContent = ldSteps[ldI]; }, 2400);
 
   try{
     const r = await Marcel.chat(q, history.slice(-20));
-    ld.remove();
+    clearInterval(ldTimer); ld.remove();
     const reply = r.reply || r.message || 'Marcel n\'a pas pu traiter votre demande.';
     history.push({role:'assistant',content:reply});
     if(userTier === 'premium' || userTier === 'fo') Marcel.Me.saveMemory(history.slice(-24)).catch(()=>{});
@@ -457,7 +460,7 @@ window.send = async function(e){
       }
     })();
   }catch(err){
-    ld.remove();
+    clearInterval(ldTimer); ld.remove();
     const a = document.createElement('div');
     a.className = 'msg a';
     a.innerHTML = '<strong>Erreur technique.</strong> Marcel est momentanément indisponible. <a href="mailto:maxime@ikcp.fr">Contactez Maxime</a>.';
