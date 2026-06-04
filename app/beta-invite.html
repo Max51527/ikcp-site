@@ -274,7 +274,7 @@ input[type=email]::placeholder,input[type=text]::placeholder{color:rgba(250,247,
     <div class="code-banner" id="codeBanner"></div>
     <span class="form-label">Votre candidature fondateur</span>
     <p class="form-subtitle">
-      <strong>Essai Premium 14 jours offert</strong>, sans engagement. Vous avez un code fondateur (invitation / recommandation) ? Saisissez-le pour un accès privilégié. Sinon, laissez-le vide : votre essai démarre dès la connexion.
+      <strong>Essai Family Office 14 jours offert</strong> — Cassius, vos 12 univers et la conciergerie, sans engagement. Vous avez un code fondateur (invitation / recommandation) ? Saisissez-le pour un accès privilégié. Sinon, laissez-le vide : votre essai démarre dès la connexion.
     </p>
     <form id="applyForm" onsubmit="return submitApplication(event)">
       <div class="fld-col">
@@ -369,7 +369,7 @@ window.submitApplication = async function(e) {
     // Sans code : accès libre à l'essai. La période d'essai Premium démarre à la connexion.
     if (email) { try { localStorage.setItem('ikcp_prefill_email', email); } catch(_){} }
     msg.className = 'msg ok';
-    msg.innerHTML = 'Aucun code nécessaire : votre <b>essai Premium de 14 jours</b> démarre dès la connexion. Redirection…';
+    msg.innerHTML = 'Aucun code nécessaire : votre <b>essai Family Office de 14 jours</b> (Cassius + conciergerie) démarre dès la connexion. Redirection…';
     setTimeout(() => { location.href = '/app/index.html'; }, 1500);
     return false;
   }

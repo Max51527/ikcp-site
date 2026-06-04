@@ -402,13 +402,17 @@ if(me){
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
   let tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
-  if(me.trial && me.trial.active){ tierLbl = 'Premium · essai ' + me.trial.days_left + ' j'; }
+  if(me.trial && me.trial.active){ tierLbl = 'Family Office · essai ' + me.trial.days_left + ' j'; }
   const tierEl = document.getElementById('userTier');
   tierEl.textContent = tierLbl;
   if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
-  document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+  if(me.trial && me.trial.active){
+    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai Family Office</b> — Cassius, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
+  } else {
+    document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+  }
   // Résumé « Mon patrimoine » (module patrimoine, stockage local)
   try {
     const _pb = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + (me.email||'invite')) || '[]');
