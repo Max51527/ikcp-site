@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · ORIAS 23001568 — Poste de pilotage (interne) -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1426">
+<meta name="robots" content="noindex, nofollow">
+<title>Pilotage — IKCP Family Office</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0B1426;--panel:#101D33;--cream:#FAF7F0;--gold:#C9A96E;--gold-b:#E2C896;--navy:#1B2A4A;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.18);--ok:#4ade80}
+body{background:var(--bg);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding:clamp(20px,4vw,42px)}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 60% 45% at 80% -8%,rgba(201,169,110,.08),transparent 60%),var(--bg)}
+.top{display:flex;align-items:center;gap:14px;max-width:1080px;margin:0 auto 4px}
+.mark{width:42px;height:42px;border-radius:11px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--gold-b);font-size:17px}
+.top h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,3.4vw,30px)}
+.top h1 em{font-style:italic;color:var(--gold-b)}
+.sys{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute);border:1px solid var(--line);padding:7px 13px;border-radius:99px}
+.sys .d{width:8px;height:8px;border-radius:50%;background:var(--mute)}
+.sys .d.up{background:var(--ok);box-shadow:0 0 0 0 rgba(74,222,128,.5);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.sub{max-width:1080px;margin:0 auto 26px;color:var(--mute);font-size:13.5px}
+.wrap{max-width:1080px;margin:0 auto}
+.section{margin-bottom:26px}
+.section h2{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:11px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px;text-decoration:none;color:var(--cream);transition:transform .16s,border-color .16s}
+.tile:hover{transform:translateY(-3px);border-color:var(--gold)}
+.tile .ic{font-size:22px;margin-bottom:4px}
+.tile .t{font-family:'Fraunces',serif;font-weight:500;font-size:16px}
+.tile .d{font-size:12px;color:var(--mute);line-height:1.4}
+.tile .b{margin-top:7px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;align-self:flex-start;padding:3px 8px;border-radius:99px}
+.b.login{background:rgba(201,169,110,.16);color:var(--gold-b)}
+.b.public{background:rgba(74,222,128,.12);color:var(--ok)}
+.b.ext{background:rgba(127,180,232,.14);color:#9CC4F0}
+.ft{max-width:1080px;margin:26px auto 0;font-size:11px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="mark">IK</div>
+  <h1>Poste de <em>pilotage</em></h1>
+  <div class="sys"><span class="d" id="sysDot"></span><span id="sysTxt">vérification…</span></div>
+</div>
+<div class="sub">Tout lancer, tester et gérer depuis une seule page · <span id="who">—</span></div>
+
+<div class="wrap" id="wrap"></div>
+
+<div class="ft">IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 — page interne. <a href="/app/dashboard.html" style="color:var(--gold-b)">← Espace membre</a></div>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+let me; try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+if(me){ const t={free:'Découverte',premium:'Premium',fo:'Family Office'}[me.tier]||'Découverte'; document.getElementById('who').textContent = (me.email||'') + ' · ' + ((me.trial&&me.trial.active)?('essai FO '+me.trial.days_left+'j'):t); }
+
+const SECTIONS = [
+  { h:'Lancer & tester', items:[
+    { ic:'🚀', t:'Espace membre', d:'Connexion = essai Family Office 14 j', href:'/app/', b:'login' },
+    { ic:'🧪', t:'Cockpit de test', d:'Coche le parcours · barre d\'avancement', href:'/app/test.html', b:'login' },
+    { ic:'📈', t:'Score patrimonial', d:'Diagnostic animé, sans login', href:'/score.html', b:'public' },
+  ]},
+  { h:'Vitrines (ce que voit le prospect)', items:[
+    { ic:'🏛️', t:'Family Office', d:'Page de présentation', href:'/family-office.html', b:'public' },
+    { ic:'🅒', t:'Cassius', d:'Le Family Officer augmenté', href:'/cassius.html', b:'public' },
+    { ic:'✦', t:'Page d\'accès', d:'Demande d\'accès / essai (code optionnel)', href:'/app/beta-invite.html', b:'public' },
+    { ic:'🛎️', t:'Conciergerie', d:'Art de vivre · toutes les passions', href:'/app/conciergerie.html', b:'login' },
+  ]},
+  { h:'Piloter', items:[
+    { ic:'🗼', t:'Console', d:'Membres · santé · accès · feedback', href:'/app/console.html', b:'login' },
+    { ic:'🎨', t:'Studio design', d:'Polices · titres · couleurs (live)', href:'/app/studio.html', b:'login' },
+    { ic:'✏️', t:'CMS contenu', d:'Éditer textes / prix (Sveltia)', href:'/admin/', b:'login' },
+    { ic:'🗺️', t:'Architecture', d:'Schéma d\'ensemble de la plateforme', href:'/app/architecture.html', b:'login' },
+  ]},
+  { h:'Données & retours', items:[
+    { ic:'📊', t:'Retours bêta', d:'Base Notion des testeurs', href:'https://app.notion.com/p/287f73500d774c15a7b514d3b4b78966', b:'ext' },
+    { ic:'📖', t:'Documentation', d:'Doc Notion (à tenir à jour)', href:'https://ikcp.notion.site/Documentation-6da4ff7ad97b45b5b7af51200303ac1c', b:'ext' },
+  ]},
+  { h:'Technique', items:[
+    { ic:'☁️', t:'Cloudflare', d:'Workers · Pages · D1 · secrets', href:'https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers-and-pages', b:'ext' },
+    { ic:'💻', t:'GitHub', d:'Code source · déploiement auto', href:'https://github.com/Max51527/ikcp-site', b:'ext' },
+    { ic:'🧠', t:'Anthropic', d:'Usage & coût de l\'IA', href:'https://console.anthropic.com/settings/usage', b:'ext' },
+  ]},
+];
+
+const bLabel = { login:'connexion', public:'public', ext:'externe' };
+document.getElementById('wrap').innerHTML = SECTIONS.map(s => `
+  <div class="section">
+    <h2>${s.h}</h2>
+    <div class="grid">
+      ${s.items.map(i => `<a class="tile" href="${i.href}" ${i.b==='ext'?'target="_blank" rel="noopener"':''}>
+        <span class="ic">${i.ic}</span>
+        <span class="t">${i.t}</span>
+        <span class="d">${i.d}</span>
+        <span class="b ${i.b}">${bLabel[i.b]}</span>
+      </a>`).join('')}
+    </div>
+  </div>`).join('');
+
+// Pastille système : ping Marcel
+fetch('https://ikcp-chat.maxime-ead.workers.dev/health',{cache:'no-store'})
+  .then(r => { const ok=r.ok; document.getElementById('sysDot').className='d '+(ok?'up':''); document.getElementById('sysTxt').textContent = ok?'système opérationnel':'à vérifier'; })
+  .catch(()=>{ document.getElementById('sysTxt').textContent='hors-ligne ?'; });
+</script>
+</body>
+</html>
