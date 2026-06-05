@@ -246,6 +246,7 @@ window.tryCartographie = async function(v, status){
     if(!d || !d.siren){ throw new Error('API 404: empty'); }
     data.siren_data = d;
     status.className = 'siren-status show ok';
+    try{ status.animate([{opacity:0,transform:'translateY(10px) scale(.98)'},{opacity:1,transform:'none'}],{duration:520,easing:'cubic-bezier(.2,.7,.2,1)'}); }catch(_){}
     status.innerHTML = `<b>✓ ${d.nom || 'Société identifiée'}</b><span class="meta">${d.forme_juridique?.split(',')[0] || ''} · ${d.siege?.ville || ''} · Capital ${d.capital ? Marcel.Utils.formatEUR(d.capital) : '—'} · Créée ${d.date_creation ? new Date(d.date_creation).getFullYear() : '—'}</span>`;
   }catch(err){
     data.siren_data = null;

@@ -49,6 +49,14 @@
   <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:8px 0 3px">Mon patrimoine <em style="font-style:italic;color:var(--accent)">&amp; mes questions</em></h2>
   <p style="color:var(--mute);font-size:13.5px;margin-bottom:16px">Votre situation, vos sociétés, votre veille — et Marcel pour décider.</p>
 
+  <!-- ── Diagnostic instantané personnalisé (WOW « l'IA me connaît ») ── -->
+  <article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Cassius</span></div>
+    <h3 style="font-family:'Fraunces',serif;font-weight:500;font-size:18px">Vos 3 priorités, <em style="font-style:italic;color:var(--accent)">personnalisées</em></h3>
+    <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre Family Officer identifie vos leviers prioritaires — en direct.</p>
+    <button class="btn btn-sm" onclick="goDiagnostic()">Voir mon diagnostic →</button>
+  </article>
+
   <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
   <div class="grid-3" style="margin-bottom:14px">
     <article class="card" id="w-veille">
@@ -463,6 +471,20 @@ function renderUnivers(profile){
   }).join('');
   sec.style.display = 'block';
 }
+
+// ─── Diagnostic instantané personnalisé ───
+window.goDiagnostic = function(){
+  let p = {}; try { p = me && me.profile_json ? JSON.parse(me.profile_json) : {}; } catch(_){}
+  const bits = [];
+  if(p.profession) bits.push(p.profession);
+  if(p.situation) bits.push(p.situation);
+  if(p.siren_data && p.siren_data.nom) bits.push('dirigeant de ' + p.siren_data.nom);
+  if(Array.isArray(p.spheres) && p.spheres.length) bits.push('centres d\'intérêt : ' + p.spheres.join(', '));
+  const ctx = bits.length ? `Voici mon profil — ${bits.join(' ; ')}. ` : '';
+  const q = `${ctx}Donnez-moi mes 3 priorités patrimoniales du moment, classées, avec pour chacune l'enjeu en une phrase et la première action à envisager. Soyez concret et personnalisé.`;
+  try { sessionStorage.setItem('marcel_q', q); } catch(_){}
+  location.href = '/app/marcel.html?q=' + encodeURIComponent(q);
+};
 
 // ─── Activation : guide l'utilisateur quand le dashboard est vide ───
 function renderActivation(profile, convsCount){

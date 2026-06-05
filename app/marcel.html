@@ -70,6 +70,11 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 .starters .st-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .msg .tw::after{content:'▋';color:var(--accent);margin-left:1px;animation:twblink 1s steps(2) infinite}
 @keyframes twblink{50%{opacity:0}}
+.msg.orch{background:transparent;border:none;padding:0}
+.orch-lbl{font-size:13px;color:var(--mute);margin-bottom:9px;font-style:italic}
+.orch-row{display:flex;flex-wrap:wrap;gap:6px}
+.orch-ag{font-size:11.5px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);color:var(--faint);background:var(--bg);opacity:.5;transition:all .3s}
+.orch-ag.on{color:#fff;background:var(--accent);border-color:var(--accent);opacity:1;transform:scale(1.06);box-shadow:0 5px 16px -7px var(--accent)}
 </style>
 </head>
 <body>
@@ -144,6 +149,8 @@ if (userTier === 'fo') {
   var h1 = document.querySelector('.chat-head h1'); if (h1) h1.textContent = 'Cassius';
   var tg = document.querySelector('.chat-head .tagline'); if (tg) tg.textContent = 'Votre Family Officer d\'élite · anticipe · orchestre · veille';
   var mini = document.querySelector('.chat-head .marcel-mini'); if (mini) mini.textContent = 'C';
+  // Accueil vocal Cassius (effet majordome) — dégrade en silence si le navigateur bloque
+  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Cassius, votre Family Officer. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
   var hello = document.querySelector('.chat-msgs .msg.a');
   if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Cassius</em>, votre Family Officer. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
 }
@@ -414,15 +421,21 @@ window.send = async function(e){
   msgs.appendChild(u);
   history.push({role:'user',content:q});
 
-  // Loading — étapes rotatives (attente active : profondeur Opus des spécialistes)
+  // Loading — ORCHESTRATION VISIBLE : les spécialistes s'allument tour à tour
   const who = userTier === 'fo' ? 'Cassius' : 'Marcel';
+  const AG = [['📜','Codex'],['🌳','Hermès'],['🏛️','Bâtisseur'],['🏠','Architecte'],['📊','Stratège'],['🛎️','Concierge']];
   const ld = document.createElement('div');
-  ld.className = 'msg loading';
-  const ldSteps = [`${who} analyse votre question…`, `${who} mobilise ses spécialistes…`, `${who} vérifie les barèmes 2026…`, `${who} rédige votre réponse…`];
-  let ldI = 0; ld.textContent = ldSteps[0];
+  ld.className = 'msg loading orch';
+  ld.innerHTML = `<div class="orch-lbl">${who} mobilise ses spécialistes…</div><div class="orch-row">${AG.map((a,k)=>`<span class="orch-ag" data-k="${k}">${a[0]} ${a[1]}</span>`).join('')}</div>`;
   msgs.appendChild(ld);
   window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-  const ldTimer = setInterval(() => { ldI = (ldI + 1) % ldSteps.length; ld.textContent = ldSteps[ldI]; }, 2400);
+  const labels = [`${who} analyse votre question…`, `${who} mobilise ses spécialistes…`, `${who} croise les barèmes 2026…`, `${who} rédige votre réponse…`];
+  let ldI = 0;
+  const ldTimer = setInterval(() => {
+    ldI++;
+    const lbl = ld.querySelector('.orch-lbl'); if(lbl) lbl.textContent = labels[ldI % labels.length];
+    const chips = ld.querySelectorAll('.orch-ag'); chips.forEach((c,k) => c.classList.toggle('on', k === (ldI % chips.length)));
+  }, 1100);
 
   try{
     const r = await Marcel.chat(q, history.slice(-20));

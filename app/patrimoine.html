@@ -72,6 +72,14 @@
   .fp-actions{display:flex;gap:10px;margin-top:16px}
 
   .disc{font-size:11px;color:var(--mute);font-style:italic;margin:22px 0 8px;line-height:1.6}
+  /* Synthèse PDF (impression) : on masque le chrome, on garde donut + valeur + biens */
+  @media print{
+    .app-header,.app-tabs,.pat-actions,.form-panel,.bien-actions,.empty-pat,button,.pat-head .btn{display:none!important}
+    body{background:#fff!important}
+    .wrap{padding:0!important}
+    .bien{break-inside:avoid}
+    h1::after{content:' — Synthèse · IKCP · ORIAS 23001568';font-size:13px;color:#6B655A;font-style:italic}
+  }
   .btn-sm2{padding:9px 16px;font-size:13px}
 </style>
 </head>
@@ -106,6 +114,7 @@
       <div class="pat-actions">
         <button class="btn" onclick="openForm()">+ Ajouter un bien</button>
         <button class="btn btn-ghost" onclick="analyzeAll()">✦ Analyser avec Marcel</button>
+        <button class="btn btn-ghost" onclick="window.print()">📄 Synthèse PDF</button>
       </div>
     </div>
   </section>
