@@ -4,7 +4,7 @@
  * Région : Cloudflare Pages (souveraineté France)
  */
 
-const CACHE_VERSION = 'marcel-v1.0.1';
+const CACHE_VERSION = 'marcel-v1.0.2';
 const STATIC_CACHE = `marcel-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `marcel-runtime-${CACHE_VERSION}`;
 
@@ -22,6 +22,7 @@ const PRECACHE_URLS = [
   '/app/profil.html',
   '/app/css/marcel.css',
   '/app/js/api.js',
+  '/app/js/appnav.js',
   '/app/manifest.json',
   '/app/icons/marcel.svg',
 ];

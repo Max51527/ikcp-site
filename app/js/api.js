@@ -17,6 +17,10 @@
  *   ikcp-batisseur / ikcp-hermes / ikcp-lifestyle → Sprint 2
  */
 
+// Barre d'onglets de l'app (bottom tab bar) — auto-injectée sur les pages
+// membres éligibles. Import à effet de bord : se filtre lui-même par page.
+import './appnav.js';
+
 const ENDPOINTS = {
   chat:        'https://ikcp-chat.maxime-ead.workers.dev',
   pappers:     'https://ikcp-pappers.maxime-ead.workers.dev',
