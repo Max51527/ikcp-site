@@ -27,7 +27,48 @@ L'espace membre `/app` est une **vraie application installable**, sans store :
 
 ---
 
-## 🤖 PHASE 2 — APK Android réel (Android-first · décision 2026-06-06)
+## ✅ FAIT (2026-06-06) — APK Android construit EN LOCAL
+
+Finalement, pas besoin de PWABuilder : l'APK a été **construit directement sur le PC**
+(Bubblewrap + Gradle, JDK 17 + SDK Android téléchargés automatiquement).
+
+| Élément | Détail |
+|---|---|
+| **APK signé** | `C:\Users\juven\Desktop\Marcel-IKCP-FamilyOffice.apk` (≈ 1,4 Mo) — à installer / envoyer |
+| **AAB Play Store** | `C:\Users\juven\Desktop\Marcel-IKCP-PlayStore.aab` (pour publication store plus tard) |
+| Package | `eu.ikcp.app` · versionName 1.0.0 · TWA ouvrant `ikcp.eu/app` |
+| Empreinte SHA-256 | `83:F2:…:54` — injectée dans `/.well-known/assetlinks.json` (LIVE) → **pas de barre d'URL** |
+| Projet de build | `C:\Users\juven\ikcp-android-build\` (hors repo git) |
+
+**⚠️ CLÉ DE SIGNATURE — à sauvegarder absolument :**
+- Keystore : `C:\Users\juven\ikcp-android-build\android.keystore`
+- Mot de passe : `C:\Users\juven\ikcp-android-build\KEYSTORE-PASSWORD.txt`
+- **Copie ces 2 fichiers dans Bitwarden.** Sans eux, impossible de publier une mise à jour
+  de l'app (Play Store refuse un APK signé par une autre clé). Ne les commit jamais.
+
+**Installer l'APK (toi + ton ami CGP) :**
+1. Copie `Marcel-IKCP-FamilyOffice.apk` sur le téléphone Android (câble, Drive, mail, WhatsApp).
+2. Réglages → Sécurité → autorise « installer des applis inconnues » pour le gestionnaire de fichiers.
+3. Ouvre l'APK → Installer → icône **Marcel** sur l'écran d'accueil, plein écran, sans barre d'URL.
+
+**Rebuild après une montée de version** (depuis `ikcp-android-build`) :
+```
+# bump appVersionName/appVersionCode dans twa-manifest.json, puis :
+export JAVA_HOME="C:\Users\juven\.bubblewrap\jdk\jdk-17.0.11+9"
+PASS=$(cat KEYSTORE-PASSWORD.txt)
+./gradlew assembleRelease bundleRelease --no-daemon \
+  -Pandroid.injected.signing.store.file=android.keystore \
+  -Pandroid.injected.signing.store.password=$PASS \
+  -Pandroid.injected.signing.key.alias=ikcp \
+  -Pandroid.injected.signing.key.password=$PASS
+```
+
+> Comme l'app charge `ikcp.eu/app` en direct, **toute modif du site se reflète sans rebuild**.
+> On ne rebuild l'APK que pour changer l'icône, le nom, ou publier une nouvelle version au store.
+
+---
+
+## 📦 (Archive) PHASE 2 alternative — PWABuilder (si jamais le build local casse)
 
 > **Android d'abord** : gratuit, pas de Mac, pas de 99 €/an Apple. iOS plus tard.
 > Machine Maxime : Node ✓ mais **pas de JDK / Android SDK** → on **n'installe rien**.
