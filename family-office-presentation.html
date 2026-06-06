@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Créé par IKCP.EU -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP Family Office augmenté — la présentation</title>
+<meta name="description" content="Présentation animée du Family Office augmenté IKCP : une seule porte (Marcel), 12 univers d'experts IA, diagnostic instantané, patrimoine visuel, veille, conciergerie, et l'application mobile. Essai 14 jours.">
+<link rel="canonical" href="https://ikcp.eu/family-office-presentation.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAF7F0;--gold:#C9A96E;--gold-b:#E2C896;--mute:rgba(250,247,240,.6);--line:rgba(201,169,110,.2)}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--navy-deep);color:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 60% 45% at 50% -6%,rgba(201,169,110,.10),transparent 60%),var(--navy-deep)}
+.hd{position:fixed;top:0;left:0;right:0;z-index:20;backdrop-filter:blur(10px);background:rgba(11,20,38,.7);border-bottom:1px solid var(--line)}
+.hd .in{max-width:1080px;margin:0 auto;padding:13px 22px;display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:20px}.hd .logo span{color:var(--gold)}
+.hd a.cta{background:var(--gold);color:var(--navy-deep);padding:8px 16px;border-radius:99px;font-weight:700;font-size:13px;text-decoration:none}
+.scene{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 22px 50px;max-width:920px;margin:0 auto}
+.scene .step{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-b);font-weight:600;margin-bottom:18px}
+.scene h2{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,5.5vw,50px);line-height:1.1}
+.scene h2 em{font-style:italic;color:var(--gold-b)}
+.scene p{color:var(--mute);font-size:clamp(16px,2.2vw,19px);max-width:620px;margin:18px auto 0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.frag{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px}
+.frag span{background:rgba(250,247,240,.05);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:13.5px;color:var(--mute)}
+.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:30px;text-align:left;width:100%}
+.feat{background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:15px;padding:18px}
+.feat .e{font-size:24px}.feat h3{font-family:'Playfair Display',serif;font-weight:500;font-size:17px;margin:7px 0 4px;color:var(--gold-b)}
+.feat p{font-size:13px;color:var(--mute);margin:0}
+.phone{width:230px;height:460px;border-radius:34px;border:8px solid #2a3a57;background:linear-gradient(160deg,#16223C,#0B1426);margin:26px auto 0;position:relative;box-shadow:0 30px 70px -30px rgba(0,0,0,.7),0 0 60px -20px rgba(201,169,110,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.phone .o{width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 40% 32%,#3a4d72,#1B2A4A 60%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-style:italic;font-size:30px;color:var(--gold-b);margin-bottom:14px}
+.phone b{font-family:'Playfair Display',serif;font-size:18px}.phone span{font-size:12px;color:var(--mute);margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--navy-deep);padding:15px 30px;border-radius:100px;font-weight:700;font-size:15px;text-decoration:none;box-shadow:0 16px 40px -14px rgba(201,169,110,.6);margin:8px}
+.btn.ghost{background:transparent;border:1px solid var(--gold);color:var(--gold-b)}
+.note{font-size:12px;color:var(--mute);font-style:italic;margin-top:14px}
+.ft{text-align:center;padding:30px 22px;font-size:12px;color:var(--mute);border-top:1px solid var(--line)}
+.ft a{color:var(--gold-b);text-decoration:none;margin:0 6px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="in"><div class="logo">IK<span>CP</span></div><a class="cta" href="/app/beta-invite.html">Essai 14 jours →</a></div></header>
+
+<section class="scene">
+  <div class="step reveal">Le Family Office augmenté</div>
+  <h2 class="reveal">Et si tout votre patrimoine<br>tenait dans <em>une seule conversation</em> ?</h2>
+  <p class="reveal">IKCP réunit, sous un toit unique, tous les métiers du patrimoine d'une famille — orchestrés par une intelligence souveraine et un humain de confiance.</p>
+</section>
+
+<section class="scene">
+  <div class="step reveal">Le problème</div>
+  <h2 class="reveal">Votre patrimoine est <em>éparpillé</em>.</h2>
+  <p class="reveal">Banquier, notaire, expert-comptable, assureur, conseiller… chacun voit une pièce. Personne ne voit le tout. Vous portez la coordination.</p>
+  <div class="frag reveal"><span>🏦 Banque</span><span>⚖️ Notaire</span><span>📊 Comptable</span><span>🛡️ Assureur</span><span>🏠 Immobilier</span><span>🧾 Fiscaliste</span></div>
+</section>
+
+<section class="scene">
+  <div class="step reveal">La réponse</div>
+  <h2 class="reveal">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+  <p class="reveal"><b style="color:var(--gold-b)">Marcel</b>, votre chef d'orchestre, mobilise 12 univers d'experts — fiscalité, transmission, immobilier, marchés, art de vivre — et vous répond, en clair, 24/7.</p>
+  <a class="btn ghost reveal" href="/family-office-map.html">Voir la carte complète →</a>
+</section>
+
+<section class="scene">
+  <div class="step reveal">Ce que vous vivez · en vrai sur le site</div>
+  <h2 class="reveal">Pas une promesse. <em>Une démonstration.</em></h2>
+  <div class="feats reveal">
+    <div class="feat"><div class="e">🎯</div><h3>Diagnostic instantané</h3><p>Vos 3 priorités patrimoniales, personnalisées dès la connexion.</p></div>
+    <div class="feat"><div class="e">🎼</div><h3>Orchestration en direct</h3><p>Vous voyez les spécialistes (Codex, Hermès…) s'activer pour vous.</p></div>
+    <div class="feat"><div class="e">📈</div><h3>Patrimoine visuel</h3><p>Répartition, valeur nette, position IFI — et une synthèse PDF.</p></div>
+    <div class="feat"><div class="e">🔔</div><h3>Veille quotidienne</h3><p>Loi de finances, jurisprudence — « ce qui vous concerne », chaque matin.</p></div>
+    <div class="feat"><div class="e">🛎️</div><h3>Conciergerie</h3><p>Voyage, art, automobile, vins… toutes vos passions, orchestrées.</p></div>
+    <div class="feat"><div class="e">🤝</div><h3>L'humain</h3><p>Maxime Juveneton (CIF · ORIAS) intervient à votre demande.</p></div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="step reveal">Dans votre poche</div>
+  <h2 class="reveal">Votre Family Office, <em>en application.</em></h2>
+  <p class="reveal">Installez IKCP sur votre téléphone en un geste — pas de store. Accès instantané, voix, et bientôt vos alertes patrimoniales chaque matin.</p>
+  <div class="phone reveal">
+    <div class="o">M</div><b>Marcel</b><span>Family Office · dans votre poche</span>
+    <div style="margin-top:16px;font-size:11px;color:var(--mute)">📲 PWA · 🎙️ Voix · 🔔 Alertes (à venir)</div>
+  </div>
+  <div class="reveal" style="margin-top:18px">
+    <button class="btn" id="installBtn" onclick="installApp()" style="display:none;border:none;cursor:pointer">📲 Installer l'application</button>
+    <div class="note" id="installNote">Sur <b>iPhone</b> : Partager → « Sur l'écran d'accueil ». Sur <b>Android</b> : menu ⋮ → « Installer l'application ».</div>
+  </div>
+</section>
+
+<section class="scene">
+  <div class="step reveal">Maintenant</div>
+  <h2 class="reveal">Vivez-le <em>14 jours</em>, offert.</h2>
+  <p class="reveal">Accès Family Office complet — Marcel, vos 12 univers, la conciergerie, la veille. Sans engagement, souverain France.</p>
+  <div class="reveal" style="margin-top:8px">
+    <a class="btn" href="/app/beta-invite.html">Démarrer mon essai →</a>
+    <a class="btn ghost" href="/score.html">Évaluer mon patrimoine d'abord</a>
+  </div>
+</section>
+
+<footer class="ft">© 2026 IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436 — souverain France · RGPD
+  <div style="margin-top:6px"><a href="/family-office.html">Family Office</a> · <a href="/family-office-map.html">La carte</a> · <a href="/family-office-definition.html">C'est quoi un FO ?</a></div>
+</footer>
+
+<script>
+// Révélation au scroll
+const io = new IntersectionObserver((es) => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold:.18 });
+document.querySelectorAll('.reveal').forEach((el,i) => { el.style.transitionDelay = (i%4*0.08)+'s'; io.observe(el); });
+// Installation PWA
+let dp = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); dp = e; const b=document.getElementById('installBtn'); b.style.display='inline-flex'; document.getElementById('installNote').style.display='none'; });
+window.installApp = async function(){ if(dp){ dp.prompt(); await dp.userChoice; dp=null; document.getElementById('installBtn').style.display='none'; } };
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
