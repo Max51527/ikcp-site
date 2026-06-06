@@ -27,39 +27,61 @@ L'espace membre `/app` est une **vraie application installable**, sans store :
 
 ---
 
-## ⏳ PHASE 2 — Publication App Store + Google Play (après bêta)
+## 🤖 PHASE 2 — APK Android réel (Android-first · décision 2026-06-06)
 
-**Approche : Capacitor** — on embarque le site existant dans une coque native.
-Zéro réécriture : la même base `/app` devient un binaire iOS + Android.
+> **Android d'abord** : gratuit, pas de Mac, pas de 99 €/an Apple. iOS plus tard.
+> Machine Maxime : Node ✓ mais **pas de JDK / Android SDK** → on **n'installe rien**.
+> On utilise **PWABuilder** (Microsoft, gratuit) qui empaquette notre PWA en APK signé.
 
-### Étapes techniques (je m'en occupe quand tu déclenches)
-1. `npm i @capacitor/core @capacitor/cli @capacitor/ios @capacitor/android`
-2. `npx cap init "IKCP" "eu.ikcp.app"` — config `server.url = https://ikcp.eu/app` (mode hybride : l'app charge le site, mises à jour instantanées sans re-soumettre).
-3. `npx cap add ios && npx cap add android`
-4. Icônes/splash natifs (générés depuis les PNG existants).
-5. Plugins natifs utiles : Push Notifications (APNs/FCM), Haptics, Share, Biometric (Face ID pour déverrouiller).
+### Pourquoi PWABuilder (TWA) et pas Capacitor ici
+- La PWA `/app` est déjà complète → PWABuilder l'emballe en **TWA** (Trusted Web Activity) :
+  une app Android native qui ouvre le site en plein écran, **sans barre d'URL**.
+- **Auto-mise à jour** : toute modif du site se reflète dans l'app, **sans re-soumettre**.
+- Build dans le navigateur → **aucune install Android Studio** sur le PC.
+- Capacitor aurait exigé JDK + Android SDK (~1,5 Go) — inutile pour une bêta.
 
-### 🔑 Tes étapes (credentials — je ne peux pas les faire à ta place)
-| Action | Coût | Où |
-|---|---|---|
-| Compte **Apple Developer** | 99 €/an | developer.apple.com |
-| Compte **Google Play Console** | 25 € (une fois) | play.google.com/console |
-| Certificats signature iOS | inclus | via Xcode (Mac requis) |
-| Soumission + review Apple | — | ~1 à 2 semaines |
+### ✅ Ce que JE prépare dans le repo (fait)
+- [x] `manifest.json` prêt TWA (standalone, icônes 192/512 maskable, raccourcis).
+- [x] `/.well-known/assetlinks.json` en place (plomberie pour masquer la barre d'URL) —
+      **empreinte à remplacer** une fois l'APK généré (voir étape 4).
+- [x] Identité app : nom **« Marcel — Family Office »**, package **`eu.ikcp.app`**.
 
-> ⚠️ **Mac requis** pour builder/soumettre l'app iOS (Xcode). Android se build sous Windows.
-> Si pas de Mac : service de build cloud (ex. Codemagic / EAS) — à arbitrer le moment venu.
+### 📲 TES étapes (≈ 10 min, navigateur, gratuit)
+1. Va sur **https://www.pwabuilder.com** → colle **`https://ikcp.eu/app/dashboard.html`** → *Start*.
+2. PWABuilder analyse la PWA (doit être au vert) → bouton **Package For Stores** → **Android**.
+3. Options : laisse **Package ID = `eu.ikcp.app`**, garde « Signing key = **New** ».
+   → **Download**. Tu obtiens un `.zip` avec : `app-release-signed.apk`, `app-release.aab`,
+   le **`signing.keystore`** + ses **mots de passe**, et un **`assetlinks.json`**.
+4. **Ouvre l'`assetlinks.json` du zip** → copie le bloc → **colle-le moi ici** (ou juste
+   l'empreinte SHA-256). Je le commit → barre d'URL supprimée, app « vraie ».
+5. **⚠️ SAUVEGARDE le `signing.keystore` + mots de passe** dans Bitwarden. Sans lui,
+   impossible de mettre à jour l'app plus tard. (Ne me l'envoie PAS — c'est ton secret.)
 
-### Trigger Phase 2
-Quand ton ami CGP a testé la Phase 1 et validé l'expérience → tu me dis **« GO stores »**
-et je prépare tout le scaffold Capacitor + le guide pas-à-pas de soumission.
+### Installer l'APK (toi + ton ami CGP)
+- Copie **`app-release-signed.apk`** sur le téléphone Android (câble, Drive, ou envoie-le).
+- Réglages → Sécurité → autorise **« installer des applis inconnues »** pour le gestionnaire de fichiers.
+- Ouvre l'APK → Installer. Icône **Marcel** sur l'écran d'accueil, ouverture plein écran.
+- Pour ton ami : envoie-lui le **fichier APK** (WhatsApp/mail) + le lien `ikcp.eu/app/beta-invite`.
+
+### Play Store public (optionnel, plus tard)
+- Le **`.aab`** sert à publier sur le Play Store : compte **Google Play Console = 25 € une fois**.
+- Quand tu veux le store public → dis **« GO Play Store »**, je te guide la soumission.
+- Tant que la bêta = toi + 1 ami, l'**APK direct suffit** (pas besoin des 25 €).
+
+### Trigger
+Lance PWABuilder quand tu veux → renvoie-moi l'`assetlinks.json`, je finalise. C'est tout.
 
 ---
 
-## 🔔 Bonus court terme (entre Phase 1 et 2)
-- **Notifications push réelles** : la veille quotidienne pousse une alerte sur le téléphone
+## 🍎 PHASE 3 — iOS (plus tard, si la bêta convainc)
+Apple Developer 99 €/an + Mac (ou build cloud type Codemagic). On verra après l'Android.
+
+---
+
+## 🔔 Bonus court terme
+- **Notifications push réelles** : la veille quotidienne sonne sur le téléphone
   (« Loi de finances : ce qui vous concerne »). Manque : clé VAPID + envoi depuis `ikcp-veille`.
-  → dis « notifications push » si tu veux que je branche ça avant les stores.
+  → dis « notifications push » pour que je branche ça.
 
 ---
 
