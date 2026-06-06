@@ -105,7 +105,7 @@ const SERVICES = [
 
 function goConcierge(text){
   try{ sessionStorage.setItem('marcel_q', text); }catch(_){}
-  location.href = '/app/marcel.html?q=' + encodeURIComponent(text);
+  location.href = '/app/marcel?q=' + encodeURIComponent(text);
 }
 
 document.getElementById('grid').innerHTML = SERVICES.map((s,i) => `

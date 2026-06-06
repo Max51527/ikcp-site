@@ -308,10 +308,6 @@ window.readMessage = async function(btnId, text){
 const _urlP = new URLSearchParams(location.search);
 const _topic = _urlP.get('topic');
 const _qParam = _urlP.get('q');
-if(_qParam && !_topic){
-  document.getElementById('q').value = _qParam;
-  document.getElementById('q').focus();
-}
 const _topicPrompts = {
   batisseur:    'Je souhaite réaliser une cartographie patrimoniale 360° : actifs immobiliers, sociétés, liquidités, contrats. Pouvez-vous orchestrer Bâtisseur ?',
   hermes:       'Je souhaite travailler ma stratégie de transmission patrimoniale (succession, donation, Pacte Dutreil, démembrement). Pouvez-vous mobiliser Hermès ?',
@@ -319,17 +315,15 @@ const _topicPrompts = {
   fiscal:       'Je souhaite optimiser ma situation fiscale 2026. Par où commencer ?',
   ifi:          'Pouvez-vous m\'aider à analyser ma position IFI 2026 et identifier les leviers d\'optimisation ?',
 };
-if(_topic && _topicPrompts[_topic]){
-  document.getElementById('q').value = _topicPrompts[_topic];
-  document.getElementById('q').focus();
-}
-
-// Si question pré-remplie depuis dashboard (sessionStorage, prioritaire sur topic)
-const pendingQ = sessionStorage.getItem('marcel_q');
+// Question pré-remplie : sessionStorage (survit aux redirections 308) OU ?q= OU ?topic=
+let pendingQ = null;
+try { pendingQ = sessionStorage.getItem('marcel_q'); if(pendingQ) sessionStorage.removeItem('marcel_q'); } catch(_){}
+if(!pendingQ && _qParam) pendingQ = _qParam;
+if(!pendingQ && _topic && _topicPrompts[_topic]) pendingQ = _topicPrompts[_topic];
 if(pendingQ){
-  sessionStorage.removeItem('marcel_q');
-  document.getElementById('q').value = pendingQ;
-  setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
+  const qi = document.getElementById('q'); if(qi) qi.value = pendingQ;
+  // Auto-envoi FIABLE (requestSubmit déclenche onsubmit=send)
+  setTimeout(() => { const f = document.querySelector('.chat-input form'); if(f && f.requestSubmit){ f.requestSubmit(); } else if(window.send){ window.send(new Event('submit')); } }, 280);
 }
 
 function md(s){

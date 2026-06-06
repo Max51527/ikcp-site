@@ -255,7 +255,7 @@ function renderIFI(){
   const flag = document.getElementById('ifiFlag');
   if(immo >= 1300000){
     flag.style.display = 'block';
-    flag.innerHTML = `⚠️ Votre immobilier déclaré (${eur(immo)}) dépasse le seuil IFI de 1,3 M€. <a href="/app/marcel.html?q=${encodeURIComponent('Mon patrimoine immobilier dépasse le seuil IFI. Quels leviers pour optimiser ma position ?')}" style="color:var(--warn);text-decoration:underline">Demander à Marcel →</a>`;
+    flag.innerHTML = `⚠️ Votre immobilier déclaré (${eur(immo)}) dépasse le seuil IFI de 1,3 M€. <a href="/app/marcel?q=${encodeURIComponent('Mon patrimoine immobilier dépasse le seuil IFI. Quels leviers pour optimiser ma position ?')}" style="color:var(--warn);text-decoration:underline">Demander à Marcel →</a>`;
   } else { flag.style.display = 'none'; }
 }
 
@@ -338,7 +338,7 @@ window.deleteCurrent = function(){
 };
 
 // ─── Analyse Marcel ───
-function goMarcel(q){ try{ sessionStorage.setItem('marcel_q', q); }catch(_){}; location.href = '/app/marcel.html?q=' + encodeURIComponent(q); }
+function goMarcel(q){ try{ sessionStorage.setItem('marcel_q', q); }catch(_){}; location.href = '/app/marcel?q=' + encodeURIComponent(q); }
 function analyzeBien(b){
   const c = CATS[b.cat] || {};
   goMarcel(`Analyse ce bien de mon patrimoine : « ${b.label} » (${c.label}), valeur estimée ${eur(b.value)}. Quels leviers patrimoniaux, fiscaux ou de transmission dois-je considérer ?`);

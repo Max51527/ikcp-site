@@ -535,7 +535,7 @@ async function askSpecialist(catKey, question, itemContext){
   if(!agent){
     // Fallback Marcel pour catégories sans agent dédié
     sessionStorage.setItem('marcel_q', question);
-    location.href = '/app/marcel.html?ask=1';
+    location.href = '/app/marcel?ask=1';
     return;
   }
 
@@ -596,7 +596,7 @@ window.askMarcelAbout = function(prompt){
     askSpecialist(activeCatKey, prompt);
   } else {
     sessionStorage.setItem('marcel_q', prompt);
-    location.href = '/app/marcel.html?ask=1';
+    location.href = '/app/marcel?ask=1';
   }
 }
 
@@ -632,11 +632,11 @@ window.exportSuccession = function(){
 window.askMarcelGlobal = function(){
   const stats = Object.values(DEMO_COLLECTIONS).reduce((s,c) => ({ total: s.total + c.total, items: s.items + c.items.length }), { total: 0, items: 0 });
   sessionStorage.setItem('marcel_q', `Point global sur mes ${stats.items} pièces de collection (valorisation ${Marcel.Utils.formatEUR(stats.total)}). Recommandations transmission, IFI, assurance, arbitrages.`);
-  location.href = '/app/marcel.html?ask=1';
+  location.href = '/app/marcel?ask=1';
 }
 window.quickAddViaMarcel = function(){
   sessionStorage.setItem('marcel_q', `Je viens d'acquérir une nouvelle pièce que je veux ajouter à ma collection. Pose-moi 5 questions courtes (catégorie, marque, modèle, prix d'achat, certificat dispo ?) pour la documenter, puis prépare un récap structuré.`);
-  location.href = '/app/marcel.html?ask=1';
+  location.href = '/app/marcel?ask=1';
 }
 window.closeCatDetail = function(){
   document.getElementById('catDetail').classList.remove('open');

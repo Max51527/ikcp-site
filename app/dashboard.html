@@ -70,7 +70,7 @@
       <div class="card-head"><span class="card-cat">Cartographie</span><span class="pill live" id="cartoStatus">SIREN</span></div>
       <h3 id="cartoNom">Société principale</h3>
       <div id="carto-body" class="loading">Lecture profil société…</div>
-      <a href="/app/marcel.html?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
+      <a href="/app/marcel?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
     </article>
 
     <article class="card" id="w-patrimoine">
@@ -121,7 +121,7 @@
       <h3>État préparation</h3>
       <div id="transmission-body" class="empty" style="padding:20px;text-align:left">
         <p>Cartographie héritiers, Pacte Dutreil, donation, mandat de protection future…</p>
-        <a href="/app/marcel.html?topic=transmission" class="btn btn-ghost btn-sm" style="margin-top:10px">Activer Hermès →</a>
+        <a href="/app/marcel?topic=transmission" class="btn btn-ghost btn-sm" style="margin-top:10px">Activer Hermès →</a>
       </div>
     </article>
   </div>
@@ -373,7 +373,7 @@ window.dashToggleMic = function(){
       btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
       btn.textContent = '🎤';
       sessionStorage.setItem('marcel_q', t);
-      location.href = '/app/marcel.html?ask=1';
+      location.href = '/app/marcel?ask=1';
     },
     onError: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
     onEnd: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
@@ -461,7 +461,7 @@ function renderUnivers(profile){
   if(cnt) cnt.textContent = keys.length + (keys.length > 1 ? ' univers' : ' univers');
   grid.innerHTML = keys.map(k => {
     const u = MAP[k];
-    const href = '/app/marcel.html?q=' + encodeURIComponent(u.q);
+    const href = '/app/marcel?q=' + encodeURIComponent(u.q);
     return `<a class="card" href="${href}" style="text-decoration:none;display:flex;flex-direction:column;transition:all .18s">
       <div style="font-size:26px;line-height:1">${u.em}</div>
       <h3 style="margin:8px 0 2px;font-size:16px">${u.nom}</h3>
@@ -483,7 +483,7 @@ window.goDiagnostic = function(){
   const ctx = bits.length ? `Voici mon profil — ${bits.join(' ; ')}. ` : '';
   const q = `${ctx}Donnez-moi mes 3 priorités patrimoniales du moment, classées, avec pour chacune l'enjeu en une phrase et la première action à envisager. Soyez concret et personnalisé.`;
   try { sessionStorage.setItem('marcel_q', q); } catch(_){}
-  location.href = '/app/marcel.html?q=' + encodeURIComponent(q);
+  location.href = '/app/marcel?q=' + encodeURIComponent(q);
 };
 
 // ─── Activation : guide l'utilisateur quand le dashboard est vide ───
@@ -494,7 +494,7 @@ function renderActivation(profile, convsCount){
   try { patCount = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + ((me&&me.email)||'invite')) || '[]').length; } catch(_){}
   const steps = [
     { ok: !!(p.onboarding_completed || p.prenom), label:'Compléter votre profil',       href:'/app/onboarding.html',             icon:'👤' },
-    { ok: !!(p.siren_data && p.siren_data.siren), label:'Cartographier votre société',   href:'/app/marcel.html?topic=batisseur', icon:'🏢' },
+    { ok: !!(p.siren_data && p.siren_data.siren), label:'Cartographier votre société',   href:'/app/marcel?topic=batisseur', icon:'🏢' },
     { ok: patCount > 0,                            label:'Ajouter un premier bien',       href:'/app/patrimoine.html',             icon:'🏠' },
     { ok: (convsCount||0) > 0,                     label:'Poser une question à Marcel',   href:'/app/marcel.html',                 icon:'💬' },
   ];
@@ -603,7 +603,7 @@ window.askMarcel = function(e){
   const q = document.getElementById('qInput').value.trim();
   if(!q) return false;
   sessionStorage.setItem('marcel_q', q);
-  location.href = '/app/marcel.html?ask=1';
+  location.href = '/app/marcel?ask=1';
   return false;
 }
 

@@ -298,7 +298,7 @@ window.doSearch = async function(e){
       resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Quota atteint</h3><p>${msg}</p></div>`;
     } else if(msg.includes('502') || msg.includes('upstream')){
       // Fallback gracieux si ikcp-veille pas encore déployé → rediriger vers Marcel
-      resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Veille indisponible</h3><p>Le service de veille est temporairement indisponible. <a href="/app/marcel.html?topic=veille&q=${encodeURIComponent(query)}">Posez la question à Marcel →</a></p></div>`;
+      resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Veille indisponible</h3><p>Le service de veille est temporairement indisponible. <a href="/app/marcel?topic=veille&q=${encodeURIComponent(query)}">Posez la question à Marcel →</a></p></div>`;
     } else {
       resultDiv.innerHTML = `<div class="card" style="margin-bottom:0"><h3>Erreur technique</h3><p>Réessayez dans un instant. Si le problème persiste, <a href="mailto:maxime@ikcp.fr">contactez Maxime</a>.</p></div>`;
     }
