@@ -145,20 +145,20 @@ try { me = await Marcel.Auth.me(); userTier = me?.tier || 'free'; } catch(_){ lo
 
 // ── Branding CASSIUS pour le tier Family Office (un cran au-dessus) ──
 if (userTier === 'fo') {
-  document.title = 'Cassius — Family Office';
-  var h1 = document.querySelector('.chat-head h1'); if (h1) h1.textContent = 'Cassius';
+  document.title = 'Marcel — Family Office';
+  var h1 = document.querySelector('.chat-head h1'); if (h1) h1.textContent = 'Marcel';
   var tg = document.querySelector('.chat-head .tagline'); if (tg) tg.textContent = 'Votre Family Officer d\'élite · anticipe · orchestre · veille';
-  var mini = document.querySelector('.chat-head .marcel-mini'); if (mini) mini.textContent = 'C';
-  // Accueil vocal Cassius (effet majordome) — dégrade en silence si le navigateur bloque
-  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Cassius, votre Family Officer. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
+  var mini = document.querySelector('.chat-head .marcel-mini'); if (mini) mini.textContent = 'M';
+  // Accueil vocal Marcel (effet majordome) — dégrade en silence si le navigateur bloque
+  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre Family Officer. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
   var hello = document.querySelector('.chat-msgs .msg.a');
-  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Cassius</em>, votre Family Officer. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
+  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre Family Officer. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
 }
 
 // ── Suggestions de démarrage personnalisées (selon le profil de l'utilisateur) ──
 (function(){ let _p=null; try{ _p = me && me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){} renderStarters(_p, userTier); })();
 
-// ── Mémoire : Marcel/Cassius se souvient du dernier échange (Premium/FO) ──
+// ── Mémoire : Marcel/Marcel se souvient du dernier échange (Premium/FO) ──
 if(userTier === 'premium' || userTier === 'fo'){ loadMemory(); }
 
 // ── Avant-goût gratuit : 3 échanges Marcel pour le tier Découverte ──
@@ -209,7 +209,7 @@ autoReadInput?.addEventListener('change', e => Voice.setAutoRead(e.target.checke
 // (qualité studio) s'active si configurée côté serveur, sinon fallback local.
 if (userTier === 'fo' && voiceSupport.tts) {
   try { Voice.setAutoRead(true); } catch(_){}
-  if (autoReadInput) { autoReadInput.checked = true; autoReadInput.closest('.auto-read').lastChild.textContent = ' Cassius vous répond à voix haute'; }
+  if (autoReadInput) { autoReadInput.checked = true; autoReadInput.closest('.auto-read').lastChild.textContent = ' Marcel vous répond à voix haute'; }
   if (voiceBar) voiceBar.classList.add('show');
 }
 
@@ -416,7 +416,7 @@ window.send = async function(e){
   history.push({role:'user',content:q});
 
   // Loading — ORCHESTRATION VISIBLE : les spécialistes s'allument tour à tour
-  const who = userTier === 'fo' ? 'Cassius' : 'Marcel';
+  const who = userTier === 'fo' ? 'Marcel' : 'Marcel';
   const AG = [['📜','Codex'],['🌳','Hermès'],['🏛️','Bâtisseur'],['🏠','Architecte'],['📊','Stratège'],['🛎️','Concierge']];
   const ld = document.createElement('div');
   ld.className = 'msg loading orch';

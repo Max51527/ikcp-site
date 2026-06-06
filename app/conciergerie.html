@@ -45,9 +45,9 @@
   <div class="hero">
     <div class="eyebrow">Art de vivre · sur demande</div>
     <h1>Votre <em id="heroWho">conciergerie</em>, pour toutes vos passions.</h1>
-    <p>Voyage, art, automobile, horlogerie, vins, bien-être, philanthropie. Vous formulez l'envie — <span id="whoName">Cassius</span> prépare, vous validez.</p>
+    <p>Voyage, art, automobile, horlogerie, vins, bien-être, philanthropie. Vous formulez l'envie — <span id="whoName">Marcel</span> prépare, vous validez.</p>
   </div>
-  <div class="who">🛎️ Orchestré par <b id="whoName2">Cassius</b> & les spécialistes IKCP · réponse immédiate, suivi humain sur demande</div>
+  <div class="who">🛎️ Orchestré par <b id="whoName2">Marcel</b> & les spécialistes IKCP · réponse immédiate, suivi humain sur demande</div>
 
   <div class="grid" id="grid"></div>
 
@@ -65,7 +65,7 @@ let me; try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index
 const tier = me?.tier || 'free';
 const isFO = tier === 'fo';
 if(me){ const t={free:'Découverte',premium:'Premium',fo:'Family Office'}[tier]||'Découverte'; document.getElementById('userTier').textContent = (me.trial&&me.trial.active)?('Family Office · essai '+me.trial.days_left+'j'):t; }
-const who = isFO ? 'Cassius' : 'Marcel';
+const who = isFO ? 'Marcel' : 'Marcel';
 ['whoName','whoName2'].forEach(id => { const e=document.getElementById(id); if(e) e.textContent = who; });
 
 const SERVICES = [
@@ -111,7 +111,7 @@ function goConcierge(text){
 document.getElementById('grid').innerHTML = SERVICES.map((s,i) => `
   <div class="svc">
     <div class="svc-h"><span class="em">${s.em}</span><h3>${s.nom}</h3></div>
-    <div class="agent">✦ ${s.agent}${isFO?' · via Cassius':''}</div>
+    <div class="agent">✦ ${s.agent}${isFO?' · via Marcel':''}</div>
     ${s.reqs.map((q,j) => `<button class="req" data-i="${i}" data-j="${j}">${q.replace(/</g,'&lt;')}</button>`).join('')}
   </div>`).join('');
 

@@ -51,7 +51,7 @@
 
   <!-- ── Diagnostic instantané personnalisé (WOW « l'IA me connaît ») ── -->
   <article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
-    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Cassius</span></div>
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Marcel</span></div>
     <h3 style="font-family:'Fraunces',serif;font-weight:500;font-size:18px">Vos 3 priorités, <em style="font-style:italic;color:var(--accent)">personnalisées</em></h3>
     <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre Family Officer identifie vos leviers prioritaires — en direct.</p>
     <button class="btn btn-sm" onclick="goDiagnostic()">Voir mon diagnostic →</button>
@@ -142,7 +142,7 @@
     <article class="card">
       <div class="card-head"><span class="card-cat">Conciergerie</span><span class="pill neutral">sur demande</span></div>
       <h3>Une demande d'exception ?</h3>
-      <div class="empty" style="padding:14px 0;text-align:left"><p>Voyage, art, automobile, vins, bien-être, philanthropie… Cassius prépare, vous validez.</p>
+      <div class="empty" style="padding:14px 0;text-align:left"><p>Voyage, art, automobile, vins, bien-être, philanthropie… Marcel prépare, vous validez.</p>
       <a href="/app/conciergerie.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir la conciergerie →</a></div>
     </article>
   </div>
@@ -417,7 +417,7 @@ if(me){
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
   if(me.trial && me.trial.active){
-    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai Family Office</b> — Cassius, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
+    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai Family Office</b> — Marcel, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
   } else {
     document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
   }
