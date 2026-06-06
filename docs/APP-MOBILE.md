@@ -47,7 +47,7 @@ L'espace membre `/app` est une **vraie application installable**, sans store :
 - [x] Identité app : nom **« Marcel — Family Office »**, package **`eu.ikcp.app`**.
 
 ### 📲 TES étapes (≈ 10 min, navigateur, gratuit)
-1. Va sur **https://www.pwabuilder.com** → colle **`https://ikcp.eu/app/dashboard.html`** → *Start*.
+1. Va sur **https://www.pwabuilder.com** → colle **`https://ikcp.eu/app/dashboard`** (URL propre, sans `.html`) → *Start*.
 2. PWABuilder analyse la PWA (doit être au vert) → bouton **Package For Stores** → **Android**.
 3. Options : laisse **Package ID = `eu.ikcp.app`**, garde « Signing key = **New** ».
    → **Download**. Tu obtiens un `.zip` avec : `app-release-signed.apk`, `app-release.aab`,
