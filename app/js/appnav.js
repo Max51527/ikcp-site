@@ -34,7 +34,7 @@
 
   // ── Styles (injectés une fois) ──
   var css = ''
-    + '.ikcp-appnav{position:fixed;left:0;right:0;bottom:0;z-index:9000;display:flex;justify-content:space-around;align-items:flex-end;'
+    + '.ikcp-appnav{position:fixed;left:0;right:0;bottom:0;z-index:150;display:flex;justify-content:space-around;align-items:flex-end;'
     + 'background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);'
     + 'border-top:1px solid rgba(27,42,74,.08);padding:7px 4px calc(7px + env(safe-area-inset-bottom));'
     + 'box-shadow:0 -10px 34px -18px rgba(27,42,74,.32);font-family:Outfit,system-ui,-apple-system,sans-serif}'
