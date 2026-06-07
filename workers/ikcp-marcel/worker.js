@@ -51,7 +51,7 @@ const SPECIALISTS_REGISTRY = {
   // ✅ LIVE Sprint 1
   codex:     { url: 'https://ikcp-codex.maxime-ead.workers.dev/',     displayName: 'Codex',       role: 'Fiscalité experte · arbitrages CGI · jurisprudence fiscale',              model: 'opus-4-7',   live: true  },
   // 🟡 Sprint 2 — workers dédiés (ikcp-batisseur / ikcp-hermes), déployables via CI/CD
-  batisseur: { url: 'https://ikcp-batisseur.maxime-ead.workers.dev/', displayName: 'Bâtisseur',   role: 'Cartographie patrimoine 360° · bilan dirigeant · holding · governance',    model: 'opus-4-7',   live: true  },
+  batisseur: { url: 'https://ikcp-batisseur.maxime-ead.workers.dev/', displayName: 'Bâtisseur',   role: 'Cartographie patrimoine 360° · bilan dirigeant · holding · governance',    model: 'opus-4-7',   live: false },
   hermes:    { url: 'https://ikcp-hermes.maxime-ead.workers.dev/',    displayName: 'Hermès',      role: 'Transmission patrimoniale · succession · donation · pacte Dutreil',        model: 'opus-4-7',   live: true  },
   // 🔴 Sprint 3 — mutualisé sur ikcp-lifestyle
   // agentKey = clé réelle dans ikcp-lifestyle/prompts.js (≠ registry key)
