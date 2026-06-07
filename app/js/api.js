@@ -113,6 +113,7 @@ export const Marcel = {
     return jsonFetch(ENDPOINTS.chat, {
       method: 'POST',
       body: JSON.stringify({ message, history }),
+      timeout: 70000, // Opus + recherche web temps réel peut dépasser 45 s
     });
   },
 

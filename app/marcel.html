@@ -416,18 +416,21 @@ window.send = async function(e){
   history.push({role:'user',content:q});
 
   // Loading — ORCHESTRATION VISIBLE : les spécialistes s'allument tour à tour
-  const who = userTier === 'fo' ? 'Marcel' : 'Marcel';
+  const who = 'Marcel';
   const AG = [['📜','Codex'],['🌳','Hermès'],['🏛️','Bâtisseur'],['🏠','Architecte'],['📊','Stratège'],['🛎️','Concierge']];
   const ld = document.createElement('div');
   ld.className = 'msg loading orch';
   ld.innerHTML = `<div class="orch-lbl">${who} mobilise ses spécialistes…</div><div class="orch-row">${AG.map((a,k)=>`<span class="orch-ag" data-k="${k}">${a[0]} ${a[1]}</span>`).join('')}</div>`;
   msgs.appendChild(ld);
   window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-  const labels = [`${who} analyse votre question…`, `${who} mobilise ses spécialistes…`, `${who} croise les barèmes 2026…`, `${who} rédige votre réponse…`];
+  const labels = [`${who} analyse votre question…`, `${who} mobilise ses spécialistes…`, `${who} consulte des sources en temps réel…`, `${who} croise les barèmes 2026…`, `${who} rédige votre réponse…`];
   let ldI = 0;
   const ldTimer = setInterval(() => {
     ldI++;
-    const lbl = ld.querySelector('.orch-lbl'); if(lbl) lbl.textContent = labels[ldI % labels.length];
+    const lbl = ld.querySelector('.orch-lbl');
+    if(lbl) lbl.textContent = ldI >= 7
+      ? '⏳ Recherche en temps réel — Marcel finalise (jusqu\'à ~25 s pour une donnée de marché)…'
+      : labels[ldI % labels.length];
     const chips = ld.querySelectorAll('.orch-ag'); chips.forEach((c,k) => c.classList.toggle('on', k === (ldI % chips.length)));
   }, 1100);
 
