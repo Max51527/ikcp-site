@@ -14,7 +14,7 @@
   if (reduce) return; // accessibilité : on n'anime pas
 
   // Sélecteurs ciblés (blocs qui gagnent à apparaître en douceur)
-  var SEL = 'section, .card, .style-card, .cat-card, .sec, .tier, .univ-card, [data-reveal]';
+  var SEL = 'section, .card, .style-card, .cat-card, .sec, .tier, .univ-card, .orbit-univ, .live-card, .booking-card, .faq-item, .passion-mini, .lev, .feat, [data-reveal]';
 
   function init() {
     var nodes = [];
