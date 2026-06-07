@@ -19,18 +19,27 @@
   if (SHOW_ON.indexOf(seg) === -1) return;          // pas une page à onglets → on sort
   if (document.querySelector('.ikcp-appnav')) return; // déjà injectée
 
-  // Définition des onglets (Marcel au centre, en bouton surélevé)
-  var TABS = [
-    { label: 'Accueil', href: '/app/dashboard', match: ['dashboard'],
+  // Onglets — Marcel reste au centre (bouton surélevé) ; les 4 autres sont
+  // réordonnables depuis le Studio (localStorage 'ikcp_nav_order').
+  var MARCEL = { id:'marcel', label: 'Marcel', href: '/app/marcel', match: ['marcel'], fab: true };
+  var OTHERS = {
+    accueil:    { id:'accueil', label: 'Accueil', href: '/app/dashboard', match: ['dashboard'],
       svg: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>' },
-    { label: 'Patrimoine', href: '/app/patrimoine', match: ['patrimoine'],
+    patrimoine: { id:'patrimoine', label: 'Patrimoine', href: '/app/patrimoine', match: ['patrimoine'],
       svg: '<path d="M4 20V11M9.3 20V4M14.6 20v-6M20 20V8"/><path d="M2.5 20h19"/>' },
-    { label: 'Marcel', href: '/app/marcel', match: ['marcel'], fab: true },
-    { label: 'Univers', href: '/app/conciergerie', match: ['conciergerie', 'collections'],
+    univers:    { id:'univers', label: 'Univers', href: '/app/conciergerie', match: ['conciergerie', 'collections'],
       svg: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 5.3-5.3 2.2 2.2-5.3z"/>' },
-    { label: 'Veille', href: '/app/veille', match: ['veille'],
+    veille:     { id:'veille', label: 'Veille', href: '/app/veille', match: ['veille'],
       svg: '<path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 8-2.5 8h17S18 14.5 18 8.5"/><path d="M13.6 21a2 2 0 0 1-3.2 0"/>' }
-  ];
+  };
+  var DEFAULT_ORDER = ['accueil', 'patrimoine', 'univers', 'veille'];
+  var order = DEFAULT_ORDER.slice();
+  try {
+    var saved = JSON.parse(localStorage.getItem('ikcp_nav_order') || 'null');
+    if (Array.isArray(saved) && saved.length === 4 && saved.every(function(k){ return OTHERS[k]; }) && (new Set(saved)).size === 4) order = saved;
+  } catch (_) {}
+  var o = order.map(function(k){ return OTHERS[k]; });
+  var TABS = [o[0], o[1], MARCEL, o[2], o[3]];
 
   // ── Styles (injectés une fois) ──
   var css = ''

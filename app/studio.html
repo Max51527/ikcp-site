@@ -51,6 +51,17 @@ body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-s
 #stage .pill{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(194,71,34,.12);color:var(--accent);margin-bottom:10px}
 #stage .cta{display:inline-block;margin-top:8px;padding:13px 22px;background:var(--accent);color:#fff;border-radius:10px;font-weight:600;font-size:14px}
 #stage .num{font-family:inherit;font-style:italic;font-size:30px;color:var(--accent)}
+.navlist{display:flex;flex-direction:column;gap:7px}
+.navit{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;cursor:grab;font-size:14px;font-weight:500;user-select:none;transition:border-color .15s,opacity .15s}
+.navit:active{cursor:grabbing}
+.navit.drag{opacity:.35;border-color:var(--accent)}
+.navit.over{border-color:var(--accent);border-style:dashed;transform:translateY(-1px)}
+.navit .grip{color:var(--mute);letter-spacing:-2px}
+.navit .ico{font-size:17px}
+.navpv{display:flex;justify-content:space-around;align-items:flex-end;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 4px 6px;margin-top:10px}
+.navpv span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--mute)}
+.navpv .fab{margin-top:-14px}.navpv .fab b{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-size:16px}
+.navpv em{font-size:16px;font-style:normal}
 </style>
 </head>
 <body>
@@ -100,6 +111,13 @@ body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-s
         <input type="color" id="accent" value="#C24722">
         <input type="text" id="accentHex" value="#C24722" style="flex:1">
       </div>
+    </div>
+
+    <div class="ctrl">
+      <label>Barre d'onglets de l'app · glissez pour réordonner</label>
+      <div id="navList" class="navlist"></div>
+      <div class="navpv" id="navPv"></div>
+      <div style="font-size:11px;color:var(--mute);margin-top:7px">Marcel reste au centre. Glissez les 4 autres dans l'ordre voulu — enregistré aussitôt.</div>
     </div>
 
     <div class="actions">
@@ -167,14 +185,44 @@ try {
 } catch(_){}
 render(); markSwatch($('accentHex').value);
 
+// ── Réorganisateur d'onglets (glisser-déposer) → localStorage ikcp_nav_order ──
+const NAV = { accueil:{l:'Accueil',i:'🏠'}, patrimoine:{l:'Patrimoine',i:'📈'}, univers:{l:'Univers',i:'✦'}, veille:{l:'Veille',i:'🔔'} };
+const NAV_DEFAULT = ['accueil','patrimoine','univers','veille'];
+function navOrder(){ try{ const s=JSON.parse(localStorage.getItem('ikcp_nav_order')||'null'); if(Array.isArray(s)&&s.length===4&&s.every(k=>NAV[k])&&new Set(s).size===4) return s; }catch(_){} return NAV_DEFAULT.slice(); }
+function renderNavPreview(){
+  const ord = navOrder();
+  const cells = [ord[0],ord[1],'__marcel__',ord[2],ord[3]].map(k =>
+    k==='__marcel__' ? '<span class="fab"><b>M</b>Marcel</span>' : `<span><em>${NAV[k].i}</em>${NAV[k].l}</span>`);
+  $('navPv').innerHTML = cells.join('');
+}
+function renderNav(){
+  const list=$('navList'); const ord=navOrder();
+  list.innerHTML = ord.map(k=>`<div class="navit" draggable="true" data-k="${k}"><span class="grip">⋮⋮</span><span class="ico">${NAV[k].i}</span>${NAV[k].l}</div>`).join('');
+  let dragK=null;
+  list.querySelectorAll('.navit').forEach(it=>{
+    it.addEventListener('dragstart',()=>{ dragK=it.dataset.k; it.classList.add('drag'); });
+    it.addEventListener('dragend',()=>{ it.classList.remove('drag'); list.querySelectorAll('.navit').forEach(x=>x.classList.remove('over')); });
+    it.addEventListener('dragover',e=>{ e.preventDefault(); it.classList.add('over'); });
+    it.addEventListener('dragleave',()=>it.classList.remove('over'));
+    it.addEventListener('drop',e=>{ e.preventDefault(); const tgt=it.dataset.k; if(!dragK||dragK===tgt) return;
+      let o=navOrder().filter(x=>x!==dragK); o.splice(o.indexOf(tgt),0,dragK);
+      try{ localStorage.setItem('ikcp_nav_order',JSON.stringify(o)); }catch(_){}
+      renderNav(); renderNavPreview();
+      $('okMsg').textContent='✓ Ordre des onglets enregistré. Rouvrez une page (Dashboard, Veille…) pour le voir.'; $('okMsg').classList.add('show');
+    });
+  });
+  renderNavPreview();
+}
+renderNav();
+
 window.applyTheme = function(){
   const theme = { titleFont: $('titleFont').value, bodyFont: $('bodyFont').value, accent: $('accentHex').value };
   try { localStorage.setItem('ikcp_theme', JSON.stringify(theme)); } catch(_){}
   $('okMsg').classList.add('show');
 };
 window.resetTheme = function(){
-  try { localStorage.removeItem('ikcp_theme'); } catch(_){}
-  $('titleFont').value='Fraunces'; $('bodyFont').value='Inter'; setAccent('#C24722'); $('scale').value=1; render();
+  try { localStorage.removeItem('ikcp_theme'); localStorage.removeItem('ikcp_nav_order'); } catch(_){}
+  $('titleFont').value='Fraunces'; $('bodyFont').value='Inter'; setAccent('#C24722'); $('scale').value=1; render(); renderNav();
   $('okMsg').textContent='✓ Réinitialisé au style par défaut.'; $('okMsg').classList.add('show');
 };
 </script>
