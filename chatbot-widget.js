@@ -1114,7 +1114,7 @@ _pageCtxSent=true;
 }
 var prefix=[pageLine,ctx].filter(Boolean).join('\n');
 var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
-var _abort=new AbortController();var _killTimer=setTimeout(function(){_abort.abort();},45000);
+var _abort=new AbortController();var _killTimer=setTimeout(function(){_abort.abort();},70000);
 // CF Worker Marcel (ikcp-chat)
 var chatUrl=PROXY;
 var chatBody=JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf});
@@ -1183,7 +1183,7 @@ hideLoading();
 typeOutMessage(reply,html);
 return;
 }catch(e){
-var errMsg=(e&&e.name==='AbortError')?'<p>Marcel a mis trop de temps à répondre (timeout 45 s). Réessayez votre question, ou <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">contactez Maxime directement</a>.</p>':'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>';
+var errMsg=(e&&e.name==='AbortError')?'<p>Marcel a mis trop de temps à répondre (timeout 70 s). Réessayez votre question, ou <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">contactez Maxime directement</a>.</p>':'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>';
 msgs.push({role:'assistant',html:errMsg});saveConv(msgs,count);
 }finally{hideLoading();render();}
 }
