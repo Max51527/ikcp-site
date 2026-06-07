@@ -57,6 +57,27 @@
     <button class="btn btn-sm" onclick="goDiagnostic()">Voir mon diagnostic →</button>
   </article>
 
+  <!-- ── Score Patrimonial — point de départ de la découverte ── -->
+  <article class="card" id="w-score" style="margin-bottom:14px">
+    <div class="card-head"><span class="card-cat">Score Patrimonial</span><span class="pill neutral" id="scorePill">diagnostic 360°</span></div>
+    <h3 style="font-family:'Fraunces',serif;font-weight:500;font-size:18px">Où en est <em style="font-style:italic;color:var(--accent)">votre patrimoine</em> ?</h3>
+    <div id="score-body" class="loading" style="padding:8px 0">Chargement de votre score…</div>
+  </article>
+  <script>(function(){
+    var el=document.getElementById('score-body'), pill=document.getElementById('scorePill'); if(!el) return;
+    var s=null; try{ s=JSON.parse(localStorage.getItem('ikcp_score')||'null'); }catch(_){ }
+    if(s && typeof s.score==='number'){
+      var col = s.score>=75?'var(--ok,#2D7A4F)':s.score>=45?'var(--accent)':'var(--bad,#B23A2E)';
+      var verdict = s.score>=75?'Patrimoine bien tenu':s.score>=45?'De bonnes bases, des angles morts':'Patrimoine exposé';
+      if(pill){ pill.textContent='à jour'; pill.className='pill live'; }
+      el.className=''; el.style.padding='0';
+      el.innerHTML='<div style="display:flex;align-items:center;gap:16px"><div style="font-family:\'Fraunces\',serif;font-size:42px;font-weight:600;color:'+col+';line-height:1">'+s.score+'<span style="font-size:15px;color:var(--mute)">/100</span></div><div style="flex:1"><div style="font-family:\'Fraunces\',serif;font-size:16px;color:var(--ink)">'+verdict+'</div><div style="font-size:12px;color:var(--mute)">Vos 3 leviers prioritaires vous attendent dans le diagnostic.</div></div></div><a href="/app/score" class="btn btn-ghost btn-sm" style="margin-top:12px">Revoir / refaire mon score →</a>';
+    } else {
+      el.className=''; el.style.padding='0';
+      el.innerHTML='<p style="font-size:13.5px;color:var(--mute);margin:0 0 10px">Le point de départ de votre Family Office : évaluez vos 7 territoires en 2 minutes. Marcel s\'en sert pour cibler vos priorités.</p><a href="/app/score" class="btn btn-sm">Établir mon Score Patrimonial →</a>';
+    }
+  })();</script>
+
   <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
   <div class="grid-3" style="margin-bottom:14px">
     <article class="card" id="w-veille">
