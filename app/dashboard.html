@@ -36,6 +36,12 @@
   <p class="app-lead" id="userGreeting">Chargement de votre tableau de bord…</p>
   <a href="/app/orbite" style="display:inline-flex;align-items:center;gap:7px;margin:2px 0 6px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">✦ Voir mon patrimoine en orbite →</a>
 
+  <!-- ✦ Observation proactive de Marcel (IA personnalisée, cache 1×/jour) -->
+  <article id="marcelInsight" class="card" style="display:none;background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.22);margin:8px 0 18px">
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">✦ L'observation de Marcel</span><span class="pill" id="miPill">pour vous</span></div>
+    <div id="miBody" style="font-size:14.5px;line-height:1.6;color:var(--ink)"></div>
+  </article>
+
   <!-- ── Marcel-Live champ sticky ── -->
   <form class="marcel-live-bar" onsubmit="return askMarcel(event)">
     <span class="label">Marcel</span>
@@ -648,5 +654,44 @@ window.logout = async function(){
 
 <script src="/protect.js?v=1" defer></script>
 <script src="/app/js/pwa-install.js" defer></script>
+<script type="module">
+// ✦ L'observation de Marcel — IA proactive personnalisée (cache journalier, gating premium/FO)
+import { Marcel } from '/app/js/api.js';
+(async function(){
+  var card=document.getElementById('marcelInsight'), body=document.getElementById('miBody'); if(!card||!body) return;
+  var tier=(localStorage.getItem('ikcp_tier')||'free');
+  var profile={}; try{ profile=JSON.parse(localStorage.getItem('marcel_profile')||'{}')||{}; }catch(_){}
+  var score=null; try{ score=JSON.parse(localStorage.getItem('ikcp_score')||'null'); }catch(_){}
+  var sd=profile.siren_data||null;
+  var hasCtx=!!(profile.profession||profile.situation||(profile.spheres&&profile.spheres.length)||sd||(score&&typeof score.score==='number'));
+  function render(text, teaser){
+    card.style.display='block';
+    if(teaser) document.getElementById('miPill').textContent='essai requis';
+    body.innerHTML = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n+/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+      + (teaser ? '<a href="/app/beta-invite" class="btn btn-sm" style="margin-top:12px;display:inline-block">Activer mon essai →</a>'
+                : '<a href="/app/marcel?q='+encodeURIComponent('Approfondis ton observation sur ma situation patrimoniale.')+'" class="btn btn-ghost btn-sm" style="margin-top:12px;display:inline-block">Approfondir avec Marcel →</a>');
+  }
+  if(!hasCtx) return; // pas assez de contexte → on n'affiche rien
+  var today=new Date().toISOString().slice(0,10);
+  try{ var c=JSON.parse(localStorage.getItem('ikcp_insight')||'null'); if(c&&c.date===today&&c.text){ render(c.text); return; } }catch(_){}
+  if(tier!=='premium' && tier!=='fo'){ render('Activez votre essai Family Office : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
+  card.style.display='block'; body.innerHTML='<span style="color:var(--mute);font-style:italic">Marcel analyse votre situation…</span>';
+  var ctx=[];
+  if(profile.prenom) ctx.push('Prénom: '+profile.prenom);
+  if(profile.profession) ctx.push('Profession: '+profile.profession);
+  if(profile.situation) ctx.push('Situation familiale: '+profile.situation);
+  if(sd&&sd.nom) ctx.push('Société: '+sd.nom+' ('+(sd.forme_juridique||'')+', capital '+(sd.capital||'?')+'€)');
+  if(profile.spheres&&profile.spheres.length) ctx.push('Univers: '+profile.spheres.join(', '));
+  if(score&&typeof score.score==='number') ctx.push('Score patrimonial: '+score.score+'/100');
+  var prompt='[OBSERVATION PROACTIVE — 3 phrases maximum] À partir de ce profil, livre UNE observation patrimoniale précise et personnalisée (un angle mort ou un levier prioritaire que la personne ignore probablement), puis termine par UNE question ouverte. Dense, sans recommandation produit, sans préambule. Profil — '+ctx.join(' · ');
+  try{
+    var r=await Marcel.chat(prompt, []);
+    var t=((r&&(r.reply||r.message))||'').replace(/Cette (analyse|interface|réponse)[\s\S]*?(CoMoFi|financier)\.?/gi,'').replace(/^#+\s*/gm,'').trim();
+    if(!t){ card.style.display='none'; return; }
+    render(t);
+    try{ localStorage.setItem('ikcp_insight', JSON.stringify({date:today,text:t})); }catch(_){}
+  }catch(_){ card.style.display='none'; }
+})();
+</script>
 </body>
 </html>

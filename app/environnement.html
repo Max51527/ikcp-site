@@ -82,6 +82,7 @@ body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);li
 .ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:12px;margin-top:36px}
 .ft a{color:var(--gold);text-decoration:none;margin:0 6px}
 </style>
+<script src="/app/js/vendor/chart.umd.min.js"></script>
 </head>
 <body>
 <header class="hd"><div class="w"><div class="logo">IK<span>CP</span></div><a href="/app/dashboard">← Mon espace</a></div></header>
@@ -132,7 +133,7 @@ body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);li
     <div class="block" id="bFin" style="display:none">
       <h3>Trajectoire financière</h3>
       <div class="h-sub">Chiffre d'affaires &amp; résultat (derniers exercices publiés)</div>
-      <div class="fin" id="finChart"></div>
+      <div style="position:relative;height:230px"><canvas id="finChart"></canvas></div>
       <div class="legend"><span><i style="background:var(--gold)"></i>Chiffre d'affaires</span><span><i style="background:var(--navy)"></i>Résultat net</span></div>
     </div>
 
@@ -221,17 +222,19 @@ function render(d, siren){
   }
   // Finances
   var fin = (d.finances||[]).filter(function(f){return f.chiffre_affaires!=null;}).slice(0,5).reverse();
-  if(fin.length>=1){ $('bFin').style.display='block';
-    var max = Math.max.apply(null, fin.map(function(f){return Math.max(f.chiffre_affaires||0, Math.abs(f.resultat||0));})) || 1;
-    $('finChart').innerHTML = fin.map(function(f){
-      var hCA = Math.max(2, Math.round((f.chiffre_affaires||0)/max*120));
-      var hRE = Math.max(2, Math.round(Math.abs(f.resultat||0)/max*120));
-      return '<div class="col"><div class="bars">'
-        +'<div class="bar ca" title="CA '+eur(f.chiffre_affaires)+'" style="height:0" data-h="'+hCA+'"></div>'
-        +'<div class="bar res" title="Résultat '+eur(f.resultat)+'" style="height:0" data-h="'+hRE+'"></div>'
-        +'</div><div class="yr">'+(f.annee||'')+'</div></div>';
-    }).join('');
-    setTimeout(function(){ document.querySelectorAll('.fin .bar').forEach(function(b){ b.style.height=b.dataset.h+'px'; }); }, 120);
+  if(fin.length>=1 && typeof Chart!=='undefined'){ $('bFin').style.display='block';
+    new Chart($('finChart'), {
+      type:'bar',
+      data:{ labels: fin.map(function(f){return f.annee||'';}), datasets:[
+        { label:'Chiffre d\'affaires', data: fin.map(function(f){return f.chiffre_affaires||0;}), backgroundColor:'#C9A96E', borderRadius:5, maxBarThickness:38 },
+        { label:'Résultat net', data: fin.map(function(f){return f.resultat||0;}), backgroundColor:'#1B2A4A', borderRadius:5, maxBarThickness:38 }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return ' '+c.dataset.label+' : '+eur(c.parsed.y); } } } },
+        scales:{ x:{ grid:{display:false}, ticks:{ color:'#6B5D52', font:{family:'JetBrains Mono'} } },
+                 y:{ grid:{color:'rgba(27,42,74,.08)'}, ticks:{ color:'#6B5D52', callback:function(v){ return eur(v); } } } },
+        animation:{ duration:900, easing:'easeOutQuart' } }
+    });
   }
   // Activité
   $('activite').innerHTML = (d.domaine_activite||d.libelle_code_naf||'—') + (d.code_naf?' <span style="color:var(--ink-mute);font-family:\'JetBrains Mono\',monospace;font-size:12px">· NAF '+d.code_naf+'</span>':'');
