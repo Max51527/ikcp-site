@@ -57,6 +57,13 @@ export default {
       }, 200, origin, allowed);
     }
 
+    // DVF — prix immobiliers réels (data.gouv geo-dvf + Base Adresse Nationale, gratuit, sans clé)
+    if (path === '/dvf') {
+      const q = url.searchParams.get('q');
+      if (!q || q.length < 2) return error('Paramètre `q` requis (commune ou code postal)', 400, origin, allowed);
+      return await getDVF(q, env, origin, allowed);
+    }
+
     // Vérifie la clé API
     if (!env.PAPPERS_API_KEY) {
       return error('PAPPERS_API_KEY non configurée — `wrangler secret put PAPPERS_API_KEY`', 500, origin, allowed);
@@ -273,6 +280,93 @@ async function getEntreprise(siren, env, origin, allowed, short) {
     status: 200,
     headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'MISS' },
   });
+}
+
+// ──────────────────────────────────────────────────────────────
+// DVF — prix immobiliers réels (data.gouv · geo-dvf · sans clé)
+// ──────────────────────────────────────────────────────────────
+async function getDVF(q, env, origin, allowed) {
+  // 1. Commune -> code INSEE via Base Adresse Nationale (gratuit, sans clé)
+  let citycode, nom, cp;
+  try {
+    const ban = await fetch('https://api-adresse.data.gouv.fr/search/?q=' + encodeURIComponent(q) + '&type=municipality&limit=1');
+    const bj = await ban.json();
+    const f = bj.features && bj.features[0];
+    if (!f) return error('Commune introuvable : ' + q, 404, origin, allowed);
+    citycode = f.properties.citycode;
+    nom = f.properties.city || f.properties.name;
+    cp = f.properties.postcode || '';
+  } catch (e) {
+    return error('Résolution commune indisponible', 502, origin, allowed);
+  }
+
+  const cacheKey = 'dvf:' + citycode;
+  if (env.PAPPERS_CACHE) {
+    const cached = await env.PAPPERS_CACHE.get(cacheKey);
+    if (cached) return new Response(cached, { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'HIT' } });
+  }
+
+  let dep;
+  if (citycode.startsWith('97') || citycode.startsWith('98')) dep = citycode.slice(0, 3);
+  else dep = citycode.slice(0, 2);
+
+  let csv = null, year = null;
+  for (const y of ['2024', '2023']) {
+    try {
+      const r = await fetch('https://files.data.gouv.fr/geo-dvf/latest/csv/' + y + '/communes/' + dep + '/' + citycode + '.csv');
+      if (r.ok) { csv = await r.text(); year = y; break; }
+    } catch (_) {}
+  }
+  if (!csv) {
+    const nd = JSON.stringify({ commune: nom, code: citycode, cp, year: null, no_data: true });
+    return new Response(nd, { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json' } });
+  }
+
+  const lines = csv.split('\n');
+  const head = lines[0].split(',');
+  const ix = {};
+  ['date_mutation', 'nature_mutation', 'valeur_fonciere', 'type_local', 'surface_reelle_bati', 'adresse_nom_voie', 'id_mutation'].forEach(k => ix[k] = head.indexOf(k));
+  const muts = {};
+  for (let i = 1; i < lines.length; i++) {
+    if (i > 40000) break;
+    const c = lines[i].split(',');
+    if (c.length < head.length) continue;
+    if (c[ix.nature_mutation] !== 'Vente') continue;
+    const tl = c[ix.type_local];
+    if (tl !== 'Maison' && tl !== 'Appartement') continue;
+    const id = c[ix.id_mutation];
+    (muts[id] = muts[id] || []).push({
+      date: c[ix.date_mutation], type: tl,
+      valeur: parseFloat(c[ix.valeur_fonciere]) || 0,
+      surface: parseFloat(c[ix.surface_reelle_bati]) || 0,
+      voie: (c[ix.adresse_nom_voie] || '').trim(),
+    });
+  }
+  const maison = [], appart = [], recent = [];
+  Object.keys(muts).forEach(id => {
+    const rows = muts[id];
+    if (rows.length !== 1) return;
+    const r = rows[0];
+    if (r.surface < 9 || r.valeur < 1000) return;
+    const pm2 = Math.round(r.valeur / r.surface);
+    if (pm2 < 200 || pm2 > 30000) return;
+    (r.type === 'Maison' ? maison : appart).push(pm2);
+    recent.push({ date: r.date, type: r.type, valeur: Math.round(r.valeur), surface: Math.round(r.surface), prix_m2: pm2, voie: r.voie });
+  });
+  const median = (a) => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2); };
+  recent.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  const result = {
+    commune: nom, code: citycode, cp, year,
+    maison: { median_m2: median(maison), count: maison.length },
+    appartement: { median_m2: median(appart), count: appart.length },
+    total_ventes: maison.length + appart.length,
+    recent: recent.slice(0, 6),
+    source: 'DVF · data.gouv.fr',
+  };
+  const body = JSON.stringify(result);
+  if (env.PAPPERS_CACHE) await env.PAPPERS_CACHE.put(cacheKey, body, { expirationTtl: 60 * 60 * 24 * 30 });
+  return new Response(body, { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'MISS' } });
 }
 
 // ──────────────────────────────────────────────────────────────
