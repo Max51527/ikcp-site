@@ -434,7 +434,7 @@ function renderItems(cat){
     ? '<div class="empty" style="grid-column:1/-1"><h4>Aucune pièce</h4><p>Aucune pièce ne correspond à votre recherche.</p></div>'
     : items.map(it => `
         <article class="item-card">
-          <div class="item-photo">${it.emoji}</div>
+          <div class="item-photo">${it.photo ? `<img src="${it.photo}" alt="${it.brand}" style="width:100%;height:100%;object-fit:cover">` : it.emoji}</div>
           <div class="item-body">
             <div class="item-brand">${it.brand}</div>
             <div class="item-model">${it.model}</div>
@@ -618,7 +618,16 @@ window.askPieceSpecialist = function(catKey, itemId, action){
   askSpecialist(catKey, PROMPTS[action] || PROMPTS.advise, itemContext);
 }
 
-window.viewPhoto = function(id){ alert('Photo HD à brancher (upload R2 EU) · pièce ' + id) }
+window.viewPhoto = function(id){
+  var it = (DEMO_COLLECTIONS[activeCatKey] && DEMO_COLLECTIONS[activeCatKey].items || []).find(function(x){return x.id===id;});
+  if(!it) return;
+  if(!it.photo){ if(confirm('Aucune photo pour cette pièce. En ajouter une maintenant ?')) addPhotoTo(id); return; }
+  var o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(7,13,26,.92);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out';
+  o.innerHTML='<img src="'+it.photo+'" style="max-width:94%;max-height:90%;border-radius:12px;box-shadow:0 30px 80px -20px #000">';
+  o.onclick=function(){ o.remove(); };
+  document.body.appendChild(o);
+}
 window.viewDoc = function(id, type){ alert('Document ' + type + ' à brancher (R2 EU) · pièce ' + id) }
 
 document.addEventListener('keydown', e => { if(e.key === 'Escape') { closeCatDetail(); closeAgentModal(); } });
@@ -642,8 +651,49 @@ window.closeCatDetail = function(){
   document.getElementById('catDetail').classList.remove('open');
   document.body.style.overflow = '';
 }
+// ─── Pièces ajoutées par le membre : persistance locale + photo (base64 compressée) ───
+function _piecesStore(){ try{ return JSON.parse(localStorage.getItem('ikcp_pieces')||'{}')||{}; }catch(_){ return {}; } }
+function _savePiece(catKey, item){ var s=_piecesStore(); (s[catKey]=s[catKey]||[]).push(item); try{ localStorage.setItem('ikcp_pieces', JSON.stringify(s)); }catch(e){ alert('Image trop lourde pour le stockage local — réessayez avec une photo plus légère.'); } }
+function _updatePiece(catKey, item){ var s=_piecesStore(); s[catKey]=(s[catKey]||[]).map(function(p){return p.id===item.id?item:p;}); try{ localStorage.setItem('ikcp_pieces', JSON.stringify(s)); }catch(_){ } }
+function _recalc(cat){ cat.total = cat.items.reduce(function(t,i){return t+(+i.current_value||0);},0); }
+window.mergeSavedPieces = function(){ var s=_piecesStore(); Object.keys(s).forEach(function(k){ var cat=DEMO_COLLECTIONS[k]; if(!cat) return; s[k].forEach(function(p){ if(!cat.items.some(function(i){return i.id===p.id;})) cat.items.push(p); }); _recalc(cat); }); };
+function _compress(file){ return new Promise(function(res){ if(!file) return res(''); var fr=new FileReader(); fr.onload=function(){ var img=new Image(); img.onload=function(){ var max=900,w=img.width,h=img.height; if(w>max||h>max){ if(w>h){ h=Math.round(h*max/w); w=max; } else { w=Math.round(w*max/h); h=max; } } var c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); res(c.toDataURL('image/jpeg',0.72)); }; img.onerror=function(){res('');}; img.src=fr.result; }; fr.onerror=function(){res('');}; fr.readAsDataURL(file); }); }
+function _modal(html){ var o=document.createElement('div'); o.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(7,13,26,.7);display:flex;align-items:center;justify-content:center;padding:18px'; o.innerHTML='<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;max-height:92vh;overflow:auto;padding:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)">'+html+'</div>'; document.body.appendChild(o); return o; }
+
+window.addPhotoTo = function(id){
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+  inp.onchange=async function(){ var data=await _compress(inp.files[0]); if(!data) return; var cat=DEMO_COLLECTIONS[activeCatKey]; var it=cat.items.find(function(x){return x.id===id;}); if(!it) return; it.photo=data; _updatePiece(activeCatKey,it); openCat(activeCatKey); };
+  inp.click();
+};
+
 window.addItem = function(){
-  alert('Ajouter une pièce — formulaire à brancher Sprint 2.\n\nChamps : marque, modèle, référence, année, photo, prix d\'achat, source.');
+  if(!activeCatKey || !DEMO_COLLECTIONS[activeCatKey]) return;
+  var cat=DEMO_COLLECTIONS[activeCatKey];
+  var o=_modal(
+    '<h3 style="font-family:\'Fraunces\',serif;font-weight:500;font-size:20px;color:#1A1814;margin-bottom:2px">Ajouter une pièce</h3>'+
+    '<p style="font-size:12.5px;color:#6B655A;margin-bottom:16px">'+cat.emoji+' '+cat.name+'</p>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;font-size:14px">'+
+    '<input id="ap_brand" placeholder="Marque *" style="padding:11px;border:1px solid #ddd;border-radius:9px">'+
+    '<input id="ap_model" placeholder="Modèle *" style="padding:11px;border:1px solid #ddd;border-radius:9px">'+
+    '<input id="ap_ref" placeholder="Référence" style="padding:11px;border:1px solid #ddd;border-radius:9px">'+
+    '<div style="display:flex;gap:10px"><input id="ap_year" type="number" placeholder="Année" style="flex:1;min-width:0;padding:11px;border:1px solid #ddd;border-radius:9px"><input id="ap_source" placeholder="Source" style="flex:1;min-width:0;padding:11px;border:1px solid #ddd;border-radius:9px"></div>'+
+    '<div style="display:flex;gap:10px"><input id="ap_acq" type="number" placeholder="Prix d&apos;achat €" style="flex:1;min-width:0;padding:11px;border:1px solid #ddd;border-radius:9px"><input id="ap_val" type="number" placeholder="Valeur actuelle €" style="flex:1;min-width:0;padding:11px;border:1px solid #ddd;border-radius:9px"></div>'+
+    '<label style="font-size:12.5px;color:#6B655A">Photo de la pièce<input id="ap_photo" type="file" accept="image/*" style="display:block;margin-top:5px;font-size:12px"></label>'+
+    '<div id="ap_prev"></div>'+
+    '</div>'+
+    '<div style="display:flex;gap:10px;margin-top:18px"><button id="ap_save" style="flex:1;padding:12px;border:none;border-radius:9px;background:#1B2A4A;color:#fff;font-weight:600;cursor:pointer">Ajouter la pièce</button><button id="ap_cancel" style="padding:12px 18px;border:1px solid #ddd;border-radius:9px;background:#fff;cursor:pointer">Annuler</button></div>'
+  );
+  var photoData='';
+  o.querySelector('#ap_photo').onchange=async function(e){ photoData=await _compress(e.target.files[0]); o.querySelector('#ap_prev').innerHTML = photoData?('<img src="'+photoData+'" style="width:100%;max-height:170px;object-fit:cover;border-radius:9px;margin-top:6px">'):''; };
+  o.querySelector('#ap_cancel').onclick=function(){ o.remove(); };
+  o.querySelector('#ap_save').onclick=function(){
+    var brand=o.querySelector('#ap_brand').value.trim(), model=o.querySelector('#ap_model').value.trim();
+    if(!brand||!model){ o.querySelector('#ap_brand').style.borderColor=brand?'#ddd':'#c0392b'; o.querySelector('#ap_model').style.borderColor=model?'#ddd':'#c0392b'; return; }
+    var val=+o.querySelector('#ap_val').value||0, acq=+o.querySelector('#ap_acq').value||0;
+    var item={ id:'u'+Date.now(), brand:brand, model:model, ref:o.querySelector('#ap_ref').value.trim()||'—', year:+o.querySelector('#ap_year').value||new Date().getFullYear(), current_value:val, acquired_price:acq, acquired_year:new Date().getFullYear(), delta: acq>0?((val-acq)/acq*100):0, source:o.querySelector('#ap_source').value.trim()||'saisie membre', emoji:cat.emoji, photo:photoData };
+    cat.items.push(item); _recalc(cat); _savePiece(activeCatKey,item);
+    o.remove(); openCat(activeCatKey);
+  };
 }
 // (doublon askMarcelAbout retiré — la version « agent dédié » l.592 fait foi)
 
@@ -661,6 +711,7 @@ try {
   showDemoBanner();     // backend indisponible → repli démo
 }
 
+try { mergeSavedPieces(); } catch(_){}
 renderStats();
 renderCategories();
 </script>

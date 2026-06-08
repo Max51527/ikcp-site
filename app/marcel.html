@@ -142,6 +142,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 <script type="module">
 import { Marcel } from '/app/js/api.js';
 import { Voice } from '/app/js/voice.js';
+import '/app/js/jarvis.js'; // mode vocal temps réel (orbe IA, mains libres)
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
 let history = [];
