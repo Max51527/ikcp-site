@@ -55,8 +55,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;opacity:.5;pointer-event
 .core .who{font-size:10.5px;color:var(--mute);margin-top:3px;letter-spacing:.04em}
 .core .nm{font-size:12.5px;font-weight:600;color:var(--cream);margin-top:1px;max-width:104px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* Satellites */
-.sat{position:absolute;top:50%;left:50%;width:0;height:0;z-index:3}
-.sat .dot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;
+.sat{position:absolute;inset:0;z-index:3;pointer-events:none}
+.sat .dot{position:absolute;pointer-events:auto;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;
   animation:float 6s ease-in-out infinite;width:84px;text-align:center}
 .sat .ico{width:50px;height:50px;border-radius:50%;background:rgba(16,29,51,.85);border:1px solid var(--line);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-size:22px;
