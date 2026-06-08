@@ -473,7 +473,7 @@ function renderUnivers(profile){
   if(!sec || !grid) return;
   const MAP = {
     patrimoine:   {em:'🏛️', nom:'Patrimoine 360°',        agent:'Bâtisseur', blurb:'Vue consolidée de tout votre patrimoine.',           q:'Fais-moi un bilan patrimonial 360° de ma situation.'},
-    immobilier:   {em:'🏠', nom:'Immobilier',             agent:'Architecte',blurb:'Arbitrages, IFI, SCI, montages locatifs.',            q:'Analyse ma stratégie immobilière et ma position IFI.'},
+    immobilier:   {em:'🏠', nom:'Immobilier',             agent:'Architecte',blurb:'Prix réels (DVF), arbitrages, IFI, SCI.',            page:'/app/immobilier', q:'Analyse ma stratégie immobilière et ma position IFI.'},
     fiscalite:    {em:'📜', nom:'Fiscalité',              agent:'Codex',     blurb:'Optimisation de l’impôt, arbitrages, dispositifs.',   q:'Comment optimiser ma fiscalité cette année ?'},
     transmission: {em:'🌳', nom:'Transmission',           agent:'Hermès',    blurb:'Succession, donation, Pacte Dutreil.',                q:'Comment préparer ma transmission sereinement ?'},
     marches:      {em:'📊', nom:'Marchés & non coté',     agent:'Stratège',  blurb:'Allocation, placements, investissement non coté.',    q:'Comment diversifier mon allocation patrimoniale ?'},
@@ -492,12 +492,12 @@ function renderUnivers(profile){
   if(cnt) cnt.textContent = keys.length + (keys.length > 1 ? ' univers' : ' univers');
   grid.innerHTML = keys.map(k => {
     const u = MAP[k];
-    const href = '/app/marcel?q=' + encodeURIComponent(u.q);
+    const href = u.page || ('/app/marcel?q=' + encodeURIComponent(u.q));
     return `<a class="card" href="${href}" style="text-decoration:none;display:flex;flex-direction:column;transition:all .18s">
       <div style="font-size:26px;line-height:1">${u.em}</div>
       <h3 style="margin:8px 0 2px;font-size:16px">${u.nom}</h3>
       <p style="font-size:12.5px;color:var(--mute);line-height:1.45;margin:0;flex:1">${u.blurb}</p>
-      <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:10px">✦ ${u.agent} · Demander à Marcel →</div>
+      <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:10px">${u.page ? '✦ Prix réels DVF →' : '✦ '+u.agent+' · Demander à Marcel →'}</div>
     </a>`;
   }).join('');
   sec.style.display = 'block';
