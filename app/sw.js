@@ -4,7 +4,7 @@
  * Région : Cloudflare Pages (souveraineté France)
  */
 
-const CACHE_VERSION = 'marcel-v1.0.5';
+const CACHE_VERSION = 'marcel-v1.0.6';
 const STATIC_CACHE = `marcel-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `marcel-runtime-${CACHE_VERSION}`;
 
@@ -73,7 +73,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ✅ Cache first pour assets statiques (CSS, JS, images, fonts)
+  // ✅ Network first pour le JS applicatif (anti-cache-obsolète : api.js toujours frais en ligne)
+  if (url.pathname.startsWith('/app/js/') || url.pathname.endsWith('.js')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response.ok && response.type !== 'opaque') {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // ✅ Cache first pour les assets stables (CSS, images, fonts)
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
