@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/app/css/marcel.css">
+<script src="/app/js/vendor/chart.umd.min.js"></script>
 <style>
   /* ─── Module patrimoine ─── */
   .pat-hero{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:30px;align-items:center;
@@ -102,7 +103,7 @@
   <!-- Overview -->
   <section class="pat-hero" id="overview" style="display:none">
     <div class="donut-wrap">
-      <svg class="donut" viewBox="0 0 200 200" id="donut"></svg>
+      <canvas id="donut"></canvas>
       <div class="donut-center">
         <div class="net" id="netTotal">—</div>
         <div class="lbl">Patrimoine net estimé</div>
@@ -219,21 +220,30 @@ function render(){
   renderBiens();
 }
 
+let _donutChart;
 function renderDonut(total){
-  const svg = document.getElementById('donut');
-  const r = 80, C = 2 * Math.PI * r;
-  // agrégation par catégorie
+  const cv = document.getElementById('donut');
+  if(!cv || typeof Chart === 'undefined') return;
   const byCat = {};
   biens.forEach(b => { byCat[b.cat] = (byCat[b.cat]||0) + (+b.value||0); });
-  let offset = 0;
-  svg.innerHTML = `<circle cx="100" cy="100" r="${r}" stroke="var(--bg-3)" stroke-width="26"></circle>` +
-    Object.keys(CATS).filter(k => byCat[k] > 0).map(k => {
-      const frac = total ? byCat[k]/total : 0;
-      const dash = frac * C;
-      const seg = `<circle cx="100" cy="100" r="${r}" stroke="${CATS[k].color}" stroke-dasharray="${dash} ${C-dash}" stroke-dashoffset="${-offset}" stroke-linecap="butt"></circle>`;
-      offset += dash;
-      return seg;
-    }).join('');
+  const keys = Object.keys(CATS).filter(k => byCat[k] > 0);
+  const data = {
+    labels: keys.map(k => CATS[k].label),
+    datasets: [{ data: keys.map(k => byCat[k]), backgroundColor: keys.map(k => CATS[k].color), borderColor: '#fff', borderWidth: 2, hoverOffset: 8 }]
+  };
+  if(_donutChart){ _donutChart.data = data; _donutChart.update(); return; }
+  _donutChart = new Chart(cv, {
+    type: 'doughnut',
+    data,
+    options: {
+      cutout: '70%', responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => ' ' + c.label + ' · ' + eur(c.parsed) + ' (' + (total ? Math.round(c.parsed/total*100) : 0) + '%)' } }
+      },
+      animation: { animateRotate: true, duration: 900, easing: 'easeOutQuart' }
+    }
+  });
 }
 
 function renderLegend(total){

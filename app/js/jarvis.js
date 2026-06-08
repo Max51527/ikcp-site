@@ -43,6 +43,7 @@ import { Voice } from '/app/js/voice.js';
     '.jv-overlay.is-listening .jv-wave i,.jv-overlay.is-speaking .jv-wave i{opacity:1;animation:jvbar .9s ease-in-out infinite}' +
     '.jv-wave i:nth-child(2){animation-delay:.1s}.jv-wave i:nth-child(3){animation-delay:.2s}.jv-wave i:nth-child(4){animation-delay:.3s}.jv-wave i:nth-child(5){animation-delay:.15s}.jv-wave i:nth-child(6){animation-delay:.25s}.jv-wave i:nth-child(7){animation-delay:.05s}' +
     '@keyframes jvbar{0%,100%{height:7px}50%{height:30px}}' +
+    '.jv-wave.jv-reactive i{animation:none!important;transition:height .07s linear;opacity:1}' +
     '.jv-status{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#C9A96E;font-weight:600;margin-top:18px;min-height:18px}' +
     '.jv-transcript{max-width:560px;margin-top:18px;font-size:15px;line-height:1.55;color:rgba(250,247,240,.92)}' +
     '.jv-transcript .u{color:#E2C896;font-style:italic;font-size:13.5px;margin-bottom:8px}' +
@@ -101,15 +102,47 @@ import { Voice } from '/app/js/voice.js';
   }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+  // ── Orbe audio-réactive : l'onde suit ta voix en temps réel (Web Audio) ──
+  var _ac, _analyser, _micStream, _raf;
+  function startMicViz() {
+    if (_ac || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      if (!running) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+      _micStream = stream;
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      _ac = new AC();
+      var src = _ac.createMediaStreamSource(stream);
+      _analyser = _ac.createAnalyser(); _analyser.fftSize = 64;
+      src.connect(_analyser);
+      var wave = ov.querySelector('.jv-wave'); if (wave) wave.classList.add('jv-reactive');
+      var bars = ov.querySelectorAll('.jv-wave i');
+      var buf = new Uint8Array(_analyser.frequencyBinCount);
+      (function tick() {
+        if (!_analyser) return;
+        _analyser.getByteFrequencyData(buf);
+        for (var i = 0; i < bars.length; i++) { var v = buf[i * 2 + 2] || 0; bars[i].style.height = Math.max(6, (v / 255) * 30) + 'px'; }
+        _raf = requestAnimationFrame(tick);
+      })();
+    }).catch(function () {});
+  }
+  function stopMicViz() {
+    if (_raf) { cancelAnimationFrame(_raf); _raf = null; }
+    if (_micStream) { _micStream.getTracks().forEach(function (t) { t.stop(); }); _micStream = null; }
+    if (_ac) { try { _ac.close(); } catch (_) {} _ac = null; }
+    _analyser = null;
+    if (ov) { var w = ov.querySelector('.jv-wave'); if (w) w.classList.remove('jv-reactive'); ov.querySelectorAll('.jv-wave i').forEach(function (b) { b.style.height = ''; }); }
+  }
+
   function startListen() {
     if (!support.stt) { setState('idle', 'Dictée non supportée'); return; }
     setState('listening', 'À l\'écoute…');
+    startMicViz();
     var captured = '';
     Voice.startListening({
       onInterim: function (t) { if (t) { transEl.innerHTML = '<div class="u">' + esc(t) + '…</div>'; } },
       onFinal: function (t) { captured = (t || '').trim(); },
-      onError: function () { setState('idle', 'Réessayez'); },
-      onEnd: function () { if (running && captured) ask(captured); else if (running) setState('idle', 'Touchez « Parler »'); }
+      onError: function () { stopMicViz(); setState('idle', 'Réessayez'); },
+      onEnd: function () { stopMicViz(); if (running && captured) ask(captured); else if (running) setState('idle', 'Touchez « Parler »'); }
     });
   }
 
@@ -144,6 +177,7 @@ import { Voice } from '/app/js/voice.js';
   }
   function close() {
     running = false;
+    try { stopMicViz(); } catch (_) {}
     try { Voice.stopListening && Voice.stopListening(); } catch (_) {}
     try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (_) {}
     setState('idle', '');
