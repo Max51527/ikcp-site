@@ -1,0 +1,42 @@
+# Dependabot — alertes vulnérabilités + mise à jour auto des deps
+# Doc : https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+
+updates:
+  # GitHub Actions (workflows .github/workflows/*.yml)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci"
+
+  # npm (chaque Worker peut avoir un package.json à terme)
+  - package-ecosystem: "npm"
+    directory: "/workers/ikcp-marcel"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "workers"
+
+  - package-ecosystem: "npm"
+    directory: "/workers/ikcp-client"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "workers"
+
+  - package-ecosystem: "npm"
+    directory: "/workers/ikcp-agents"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "workers"
