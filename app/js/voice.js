@@ -80,6 +80,48 @@ const Voice = {
 
   isListening() { return this._listening; },
 
+  /** Nettoyage texte AVANT synthèse — retire markdown, emojis, symboles,
+   *  et convertit les unités en mots (€→euros, %→pour cent, m²→mètres carrés)
+   *  pour que la voix ne lise JAMAIS la ponctuation ni les signes graphiques.
+   *  Appliqué aux DEUX chemins (premium VoxCPM2 + navigateur Web Speech). */
+  _clean(text) {
+    if (!text || typeof text !== 'string') return '';
+    let t = text;
+    t = t.replace(/```[\s\S]*?```/g, ' ');                 // blocs de code
+    t = t.replace(/`([^`]+)`/g, '$1');                      // code inline
+    t = t.replace(/!\[[^\]]*\]\([^)]*\)/g, ' ');            // images
+    t = t.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1');          // liens [texte](url)
+    t = t.replace(/https?:\/\/\S+/g, ' ');                  // URLs nues
+    t = t.replace(/^[ \t]*#{1,6}\s+/gm, '');                // titres #
+    t = t.replace(/^[ \t]*>\s?/gm, '');                     // citations >
+    t = t.replace(/^[ \t]*[-*+•·–]\s+/gm, '');              // puces de liste
+    t = t.replace(/^[ \t]*\d{1,2}[.)]\s+/gm, '');           // listes numérotées
+    t = t.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1'); // gras/italique
+    t = t.replace(/__([^_]+)__/g, '$1').replace(/_([^_]+)_/g, '$1');
+    t = t.replace(/~~([^~]+)~~/g, '$1');                    // barré
+    t = t.replace(/\|/g, ', ');                             // colonnes de tableau
+    t = t.replace(/^[ \t]*:?-{2,}:?[ \t]*$/gm, ' ');        // séparateurs de tableau
+    t = t.replace(/[─━┄┅┈┉┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬▪▸►▼◆●○■]/g, ' '); // filets / box-drawing
+    t = t.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}‍]/gu, ''); // emojis & pictos
+    t = t.replace(/[#*_>~`^]+/g, ' ');                      // symboles markdown résiduels
+    t = t.replace(/(\d)\s*M€/g, '$1 millions d’euros')      // unités → mots
+         .replace(/(\d)\s*k€/gi, '$1 000 euros')
+         .replace(/€/g, ' euros')
+         .replace(/%/g, ' pour cent')
+         .replace(/m²/g, ' mètres carrés')
+         .replace(/m³/g, ' mètres cubes')
+         .replace(/n°/gi, 'numéro ')
+         .replace(/&/g, ' et ');
+    t = t.replace(/\s[–—]\s/g, ', ').replace(/[–—]/g, ' '); // tirets longs → pause
+    t = t.replace(/…/g, '.');                               // points de suspension
+    t = t.replace(/[ \t]{2,}/g, ' ')
+         .replace(/\n{2,}/g, '. ')
+         .replace(/\n/g, ' ')
+         .replace(/\s+([.,;:!?])/g, '$1')                   // pas d'espace avant ponctuation
+         .replace(/([.,;:!?])\1+/g, '$1');                  // dédoublonne la ponctuation
+    return t.trim();
+  },
+
   /** Synthèse vocale — Marcel parle */
   speak(text, { rate = 1.0, pitch = 1.0, voiceName } = {}) {
     if (!('speechSynthesis' in window)) return;
@@ -88,16 +130,9 @@ const Voice = {
     // Stoppe une lecture en cours
     this.stopSpeaking();
 
-    // Nettoie le markdown basique pour la lecture
-    const clean = text
-      .replace(/\*\*(.+?)\*\*/g, '$1')
-      .replace(/\*(.+?)\*/g, '$1')
-      .replace(/^#+\s+/gm, '')
-      .replace(/`(.+?)`/g, '$1')
-      .replace(/\[(.+?)\]\(.+?\)/g, '$1')
-      .replace(/\|/g, ' ')
-      .replace(/[─━┌┐└┘├┤┬┴┼]/g, ' ')
-      .trim();
+    // Nettoyage complet (markdown, emojis, symboles, unités) avant lecture
+    const clean = this._clean(text);
+    if (!clean) return;
 
     // Découpage par phrases pour fluidité (~200 chars max par utterance)
     const sentences = clean.match(/[^.!?]+[.!?]+|\S+/g) || [clean];
@@ -113,7 +148,9 @@ const Voice = {
     const voices = window.speechSynthesis.getVoices();
     let voice = null;
     if (voiceName) voice = voices.find(v => v.name === voiceName);
-    if (!voice) voice = voices.find(v => v.lang === 'fr-FR' && /femme|female|amelie|audrey|virginie|marie/i.test(v.name));
+    // Priorité aux voix neuronales (bien meilleur rendu) : Natural / Online / Google
+    if (!voice) voice = voices.find(v => /^fr/i.test(v.lang) && /natural|online|neural|google|denise|éloïse|eloise|vivienne/i.test(v.name));
+    if (!voice) voice = voices.find(v => v.lang === 'fr-FR' && /femme|female|amelie|amélie|audrey|virginie|marie|hortense/i.test(v.name));
     if (!voice) voice = voices.find(v => v.lang === 'fr-FR');
     if (!voice) voice = voices.find(v => v.lang.startsWith('fr'));
 
@@ -232,6 +269,9 @@ const Voice = {
   async speakPremium(text, { voiceId } = {}) {
     this.stopSpeaking();
     if (!text || typeof text !== 'string') return false;
+    // Nettoyage AVANT envoi au TTS premium — sinon VoxCPM2 lit la ponctuation/markdown
+    text = this._clean(text);
+    if (!text) return false;
     try {
       const r = await fetch(VOICE_WORKER + '/tts', {
         method: 'POST', credentials: 'include',
