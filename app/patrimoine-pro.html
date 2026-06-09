@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'fo'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1729">
+<title>Patrimoine — Cockpit IKCP Family Office</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<script src="/app/js/vendor/chart.umd.min.js" defer></script>
+<style>
+  :root{
+    --nd:#0E1729; --n:#1B2A4A; --n-2:#243657;
+    --gold:#A8884D; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+    --cream:#FAFAF8; --paper:#F2F0EA;
+    --tnum:"tnum" 1,"lnum" 1;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);-webkit-font-smoothing:antialiased}
+  .cockpit{max-width:1080px;margin:0 auto;padding:22px 20px 120px}
+  .num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:var(--tnum);letter-spacing:-0.01em}
+
+  /* ── top bar ── */
+  .cp-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .cp-back{display:inline-flex;align-items:center;gap:8px;color:var(--mute);text-decoration:none;font-size:13px;font-weight:500}
+  .cp-back:hover{color:var(--gold)}
+  .cp-mode{display:inline-flex;gap:4px;padding:3px;background:var(--bg-2);border:1px solid var(--line);border-radius:999px}
+  .cp-mode button{border:0;background:transparent;color:var(--mute);font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:999px;cursor:pointer;transition:.2s}
+  .cp-mode button.on{background:var(--n);color:var(--gold-bright);box-shadow:0 2px 8px -3px rgba(14,23,41,.5)}
+
+  .cp-banner{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--gold-deep);background:rgba(168,136,77,.09);border:1px solid rgba(168,136,77,.28);border-radius:11px;padding:9px 14px;margin-bottom:16px}
+  .cp-banner b{color:var(--n)}
+
+  /* ── HERO COCKPIT (dark jewel band) ── */
+  .hero{position:relative;overflow:hidden;border-radius:22px;color:var(--cream);
+    background:
+      radial-gradient(120% 140% at 12% -10%, rgba(226,200,150,.16), transparent 46%),
+      radial-gradient(120% 130% at 100% 110%, rgba(168,136,77,.18), transparent 50%),
+      linear-gradient(155deg,#16233f 0%, var(--nd) 60%, #0a1120 100%);
+    box-shadow:0 40px 80px -50px rgba(14,23,41,.9), inset 0 1px 0 rgba(255,255,255,.06);
+    padding:30px 32px;display:grid;grid-template-columns:1.35fr .85fr;gap:26px;align-items:center}
+  .hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay}
+  .hero::after{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(226,200,150,.6),transparent)}
+  .hero-l{position:relative;z-index:1}
+  .hero-eyebrow{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-bright);font-weight:600;display:flex;align-items:center;gap:9px}
+  .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:#7BCF9A;box-shadow:0 0 0 4px rgba(123,207,154,.18);animation:livep 2.6s ease-in-out infinite}
+  @keyframes livep{0%,100%{opacity:1}50%{opacity:.45}}
+  .hero-total{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(40px,7vw,68px);line-height:1;margin:14px 0 6px;color:#fff}
+  .hero-total .cur{font-size:.46em;color:var(--gold-bright);vertical-align:.12em;margin-left:6px;font-style:italic}
+  .hero-sub{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;color:rgba(250,250,248,.62)}
+  .delta{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:12.5px;padding:4px 10px;border-radius:999px}
+  .delta.up{color:#9BE3B6;background:rgba(123,207,154,.13)}
+  .delta.down{color:#F0A89C;background:rgba(178,58,46,.16)}
+  .delta.flat{color:rgba(250,250,248,.6);background:rgba(255,255,255,.06)}
+  .hero-chips{display:flex;gap:6px;margin-top:18px}
+  .hero-chips button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:rgba(250,250,248,.72);font:inherit;font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;transition:.2s}
+  .hero-chips button.on{background:var(--gold);color:#15233f;border-color:var(--gold)}
+  .hero-spark{margin-top:16px;height:62px;position:relative}
+  .hero-r{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .donut-wrap{position:relative;width:200px;height:200px}
+  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+  .donut-center .k{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(226,200,150,.8);font-weight:600}
+  .donut-center .v{font-family:'Fraunces',serif;font-size:30px;font-weight:500;color:#fff;line-height:1.05;margin-top:3px}
+  .donut-center .u{font-size:11px;color:rgba(250,250,248,.5);margin-top:2px}
+
+  /* ── section heading ── */
+  .cp-h{font-family:'Fraunces',serif;font-weight:500;font-size:22px;color:var(--ink);letter-spacing:-.01em;margin:38px 0 4px}
+  .cp-h em{font-style:italic;color:var(--gold)}
+  .cp-hs{font-size:13px;color:var(--mute);margin:0 0 18px}
+
+  /* ── allocation bar ── */
+  .alloc-bar{display:flex;height:18px;border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line);background:var(--bg-2)}
+  .alloc-bar span{height:100%;transition:width 1.1s cubic-bezier(.22,1,.36,1);min-width:0}
+  .alloc-bar span:not(:last-child){box-shadow:1px 0 0 rgba(250,250,248,.7)}
+  .legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 22px;margin-top:18px}
+  .leg{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .leg .sw{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+  .leg .lb{flex:1;font-size:13.5px;color:var(--ink);font-weight:500}
+  .leg .pc{font-size:12px;color:var(--mute);font-weight:600;width:42px;text-align:right}
+  .leg .vl{font-size:13px;color:var(--ink);font-weight:600;width:96px;text-align:right}
+
+  /* ── univers cards ── */
+  .uni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+  .uni{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;
+    transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s,border-color .25s;overflow:hidden;text-decoration:none;display:block}
+  .uni::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+  .uni:hover{transform:translateY(-3px);box-shadow:0 22px 40px -26px rgba(14,23,41,.32);border-color:var(--line-strong)}
+  .uni-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .uni-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--bg-2);border:1px solid var(--line)}
+  .uni-pc{font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);padding:3px 9px;border-radius:999px}
+  .uni-lb{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600}
+  .uni-vl{font-family:'Fraunces',serif;font-size:25px;font-weight:500;color:var(--ink);line-height:1.1;margin:3px 0 12px}
+  .uni-mb{height:5px;border-radius:999px;background:var(--bg-3);overflow:hidden}
+  .uni-mb i{display:block;height:100%;background:var(--c);border-radius:999px;transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+
+  /* ── insight band ── */
+  .insight{margin-top:38px;border-radius:18px;padding:22px 24px;color:var(--cream);position:relative;overflow:hidden;
+    background:linear-gradient(150deg,#1d2d4d,#0e1729)}
+  .insight::after{content:'';position:absolute;top:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(226,200,150,.5),transparent)}
+  .insight .ie{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-bright);font-weight:600}
+  .insight .it{font-family:'Fraunces',serif;font-size:16px;line-height:1.5;margin:8px 0 0;color:#fff}
+  .insight .it em{color:var(--gold-bright);font-style:italic}
+
+  /* ── footer compliance ── */
+  .cp-foot{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);font-size:11px;color:var(--mute);line-height:1.6}
+  .cp-foot b{color:var(--ink)}
+
+  /* ── edit FAB + modal ── */
+  .cp-edit{position:fixed;right:20px;bottom:84px;z-index:120;display:inline-flex;align-items:center;gap:8px;
+    background:var(--n);color:var(--gold-bright);border:1px solid rgba(226,200,150,.4);border-radius:999px;
+    padding:13px 20px;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 16px 34px -16px rgba(14,23,41,.7)}
+  .cp-edit:hover{background:var(--nd)}
+  .modal{position:fixed;inset:0;z-index:200;background:rgba(14,23,41,.5);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
+  .modal.open{display:flex}
+  .sheet{background:var(--paper);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:24px 22px calc(24px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;box-shadow:0 -20px 60px -20px rgba(14,23,41,.5);animation:up .35s cubic-bezier(.22,1,.36,1)}
+  @media(min-width:560px){.modal{align-items:center}.sheet{border-radius:22px}}
+  @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .sheet h3{font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:0 0 3px}
+  .sheet p.sub{font-size:12.5px;color:var(--mute);margin:0 0 18px}
+  .frow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .frow .fi{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bg-2);border:1px solid var(--line);flex-shrink:0}
+  .frow label{flex:1;font-size:13.5px;color:var(--ink);font-weight:500}
+  .frow input{width:130px;text-align:right;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:14px;font-variant-numeric:tabular-nums;background:var(--bg);color:var(--ink)}
+  .frow input:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-soft)}
+  .frow.passif label{color:var(--accent)}
+  .sheet-actions{display:flex;gap:10px;margin-top:20px}
+  .sheet-actions .btn{flex:1;justify-content:center}
+  .reveal-up{opacity:0;transform:translateY(14px);animation:rvu .7s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes rvu{to{opacity:1;transform:none}}
+  @media(max-width:680px){
+    .hero{grid-template-columns:1fr;padding:24px 20px;gap:20px}
+    .hero-r{order:-1}
+    .cockpit{padding:16px 14px 120px}
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Family Office augmenté</span></a>
+  <div class="app-user">
+    <span class="tier premium" id="userTier">Family Office</span>
+    <div class="avatar" id="userAvatar">M</div>
+  </div>
+</header>
+
+<main class="cockpit">
+  <div class="cp-top">
+    <a href="/app/dashboard" class="cp-back">← Mon espace</a>
+    <div class="cp-mode" role="tablist" aria-label="Mode d'affichage">
+      <button id="mReal" onclick="setMode('real')">Mes données</button>
+      <button id="mDemo" onclick="setMode('demo')">Exemple</button>
+    </div>
+  </div>
+
+  <div class="cp-banner" id="banner" style="display:none"></div>
+
+  <!-- ════ HERO COCKPIT ════ -->
+  <section class="hero reveal-up">
+    <div class="hero-l">
+      <div class="hero-eyebrow"><span class="dot"></span> Patrimoine net consolidé</div>
+      <div class="hero-total num" id="heroTotal">—</div>
+      <div class="hero-sub">
+        <span class="delta flat" id="heroDelta">—</span>
+        <span id="heroMeta">déclaratif · hébergé en France</span>
+      </div>
+      <div class="hero-chips" id="heroChips">
+        <button data-p="6" class="on">6 M</button>
+        <button data-p="12">1 an</button>
+        <button data-p="0">Tout</button>
+      </div>
+      <div class="hero-spark"><canvas id="sparkCv"></canvas></div>
+    </div>
+    <div class="hero-r">
+      <div class="donut-wrap">
+        <canvas id="donutCv" width="200" height="200"></canvas>
+        <div class="donut-center">
+          <span class="k">Actifs bruts</span>
+          <span class="v num" id="donutTotal">—</span>
+          <span class="u" id="donutCount">— univers</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ ALLOCATION ════ -->
+  <h2 class="cp-h reveal-up" style="animation-delay:.06s">Allocation <em>par univers</em></h2>
+  <p class="cp-hs reveal-up" style="animation-delay:.06s">La répartition réelle de votre patrimoine — la vue qu'un Family Office vous doit.</p>
+  <div class="reveal-up" style="animation-delay:.1s">
+    <div class="alloc-bar" id="allocBar"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <!-- ════ UNIVERS ════ -->
+  <h2 class="cp-h reveal-up" style="animation-delay:.14s">Vos <em>univers</em></h2>
+  <p class="cp-hs reveal-up" style="animation-delay:.14s">Chaque classe d'actif, son poids, son levier. Cliquez pour ouvrir l'univers.</p>
+  <div class="uni-grid reveal-up" id="uniGrid" style="animation-delay:.18s"></div>
+
+  <!-- ════ MARCEL INSIGHT ════ -->
+  <section class="insight reveal-up" id="insight" style="display:none;animation-delay:.2s">
+    <div class="ie">✦ L'observation de Marcel</div>
+    <p class="it" id="insightBody"></p>
+  </section>
+
+  <footer class="cp-foot">
+    <b>Patrimoine déclaratif.</b> Les montants sont saisis par vous et stockés sur votre appareil / en France (RGPD souverain) — IKCP ne se connecte à aucun compte bancaire.
+    Cette vue ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.
+    Maxime Juveneton · CIF — <b>ORIAS 23001568</b> · CNCEF Patrimoine.
+  </footer>
+</main>
+
+<button class="cp-edit" onclick="openEdit()">✎ Renseigner</button>
+
+<!-- ── EDIT SHEET ── -->
+<div class="modal" id="editModal" onclick="if(event.target===this)closeEdit()">
+  <div class="sheet">
+    <h3>Votre patrimoine</h3>
+    <p class="sub">Renseignez ce que vous souhaitez — Marcel consolide le reste. Tout reste privé.</p>
+    <div id="editRows"></div>
+    <div class="frow passif">
+      <span class="fi">⊖</span>
+      <label>Passifs · dettes (crédits…)</label>
+      <input type="number" id="f_passif" inputmode="numeric" placeholder="0">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeEdit()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { Marcel, Auth } from '/app/js/api.js';
+window.__Marcel = Marcel;
+
+const CATS = [
+  { key:'immobilier', label:'Immobilier',         icon:'🏠', color:'#A8884D', href:'/app/immobilier' },
+  { key:'financier',  label:'Actifs financiers',  icon:'📈', color:'#1B2A4A', href:'/app/marcel?topic=marches' },
+  { key:'tresorerie', label:'Trésorerie',         icon:'💧', color:'#5B8A8C', href:'/app/marcel?topic=tresorerie' },
+  { key:'societe',    label:'Société · non coté', icon:'🏛️', color:'#7A5C2E', href:'/app/environnement' },
+  { key:'retraite',   label:'Épargne & retraite', icon:'🛡️', color:'#C9A96E', href:'/app/marcel?topic=retraite' },
+  { key:'passion',    label:'Objets de passion',  icon:'🎨', color:'#B23A2E', href:'/app/collections' },
+  { key:'autres',     label:'Autres actifs',      icon:'✦',  color:'#9AA0AE', href:'/app/marcel' },
+];
+const DEMO = { immobilier:1450000, financier:720000, tresorerie:180000, societe:850000, retraite:240000, passion:95000, autres:40000, passif:320000 };
+const DEMO_HIST = [2710,2755,2790,2840,2905,2960,3010,3060,3105,3160,3210,3255].map((n,i)=>({t:i,net:n*1000}));
+
+const EUR = (n)=> new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(n));
+const fmtFull = (n)=> EUR(n)+' €';
+const $ = (id)=> document.getElementById(id);
+let mode='real', data={}, hist=[], donutChart=null, sparkChart=null;
+
+function loadData(){
+  try{ data = JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null') || {}; }catch(_){ data={}; }
+  try{ hist = JSON.parse(localStorage.getItem('ikcp_patrimoine_hist')||'[]'); }catch(_){ hist=[]; }
+}
+function hasData(){ return CATS.some(c=> Number(data[c.key])>0); }
+function activeData(){ return mode==='demo' ? DEMO : data; }
+function activeHist(){
+  if(mode==='demo') return DEMO_HIST;
+  return hist.map((h,i)=>({t:i,net:h.net}));
+}
+const sumAssets = (d)=> CATS.reduce((s,c)=> s+(Number(d[c.key])||0),0);
+const netWorth  = (d)=> sumAssets(d) - (Number(d.passif)||0);
+
+function setMode(m){
+  mode = m;
+  $('mReal').classList.toggle('on', m==='real');
+  $('mDemo').classList.toggle('on', m==='demo');
+  const b = $('banner');
+  if(m==='demo'){
+    b.style.display='flex';
+    b.innerHTML = '✦ <span><b>Exemple illustratif</b> — profil dirigeant fictif. Basculez sur « Mes données » pour votre situation réelle.</span>';
+  } else if(!hasData()){
+    b.style.display='flex';
+    b.innerHTML = '✦ <span>Votre cockpit est <b>vierge</b>. Appuyez sur <b>✎ Renseigner</b> pour le faire vivre — ou regardez l\'<b>Exemple</b>.</span>';
+  } else { b.style.display='none'; }
+  render();
+}
+
+let _ctr=null;
+function countUp(el, to){
+  if(_ctr) cancelAnimationFrame(_ctr);
+  const dur=900, t0=performance.now(), from=0;
+  const tick=(t)=>{ const p=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-p,3);
+    el.textContent = EUR(from+(to-from)*e); if(p<1) _ctr=requestAnimationFrame(tick); };
+  el.innerHTML = '<span class="amt">0</span>';
+  el.textContent='0'; _ctr=requestAnimationFrame(tick);
+  // append currency after
+  setTimeout(()=>{ if(el.id==='heroTotal') el.innerHTML = EUR(to)+'<span class="cur">€</span>'; },920);
+}
+
+function render(){
+  const d = activeData(), assets=sumAssets(d), net=netWorth(d), empty = assets<=0;
+
+  // hero total
+  if(empty){ $('heroTotal').innerHTML='<span style="font-size:.5em;font-style:italic;color:var(--mute);font-family:Fraunces">À renseigner</span>'; }
+  else countUp($('heroTotal'), net);
+
+  // delta from history
+  const h = activeHist();
+  const hd=$('heroDelta');
+  if(h.length>=2){
+    const diff = net - h[Math.max(0,h.length-7)].net; // ~vs 6 pts avant
+    const base = h[Math.max(0,h.length-7)].net || 1;
+    const pct = (diff/base*100);
+    hd.className = 'delta '+(diff>0?'up':diff<0?'down':'flat');
+    hd.textContent = (diff>0?'▲ +':diff<0?'▼ ':'• ')+EUR(Math.abs(diff))+' € ('+(diff>=0?'+':'')+pct.toFixed(1)+'%)';
+  } else { hd.className='delta flat'; hd.textContent = empty?'—':'historique en construction'; }
+
+  // donut center
+  $('donutTotal').textContent = empty? '—' : EUR(assets);
+  const nU = CATS.filter(c=>Number(d[c.key])>0).length;
+  $('donutCount').textContent = empty? 'aucun univers' : nU+' univers actif'+(nU>1?'s':'');
+
+  drawDonut(d, empty);
+  drawSpark(h);
+  drawAlloc(d, assets, empty);
+  drawUnivers(d, assets, empty);
+}
+
+function drawDonut(d, empty){
+  if(!window.Chart) return;
+  const segs = CATS.map(c=>({c, v:Number(d[c.key])||0})).filter(x=>x.v>0);
+  const cfg = {
+    type:'doughnut',
+    data:{ labels: empty?['—']:segs.map(s=>s.c.label),
+      datasets:[{ data: empty?[1]:segs.map(s=>s.v),
+        backgroundColor: empty?['#E3DDD0']:segs.map(s=>s.c.color),
+        borderColor:'#0E1729', borderWidth:2, hoverOffset:6 }]},
+    options:{ cutout:'72%', responsive:false, plugins:{legend:{display:false},
+      tooltip:{enabled:!empty, callbacks:{label:(x)=>' '+x.label+' · '+fmtFull(x.raw)}}},
+      animation:{animateRotate:true,duration:1100} }
+  };
+  if(donutChart) donutChart.destroy();
+  donutChart = new Chart($('donutCv').getContext('2d'), cfg);
+}
+
+function drawSpark(h){
+  if(!window.Chart) return;
+  const cv=$('sparkCv'); if(!cv) return;
+  if(sparkChart) sparkChart.destroy();
+  if(!h || h.length<2){ cv.getContext('2d').clearRect(0,0,cv.width,cv.height); return; }
+  const ctx=cv.getContext('2d');
+  const g=ctx.createLinearGradient(0,0,0,62);
+  g.addColorStop(0,'rgba(226,200,150,.42)'); g.addColorStop(1,'rgba(226,200,150,0)');
+  sparkChart = new Chart(ctx,{ type:'line',
+    data:{ labels:h.map(x=>x.t), datasets:[{ data:h.map(x=>x.net), borderColor:'#E2C896',
+      borderWidth:2, fill:true, backgroundColor:g, tension:.4, pointRadius:0,
+      pointHoverRadius:4, pointHoverBackgroundColor:'#E2C896' }]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{displayColors:false, callbacks:{title:()=>'', label:(x)=>fmtFull(x.raw)}}},
+      scales:{x:{display:false}, y:{display:false}}, animation:{duration:1100} }});
+}
+
+function drawAlloc(d, assets, empty){
+  const bar=$('allocBar'), leg=$('legend');
+  if(empty){ bar.innerHTML='<span style="width:100%;background:var(--bg-3)"></span>'; leg.innerHTML='<div class="leg" style="color:var(--mute);border:0">Renseignez vos univers pour voir l\'allocation.</div>'; return; }
+  const items = CATS.map(c=>({c, v:Number(d[c.key])||0})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
+  bar.innerHTML = items.map(x=>`<span style="width:0;background:${x.c.color}" data-w="${(x.v/assets*100).toFixed(2)}"></span>`).join('');
+  requestAnimationFrame(()=>{ [...bar.children].forEach(s=> s.style.width=s.dataset.w+'%'); });
+  leg.innerHTML = items.map(x=>{
+    const pc=(x.v/assets*100); return `<div class="leg">
+      <span class="sw" style="background:${x.c.color}"></span>
+      <span class="lb">${x.c.label}</span>
+      <span class="pc num">${pc.toFixed(1)}%</span>
+      <span class="vl num">${fmtFull(x.v)}</span></div>`;
+  }).join('');
+}
+
+function drawUnivers(d, assets, empty){
+  $('uniGrid').innerHTML = CATS.map(c=>{
+    const v=Number(d[c.key])||0, pc= assets>0? v/assets*100 : 0;
+    return `<a class="uni" style="--c:${c.color}" href="${c.href}">
+      <div class="uni-top"><span class="uni-ic">${c.icon}</span>
+        ${v>0?`<span class="uni-pc">${pc.toFixed(0)}%</span>`:`<span class="uni-pc" style="color:var(--mute);background:var(--bg-2)">+</span>`}</div>
+      <div class="uni-lb">${c.label}</div>
+      <div class="uni-vl num">${v>0?fmtFull(v):'<span style="color:var(--mute);font-style:italic;font-size:16px">à renseigner</span>'}</div>
+      <div class="uni-mb"><i style="width:0" data-w="${pc.toFixed(1)}"></i></div>
+    </a>`;
+  }).join('');
+  requestAnimationFrame(()=>{ document.querySelectorAll('.uni-mb i').forEach(b=> b.style.width=Math.min(100,b.dataset.w)+'%'); });
+}
+
+// ── edit ──
+function openEdit(){
+  $('editRows').innerHTML = CATS.map(c=>`<div class="frow">
+    <span class="fi">${c.icon}</span><label>${c.label}</label>
+    <input type="number" id="f_${c.key}" inputmode="numeric" placeholder="0" value="${data[c.key]||''}"></div>`).join('');
+  $('f_passif').value = data.passif||'';
+  $('editModal').classList.add('open');
+}
+function closeEdit(){ $('editModal').classList.remove('open'); }
+function saveEdit(){
+  const nd={};
+  CATS.forEach(c=>{ const v=parseFloat($('f_'+c.key).value); if(v>0) nd[c.key]=Math.round(v); });
+  const p=parseFloat($('f_passif').value); if(p>0) nd.passif=Math.round(p);
+  data=nd;
+  try{ localStorage.setItem('ikcp_patrimoine', JSON.stringify(nd)); }catch(_){}
+  // snapshot mensuel pour la courbe (honnête : se construit dans le temps)
+  try{
+    const ym = new Date().toISOString().slice(0,7);
+    hist = (JSON.parse(localStorage.getItem('ikcp_patrimoine_hist')||'[]')).filter(h=>h.ym!==ym);
+    hist.push({ ym, net: netWorth(nd) });
+    hist = hist.slice(-36);
+    localStorage.setItem('ikcp_patrimoine_hist', JSON.stringify(hist));
+  }catch(_){}
+  closeEdit();
+  if(mode!=='real') setMode('real'); else setMode('real');
+}
+window.setMode=setMode; window.openEdit=openEdit; window.closeEdit=closeEdit; window.saveEdit=saveEdit;
+
+// ── Marcel insight (premium, honnête, finit par une question) ──
+async function loadInsight(){
+  if(mode!=='real' || !hasData()) return;
+  const ins=$('insight'), body=$('insightBody');
+  try{
+    const cached = JSON.parse(localStorage.getItem('ikcp_pat_insight')||'null');
+    const today = new Date().toISOString().slice(0,10);
+    if(cached && cached.d===today){ body.innerHTML=cached.t; ins.style.display='block'; return; }
+  }catch(_){}
+  const d=data, assets=sumAssets(d);
+  const repartition = CATS.filter(c=>d[c.key]>0).map(c=>`${c.label} ${Math.round(d[c.key]/assets*100)}%`).join(', ');
+  const prompt = `Tu observes l'allocation patrimoniale déclarée d'un dirigeant : patrimoine net ${EUR(netWorth(d))} €, répartition : ${repartition}. En 2 phrases maximum, fais UNE observation pertinente et élégante sur l'équilibre/les angles morts de cette allocation, puis termine par UNE question ouverte. Ne donne AUCUNE recommandation produit. Ton : Family Officer haut de gamme, vouvoiement.`;
+  try{
+    const r = await Marcel.chat(prompt);
+    const txt = (r.reply||r.message||'').trim();
+    if(txt){ body.innerHTML = txt.replace(/\n+/g,'<br>'); ins.style.display='block';
+      try{ localStorage.setItem('ikcp_pat_insight', JSON.stringify({d:new Date().toISOString().slice(0,10), t:body.innerHTML})); }catch(_){}
+    }
+  }catch(_){ /* silencieux */ }
+}
+
+// ── boot ──
+loadData();
+try{ const p=JSON.parse(localStorage.getItem('ikcp_profile')||'null'); if(p&&p.prenom){ $('userAvatar').textContent=(p.prenom[0]||'M').toUpperCase(); } }catch(_){}
+if(hasData()) setMode('real'); else setMode('demo');
+setTimeout(loadInsight, 600);
+// recharge les graphes quand Chart.js (defer) est prêt
+if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv); render(); } },120); setTimeout(()=>clearInterval(iv),4000); }
+</script>
+</body>
+</html>
