@@ -306,6 +306,24 @@ select option{background:var(--navy-deep)}
       <!-- ═══ RÉGLAGES ═══ -->
       <section class="view" id="v-reglages">
         <div class="card" style="margin-top:0">
+          <h2>🛠️ Atelier — éditer &amp; déployer en direct</h2>
+          <div class="desc">Le lien Claude ↔ GitHub ↔ Cloudflare ↔ site. Trois façons de modifier la plateforme — puis ça se déploie tout seul (~30 s).</div>
+          <div class="alert ok"><span class="x">💬</span><div><b>Modifier avec Claude (le plus puissant)</b> — ouvre la page concernée et dis « Claude, change X ici ». Il modifie le code → push GitHub → en ligne en ~30 s. C'est exactement ce qu'on fait ensemble en co-browsing.</div></div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Éditer</div>
+          <a class="lnk" href="/admin/" target="_blank">✏️ CMS contenu (Sveltia) — textes &amp; pages, sans coder</a>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site" target="_blank">💻 GitHub — le code (source unique de vérité)</a>
+          <a class="lnk" href="https://github.dev/Max51527/ikcp-site" target="_blank">⌨️ Éditeur GitHub web — modifier un fichier en ligne (VS Code)</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Déployer &amp; surveiller</div>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site/actions" target="_blank">🚀 GitHub Actions — vérifier / relancer un déploiement</a>
+          <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/pages" target="_blank">☁️ Cloudflare Pages — le site (déploiements, domaine)</a>
+          <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers/overview" target="_blank">⚙️ Cloudflare Workers — les agents IA / API (logs, secrets)</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Application &amp; espaces</div>
+          <a class="lnk" href="/app/patrimoine-pro" target="_blank">📊 Cockpit patrimoine (le SaaS premium)</a>
+          <a class="lnk" href="/decouvrir" target="_blank">🎬 Vitrine /decouvrir (vidéo + invitation)</a>
+          <a class="lnk" href="/app/dashboard" target="_blank">📲 Espace membre — installer la PWA (« écran d'accueil »)</a>
+          <div class="desc" style="margin-top:12px">📱 APK Android : construit localement (Bubblewrap). Distribution Play Store = ton compte développeur Google (je rebuild, tu soumets).</div>
+        </div>
+        <div class="card">
           <h2>⚙ Centre technique — toutes tes consoles</h2>
           <div class="desc">Tout ce qui fait tourner la plateforme. Une « console » = le tableau de bord d'un fournisseur où tu vois l'usage, les logs et la facturation. Les clés ne s'affichent jamais ici (sécurité).</div>
           <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:8px 0 8px">Ton infrastructure</div>
