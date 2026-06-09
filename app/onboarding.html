@@ -123,6 +123,27 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
         <option value="autre">Autre</option>
       </select>
     </div>
+    <div class="field">
+      <label for="objectif">Votre objectif n°1</label>
+      <select id="objectif">
+        <option value="">— Choisir —</option>
+        <option value="me_remunerer">Me rémunérer juste &amp; préparer ma retraite</option>
+        <option value="faire_travailler">Faire travailler mon entreprise &amp; mon patrimoine</option>
+        <option value="ceder">Préparer / réussir une cession</option>
+        <option value="transmettre">Transmettre à mes proches</option>
+        <option value="piloter">Piloter &amp; consolider l'ensemble</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="patrimoine">Patrimoine global (ordre de grandeur)</label>
+      <select id="patrimoine">
+        <option value="">— Choisir —</option>
+        <option value="moins_1m">Moins de 1 M€</option>
+        <option value="1_3m">1 à 3 M€</option>
+        <option value="3_10m">3 à 10 M€</option>
+        <option value="plus_10m">Plus de 10 M€</option>
+      </select>
+    </div>
     <div class="progress"><span class="done"></span><span class="active"></span><span></span><span></span></div>
     <div class="nav-actions">
       <button class="btn-back" onclick="next(1)">← Retour</button>
@@ -196,7 +217,18 @@ if(me?.profile_json){
   }catch(_){}
 }
 
-const data = { prenom:'', age:null, situation:'', profession:'', spheres:[], siren_data:null };
+const data = { prenom:'', age:null, situation:'', profession:'', objectif:'', patrimoine:'', typologie:'', spheres:[], siren_data:null };
+
+// Onboarding adaptatif (C) — déduit la typologie pour adapter cockpit + Marcel + univers.
+function computeTypologie(prof, pat, obj){
+  if(obj==='ceder') return 'cedant';
+  if(pat==='plus_10m') return 'famille';
+  if(obj==='transmettre') return (pat==='3_10m') ? 'famille' : 'cedant';
+  if(pat==='3_10m') return 'cedant';
+  if(pat==='moins_1m' || prof==='profession_liberale') return 'indep';
+  if(prof==='entrepreneur' && pat!=='1_3m') return 'famille';
+  return 'etabli';
+}
 
 window.next = function(step){
   // Sauvegarde valeurs courantes
@@ -205,6 +237,8 @@ window.next = function(step){
     data.age = parseInt(document.getElementById('age').value, 10) || null;
     data.situation = document.getElementById('situation').value;
     data.profession = document.getElementById('profession').value;
+    data.objectif = document.getElementById('objectif').value;
+    data.patrimoine = document.getElementById('patrimoine').value;
   }
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   document.getElementById('step' + step).classList.add('active');
@@ -278,11 +312,15 @@ window.finishOnboarding = async function(skipSiren = false){
   const btn = document.getElementById('finishBtn');
   if(btn){ btn.disabled = true; btn.textContent = 'Enregistrement…'; }
 
+  data.typologie = computeTypologie(data.profession, data.patrimoine, data.objectif);
   const profile = {
     prenom: data.prenom,
     age: data.age,
     situation: data.situation,
     profession: data.profession,
+    objectif: data.objectif,
+    patrimoine_range: data.patrimoine,
+    typologie: data.typologie,
     spheres: data.spheres,
     onboarding_completed: true,
     onboarded_at: new Date().toISOString(),

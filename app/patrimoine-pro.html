@@ -341,8 +341,13 @@ function activeHist(){
   return PROFILES[view].hist.map((n,i)=>({t:i,net:n*1000}));
 }
 function detectTypology(){
+  // 1) Priorité à la typologie issue de l'onboarding adaptatif (C)
+  let prof=null;
+  try{ prof=JSON.parse(localStorage.getItem('marcel_profile')||localStorage.getItem('ikcp_profile')||'null'); }catch(_){}
+  if(prof && prof.typologie && TYPO[prof.typologie]) return TYPO[prof.typologie];
+  // 2) Sinon heuristique SIREN + patrimoine net
   let sd=null;
-  try{ sd=JSON.parse(localStorage.getItem('ikcp_profile')||'null')||JSON.parse(localStorage.getItem('siren_data')||'null'); }catch(_){}
+  try{ sd=JSON.parse(localStorage.getItem('siren_data')||'null')||prof; }catch(_){}
   const forme=((sd&&(sd.forme_juridique||sd.forme||sd.forme_juridique_libelle))||'').toLowerCase();
   const eff=Number(sd&&(sd.effectif||sd.tranche_effectif))||0;
   const net=netWorth(data);
