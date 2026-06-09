@@ -363,7 +363,7 @@ select option{background:var(--navy-deep)}
 <script>
 const API = 'https://ikcp-client.maxime-ead.workers.dev';
 const W = u => `https://ikcp-${u}.maxime-ead.workers.dev`;
-let SECRET = sessionStorage.getItem('ikcp_admin_secret') || '';
+let SECRET = localStorage.getItem('ikcp_admin_secret') || sessionStorage.getItem('ikcp_admin_secret') || '';
 const loaded = {};
 
 function hdr(){ return { 'Content-Type':'application/json', 'x-admin-secret': SECRET }; }
@@ -385,6 +385,7 @@ async function unlock(){
     if(r.status === 401 || r.status === 403){ throw new Error('Clé incorrecte.'); }
     if(!r.ok){ throw new Error('Erreur '+r.status); }
     sessionStorage.setItem('ikcp_admin_secret', SECRET);
+    localStorage.setItem('ikcp_admin_secret', SECRET); // mémorisé sur cet appareil → plus jamais à retaper
     document.getElementById('gate').style.display='none';
     document.getElementById('app').style.display='grid';
     route();
@@ -394,7 +395,9 @@ async function unlock(){
     document.getElementById('unlockBtn').disabled = false;
   }
 }
-function logout(){ sessionStorage.removeItem('ikcp_admin_secret'); location.reload(); }
+function logout(){ sessionStorage.removeItem('ikcp_admin_secret'); localStorage.removeItem('ikcp_admin_secret'); location.reload(); }
+// Mémorisation : si la clé a déjà été saisie sur cet appareil, on déverrouille tout seul (plus de mot de passe à retaper).
+if (SECRET) { setTimeout(unlock, 50); }
 
 /* ─── NAV / ROUTER ─── */
 const TITLES = {
