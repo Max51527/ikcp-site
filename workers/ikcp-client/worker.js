@@ -184,19 +184,45 @@ async function handleAuthVerify(request, env) {
 
   let user = await env.D1.prepare('SELECT * FROM users WHERE email = ?').bind(row.email).first();
   if (!user) {
-    // Accès gouverné : si une candidature a été APPROUVÉE pour cet email,
-    // on crée le compte directement au tier accordé (bêta). Sinon 'free'.
-    let grantedTier = 'free', src = 'organic';
+    // ── ACCÈS GOUVERNÉ — bêta « 50 familles fondatrices » ──────────────
+    //  BETA_CAP         : nombre maximum de membres.
+    //  BETA_INVITE_ONLY : true  = personne n'entre sans invitation approuvée
+    //                     false = les places fondatrices s'ouvrent jusqu'au cap
+    const BETA_CAP = 50;
+    const BETA_INVITE_ONLY = false;
+
+    // 1) Candidature APPROUVÉE → admis au tier accordé (prime sur le plafond).
+    let grantedTier = null, src = 'invitation';
     try {
       const appr = await env.D1.prepare("SELECT grant_tier FROM member_applications WHERE email = ? AND status = 'approved' ORDER BY reviewed_at DESC LIMIT 1").bind(row.email).first();
-      if (appr && appr.grant_tier) { grantedTier = appr.grant_tier; src = 'invitation'; }
-    } catch (_) { /* table absente = pas de candidature, on reste free */ }
+      if (appr && appr.grant_tier) grantedTier = appr.grant_tier;
+    } catch (_) { /* table absente = pas de candidature approuvée */ }
+
+    // 2) Sinon : place fondatrice ouverte tant que COUNT(users) < BETA_CAP.
+    if (!grantedTier) {
+      let memberCount = 0;
+      try { const c = await env.D1.prepare('SELECT COUNT(*) AS n FROM users').first(); memberCount = (c && c.n) || 0; } catch (_) {}
+      if (!BETA_INVITE_ONLY && memberCount < BETA_CAP) {
+        grantedTier = 'free'; src = 'organic';            // place fondatrice
+      } else {
+        // 3) Plafond atteint / invitation stricte → liste d'attente : AUCUNE
+        //    session, on enregistre la demande (best effort) et on renvoie le
+        //    visiteur vers la page de découverte.
+        try {
+          await env.D1.prepare("INSERT INTO member_applications (id, email, status, created_at) VALUES (?, ?, 'pending', ?)")
+            .bind(crypto.randomUUID(), row.email, Date.now()).run();
+        } catch (_) { /* table absente : demande tracée via l'événement ci-dessous */ }
+        await emitEvent(env, null, 'waitlist', { email: row.email }).catch(() => {});
+        return new Response(null, { status: 302, headers: { 'Location': `${env.FRONT_URL || 'https://ikcp.eu'}/decouvrir` } });
+      }
+    }
+
     const id = crypto.randomUUID();
     await env.D1.prepare('INSERT INTO users (id, email, tier, created_at, last_login_at, source) VALUES (?, ?, ?, ?, ?, ?)')
       .bind(id, row.email, grantedTier, Date.now(), Date.now(), src).run();
     user = { id, email: row.email, tier: grantedTier };
     await audit(env, id, 'signup', request);
-    await emitEvent(env, id, 'signup', { email: row.email });
+    await emitEvent(env, id, 'signup', { email: row.email, src });
     await sendEmail(env, { to: row.email, subject: 'Bienvenue · IKCP', html: emailTemplateWelcome() });
   } else {
     await env.D1.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').bind(Date.now(), user.id).run();
