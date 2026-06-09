@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1729">
+<title>IKCP Family Office augmenté — Découvrir</title>
+<meta name="description" content="Une porte. Une équipe. Votre patrimoine en orbite. Le premier Family Office 100 % digital, 100 % automatisé — sans oublier l'humain.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nd:#0B1322; --n:#16233f; --n2:#1B2A4A;
+    --cream:#FAFAF8; --gold:#C9A96E; --gold-b:#E2C896; --gold-d:#A8884D;
+    --mute:rgba(250,250,248,.6); --line:rgba(226,200,150,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--nd);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+  .num{font-variant-numeric:tabular-nums lining-nums}
+
+  .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .stage::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:30;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.022'/%3E%3C/svg%3E");mix-blend-mode:overlay}
+
+  /* progress bars */
+  .bars{position:absolute;top:14px;left:16px;right:16px;z-index:40;display:flex;gap:6px}
+  .bars i{flex:1;height:3px;border-radius:3px;background:rgba(250,250,248,.18);overflow:hidden}
+  .bars i b{display:block;height:100%;width:0;background:var(--gold-b);border-radius:3px}
+
+  .brand{position:absolute;top:30px;left:0;right:0;z-index:40;text-align:center;font-family:'Fraunces',serif;font-size:15px;letter-spacing:.02em;font-weight:500;opacity:.92}
+  .brand em{font-style:italic;color:var(--gold-b)}
+
+  .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:70px 26px 90px;opacity:0;visibility:hidden;transition:opacity .7s ease;z-index:1}
+  .scene.active{opacity:1;visibility:visible;z-index:2}
+  .scene::before{content:'';position:absolute;inset:0;z-index:-1;
+    background:
+      radial-gradient(120% 90% at 15% 0%, rgba(226,200,150,.14), transparent 50%),
+      radial-gradient(120% 90% at 100% 100%, rgba(168,136,77,.16), transparent 55%),
+      linear-gradient(160deg,var(--n) 0%, var(--nd) 70%);}
+  .eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-b);font-weight:600;margin-bottom:22px}
+  .scene h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,6.4vw,60px);line-height:1.05;letter-spacing:-.015em;max-width:13ch}
+  .scene h1 em{font-style:italic;color:var(--gold-b)}
+  .scene p.lead{margin-top:18px;font-size:clamp(14px,2.4vw,17px);color:var(--mute);line-height:1.6;max-width:46ch}
+
+  /* staggered reveal */
+  .scene.active .anim{animation:rise .9s cubic-bezier(.2,1,.36,1) both}
+  .scene.active .anim:nth-child(1){animation-delay:.05s}
+  .scene.active .anim:nth-child(2){animation-delay:.18s}
+  .scene.active .anim:nth-child(3){animation-delay:.32s}
+  .scene.active .anim:nth-child(4){animation-delay:.46s}
+  .scene.active .anim:nth-child(5){animation-delay:.6s}
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+  /* agents constellation (scene 1) */
+  .orb{position:relative;width:min(78vw,360px);height:min(78vw,360px);margin-top:6px}
+  .orb .core{position:absolute;inset:0;margin:auto;width:96px;height:96px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-b), var(--gold-d));
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;
+    font-size:30px;color:var(--nd);box-shadow:0 0 60px rgba(226,200,150,.4);z-index:2}
+  .orb .ring{position:absolute;inset:0;border:1px solid var(--line);border-radius:50%}
+  .orb .ring.r2{inset:18%}
+  .chip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;
+    padding:6px 12px;font-size:11.5px;font-weight:600;white-space:nowrap;backdrop-filter:blur(4px)}
+  .scene.active .orb{animation:spin 60s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .scene.active .orb .chip,.scene.active .orb .core{animation:spinb 60s linear infinite}
+  @keyframes spinb{to{transform:translate(-50%,-50%) rotate(-360deg)}}
+
+  /* mock cockpit (scene 2) */
+  .mock{width:min(92vw,560px);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:20px;padding:24px;text-align:left;box-shadow:0 40px 80px -50px #000}
+  .mock .k{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-b);font-weight:600}
+  .mock .big{font-family:'Fraunces',serif;font-size:clamp(34px,8vw,52px);font-weight:500;margin:6px 0 4px}
+  .mock .big .cur{font-size:.42em;color:var(--gold-b);font-style:italic;vertical-align:.1em}
+  .mock .up{color:#9BE3B6;font-weight:600;font-size:13px}
+  .mbar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:18px 0 12px;box-shadow:inset 0 0 0 1px var(--line)}
+  .mbar span{height:100%}
+  .mleg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--mute)}
+  .mleg b{color:var(--cream);font-weight:600}
+  .mdot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+  /* typology cards (scene 3) */
+  .typos{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:min(92vw,560px);margin-top:8px}
+  .typo{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:15px;text-align:left}
+  .typo .t{font-family:'Fraunces',serif;font-size:16px;font-weight:500}
+  .typo .v{font-size:12px;color:var(--gold-b);font-weight:600;margin-top:3px}
+  .typo .s{font-size:11.5px;color:var(--mute);margin-top:4px;line-height:1.4}
+
+  /* services grid (scene 4) */
+  .svc{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;width:min(92vw,560px);margin-top:8px}
+  @media(min-width:620px){.svc{grid-template-columns:repeat(3,1fr)}}
+  .svc div{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:13px;padding:14px;text-align:left}
+  .svc .ic{font-size:20px}
+  .svc .nm{font-weight:600;font-size:13px;margin-top:7px}
+  .svc .ds{font-size:11px;color:var(--mute);margin-top:2px;line-height:1.35}
+
+  .badge{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+    color:var(--nd);background:var(--gold-b);padding:5px 13px;border-radius:999px;margin-bottom:20px}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:26px;background:var(--gold-b);color:var(--nd);
+    text-decoration:none;font-weight:700;font-size:15px;padding:14px 26px;border-radius:999px;transition:.2s}
+  .cta:hover{background:#fff;transform:translateY(-2px)}
+  .legal{margin-top:24px;font-size:10.5px;color:rgba(250,250,248,.42);line-height:1.6;max-width:52ch}
+
+  /* nav + controls */
+  .nz{position:absolute;top:0;bottom:0;width:35%;z-index:35;cursor:pointer}
+  .nz.l{left:0}.nz.r{right:0}
+  .ctrl{position:absolute;bottom:22px;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:center;gap:16px}
+  .ctrl button{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--cream);
+    width:40px;height:40px;border-radius:50%;font-size:14px;cursor:pointer;transition:.2s}
+  .ctrl button:hover{background:rgba(255,255,255,.16)}
+  .hint{position:absolute;bottom:26px;right:18px;z-index:40;font-size:11px;color:rgba(250,250,248,.4)}
+  @media(max-width:520px){.hint{display:none}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bars" id="bars"></div>
+  <div class="brand">IKCP <em>Family Office augmenté</em></div>
+
+  <!-- 0 — COVER -->
+  <section class="scene" data-d="4600">
+    <div class="eyebrow anim">Plan Family Office · sur invitation</div>
+    <h1 class="anim">Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
+    <p class="lead anim">Le premier Family Office <b>100 % digital, 100 % automatisé</b> — sans jamais oublier l'humain.</p>
+  </section>
+
+  <!-- 1 — L'ÉQUIPE -->
+  <section class="scene" data-d="7000">
+    <div class="eyebrow anim">Une seule porte d'entrée</div>
+    <h1 class="anim">Marcel orchestre <em>11 spécialistes</em>.</h1>
+    <div class="orb anim">
+      <div class="ring"></div><div class="ring r2"></div>
+      <div class="core">M</div>
+      <span class="chip" style="left:50%;top:6%">⚖️ Codex · Fiscalité</span>
+      <span class="chip" style="left:92%;top:34%">🌳 Hermès · Transmission</span>
+      <span class="chip" style="left:84%;top:80%">🏛️ Bâtisseur · 360°</span>
+      <span class="chip" style="left:30%;top:94%">🛎️ Conciergerie</span>
+      <span class="chip" style="left:4%;top:62%">🔔 Veille marchés</span>
+      <span class="chip" style="left:10%;top:18%">🎨 Collections</span>
+    </div>
+    <p class="lead anim">Vous posez une question. Marcel mobilise le bon expert. Vous recevez une réponse claire.</p>
+  </section>
+
+  <!-- 2 — LE COCKPIT -->
+  <section class="scene" data-d="7000">
+    <div class="eyebrow anim">Votre patrimoine, vivant</div>
+    <h1 class="anim" style="font-size:clamp(26px,5.2vw,44px)">Tout, consolidé. <em>En un écran.</em></h1>
+    <div class="mock anim">
+      <div class="k">Patrimoine net consolidé</div>
+      <div class="big num">3 255 000<span class="cur">€</span></div>
+      <div class="up">▲ +295 000 € (+10,0 %) cette année</div>
+      <div class="mbar">
+        <span style="width:41%;background:#A8884D"></span><span style="width:24%;background:#1B2A4A"></span>
+        <span style="width:20%;background:#5B8A8C"></span><span style="width:9%;background:#C9A96E"></span>
+        <span style="width:6%;background:#B23A2E"></span>
+      </div>
+      <div class="mleg">
+        <span><i class="mdot" style="background:#A8884D"></i>Immobilier <b>41 %</b></span>
+        <span><i class="mdot" style="background:#1B2A4A"></i>Société <b>24 %</b></span>
+        <span><i class="mdot" style="background:#5B8A8C"></i>Financier <b>20 %</b></span>
+        <span><i class="mdot" style="background:#C9A96E"></i>Épargne <b>9 %</b></span>
+      </div>
+    </div>
+    <p class="lead anim">Allocation, IFI, leviers — et l'observation de Marcel, mise à jour chaque jour.</p>
+  </section>
+
+  <!-- 3 — SUR-MESURE -->
+  <section class="scene" data-d="7000">
+    <div class="eyebrow anim">Intelligence sur-mesure</div>
+    <h1 class="anim" style="font-size:clamp(26px,5.2vw,44px)">À chaque dirigeant, <em>son</em> cockpit.</h1>
+    <div class="typos anim">
+      <div class="typo"><div class="t">L'Indépendant</div><div class="v">~420 k€</div><div class="s">Reste à vivre · retraite · prévoyance</div></div>
+      <div class="typo"><div class="t">Le Dirigeant</div><div class="v">~1,9 M€</div><div class="s">Tréso · couple rému/dividende · IFI</div></div>
+      <div class="typo"><div class="t">Le Cédant</div><div class="v">~6,2 M€</div><div class="s">Net de cession · Dutreil · réemploi</div></div>
+      <div class="typo"><div class="t">La Famille</div><div class="v">~31 M€</div><div class="s">Consolidation · gouvernance · MFO</div></div>
+    </div>
+    <p class="lead anim">Votre SIREN suffit : le cockpit détecte votre profil et affiche vos bons indicateurs.</p>
+  </section>
+
+  <!-- 4 — SERVICES -->
+  <section class="scene" data-d="7500">
+    <div class="eyebrow anim">Inclus dans le plan</div>
+    <h1 class="anim" style="font-size:clamp(26px,5.2vw,44px)">Six services, <em>opérationnels</em>.</h1>
+    <div class="svc anim">
+      <div><div class="ic">🛰️</div><div class="nm">Cartographie 30 s</div><div class="ds">Votre société depuis le SIREN</div></div>
+      <div><div class="ic">💬</div><div class="nm">Marcel 24/7</div><div class="ds">Votre Family Officer IA</div></div>
+      <div><div class="ic">⚖️</div><div class="nm">Fiscalité experte</div><div class="ds">IR, IFI, donation, cession</div></div>
+      <div><div class="ic">🔔</div><div class="nm">Veille marchés</div><div class="ds">Alertes personnalisées</div></div>
+      <div><div class="ic">🛎️</div><div class="nm">Conciergerie</div><div class="ds">Art, immobilier, lifestyle</div></div>
+      <div><div class="ic">📱</div><div class="nm">Application</div><div class="ds">Installable, dans votre poche</div></div>
+    </div>
+    <p class="lead anim">Données hébergées en France · intelligence souveraine · RGPD.</p>
+  </section>
+
+  <!-- 5 — CTA -->
+  <section class="scene" data-d="9000">
+    <div class="badge anim">Bêta — 50 familles fondatrices</div>
+    <h1 class="anim">Et vous, <em>où en est votre patrimoine ?</em></h1>
+    <p class="lead anim">Accès sur invitation, 6 mois offerts. Marcel répond — Maxime vous accompagne.</p>
+    <a class="cta anim" href="mailto:maxime@ikcp.fr?subject=Découvrir%20le%20Family%20Office%20augmenté%20IKCP&body=Bonjour%20Maxime,%0D%0A%0D%0AJe%20souhaite%20en%20savoir%20plus%20sur%20le%20Family%20Office%20augmenté%20et%20la%20bêta.%0D%0A%0D%0AMa%20situation%20:%20">Échanger avec Maxime →</a>
+    <div class="legal anim">Maxime Juveneton · CIF — ORIAS 23001568 · CNCEF Patrimoine. Cet outil fournit information et simulation, non un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+  </section>
+
+  <div class="nz l" onclick="prev()"></div>
+  <div class="nz r" onclick="next()"></div>
+  <div class="ctrl">
+    <button onclick="prev()" aria-label="Précédent">‹</button>
+    <button id="pp" onclick="toggle()" aria-label="Pause">❚❚</button>
+    <button onclick="next()" aria-label="Suivant">›</button>
+  </div>
+  <div class="hint">← → pour naviguer · espace = pause</div>
+</div>
+
+<script>
+  const scenes=[...document.querySelectorAll('.scene')];
+  const N=scenes.length, bars=document.getElementById('bars'), pp=document.getElementById('pp');
+  scenes.forEach(()=>{ const i=document.createElement('i'); i.appendChild(document.createElement('b')); bars.appendChild(i); });
+  let idx=0, paused=false, timer=null;
+  const dur=(i)=> Number(scenes[i].dataset.d)||6500;
+  function show(n){
+    idx=(n+N)%N;
+    scenes.forEach((s,k)=> s.classList.toggle('active', k===idx));
+    [...bars.children].forEach((bi,k)=>{ const f=bi.firstChild; f.style.transition='none'; f.style.width=k<idx?'100%':'0%'; });
+    void bars.offsetWidth;
+    const cur=bars.children[idx].firstChild;
+    if(!paused){ cur.style.transition='width '+dur(idx)+'ms linear'; cur.style.width='100%'; }
+    clearTimeout(timer); if(!paused) timer=setTimeout(next, dur(idx));
+  }
+  function next(){ show(idx+1); }
+  function prev(){ show(idx-1); }
+  function toggle(){
+    paused=!paused; pp.textContent=paused?'▶':'❚❚';
+    const cur=bars.children[idx].firstChild;
+    if(paused){ clearTimeout(timer); const w=getComputedStyle(cur).width; cur.style.transition='none'; cur.style.width=w; }
+    else show(idx);
+  }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight') next();
+    else if(e.key==='ArrowLeft') prev();
+    else if(e.key===' '){ e.preventDefault(); toggle(); }
+  });
+  show(0);
+</script>
+</body>
+</html>
