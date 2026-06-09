@@ -1061,6 +1061,23 @@ export default {
       let totalIterations = 0;
       const MAX_ITER = 4; // sécurité : max 4 tours de tool calling
 
+      // ── ESSAI MISTRAL EN PRIMAIRE (réversible · souveraineté FR) ──────
+      // Si la variable d'env LLM_PRIMARY === 'mistral' (et MISTRAL_API_KEY posée),
+      // Marcel répond ENTIÈREMENT via Mistral — sans outils (réponse texte simple,
+      // MIF II garanti par callMistralFallback). Pour revenir à Claude : supprimer
+      // la variable LLM_PRIMARY. Aucune autre modification. A/B test sans risque.
+      if (env.LLM_PRIMARY === 'mistral') {
+        const mr = await callMistralFallback(env, systemPromptText, workingMessages);
+        if (mr) {
+          return new Response(JSON.stringify({
+            reply: mr,
+            follow_ups: ['Pouvez-vous préciser votre situation ?', 'Souhaitez-vous échanger avec Maxime ?', 'Voulez-vous un autre point patrimonial ?'],
+            provider: 'mistral',
+          }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+        }
+        // Mistral indisponible (clé absente / erreur) → on bascule sur Claude.
+      }
+
       while (totalIterations < MAX_ITER) {
         totalIterations++;
         const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
