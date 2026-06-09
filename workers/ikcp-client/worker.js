@@ -654,7 +654,7 @@ function corsHeaders(origin = '') {
   return {
     'Access-Control-Allow-Origin': ok ? (o || 'https://ikcp.eu') : 'https://ikcp.eu',
     'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-admin-secret',
     'Access-Control-Allow-Credentials': 'true',
     'Vary': 'Origin',
   };
