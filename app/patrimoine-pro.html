@@ -33,6 +33,25 @@
   .cp-mode{display:inline-flex;gap:4px;padding:3px;background:var(--bg-2);border:1px solid var(--line);border-radius:999px}
   .cp-mode button{border:0;background:transparent;color:var(--mute);font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:999px;cursor:pointer;transition:.2s}
   .cp-mode button.on{background:var(--n);color:var(--gold-bright);box-shadow:0 2px 8px -3px rgba(14,23,41,.5)}
+  .cp-seg{display:flex;gap:4px;padding:3px;background:var(--bg-2);border:1px solid var(--line);border-radius:999px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .cp-seg::-webkit-scrollbar{display:none}
+  .cp-seg button{white-space:nowrap;border:0;background:transparent;color:var(--mute);font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:999px;cursor:pointer;transition:.2s}
+  .cp-seg button.on{background:var(--n);color:var(--gold-bright);box-shadow:0 2px 8px -3px rgba(14,23,41,.5)}
+  .posture{font-size:13px;line-height:1.5;color:var(--ink);background:rgba(168,136,77,.08);border:1px solid rgba(168,136,77,.24);border-radius:13px;padding:11px 16px;margin-top:18px}
+  .posture b{color:var(--gold-deep)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:12px;margin-top:14px}
+  .kpi{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:15px 16px 14px 18px;position:relative;overflow:hidden;text-decoration:none;display:block;transition:transform .2s,box-shadow .2s}
+  .kpi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--mute)}
+  .kpi-ok::before{background:#2D7A4F}
+  .kpi-warn::before{background:var(--accent)}
+  .kpi-gold::before{background:var(--gold)}
+  .kpi-neutral::before{background:var(--mute)}
+  .kpi-cta{background:linear-gradient(150deg,rgba(168,136,77,.13),transparent);border-color:rgba(168,136,77,.32)}
+  .kpi-cta::before{background:var(--gold)}
+  .kpi-cta:hover{transform:translateY(-2px);box-shadow:0 16px 30px -20px rgba(14,23,41,.4)}
+  .kpi-k{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);font-weight:600}
+  .kpi-v{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--ink);line-height:1.12;margin:5px 0 3px}
+  .kpi-s{font-size:11.5px;color:var(--mute);line-height:1.4}
 
   .cp-banner{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--gold-deep);background:rgba(168,136,77,.09);border:1px solid rgba(168,136,77,.28);border-radius:11px;padding:9px 14px;margin-bottom:16px}
   .cp-banner b{color:var(--n)}
@@ -155,9 +174,12 @@
 <main class="cockpit">
   <div class="cp-top">
     <a href="/app/dashboard" class="cp-back">← Mon espace</a>
-    <div class="cp-mode" role="tablist" aria-label="Mode d'affichage">
-      <button id="mReal" onclick="setMode('real')">Mes données</button>
-      <button id="mDemo" onclick="setMode('demo')">Exemple</button>
+    <div class="cp-seg" id="cpSeg" role="tablist" aria-label="Profil affiché">
+      <button data-v="real" onclick="setView('real')">Mes données</button>
+      <button data-v="indep" onclick="setView('indep')">Indépendant</button>
+      <button data-v="etabli" onclick="setView('etabli')">Dirigeant</button>
+      <button data-v="cedant" onclick="setView('cedant')">Cédant</button>
+      <button data-v="famille" onclick="setView('famille')">Famille</button>
     </div>
   </div>
 
@@ -190,6 +212,10 @@
       </div>
     </div>
   </section>
+
+  <!-- ════ PROFIL + KPIs typologie ════ -->
+  <div class="posture reveal-up" id="posture" style="animation-delay:.03s;display:none"></div>
+  <div class="kpis reveal-up" id="kpiBand" style="animation-delay:.05s"></div>
 
   <!-- ════ ALLOCATION ════ -->
   <h2 class="cp-h reveal-up" style="animation-delay:.06s">Allocation <em>par univers</em></h2>
@@ -250,56 +276,127 @@ const CATS = [
   { key:'passion',    label:'Objets de passion',  icon:'🎨', color:'#B23A2E', href:'/app/collections' },
   { key:'autres',     label:'Autres actifs',      icon:'✦',  color:'#9AA0AE', href:'/app/marcel' },
 ];
-const DEMO = { immobilier:1450000, financier:720000, tresorerie:180000, societe:850000, retraite:240000, passion:95000, autres:40000, passif:320000 };
-const DEMO_HIST = [2710,2755,2790,2840,2905,2960,3010,3060,3105,3160,3210,3255].map((n,i)=>({t:i,net:n*1000}));
+const TYPO = {
+  indep:  {label:'L’Indépendant',           short:'Indépendant',      sub:'TNS · libéral',     topic:'retraite',     cta:'Optimiser ma rémunération'},
+  etabli: {label:'Le Dirigeant établi',     short:'Dirigeant établi', sub:'PME · holding',     topic:'batisseur',    cta:'Faire travailler ma trésorerie'},
+  cedant: {label:'L’Entrepreneur-cédant',   short:'Cédant',           sub:'cession à venir',   topic:'transmission', cta:'Simuler ma cession'},
+  famille:{label:'La Famille patrimoniale', short:'Famille',          sub:'multi-générations', topic:'batisseur',    cta:'Consolider mon groupe'},
+};
+const PROFILES = {
+  indep:{ ...TYPO.indep, blurb:'TNS · profession libérale · ~420 k€',
+    posture:'Marcel en mode <b>pédagogue</b> — chaque levier expliqué simplement.',
+    data:{ immobilier:380000, financier:70000, tresorerie:40000, societe:35000, retraite:30000, passif:135000 },
+    hist:[290,298,305,312,322,335,348,360,375,390,405,420],
+    kpis:[
+      {k:'Reste à vivre',v:'3 800 €',s:'par mois',tone:'ok'},
+      {k:'Retraite estimée · 64 ans',v:'1 150 €',s:'/mois — à renforcer',tone:'warn'},
+      {k:'Prévoyance',v:'Partielle',s:'décès OK · invalidité non',tone:'warn'},
+      {k:'Matelas de sécurité',v:'2,4 mois',s:'objectif 6 mois',tone:'warn'},
+    ]},
+  etabli:{ ...TYPO.etabli, blurb:'SARL/SAS · holding · ~1,9 M€',
+    posture:'Marcel en mode <b>stratège</b> — couple rémunération/dividende & holding.',
+    data:{ immobilier:850000, financier:420000, tresorerie:180000, societe:520000, retraite:160000, passion:40000, passif:270000 },
+    hist:[1600,1640,1675,1710,1745,1780,1810,1835,1860,1880,1895,1900],
+    kpis:[
+      {k:'Patrimoine consolidé',v:'1,9 M€',s:'pro + perso',tone:'ok'},
+      {k:'Trésorerie qui dort',v:'180 k€',s:'≈0,3 % · ~5 k€/an dormants',tone:'warn'},
+      {k:'Position IFI',v:'Sous le seuil',s:'immobilier 0,85 M€ < 1,3 M€',tone:'ok'},
+      {k:'Valorisation société',v:'≈3,2× EBE',s:'estimation indicative',tone:'neutral'},
+    ]},
+  cedant:{ ...TYPO.cedant, blurb:'cession 3-15 M€ · ~6,2 M€',
+    posture:'Marcel en mode <b>ingénieur patrimonial</b> — scénarios cession & transmission.',
+    data:{ societe:3800000, immobilier:1200000, financier:800000, tresorerie:300000, retraite:200000, passion:120000, passif:220000 },
+    hist:[4800,5000,5200,5400,5600,5750,5900,6000,6080,6140,6180,6200],
+    kpis:[
+      {k:'Net de cession estimé',v:'≈3,0 M€',s:'apport-cession vs 2,6 M€ direct',tone:'ok'},
+      {k:'Économie Dutreil',v:'≈1,1 M€',s:'transmission structurée',tone:'ok'},
+      {k:'Réemploi 60 %',v:'24 mois',s:'délai 150-0 B ter',tone:'warn'},
+      {k:'Train de vie sécurisé',v:'28 ans',s:'post-cession, prudent',tone:'ok'},
+    ]},
+  famille:{ ...TYPO.famille, blurb:'holding animatrice · multi-gén · ~31 M€',
+    posture:'Marcel en mode <b>chef d’orchestre MFO</b> — reporting d’expert, coordination.',
+    data:{ societe:14000000, immobilier:8500000, financier:5200000, tresorerie:900000, retraite:600000, passion:1800000, autres:600000, passif:600000 },
+    hist:[27500,28200,28800,29300,29800,30100,30400,30650,30800,30920,30980,31000],
+    kpis:[
+      {k:'Consolidation groupe',v:'31 M€',s:'holding + 3 filiales + perso',tone:'ok'},
+      {k:'Allocation cible vs réelle',v:'+8 pts',s:'immobilier surpondéré',tone:'warn'},
+      {k:'IFI consolidé',v:'≈92 k€',s:'par an',tone:'neutral'},
+      {k:'Performance 12 mois',v:'+6,4 %',s:'toutes poches',tone:'ok'},
+    ]},
+};
 
 const EUR = (n)=> new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(n));
 const fmtFull = (n)=> EUR(n)+' €';
 const $ = (id)=> document.getElementById(id);
-let mode='real', data={}, hist=[], donutChart=null, sparkChart=null;
+let view='real', data={}, hist=[], donutChart=null, sparkChart=null, _insTo=null;
 
 function loadData(){
   try{ data = JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null') || {}; }catch(_){ data={}; }
   try{ hist = JSON.parse(localStorage.getItem('ikcp_patrimoine_hist')||'[]'); }catch(_){ hist=[]; }
 }
 function hasData(){ return CATS.some(c=> Number(data[c.key])>0); }
-function activeData(){ return mode==='demo' ? DEMO : data; }
+function activeData(){ return view==='real' ? data : PROFILES[view].data; }
 function activeHist(){
-  if(mode==='demo') return DEMO_HIST;
-  return hist.map((h,i)=>({t:i,net:h.net}));
+  if(view==='real') return hist.map((h,i)=>({t:i,net:h.net}));
+  return PROFILES[view].hist.map((n,i)=>({t:i,net:n*1000}));
+}
+function detectTypology(){
+  let sd=null;
+  try{ sd=JSON.parse(localStorage.getItem('ikcp_profile')||'null')||JSON.parse(localStorage.getItem('siren_data')||'null'); }catch(_){}
+  const forme=((sd&&(sd.forme_juridique||sd.forme||sd.forme_juridique_libelle))||'').toLowerCase();
+  const eff=Number(sd&&(sd.effectif||sd.tranche_effectif))||0;
+  const net=netWorth(data);
+  if(net>=10000000) return TYPO.famille;
+  if(net>=3000000 || /holding/.test(forme)) return TYPO.cedant;
+  if(/sas|sarl|s\.a|société anonyme/.test(forme) || eff>=3 || net>=1000000) return TYPO.etabli;
+  return TYPO.indep;
 }
 const sumAssets = (d)=> CATS.reduce((s,c)=> s+(Number(d[c.key])||0),0);
 const netWorth  = (d)=> sumAssets(d) - (Number(d.passif)||0);
 
-function setMode(m){
-  mode = m;
-  $('mReal').classList.toggle('on', m==='real');
-  $('mDemo').classList.toggle('on', m==='demo');
-  const b = $('banner');
-  if(m==='demo'){
-    b.style.display='flex';
-    b.innerHTML = '✦ <span><b>Exemple illustratif</b> — profil dirigeant fictif. Basculez sur « Mes données » pour votre situation réelle.</span>';
-  } else if(!hasData()){
-    b.style.display='flex';
-    b.innerHTML = '✦ <span>Votre cockpit est <b>vierge</b>. Appuyez sur <b>✎ Renseigner</b> pour le faire vivre — ou regardez l\'<b>Exemple</b>.</span>';
-  } else { b.style.display='none'; }
+function setView(v){
+  view=v;
+  [...document.querySelectorAll('#cpSeg button')].forEach(b=> b.classList.toggle('on', b.dataset.v===v));
+  const b=$('banner');
+  if(v!=='real'){ b.style.display='flex'; b.innerHTML='✦ <span><b>Exemple — '+PROFILES[v].label+'</b> · profil fictif. Basculez sur « Mes données » pour votre situation réelle.</span>'; }
+  else if(!hasData()){ b.style.display='flex'; b.innerHTML='✦ <span>Cockpit <b>vierge</b> — appuyez sur <b>✎ Renseigner</b>, ou explorez un profil ci-dessus.</span>'; }
+  else b.style.display='none';
   render();
+  clearTimeout(_insTo); _insTo=setTimeout(loadInsight, 450);
 }
 
 let _ctr=null;
 function countUp(el, to){
   if(_ctr) cancelAnimationFrame(_ctr);
-  const dur=900, t0=performance.now(), from=0;
+  const dur=900, t0=performance.now();
   const tick=(t)=>{ const p=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-p,3);
-    el.textContent = EUR(from+(to-from)*e); if(p<1) _ctr=requestAnimationFrame(tick); };
-  el.innerHTML = '<span class="amt">0</span>';
+    if(p<1){ el.textContent=EUR(to*e); _ctr=requestAnimationFrame(tick); }
+    else { el.innerHTML=EUR(to)+'<span class="cur">€</span>'; } };
   el.textContent='0'; _ctr=requestAnimationFrame(tick);
-  // append currency after
-  setTimeout(()=>{ if(el.id==='heroTotal') el.innerHTML = EUR(to)+'<span class="cur">€</span>'; },920);
+}
+
+function kpiTile(x){ const t=x.tone||'neutral';
+  return `<div class="kpi kpi-${t}"><div class="kpi-k">${x.k}</div><div class="kpi-v num">${x.v}</div><div class="kpi-s">${x.s||''}</div></div>`; }
+function renderKpis(){
+  const band=$('kpiBand'), pos=$('posture');
+  if(view!=='real'){ const p=PROFILES[view]; pos.style.display='block';
+    pos.innerHTML='✦ Profil <b>'+p.label+'</b> · '+p.blurb+' — '+p.posture;
+    band.innerHTML=p.kpis.map(kpiTile).join(''); return; }
+  pos.style.display='none';
+  const det=detectTypology(), d=data, assets=sumAssets(d), net=netWorth(d), immo=Number(d.immobilier)||0;
+  if(assets<=0){ band.innerHTML=`<div class="kpi kpi-gold" style="grid-column:1/-1"><div class="kpi-k">Profil détecté</div><div class="kpi-v" style="font-size:19px">${det.label}</div><div class="kpi-s">Renseignez vos univers (✎) pour activer vos indicateurs sur-mesure — calculés par Marcel.</div></div>`; return; }
+  const overIFI=immo>=1300000;
+  band.innerHTML=[
+    kpiTile({k:'Profil détecté',v:det.short,s:det.sub,tone:'gold'}),
+    kpiTile({k:'Patrimoine net',v:fmtFull(net),s:'déclaratif',tone:'ok'}),
+    kpiTile({k:'Position IFI',v:overIFI?'À surveiller':'Sous le seuil',s:'immobilier '+fmtFull(immo)+' vs 1,3 M€',tone:overIFI?'warn':'ok'}),
+    `<a class="kpi kpi-cta" href="/app/marcel?topic=${det.topic}"><div class="kpi-k">${det.cta}</div><div class="kpi-v" style="font-size:15px;font-style:italic;font-family:Fraunces">Demander à Marcel →</div><div class="kpi-s">calcul personnalisé en direct</div></a>`
+  ].join('');
 }
 
 function render(){
   const d = activeData(), assets=sumAssets(d), net=netWorth(d), empty = assets<=0;
+  renderKpis();
 
   // hero total
   if(empty){ $('heroTotal').innerHTML='<span style="font-size:.5em;font-style:italic;color:var(--mute);font-family:Fraunces">À renseigner</span>'; }
@@ -414,36 +511,33 @@ function saveEdit(){
     localStorage.setItem('ikcp_patrimoine_hist', JSON.stringify(hist));
   }catch(_){}
   closeEdit();
-  if(mode!=='real') setMode('real'); else setMode('real');
+  setView('real');
 }
-window.setMode=setMode; window.openEdit=openEdit; window.closeEdit=closeEdit; window.saveEdit=saveEdit;
+window.setView=setView; window.openEdit=openEdit; window.closeEdit=closeEdit; window.saveEdit=saveEdit;
 
 // ── Marcel insight (premium, honnête, finit par une question) ──
 async function loadInsight(){
-  if(mode!=='real' || !hasData()) return;
   const ins=$('insight'), body=$('insightBody');
-  try{
-    const cached = JSON.parse(localStorage.getItem('ikcp_pat_insight')||'null');
-    const today = new Date().toISOString().slice(0,10);
-    if(cached && cached.d===today){ body.innerHTML=cached.t; ins.style.display='block'; return; }
-  }catch(_){}
-  const d=data, assets=sumAssets(d);
+  const d=activeData(), assets=sumAssets(d);
+  if(assets<=0){ ins.style.display='none'; return; }
+  const ck='ikcp_pat_insight_'+view, today=new Date().toISOString().slice(0,10);
+  try{ const c=JSON.parse(localStorage.getItem(ck)||'null'); if(c&&c.d===today){ body.innerHTML=c.t; ins.style.display='block'; return; } }catch(_){}
   const repartition = CATS.filter(c=>d[c.key]>0).map(c=>`${c.label} ${Math.round(d[c.key]/assets*100)}%`).join(', ');
-  const prompt = `Tu observes l'allocation patrimoniale déclarée d'un dirigeant : patrimoine net ${EUR(netWorth(d))} €, répartition : ${repartition}. En 2 phrases maximum, fais UNE observation pertinente et élégante sur l'équilibre/les angles morts de cette allocation, puis termine par UNE question ouverte. Ne donne AUCUNE recommandation produit. Ton : Family Officer haut de gamme, vouvoiement.`;
+  const profil = (view!=='real' && PROFILES[view]) ? PROFILES[view].label : 'dirigeant';
+  const prompt = `Tu es Marcel, Family Officer haut de gamme. Profil : ${profil}. Allocation patrimoniale déclarée : patrimoine net ${EUR(netWorth(d))} €, répartition : ${repartition}. En 2 phrases maximum, fais UNE observation élégante et pertinente sur l'équilibre ou les angles morts, puis termine par UNE question ouverte. AUCUNE recommandation produit. Vouvoiement.`;
   try{
     const r = await Marcel.chat(prompt);
     const txt = (r.reply||r.message||'').trim();
-    if(txt){ body.innerHTML = txt.replace(/\n+/g,'<br>'); ins.style.display='block';
-      try{ localStorage.setItem('ikcp_pat_insight', JSON.stringify({d:new Date().toISOString().slice(0,10), t:body.innerHTML})); }catch(_){}
+    if(txt){ body.innerHTML=txt.replace(/\n+/g,'<br>'); ins.style.display='block';
+      try{ localStorage.setItem(ck, JSON.stringify({d:today, t:body.innerHTML})); }catch(_){}
     }
-  }catch(_){ /* silencieux */ }
+  }catch(_){ }
 }
 
 // ── boot ──
 loadData();
 try{ const p=JSON.parse(localStorage.getItem('ikcp_profile')||'null'); if(p&&p.prenom){ $('userAvatar').textContent=(p.prenom[0]||'M').toUpperCase(); } }catch(_){}
-if(hasData()) setMode('real'); else setMode('demo');
-setTimeout(loadInsight, 600);
+setView(hasData()?'real':'etabli');
 // recharge les graphes quand Chart.js (defer) est prêt
 if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv); render(); } },120); setTimeout(()=>clearInterval(iv),4000); }
 </script>
