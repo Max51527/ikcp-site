@@ -4,7 +4,7 @@
  * Région : Cloudflare Pages (souveraineté France)
  */
 
-const CACHE_VERSION = 'marcel-v1.0.6';
+const CACHE_VERSION = 'marcel-v1.0.7';
 const STATIC_CACHE = `marcel-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `marcel-runtime-${CACHE_VERSION}`;
 

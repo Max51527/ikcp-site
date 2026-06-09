@@ -83,10 +83,15 @@ async function jsonFetch(url, options = {}) {
   // l'autorisent en CORS (client = auth/tiers ; chat = Marcel pour le tier).
   // Les autres workers (Pappers, veille directe…) n'autorisent pas l'en-tête
   // Authorization → l'ajouter casserait le pré-vol CORS ("Société introuvable").
-  const sendAuth = tok && (url.indexOf(ENDPOINTS.client) === 0 || url.indexOf(ENDPOINTS.chat) === 0);
+  const authScope = (url.indexOf(ENDPOINTS.client) === 0 || url.indexOf(ENDPOINTS.chat) === 0);
+  const sendAuth = tok && authScope;
   try {
     const r = await fetch(url, {
-      credentials: 'include', // cookie de secours (si api.ikcp.eu un jour)
+      // cookie de secours UNIQUEMENT pour client/chat (workers qui renvoient
+      // Access-Control-Allow-Credentials). Les workers publics (Pappers, veille,
+      // codex…) ne l'autorisent pas → credentials:'include' casserait leur CORS
+      // avec un "Failed to fetch" silencieux ("cartographie indisponible").
+      ...(authScope ? { credentials: 'include' } : {}),
       ...options,
       signal: ctrl.signal,
       headers: {
