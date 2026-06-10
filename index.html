@@ -2309,6 +2309,14 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
     </style>
 </head>
 <body class="bg-[#f9f6f0] text-[#2e2520] antialiased" x-data="layoutData()" @scroll.window="scrolled = window.scrollY > 50">
+<!-- ═══ Bandeau lancement bêta → /decouvrir (fermable) ═══ -->
+<div id="betaBar" style="display:none;background:linear-gradient(90deg,#16233f,#1B2A4A);color:#FAFAF8;font-family:'Outfit',sans-serif;font-size:13px;padding:9px 40px 9px 16px;text-align:center;position:relative;z-index:60">
+  <span style="color:#E2C896;font-weight:700">✦ Nouveau</span> — Le Family Office augmenté en 90 secondes ·
+  <a href="/decouvrir" style="color:#E2C896;font-weight:700;text-decoration:underline">Découvrir & demander une invitation →</a>
+  <span style="opacity:.65"> · 50 familles fondatrices</span>
+  <button onclick="this.parentNode.style.display='none';try{localStorage.setItem('ikcp_betabar','off')}catch(e){}" aria-label="Fermer" style="position:absolute;right:10px;top:6px;background:none;border:0;color:#FAFAF8;font-size:16px;cursor:pointer;opacity:.7">×</button>
+</div>
+<script>try{if(localStorage.getItem('ikcp_betabar')!=='off')document.getElementById('betaBar').style.display='block';}catch(e){}</script>
 
     <!-- ══════════ NAVIGATION ══════════ -->
     <nav :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'" class="fixed w-full z-50 transition-all duration-300">
