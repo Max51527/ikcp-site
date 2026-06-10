@@ -649,6 +649,87 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
   </div>
 </section>
 
+<!-- ═══ L'APPLICATION — aperçu des fonctionnalités ═══ -->
+<section style="background:linear-gradient(165deg,#16233f,#0E1729);padding:90px 24px;overflow:hidden">
+<style>
+  .foapp{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+  @media(max-width:820px){.foapp{grid-template-columns:1fr;gap:40px}}
+  .foapp-phone{width:270px;margin:0 auto;background:#0B1322;border:1px solid rgba(226,200,150,.3);border-radius:38px;padding:14px 12px;box-shadow:0 50px 90px -40px rgba(0,0,0,.8),0 0 70px -30px rgba(226,200,150,.35);animation:fofloat 7s ease-in-out infinite}
+  @keyframes fofloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-13px) rotate(1deg)}}
+  .foapp-scr{background:linear-gradient(170deg,#15223e,#0c1426);border-radius:26px;padding:18px 15px;min-height:430px}
+  .foapp-k{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#E2C896;font-weight:700}
+  .foapp-net{font-family:'Playfair Display',serif;font-size:33px;color:#fff;margin:5px 0 2px}
+  .foapp-net em{font-style:italic;color:#E2C896;font-size:.55em}
+  .foapp-up{font-size:10.5px;color:#9BE3B6;font-weight:700}
+  .foapp-bar{display:flex;height:9px;border-radius:99px;overflow:hidden;margin:14px 0 7px;background:rgba(255,255,255,.07)}
+  .foapp-bar span{height:100%;width:0;transition:width 1.4s cubic-bezier(.22,1,.36,1)}
+  .foapp-leg{font-size:8.5px;color:rgba(250,250,248,.55);display:flex;gap:9px;flex-wrap:wrap}
+  .foapp-msg{margin-top:14px;background:rgba(226,200,150,.1);border:1px solid rgba(226,200,150,.25);border-radius:11px;padding:10px 12px;font-size:10.5px;line-height:1.5;color:#FAFAF8}
+  .foapp-msg b{color:#E2C896}
+  .foapp-dock{display:flex;justify-content:space-around;margin-top:16px;padding-top:11px;border-top:1px solid rgba(255,255,255,.08);font-size:15px;opacity:.85}
+  .foapp h2{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(26px,3.6vw,40px);color:#fff;line-height:1.12;margin:0 0 10px}
+  .foapp h2 em{font-style:italic;color:#E2C896}
+  .foapp .lead{color:rgba(250,250,248,.62);font-size:15px;line-height:1.65;margin-bottom:24px;max-width:46ch}
+  .fofeat{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.fofeat{grid-template-columns:1fr}}
+  .fofeat div{background:rgba(255,255,255,.05);border:1px solid rgba(226,200,150,.16);border-radius:12px;padding:12px 14px;font-size:12.5px;color:#FAFAF8;line-height:1.45;transition:transform .25s,border-color .25s}
+  .fofeat div:hover{transform:translateY(-3px);border-color:rgba(226,200,150,.45)}
+  .fofeat b{color:#E2C896;display:block;font-size:13px;margin-bottom:2px}
+  .foapp-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+  .foapp-ctas a{text-decoration:none;font-weight:700;font-size:14px;padding:13px 24px;border-radius:99px;transition:.2s}
+  .foapp-ctas .p{background:#E2C896;color:#0E1729}.foapp-ctas .p:hover{background:#fff}
+  .foapp-ctas .g{border:1px solid rgba(226,200,150,.4);color:#E2C896}.foapp-ctas .g:hover{background:rgba(226,200,150,.12)}
+</style>
+<div class="foapp">
+  <div class="foapp-phone" aria-hidden="true">
+    <div class="foapp-scr">
+      <div class="foapp-k">● Patrimoine net consolidé</div>
+      <div class="foapp-net" id="foappNet">0<em> €</em></div>
+      <div class="foapp-up">▲ +295 000 € cette année</div>
+      <div class="foapp-bar" id="foappBar">
+        <span style="background:#A8884D" data-w="41%"></span><span style="background:#5B8A8C" data-w="24%"></span>
+        <span style="background:#C9A96E" data-w="20%"></span><span style="background:#E2C896" data-w="9%"></span>
+        <span style="background:#B23A2E" data-w="6%"></span>
+      </div>
+      <div class="foapp-leg"><span>🏠 Immobilier 41%</span><span>🏛️ Société 24%</span><span>📈 Financier 20%</span></div>
+      <div class="foapp-msg"><b>✦ Marcel</b> — Votre trésorerie d'entreprise semble sous-employée. Souhaitez-vous explorer les pistes adaptées à votre horizon ?</div>
+      <div class="foapp-dock"><span>📊</span><span>🪐</span><span>✦</span><span>🔔</span><span>🛎️</span></div>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#E2C896;font-weight:700;margin-bottom:14px">L'application</div>
+    <h2>Votre Family Office, <em>dans votre poche.</em></h2>
+    <p class="lead">Installable en un geste sur iPhone et Android — sans app store. Vos données vous suivent sur tous vos appareils, hébergées en France.</p>
+    <div class="fofeat">
+      <div><b>📊 Cockpit patrimonial</b>Net consolidé, allocation par univers, indicateurs selon votre profil.</div>
+      <div><b>✦ Marcel 24/7</b>Votre Family Officer répond — et mobilise 11 spécialistes.</div>
+      <div><b>🛰️ Cartographie 30 s</b>Votre société analysée depuis son SIREN, sources officielles.</div>
+      <div><b>🏠 Immobilier réel</b>Prix au m² de votre commune, transactions récentes.</div>
+      <div><b>🔔 Veille personnalisée</b>Alertes marchés, fiscalité, collections — chaque matin.</div>
+      <div><b>🎙️ Mode vocal</b>Parlez à Marcel, il vous répond. En voiture, entre deux rendez-vous.</div>
+    </div>
+    <div class="foapp-ctas">
+      <a class="p" href="/decouvrir">Voir la démo 90 s →</a>
+      <a class="g" href="/app/">Demander mon accès</a>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var fired=false;
+  function go(){ if(fired) return; fired=true;
+    var el=document.getElementById('foappNet'), to=3255000, t0=performance.now();
+    (function tick(t){ var p=Math.min(1,(t-t0)/1400), e=1-Math.pow(1-p,3);
+      el.innerHTML=new Intl.NumberFormat('fr-FR').format(Math.round(to*e))+'<em> €</em>';
+      if(p<1) requestAnimationFrame(tick); })(t0);
+    document.querySelectorAll('#foappBar span').forEach(function(s){ s.style.width=s.dataset.w; });
+  }
+  try{ new IntersectionObserver(function(en,ob){ en.forEach(function(x){ if(x.isIntersecting){ go(); ob.disconnect(); } }); },{threshold:.35}).observe(document.getElementById('foappNet'));
+  }catch(_){ go(); }
+})();
+</script>
+</section>
+
 <!-- ═══ POSITIONNEMENT — au-delà du patrimoine classique ═══ -->
 <section class="beyond-section">
   <div class="beyond-wrap">

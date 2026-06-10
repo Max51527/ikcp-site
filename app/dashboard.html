@@ -26,7 +26,8 @@
   <div class="app-user">
     <span class="tier" id="userTier">Découverte</span>
     <div class="avatar" id="userAvatar">M</div>
-    <a href="/app/console" class="logout" style="text-decoration:none" title="Tour de contrôle (admin)">⚙ Console</a>
+    <a href="/app/console" class="logout" id="adminLnk" style="text-decoration:none;display:none" title="Tour de contrôle (admin)">⚙ Console</a>
+    <script>try{ if(localStorage.getItem('ikcp_admin_secret')) document.getElementById('adminLnk').style.display=''; }catch(_){}</script>
     <button class="logout" onclick="logout()">Déconnexion</button>
   </div>
 </header>
