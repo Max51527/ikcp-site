@@ -141,6 +141,7 @@ const BAREME_IR=[[11497,0],[29315,.11],[83823,.30],[180294,.41],[Infinity,.45]];
 const PLAF_DEMI_PART=1791;
 const BAREME_IFI=[[800000,0],[1300000,.005],[2570000,.007],[5000000,.01],[10000000,.0125],[Infinity,.015]];
 const DMTG_LIGNE=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
+const DMTG_EPOUX=[[8072,.05],[15932,.10],[31865,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]]; // donation entre époux/PACS (art. 777 CGI)
 const ABATT={enfant:100000,pe:31865,conjoint:80724,frere:15932,neveu:7967,autre:0};
 
 function prog(base,bareme){let t=0,prev=0,detail=[];for(const[plaf,tx]of bareme){if(base>prev){const part=Math.min(base,plaf)-prev;const d=part*tx;t+=d;if(tx>0&&part>0)detail.push([tx,part,d]);}prev=plaf;if(base<=plaf)break;}return{total:t,detail};}
@@ -148,7 +149,8 @@ function dmtgLien(taxable,lien){
   if(lien==='frere'){const t1=Math.min(taxable,24430)*.35,t2=Math.max(0,taxable-24430)*.45;return t1+t2;}
   if(lien==='neveu')return taxable*.55;
   if(lien==='autre')return taxable*.60;
-  return prog(taxable,DMTG_LIGNE).total; // ligne directe + époux (donation)
+  if(lien==='conjoint')return prog(taxable,DMTG_EPOUX).total; // barème époux/PACS
+  return prog(taxable,DMTG_LIGNE).total; // ligne directe
 }
 function show(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('on');}
 function mif(q,topic){return `<div class="mif"><em>✦ La question qui compte</em>${q}<br><a class="cta-m" href="/app/marcel?topic=${topic}">En parler avec Marcel →</a><div class="dis">Simulation indicative à partir des éléments saisis. Ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Étude personnalisée : lettre de mission préalable.</div></div>`;}
