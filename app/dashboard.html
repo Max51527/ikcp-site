@@ -111,10 +111,25 @@
       <div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill neutral" id="patCount">à compléter</span></div>
       <h3 id="patNet">Vue consolidée</h3>
       <div id="pat-body" class="empty" style="padding:16px 0;text-align:left">
-        <p>Cartographiez vos biens : répartition visuelle, position IFI, leviers Marcel.</p>
-        <a href="/app/patrimoine.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir →</a>
+        <p>Votre cockpit : patrimoine net, allocation par univers, indicateurs sur-mesure.</p>
+        <a href="/app/patrimoine-pro" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir mon cockpit →</a>
       </div>
     </article>
+    <script>(function(){
+      try{
+        var d=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null'); if(!d) return;
+        var keys=['immobilier','financier','tresorerie','societe','retraite','passion','autres'];
+        var assets=0,n=0; keys.forEach(function(k){var v=Number(d[k])||0; if(v>0){assets+=v;n++;}});
+        if(assets<=0) return;
+        var net=assets-(Number(d.passif)||0);
+        var eur=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(net));
+        var pill=document.getElementById('patCount'); if(pill){pill.textContent='synchronisé';pill.className='pill live';}
+        var h=document.getElementById('patNet'); if(h) h.innerHTML=eur+' <span style="font-size:14px;color:var(--accent)">€ net</span>';
+        var b=document.getElementById('pat-body'); if(b){b.className='';b.style.padding='6px 0 0';
+          b.innerHTML='<p style="font-size:12.5px;color:var(--mute)">'+n+' univers renseigné'+(n>1?'s':'')+' · suivi sur tous vos appareils.</p>'+
+          '<a href="/app/patrimoine-pro" class="btn btn-sm" style="margin-top:10px">Ouvrir mon cockpit →</a>';}
+      }catch(_){}
+    })();</script>
   </div>
 
   <!-- ── Widgets row 2 : Watches + Carnet + Documents ── -->
