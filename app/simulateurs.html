@@ -66,6 +66,9 @@
     <button data-s="dutreil">Pacte Dutreil</button>
     <button data-s="pv">Cession de titres</button>
     <button data-s="av">Assurance-vie</button>
+    <button data-s="rem">Rémunération dirigeant</button>
+    <button data-s="eps">Épargne salariale</button>
+    <button data-s="strat">🔒 Stratégie</button>
   </div>
 
   <!-- IR -->
@@ -158,6 +161,37 @@
     </div>
     <button class="go" onclick="calcAV()">Calculer →</button>
     <div class="res" id="r-av"></div>
+  </section>
+
+  <!-- RÉMUNÉRATION DIRIGEANT -->
+  <section class="sim" id="s-rem">
+    <h2>Rémunération du dirigeant·e</h2>
+    <span class="mille">Approximation pédagogique · taux moyens cotisations TNS ~45 % / assimilé salarié ~82 % du net · IS 25 % · PFU 30 %</span>
+    <div class="frm">
+      <div><label>Enveloppe société disponible (€/an)</label><input id="rem_e" type="number" placeholder="120 000"></div>
+      <div><label>Statut</label><select id="rem_s"><option value="tns">Gérant majoritaire EURL/SARL (TNS)</option><option value="sas">Président SAS/SASU (assimilé salarié)</option></select></div>
+    </div>
+    <button class="go" onclick="calcRem()">Comparer →</button>
+    <div class="res" id="r-rem"></div>
+  </section>
+
+  <!-- ÉPARGNE SALARIALE -->
+  <section class="sim" id="s-eps">
+    <h2>Épargne salariale — prime vs intéressement + PEE</h2>
+    <span class="mille">Entreprise &lt; 50 salariés : forfait social 0 % · CSG/CRDS 9,7 % · blocage 5 ans</span>
+    <div class="frm">
+      <div><label>Budget entreprise (€)</label><input id="eps_b" type="number" placeholder="10 000"></div>
+      <div><label>Votre TMI</label><select id="eps_t"><option value=".30">30 %</option><option value=".41">41 %</option><option value=".45">45 %</option><option value=".11">11 %</option></select></div>
+    </div>
+    <button class="go" onclick="calcEps()">Comparer →</button>
+    <div class="res" id="r-eps"></div>
+  </section>
+
+  <!-- STRATÉGIE — réservé FO -->
+  <section class="sim" id="s-strat">
+    <h2>Stratégie patrimoniale globale</h2>
+    <span class="mille">Réservé aux membres Family Office</span>
+    <div id="strat-body"></div>
   </section>
 
   <div class="credit">— Créé par <b>IKCP.EU</b> — cabinet de gestion de patrimoine indépendant · Ardèche · Combloux · Megève. Reproduction interdite.<br>Maxime Juveneton · CIF — ORIAS 23001568 · CNCEF Patrimoine.</div>
@@ -259,6 +293,41 @@ window.calcAV=function(){
   +mif(`Même somme transmise par succession classique à un enfant : souvent bien plus taxée. Vos clauses bénéficiaires sont-elles à jour de votre situation familiale réelle ?`,'transmission'));
   donut('g-av',['Net transmis','Prélèvement 990 I'],[K-tot,tot],['#A8884D','#B23A2E']);
 };
+window.calcRem=function(){
+  const E=+document.getElementById('rem_e').value||0,s=document.getElementById('rem_s').value;
+  const ch=s==='tns'?1.45:1.82;
+  const netSal=E/ch;                                  // option A : tout en rémunération
+  const smin=s==='tns'?15000:25000, coutMin=smin*ch;  // option B : socle + dividendes
+  const reste=Math.max(0,E-coutMin), apresIS=reste*0.75, netDiv=apresIS*0.70;
+  const netB=smin+netDiv;
+  show('r-rem',`<div class="big">${EUR(Math.max(netSal,netB))} <small>net avant IR — meilleure option</small></div>
+  <div class="rows"><div><span>A · 100 % rémunération</span><b>${EUR(netSal)}</b></div>
+  <div><span>B · socle ${EUR(smin)} + dividendes (IS 25 % puis PFU 30 %)</span><b>${EUR(netB)}</b></div>
+  <div><span>Écart</span><b>${EUR(Math.abs(netSal-netB))}</b></div>
+  <div><span>⚠️ Non chiffré ici</span><b>retraite, prévoyance, IJ — la rémunération en crée, pas le dividende</b></div></div>${CV('g-rem')}`
+  +mif(`L'écart brut ne dit pas tout : l'option dividendes sacrifie vos droits retraite et votre prévoyance. Quel est le « juste socle » pour votre âge et votre couverture actuelle ?`,'fiscal'));
+  donut('g-rem',['Option A (rému)','Option B (mix div.)'],[netSal,netB],['#1B2A4A','#A8884D']);
+};
+window.calcEps=function(){
+  const B=+document.getElementById('eps_b').value||0,t=+document.getElementById('eps_t').value;
+  const netPee=B*0.903;                               // intéressement → PEE : CSG/CRDS seule
+  const brut=B/1.45, netPrime=brut*0.78*(1-t);        // prime classique : patronal+salarial+IR
+  show('r-eps',`<div class="big">${EUR(netPee)} <small>investis via intéressement + PEE</small></div>
+  <div class="rows"><div><span>Prime classique (même budget)</span><b>${EUR(netPrime)}</b></div>
+  <div><span>Gain épargne salariale</span><b>+${EUR(netPee-netPrime)} (×${netPrime>0?(netPee/netPrime).toFixed(1):'—'})</b></div>
+  <div><span>Contrainte</span><b>blocage 5 ans (sauf cas de déblocage)</b></div></div>${CV('g-eps')}`
+  +mif(`Pour ${EUR(B)} de budget, l'écart est massif — et le dirigeant d'une entreprise de 1 à 249 salariés y a droit aussi. Votre accord d'intéressement existe-t-il déjà ?`,'fiscal'));
+  donut('g-eps',['Intéressement + PEE','Prime classique'],[netPee,netPrime],['#A8884D','#B23A2E']);
+};
+(function(){
+  const tier=(localStorage.getItem('ikcp_tier')||'free');
+  const fo=(tier==='fo'||tier==='premium');
+  document.getElementById('strat-body').innerHTML = fo
+   ? `<p style="font-size:13.5px;line-height:1.6">Votre stratégie globale croise les 7 simulateurs avec votre situation réelle (cartographie, patrimoine, objectif). C'est un travail d'orchestration — Marcel mode Family Office vous le restitue en direct.</p>
+      <a class="go" style="display:inline-block;text-decoration:none;margin-top:10px" href="/app/marcel?topic=batisseur">✦ Lancer mon analyse stratégique →</a>
+      <div class="mif" style="margin-top:14px">Étude formalisée et recommandations personnalisées : uniquement après lettre de mission (art. L.541-1 CoMoFi). <a class="cta-m" href="mailto:maxime@ikcp.fr?subject=Stratégie patrimoniale — lettre de mission">Demander à Maxime →</a></div>`
+   : `<div class="mif"><em>✦ Réservé aux membres Family Office</em>La stratégie globale (rémunération × holding × transmission × cession, séquencée sur 10 ans) est l'apanage de l'accompagnement Family Office — 50 familles fondatrices.<br><a class="cta-m" href="/decouvrir">Découvrir le Family Office →</a></div>`;
+})();
 document.getElementById('tabs').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b)return;
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
