@@ -334,6 +334,43 @@ function loadData(){
   try{ data = JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null') || {}; }catch(_){ data={}; }
   try{ hist = JSON.parse(localStorage.getItem('ikcp_patrimoine_hist')||'[]'); }catch(_){ hist=[]; }
 }
+
+// ─── SYNC SERVEUR (base D1 Paris) ───────────────────────────────
+// Le patrimoine vit dans profile_json côté serveur → il vous suit sur
+// tous vos appareils (PC, PWA, app Android). localStorage = cache local.
+// Stratégie : le plus récent gagne (timestamp), fusion sans écrasement.
+const TS_KEY='ikcp_patrimoine_ts';
+function _localTs(){ return Number(localStorage.getItem(TS_KEY)||0); }
+async function _serverProfile(){
+  const me = await Marcel.Auth.me();
+  let p={}; try{ p = me && me.profile_json ? JSON.parse(me.profile_json) : {}; }catch(_){}
+  return p;
+}
+async function pushToServer(){
+  try{
+    const p = await _serverProfile();           // relit le profil → fusion, jamais d'écrasement
+    p.patrimoine = data; p.patrimoine_hist = hist; p.patrimoine_ts = _localTs() || Date.now();
+    await Marcel.Me.saveProfile(JSON.stringify(p));
+    return true;
+  }catch(_){ return false; }                    // hors-ligne / non connecté : on reste local
+}
+async function syncFromServer(){
+  try{
+    const p = await _serverProfile();
+    const sTs = Number(p.patrimoine_ts||0), lTs = _localTs();
+    if(p.patrimoine && sTs >= lTs && sTs > 0){
+      data = p.patrimoine; hist = Array.isArray(p.patrimoine_hist)? p.patrimoine_hist : hist;
+      try{
+        localStorage.setItem('ikcp_patrimoine', JSON.stringify(data));
+        localStorage.setItem('ikcp_patrimoine_hist', JSON.stringify(hist));
+        localStorage.setItem(TS_KEY, String(sTs));
+      }catch(_){}
+      if(view==='real' || (hasData() && view!=='real')) setView('real');   // re-rend avec les données serveur
+    } else if(hasData() && lTs > sTs){
+      pushToServer();                            // local plus récent → on pousse
+    }
+  }catch(_){ /* non connecté : mode local, silencieux */ }
+}
 function hasData(){ return CATS.some(c=> Number(data[c.key])>0); }
 function activeData(){ return view==='real' ? data : PROFILES[view].data; }
 function activeHist(){
@@ -506,7 +543,7 @@ function saveEdit(){
   CATS.forEach(c=>{ const v=parseFloat($('f_'+c.key).value); if(v>0) nd[c.key]=Math.round(v); });
   const p=parseFloat($('f_passif').value); if(p>0) nd.passif=Math.round(p);
   data=nd;
-  try{ localStorage.setItem('ikcp_patrimoine', JSON.stringify(nd)); }catch(_){}
+  try{ localStorage.setItem('ikcp_patrimoine', JSON.stringify(nd)); localStorage.setItem(TS_KEY, String(Date.now())); }catch(_){}
   // snapshot mensuel pour la courbe (honnête : se construit dans le temps)
   try{
     const ym = new Date().toISOString().slice(0,7);
@@ -517,6 +554,7 @@ function saveEdit(){
   }catch(_){}
   closeEdit();
   setView('real');
+  pushToServer();   // → base D1 (Paris) : votre patrimoine vous suit sur tous vos appareils
 }
 window.setView=setView; window.openEdit=openEdit; window.closeEdit=closeEdit; window.saveEdit=saveEdit;
 
@@ -543,6 +581,7 @@ async function loadInsight(){
 loadData();
 try{ const p=JSON.parse(localStorage.getItem('ikcp_profile')||'null'); if(p&&p.prenom){ $('userAvatar').textContent=(p.prenom[0]||'M').toUpperCase(); } }catch(_){}
 setView(hasData()?'real':'etabli');
+syncFromServer();   // récupère le patrimoine depuis la base D1 si plus récent (multi-appareils)
 // recharge les graphes quand Chart.js (defer) est prêt
 if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv); render(); } },120); setTimeout(()=>clearInterval(iv),4000); }
 </script>
