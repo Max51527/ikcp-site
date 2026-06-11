@@ -1,0 +1,34 @@
+# Worker voix Marcel — TTS VoxCPM2 + STT Mistral Voxtral
+# © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+name = "ikcp-voice"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+workers_dev = true
+
+[placement]
+mode = "smart"
+
+[[routes]]
+pattern = "voice.ikcp.eu/*"
+zone_name = "ikcp.eu"
+
+# Vars publiques (override par 'wrangler.toml' Maxime côté local si besoin)
+[vars]
+VOXCPM_API_URL = ""                  # ex: https://xxx--voxcpm-tts.modal.run
+VOXCPM_MODEL   = "openbmb/VoxCPM2"
+VOXCPM_VOICE   = "default"
+
+# Secrets à pousser (une fois) :
+#   wrangler secret put MISTRAL_API_KEY --name ikcp-voice
+
+# KV — cache TTS + rate limit (créer une fois et mettre les IDs ci-dessous)
+[[kv_namespaces]]
+binding = "VOICE_CACHE"
+id = "VOTRE_KV_ID_VOICE_CACHE"
+
+[[kv_namespaces]]
+binding = "VOICE_RATE"
+id = "VOTRE_KV_ID_VOICE_RATE"
+
+[observability]
+enabled = true

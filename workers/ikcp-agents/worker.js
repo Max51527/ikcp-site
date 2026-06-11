@@ -70,6 +70,19 @@ export default {
         return json({ ok: true, ts: Date.now() }, 200, cors);
       }
 
+      // ─── DÉMO publique (sans auth, rate-limited 1/IP/jour) ───
+      if (url.pathname === '/api/agents/demo' && req.method === 'POST') {
+        return await startDemoTask(req, env, ctx, cors);
+      }
+      const demoStreamMatch = url.pathname.match(/^\/api\/agents\/demo\/([^/]+)\/stream$/);
+      if (demoStreamMatch && req.method === 'GET') {
+        return await streamDemoEvents(demoStreamMatch[1], env, cors);
+      }
+      const demoVoiceMatch = url.pathname.match(/^\/api\/agents\/demo\/([^/]+)\/voice$/);
+      if (demoVoiceMatch && req.method === 'POST') {
+        return await speakDemoSummary(demoVoiceMatch[1], req, env, cors);
+      }
+
       // Auth user (magic-link cookie → user_id) pour toutes les autres routes
       const userId = await authUser(req, env);
       if (!userId) return json({ error: 'unauthorized' }, 401, cors);
@@ -602,6 +615,165 @@ function labelForKind(kind) {
 async function alertOps(kind, ref, env) {
   // Stub — à brancher Slack/email ops
   console.warn(`[OPS ALERT] ${kind}: ${ref}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DÉMO PUBLIQUE — sandbox sans auth pour prospects + page démo
+// ═══════════════════════════════════════════════════════════════════
+
+const DEMO_PRESETS = {
+  reporting: {
+    task: "Génère un DER trimestriel de démonstration pour la famille D. — patrimoine 4,2 M€ (60% immo + 30% AV + 10% PEA). Produis 3 visuels (donut allocation, timeline échéances Q3, perf vs cible) et un .docx 4 pages. Ton pédagogique pour dirigeant 55-65 ans.",
+    rubric: "Le DER contient : (1) page de garde IKCP, (2) au moins 3 charts matplotlib embedded dans le docx avec palette IKCP (gold/cream/ink), (3) section échéances J+90, (4) section allocation, (5) section performance, (6) disclaimer pédagogique MIF II en fin. Pas de produit financier nommé."
+  },
+  patrimoine: {
+    task: "Démo : analyse patrimoniale 360° famille fictive Durand — actifs 7,5 M€ (SARL exploitation 4M€, SCI 2M€, AV 1M€, PEA 0,5M€) - passifs 1,2M€. Produis les 5 visuels obligatoires + PDF synthèse 5 pages.",
+    rubric: "Synthèse contient : donut classes actifs + treemap granularité + pyramide liquidité + heatmap fiscale 5 enveloppes + schéma Mermaid de structure. PDF 4-6 pages. Points d'attention listés (surconcentration, liquidité, frottement fiscal)."
+  },
+  fortune: {
+    task: "Démo HNW : famille Lefèvre, holding FR avec participation SOPARFI LUX, patrimoine 35 M€. Compare 3 scénarios transmission (Dutreil familial pur / Holding apport + Dutreil / Donation-cession). Produis schéma actuel + 2 scénarios + waterfall transmission.",
+    rubric: "Mémo contient : Mermaid structure actuelle, Mermaid de 2 scénarios alternatifs, tableau comparatif juridictions, waterfall transmission net héritiers, avertissement substance BEPS/ATAD. Sources CGI + convention FR-LUX 1958/2018 citées."
+  },
+  gouvernance: {
+    task: "Démo charte familiale : famille Martin, 2 parents 60 ans + 3 enfants (32/28/24 ans, dont 1 dans l'entreprise). Rédige charte familiale base (valeurs, gouvernance, transmission, conflits) + plan de formation NextGen 6 modules.",
+    rubric: "Livrable contient : génogramme Mermaid (3 générations), visuel pédagogique (RACI familial), corps narratif 8-12 pages, ton chaleureux multi-générationnel (parent ET enfant s'y retrouvent), section formation NextGen avec 6 modules, disclaimer formalisation juridique."
+  },
+};
+
+async function startDemoTask(req, env, ctx, cors) {
+  const body = await req.json().catch(() => ({}));
+  const { kind, email } = body;
+
+  if (!DEMO_PRESETS[kind]) {
+    return json({ error: 'invalid_demo_kind', accepted: Object.keys(DEMO_PRESETS) }, 400, cors);
+  }
+
+  // Rate limit demo : 1/IP/jour (sauf si bypass token)
+  const ip = req.headers.get('cf-connecting-ip') || 'unknown';
+  const todayKey = `demo:${ip}:${new Date().toISOString().slice(0, 10)}`;
+  if (env.AGENT_KV) {
+    const used = await env.AGENT_KV.get(todayKey);
+    if (used && !(body.bypass_token === env.DEMO_BYPASS_TOKEN)) {
+      return json({ error: 'demo_quota_used', message: '1 démo par jour. Demandez un code beta pour accès complet.' }, 429, cors);
+    }
+    await env.AGENT_KV.put(todayKey, '1', { expirationTtl: 86400 });
+  }
+
+  const preset = DEMO_PRESETS[kind];
+  const agentId = env[AGENT_KIND_TO_ENV_VAR[kind]];
+  const envId = env.MARCEL_ENV_ID;
+  if (!agentId || !envId) {
+    return json({ error: 'demo_misconfigured', hint: `Set ${AGENT_KIND_TO_ENV_VAR[kind]} + MARCEL_ENV_ID` }, 500, cors);
+  }
+
+  // Créer la session avec un user_id démo dédié
+  const demoUserId = `demo_${kind}_${Date.now().toString(36)}`;
+  const session = await anthropicFetch(env, 'POST', '/v1/sessions', {
+    agent: agentId,
+    environment_id: envId,
+    title: `DEMO ${kind} · ${ip.slice(0, 8)}`,
+    metadata: { user_id: demoUserId, kind, source: 'demo', email: email || null, ip },
+  });
+
+  await env.DB.prepare(`
+    INSERT INTO agent_sessions
+      (id, user_id, agent_kind, agent_id, agent_version, status, created_at, metadata_json)
+    VALUES (?, ?, ?, ?, ?, 'running', ?, ?)
+  `).bind(
+    session.id, demoUserId, kind, agentId, 0, Date.now(),
+    JSON.stringify({ demo: true, ip, email: email || null }),
+  ).run();
+
+  // Background : drainer le stream pour gérer custom_tool_use éventuels
+  ctx.waitUntil(drainSessionStream(session.id, env));
+
+  // Envoi du kickoff outcome
+  await anthropicFetch(env, 'POST', `/v1/sessions/${session.id}/events`, {
+    events: [{
+      type: 'user.define_outcome',
+      description: preset.task,
+      rubric: { type: 'text', content: preset.rubric },
+      max_iterations: 3,
+    }],
+  });
+
+  return json({
+    session_id: session.id,
+    kind,
+    stream_url: `/api/agents/demo/${session.id}/stream`,
+    voice_url: `/api/agents/demo/${session.id}/voice`,
+    estimated_duration_sec: kind === 'fortune' ? 180 : 90,
+  }, 200, cors);
+}
+
+// SSE stream proxy — relaie les events Anthropic vers le browser
+async function streamDemoEvents(sessionId, env, cors) {
+  const upstream = await fetch(
+    `${ANTHROPIC_API}/v1/sessions/${sessionId}/events/stream`,
+    {
+      headers: {
+        'x-api-key': env.ANTHROPICAPIKEY,
+        'anthropic-version': API_VERSION,
+        'anthropic-beta': BETA_HEADER,
+        'Accept': 'text/event-stream',
+      },
+    },
+  );
+  if (!upstream.ok || !upstream.body) {
+    return json({ error: 'stream_failed', status: upstream.status }, 502, cors);
+  }
+
+  // Pipe direct — Cloudflare Workers supportent les streams sortants
+  return new Response(upstream.body, {
+    status: 200,
+    headers: {
+      ...cors,
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'X-Accel-Buffering': 'no',
+    },
+  });
+}
+
+// Synthèse vocale du résumé de la session
+async function speakDemoSummary(sessionId, req, env, cors) {
+  const body = await req.json().catch(() => ({}));
+  const { voice = 'default', summary_max_chars = 600 } = body;
+
+  // Vérifier que la session est idle (sinon on ne peut pas résumer)
+  const session = await anthropicFetch(env, 'GET', `/v1/sessions/${sessionId}`);
+  if (session.status !== 'idle') {
+    return json({ error: 'session_not_idle', status: session.status }, 409, cors);
+  }
+
+  // Récupérer les events agent.message et extraire le dernier message texte
+  const events = await anthropicFetch(env, 'GET', `/v1/sessions/${sessionId}/events?limit=50`);
+  const agentMessages = (events.data || [])
+    .filter(e => e.type === 'agent.message')
+    .flatMap(e => (e.content || []).filter(b => b.type === 'text').map(b => b.text));
+  const lastMessage = agentMessages.slice(-1)[0] || 'Démonstration terminée.';
+
+  // Tronquer pour le TTS (sinon trop long)
+  const truncated = lastMessage.length > summary_max_chars
+    ? lastMessage.slice(0, summary_max_chars) + '… (voir le livrable complet pour la suite)'
+    : lastMessage;
+
+  // Appel au worker ikcp-voice (TTS VoxCPM2)
+  const voiceUrl = env.IKCP_VOICE_URL || 'https://voice.ikcp.eu';
+  const r = await fetch(`${voiceUrl}/tts`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ text: truncated, voice, format: 'wav' }),
+  });
+  if (!r.ok) {
+    const errText = await r.text().catch(() => '');
+    return json({ error: 'tts_failed', status: r.status, body: errText.slice(0, 200) }, 502, cors);
+  }
+  const audio = await r.arrayBuffer();
+  return new Response(audio, {
+    status: 200,
+    headers: { ...cors, 'Content-Type': 'audio/wav', 'X-Summary-Length': String(truncated.length) },
+  });
 }
 
 function corsHeaders(req) {
