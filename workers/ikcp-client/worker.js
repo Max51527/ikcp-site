@@ -416,6 +416,17 @@ async function handleFeedback(request, env) {
     <p style="font-size:13px;color:#6B5D52"><b>De :</b> ${esc(email) || 'anonyme'} &nbsp;·&nbsp; <b>Page :</b> ${esc(page)} &nbsp;·&nbsp; <b>Source :</b> ${esc(source)}</p>
   </div>`;
   const sent = await sendEmail(env, { to: 'maxime@ikcp.fr', subject: `[IKCP Bêta] Retour ${prio}${cats ? ' · ' + cats : ''}`, html });
+  // Accusé de réception automatique au prospect (demande d'invitation /decouvrir)
+  if (source === 'decouvrir-invitation' && email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    const ack = `<div style="font-family:Georgia,serif;max-width:540px;margin:auto;background:#0E1729;color:#FAFAF8;border-radius:14px;padding:34px 30px">
+      <p style="font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:#E2C896;margin:0 0 14px">IKCP · Family Office augmenté</p>
+      <h2 style="font-weight:500;font-size:22px;margin:0 0 12px">Votre demande est <em style="color:#E2C896">bien reçue.</em></h2>
+      <p style="font-size:14px;line-height:1.65;color:rgba(250,250,248,.8)">Merci de votre intérêt pour la bêta — 50 familles fondatrices, accès sur invitation. Maxime étudie personnellement chaque demande et revient vers vous sous 48&nbsp;h.</p>
+      <p style="font-size:14px;line-height:1.65;color:rgba(250,250,248,.8)">En attendant, la présentation de 90&nbsp;secondes&nbsp;: <a href="https://ikcp.eu/decouvrir" style="color:#E2C896">ikcp.eu/decouvrir</a></p>
+      <p style="font-size:12px;color:rgba(250,250,248,.5);border-top:1px solid rgba(226,200,150,.25);padding-top:14px;margin-top:22px">Maxime Juveneton · CIF — ORIAS 23001568 · CNCEF Patrimoine · Données hébergées en France.</p>
+    </div>`;
+    await sendEmail(env, { to: email, subject: 'Votre demande d’invitation — IKCP Family Office', html: ack }).catch(() => {});
+  }
   await emitEvent(env, null, 'beta_feedback', { categories: cats, priorite: prio, email, page, source }).catch(() => {});
   return json({ ok: true, emailed: !!sent });
 }
