@@ -28,15 +28,25 @@ const BETA_HEADER = 'managed-agents-2026-04-01';
 const API_VERSION = '2023-06-01';
 
 const AGENT_KIND_TO_ENV_VAR = {
-  reporting: 'MARCEL_REPORTING_AGENT_ID',
-  documents: 'MARCEL_DOCUMENTS_AGENT_ID',
-  suivi: 'MARCEL_SUIVI_AGENT_ID',
+  // Agents techniques (Opus 4.8 — reasoning structuré)
+  documents:   'MARCEL_DOCUMENTS_AGENT_ID',    // OCR + extraction
+  suivi:       'MARCEL_SUIVI_AGENT_ID',        // planning + arbitrages
+  patrimoine:  'MARCEL_PATRIMOINE_AGENT_ID',   // 360° gestion patrimoine 1-10 M€
+  fortune:     'MARCEL_FORTUNE_AGENT_ID',      // HNW/UHNW 10-500 M€
+  // Agents éditoriaux (Fable 5 — narrative + pédagogique)
+  reporting:   'MARCEL_REPORTING_AGENT_ID',    // DER trimestriel, rapports
+  editorial:   'MARCEL_EDITORIAL_AGENT_ID',    // newsletter UPPERCUT + articles
+  gouvernance: 'MARCEL_GOUVERNANCE_AGENT_ID',  // charte familiale + NextGen
 };
 
 const ALLOWED_ORIGINS = [
   'https://ikcp.eu',
   'https://www.ikcp.eu',
   'https://client.ikcp.eu',
+  'https://app.ikcp.eu',          // app mobile PWA / Capacitor
+  'capacitor://localhost',         // Capacitor iOS native scheme
+  'http://localhost',              // Capacitor Android native
+  'https://localhost',             // Capacitor Android https
 ];
 
 // ──────────────────────────────────────────────────────────────
@@ -428,9 +438,15 @@ async function callSubAgent(toolName, input, env) {
   const method = rest.join('.');
 
   const subAgentUrl = {
-    documents: 'https://documents-mcp.ikcp.eu/mcp/call',
-    suivi: 'https://suivi-mcp.ikcp.eu/mcp/call',
-    reporting: 'https://reporting-mcp.ikcp.eu/mcp/call',
+    // MCP sub-agents existants (HMAC)
+    documents:   'https://documents-mcp.ikcp.eu/mcp/call',
+    suivi:       'https://suivi-mcp.ikcp.eu/mcp/call',
+    reporting:   'https://reporting-mcp.ikcp.eu/mcp/call',
+    // Nouveaux dispatch via les workers existants (Pattern 9)
+    patrimoine:  'https://ikcp-batisseur.maxime-ead.workers.dev/mcp/call',  // patrimoine 360°
+    fortune:     'https://ikcp-hermes.maxime-ead.workers.dev/mcp/call',     // transmission HNW
+    gouvernance: 'https://ikcp-hermes.maxime-ead.workers.dev/mcp/call',     // partage hermes
+    editorial:   'https://ikcp-veille.maxime-ead.workers.dev/mcp/call',     // veille pour brief
   }[service];
 
   if (!subAgentUrl) {
