@@ -110,11 +110,29 @@ export default {
         return await downloadFile(fileMatch[1], fileMatch[2], env, userId, cors);
       }
 
+      // ─── MEMORY STORES — Marcel se souvient de chaque famille ───
+      if (url.pathname === '/api/me/memory' && req.method === 'GET') {
+        return await getMyMemory(env, userId, cors);
+      }
+      if (url.pathname === '/api/me/memory/init' && req.method === 'POST') {
+        return await initMyMemory(env, userId, cors);
+      }
+
+      // ─── NEWSLETTERS PERSO — log et derniers envois ───
+      if (url.pathname === '/api/me/newsletters' && req.method === 'GET') {
+        return await getMyNewsletters(env, userId, cors);
+      }
+
       return json({ error: 'not_found' }, 404, cors);
     } catch (e) {
       console.error('worker error:', e?.stack || e);
       return json({ error: 'internal_error', message: String(e?.message || e) }, 500, cors);
     }
+  },
+
+  // ─── CRON HANDLER — newsletter hebdo vendredi 8h UTC ───
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(handleScheduled(event, env));
   },
 };
 
@@ -774,6 +792,210 @@ async function speakDemoSummary(sessionId, req, env, cors) {
     status: 200,
     headers: { ...cors, 'Content-Type': 'audio/wav', 'X-Summary-Length': String(truncated.length) },
   });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MEMORY STORES — Marcel se souvient de chaque famille (cross-session)
+// ═══════════════════════════════════════════════════════════════════
+
+async function initMyMemory(env, userId, cors) {
+  // Vérifie si l'user a déjà un memory_store
+  const existing = await env.DB.prepare(
+    `SELECT memory_store_id, email, name FROM users WHERE id=?`
+  ).bind(userId).first();
+
+  if (!existing) return json({ error: 'user_not_found' }, 404, cors);
+  if (existing.memory_store_id) {
+    return json({ memory_store_id: existing.memory_store_id, status: 'already_exists' }, 200, cors);
+  }
+
+  // Crée le memory store côté Anthropic
+  const store = await anthropicFetch(env, 'POST', '/v1/memory_stores', {
+    name: `IKCP — ${existing.name || existing.email || userId.slice(0, 8)}`,
+    description: `Mémoire persistante de la famille (préférences fiscales, allocation cible, contexte personnel, échéances clés). Marcel y lit avant chaque tâche et y écrit après. Tout PII reste filtré au worker EU.`,
+    metadata: { user_id: userId, project: 'ikcp-family-office' },
+  });
+
+  // Seed avec quelques fichiers de base
+  const seedFiles = [
+    {
+      path: '/contexte/famille.md',
+      content: `# Contexte famille\n\nCe fichier sera enrichi au fil des sessions. Marcel y inscrit :\n- composition familiale\n- objectifs patrimoniaux exprimés\n- préférences de communication\n- événements à ne pas oublier\n\n_(initialisé le ${new Date().toISOString().slice(0, 10)})_\n`,
+    },
+    {
+      path: '/preferences/format.md',
+      content: `# Préférences de format\n\n- Format rapport préféré : .docx\n- Niveau de détail : équilibré\n- Ton : pédagogique, vouvoiement\n- Langue : français\n\n_(à enrichir par Marcel selon les retours)_\n`,
+    },
+    {
+      path: '/allocation/cible.md',
+      content: `# Allocation cible (DER)\n\nÀ remplir lors du premier DER. Marcel comparera l'allocation actuelle à celle-ci dans chaque rapport.\n`,
+    },
+  ];
+  for (const seed of seedFiles) {
+    await anthropicFetch(env, 'POST', `/v1/memory_stores/${store.id}/memories`, seed);
+  }
+
+  // Persiste l'ID en D1
+  await env.DB.prepare(
+    `UPDATE users SET memory_store_id=? WHERE id=?`
+  ).bind(store.id, userId).run();
+
+  return json({
+    memory_store_id: store.id,
+    status: 'created',
+    seeded_files: seedFiles.length,
+  }, 200, cors);
+}
+
+async function getMyMemory(env, userId, cors) {
+  const row = await env.DB.prepare(
+    `SELECT memory_store_id FROM users WHERE id=?`
+  ).bind(userId).first();
+  if (!row?.memory_store_id) {
+    return json({ memory_store_id: null, files: [] }, 200, cors);
+  }
+  const files = await anthropicFetch(env, 'GET',
+    `/v1/memory_stores/${row.memory_store_id}/memories?view=basic`);
+  return json({
+    memory_store_id: row.memory_store_id,
+    files: (files.data || []).map(m => ({
+      id: m.id, path: m.path,
+      size: m.content_size_bytes, updated_at: m.updated_at,
+    })),
+  }, 200, cors);
+}
+
+async function getMyNewsletters(env, userId, cors) {
+  const rows = await env.DB.prepare(`
+    SELECT id, week_iso, subject, preview, status, sent_at
+    FROM newsletter_log
+    WHERE user_id = ? AND status = 'sent'
+    ORDER BY sent_at DESC LIMIT 20
+  `).bind(userId).all();
+  return json({ newsletters: rows.results || [] }, 200, cors);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CRON HANDLER — newsletter hebdo vendredi 8h UTC (10h Paris été)
+// ═══════════════════════════════════════════════════════════════════
+
+async function handleScheduled(event, env) {
+  const cron = event?.cron || '';
+  console.log(`[CRON] triggered: ${cron} at ${new Date().toISOString()}`);
+
+  if (cron === '0 8 * * 5') {
+    return await runWeeklyNewsletters(env);
+  }
+
+  console.log(`[CRON] unhandled cron pattern: ${cron}`);
+}
+
+async function runWeeklyNewsletters(env) {
+  const week = getIsoWeek(new Date());
+
+  // Sélectionne les users tier "augmente" ou "bespoke" qui n'ont pas
+  // déjà reçu la newsletter de cette semaine
+  const candidates = await env.DB.prepare(`
+    SELECT u.id, u.email, u.name, u.tier, u.memory_store_id
+    FROM users u
+    LEFT JOIN newsletter_log n
+      ON n.user_id = u.id AND n.week_iso = ?
+    WHERE u.tier IN ('augmente', 'bespoke')
+      AND u.email IS NOT NULL
+      AND (u.newsletter_optin IS NULL OR u.newsletter_optin = 1)
+      AND n.id IS NULL
+    LIMIT 100
+  `).bind(week).all();
+
+  const users = candidates.results || [];
+  console.log(`[CRON] ${users.length} users to newsletter this week (${week})`);
+
+  let queued = 0;
+  for (const user of users) {
+    try {
+      await queueNewsletterFor(user, week, env);
+      queued++;
+    } catch (e) {
+      console.error(`[CRON] failed for user ${user.id}:`, e?.message);
+    }
+  }
+  console.log(`[CRON] ${queued}/${users.length} newsletters queued`);
+}
+
+async function queueNewsletterFor(user, week, env) {
+  // S'assure que le memory store existe
+  let memoryStoreId = user.memory_store_id;
+  if (!memoryStoreId) {
+    const store = await anthropicFetch(env, 'POST', '/v1/memory_stores', {
+      name: `IKCP — ${user.name || user.email}`,
+      description: `Mémoire famille.`,
+      metadata: { user_id: user.id },
+    });
+    memoryStoreId = store.id;
+    await env.DB.prepare(`UPDATE users SET memory_store_id=? WHERE id=?`)
+      .bind(memoryStoreId, user.id).run();
+  }
+
+  // Lance la session marcel-editorial avec memory store attaché
+  const agentId = env.MARCEL_EDITORIAL_AGENT_ID;
+  const envId = env.MARCEL_ENV_ID;
+  if (!agentId || !envId) {
+    throw new Error('editorial agent or env not configured');
+  }
+
+  const session = await anthropicFetch(env, 'POST', '/v1/sessions', {
+    agent: agentId,
+    environment_id: envId,
+    title: `Newsletter ${week} · ${user.id.slice(0, 8)}`,
+    resources: [
+      { type: 'memory_store', memory_store_id: memoryStoreId, access: 'read_write',
+        instructions: 'Mémoire de cette famille. Lis le contexte avant de rédiger, écris-y ce que tu apprends de neuf cette semaine.' },
+    ],
+    metadata: { user_id: user.id, kind: 'newsletter_weekly', week },
+  });
+
+  // Tracking en D1
+  const newsletterId = `nl_${week}_${user.id.slice(0, 12)}`;
+  await env.DB.prepare(`
+    INSERT INTO newsletter_log (id, user_id, session_id, week_iso, status, created_at, metadata_json)
+    VALUES (?, ?, ?, ?, 'queued', ?, ?)
+  `).bind(
+    newsletterId, user.id, session.id, week, Date.now(),
+    JSON.stringify({ tier: user.tier, agent_kind: 'editorial' }),
+  ).run();
+
+  // Persist agent_sessions aussi
+  await env.DB.prepare(`
+    INSERT INTO agent_sessions
+      (id, user_id, agent_kind, agent_id, agent_version, status, created_at, metadata_json)
+    VALUES (?, ?, 'editorial', ?, ?, 'running', ?, ?)
+  `).bind(
+    session.id, user.id, agentId, 0, Date.now(),
+    JSON.stringify({ newsletter_id: newsletterId, week, source: 'cron_weekly' }),
+  ).run();
+
+  // Outcome — rubric pour newsletter perso UPPERCUT
+  await anthropicFetch(env, 'POST', `/v1/sessions/${session.id}/events`, {
+    events: [{
+      type: 'user.define_outcome',
+      description: `Rédige la newsletter UPPERCUT IKCP de la semaine ${week} pour cette famille (${user.name || 'client'}). Lis d'abord son memory store (/contexte/famille.md, /allocation/cible.md, /preferences/format.md). Compose ensuite une newsletter PERSO de 250-400 mots qui aborde 1-2 sujets fiscaux/patrimoniaux PERTINENTS pour SA situation cette semaine, en citant les sources. Ton UPPERCUT : direct, premier degré, opinionnated. Génère 1 visuel hero matplotlib (palette IKCP) qui résume le sujet principal. Persist via editorial.persist_article puis appelle editorial.send_email_via_resend pour l'envoi.`,
+      rubric: { type: 'text', content: `La newsletter contient : (1) un titre accrocheur sans "Dans un monde", (2) 250-400 mots, (3) 1-2 sujets adaptés à la famille (lus depuis memory store), (4) au moins 1 source CGI/BOFIP/article cité avec lien, (5) ton UPPERCUT respecté, (6) 1 visuel hero PNG palette IKCP, (7) disclaimer MIF II final.` },
+      max_iterations: 3,
+    }],
+  });
+}
+
+function getIsoWeek(d) {
+  const target = new Date(d.valueOf());
+  const dayNr = (d.getUTCDay() + 6) % 7;
+  target.setUTCDate(target.getUTCDate() - dayNr + 3);
+  const firstThursday = target.valueOf();
+  target.setUTCMonth(0, 1);
+  if (target.getUTCDay() !== 4) {
+    target.setUTCMonth(0, 1 + ((4 - target.getUTCDay()) + 7) % 7);
+  }
+  const week = 1 + Math.ceil((firstThursday - target) / 604800000);
+  return `${d.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
 }
 
 function corsHeaders(req) {

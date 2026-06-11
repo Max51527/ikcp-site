@@ -37,16 +37,27 @@ bucket_name = "ikcp-templates"
 binding = "AGENT_KV"
 id = "VOTRE_KV_ID"
 
+# Cron triggers — newsletter hebdo
+# Vendredi 8h UTC = 10h Paris (heure d'été) / 9h Paris (heure d'hiver)
+[triggers]
+crons = ["0 8 * * 5"]
+
 # Secrets à provisionner via wrangler secret put :
 #   ANTHROPICAPIKEY                  — clé API Anthropic Enterprise (DPA signé)
 #   ANTHROPIC_WEBHOOK_SIGNING_KEY    — whsec_… depuis Console Anthropic
 #   HMAC_SECRET                      — partagé avec les MCP sub-agents
 #   MARCEL_ENV_ID                    — env_… créé via ant beta:environments create
-#   MARCEL_REPORTING_AGENT_ID        — agent_… reporting
-#   MARCEL_DOCUMENTS_AGENT_ID        — agent_… documents
-#   MARCEL_SUIVI_AGENT_ID            — agent_… suivi
-#   RESEND_API_KEY                   — pour magic-link notifications (partagé)
+#   MARCEL_REPORTING_AGENT_ID        — agent_… reporting (Fable 5)
+#   MARCEL_DOCUMENTS_AGENT_ID        — agent_… documents (Opus 4.8)
+#   MARCEL_SUIVI_AGENT_ID            — agent_… suivi (Opus 4.8)
+#   MARCEL_PATRIMOINE_AGENT_ID       — agent_… patrimoine 360° (Opus 4.8)
+#   MARCEL_FORTUNE_AGENT_ID          — agent_… HNW (Opus 4.8 effort max)
+#   MARCEL_GOUVERNANCE_AGENT_ID      — agent_… charte familiale (Fable 5)
+#   MARCEL_EDITORIAL_AGENT_ID        — agent_… newsletter/articles (Fable 5)
+#   RESEND_API_KEY                   — pour newsletters + magic-link
 #   IKCP_CLIENT_BASE_URL             — https://client.ikcp.eu (pour redirect)
+#   IKCP_VOICE_URL                   — https://voice.ikcp.eu (TTS résumé démo)
+#   DEMO_BYPASS_TOKEN                — secret pour bypasser rate limit démo
 
 [observability]
 enabled = true

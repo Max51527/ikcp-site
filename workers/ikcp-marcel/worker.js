@@ -1128,7 +1128,7 @@ export default {
         status: 'ok',
         service: 'ikcp-marcel-proxy',
         version: '2.1',
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard'],
       }), {
         status: 200,
@@ -1252,7 +1252,7 @@ export default {
             'anthropic-beta': 'prompt-caching-2024-07-31',
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-6',
             max_tokens: 1200,
             system: systemParam,
             messages: workingMessages,
