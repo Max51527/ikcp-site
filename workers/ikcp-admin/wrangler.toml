@@ -1,0 +1,43 @@
+# Worker admin cockpit Maxime — OAuth GitHub + endpoints stats + run-agent
+# © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+name = "ikcp-admin"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+workers_dev = false
+
+[placement]
+mode = "smart"
+
+[[routes]]
+pattern = "admin.ikcp.eu/api/*"
+zone_name = "ikcp.eu"
+
+[[routes]]
+pattern = "admin.ikcp.eu/auth/*"
+zone_name = "ikcp.eu"
+
+# D1 binding — lit users + agent_sessions
+[[d1_databases]]
+binding = "DB"
+database_name = "ikcp-prod"
+database_id = "VOTRE_D1_DATABASE_ID"
+
+# Vars publiques
+[vars]
+ADMIN_ALLOWED_LOGINS = "Max51527"
+
+# Secrets à provisionner :
+#   wrangler secret put GITHUB_CLIENT_ID --name ikcp-admin
+#   wrangler secret put GITHUB_CLIENT_SECRET --name ikcp-admin
+#   wrangler secret put ADMIN_SIGNING_SECRET --name ikcp-admin  (random 32+ chars)
+#   wrangler secret put ANTHROPICAPIKEY --name ikcp-admin
+#   wrangler secret put MARCEL_ENV_ID --name ikcp-admin
+#   wrangler secret put MARCEL_*_AGENT_ID --name ikcp-admin  (les 13 agents)
+#
+# GitHub OAuth App séparée de ikcp-cms-auth (cookies différents) :
+#   Application name : IKCP Cockpit Admin
+#   Homepage URL     : https://admin.ikcp.eu
+#   Callback URL     : https://admin.ikcp.eu/auth/callback
+
+[observability]
+enabled = true

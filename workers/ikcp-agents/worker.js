@@ -28,15 +28,21 @@ const BETA_HEADER = 'managed-agents-2026-04-01';
 const API_VERSION = '2023-06-01';
 
 const AGENT_KIND_TO_ENV_VAR = {
-  // Agents techniques (Opus 4.8 — reasoning structuré)
-  documents:   'MARCEL_DOCUMENTS_AGENT_ID',    // OCR + extraction
-  suivi:       'MARCEL_SUIVI_AGENT_ID',        // planning + arbitrages
-  patrimoine:  'MARCEL_PATRIMOINE_AGENT_ID',   // 360° gestion patrimoine 1-10 M€
-  fortune:     'MARCEL_FORTUNE_AGENT_ID',      // HNW/UHNW 10-500 M€
-  // Agents éditoriaux (Fable 5 — narrative + pédagogique)
-  reporting:   'MARCEL_REPORTING_AGENT_ID',    // DER trimestriel, rapports
-  editorial:   'MARCEL_EDITORIAL_AGENT_ID',    // newsletter UPPERCUT + articles
-  gouvernance: 'MARCEL_GOUVERNANCE_AGENT_ID',  // charte familiale + NextGen
+  // ─── Spécialistes techniques (Opus 4.8) ───
+  documents:        'MARCEL_DOCUMENTS_AGENT_ID',        // OCR + extraction générique
+  suivi:            'MARCEL_SUIVI_AGENT_ID',            // planning + arbitrages
+  patrimoine:       'MARCEL_PATRIMOINE_AGENT_ID',       // 360° 1-10 M€
+  fortune:          'MARCEL_FORTUNE_AGENT_ID',          // HNW/UHNW 10-500 M€
+  transmission:     'MARCEL_TRANSMISSION_AGENT_ID',     // donations, succ., Dutreil
+  remuneration:     'MARCEL_REMUNERATION_AGENT_ID',     // dirigeant + épargne salar.
+  strategie:        'MARCEL_STRATEGIE_AGENT_ID',        // feuille de route 5 ans
+  fiscalite_impots: 'MARCEL_FISCALITE_IMPOTS_AGENT_ID', // OCR avis IR/IFI/2042
+  immobilier:       'MARCEL_IMMOBILIER_AGENT_ID',       // direct + papier + DVF
+  defiscalisation:  'MARCEL_DEFISCALISATION_AGENT_ID',  // PER, FCPI, Girardin, dons
+  // ─── Spécialistes éditoriaux (Fable 5) ───
+  reporting:        'MARCEL_REPORTING_AGENT_ID',        // DER trimestriel
+  editorial:        'MARCEL_EDITORIAL_AGENT_ID',        // newsletter UPPERCUT
+  gouvernance:      'MARCEL_GOUVERNANCE_AGENT_ID',      // charte familiale + NextGen
 };
 
 const ALLOWED_ORIGINS = [

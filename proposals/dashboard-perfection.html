@@ -226,19 +226,27 @@ const CLIENT_BASE = window.IKCP_CLIENT_URL || 'https://client.ikcp.eu';
 
 const TIER_AGENTS = {
   freemium: [],
-  augmente: ['documents', 'suivi', 'patrimoine', 'reporting'],
-  bespoke: ['documents', 'suivi', 'patrimoine', 'reporting',
-            'fortune', 'gouvernance', 'editorial'],
+  augmente: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
+             'immobilier', 'defiscalisation', 'transmission', 'remuneration'],
+  bespoke: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
+            'immobilier', 'defiscalisation', 'transmission', 'remuneration',
+            'fortune', 'gouvernance', 'editorial', 'strategie'],
 };
 
 const ALL_AGENTS = [
-  { kind: 'reporting',   name: 'DER trimestriel',    desc: 'Rapport + 3 charts (Fable 5)' },
-  { kind: 'patrimoine',  name: 'Patrimoine 360°',    desc: 'Analyse + 5 visuels (Opus 4.8)' },
-  { kind: 'documents',   name: 'OCR document',       desc: 'Extraction JSON structurée' },
-  { kind: 'suivi',       name: 'Planning trimestre', desc: 'Échéances + arbitrages' },
-  { kind: 'fortune',     name: 'Stratégie HNW',      desc: 'Structures internationales' },
-  { kind: 'gouvernance', name: 'Charte familiale',   desc: 'Gouvernance + NextGen' },
-  { kind: 'editorial',   name: 'Newsletter perso',   desc: 'Article sur mesure' },
+  { kind: 'patrimoine',       name: 'Patrimoine 360°',     desc: 'Analyse + 5 visuels (Opus 4.8)' },
+  { kind: 'transmission',     name: 'Transmission',        desc: 'Donations / Dutreil / succession' },
+  { kind: 'remuneration',     name: 'Rémunération',        desc: 'Salaire / dividendes / management package' },
+  { kind: 'fiscalite_impots', name: 'OCR fiscalité',       desc: 'Avis IR/IFI/2042 case par case' },
+  { kind: 'immobilier',       name: 'Immobilier',          desc: 'Direct + papier + DVF' },
+  { kind: 'defiscalisation',  name: 'Défiscalisation',     desc: 'PER, FCPI, Girardin, dons' },
+  { kind: 'reporting',        name: 'DER trimestriel',     desc: 'Rapport + 3 charts (Fable 5)' },
+  { kind: 'documents',        name: 'OCR document',        desc: 'Extraction JSON générique' },
+  { kind: 'suivi',            name: 'Planning trimestre',  desc: 'Échéances + arbitrages' },
+  { kind: 'strategie',        name: 'Stratégie 5 ans',     desc: 'Feuille de route intégrée (BESPOKE)' },
+  { kind: 'fortune',          name: 'Stratégie HNW',       desc: 'Structures internationales (BESPOKE)' },
+  { kind: 'gouvernance',      name: 'Charte familiale',    desc: 'Gouvernance + NextGen (BESPOKE)' },
+  { kind: 'editorial',        name: 'Newsletter perso',    desc: 'Article sur mesure (BESPOKE)' },
 ];
 
 const voice = document.getElementById('voice');
