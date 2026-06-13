@@ -90,4 +90,36 @@
   }
   if (document.body) mount();
   else document.addEventListener('DOMContentLoaded', mount);
+
+  // ── Bouton flottant « Mon avis » — boucle de feedback bêta (→ console Retours testeurs) ──
+  function mountFb() {
+    if (document.querySelector('.ikcp-fb')) return;
+    var fcss = document.createElement('style');
+    fcss.textContent = '.ikcp-fb{position:fixed;right:15px;bottom:86px;z-index:151;background:var(--accent,#C9A96E);color:#0E1729;border:0;border-radius:999px;padding:10px 15px;font:600 12.5px Outfit,system-ui,sans-serif;box-shadow:0 10px 26px -10px rgba(14,23,41,.55);cursor:pointer}'
+      + '.ikcp-fbm{position:fixed;inset:0;z-index:200;background:rgba(14,23,41,.55);display:none;align-items:flex-end;justify-content:center}.ikcp-fbm.open{display:flex}'
+      + '.ikcp-fbm .box{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom))}'
+      + '@media(min-width:560px){.ikcp-fbm{align-items:center}.ikcp-fbm .box{border-radius:20px}}'
+      + '.ikcp-fbm h3{font-family:Fraunces,"Playfair Display",serif;font-weight:500;font-size:19px;margin:0 0 4px;color:#1B2A4A}'
+      + '.ikcp-fbm p{font-size:12.5px;color:#6E7689;margin:0 0 12px;line-height:1.5}'
+      + '.ikcp-fbm textarea{width:100%;min-height:92px;box-sizing:border-box;border:1.5px solid rgba(27,42,74,.15);border-radius:10px;padding:11px;font:inherit;font-size:14px;resize:vertical}'
+      + '.ikcp-fbm .row{display:flex;gap:9px;margin-top:12px}.ikcp-fbm .row button{flex:1;border:0;border-radius:10px;padding:12px;font:600 14px Outfit,system-ui,sans-serif;cursor:pointer}'
+      + '.ikcp-fbm .send{background:#1B2A4A;color:#fff}.ikcp-fbm .cancel{background:transparent;border:1px solid rgba(27,42,74,.15);color:#6E7689}';
+    document.head.appendChild(fcss);
+    var btn = document.createElement('button'); btn.className = 'ikcp-fb'; btn.type = 'button'; btn.textContent = '💬 Mon avis';
+    var modal = document.createElement('div'); modal.className = 'ikcp-fbm';
+    modal.innerHTML = '<div class="box"><h3>Votre avis compte</h3><p>Bêta — dites-nous ce qui vous a plu, gêné ou manqué. Maxime lit chaque retour.</p><textarea id="ikcpFbT" placeholder="Votre retour…"></textarea><div class="row"><button type="button" class="cancel">Annuler</button><button type="button" class="send">Envoyer</button></div></div>';
+    document.body.appendChild(btn); document.body.appendChild(modal);
+    function close(){ modal.classList.remove('open'); }
+    btn.onclick = function(){ modal.classList.add('open'); setTimeout(function(){ var t=document.getElementById('ikcpFbT'); if(t) t.focus(); },80); };
+    modal.addEventListener('click', function(e){ if(e.target===modal) close(); });
+    modal.querySelector('.cancel').onclick = close;
+    modal.querySelector('.send').onclick = function(){
+      var t = (document.getElementById('ikcpFbT').value||'').trim(); if(t.length<5) return;
+      var s = modal.querySelector('.send'); s.textContent='Envoi…'; s.disabled=true;
+      fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/feedback', { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ besoin:t, categories:['avis in-app'], priorite:'moyenne', page:location.pathname, source:'app-feedback' }) })
+        .catch(function(){}).finally(function(){ modal.querySelector('.box').innerHTML='<h3>Merci 🙏</h3><p>Votre retour est transmis — il façonne directement la prochaine version.</p>'; setTimeout(close,1800); });
+    };
+  }
+  if (document.body) mountFb(); else document.addEventListener('DOMContentLoaded', mountFb);
 })();

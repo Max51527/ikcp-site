@@ -131,6 +131,10 @@ a{color:var(--gold-deep);text-decoration:none}
 
 <script>
 var FROM_ONB = new URLSearchParams(location.search).get('from') === 'onboarding';
+// Sync D1 : si un score serveur existe et que le local est vide, on l'hydrate (multi-appareils)
+try{ var _tk=localStorage.getItem('ikcp_token'); if(_tk && !localStorage.getItem('ikcp_score')){
+  fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me',{headers:{Authorization:'Bearer '+_tk}}).then(function(r){return r.json();}).then(function(me){
+    var p={}; try{p=me.profile_json?JSON.parse(me.profile_json):{};}catch(_){ } if(p.score)localStorage.setItem('ikcp_score',JSON.stringify(p.score)); }).catch(function(){}); } }catch(_){}
 var NEXT_URL = FROM_ONB ? '/app/dashboard?welcome=1' : '/app/dashboard';
 
 // ── 7 territoires patrimoniaux · questions (chaque réponse = score 0/40/75/100) ──
@@ -218,6 +222,11 @@ function finish(){
       document.getElementById('verdictSub').insertAdjacentElement('afterend', ev);
     }
     localStorage.setItem('ikcp_score', JSON.stringify({ score: global, date: new Date().toISOString(), terr: Q.map(function(it,i){return {t:it.t,v:answers[i]};}) }));
+    // Sync D1 (le score suit le membre sur tous ses appareils)
+    try{ var _tks=localStorage.getItem('ikcp_token'); if(_tks){ var _C='https://ikcp-client.maxime-ead.workers.dev';
+      fetch(_C+'/api/v1/me',{headers:{Authorization:'Bearer '+_tks}}).then(function(r){return r.json();}).then(function(me){
+        var p={}; try{p=me.profile_json?JSON.parse(me.profile_json):{};}catch(_){ } p.score=JSON.parse(localStorage.getItem('ikcp_score'));
+        fetch(_C+'/api/v1/me/profile',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+_tks},body:JSON.stringify({profile_json:JSON.stringify(p)})}); }).catch(function(){}); } }catch(_){}
   } catch (_) {}
   document.getElementById('terrBars').innerHTML = Q.map(function(item,i){
     var v=answers[i];
