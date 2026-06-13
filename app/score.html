@@ -83,9 +83,9 @@ a{color:var(--gold-deep);text-decoration:none}
 <header class="hd"><div class="wrap"><div class="logo">IK<span>CP</span></div><a class="back" href="/app/dashboard">← Mon espace</a></div></header>
 
 <section class="hero wrap">
-  <div class="eyebrow">Découverte · Family Office</div>
+  <div class="eyebrow">Miroir Patrimonial · Family Office</div>
   <h1>Votre <em>Score Patrimonial</em></h1>
-  <p id="heroLead">7 territoires, 2 minutes. C'est le point de départ de votre Family Office : Marcel s'en sert pour cibler vos priorités.</p>
+  <p id="heroLead">Le miroir de votre patrimoine en 7 territoires — 2 minutes. Pas un questionnaire d'assurance : le regard qu'un Family Office porte sur votre situation. Marcel s'en sert pour cibler vos priorités.</p>
 </section>
 
 <div class="quiz" id="quiz">
@@ -135,31 +135,31 @@ var NEXT_URL = FROM_ONB ? '/app/dashboard?welcome=1' : '/app/dashboard';
 
 // ── 7 territoires patrimoniaux · questions (chaque réponse = score 0/40/75/100) ──
 var Q = [
-  {t:'Protection', ic:'🛡️', q:'Si demain vous (ou le revenu principal du foyer) disparaissiez, vos proches seraient-ils protégés ?',
-   o:[['Aucune prévoyance / je ne sais pas',0],['Juste l\'assurance emprunteur',40],['Prévoyance partielle (décès)',75],['Prévoyance décès + invalidité dimensionnée',100]]},
-  {t:'Transmission', ic:'🌿', q:'Votre transmission est-elle organisée (testament, donations, clause bénéficiaire) ?',
-   o:[['Rien de prévu',0],['J\'y pense, sans agir',40],['Quelques actes (testament OU donation)',75],['Stratégie en place et révisée',100]]},
-  {t:'Fiscalité', ic:'⚖️', q:'Pilotez-vous activement votre fiscalité (IR, IFI, enveloppes) ?',
-   o:[['Je subis, aucune optimisation',0],['Quelques réflexes (PER/AV)',40],['Plusieurs leviers activés',75],['Optimisation structurée et suivie',100]]},
-  {t:'Retraite', ic:'⏳', q:'Avez-vous anticipé le maintien de votre niveau de vie à la retraite ?',
-   o:[['Aucune préparation',0],['Un peu d\'épargne, sans plan',40],['PER / capitalisation en cours',75],['Plan chiffré et suivi',100]]},
-  {t:'Diversification', ic:'📊', q:'Votre patrimoine est-il diversifié (classes d\'actifs, supports) ?',
-   o:[['Tout sur un seul actif (immo OU liquide)',0],['Peu diversifié',40],['Plusieurs classes d\'actifs',75],['Allocation équilibrée et pilotée',100]]},
-  {t:'Liquidité', ic:'💧', q:'Disposez-vous d\'une épargne de précaution mobilisable rapidement ?',
-   o:[['Quasi rien de disponible',0],['< 3 mois de dépenses',40],['3 à 6 mois',75],['> 6 mois + accès au crédit',100]]},
-  {t:'Structure', ic:'🏛️', q:'Si vous êtes dirigeant : la frontière pro/perso et la détention sont-elles optimisées ?',
-   o:[['Non concerné / pas du tout',0],['Tout est mélangé pro/perso',40],['Société + compte séparés',75],['Holding / structuration pensée',100]]},
+  {t:'Protection', ic:'🛡️', q:'Si vous disparaissiez demain, votre famille garderait-elle son train de vie ET le contrôle de vos sociétés ?',
+   o:[['Tout repose sur moi — rien n\'est organisé',0],['Un crédit couvert, le reste à improviser',40],['Mes proches seraient protégés financièrement',75],['Train de vie ET gouvernance sécurisés',100]]},
+  {t:'Transmission', ic:'🌿', q:'Avez-vous décidé non seulement qui hérite, mais comment le pouvoir et les valeurs se transmettent ?',
+   o:[['Rien n\'est écrit — la loi décidera',0],['J\'y pense, sans rien formaliser',40],['Quelques actes posés (testament ou donation)',75],['Stratégie complète, révisée et partagée aux miens',100]]},
+  {t:'Fiscalité', ic:'⚖️', q:'Votre fiscalité est-elle pilotée comme un levier — ou subie chaque année ?',
+   o:[['Subie : je découvre l\'addition',0],['Quelques réflexes isolés',40],['Plusieurs leviers activés et coordonnés',75],['Stratégie pluriannuelle intégrée à mon patrimoine',100]]},
+  {t:'Liberté financière', ic:'🕊️', q:'Si vous cessiez votre activité demain, votre patrimoine financerait-il seul votre train de vie ?',
+   o:[['Non — mes revenus dépendent de mon activité',0],['Partiellement, pour quelques années',40],['Oui, avec un train de vie ajusté',75],['Oui, indéfiniment — je travaille par choix',100]]},
+  {t:'Allocation', ic:'📊', q:'Votre patrimoine est-il alloué selon une stratégie — ou accumulé au fil des opportunités ?',
+   o:[['Concentré sur un seul actif (société OU immobilier)',0],['Peu réparti, par hasard plus que par choix',40],['Plusieurs classes d\'actifs',75],['Allocation cible définie, pilotée, rééquilibrée',100]]},
+  {t:'Liquidité', ic:'💧', q:'Pourriez-vous saisir une belle opportunité — ou absorber un imprévu — sans brader un actif ?',
+   o:[['Non, tout est immobilisé',0],['Un coussin limité (< 3 mois)',40],['Une réserve confortable (3 à 6 mois)',75],['Réserve + lignes de crédit mobilisables à tout moment',100]]},
+  {t:'Architecture', ic:'🏛️', q:'La détention de votre patrimoine (holding, frontière pro/perso, rémunération) est-elle architecturée ?',
+   o:[['Pro et perso totalement mêlés',0],['Séparés, sans optimisation',40],['Société et détention déjà pensées',75],['Holding et schéma optimisés (fiscalité + transmission)',100]]},
 ];
 var LEVIERS = {
-  'Protection':{ic:'🛡️',t:'Sécuriser vos proches',d:'Un audit prévoyance dimensionne le capital décès/invalidité au juste niveau — souvent le premier angle mort.',q:'Comment dimensionner ma prévoyance décès et invalidité pour protéger ma famille ?'},
-  'Transmission':{ic:'🌿',t:'Organiser la transmission',d:'Donation, démembrement, clause bénéficiaire, pacte Dutreil : anticiper réduit fortement les droits.',q:'Quels leviers pour transmettre mon patrimoine en limitant les droits de succession ?'},
-  'Fiscalité':{ic:'⚖️',t:'Reprendre la main sur l\'impôt',d:'PER, assurance-vie, déficit foncier, enveloppes : plusieurs leviers légaux à articuler.',q:'Quels sont les principaux leviers pour optimiser ma fiscalité cette année ?'},
-  'Retraite':{ic:'⏳',t:'Préparer votre retraite',d:'Estimer l\'écart de revenus et le combler par capitalisation, idéalement tôt (intérêts composés).',q:'Comment préparer ma retraite et combler l\'écart de revenus attendu ?'},
-  'Diversification':{ic:'📊',t:'Diversifier intelligemment',d:'Répartir entre classes d\'actifs selon votre horizon et tolérance au risque lisse le risque.',q:'Comment diversifier mon patrimoine selon mon profil et mon horizon ?'},
-  'Liquidité':{ic:'💧',t:'Constituer un matelas',d:'Une épargne de précaution évite de vendre au mauvais moment. 3 à 6 mois de dépenses est un repère.',q:'Quel montant d\'épargne de précaution viser et sur quels supports ?'},
-  'Structure':{ic:'🏛️',t:'Structurer votre détention',d:'Holding, rémunération, séparation pro/perso : la structure conditionne fiscalité et transmission.',q:'Comment structurer la détention de mon patrimoine de dirigeant (holding, rémunération) ?'},
+  'Protection':{ic:'🛡️',t:'Sécuriser la continuité',d:'Au-delà du capital : qui dirige vos sociétés, qui décide, comment vos proches gardent le contrôle. Le premier angle mort des dirigeants.',q:'Comment garantir à ma famille le train de vie ET le contrôle de mes sociétés si je disparais ?'},
+  'Transmission':{ic:'🌿',t:'Orchestrer la transmission',d:'Donation, démembrement, clause bénéficiaire, pacte Dutreil : transmettre le patrimoine, le pouvoir et les valeurs en limitant les droits.',q:'Comment organiser la transmission de mon patrimoine et de mon entreprise en limitant les droits ?'},
+  'Fiscalité':{ic:'⚖️',t:'Faire de l\'impôt un levier',d:'Rémunération, holding, enveloppes, déficit : articuler les dispositifs sur plusieurs années plutôt que subir l\'addition.',q:'Quels leviers articuler pour piloter ma fiscalité sur plusieurs années ?'},
+  'Liberté financière':{ic:'🕊️',t:'Bâtir votre indépendance',d:'Chiffrer le capital qui rend vos revenus indépendants de votre activité — et tracer le chemin pour y arriver.',q:'Quel patrimoine me rendrait financièrement indépendant de mon activité, et comment l\'atteindre ?'},
+  'Allocation':{ic:'📊',t:'Définir une allocation cible',d:'Répartir entre classes d\'actifs selon votre horizon et votre rôle de dirigeant — sortir de la sur-concentration.',q:'Quelle allocation cible pour mon patrimoine selon mon profil de dirigeant ?'},
+  'Liquidité':{ic:'💧',t:'Préserver vos marges de manœuvre',d:'Des liquidités pour saisir une opportunité ou absorber un choc sans vendre au mauvais moment.',q:'Quel niveau de liquidités viser et sur quels supports pour rester agile ?'},
+  'Architecture':{ic:'🏛️',t:'Architecturer votre détention',d:'Holding, rémunération, séparation pro/perso : la structure conditionne fiscalité, protection et transmission.',q:'Comment architecturer la détention de mon patrimoine de dirigeant (holding, rémunération) ?'},
 };
-var TERR_LABEL = {Protection:'Protection',Transmission:'Transmission',Fiscalité:'Fiscalité',Retraite:'Retraite',Diversification:'Diversification',Liquidité:'Liquidité',Structure:'Structure'};
+var TERR_LABEL = {Protection:'Protection',Transmission:'Transmission',Fiscalité:'Fiscalité','Liberté financière':'Liberté financière',Allocation:'Allocation',Liquidité:'Liquidité',Architecture:'Architecture'};
 
 var idx = 0, answers = new Array(Q.length).fill(null);
 function color(v){ return v>=75?'var(--ok)':v>=45?'var(--gold-deep)':'var(--bad)'; }
@@ -193,9 +193,9 @@ function finish(){
     arc.setAttribute('stroke', global>=75?'#7BCCA2':global>=45?'#E2C896':'#E0856B'); },150);
   var n=0; var step=Math.max(1,Math.round(global/40)); var iv=setInterval(function(){ n=Math.min(global,n+step); num.textContent=n; if(n>=global)clearInterval(iv); },28);
   var verdict, sub;
-  if(global>=75){ verdict='Patrimoine bien tenu.'; sub='Vous avez les bons réflexes. L\'enjeu : affiner et anticiper les prochaines étapes (transmission, optimisation fine).'; }
-  else if(global>=45){ verdict='De bonnes bases, des angles morts.'; sub='Plusieurs territoires sont à renforcer pour sécuriser et optimiser l\'ensemble.'; }
-  else { verdict='Votre patrimoine est exposé.'; sub='Des leviers simples et prioritaires peuvent changer la donne rapidement.'; }
+  if(global>=75){ verdict='Un patrimoine d\'architecte.'; sub='Vous pilotez déjà. L\'enjeu devient l\'optimisation fine et la transmission de votre modèle à la prochaine génération.'; }
+  else if(global>=45){ verdict='De solides fondations — des angles morts.'; sub='Plusieurs territoires méritent l\'œil d\'un Family Officer pour passer de « bien géré » à « orchestré ».'; }
+  else { verdict='Un patrimoine subi, pas encore piloté.'; sub='C\'est le cas de la plupart des dirigeants avant un Family Office — et les bons leviers redressent vite la trajectoire.'; }
   document.getElementById('verdict').textContent=verdict;
   document.getElementById('verdictSub').textContent=sub;
   // CTA finale selon contexte
@@ -235,7 +235,7 @@ function finish(){
   }).join('');
   res.scrollIntoView({behavior:'smooth'});
 }
-if(FROM_ONB){ document.getElementById('heroLead').textContent = 'Dernière étape de votre découverte : 7 territoires, 2 minutes. Marcel s\'en servira pour cibler vos priorités dès votre arrivée.'; }
+if(FROM_ONB){ document.getElementById('heroLead').textContent = 'Dernière étape : le miroir de votre patrimoine en 7 territoires, 2 minutes. Le regard d\'un Family Office — Marcel s\'en sert pour cibler vos priorités dès votre arrivée.'; }
 renderQ();
 </script>
 <script src="/app/js/appnav.js" defer></script>
