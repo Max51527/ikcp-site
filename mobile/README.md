@@ -3,6 +3,47 @@
 > Wrap natif iOS + Android de la PWA `client.ikcp.eu` pour publication
 > App Store + Google Play. Mises à jour PWA déployées sans repassage
 > validation Apple/Google (le contenu est servi par Cloudflare Pages).
+
+---
+
+## ⚠ Avertissement Apple App Store Review Guideline 4.2
+
+**Risque de rejet en première soumission : 40-60%.**
+
+L'App Store Review Guideline 4.2 — *Minimum Functionality* — stipule
+qu'une app qui est essentiellement un wrapper de site web peut être
+rejetée :
+
+> *"Your app should include features, content, and UI that elevate
+> it beyond a repackaged website. If your app is not particularly
+> useful, unique, or 'app-like', it doesn't belong on the App Store."*
+
+### Mitigations à mettre en place AVANT la soumission
+
+Pour passer la review, ajouter au minimum :
+
+1. **Stockage offline** d'au moins 1 contenu (le dernier rapport DER ou
+   la dernière newsletter) — démontre que l'app a sa propre logique
+   au-delà du web.
+2. **Camera native** pour scanner les documents (au lieu du seul
+   drag-drop web) — fait usage du hardware natif iOS.
+3. **Push notifications activées** dès le premier launch — démontre
+   l'intégration native (APNs).
+4. **Haptic feedback** sur les actions clés (tap "Générer rapport",
+   tap "Marcel parle") — autre démonstration native.
+5. **Au moins 1 écran UI vraiment natif** (pas du WebView) — par
+   exemple l'onboarding magic-link.
+
+### Plan B si rejet
+
+- Soit on itère sur la review feedback Apple (1-2 cycles, 5-14 jours)
+- Soit on bascule sur PWA "Add to Home Screen" pour l'été (iOS 16.4+
+  supporte Web Push depuis mars 2023, suffit pour la beta payante)
+- Re-tenter app native au Q1 2027 avec un budget UX natif dédié
+
+---
+
+
 >
 > © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
 
