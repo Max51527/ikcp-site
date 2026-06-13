@@ -585,5 +585,6 @@ syncFromServer();   // récupère le patrimoine depuis la base D1 si plus récen
 // recharge les graphes quand Chart.js (defer) est prêt
 if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv); render(); } },120); setTimeout(()=>clearInterval(iv),4000); }
 </script>
+<script src="/app/js/appnav.js" defer></script>
 </body>
 </html>
