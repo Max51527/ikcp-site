@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Configurateur Family Office — IKCP (white-label)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Cormorant+Garamond:wght@600&family=Playfair+Display:ital,wght@0,500;1,500&family=EB+Garamond:wght@500&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#F4F1EA;--card:#fff;--ink:#1B2A4A;--mute:#6E7689;--accent:#A8884D;--line:rgba(27,42,74,.12);--nd:#0E1729}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh}
+  .top{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:#fff;position:sticky;top:0;z-index:10}
+  .top h1{font-family:'Fraunces',serif;font-weight:500;font-size:19px}
+  .top .badge{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;border:1px solid var(--line);padding:4px 10px;border-radius:99px}
+  .top a{margin-left:auto;font-size:13px;color:var(--mute);text-decoration:none}
+  .wrap{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 53px)}
+  @media(max-width:880px){.wrap{grid-template-columns:1fr}}
+  .panel{padding:22px;border-right:1px solid var(--line);background:#fff;overflow:auto}
+  .grp{margin-bottom:24px}
+  .grp h2{font-family:'Fraunces',serif;font-weight:500;font-size:15px;margin-bottom:3px}
+  .grp .sub{font-size:11.5px;color:var(--mute);margin-bottom:13px;line-height:1.5}
+  .ctrl{margin-bottom:13px}
+  .ctrl label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:6px}
+  .ctrl input[type=text],.ctrl select{width:100%;padding:10px 12px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;font-family:'Inter';font-size:14px;color:var(--ink);outline:none}
+  .ctrl input:focus,.ctrl select:focus{border-color:var(--accent)}
+  .colorrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .colorrow input[type=color]{width:40px;height:34px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer;padding:2px}
+  .sw{width:30px;height:30px;border-radius:7px;cursor:pointer;border:2px solid transparent}.sw.on{border-color:var(--ink)}
+  .toggles{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .tg{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;cursor:pointer;font-size:12.5px;font-weight:500;user-select:none;transition:.15s}
+  .tg.on{border-color:var(--accent);background:rgba(168,136,77,.08);color:var(--ink)}
+  .tg .dot{width:9px;height:9px;border-radius:3px;background:var(--line);flex-shrink:0}
+  .tg.on .dot{background:var(--accent)}
+  .actions{display:flex;flex-direction:column;gap:9px;margin-top:8px}
+  .btn{padding:12px;border:none;border-radius:10px;cursor:pointer;font:inherit;font-size:13px;font-weight:700;letter-spacing:.02em}
+  .btn.go{background:var(--nd);color:#E2C896}.btn.go:hover{background:var(--ink)}
+  .btn.alt{background:var(--accent);color:#fff}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--mute)}
+  .ok{font-size:12px;color:#2D7A4F;margin-top:8px;display:none}.ok.show{display:block}
+
+  /* ───── APERÇU LIVE ───── */
+  .preview{padding:30px;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:18px;background:radial-gradient(120% 80% at 50% -10%,rgba(168,136,77,.08),transparent 60%)}
+  .pv-lbl{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);font-weight:700;align-self:flex-start}
+  .phone{width:300px;background:#0B1322;border:1px solid var(--pvAccent,#A8884D);border-radius:40px;padding:14px 12px;box-shadow:0 50px 90px -40px rgba(14,23,41,.7)}
+  .scr{background:linear-gradient(170deg,#16233f,#0c1426);border-radius:28px;padding:18px 16px 14px;min-height:480px;color:#FAFAF8;position:relative;overflow:hidden}
+  .scr .brand{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .scr .logo{width:34px;height:34px;border-radius:9px;background:var(--pvAccent,#A8884D);color:#0E1729;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+  .scr .bn{font-family:var(--pvTitle,'Fraunces'),serif;font-size:16px;line-height:1.1}
+  .scr .bn small{display:block;font-family:'Inter';font-size:8.5px;letter-spacing:.1em;color:rgba(250,250,248,.55);text-transform:uppercase;margin-top:1px}
+  .scr .k{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--pvAccent,#A8884D);font-weight:700;margin-top:4px}
+  .scr .net{font-family:var(--pvTitle,'Fraunces'),serif;font-size:30px;margin:4px 0 2px}
+  .scr .tag{font-family:'Inter';font-size:11px;color:rgba(250,250,248,.6);font-style:italic;margin-bottom:12px}
+  .scr .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .scr .uni{background:rgba(255,255,255,.05);border:1px solid var(--pvLine,rgba(226,200,150,.18));border-radius:10px;padding:9px 10px;font-size:10.5px;font-weight:600}
+  .scr .uni .e{font-size:14px;display:block;margin-bottom:2px}
+  .scr .cta{display:block;text-align:center;margin-top:12px;background:var(--pvAccent,#A8884D);color:#0E1729;border-radius:99px;padding:10px;font-weight:700;font-size:12px;font-family:var(--pvBody,'Inter')}
+  .scr .dock{display:flex;justify-content:space-around;margin-top:13px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;opacity:.8}
+  .json{width:100%;max-width:620px;background:var(--nd);color:#9BE3B6;border-radius:12px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Configurateur <span style="color:var(--accent)">Family Office</span></h1>
+  <span class="badge">White-label</span>
+  <a href="/app/console">← Console</a>
+</header>
+
+<div class="wrap">
+  <!-- ═══ PANNEAU DE PARAMÉTRAGE ═══ -->
+  <aside class="panel">
+    <div class="grp">
+      <h2>1 · Marque</h2>
+      <div class="sub">L'espace vendu porte la marque du cabinet client.</div>
+      <div class="ctrl"><label>Nom du cabinet</label><input type="text" id="c_nom" value="IKIGAÏ Conseil Patrimonial"></div>
+      <div class="ctrl"><label>Baseline</label><input type="text" id="c_base" value="Family Office augmenté"></div>
+      <div class="ctrl"><label>Initiales du logo</label><input type="text" id="c_logo" value="IK" maxlength="3"></div>
+    </div>
+
+    <div class="grp">
+      <h2>2 · Identité graphique</h2>
+      <div class="sub">Sur-mesure : couleur d'accent et polices.</div>
+      <div class="ctrl"><label>Couleur d'accent</label>
+        <div class="colorrow">
+          <input type="color" id="c_accent" value="#A8884D">
+          <span class="sw" data-c="#A8884D" style="background:#A8884D"></span>
+          <span class="sw" data-c="#C24722" style="background:#C24722"></span>
+          <span class="sw" data-c="#1B6E5F" style="background:#1B6E5F"></span>
+          <span class="sw" data-c="#7A2E4A" style="background:#7A2E4A"></span>
+          <span class="sw" data-c="#2C3E73" style="background:#2C3E73"></span>
+        </div>
+      </div>
+      <div class="ctrl"><label>Police des titres</label><select id="c_title">
+        <option>Fraunces</option><option>Playfair Display</option><option>Cormorant Garamond</option><option>EB Garamond</option></select></div>
+      <div class="ctrl"><label>Police du corps</label><select id="c_body">
+        <option>Inter</option><option>Outfit</option><option>Manrope</option></select></div>
+    </div>
+
+    <div class="grp">
+      <h2>3 · Onglets &amp; univers</h2>
+      <div class="sub">Quels espaces sont inclus dans l'offre vendue.</div>
+      <div class="toggles" id="onglets"></div>
+    </div>
+
+    <div class="grp">
+      <h2>4 · IA &amp; API incluses</h2>
+      <div class="sub">Le moteur du package.</div>
+      <div class="toggles" id="services"></div>
+    </div>
+
+    <div class="grp">
+      <h2>5 · Contact</h2>
+      <div class="ctrl"><label>Libellé du bouton</label><input type="text" id="c_cta" value="Échanger avec votre conseiller"></div>
+      <div class="ctrl"><label>Lien / email</label><input type="text" id="c_lien" value="mailto:contact@cabinet.fr"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn go" onclick="apply()">✓ Appliquer le thème à mon espace</button>
+      <button class="btn alt" onclick="save()">💾 Enregistrer la configuration</button>
+      <button class="btn ghost" onclick="exportCfg()">⬇ Exporter la config (JSON)</button>
+      <button class="btn ghost" onclick="reset()">↺ Réinitialiser</button>
+      <div class="ok" id="ok"></div>
+    </div>
+  </aside>
+
+  <!-- ═══ APERÇU LIVE ═══ -->
+  <main class="preview">
+    <div class="pv-lbl">Aperçu live — l'espace tel que le client le verra</div>
+    <div class="phone"><div class="scr" id="scr"></div></div>
+    <div class="pv-lbl">Configuration générée (la « recette » de l'espace vendu)</div>
+    <div class="json" id="json"></div>
+  </main>
+</div>
+
+<script>
+const UNIVERS = [
+  {k:'cockpit',e:'📊',n:'Cockpit'},{k:'marcel',e:'✦',n:'Marcel'},{k:'immobilier',e:'🏠',n:'Immobilier'},
+  {k:'simulateurs',e:'🧮',n:'Simulateurs'},{k:'radiographie',e:'🩻',n:'Radiographie'},{k:'famille',e:'🌳',n:'Famille'},
+  {k:'veille',e:'🔔',n:'Veille'},{k:'collections',e:'🎨',n:'Collections'},{k:'conciergerie',e:'🛎️',n:'Conciergerie'},
+  {k:'transmission',e:'🌿',n:'Transmission'},{k:'marches',e:'📈',n:'Marchés'},{k:'score',e:'🎯',n:'Score'}
+];
+const SERVICES = [
+  {k:'marcel24',n:'Marcel 24/7 (IA)'},{k:'veillePerplexity',n:'Veille Perplexity Pro'},
+  {k:'cartographie',n:'Cartographie SIREN'},{k:'dvf',n:'Immobilier DVF réel'},
+  {k:'simulateurs',n:'9 simulateurs'},{k:'radiographie',n:'Radiographie 360°'},{k:'vocal',n:'Mode vocal'}
+];
+let cfg = load() || {
+  brand:{nom:'IKIGAÏ Conseil Patrimonial',base:'Family Office augmenté',logo:'IK',accent:'#A8884D',title:'Fraunces',body:'Inter'},
+  onglets:Object.fromEntries(UNIVERS.map(u=>[u.k,['cockpit','marcel','immobilier','simulateurs','radiographie','famille','veille'].includes(u.k)])),
+  services:Object.fromEntries(SERVICES.map(s=>[s.k,true])),
+  contact:{cta:'Échanger avec votre conseiller',lien:'mailto:contact@cabinet.fr'}
+};
+function load(){try{return JSON.parse(localStorage.getItem('ikcp_whitelabel')||'null');}catch(_){return null;}}
+
+function buildToggles(){
+  document.getElementById('onglets').innerHTML = UNIVERS.map(u=>
+    `<div class="tg${cfg.onglets[u.k]?' on':''}" data-t="ong" data-k="${u.k}"><span class="dot"></span>${u.e} ${u.n}</div>`).join('');
+  document.getElementById('services').innerHTML = SERVICES.map(s=>
+    `<div class="tg${cfg.services[s.k]?' on':''}" data-t="srv" data-k="${s.k}"><span class="dot"></span>${s.n}</div>`).join('');
+}
+function render(){
+  // hydrate inputs
+  document.getElementById('c_nom').value=cfg.brand.nom; document.getElementById('c_base').value=cfg.brand.base;
+  document.getElementById('c_logo').value=cfg.brand.logo; document.getElementById('c_accent').value=cfg.brand.accent;
+  document.getElementById('c_title').value=cfg.brand.title; document.getElementById('c_body').value=cfg.brand.body;
+  document.getElementById('c_cta').value=cfg.contact.cta; document.getElementById('c_lien').value=cfg.contact.lien;
+  // preview vars
+  const s=document.getElementById('scr');
+  s.style.setProperty('--pvAccent',cfg.brand.accent);
+  s.style.setProperty('--pvTitle',"'"+cfg.brand.title+"'");
+  s.style.setProperty('--pvBody',"'"+cfg.brand.body+"'");
+  document.querySelector('.phone').style.borderColor=cfg.brand.accent;
+  const actifs=UNIVERS.filter(u=>cfg.onglets[u.k]);
+  s.innerHTML = `<div class="brand"><div class="logo">${cfg.brand.logo||'·'}</div><div class="bn">${cfg.brand.nom||'Cabinet'}<small>${cfg.brand.base||''}</small></div></div>
+    <div class="k">● Patrimoine net consolidé</div><div class="net">3 255 000 €</div>
+    <div class="tag">${cfg.brand.base||'Votre patrimoine, en orbite.'}</div>
+    <div class="grid">${actifs.slice(0,6).map(u=>`<div class="uni"><span class="e">${u.e}</span>${u.n}</div>`).join('')}</div>
+    <div class="cta">${cfg.contact.cta||'Contact'}</div>
+    <div class="dock">${actifs.slice(0,5).map(u=>`<span>${u.e}</span>`).join('')||'<span>✦</span>'}</div>`;
+  document.getElementById('json').textContent = JSON.stringify(cfg,null,2);
+}
+// listeners
+['c_nom','c_base','c_logo','c_cta','c_lien','c_title','c_body','c_accent'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',e=>{
+    const v=e.target.value;
+    if(id==='c_nom')cfg.brand.nom=v; if(id==='c_base')cfg.brand.base=v; if(id==='c_logo')cfg.brand.logo=v;
+    if(id==='c_cta')cfg.contact.cta=v; if(id==='c_lien')cfg.contact.lien=v;
+    if(id==='c_title')cfg.brand.title=v; if(id==='c_body')cfg.brand.body=v; if(id==='c_accent')cfg.brand.accent=v;
+    render();
+  });
+});
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{cfg.brand.accent=sw.dataset.c;render();}));
+document.addEventListener('click',e=>{const tg=e.target.closest('.tg');if(!tg)return;
+  const bag=tg.dataset.t==='ong'?cfg.onglets:cfg.services; bag[tg.dataset.k]=!bag[tg.dataset.k];
+  tg.classList.toggle('on'); render();});
+
+function flash(t){const o=document.getElementById('ok');o.textContent=t;o.className='ok show';setTimeout(()=>o.className='ok',2600);}
+window.save=function(){try{localStorage.setItem('ikcp_whitelabel',JSON.stringify(cfg));flash('✓ Configuration enregistrée');}catch(_){}};
+window.apply=function(){ // applique le thème au vrai espace (mécanisme api.js applyTheme : ikcp_theme)
+  try{localStorage.setItem('ikcp_theme',JSON.stringify({titleFont:cfg.brand.title,bodyFont:cfg.brand.body,accent:cfg.brand.accent}));
+  localStorage.setItem('ikcp_whitelabel',JSON.stringify(cfg));flash('✓ Thème appliqué — ouvrez un onglet de l\'espace pour le voir');}catch(_){}};
+window.exportCfg=function(){const blob=new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='famille-office-config-'+(cfg.brand.nom||'cabinet').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.json';a.click();flash('⬇ Config exportée');};
+window.reset=function(){if(confirm('Réinitialiser la configuration ?')){localStorage.removeItem('ikcp_whitelabel');location.reload();}};
+
+buildToggles();render();
+</script>
+</body>
+</html>

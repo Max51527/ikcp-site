@@ -1,0 +1,20 @@
+# Wrangler config — Worker IKCP Universign (signature électronique)
+#
+# Pré-requis : compte Universign Pro (Dhimyotis)
+# → souscription via https://www.universign.eu/professionnel/
+# → récupérer la clé API + l'ID profil "qualified"
+
+name = "ikcp-universign"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+
+[placement]
+mode = "smart"
+
+[[d1_databases]]
+binding = "IKCP_UNIVERSIGN_DB"
+database_name = "ikcp_universign_db"
+database_id = "REPLACE_WITH_YOUR_D1_ID"
+
+[observability]
+enabled = true

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Console de pilotage privée -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1426">
+<meta name="robots" content="noindex, nofollow">
+<title>IKCP · Console de pilotage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A;--navy-deep:#0B1426;--panel:#101D33;--panel-2:#0E1A2E;
+  --cream:#FAF7F0;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;
+  --mute:rgba(250,247,240,.52);--mute-2:rgba(250,247,240,.34);
+  --line:rgba(201,169,110,.16);--line-2:rgba(250,247,240,.07);
+  --ok:#4ade80;--warn:#E2C896;--bad:#e06161;--blue:#7FB4E8;
+}
+html{scrollbar-color:var(--gold-deep) transparent}
+body{background:var(--navy-deep);color:var(--cream);font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(ellipse 60% 45% at 82% -8%,rgba(201,169,110,.07),transparent 60%),
+  radial-gradient(ellipse 50% 40% at 5% 105%,rgba(27,42,74,.5),transparent 55%),var(--navy-deep)}
+a{color:var(--gold-bright);text-decoration:none}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:all .18s}
+
+/* ─── LAYOUT ─── */
+.app{display:flex;min-height:100vh}
+.side{flex:0 0 248px;box-sizing:border-box;background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 20px;border-bottom:1px solid var(--line-2);margin-bottom:14px}
+.brand .mark{width:38px;height:38px;border-radius:11px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--gold-bright);font-size:18px;box-shadow:0 0 22px -6px rgba(201,169,110,.5)}
+.brand .t{font-family:'Fraunces',serif;font-size:17px;line-height:1.1}
+.brand .t small{display:block;font-family:'Inter';font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:2px}
+.nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:var(--mute);font-size:13.5px;font-weight:500;position:relative}
+.nav a .ic{width:18px;text-align:center;font-size:15px;opacity:.85}
+.nav a:hover{background:var(--line-2);color:var(--cream)}
+.nav a.on{background:linear-gradient(90deg,rgba(201,169,110,.16),rgba(201,169,110,.04));color:var(--gold-bright)}
+.nav a.on::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:var(--gold)}
+.nav a .badge{margin-left:auto;background:var(--gold);color:var(--navy-deep);font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:99px;display:none;align-items:center;justify-content:center;padding:0 5px}
+.nav a .badge.show{display:flex}
+.side-foot{border-top:1px solid var(--line-2);padding-top:14px;font-size:11px;color:var(--mute-2)}
+.side-foot button{background:none;color:var(--mute);font-size:11.5px;padding:6px 0}
+.side-foot button:hover{color:var(--bad)}
+
+.main{flex:1;min-width:0;padding:0 0 60px}
+.top{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(11,20,38,.82);border-bottom:1px solid var(--line);padding:16px clamp(20px,3.5vw,38px);display:flex;align-items:center;gap:16px}
+.top h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(20px,2.6vw,27px);line-height:1.1}
+.top h1 em{font-style:italic;color:var(--gold-bright)}
+.top .sub{font-size:12px;color:var(--mute)}
+.sys{margin-left:auto;display:flex;align-items:center;gap:14px}
+.sysdot{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute);padding:7px 13px;border:1px solid var(--line);border-radius:99px}
+.sysdot .d{width:8px;height:8px;border-radius:50%;background:var(--mute-2)}
+.sysdot .d.up{background:var(--ok);box-shadow:0 0 0 0 rgba(74,222,128,.5);animation:pulse 2.4s infinite}
+.sysdot .d.warn{background:var(--warn)}.sysdot .d.down{background:var(--bad)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.btn{padding:9px 16px;background:var(--gold);color:var(--navy-deep);border-radius:9px;font-size:13px;font-weight:700}
+.btn:hover{background:var(--gold-bright)}
+.btn.ghost{background:transparent;color:var(--gold-bright);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--gold);background:var(--line-2)}
+.btn.sm{padding:6px 12px;font-size:11.5px}
+.btn.reject{background:transparent;color:#F0A0A0;border:1px solid rgba(200,60,60,.4)}
+.btn:disabled{opacity:.5;cursor:wait}
+
+.wrap{padding:clamp(20px,3.5vw,38px);max-width:1180px}
+.view{display:none;animation:fade .35s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ─── CARDS / GRID ─── */
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(4,1fr)}
+.kpi{background:linear-gradient(155deg,rgba(201,169,110,.09),rgba(250,247,240,.025));border:1px solid var(--line);border-radius:15px;padding:18px 20px;position:relative;overflow:hidden}
+.kpi .v{font-family:'Fraunces',serif;font-style:italic;font-size:33px;color:var(--gold-bright);line-height:1}
+.kpi .l{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-top:8px}
+.kpi .s{font-size:11.5px;color:var(--mute);margin-top:3px}
+.kpi .ic{position:absolute;top:14px;right:16px;font-size:18px;opacity:.5}
+.card{background:rgba(250,247,240,.035);border:1px solid var(--line);border-radius:15px;padding:22px;margin-top:16px}
+.card>h2{font-family:'Fraunces',serif;font-weight:500;font-size:18px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.card>.desc{font-size:12.5px;color:var(--mute);margin-bottom:16px}
+.card .tools{margin-left:auto}
+.two{grid-template-columns:1.4fr 1fr}
+@media(max-width:1080px){.two{grid-template-columns:1fr}}
+
+/* health */
+.health{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px}
+.hpill{display:flex;align-items:center;gap:9px;padding:11px 13px;background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:10px;font-size:12.5px}
+.hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--mute-2);transition:background .3s}
+.hdot.up{background:var(--ok)}.hdot.down{background:var(--bad)}.hdot.warn{background:var(--warn)}
+.hpill .note{color:var(--mute);font-size:10.5px;margin-left:auto}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--gold);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:9px 8px;border-bottom:1px solid var(--line)}
+td{padding:11px 8px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.pill{display:inline-flex;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(201,169,110,.14);color:var(--gold-bright)}
+.pill.fo{background:rgba(201,169,110,.22);color:var(--gold-bright)}
+.pill.premium{background:rgba(127,180,232,.16);color:var(--blue)}
+.pill.free{background:rgba(250,247,240,.08);color:var(--mute)}
+.pill.opus{background:rgba(180,130,230,.14);color:#C9A6E8}
+.pill.sonnet{background:rgba(127,180,232,.14);color:var(--blue)}
+.pill.perplexity{background:rgba(120,200,180,.14);color:#88C8B4}
+
+/* forms */
+label{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 6px}
+input,select{width:100%;padding:11px 13px;background:rgba(250,247,240,.06);border:1.5px solid var(--line);border-radius:9px;color:var(--cream);font-family:'Inter';font-size:14px;outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+select option{background:var(--navy-deep)}
+.row{display:flex;gap:11px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+.msg{margin-top:12px;padding:11px 14px;border-radius:9px;font-size:13px}
+.msg.ok{background:rgba(45,122,79,.16);color:#7BCCA2;border:1px solid rgba(45,122,79,.3)}
+.msg.err{background:rgba(200,60,60,.14);color:#F0A0A0;border:1px solid rgba(200,60,60,.3)}
+.codebox{margin-top:12px;padding:12px 14px;background:rgba(201,169,110,.1);border:1px dashed rgba(201,169,110,.4);border-radius:9px;font-family:monospace;font-size:13px;color:var(--gold-bright);word-break:break-all}
+.empty{color:var(--mute);font-style:italic;padding:14px 0;font-size:13px}
+.alert{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:11px;font-size:13px;margin-bottom:10px;border:1px solid}
+.alert.warn{background:rgba(226,200,150,.08);border-color:rgba(226,200,150,.28);color:var(--gold-bright)}
+.alert.ok{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.22);color:#9FE6B8}
+.alert .x{font-size:16px;flex-shrink:0}
+.lnk{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;background:rgba(250,247,240,.045);border:1px solid var(--line);border-radius:10px;color:var(--cream);font-size:13px;font-weight:500;margin:4px 6px 4px 0}
+.lnk:hover{border-color:var(--gold);background:var(--line-2)}
+.app-item{border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:11px}
+.app-item .h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.app-item .em{font-weight:600}
+.app-item .meta{font-size:12.5px;color:var(--mute)}
+.app-item .acts{display:flex;gap:8px;align-items:center;margin-top:11px;flex-wrap:wrap}
+.app-item .acts select{flex:0 0 150px;width:auto;padding:8px 10px;font-size:12.5px}
+.digest{font-size:13.5px;line-height:1.7;color:rgba(250,247,240,.82)}
+.digest b,.digest strong{color:var(--gold-bright)}
+
+/* ─── GATE ─── */
+.gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.gate .box{max-width:400px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px;text-align:center}
+.gate .mark{width:56px;height:56px;border-radius:15px;margin:0 auto 18px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--gold-bright);font-size:26px}
+.gate h2{font-family:'Fraunces',serif;font-weight:500;font-size:22px;margin-bottom:6px}
+.gate p{font-size:13px;color:var(--mute);margin-bottom:20px}
+.gate input{text-align:center;letter-spacing:.1em}
+.gate .btn{width:100%;margin-top:16px;padding:13px;justify-content:center}
+
+/* ─── MOBILE ─── */
+.menu-btn{display:none;background:none;color:var(--gold-bright);font-size:22px;padding:0 4px}
+.side-close{display:none;position:absolute;right:14px;top:15px;background:none;border:0;color:var(--mute);font-size:22px;line-height:1;cursor:pointer;z-index:3}
+.side-close:hover{color:var(--gold-bright)}
+@media(max-width:840px){
+  .side{flex-basis:auto;position:fixed;left:0;top:0;bottom:0;width:262px;height:100%;z-index:60;transform:translateX(-105%);box-shadow:0 0 60px rgba(0,0,0,.5);transition:transform .28s}
+  .side.open{transform:none}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55}
+  .scrim.show{display:block}
+  .menu-btn{display:block}
+  .side-close{display:block}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:520px){.kpis{grid-template-columns:1fr 1fr}.top h1{font-size:18px}.sys .sysdot span{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ═══ GATE ═══ -->
+<div class="gate" id="gate">
+  <div class="box">
+    <div class="mark">IK</div>
+    <h2>Console de pilotage</h2>
+    <p>Accès réservé. Saisissez la clé administrateur.</p>
+    <input type="password" id="secret" placeholder="Clé admin" autocomplete="off" onkeydown="if(event.key==='Enter')unlock()">
+    <button class="btn" id="unlockBtn" onclick="unlock()">Déverrouiller →</button>
+    <div id="gateMsg"></div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app" style="display:none">
+  <div class="scrim" id="scrim" onclick="toggleMenu(false)"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="side" id="side">
+    <button class="side-close" onclick="toggleMenu(false)" aria-label="Fermer le menu">✕</button>
+    <div class="brand">
+      <div class="mark">IK</div>
+      <div class="t">Console<small>Pilotage IKCP</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <a href="#dashboard" class="on"><span class="ic">◆</span> Tableau de bord</a>
+      <a href="#synthese"><span class="ic">◈</span> Synthèse &amp; feuille de route</a>
+      <a href="#code"><span class="ic">⌥</span> Code &amp; outils</a>
+      <a href="#membres"><span class="ic">👤</span> Membres & familles</a>
+      <a href="#beta"><span class="ic">✦</span> Bêta & invitations <span class="badge" id="bdgBeta"></span></a>
+      <a href="#agents"><span class="ic">⬡</span> Agents IA</a>
+      <a href="#veille"><span class="ic">◷</span> Veille & contenu</a>
+      <a href="#feedback"><span class="ic">✎</span> Retours testeurs <span class="badge" id="bdgFb"></span></a>
+      <a href="#reglages"><span class="ic">⚙</span> Réglages & liens</a>
+    </nav>
+    <div class="side-foot">
+      <div style="margin-bottom:4px">v1.0 · ORIAS 23001568</div>
+      <div id="buildInfo" style="font-size:10px;opacity:.55;margin-bottom:8px">déploiement…</div>
+      <button onclick="logout()">↪ Verrouiller la console</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="top">
+      <button class="menu-btn" onclick="toggleMenu(true)">☰</button>
+      <div>
+        <h1 id="vTitle">Tableau de <em>bord</em></h1>
+        <div class="sub" id="vSub">Vue d'ensemble de la plateforme</div>
+      </div>
+      <div class="sys">
+        <div class="sysdot"><span class="d" id="sysDot"></span><span id="sysTxt">vérification…</span></div>
+        <button class="btn ghost sm" onclick="refreshAll()">↻ Actualiser</button>
+      </div>
+    </header>
+
+    <div class="wrap">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <section class="view on" id="v-dashboard">
+        <div id="alerts"></div>
+        <div class="grid kpis" id="kpis">
+          <div class="kpi"><div class="v">…</div><div class="l">Chargement</div></div>
+        </div>
+        <div class="grid two">
+          <div class="card" style="margin-top:16px">
+            <h2>⬡ Santé des services <button class="btn ghost sm tools" onclick="loadHealth()">↻</button></h2>
+            <div class="health" id="healthMini"></div>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <h2>✎ Derniers retours</h2>
+            <div id="fbMini"><div class="empty">Chargement…</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ MEMBRES ═══ -->
+      <section class="view" id="v-membres">
+        <div class="card" style="margin-top:0">
+          <h2>🧪 Définir un tier <span class="desc tools" style="margin:0"></span></h2>
+          <div class="desc">Pour vivre l'expérience client : connectez-vous (lien magique), passez votre email en Family Office ici, puis rafraîchissez l'espace membre.</div>
+          <div class="row">
+            <div><label>Email du membre</label><input type="email" id="stEmail" placeholder="maxime@ikcp.fr"></div>
+            <div><label>Tier</label><select id="stTier"><option value="fo">Family Office (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
+            <div style="flex:0 0 auto;display:flex;align-items:flex-end"><button class="btn" onclick="setTier()">Appliquer →</button></div>
+          </div>
+          <div id="stMsg"></div>
+        </div>
+        <div class="card">
+          <h2>Membres <span class="pill" id="memCount">…</span><button class="btn ghost sm tools" onclick="loadMembers()">↻</button></h2>
+          <div style="overflow-x:auto" id="members"><div class="empty">Chargement…</div></div>
+        </div>
+      </section>
+
+      <!-- ═══ BÊTA ═══ -->
+      <section class="view" id="v-beta">
+        <div class="card" style="margin-top:0">
+          <h2>Générer une invitation</h2>
+          <div class="desc">Crée un code d'accès bêta (familles fondatrices). Lien à transmettre directement à la famille.</div>
+          <div class="row">
+            <div><label>Email destinataire (option)</label><input type="email" id="invEmail" placeholder="client@email.fr"></div>
+            <div><label>Utilisations max</label><input type="number" id="invMax" value="1" min="1"></div>
+            <div><label>Expire (jours, 0=jamais)</label><input type="number" id="invExp" value="30" min="0"></div>
+            <div style="flex:0 0 auto;display:flex;align-items:flex-end"><button class="btn" onclick="genCode()">Générer →</button></div>
+          </div>
+          <div id="codeOut"></div>
+        </div>
+        <div class="card">
+          <h2>Candidatures en attente <span class="pill" id="appCount">…</span><button class="btn ghost sm tools" onclick="loadApps()">↻</button></h2>
+          <div id="apps"><div class="empty">Chargement…</div></div>
+        </div>
+      </section>
+
+      <!-- ═══ AGENTS ═══ -->
+      <section class="view" id="v-agents">
+        <div class="card" style="margin-top:0">
+          <h2>⬡ Agents IA souverains <button class="btn ghost sm tools" onclick="loadAgents()">↻ Sonder</button></h2>
+          <div class="desc">État live de chaque agent. Aucun nom de technologie n'est exposé côté client — ici, vue technique interne.</div>
+          <div style="overflow-x:auto" id="agents"><div class="empty">Sondage en cours…</div></div>
+        </div>
+        <div class="card">
+          <h2>◷ Automatisations (CRON)</h2>
+          <div id="autos" class="digest"></div>
+        </div>
+      </section>
+
+      <!-- ═══ VEILLE ═══ -->
+      <section class="view" id="v-veille">
+        <div class="card" style="margin-top:0">
+          <h2>◷ Digest du jour <button class="btn ghost sm tools" onclick="loadDigest()">↻</button></h2>
+          <div class="desc">Veille patrimoniale produite automatiquement chaque matin (6h UTC).</div>
+          <div id="digest" class="digest"><div class="empty">Chargement…</div></div>
+        </div>
+        <div class="card">
+          <h2>✏️ Contenu & publication</h2>
+          <div class="desc">Éditer le site sans coder, puis publier.</div>
+          <a class="lnk" href="/admin/" target="_blank">✏️ CMS contenu (Sveltia)</a>
+          <a class="lnk" href="/webmaster.html" target="_blank">🛰️ Console webmaster (staging → publish)</a>
+          <a class="lnk" href="/apercu.html" target="_blank">🗂️ Aperçu de toutes les pages</a>
+          <a class="lnk" href="/" target="_blank">🌐 Voir le site public</a>
+        </div>
+      </section>
+
+      <!-- ═══ FEEDBACK ═══ -->
+      <section class="view" id="v-feedback">
+        <div class="card" style="margin-top:0">
+          <h2>✎ Retours testeurs <button class="btn ghost sm tools" onclick="loadFeedback()">↻</button></h2>
+          <div class="desc">Retours envoyés depuis l'espace membre (et par email à maxime@ikcp.fr).</div>
+          <div id="feedback"><div class="empty">Chargement…</div></div>
+        </div>
+      </section>
+
+      <!-- ═══ SYNTHÈSE & FEUILLE DE ROUTE ═══ -->
+      <section class="view" id="v-synthese">
+        <div class="grid kpis">
+          <div class="kpi"><span class="ic">⬡</span><div class="v">10</div><div class="l">Agents / API live</div></div>
+          <div class="kpi"><span class="ic">▦</span><div class="v">15+</div><div class="l">Écrans membre</div></div>
+          <div class="kpi"><span class="ic">🧮</span><div class="v">9</div><div class="l">Simulateurs</div></div>
+          <div class="kpi"><span class="ic">✦</span><div class="v">50</div><div class="l">Places bêta</div></div>
+        </div>
+
+        <div class="alert warn" style="margin-top:16px"><span class="x">⚠️</span><div><b>Vérité produit :</b> aucun retour terrain à ce jour. Le prochain levier n'est pas une fonctionnalité — c'est ton <b>premier utilisateur réel</b>. Modèle : ① prestation directe aux dirigeants · ② SaaS white-label aux confrères CGP.</div></div>
+
+        <div class="card" style="margin-top:16px">
+          <h2>✅ Socle livré</h2>
+          <div class="digest">
+            <b>IA</b> — Marcel orchestrateur (MIF II serveur) · Codex · Hermès · Lifestyle · Veille Perplexity Pro · Vocal · Mistral en secours.<br>
+            <b>API réelles</b> — Pappers (SIREN) · DVF (prix m²) · Perplexity.<br>
+            <b>SaaS</b> — Auth lien magique · tiers/quotas · gating bêta 50 + accusé auto · sync D1 (patrimoine + famille) · onboarding adaptatif (typologie).<br>
+            <b>Membre</b> — Cockpit · Radiographie 360° · 9 simulateurs · Famille &amp; gouvernance · Score « questions à se poser » · Immobilier · nav native unifiée.<br>
+            <b>App</b> — PWA installable · APK Android · manifest store-ready.<br>
+            <b>Funnel</b> — bandeau accueil → /decouvrir (vidéo + formulaire) → email · Configurateur white-label.<br>
+            <b>Conformité</b> — MIF II natif · ORIAS · RGPD (sous-traitants nommés) · jamais « Claude » client.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🎯 Top 10 à améliorer <span class="pill">par levier</span></h2>
+          <div class="desc">Classé par impact réel sur le lancement, pas par difficulté.</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>#</th><th>Action</th><th>Qui</th><th>Statut</th></tr>
+            <tr><td>1</td><td>Tes 3 gestes : clé Bâtisseur (11ᵉ agent) · ADMIN_SECRET · test login complet</td><td>Maxime</td><td><span class="pill free">à faire</span></td></tr>
+            <tr><td>2</td><td>Obtenir 1 vrai retour terrain (toi 1 semaine → ton ami CGP)</td><td>Maxime</td><td><span class="pill free">à faire</span></td></tr>
+            <tr><td>3</td><td>Relecture avocat AMF (disclaimers + simulateurs)</td><td>Maxime</td><td><span class="pill free">à faire</span></td></tr>
+            <tr><td>4</td><td>Sync D1 Collections + Score (vrai SaaS multi-appareils)</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>5</td><td>Perception latence Marcel (indicateur « réfléchit… » vivant)</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>6</td><td>White-label couche 2 : masquage réel des onglets selon la config</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>7</td><td>Consolider : 6 univers parfaits &gt; 12 coquilles (brancher IA+data à collections/veille/carnet, ou retirer)</td><td>Claude</td><td><span class="pill premium">à arbitrer</span></td></tr>
+            <tr><td>8</td><td>Cloudflare Web Analytics — mesurer le funnel réel (RGPD-friendly)</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>9</td><td>Éponger la dette : nav unique · .html → URLs propres · workers legacy</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>10</td><td>Vidéos d'usage LinkedIn + barème IR millésime 2026</td><td>Mixte</td><td><span class="pill free">en attente</span></td></tr>
+          </table></div>
+        </div>
+
+        <div class="card">
+          <h2>📅 Cap septembre</h2>
+          <div class="digest"><b>Juin</b> — tes 3 gestes + finitions (Top 10 n°4-9).<br><b>Juillet</b> — bêta douce 5-10 testeurs + vidéos.<br><b>Août</b> — itérations + relecture AMF + liste des 50.<br><b>Septembre</b> — ouverture publique. <b>Verdict : confortable</b>, seul vrai risque = la couverture juridique (n°3).</div>
+        </div>
+      </section>
+
+      <!-- ═══ CODE & OUTILS ═══ -->
+      <section class="view" id="v-code">
+        <div class="card" style="margin-top:0">
+          <h2>📦 Ton dépôt &amp; déploiement</h2>
+          <div class="desc">GitHub = ta vérité unique. Chaque push (Claude Code ou toi) déploie tout. Tu choisis quoi déployer ici.</div>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site" target="_blank">💻 Dépôt GitHub (code source)</a>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site/actions" target="_blank">🚀 Actions — vérifier / relancer un déploiement</a>
+          <a class="lnk" href="https://github.dev/Max51527/ikcp-site" target="_blank">⌨️ Éditeur web (modifier un fichier en ligne)</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Ce qu'un push déploie (déployer ou non = activer/ignorer le workflow)</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>Workflow</th><th>Déploie</th><th>Déclencheur</th></tr>
+            <tr><td>deploy-pages</td><td>Site + SaaS + PWA</td><td><span class="pill">push (auto)</span></td></tr>
+            <tr><td>deploy-workers</td><td>10 agents IA / API</td><td><span class="pill">push workers/ (auto)</span></td></tr>
+            <tr><td>deploy-hostinger</td><td>Miroir FTP</td><td><span class="pill free">push (si secrets)</span></td></tr>
+            <tr><td>health-monitor</td><td>Ping agents</td><td><span class="pill">cron 9h</span></td></tr>
+          </table></div>
+          <div class="alert ok" style="margin-top:12px"><span class="x">✓</span><div>Pour <b>ne pas</b> déployer un changement : commit sur une branche autre que <code>main</code>, ou demande-moi « ne déploie pas » → je pousse sans merger. Le déploiement n'arrive que sur <code>main</code>.</div></div>
+        </div>
+
+        <div class="card">
+          <h2>🧰 Briques externes — <em style="font-style:italic;color:var(--gold-bright)">mon tri pour TOI</em></h2>
+          <div class="desc">Tu pars d'une stack souveraine qui marche (Cloudflare + Marcel + voix). La règle : n'ajoute que ce qui n'existe pas déjà chez toi — et ne jette JAMAIS du code qui tourne.</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>Brique</th><th>Verdict</th><th>Pourquoi pour toi</th></tr>
+            <tr><td><a href="https://github.com/OpenBMB/VoxCPM" target="_blank">VoxCPM</a></td><td><span class="pill fo">✅ déjà chez toi</span></td><td>C'est déjà ton moteur voix (ikcp-voice).</td></tr>
+            <tr><td><a href="https://github.com/livekit/agents" target="_blank">LiveKit Agents</a></td><td><span class="pill premium">🟡 plus tard</span></td><td>Vrai upgrade « voix temps réel / Jarvis », mais infra WebRTC lourde. Ta voix actuelle suffit pour la bêta.</td></tr>
+            <tr><td><a href="https://github.com/n8n-io/n8n" target="_blank">n8n</a></td><td><span class="pill premium">🟡 à évaluer</span></td><td>Alternative <b>self-hosted souveraine</b> à Make.com. Pertinent si tu rapatries l'automatisation en France.</td></tr>
+            <tr><td>Open SaaS · BoxyHQ · Vercel Sub.</td><td><span class="pill free">❌ piège</span></td><td>Tu as DÉJÀ ta base SaaS (Workers + D1 + auth + tiers). Migrer = jeter du code qui marche + perdre la souveraineté (stack US/Postgres).</td></tr>
+            <tr><td>LangChain · Langflow</td><td><span class="pill free">❌ inutile</span></td><td>Marcel orchestre déjà (Option A validée). Ajouter = la complexité que tu as justement évitée.</td></tr>
+            <tr><td>OpenHands</td><td><span class="pill free">❌ redondant</span></td><td>Tu as déjà Claude Code (moi) pour coder/refacto.</td></tr>
+            <tr><td><a href="https://github.com/wildminder/awesome-ai-voice" target="_blank">Awesome lists</a></td><td><span class="pill">📌 veille</span></td><td>À garder en favori pour surveiller le domaine — pas à adopter.</td></tr>
+          </table></div>
+          <div class="alert warn" style="margin-top:12px"><span class="x">🎯</span><div><b>Verdict :</b> sur 10 repos, <b>2 valent vraiment</b> pour toi (n8n si souveraineté auto · LiveKit si voix temps réel) — et <b>plus tard</b>. Le reste, tu l'as déjà. Le piège serait d'empiler des outils au lieu d'avoir tes 10 premiers testeurs.</div></div>
+        </div>
+      </section>
+
+      <!-- ═══ RÉGLAGES ═══ -->
+      <section class="view" id="v-reglages">
+        <div class="card" style="margin-top:0">
+          <h2>🛠️ Atelier — éditer &amp; déployer en direct</h2>
+          <div class="desc">Le lien Claude ↔ GitHub ↔ Cloudflare ↔ site. Trois façons de modifier la plateforme — puis ça se déploie tout seul (~30 s).</div>
+          <div class="alert ok"><span class="x">💬</span><div><b>Modifier avec Claude (le plus puissant)</b> — ouvre la page concernée et dis « Claude, change X ici ». Il modifie le code → push GitHub → en ligne en ~30 s. C'est exactement ce qu'on fait ensemble en co-browsing.</div></div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Éditer</div>
+          <a class="lnk" href="/admin/" target="_blank">✏️ CMS contenu (Sveltia) — textes &amp; pages, sans coder</a>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site" target="_blank">💻 GitHub — le code (source unique de vérité)</a>
+          <a class="lnk" href="https://github.dev/Max51527/ikcp-site" target="_blank">⌨️ Éditeur GitHub web — modifier un fichier en ligne (VS Code)</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Déployer &amp; surveiller</div>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site/actions" target="_blank">🚀 GitHub Actions — vérifier / relancer un déploiement</a>
+          <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/pages" target="_blank">☁️ Cloudflare Pages — le site (déploiements, domaine)</a>
+          <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers/overview" target="_blank">⚙️ Cloudflare Workers — les agents IA / API (logs, secrets)</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Application &amp; espaces</div>
+          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur Family Office (white-label) — packager un espace de marque</a>
+          <a class="lnk" href="/app/patrimoine-pro" target="_blank">📊 Cockpit patrimoine (le SaaS premium)</a>
+          <a class="lnk" href="/decouvrir" target="_blank">🎬 Vitrine /decouvrir (vidéo + invitation)</a>
+          <a class="lnk" href="/app/dashboard" target="_blank">📲 Espace membre — installer la PWA (« écran d'accueil »)</a>
+          <div class="desc" style="margin-top:12px">📱 APK Android : construit localement (Bubblewrap). Distribution Play Store = ton compte développeur Google (je rebuild, tu soumets).</div>
+        </div>
+        <div class="card">
+          <h2>⚙ Centre technique — toutes tes consoles</h2>
+          <div class="desc">Tout ce qui fait tourner la plateforme. Une « console » = le tableau de bord d'un fournisseur où tu vois l'usage, les logs et la facturation. Les clés ne s'affichent jamais ici (sécurité).</div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:8px 0 8px">Ton infrastructure</div>
+          <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers-and-pages" target="_blank">☁️ Cloudflare — hébergement, Workers (tes APIs), base D1, logs &amp; secrets</a>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site" target="_blank">💻 GitHub — code source (déploiement auto à chaque push)</a>
+          <a class="lnk" href="https://ikcp.notion.site/Documentation-6da4ff7ad97b45b5b7af51200303ac1c" target="_blank">📖 Documentation (Notion) — à tenir à jour</a>
+          <a class="lnk" href="https://app.notion.com/p/287f73500d774c15a7b514d3b4b78966" target="_blank">📊 Base retours bêta (Notion)</a>
+          <a class="lnk" href="/app/architecture.html" target="_blank">🗺️ Schéma d'architecture (vue d'ensemble)</a>
+          <a class="lnk" href="/app/test.html" target="_blank">🧪 Cockpit de test (barre d'avancement)</a>
+          <a class="lnk" href="/app/studio.html" target="_blank">🎨 Studio design</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">APIs externes connectées · usage &amp; facturation</div>
+          <a class="lnk" href="https://console.anthropic.com/settings/usage" target="_blank">🧠 Anthropic — moteur IA (Marcel · Marcel) · usage &amp; coût</a>
+          <a class="lnk" href="https://www.perplexity.ai/settings/api" target="_blank">🔎 Perplexity — veille temps réel · usage</a>
+          <a class="lnk" href="https://www.pappers.fr/mon-compte/api" target="_blank">🏢 Pappers — cartographie SIREN/sociétés · quota</a>
+          <a class="lnk" href="https://resend.com/emails" target="_blank">✉️ Resend — emails (liens d'accès) · délivrabilité</a>
+          <a class="lnk" href="https://dashboard.stripe.com" target="_blank">💳 Stripe — paiements (à activer) · abonnements</a>
+        </div>
+        <div class="card">
+          <h2>État de configuration</h2>
+          <div id="config"><div class="empty">Vérification…</div></div>
+        </div>
+        <div class="card">
+          <h2>Rappels conformité</h2>
+          <div class="digest">
+            <b>MIF II</b> — chaque réponse IA finit par une question, jamais une recommandation produit (art. L.541-1 garanti côté serveur).<br>
+            <b>RGPD</b> — hébergement Cloudflare WEUR (Paris), D1 SQLite Paris. Sous-traitants nommés sur les pages légales.<br>
+            <b>ORIAS</b> — 23001568, mention systématique en footer.<br>
+            <b>Bêta sans avocat AMF</b> — responsabilité personnelle assumée ; RDV avocat déclenché au 1ᵉʳ client signé.
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+const API = 'https://ikcp-client.maxime-ead.workers.dev';
+const W = u => `https://ikcp-${u}.maxime-ead.workers.dev`;
+let SECRET = localStorage.getItem('ikcp_admin_secret') || sessionStorage.getItem('ikcp_admin_secret') || '';
+const loaded = {};
+
+function hdr(){ return { 'Content-Type':'application/json', 'x-admin-secret': SECRET }; }
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
+function fdate(ts){ return ts ? new Date(ts).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '—'; }
+
+/* ─── GATE ─── */
+async function unlock(){
+  const inp = document.getElementById('secret');
+  const msg = document.getElementById('gateMsg');
+  const v = (inp.value || SECRET).trim();
+  if(!v){ return; }
+  SECRET = v;
+  document.getElementById('unlockBtn').disabled = true;
+  try{
+    const r = await fetch(`${API}/api/v1/admin/stats`, { headers: hdr() });
+    if(r.status === 503){ throw new Error('ADMIN_SECRET non configuré sur le worker ikcp-client (Cloudflare → ikcp-client → Variables).'); }
+    if(r.status === 401 || r.status === 403){ throw new Error('Clé incorrecte.'); }
+    if(!r.ok){ throw new Error('Erreur '+r.status); }
+    sessionStorage.setItem('ikcp_admin_secret', SECRET);
+    localStorage.setItem('ikcp_admin_secret', SECRET); // mémorisé sur cet appareil → plus jamais à retaper
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app').style.display='grid';
+    route();
+    loadHealth(); // alimente la pastille système globale
+  }catch(e){
+    msg.className='msg err'; msg.textContent = e.message || 'Erreur.';
+    document.getElementById('unlockBtn').disabled = false;
+  }
+}
+function logout(){ sessionStorage.removeItem('ikcp_admin_secret'); localStorage.removeItem('ikcp_admin_secret'); location.reload(); }
+// Mémorisation : si la clé a déjà été saisie sur cet appareil, on déverrouille tout seul (plus de mot de passe à retaper).
+if (SECRET) { setTimeout(unlock, 50); }
+// Dernière mise à jour déployée (stampée par GitHub Actions à chaque push Claude Code)
+fetch('/version.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(v){
+  var e=document.getElementById('buildInfo'); if(!e)return;
+  e.textContent='MAJ '+v.sha+' · '+new Date(v.deployed_at).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+}).catch(function(){ var e=document.getElementById('buildInfo'); if(e)e.textContent=''; });
+
+/* ─── NAV / ROUTER ─── */
+const TITLES = {
+  dashboard:['Tableau de <em>bord</em>','Vue d\'ensemble de la plateforme'],
+  synthese:['Synthèse &amp; <em>feuille de route</em>','Où en est le projet · Top 10 à améliorer'],
+  code:['Code &amp; <em>outils</em>','Dépôt GitHub, déploiement, et briques externes triées'],
+  membres:['Membres & <em>familles</em>','Comptes, tiers et activité'],
+  beta:['Bêta & <em>invitations</em>','Familles fondatrices, codes et candidatures'],
+  agents:['Agents <em>IA</em>','État live des intelligences souveraines'],
+  veille:['Veille & <em>contenu</em>','Digest quotidien, CMS et publication'],
+  feedback:['Retours <em>testeurs</em>','Ce que disent les premiers utilisateurs'],
+  reglages:['Réglages & <em>liens</em>','Infrastructure, configuration, conformité'],
+};
+function route(){
+  const sec = (location.hash || '#dashboard').slice(1);
+  const valid = TITLES[sec] ? sec : 'dashboard';
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+valid)?.classList.add('on');
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on', a.getAttribute('href')==='#'+valid));
+  document.getElementById('vTitle').innerHTML = TITLES[valid][0];
+  document.getElementById('vSub').textContent = TITLES[valid][1];
+  toggleMenu(false);
+  load(valid);
+}
+window.addEventListener('hashchange', route);
+
+function load(sec, force){
+  if(loaded[sec] && !force) return;
+  loaded[sec] = true;
+  if(sec==='dashboard'){ loadStats(); loadHealth(); loadFeedback('fbMini'); loadAlerts(); }
+  if(sec==='membres'){ loadMembers(); }
+  if(sec==='beta'){ loadApps(); }
+  if(sec==='agents'){ loadAgents(); loadAutos(); }
+  if(sec==='veille'){ loadDigest(); }
+  if(sec==='feedback'){ loadFeedback('feedback'); }
+  if(sec==='reglages'){ loadConfig(); }
+}
+function refreshAll(){ Object.keys(loaded).forEach(k=>loaded[k]=false); route(); loadHealth(); }
+
+function toggleMenu(open){
+  document.getElementById('side').classList.toggle('open', open);
+  document.getElementById('scrim').classList.toggle('show', open);
+}
+
+/* ─── DASHBOARD ─── */
+async function loadStats(){
+  const el = document.getElementById('kpis');
+  try{
+    const s = await (await fetch(`${API}/api/v1/admin/stats`, { headers: hdr() })).json();
+    const k = (v,l,sub,ic) => `<div class="kpi"><span class="ic">${ic||''}</span><div class="v">${v}</div><div class="l">${l}</div>${sub?`<div class="s">${sub}</div>`:''}</div>`;
+    el.innerHTML =
+      k(s.members,'Membres',`${s.by_tier.free} free · ${s.by_tier.premium} prem · ${s.by_tier.fo} FO`,'👤')
+      + k(s.by_tier.fo,'Family Office','cercle restreint','✦')
+      + k('+'+s.signups_7d,'Inscrits','7 derniers jours','↗')
+      + k(s.marcel_messages_month||0,'Messages Marcel','ce mois','◆')
+      + k(s.pending_applications,'Candidatures','en attente','✎')
+      + k(eur(s.revenu_premium_estime),'Revenu','Premium est./mois','€')
+      + k(eur(s.cout_ia_estime),'Coût IA','estimé/mois','⬡')
+      + k(eur(s.marge_estimee),'Marge','estimée/mois','▲');
+    // badges nav
+    setBadge('bdgBeta', s.pending_applications);
+  }catch(_){ el.innerHTML='<div class="msg err" style="grid-column:1/-1">Statistiques indisponibles.</div>'; }
+}
+function setBadge(id,n){ const b=document.getElementById(id); if(!b)return; b.textContent=n||''; b.classList.toggle('show', !!n && n>0); }
+
+async function loadAlerts(){
+  const el = document.getElementById('alerts'); el.innerHTML='';
+  const alerts = [];
+  // Bâtisseur key
+  try{ const h = await (await fetch(W('batisseur')+'/health',{cache:'no-store'})).json();
+    if(h.configured && h.configured.api_key===false) alerts.push(['warn','🔑',`<b>Bâtisseur</b> (Patrimoine 360°) attend sa clé API — c'est le 11ᵉ agent, non bloquant. Pose <code>ANTHROPICAPIKEY</code> dans Cloudflare puis signale-le.`]);
+  }catch(_){}
+  if(!alerts.length) alerts.push(['ok','✓','Tous les systèmes sont opérationnels. La bêta est lançable.']);
+  el.innerHTML = alerts.map(a=>`<div class="alert ${a[0]}"><span class="x">${a[1]}</span><div>${a[2]}</div></div>`).join('');
+}
+
+/* ─── HEALTH ─── */
+const SERVICES = [
+  {n:'Marcel',u:W('chat')+'/health'},
+  {n:'Codex',u:W('codex')+'/health'},
+  {n:'Hermès',u:W('hermes')+'/health'},
+  {n:'Bâtisseur',u:W('batisseur')+'/health'},
+  {n:'Lifestyle',u:W('lifestyle')+'/health'},
+  {n:'Veille',u:W('veille')+'/health'},
+  {n:'Voice',u:W('voice')+'/health'},
+  {n:'Pappers',u:W('pappers')+'/health'},
+  {n:'Auth/Comptes',u:W('client')+'/health'},
+  {n:'Témoin',u:W('temoin')+'/health'},
+];
+async function loadHealth(){
+  const el = document.getElementById('healthMini');
+  if(el) el.innerHTML = SERVICES.map((s,i)=>`<div class="hpill" id="h${i}"><span class="hdot"></span>${s.n}</div>`).join('');
+  let up=0, down=0, warn=0;
+  await Promise.all(SERVICES.map(async (s,i)=>{
+    const pill = document.getElementById('h'+i);
+    try{
+      const r = await fetch(s.u, {cache:'no-store'}); const d = await r.json().catch(()=>({}));
+      const cfg = d.configured||{}; let cls='up', note='';
+      if(r.ok && cfg.api_key===false){ cls='warn'; note='clé manquante'; warn++; }
+      else if(!r.ok){ cls='down'; down++; }
+      else { up++; }
+      if(pill) pill.innerHTML = `<span class="hdot ${cls}"></span>${s.n}${note?`<span class="note">${note}</span>`:''}`;
+    }catch(_){ down++; if(pill) pill.innerHTML = `<span class="hdot down"></span>${s.n}<span class="note">injoignable</span>`; }
+  }));
+  // pastille système globale
+  const dot = document.getElementById('sysDot'), txt = document.getElementById('sysTxt');
+  if(dot){
+    if(down>0){ dot.className='d down'; txt.textContent=`${down} hors-ligne`; }
+    else if(warn>0){ dot.className='d up'; txt.textContent='opérationnel'; }
+    else { dot.className='d up'; txt.textContent='opérationnel'; }
+  }
+}
+
+/* ─── AGENTS (vue technique) ─── */
+const AGENTS = [
+  {n:'Marcel',role:'Chef d\'orchestre',model:'sonnet',u:W('chat')+'/health',note:'Opus + persona Marcel en mode Family Office'},
+  {n:'Codex',role:'Fiscalité',model:'opus',u:W('codex')+'/health'},
+  {n:'Hermès',role:'Transmission',model:'opus',u:W('hermes')+'/health'},
+  {n:'Bâtisseur',role:'Patrimoine 360°',model:'opus',u:W('batisseur')+'/health'},
+  {n:'Lifestyle',role:'Art de vivre (9 agents)',model:'sonnet',u:W('lifestyle')+'/health'},
+  {n:'Veille',role:'Veille marchés & droit',model:'perplexity',u:W('veille')+'/health'},
+  {n:'Voice',role:'Voix (transcription)',model:'sonnet',u:W('voice')+'/health',note:'STT actif · synthèse vocale premium à configurer'},
+  {n:'Pappers',role:'Cartographie SIREN',model:'',u:W('pappers')+'/health'},
+  {n:'Témoin',role:'Audit MIF II',model:'',u:W('temoin')+'/health'},
+];
+async function loadAgents(){
+  const el = document.getElementById('agents');
+  el.innerHTML = `<table><thead><tr><th>Agent</th><th>Rôle</th><th>Modèle</th><th>État</th><th>Note</th></tr></thead><tbody>${
+    AGENTS.map((a,i)=>`<tr id="ag${i}"><td style="font-weight:600">${a.n}</td><td style="color:var(--mute)">${a.role}</td><td>${a.model?`<span class="pill ${a.model}">${a.model}</span>`:'—'}</td><td><span class="hdot"></span> <span class="st">…</span></td><td style="color:var(--mute);font-size:12px">${a.note||''}</td></tr>`).join('')
+  }</tbody></table>`;
+  AGENTS.forEach(async (a,i)=>{
+    const row = document.getElementById('ag'+i); if(!row) return;
+    const dot = row.querySelector('.hdot'), st = row.querySelector('.st');
+    try{
+      const r = await fetch(a.u,{cache:'no-store'}); const d = await r.json().catch(()=>({}));
+      const cfg = d.configured||{};
+      if(r.ok && cfg.api_key===false){ dot.className='hdot warn'; st.textContent='clé manquante'; st.style.color='var(--warn)'; }
+      else if(r.ok){ dot.className='hdot up'; st.textContent='actif'; }
+      else { dot.className='hdot down'; st.textContent='HS'; }
+    }catch(_){ dot.className='hdot down'; st.textContent='injoignable'; }
+  });
+}
+function loadAutos(){
+  document.getElementById('autos').innerHTML =
+    '🟢 <b>Collector</b> — scan marchés / cote de collection · chaque jour 6h UTC<br>'
+    + '🟢 <b>Veille nocturne</b> — digest patrimonial quotidien · 6h UTC (visible dans « Veille »)<br>'
+    + '🟢 <b>Quotas mensuels</b> — réinitialisation automatique des compteurs Marcel (free = 5/mois)<br>'
+    + '⚪ <b>SEO quotidien</b> — tâche planifiée sur le poste de Maxime (hors plateforme)';
+}
+
+/* ─── MEMBRES ─── */
+async function loadMembers(){
+  const el = document.getElementById('members');
+  try{
+    const list = await (await fetch(`${API}/api/v1/admin/members`, { headers: hdr() })).json();
+    document.getElementById('memCount').textContent = list.length;
+    if(!list.length){ el.innerHTML='<div class="empty">Aucun membre encore. Génère une invitation dans « Bêta ».</div>'; return; }
+    el.innerHTML = `<table><thead><tr><th>Membre</th><th>Tier</th><th>Inscrit</th><th>Dernier accès</th><th>Marcel/mois</th></tr></thead><tbody>${
+      list.map(m=>`<tr><td>${esc(m.prenom?m.prenom+' · ':'')}${esc(m.email)}</td>
+        <td><span class="pill ${esc(m.tier||'free')}">${esc(m.tier||'free')}</span></td>
+        <td style="color:var(--mute)">${fdate(m.created_at)}</td>
+        <td style="color:var(--mute)">${fdate(m.last_login_at)}</td>
+        <td>${m.marcel_month||0}</td></tr>`).join('')
+    }</tbody></table>`;
+  }catch(_){ el.innerHTML='<div class="msg err">Liste indisponible.</div>'; }
+}
+async function setTier(){
+  const email = document.getElementById('stEmail').value.trim();
+  const tier = document.getElementById('stTier').value;
+  const msg = document.getElementById('stMsg');
+  if(!email){ msg.className='msg err'; msg.textContent='Email requis.'; return; }
+  const r = await fetch(`${API}/api/v1/admin/set-tier`, { method:'POST', headers: hdr(), body: JSON.stringify({ email, tier }) });
+  const d = await r.json().catch(()=>({}));
+  if(!r.ok){ msg.className='msg err'; msg.textContent = d.error==='membre_introuvable' ? 'Membre introuvable — il doit s\'être connecté au moins une fois.' : ('Erreur '+r.status); return; }
+  msg.className='msg ok'; msg.textContent = `✓ ${email} est maintenant ${tier.toUpperCase()}. Rafraîchis l'espace membre.`;
+  loadMembers(); loadStats();
+}
+
+/* ─── BÊTA ─── */
+async function loadApps(){
+  const r = await fetch(`${API}/api/v1/admin/applications?status=pending`, { headers: hdr() });
+  if(!r.ok){ document.getElementById('apps').innerHTML = `<div class="msg err">Erreur ${r.status}</div>`; return; }
+  renderApps(await r.json());
+}
+function renderApps(list){
+  const wrap = document.getElementById('apps');
+  document.getElementById('appCount').textContent = list.length;
+  setBadge('bdgBeta', list.length);
+  if(!list.length){ wrap.innerHTML = '<div class="empty">Aucune candidature en attente.</div>'; return; }
+  wrap.innerHTML = list.map(a => {
+    const d = new Date(a.created_at).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="app-item" id="app-${esc(a.id)}">
+      <div class="h"><span class="em">${esc(a.prenom||'')} · ${esc(a.email)}</span><span class="pill">${esc(a.code||'—')}</span></div>
+      <div class="meta">${a.siren?`SIREN <b>${esc(a.siren)}</b> · `:''}Patrimoine déclaré <b>${esc(a.patrimoine_declare||'n/c')}</b> · Reçu le ${d}</div>
+      <div class="acts">
+        <select id="tier-${esc(a.id)}"><option value="fo">Family Office (bêta)</option><option value="premium">Premium</option></select>
+        <button class="btn sm" onclick="decide('${esc(a.id)}','approve')">Approuver →</button>
+        <button class="btn reject sm" onclick="decide('${esc(a.id)}','reject')">Refuser</button>
+      </div>
+      <div id="msg-${esc(a.id)}"></div>
+    </div>`;
+  }).join('');
+}
+async function decide(id, decision){
+  const tier = document.getElementById('tier-'+id)?.value || 'fo';
+  const msg = document.getElementById('msg-'+id);
+  const r = await fetch(`${API}/api/v1/admin/applications/${id}/decision`, { method:'POST', headers: hdr(), body: JSON.stringify({ decision, grant_tier: tier }) });
+  if(!r.ok){ msg.className='msg err'; msg.textContent='Erreur '+r.status; return; }
+  const d = await r.json();
+  document.getElementById('app-'+id).style.opacity='.5';
+  msg.className='msg ok';
+  msg.textContent = decision==='approve' ? `Approuvé → accès ${d.grant_tier}. Le client obtient son espace à la prochaine connexion.` : 'Candidature refusée.';
+  setTimeout(loadApps, 1200);
+}
+async function genCode(){
+  const out = document.getElementById('codeOut'); out.innerHTML = '';
+  const body = { type:'direct', email: document.getElementById('invEmail').value.trim() || null,
+    max_uses: parseInt(document.getElementById('invMax').value||'1',10),
+    expires_days: parseInt(document.getElementById('invExp').value||'0',10) || null };
+  const r = await fetch(`${API}/api/v1/admin/invitations`, { method:'POST', headers: hdr(), body: JSON.stringify(body) });
+  if(!r.ok){ out.innerHTML = `<div class="msg err">Erreur ${r.status}</div>`; return; }
+  const d = await r.json();
+  out.innerHTML = `<div class="msg ok">Code créé.</div><div class="codebox">${esc(d.code)}</div><div class="codebox">${esc(d.link)}</div>
+    <div style="margin-top:8px"><button class="btn ghost sm" onclick="navigator.clipboard.writeText('${esc(d.link)}');this.textContent='✓ Copié'">Copier le lien</button></div>`;
+}
+
+/* ─── VEILLE ─── */
+async function loadDigest(){
+  const el = document.getElementById('digest');
+  try{
+    const r = await fetch(W('veille')+'/digest',{cache:'no-store'});
+    const d = await r.json().catch(()=>({}));
+    if(d.summary){
+      const html = esc(d.summary).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+      const ts = d.generated_at || d.date;
+      const when = ts ? new Date(ts).toLocaleString('fr-FR') : '';
+      el.innerHTML = (when?`<div style="font-size:11px;color:var(--mute);margin-bottom:10px">Mis à jour : ${when}</div>`:'') + html;
+    } else el.innerHTML = '<div class="empty">Pas encore de digest — il se génère chaque matin à 6h UTC.</div>';
+  }catch(_){ el.innerHTML='<div class="empty">Digest indisponible.</div>'; }
+}
+
+/* ─── FEEDBACK ─── */
+async function loadFeedback(target){
+  const el = document.getElementById(target||'feedback');
+  try{
+    const list = await (await fetch(`${API}/api/v1/admin/feedback`, { headers: hdr() })).json();
+    setBadge('bdgFb', list.length);
+    if(!list.length){ el.innerHTML='<div class="empty">Aucun retour pour l\'instant.</div>'; return; }
+    const show = target==='fbMini' ? list.slice(0,4) : list;
+    el.innerHTML = show.map(f=>{
+      let p={}; try{ p=JSON.parse(f.payload_json||'{}'); }catch(_){}
+      const d = new Date(f.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+      return `<div style="border-top:1px solid var(--line-2);padding:10px 0;font-size:13px">
+        <b>${esc(p.priorite||'')}</b> ${esc(p.categories||'')} <span style="color:var(--mute);float:right">${d}</span>
+        ${p.message?`<div style="margin-top:3px">${esc(p.message).slice(0,160)}</div>`:''}
+        <div style="color:var(--mute);font-size:12px">${esc(p.email||'anonyme')} · ${esc(p.page||'')}</div></div>`;
+    }).join('');
+  }catch(_){ el.innerHTML='<div class="empty">Retours envoyés par email (historique structuré dès activation D1).</div>'; }
+}
+
+/* ─── CONFIG (réglages) ─── */
+async function loadConfig(){
+  const el = document.getElementById('config');
+  const checks = [];
+  await Promise.all(SERVICES.map(async s=>{
+    try{ const d = await (await fetch(s.u,{cache:'no-store'})).json(); const cfg=d.configured||{};
+      checks.push([s.n, cfg.api_key===false?'⚠ clé manquante':'✓ configuré', cfg.api_key===false]);
+    }catch(_){ checks.push([s.n,'✗ injoignable',true]); }
+  }));
+  el.innerHTML = `<table><tbody>${checks.map(c=>`<tr><td>${c[0]}</td><td style="color:${c[2]?'var(--warn)':'#9FE6B8'}">${c[1]}</td></tr>`).join('')}</tbody></table>`;
+}
+
+/* ─── INIT ─── */
+if(SECRET){ unlock(); } else { document.getElementById('secret').focus(); }
+</script>
+</body>
+</html>

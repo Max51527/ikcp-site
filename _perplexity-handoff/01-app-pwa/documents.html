@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<title>Marcel — Documents</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/marcel.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Documents</span></a>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Vos documents</div>
+  <h1 class="app-h1">Signés. <em>Conservés 10 ans.</em></h1>
+  <p class="app-lead">DER, Lettre de Mission, rapports, cartographies. Signature eIDAS qualifiée, hébergement R2 EU, audit conforme MIF II.</p>
+
+  <div id="docs-list" class="loading">Chargement…</div>
+
+  <div style="margin-top:30px;padding-top:30px;border-top:1px solid var(--line)">
+    <h3 style="font-family:'Fraunces',serif;font-size:20px;margin-bottom:14px">À signer</h3>
+    <div class="grid-2">
+      <article class="card">
+        <span class="card-cat">DER bêta</span>
+        <h3>Document d'Entrée en Relation</h3>
+        <p>Bêta privée IKCP · 50 familles fondatrices · accès Premium offert 6 mois.</p>
+        <a href="/der.html" class="btn btn-accent btn-sm" style="align-self:flex-start">Signer →</a>
+      </article>
+      <article class="card">
+        <span class="card-cat">Lettre de Mission</span>
+        <h3>Mission patrimoniale</h3>
+        <p>Cadrage de la prestation IKCP, périmètre, rémunération, conflits d'intérêts.</p>
+        <a href="mailto:maxime@ikcp.fr?subject=Demande%20LM" class="btn btn-ghost btn-sm" style="align-self:flex-start">Demander →</a>
+      </article>
+    </div>
+  </div>
+</main>
+
+<nav class="app-tabs">
+  <a href="/app/dashboard.html">Dashboard</a>
+  <a href="/app/marcel.html">Marcel</a>
+  <a href="/app/veille.html">Veille</a>
+  <a href="/app/carnet.html">Carnet</a>
+  <a href="/app/profil.html">Profil</a>
+</nav>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+try { await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+const list = document.getElementById('docs-list');
+try {
+  const docs = await Marcel.Me.documents();
+  if(docs.length === 0){
+    list.innerHTML = '<div class="empty"><h4>Aucun document.</h4><p>Vos documents signés apparaîtront ici.</p></div>';
+  } else {
+    list.classList.remove('loading');
+    list.innerHTML = '<div class="grid-2">' + docs.map(d => `
+      <article class="card">
+        <div class="card-head"><span class="card-cat">${d.type}</span>${d.signed_at ? '<span class="pill live">signé eIDAS</span>' : '<span class="pill warn">en attente</span>'}</div>
+        <h3>📄 ${d.title}</h3>
+        <p class="meta">${d.signed_at ? 'Signé le ' + Marcel.Utils.formatDate(d.signed_at) : 'Créé le ' + Marcel.Utils.formatDate(d.created_at)}</p>
+        <a href="${d.r2_key ? '/api/docs/' + d.id : '#'}" class="btn btn-ghost btn-sm" style="align-self:flex-start">Télécharger PDF →</a>
+      </article>
+    `).join('') + '</div>';
+  }
+}catch(_){
+  list.innerHTML = '<div class="empty"><h4>Documents indisponibles.</h4></div>';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Créé par IKCP.EU -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Votre Score Patrimonial — diagnostic 360° en 2 min · IKCP</title>
+<meta name="description" content="Évaluez votre patrimoine sur 7 territoires (protection, transmission, fiscalité, retraite, diversification, liquidité, structure) en 2 minutes. Diagnostic gratuit, sans inscription. IKCP · ORIAS 23001568.">
+<link rel="canonical" href="https://ikcp.eu/score.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F;--warn:#C0612A;--bad:#B23A2E}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:15px 0}
+.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:21px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+
+.hero{text-align:center;padding:50px 0 22px}
+.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,5vw,46px);line-height:1.1;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:560px;margin:16px auto 0}
+
+/* Quiz */
+.quiz{max-width:680px;margin:30px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,36px);box-shadow:0 24px 60px -30px rgba(27,42,74,.25)}
+.progress{height:5px;background:var(--cream-2);border-radius:3px;overflow:hidden;margin-bottom:24px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));width:0;transition:width .4s cubic-bezier(.16,1,.3,1)}
+.q-num{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:6px}
+.q-terr{font-size:12px;color:var(--ink-mute);margin-bottom:4px}
+.q-text{font-family:'Playfair Display',serif;font-size:clamp(19px,3vw,25px);color:var(--navy);font-weight:500;line-height:1.25;margin-bottom:22px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:15px 18px;font-family:'Outfit',sans-serif;font-size:15px;color:var(--ink);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.opt:hover{border-color:var(--gold);background:#fff;transform:translateX(3px)}
+.opt .k{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gold-deep);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.back-q{margin-top:18px;background:none;border:none;color:var(--ink-mute);font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif}
+.back-q:hover{color:var(--gold-deep)}
+
+/* Résultat */
+.result{display:none;max-width:760px;margin:30px auto}
+.result.show{display:block;animation:fade .5s}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.gauge-wrap{text-align:center;background:var(--navy-deep);border-radius:20px;padding:34px 24px;color:var(--cream)}
+.gauge{position:relative;width:220px;height:220px;margin:0 auto}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .num b{font-family:'Playfair Display',serif;font-size:58px;font-weight:600;color:var(--gold-bright);line-height:1}
+.gauge .num span{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,250,248,.6);margin-top:4px}
+.verdict{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--cream);margin-top:18px}
+.verdict.sub{font-style:normal;font-size:13.5px;color:rgba(250,250,248,.65);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto}
+
+.terr{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}
+.terr h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:16px}
+.terr-row{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.terr-row .nm{flex:0 0 130px;font-size:13px;font-weight:600;color:var(--navy)}
+.terr-row .bar{flex:1;height:8px;background:var(--cream-2);border-radius:5px;overflow:hidden}
+.terr-row .bar i{display:block;height:100%;border-radius:5px;width:0;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.terr-row .sc{flex:0 0 38px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--ink-mute)}
+
+.leviers{margin-top:24px}
+.leviers h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:6px}
+.leviers .sub{color:var(--ink-mute);font-size:13.5px;margin-bottom:16px}
+.lev{display:flex;gap:14px;align-items:flex-start;background:var(--cream-2);border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-bottom:12px}
+.lev .ic{font-size:24px;flex-shrink:0}
+.lev .bd{flex:1}
+.lev .bd h4{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:3px}
+.lev .bd p{font-size:13px;color:var(--ink-mute);line-height:1.5}
+.lev .go{align-self:center;background:var(--navy);color:var(--cream);border:none;border-radius:9px;padding:9px 15px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none}
+.lev .go:hover{background:var(--gold-deep)}
+
+.cta-final{text-align:center;margin:30px 0 10px}
+.cta-final a{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--navy-deep);padding:15px 30px;border-radius:100px;font-weight:700;font-size:15px;box-shadow:0 14px 34px -12px rgba(201,169,110,.6)}
+.replay{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink-mute);font-size:13px;cursor:pointer;text-decoration:underline;font-family:'Outfit',sans-serif}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:600px;margin:20px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:12px;margin-top:40px}
+.ft a{color:var(--gold);margin:0 6px}
+</style>
+</head>
+<body>
+
+<header class="hd"><div class="wrap"><div class="logo">IK<span>CP</span></div><a class="back" href="/">← Site IKCP</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Diagnostic patrimonial 360°</div>
+  <h1>Votre <em>Score Patrimonial</em></h1>
+  <p>7 territoires, 2 minutes, sans inscription. Découvrez où vous êtes solide — et vos 3 leviers prioritaires.</p>
+</section>
+
+<div class="quiz" id="quiz">
+  <div class="progress"><span id="prog"></span></div>
+  <div id="qbody"></div>
+  <button class="back-q" id="backBtn" onclick="prev()" style="display:none">← Question précédente</button>
+</div>
+
+<div class="result wrap" id="result">
+  <div class="gauge-wrap">
+    <div class="gauge">
+      <svg width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="96" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="14"/>
+        <circle id="gaugeArc" cx="110" cy="110" r="96" fill="none" stroke="#E2C896" stroke-width="14" stroke-linecap="round" stroke-dasharray="603" stroke-dashoffset="603"/>
+      </svg>
+      <div class="num"><b id="scoreNum">0</b><span>/ 100</span></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="verdict sub" id="verdictSub"></div>
+  </div>
+
+  <div class="terr">
+    <h3>Votre patrimoine par territoire</h3>
+    <div id="terrBars"></div>
+  </div>
+
+  <div class="leviers">
+    <h3>Vos 3 <em style="font-style:italic;color:var(--gold-deep)">leviers prioritaires</em></h3>
+    <div class="sub">Là où l'impact est le plus fort. Chaque levier, vous pouvez l'explorer avec Marcel.</div>
+    <div id="levList"></div>
+  </div>
+
+  <div class="cta-final">
+    <a href="/family-office.html#siren-funnel">Approfondir avec Marcel & Maxime →</a>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap">
+    <span style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:600">Partager</span>
+    <button onclick="ikcpShare('linkedin')" aria-label="LinkedIn" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-weight:700;font-size:13px">in</button>
+    <button onclick="ikcpShare('email')" aria-label="Email" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-size:15px">✉</button>
+    <button onclick="ikcpShare('copy');this.textContent='✓';setTimeout(()=>this.textContent='🔗',1500)" aria-label="Copier" style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-size:14px">🔗</button>
+  </div>
+  <button class="replay" onclick="location.reload()">↻ Refaire le diagnostic</button>
+  <div class="disc">Diagnostic indicatif et pédagogique fondé sur vos déclarations. Il ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni un audit complet. Pour une analyse adaptée, échangez avec Maxime Juveneton (CIF · ORIAS 23001568).</div>
+</div>
+
+<footer class="ft">
+  © 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
+  <div style="margin-top:6px"><a href="/cgu">CGU</a> · <a href="/mentions-legales">Mentions</a> · <a href="/investir">Investir</a></div>
+</footer>
+
+<script>
+// ── 7 territoires patrimoniaux · questions (chaque réponse = score 0/40/75/100) ──
+var Q = [
+  {t:'Protection', ic:'🛡️', q:'Si demain vous (ou le revenu principal du foyer) disparaissiez, vos proches seraient-ils protégés ?',
+   o:[['Aucune prévoyance / je ne sais pas',0],['Juste l\'assurance emprunteur',40],['Prévoyance partielle (décès)',75],['Prévoyance décès + invalidité dimensionnée',100]]},
+  {t:'Transmission', ic:'🌿', q:'Votre transmission est-elle organisée (testament, donations, clause bénéficiaire) ?',
+   o:[['Rien de prévu',0],['J\'y pense, sans agir',40],['Quelques actes (testament OU donation)',75],['Stratégie en place et révisée',100]]},
+  {t:'Fiscalité', ic:'⚖️', q:'Pilotez-vous activement votre fiscalité (IR, IFI, enveloppes) ?',
+   o:[['Je subis, aucune optimisation',0],['Quelques réflexes (PER/AV)',40],['Plusieurs leviers activés',75],['Optimisation structurée et suivie',100]]},
+  {t:'Retraite', ic:'⏳', q:'Avez-vous anticipé le maintien de votre niveau de vie à la retraite ?',
+   o:[['Aucune préparation',0],['Un peu d\'épargne, sans plan',40],['PER / capitalisation en cours',75],['Plan chiffré et suivi',100]]},
+  {t:'Diversification', ic:'📊', q:'Votre patrimoine est-il diversifié (classes d\'actifs, supports) ?',
+   o:[['Tout sur un seul actif (immo OU liquide)',0],['Peu diversifié',40],['Plusieurs classes d\'actifs',75],['Allocation équilibrée et pilotée',100]]},
+  {t:'Liquidité', ic:'💧', q:'Disposez-vous d\'une épargne de précaution mobilisable rapidement ?',
+   o:[['Quasi rien de disponible',0],['< 3 mois de dépenses',40],['3 à 6 mois',75],['> 6 mois + accès au crédit',100]]},
+  {t:'Structure', ic:'🏛️', q:'Si vous êtes dirigeant : la frontière pro/perso et la détention sont-elles optimisées ?',
+   o:[['Non concerné / pas du tout',0],['Tout est mélangé pro/perso',40],['Société + compte séparés',75],['Holding / structuration pensée',100]]},
+];
+var LEVIERS = {
+  'Protection':{ic:'🛡️',t:'Sécuriser vos proches',d:'Un audit prévoyance dimensionne le capital décès/invalidité au juste niveau — souvent le premier angle mort.',q:'Comment dimensionner ma prévoyance décès et invalidité pour protéger ma famille ?'},
+  'Transmission':{ic:'🌿',t:'Organiser la transmission',d:'Donation, démembrement, clause bénéficiaire, pacte Dutreil : anticiper réduit fortement les droits.',q:'Quels leviers pour transmettre mon patrimoine en limitant les droits de succession ?'},
+  'Fiscalité':{ic:'⚖️',t:'Reprendre la main sur l\'impôt',d:'PER, assurance-vie, déficit foncier, enveloppes : plusieurs leviers légaux à articuler.',q:'Quels sont les principaux leviers pour optimiser ma fiscalité cette année ?'},
+  'Retraite':{ic:'⏳',t:'Préparer votre retraite',d:'Estimer l\'écart de revenus et le combler par capitalisation, idéalement tôt (intérêts composés).',q:'Comment préparer ma retraite et combler l\'écart de revenus attendu ?'},
+  'Diversification':{ic:'📊',t:'Diversifier intelligemment',d:'Répartir entre classes d\'actifs selon votre horizon et tolérance au risque lisse le risque.',q:'Comment diversifier mon patrimoine selon mon profil et mon horizon ?'},
+  'Liquidité':{ic:'💧',t:'Constituer un matelas',d:'Une épargne de précaution évite de vendre au mauvais moment. 3 à 6 mois de dépenses est un repère.',q:'Quel montant d\'épargne de précaution viser et sur quels supports ?'},
+  'Structure':{ic:'🏛️',t:'Structurer votre détention',d:'Holding, rémunération, séparation pro/perso : la structure conditionne fiscalité et transmission.',q:'Comment structurer la détention de mon patrimoine de dirigeant (holding, rémunération) ?'},
+};
+var TERR_LABEL = {Protection:'Protection',Transmission:'Transmission',Fiscalité:'Fiscalité',Retraite:'Retraite',Diversification:'Diversification',Liquidité:'Liquidité',Structure:'Structure'};
+
+var idx = 0, answers = new Array(Q.length).fill(null);
+function color(v){ return v>=75?'var(--ok)':v>=45?'var(--gold-deep)':'var(--bad)'; }
+
+function renderQ(){
+  var item = Q[idx];
+  document.getElementById('prog').style.width = (idx/Q.length*100)+'%';
+  document.getElementById('backBtn').style.display = idx>0 ? 'block':'none';
+  var letters=['A','B','C','D'];
+  document.getElementById('qbody').innerHTML =
+    '<div class="q-num">Question '+(idx+1)+' / '+Q.length+'</div>'
+    +'<div class="q-terr">'+item.ic+' Territoire : '+item.t+'</div>'
+    +'<div class="q-text">'+item.q+'</div>'
+    +'<div class="opts">'+item.o.map(function(o,i){
+        return '<button class="opt" onclick="answer('+o[1]+')"><span class="k">'+letters[i]+'</span>'+o[0]+'</button>';
+      }).join('')+'</div>';
+}
+window.answer = function(v){ answers[idx]=v; if(idx<Q.length-1){ idx++; renderQ(); } else { finish(); } };
+window.prev = function(){ if(idx>0){ idx--; renderQ(); } };
+
+function finish(){
+  document.getElementById('prog').style.width='100%';
+  var global = Math.round(answers.reduce(function(a,b){return a+b;},0)/Q.length);
+  document.getElementById('quiz').style.display='none';
+  var res = document.getElementById('result'); res.className='result wrap show';
+  // jauge animée
+  var arc = document.getElementById('gaugeArc'), num=document.getElementById('scoreNum');
+  var full=603, off=full*(1-global/100);
+  setTimeout(function(){ arc.style.transition='stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)'; arc.style.strokeDashoffset=off;
+    arc.setAttribute('stroke', global>=75?'#7BCCA2':global>=45?'#E2C896':'#E0856B'); },150);
+  var n=0; var step=Math.max(1,Math.round(global/40)); var iv=setInterval(function(){ n=Math.min(global,n+step); num.textContent=n; if(n>=global)clearInterval(iv); },28);
+  // verdict
+  var verdict, sub;
+  if(global>=75){ verdict='Patrimoine bien tenu.'; sub='Vous avez les bons réflexes. L\'enjeu : affiner et anticiper les prochaines étapes (transmission, optimisation fine).'; }
+  else if(global>=45){ verdict='De bonnes bases, des angles morts.'; sub='Plusieurs territoires sont à renforcer pour sécuriser et optimiser l\'ensemble.'; }
+  else { verdict='Votre patrimoine est exposé.'; sub='Des leviers simples et prioritaires peuvent changer la donne rapidement.'; }
+  document.getElementById('verdict').textContent=verdict;
+  document.getElementById('verdictSub').textContent=sub;
+  // Rétention : compare au dernier diagnostic + mémorise (client only, RGPD-friendly)
+  try {
+    var prev = JSON.parse(localStorage.getItem('ikcp_score') || 'null');
+    if (prev && typeof prev.score === 'number') {
+      var delta = global - prev.score;
+      var since = prev.date ? new Date(prev.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}) : '';
+      var txt = delta > 0 ? ('📈 +' + delta + ' points depuis le ' + since + '. Continuez sur cette lancée.')
+        : delta < 0 ? ('📉 ' + delta + ' points depuis le ' + since + '. Des leviers se sont relâchés.')
+        : ('Stable depuis le ' + since + '.');
+      var ev = document.createElement('div');
+      ev.style.cssText = 'margin-top:14px;display:inline-block;background:rgba(201,169,110,.16);border:1px solid rgba(201,169,110,.4);color:var(--gold-bright);padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600';
+      ev.textContent = txt;
+      document.getElementById('verdictSub').insertAdjacentElement('afterend', ev);
+    }
+    localStorage.setItem('ikcp_score', JSON.stringify({ score: global, date: new Date().toISOString() }));
+  } catch (_) {}
+  // barres par territoire
+  document.getElementById('terrBars').innerHTML = Q.map(function(item,i){
+    var v=answers[i];
+    return '<div class="terr-row"><span class="nm">'+item.ic+' '+TERR_LABEL[item.t]+'</span>'
+      +'<span class="bar"><i style="background:'+color(v)+'" data-w="'+v+'"></i></span>'
+      +'<span class="sc">'+v+'</span></div>';
+  }).join('');
+  setTimeout(function(){ document.querySelectorAll('.terr-row .bar i').forEach(function(b){ b.style.width=b.dataset.w+'%'; }); }, 250);
+  // 3 leviers = 3 territoires les plus faibles
+  var ranked = Q.map(function(item,i){return {t:item.t,v:answers[i]};}).sort(function(a,b){return a.v-b.v;}).slice(0,3);
+  document.getElementById('levList').innerHTML = ranked.map(function(r){
+    var L=LEVIERS[r.t];
+    var url='/family-office.html?q='+encodeURIComponent(L.q);
+    return '<div class="lev"><span class="ic">'+L.ic+'</span><div class="bd"><h4>'+L.t+'</h4><p>'+L.d+'</p></div>'
+      +'<a class="go" href="'+url+'">Explorer →</a></div>';
+  }).join('');
+  res.scrollIntoView({behavior:'smooth'});
+}
+renderQ();
+</script>
+<script src="/protect.js?v=1" defer></script>
+<script src="/reveal.js?v=1" defer></script>
+</body>
+</html>

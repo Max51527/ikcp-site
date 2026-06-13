@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel · Dashboard live des agents IA</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#FAF7F0;--bg-2:#F5EFE0;--ink:#1A1814;--mute:#6B655A;--faint:#9B8F80;
+  --accent:#C24722;--gold:#C9A96E;
+  --line:rgba(26,24,20,0.10);
+  --success:#3F7A3F;--warn:#B8801F;--bad:#B91C1C;
+  --mono:'JetBrains Mono',monospace;
+}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+header{padding:24px 32px;background:var(--bg);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(250,247,240,0.94)}
+header h1{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--ink);letter-spacing:-0.012em}
+header h1 em{font-style:italic;color:var(--accent)}
+header .meta{font-size:11px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:600;text-align:right}
+header .ping{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;color:var(--success);background:rgba(63,122,63,0.10);padding:6px 12px;border-radius:999px;font-weight:600}
+header .ping::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(0.6);opacity:0.5}}
+main{max-width:1240px;margin:0 auto;padding:32px}
+
+/* Status grid */
+section.status{margin-bottom:36px}
+section.status h2{font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin-bottom:14px;color:var(--ink);letter-spacing:-0.01em}
+section.status .label{font-size:10.5px;letter-spacing:0.28em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:8px;display:inline-block}
+section.status .label::before{content:'◆ ';opacity:0.7}
+.grid-status{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:980px){.grid-status{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid-status{grid-template-columns:1fr}}
+.svc{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--mono);font-size:12px}
+.svc.up{border-left:3px solid var(--success)}
+.svc.down{border-left:3px solid var(--bad)}
+.svc.partial{border-left:3px solid var(--warn)}
+.svc-name{color:var(--ink);font-weight:600}
+.svc-meta{color:var(--mute);font-size:10.5px;letter-spacing:0.02em}
+.svc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.svc.up .svc-dot{background:var(--success);box-shadow:0 0 0 3px rgba(63,122,63,0.18)}
+.svc.down .svc-dot{background:var(--bad)}
+.svc.partial .svc-dot{background:var(--warn)}
+
+/* Agent grid */
+section.agents{margin-bottom:36px}
+.grid-agents{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:1020px){.grid-agents{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.grid-agents{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.grid-agents{grid-template-columns:1fr}}
+.agent-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px 18px 14px;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);text-align:left}
+.agent-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px -14px rgba(26,24,20,0.12);border-color:var(--accent)}
+.agent-card.active{border-color:var(--accent);background:var(--bg-2);box-shadow:0 0 0 2px rgba(194,71,34,0.10)}
+.agent-emoji{font-size:30px;display:block;margin-bottom:8px}
+.agent-name{font-family:'Fraunces',serif;font-size:18px;font-weight:500;letter-spacing:-0.005em}
+.agent-role{font-size:10.5px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600;margin-top:3px}
+.agent-model{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:8px;letter-spacing:0.02em}
+
+/* Test panel */
+section.test-panel{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+section.test-panel h2{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:6px;color:var(--ink)}
+section.test-panel h2 em{font-style:italic;color:var(--accent)}
+section.test-panel p.sub{font-size:13.5px;color:var(--mute);margin-bottom:18px;font-style:italic}
+.test-form{display:flex;flex-direction:column;gap:12px}
+.test-form textarea{width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:var(--ink);resize:vertical;min-height:90px;outline:none;transition:border 0.2s}
+.test-form textarea:focus{border-color:var(--accent)}
+.test-form .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.test-form .quick{display:flex;gap:6px;flex-wrap:wrap}
+.test-form .quick button{background:transparent;border:1px solid var(--line);color:var(--mute);font-size:11px;padding:5px 10px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.test-form .quick button:hover{border-color:var(--accent);color:var(--accent)}
+.test-form .btn{background:var(--ink);color:var(--bg);border:none;padding:12px 26px;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.02em;cursor:pointer;transition:all 0.2s;margin-left:auto}
+.test-form .btn:hover{background:var(--accent);transform:translateY(-1px)}
+.test-form .btn:disabled{opacity:0.5;cursor:wait}
+
+/* Result */
+.result{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.result-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;font-family:var(--mono);font-size:11.5px}
+.result-meta span{background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:999px;color:var(--mute)}
+.result-meta span b{color:var(--ink);font-weight:600}
+.result-meta span.ok{color:var(--success);border-color:rgba(63,122,63,0.30)}
+.result-body{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px 20px;font-size:14px;line-height:1.7;white-space:pre-wrap;max-height:600px;overflow-y:auto}
+.result-body strong{font-weight:600;color:var(--ink)}
+.result-body em{font-style:italic;color:var(--accent)}
+.result-body h2,.result-body h3{font-family:'Fraunces',serif;font-weight:500;margin:14px 0 8px}
+.result-body h2{font-size:18px}
+.result-body h3{font-size:15px}
+.result-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
+.result-body th,.result-body td{padding:7px 10px;border:1px solid var(--line);text-align:left;font-family:'Inter',sans-serif}
+.result-body th{background:var(--bg-2);font-weight:600}
+.result-loading{font-style:italic;color:var(--mute);padding:14px;text-align:center}
+.result-loading::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:10px;animation:pulse 1.4s ease-in-out infinite}
+.result-error{color:var(--bad);font-style:italic;padding:14px}
+
+/* Usage tracker */
+section.tracker{background:var(--ink);color:var(--bg);border-radius:14px;padding:24px;margin-bottom:24px}
+section.tracker h2{font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:var(--gold);margin-bottom:14px}
+section.tracker h2 em{font-style:italic}
+.tracker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:720px){.tracker-grid{grid-template-columns:repeat(2,1fr)}}
+.tracker-cell{background:rgba(250,247,240,0.05);border:1px solid rgba(201,169,110,0.25);border-radius:10px;padding:16px}
+.tracker-cell .lbl{font-size:10px;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.tracker-cell .val{font-family:'Fraunces',serif;font-size:30px;font-weight:400;font-style:italic;line-height:1}
+.tracker-cell .sub{font-size:10.5px;color:rgba(250,247,240,0.55);margin-top:4px;font-family:var(--mono)}
+
+footer{padding:30px 32px;text-align:center;font-size:11.5px;color:var(--mute);letter-spacing:0.04em;border-top:1px solid var(--line)}
+footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Marcel · <em>Dashboard live</em></h1>
+    <div style="font-size:11.5px;color:var(--mute);margin-top:4px">Interaction agents IA · test en réel · usage tracker</div>
+  </div>
+  <div class="ping" id="globalPing">● Live · 9 agents</div>
+</header>
+
+<main>
+
+  <!-- ─── Statut workers ─── -->
+  <section class="status">
+    <div class="label">Statut workers (auto-refresh 20s)</div>
+    <h2>Infrastructure en direct</h2>
+    <div class="grid-status" id="statusGrid">
+      <!-- généré JS -->
+    </div>
+  </section>
+
+  <!-- ─── Sélecteur d'agent ─── -->
+  <section class="agents">
+    <div class="label">Sélectionnez un agent à tester</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin-bottom:14px">Choisissez votre interlocuteur</h2>
+    <div class="grid-agents" id="agentGrid">
+      <!-- généré JS -->
+    </div>
+  </section>
+
+  <!-- ─── Panneau de test ─── -->
+  <section class="test-panel" id="testPanel">
+    <h2>Test live <em id="activeAgent">Marcel</em></h2>
+    <p class="sub" id="activeRole">Chef d'orchestre · Sonnet 4.6 · répond aux questions patrimoniales générales</p>
+
+    <div class="test-form">
+      <textarea id="qInput" placeholder="Tapez votre question…"></textarea>
+      <div class="row">
+        <div class="quick" id="quickPrompts">
+          <!-- généré JS selon agent -->
+        </div>
+        <button class="btn" id="sendBtn" onclick="runTest()">Tester →</button>
+      </div>
+    </div>
+
+    <div class="result" id="result" style="display:none">
+      <div class="result-meta" id="resultMeta"></div>
+      <div class="result-body" id="resultBody"></div>
+    </div>
+  </section>
+
+  <!-- ─── Usage tracker ─── -->
+  <section class="tracker">
+    <h2>Votre <em>session</em></h2>
+    <div class="tracker-grid">
+      <div class="tracker-cell">
+        <div class="lbl">Appels</div>
+        <div class="val" id="trkCalls">0</div>
+        <div class="sub">questions posées</div>
+      </div>
+      <div class="tracker-cell">
+        <div class="lbl">Tokens</div>
+        <div class="val" id="trkTokens">0</div>
+        <div class="sub">cumul session</div>
+      </div>
+      <div class="tracker-cell">
+        <div class="lbl">Coût estimé</div>
+        <div class="val" id="trkCost">0 €</div>
+        <div class="sub">en temps réel</div>
+      </div>
+      <div class="tracker-cell">
+        <div class="lbl">Latence moy.</div>
+        <div class="val" id="trkLatency">—</div>
+        <div class="sub">secondes</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <b>IKCP</b> · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · Dashboard interne ops · ne pas partager
+</footer>
+
+<script>
+// ─── Config 9 workers ───
+const SERVICES = [
+  { id:'pappers',   name:'ikcp-pappers',   role:'Cartographie SIREN',           url:'https://ikcp-pappers.maxime-ead.workers.dev' },
+  { id:'chat',      name:'ikcp-chat',      role:'Marcel orchestre',              url:'https://ikcp-chat.maxime-ead.workers.dev' },
+  { id:'codex',     name:'ikcp-codex',     role:'Codex fiscal',                  url:'https://ikcp-codex.maxime-ead.workers.dev' },
+  { id:'hermes',    name:'ikcp-hermes',    role:'Hermès transmission',           url:'https://ikcp-hermes.maxime-ead.workers.dev' },
+  { id:'lifestyle', name:'ikcp-lifestyle', role:'8 sub-agents lifestyle',        url:'https://ikcp-lifestyle.maxime-ead.workers.dev' },
+  { id:'veille',    name:'ikcp-veille',    role:'Veille Perplexity',             url:'https://ikcp-veille.maxime-ead.workers.dev' },
+  { id:'temoin',    name:'ikcp-temoin',    role:'Audit eIDAS',                   url:'https://ikcp-temoin.maxime-ead.workers.dev' },
+  { id:'collector', name:'ikcp-collector', role:'Watches + cron',                url:'https://ikcp-collector.maxime-ead.workers.dev' },
+  { id:'client',    name:'ikcp-client',    role:'Auth + CRUD freemium',          url:'https://ikcp-client.maxime-ead.workers.dev' },
+];
+
+// ─── Config 14 agents ─── (12 Marcel + Pappers + Veille)
+const AGENTS = [
+  { id:'marcel',    emoji:'🎼', name:'Marcel',    role:'Orchestre',          model:'sonnet-4-6',  endpoint:'chat',     mode:'chat' },
+  { id:'pappers',   emoji:'🏛️', name:'Pappers',   role:'Cartographie',       model:'API officielle', endpoint:'pappers', mode:'siren' },
+  { id:'codex',     emoji:'📜', name:'Codex',     role:'Fiscalité',          model:'opus-4-7',    endpoint:'codex',    mode:'specialist' },
+  { id:'hermes',    emoji:'🌳', name:'Hermès',    role:'Transmission',       model:'opus-4-7',    endpoint:'hermes',   mode:'specialist' },
+  { id:'iris',      emoji:'✈️', name:'Iris',      role:'Voyage',             model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'emile',     emoji:'🎨', name:'Émile',     role:'Art',                model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'leon',      emoji:'🏎️', name:'Léon',      role:'Véhicules',          model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'josephine', emoji:'⌚', name:'Joséphine', role:'Joaillerie',         model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'helene',    emoji:'🌸', name:'Hélène',    role:'Bien-être',          model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'olympe',    emoji:'🌱', name:'Olympe',    role:'Philanthropie',      model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'auguste',   emoji:'🍷', name:'Auguste',   role:'Vins',               model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'augustin',  emoji:'🏠', name:'Augustin',  role:'Immobilier',         model:'sonnet-4-6',  endpoint:'lifestyle',mode:'lifestyle' },
+  { id:'veille',    emoji:'🔎', name:'Veille',    role:'Recherche temps réel', model:'sonar (Perplexity)', endpoint:'veille', mode:'veille' },
+];
+
+// Prompts canon par agent (3 par agent)
+const QUICK_PROMPTS = {
+  marcel:    ['Présente-toi en 3 phrases','Quels sont les 3 piliers IKCP ?','Comment fonctionne le Pacte Dutreil ?'],
+  pappers:   ['775670417','552032534','662042449'],
+  codex:     ['Articulation Pacte Dutreil + 150-0 B ter','Jurisprudence holding animatrice 2024-2026','Plus-value PME 2 M€ : PFU ou barème ?'],
+  hermes:    ['OBO familial 8 M€ avec donation NP enfants','Démembrement croisé entre époux','Mandat protection future vs effet posthume'],
+  iris:      ['Chalet Megève février 2027 famille 6 pax','Jet privé Genève-Megève samedi','Palace Aman vs Cheval Blanc différenciation'],
+  emile:     ['Vente Sotheby\'s Paris mai 2026','Fiscalité œuvre art 1716 bis CGI','Free port Genève vs Luxembourg'],
+  leon:      ['Porsche 911 GT3 RS 991 vs 992','Yacht charter Méditerranée août 2026','Histovec fiscalité véhicule collection'],
+  josephine: ['Patek Nautilus 5711 vert cote actuelle','Cartier Tank Cintrée platine','Valorisation IFI montres de collection'],
+  helene:    ['Lanserhof vs SHA Wellness 2026','Haute couture sur-mesure Cifonelli','Programme NextGen Le Rosey'],
+  olympe:    ['Fonds dotation vs fondation abritée 200 k€/an','Réduction IFI 75 % conditions 2026','Mécénat IS 60 % art. 238 bis'],
+  auguste:   ['Bordeaux primeur 2024 vs Bourgogne grand cru','Cave 100 k€ assurance et fiscalité','Pétrus 2015 cote actuelle'],
+  augustin:  ['Démembrement croisé SCI familiale','LMNP à l\'IS 2026 changements','IFI seuil 1,3 M€ patrimoine 2 M€'],
+  veille:    ['Loi de Finances 2027 amendements Pacte Dutreil dernières 48h','Cote Patek 5711 vert mai 2026 sources datées','Jurisprudence Cass. com. holding animatrice 7 derniers jours'],
+};
+
+// ─── Coûts par agent (tarifs Anthropic 2026) ───
+const COSTS = {
+  'sonnet-4-6':       { in: 3,  out: 15  }, // $ par 1M tokens
+  'opus-4-7':         { in: 15, out: 75  },
+  'sonar (Perplexity)': { in: 0, out: 5  }, // $ par 1000 reqs (forfait)
+  'API officielle':   { in: 0, out: 0   }, // Pappers cache
+};
+
+let activeAgent = AGENTS[0];
+let stats = { calls: 0, tokensIn: 0, tokensOut: 0, latencies: [] };
+
+// ─── Render Status Grid ───
+async function refreshStatus(){
+  const grid = document.getElementById('statusGrid');
+  grid.innerHTML = SERVICES.map(s => `<div class="svc partial" id="svc-${s.id}"><div><div class="svc-name">${s.name}</div><div class="svc-meta">${s.role}</div></div><span class="svc-dot"></span></div>`).join('');
+
+  for (const s of SERVICES){
+    const t0 = performance.now();
+    try{
+      const r = await fetch(s.url + '/health', { signal: AbortSignal.timeout(6000) });
+      const ms = Math.round(performance.now() - t0);
+      const data = await r.json();
+      const el = document.getElementById('svc-' + s.id);
+      if(r.ok && data.status === 'ok'){
+        // Check si bridé (api_key missing par exemple)
+        const bridges = [];
+        if(data.configured?.api_key === false) bridges.push('api_key');
+        if(data.configured?.resend === false && s.id === 'client') bridges.push('resend');
+        if(bridges.length){
+          el.className = 'svc partial';
+          el.querySelector('.svc-meta').innerHTML = `${s.role} <span style="color:var(--warn)">· ${bridges.join(', ')} KO</span> · ${ms}ms`;
+        } else {
+          el.className = 'svc up';
+          el.querySelector('.svc-meta').textContent = `${s.role} · ${ms}ms`;
+        }
+      } else {
+        el.className = 'svc down';
+        el.querySelector('.svc-meta').textContent = `${s.role} · ${r.status}`;
+      }
+    }catch(err){
+      const el = document.getElementById('svc-' + s.id);
+      el.className = 'svc down';
+      el.querySelector('.svc-meta').textContent = `${s.role} · timeout`;
+    }
+  }
+  const up = document.querySelectorAll('.svc.up').length;
+  const partial = document.querySelectorAll('.svc.partial').length;
+  document.getElementById('globalPing').textContent = `● ${up}/${SERVICES.length} agents UP${partial ? ' · ' + partial + ' bridés' : ''}`;
+}
+refreshStatus();
+setInterval(refreshStatus, 20000);
+
+// ─── Render Agents Grid ───
+function renderAgents(){
+  document.getElementById('agentGrid').innerHTML = AGENTS.map(a => `
+    <div class="agent-card${a.id === activeAgent.id ? ' active' : ''}" onclick="selectAgent('${a.id}')">
+      <span class="agent-emoji">${a.emoji}</span>
+      <div class="agent-name">${a.name}</div>
+      <div class="agent-role">${a.role}</div>
+      <div class="agent-model">${a.model}</div>
+    </div>
+  `).join('');
+}
+function selectAgent(id){
+  activeAgent = AGENTS.find(a => a.id === id);
+  document.getElementById('activeAgent').textContent = activeAgent.name;
+  document.getElementById('activeRole').textContent = `${activeAgent.role} · ${activeAgent.model}${activeAgent.id === 'pappers' ? ' · saisir 9 chiffres SIREN' : ''}`;
+  renderAgents();
+  renderQuickPrompts();
+  document.getElementById('qInput').placeholder = activeAgent.id === 'pappers' ? 'SIREN (9 chiffres)…' : `Question à ${activeAgent.name}…`;
+  document.getElementById('result').style.display = 'none';
+}
+function renderQuickPrompts(){
+  const prompts = QUICK_PROMPTS[activeAgent.id] || [];
+  document.getElementById('quickPrompts').innerHTML = prompts.map(p => `<button onclick="document.getElementById('qInput').value='${p.replace(/'/g,"\\'")}'">${p.slice(0,40)}${p.length > 40 ? '…' : ''}</button>`).join('');
+}
+renderAgents();
+renderQuickPrompts();
+
+// ─── Test runner ───
+async function runTest(){
+  const q = document.getElementById('qInput').value.trim();
+  if(!q) return;
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = activeAgent.name + ' réfléchit…';
+  const result = document.getElementById('result');
+  const meta = document.getElementById('resultMeta');
+  const body = document.getElementById('resultBody');
+  result.style.display = 'block';
+  meta.innerHTML = `<span class="ok">● ${activeAgent.name} en cours</span>`;
+  body.innerHTML = '<div class="result-loading">' + activeAgent.name + ' mobilise ses sources…</div>';
+
+  const t0 = performance.now();
+  let payload, url, response;
+  try {
+    switch(activeAgent.mode){
+      case 'siren':
+        url = `https://ikcp-pappers.maxime-ead.workers.dev/entreprise/${q.replace(/\s/g,'')}/short`;
+        response = await fetch(url);
+        break;
+      case 'chat':
+        url = 'https://ikcp-chat.maxime-ead.workers.dev';
+        response = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message:q,history:[]}) });
+        break;
+      case 'specialist':
+        url = `https://ikcp-${activeAgent.id}.maxime-ead.workers.dev`;
+        response = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({question:q,context:''}) });
+        break;
+      case 'lifestyle':
+        url = 'https://ikcp-lifestyle.maxime-ead.workers.dev';
+        response = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({agent:activeAgent.id,question:q,context:''}) });
+        break;
+      case 'veille':
+        url = 'https://ikcp-veille.maxime-ead.workers.dev/search';
+        response = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({query:q,mode:'quick',user_id:'admin-dashboard',tier:'premium_fo'}) });
+        break;
+    }
+    const ms = Math.round(performance.now() - t0);
+    const data = await response.json();
+    const reply = data.reply || data.summary || JSON.stringify(data, null, 2);
+    const usage = data.usage || {};
+    const tIn = usage.input_tokens || usage.prompt_tokens || 0;
+    const tOut = usage.output_tokens || usage.completion_tokens || 0;
+    const tCacheRead = usage.cache_read_input_tokens || 0;
+
+    // Coût
+    const c = COSTS[activeAgent.model] || { in: 0, out: 0 };
+    const costEur = ((tIn * c.in + tOut * c.out) / 1000000 * 0.92).toFixed(4); // EUR ≈ USD × 0.92
+
+    stats.calls += 1;
+    stats.tokensIn += tIn;
+    stats.tokensOut += tOut;
+    stats.latencies.push(ms);
+
+    meta.innerHTML = `
+      <span class="ok">● ${response.ok ? 'OK' : 'FAIL ' + response.status}</span>
+      <span>⏱ <b>${(ms/1000).toFixed(1)}s</b></span>
+      ${tIn ? `<span>tokens in <b>${tIn}</b></span>` : ''}
+      ${tOut ? `<span>tokens out <b>${tOut}</b></span>` : ''}
+      ${tCacheRead ? `<span>cache hit <b>${tCacheRead}</b></span>` : ''}
+      <span>coût <b>${costEur} €</b></span>
+      <span>modèle <b>${activeAgent.model}</b></span>
+    `;
+    body.innerHTML = renderMarkdown(reply);
+    updateTracker();
+  } catch(err){
+    body.innerHTML = '<div class="result-error">Erreur : ' + err.message + '</div>';
+    meta.innerHTML = '<span style="color:var(--bad)">● erreur réseau</span>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Tester →';
+  }
+}
+
+function renderMarkdown(s){
+  if(typeof s !== 'string') s = JSON.stringify(s, null, 2);
+  return s
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/\n\n/g, '\n\n');
+}
+
+function updateTracker(){
+  document.getElementById('trkCalls').textContent = stats.calls;
+  document.getElementById('trkTokens').textContent = (stats.tokensIn + stats.tokensOut).toLocaleString('fr-FR');
+  // Coût agrégé : on recalcule approximativement (mix Sonnet/Opus moyenne)
+  const avgCost = (stats.tokensIn * 5 + stats.tokensOut * 25) / 1000000 * 0.92; // $ pondéré
+  document.getElementById('trkCost').textContent = avgCost.toFixed(3) + ' €';
+  const avgMs = stats.latencies.length ? stats.latencies.reduce((a,b)=>a+b,0) / stats.latencies.length : 0;
+  document.getElementById('trkLatency').textContent = avgMs ? (avgMs/1000).toFixed(1) + ' s' : '—';
+}
+
+// Enter to send
+document.getElementById('qInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runTest();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Hero : 4 options pour l'espace droit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--ok:#2D6A4F}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink)}
+.row{max-width:1240px;margin:0 auto;padding:40px 32px;border-bottom:1px solid rgba(201,169,110,.18);display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;min-height:62vh}
+.label{position:sticky;top:0;background:var(--navy);color:var(--gold-bright);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:8px 16px;text-align:center}
+.left .kick{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
+.left h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(30px,4vw,46px);line-height:1.12;color:var(--navy-deep)}
+.left h1 em{font-style:italic;color:var(--gold-deep)}
+.left p{color:var(--ink-mute);margin-top:14px;font-size:15px;line-height:1.6}
+.right{display:flex;align-items:center;justify-content:center}
+
+/* ── Option 1 : Score ring ── */
+.score-card{width:100%;max-width:380px;background:#fff;border:1px solid rgba(201,169,110,.25);border-radius:20px;padding:26px;box-shadow:0 24px 60px -24px rgba(31,26,22,.22)}
+.score-top{display:flex;align-items:center;gap:18px}
+.ring{position:relative;width:96px;height:96px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;color:var(--navy-deep);font-weight:600}
+.score-lbl{font-size:13px;color:var(--ink-mute)}
+.score-lbl b{display:block;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:600;margin-bottom:3px}
+.score-levers{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.lever{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink)}
+.lever .dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.score-cta{margin-top:20px;display:block;text-align:center;background:var(--navy);color:var(--cream);padding:12px;border-radius:10px;font-size:13.5px;font-weight:600;text-decoration:none}
+
+/* ── Option 2 : Chiffre signature ── */
+.sig{text-align:center}
+.sig-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
+.sig-num{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(48px,8vw,86px);color:var(--gold-deep);line-height:1;font-weight:500}
+.sig-cap{color:var(--ink-mute);font-size:14px;margin-top:14px;font-style:italic}
+.sig-rule{width:46px;height:2px;background:var(--gold);margin:20px auto 0}
+
+/* ── Option 3 : Montgolfière raffinée ── */
+.sky{position:relative;width:100%;max-width:360px;aspect-ratio:4/5;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px;
+  background:radial-gradient(ellipse at 70% 25%,rgba(255,240,210,.9),transparent 55%),linear-gradient(180deg,#fffaf2,#f5e6c8 70%,#ece0c5)}
+.sky .balloon{width:74px;position:absolute;top:24%;left:50%;transform:translateX(-50%);animation:fly 7s ease-in-out infinite;filter:drop-shadow(0 14px 20px rgba(31,26,22,.22))}
+@keyframes fly{0%,100%{transform:translate(-50%,0) rotate(-2deg)}50%{transform:translate(-50%,-14px) rotate(2deg)}}
+.sky .badge{position:absolute;top:13%;left:50%;transform:translateX(-50%);background:rgba(31,26,22,.88);color:#fff;font-size:11px;font-weight:600;padding:6px 13px;border-radius:100px;display:flex;align-items:center;gap:7px}
+.sky .badge .d{width:7px;height:7px;border-radius:50%;background:#22c55e}
+.sky .cta{background:rgba(31,26,22,.9);color:#fff;border:1px solid rgba(201,169,110,.45);border-radius:100px;padding:12px 22px;font-size:13px;font-weight:600;cursor:pointer}
+
+/* ── Option 4 : Vidéo ── */
+.video{position:relative;width:100%;max-width:420px;aspect-ratio:16/10;border-radius:18px;overflow:hidden;
+  background:radial-gradient(ellipse 60% 50% at 50% 35%,#16233f,var(--navy-deep));display:flex;align-items:center;justify-content:center;box-shadow:0 24px 60px -24px rgba(0,0,0,.5)}
+.video .play{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.12);border:1.5px solid var(--gold-bright);display:flex;align-items:center;justify-content:center;color:var(--gold-bright);font-size:22px;cursor:pointer}
+.video .cap{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:rgba(250,250,248,.7);font-size:12px;letter-spacing:.06em}
+.note{max-width:1240px;margin:0 auto;padding:24px 32px 60px;color:var(--ink-mute);font-size:13.5px;line-height:1.7}
+.flag{position:fixed;bottom:12px;left:12px;background:var(--navy);color:var(--gold);padding:6px 13px;border-radius:100px;font-size:11px;font-weight:600;z-index:99}
+</style>
+</head>
+<body>
+
+<div class="label">Option 1 — Score patrimonial interactif (reco conversion)</div>
+<div class="row">
+  <div class="left">
+    <div class="kick">IKCP · Conseil patrimonial indépendant</div>
+    <h1>Protéger ce que vous êtes <em>en train de bâtir.</em></h1>
+    <p>Un accompagnement sur-mesure — juridique, fiscal et financier.</p>
+  </div>
+  <div class="right">
+    <div class="score-card">
+      <div class="score-top">
+        <div class="ring">
+          <svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#efe7d8" stroke-width="9"/><circle cx="48" cy="48" r="42" fill="none" stroke="#C9A96E" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="74"/></svg>
+          <div class="ring-num">72</div>
+        </div>
+        <div class="score-lbl"><b>Votre score patrimonial</b>Estimation en 2 minutes · sans inscription</div>
+      </div>
+      <div class="score-levers">
+        <div class="lever"><span class="dot"></span>Tranche d'imposition 41 % · optimisable</div>
+        <div class="lever"><span class="dot"></span>Droits de succession estimés · 88 k€</div>
+        <div class="lever"><span class="dot"></span>3 leviers détectés · ~38 k€ d'économies</div>
+      </div>
+      <a href="#" class="score-cta">Faire mon bilan patrimonial →</a>
+    </div>
+  </div>
+</div>
+
+<div class="label">Option 2 — Chiffre signature éditorial</div>
+<div class="row">
+  <div class="left">
+    <div class="kick">IKCP · Conseil patrimonial indépendant</div>
+    <h1>Protéger ce que vous êtes <em>en train de bâtir.</em></h1>
+    <p>Un accompagnement sur-mesure — juridique, fiscal et financier.</p>
+  </div>
+  <div class="right">
+    <div class="sig">
+      <div class="sig-eyebrow">Transmission · abattements cumulables</div>
+      <div class="sig-num">384 365 €</div>
+      <div class="sig-cap">transmissibles à vos enfants sans droits — sous conditions, par anticipation.</div>
+      <div class="sig-rule"></div>
+    </div>
+  </div>
+</div>
+
+<div class="label">Option 3 — Montgolfière Marcel raffinée</div>
+<div class="row">
+  <div class="left">
+    <div class="kick">IKCP · Conseil patrimonial indépendant</div>
+    <h1>Protéger ce que vous êtes <em>en train de bâtir.</em></h1>
+    <p>Un accompagnement sur-mesure — juridique, fiscal et financier.</p>
+  </div>
+  <div class="right">
+    <div class="sky">
+      <div class="badge"><span class="d"></span>Marcel · En ligne</div>
+      <svg class="balloon" viewBox="0 0 240 340"><defs><clipPath id="bc"><path d="M120 8C195 8 220 70 220 130C220 175 200 210 165 220C158 222 150 224 138 224C130 230 130 235 130 240L110 240C110 235 110 230 102 224C90 224 82 222 75 220C40 210 20 175 20 130C20 70 45 8 120 8Z"/></clipPath></defs><g clip-path="url(#bc)"><rect x="0" width="80" height="240" fill="#0a2855"/><rect x="80" width="80" height="240" fill="#fff"/><rect x="160" width="80" height="240" fill="#7c2418"/></g><rect x="78" y="270" width="84" height="50" rx="6" fill="#6b4f35"/><line x1="105" y1="240" x2="92" y2="270" stroke="#1f1a16" stroke-width="1.5"/><line x1="135" y1="240" x2="148" y2="270" stroke="#1f1a16" stroke-width="1.5"/></svg>
+      <button class="cta">Discutez avec Marcel →</button>
+    </div>
+  </div>
+</div>
+
+<div class="label">Option 4 — Vidéo (explainer / ambiance)</div>
+<div class="row">
+  <div class="left">
+    <div class="kick">IKCP · Conseil patrimonial indépendant</div>
+    <h1>Protéger ce que vous êtes <em>en train de bâtir.</em></h1>
+    <p>Un accompagnement sur-mesure — juridique, fiscal et financier.</p>
+  </div>
+  <div class="right">
+    <div class="video">
+      <div class="play">▶</div>
+      <div class="cap">IKCP en 90 secondes · explainer animé Marcel</div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <b>Possibilité vidéo (Option 4)</b> : on peut mettre dans cet espace soit l'<b>explainer animé Marcel</b> qu'on a déjà créé (léger, sur-mesure, lecture au clic), soit une <b>vidéo cinématique IA</b> (Sora/Runway — boucle montgolfière au-dessus de l'Ardèche). ⚠️ Une vidéo en lecture auto peut alourdir/ralentir et faire « générique » — je recommande un <b>bouton ▶ play</b> plutôt qu'un autoplay. L'explainer déjà fait est le choix le plus rapide et on-brand.
+</div>
+
+<div class="flag">APERÇU · 4 OPTIONS HERO</div>
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Cinéma</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --cream:#FBF8F1;
+  --cream-2:#F4ECDF;
+  --cream-3:#E5D6B5;
+  --ink:#15110D;
+  --ink-2:#2A1F18;
+  --ink-mute:#5C5046;
+  --ink-faint:#8B7F6F;
+  --brick:#A04030;
+  --brick-deep:#7A2D20;
+  --brick-light:#C97565;
+  --line:#E0D4BE;
+  --line-strong:#C9B89E;
+}
+
+html,body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:400; line-height:1.55; letter-spacing:-0.005em;
+  overflow-x:hidden; min-height:100vh;
+  text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+
+main{position:relative; z-index:1}
+
+/* ─── BANDEAU TOP ─── */
+.top-bar{
+  background:var(--ink); color:var(--cream);
+  padding:10px 32px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.32em; text-transform:uppercase;
+}
+.top-bar b{color:var(--brick-light); font-weight:500}
+
+nav.top{
+  position:sticky; top:0; z-index:100;
+  padding:24px 48px; background:rgba(251,248,241,0.92);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-family:'Fraunces',serif; font-size:28px; font-weight:600; color:var(--ink); letter-spacing:0.005em; line-height:1; font-variation-settings:"opsz" 144}
+.brand b{color:var(--brick); font-style:italic}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.32em; color:var(--brick-deep); text-transform:uppercase; margin-top:5px; font-weight:600}
+nav .menu{display:flex; align-items:center; gap:30px; font-family:'Inter',sans-serif}
+nav .menu a{color:var(--ink-mute); text-decoration:none; font-size:13px; font-weight:500; transition:color 0.25s}
+nav .menu a:hover{color:var(--brick)}
+nav .cta{padding:11px 22px; background:var(--ink); color:var(--cream); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; border-radius:0}
+nav .cta:hover{background:var(--brick)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ HERO — TYPOGRAPHIQUE PLEIN ÉCRAN ════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.hero{
+  position:relative; min-height:88vh; padding:0;
+  display:flex; flex-direction:column; justify-content:center;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(160,64,48,0.06), transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(229,214,181,0.4), transparent 50%),
+    var(--cream);
+  overflow:hidden;
+}
+
+/* Grille géométrique de fond */
+.hero-grid{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+  background-size:80px 80px;
+  opacity:0.6;
+}
+
+/* Montgolfière flottante (subtil, en arrière) */
+.hero-balloon{
+  position:absolute; right:5%; top:20%; width:18%; max-width:260px;
+  z-index:1; opacity:0.85;
+  animation:floatY 8s ease-in-out infinite;
+}
+@keyframes floatY{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-20px) rotate(1deg)}}
+
+@media (max-width:760px){.hero-balloon{right:5%; top:6%; width:30%; opacity:0.5}}
+
+.hero-content{
+  position:relative; z-index:2;
+  padding:80px 56px 60px; max-width:1320px; margin:0 auto; width:100%;
+}
+@media (max-width:760px){.hero-content{padding:60px 28px 40px}}
+
+.hero-prelude{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10.5px; letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--brick); margin-bottom:32px; font-weight:600;
+  display:flex; align-items:center; gap:16px;
+  opacity:0; animation:fadeUp 1s 0.3s forwards;
+}
+.hero-prelude::before, .hero-prelude::after{content:''; flex:0 1 60px; height:1px; background:var(--brick); display:inline-block}
+.hero-prelude::after{display:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.hero h1{
+  font-family:'Fraunces',serif;
+  font-variation-settings:"opsz" 144;
+  font-size:clamp(56px, 11vw, 168px);
+  line-height:0.92; font-weight:300; letter-spacing:-0.045em;
+  color:var(--ink); margin-bottom:48px;
+  opacity:0; animation:fadeUp 1.2s 0.5s forwards;
+}
+.hero h1 .line{display:block; opacity:0; animation:fadeUp 1s forwards}
+.hero h1 .line-1{animation-delay:0.5s}
+.hero h1 .line-2{animation-delay:0.9s}
+.hero h1 .line-3{animation-delay:1.3s}
+.hero h1 em{font-style:italic; color:var(--brick); font-weight:400}
+
+.hero-tagline{
+  font-family:'Fraunces',serif; font-style:italic;
+  font-size:clamp(20px, 2.4vw, 28px); line-height:1.4;
+  color:var(--ink-mute); max-width:680px; margin-bottom:50px; font-weight:400;
+  opacity:0; animation:fadeUp 1s 1.5s forwards;
+}
+.hero-tagline em{color:var(--ink); font-weight:500}
+
+.hero-actions{
+  display:flex; align-items:center; gap:32px; flex-wrap:wrap;
+  opacity:0; animation:fadeUp 1s 1.8s forwards;
+}
+.btn-primary{
+  display:inline-block; padding:18px 38px; background:var(--ink); color:var(--cream);
+  text-decoration:none; font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:0.2em; text-transform:uppercase; border-radius:0;
+  transition:all 0.3s; border:1.5px solid var(--ink);
+}
+.btn-primary:hover{background:transparent; color:var(--ink)}
+.btn-secondary{color:var(--ink); text-decoration:none; font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:0.06em; border-bottom:1.5px solid var(--ink); padding-bottom:5px; font-weight:500}
+.btn-secondary:hover{color:var(--brick); border-color:var(--brick)}
+
+.hero-meta{
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:0;
+  margin-top:80px; padding-top:40px; border-top:1px solid var(--ink);
+  opacity:0; animation:fadeUp 1s 2.1s forwards;
+}
+@media (max-width:760px){.hero-meta{grid-template-columns:repeat(2, 1fr)}}
+.hero-meta-item{
+  padding:0 24px; border-right:1px solid var(--line-strong);
+  font-family:'Inter',sans-serif;
+}
+.hero-meta-item:last-child{border-right:none}
+.hero-meta-item:first-child{padding-left:0}
+.hero-meta-item .num{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:48px; color:var(--ink); line-height:1; font-weight:400; letter-spacing:-0.02em;
+}
+.hero-meta-item .num em{color:var(--brick); font-style:italic}
+.hero-meta-item .lbl{font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-mute); font-weight:600; margin-top:8px}
+
+/* Scroll indicator */
+.scroll-hint{
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--ink-faint);
+  letter-spacing:0.32em; text-transform:uppercase; z-index:2;
+  opacity:0; animation:fadeIn 1.5s 2.5s forwards;
+}
+.scroll-hint::after{
+  content:''; display:block; width:1px; height:24px; background:var(--brick);
+  margin:8px auto 0; animation:scroll 2s ease-in-out infinite;
+}
+@keyframes scroll{0%,100%{transform:scaleY(0.4); transform-origin:top}50%{transform:scaleY(1); transform-origin:top}}
+
+/* ─── §I L'ÉQUIPAGE — GRID GEOMÉTRIQUE ─── */
+section.equipage{padding:140px 56px 120px; max-width:1280px; margin:0 auto; border-top:1px solid var(--line)}
+.section-mark{
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.32em; text-transform:uppercase; color:var(--brick); margin-bottom:24px; font-weight:600;
+}
+.section-mark::before{content:'§ I — '; opacity:0.6}
+.section-mark.s2::before{content:'§ II — '}
+.section-mark.s3::before{content:'§ III — '}
+.section-mark.s4::before{content:'§ IV — '}
+
+.section-h{
+  font-family:'Fraunces',serif;
+  font-variation-settings:"opsz" 144;
+  font-size:clamp(40px, 6vw, 88px); line-height:0.95;
+  color:var(--ink); font-weight:400; letter-spacing:-0.025em; margin-bottom:24px;
+}
+.section-h em{color:var(--brick); font-style:italic}
+.section-deck{
+  font-size:17px; color:var(--ink-mute); line-height:1.7;
+  max-width:680px; margin-bottom:60px;
+}
+
+.eq-grid{
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  gap:0; border-top:1.5px solid var(--ink); border-left:1.5px solid var(--ink);
+}
+@media (max-width:900px){.eq-grid{grid-template-columns:repeat(2, 1fr)}}
+@media (max-width:580px){.eq-grid{grid-template-columns:1fr}}
+
+.eq-cell{
+  padding:36px 32px; background:var(--cream);
+  border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink);
+  position:relative; transition:background 0.3s;
+}
+.eq-cell:hover{background:var(--cream-2)}
+.eq-cell.featured{background:var(--ink); color:var(--cream)}
+.eq-cell.featured:hover{background:var(--brick-deep)}
+
+.eq-num{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:14px; color:var(--brick); font-style:italic; margin-bottom:16px; font-weight:500;
+}
+.eq-cell.featured .eq-num{color:var(--brick-light)}
+.eq-icon-row{display:flex; align-items:flex-start; gap:14px; margin-bottom:14px}
+.eq-icon{font-size:32px; line-height:1}
+.eq-name{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:32px; line-height:1; color:var(--ink); font-weight:400; letter-spacing:-0.015em;
+}
+.eq-cell.featured .eq-name{color:var(--cream); font-style:italic}
+.eq-domain{
+  display:block; font-family:'Inter',sans-serif; font-size:10px;
+  letter-spacing:0.32em; text-transform:uppercase; color:var(--ink-mute); font-weight:700; margin-top:6px;
+}
+.eq-cell.featured .eq-domain{color:var(--brick-light)}
+.eq-rule{width:32px; height:1.5px; background:var(--brick); margin:14px 0}
+.eq-cell.featured .eq-rule{background:var(--brick-light)}
+.eq-desc{font-size:14px; color:var(--ink-mute); line-height:1.65}
+.eq-cell.featured .eq-desc{color:rgba(251,248,241,0.7)}
+
+/* ─── §II SALON PRIVÉ ─── */
+section.salon{padding:140px 56px; max-width:1280px; margin:0 auto; border-top:1px solid var(--line)}
+.salon-frame{
+  margin-top:50px; border:1.5px solid var(--ink);
+  display:grid; grid-template-columns:240px 1fr;
+  background:var(--cream); position:relative;
+  box-shadow:12px 12px 0 var(--brick);
+}
+@media (max-width:760px){.salon-frame{grid-template-columns:1fr; box-shadow:6px 6px 0 var(--brick)}}
+
+.salon-aside{background:var(--ink); color:var(--cream); padding:28px 22px}
+.salon-aside-brand{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; color:var(--brick-light); border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:14px; margin-bottom:18px; letter-spacing:0.005em; font-weight:500}
+.salon-aside-brand b{color:var(--cream); font-weight:500; font-style:italic}
+.salon-aside-section{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--brick-light); margin:18px 0 10px; opacity:0.7; font-weight:700}
+.salon-aside-item{padding:9px 12px; font-family:'Inter',sans-serif; font-size:13px; color:var(--cream); display:flex; align-items:center; gap:10px; transition:all 0.25s; cursor:pointer}
+.salon-aside-item:hover{color:var(--brick-light)}
+.salon-aside-item.active{background:rgba(201,117,101,0.15); color:var(--brick-light); border-left:2px solid var(--brick-light)}
+
+.salon-main{padding:36px 40px}
+.salon-greet{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:42px; color:var(--ink); margin-bottom:6px; font-weight:400; letter-spacing:-0.025em; line-height:1}
+.salon-greet em{color:var(--brick); font-style:italic}
+.salon-sub{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-mute); margin-bottom:32px; letter-spacing:0.06em; text-transform:uppercase}
+
+.salon-tiles{display:grid; grid-template-columns:repeat(4, 1fr); gap:0; border:1.5px solid var(--ink); margin-bottom:32px}
+@media (max-width:760px){.salon-tiles{grid-template-columns:repeat(2, 1fr)}}
+.salon-tile{padding:20px 18px; border-right:1px solid var(--line-strong); background:var(--cream)}
+.salon-tile:last-child{border-right:none}
+.salon-tile-l{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--brick); font-weight:700; margin-bottom:10px}
+.salon-tile-v{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:34px; color:var(--ink); font-weight:400; line-height:1; letter-spacing:-0.025em}
+.salon-tile-m{font-family:'Inter',sans-serif; font-size:11px; color:var(--ink-faint); margin-top:6px; font-style:italic}
+
+.salon-feed{background:var(--cream-2); padding:24px; border:1.5px solid var(--ink)}
+.salon-feed h4{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:20px; color:var(--ink); margin-bottom:14px; font-weight:500; padding-bottom:10px; border-bottom:1.5px solid var(--brick)}
+.salon-feed-row{padding:11px 0; font-family:'Inter',sans-serif; font-size:13.5px; color:var(--ink); line-height:1.5; display:flex; gap:12px; border-bottom:1px solid var(--line); align-items:flex-start}
+.salon-feed-row:last-child{border-bottom:none}
+.salon-feed-row .who{font-family:'Fraunces',serif; font-style:italic; color:var(--brick); font-weight:500; min-width:80px}
+.salon-feed-row .ts{color:var(--ink-faint); font-size:10.5px; margin-left:auto; white-space:nowrap; font-family:'JetBrains Mono',monospace}
+
+/* ─── §III INTÉGRATIONS ─── */
+section.integ{padding:140px 56px; max-width:1280px; margin:0 auto; border-top:1px solid var(--line)}
+.integ-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:0; border-top:1.5px solid var(--ink); border-left:1.5px solid var(--ink); margin-top:50px}
+@media (max-width:760px){.integ-grid{grid-template-columns:repeat(2, 1fr)}}
+.integ-cell{padding:24px 22px; border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); background:var(--cream); transition:background 0.25s}
+.integ-cell:hover{background:var(--cream-2)}
+.integ-cell.high{background:var(--cream-3)}
+.integ-cat{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--brick); font-weight:700; margin-bottom:10px}
+.integ-name{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; color:var(--ink); font-weight:400; letter-spacing:-0.015em; line-height:1}
+.integ-name em{font-style:italic}
+.integ-mini{font-family:'Inter',sans-serif; font-size:11px; color:var(--ink-faint); margin-top:8px; font-style:italic}
+
+/* ─── §IV SOUVERAINETÉ ─── */
+section.souv{padding:140px 56px; max-width:1280px; margin:0 auto; border-top:1px solid var(--line)}
+.souv-grid{display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:60px}
+@media (max-width:900px){.souv-grid{grid-template-columns:1fr; gap:40px}}
+.souv-body{font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--ink-mute); line-height:1.7; margin-bottom:18px; font-weight:400}
+.souv-body strong{color:var(--ink); font-weight:500; font-style:normal}
+.souv-stack{background:var(--cream-2); border:1.5px solid var(--ink); box-shadow:8px 8px 0 var(--brick)}
+.souv-row{
+  display:grid; grid-template-columns:auto 110px 1fr; gap:16px; align-items:center;
+  padding:18px 22px; border-bottom:1px solid var(--line);
+  font-family:'Inter',sans-serif; font-size:13px; line-height:1.5;
+}
+.souv-row:last-child{border-bottom:none}
+.souv-row .flag{font-size:20px}
+.souv-row .label{font-family:'Fraunces',serif; font-style:italic; font-size:15px; color:var(--brick-deep); font-weight:500}
+.souv-row .val{color:var(--ink-mute); font-size:13px}
+.souv-row .val b{color:var(--ink); font-weight:600}
+
+/* ─── CTA FINAL ─── */
+section.cta-final{
+  padding:160px 56px; text-align:center;
+  background:var(--ink); color:var(--cream);
+  border-top:1px solid var(--line);
+  position:relative;
+}
+.cta-final::before{
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:60%; height:1px; background:linear-gradient(90deg, transparent, var(--brick-light), transparent);
+}
+.cta-final-h{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:clamp(48px, 8vw, 120px); line-height:0.94; color:var(--cream);
+  font-weight:300; letter-spacing:-0.035em; max-width:1100px; margin:0 auto 28px;
+}
+.cta-final-h em{color:var(--brick-light); font-style:italic; font-weight:400}
+.cta-final-sub{font-family:'Fraunces',serif; font-style:italic; font-size:20px; color:var(--brick-light); max-width:560px; margin:0 auto 50px; line-height:1.5}
+
+footer.proto{padding:48px 32px 36px; text-align:center; background:var(--ink); border-top:1px solid rgba(255,255,255,0.1)}
+footer.proto p{font-family:'Inter',sans-serif; font-size:11px; color:rgba(251,248,241,0.55); line-height:1.85; letter-spacing:0.06em}
+footer.proto a{color:var(--brick-light); text-decoration:none; border-bottom:1px solid transparent}
+footer.proto a:hover{border-color:var(--brick-light)}
+footer.proto .signature{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-style:italic; font-size:14px; color:var(--brick-light); margin-bottom:10px}
+
+@media (max-width:760px){
+  nav.top{padding:18px 22px}
+  nav .menu{gap:14px}
+  nav .menu a:not(.cta){display:none}
+  section{padding-left:22px !important; padding-right:22px !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="top-bar"><b>★</b> Family Office augmenté · Sur recommandation</div>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="menu">
+    <a href="#equipage">Équipage</a>
+    <a href="#salon">Salon</a>
+    <a href="#integ">Intégrations</a>
+    <a href="#souv">Souveraineté</a>
+    <a href="mailto:maxime@ikcp.fr" class="cta">Échanger</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO — TYPOGRAPHIQUE PLEIN ÉCRAN ═══ -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-balloon">
+    <svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="bcc"><ellipse cx="65" cy="55" rx="48" ry="56"/></clipPath></defs>
+      <g clip-path="url(#bcc)">
+        <rect x="17" y="-1" width="32" height="112" fill="#0055A4"/>
+        <rect x="49" y="-1" width="32" height="112" fill="#FFFFFF"/>
+        <rect x="81" y="-1" width="32" height="112" fill="#EF4135"/>
+      </g>
+      <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="#15110D" stroke-width="1.3"/>
+      <line x1="35" y1="105" x2="50" y2="125" stroke="#15110D" stroke-width="1.3"/>
+      <line x1="95" y1="105" x2="80" y2="125" stroke="#15110D" stroke-width="1.3"/>
+      <rect x="50" y="125" width="30" height="20" rx="2" fill="#7A2D20"/>
+      <ellipse cx="65" cy="115" rx="6" ry="3" fill="#C97565"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-prelude">Family Office · IKCP · 2026</div>
+
+    <h1>
+      <span class="line line-1">Une <em>porte.</em></span>
+      <span class="line line-2">Une <em>équipe.</em></span>
+      <span class="line line-3">Votre <em>orbite.</em></span>
+    </h1>
+
+    <p class="hero-tagline">Marcel orchestre. <em>Neuf agents</em> exécutent. Vous gardez la main.</p>
+
+    <div class="hero-actions">
+      <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office" class="btn-primary">Demander une recommandation</a>
+      <a href="#equipage" class="btn-secondary">Voir l'équipage →</a>
+    </div>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item"><div class="num"><em>9</em></div><div class="lbl">Agents IA<br>spécialisés</div></div>
+      <div class="hero-meta-item"><div class="num">9</div><div class="lbl">Expertises<br>Family Office</div></div>
+      <div class="hero-meta-item"><div class="num">1</div><div class="lbl">Chef<br>d'orchestre</div></div>
+      <div class="hero-meta-item"><div class="num">0</div><div class="lbl">Donnée hors<br>de France</div></div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Marcel &amp; les agents</div>
+</section>
+
+<!-- ═══ §I L'ÉQUIPAGE ═══ -->
+<section class="equipage" id="equipage">
+  <div class="section-mark">L'équipage</div>
+  <h2 class="section-h">Marcel et <em>neuf spécialistes</em>.</h2>
+  <p class="section-deck">Chaque agent porte un nom, un domaine, une signature. Tous écoutent Marcel. Aucun ne se substitue à votre cabinet — ils l'amplifient.</p>
+
+  <div class="eq-grid">
+    <article class="eq-cell featured" style="grid-column:span 1">
+      <div class="eq-num">★ chef</div>
+      <div class="eq-icon-row"><div class="eq-icon">🎯</div><div><div class="eq-name">Marcel</div><div class="eq-domain">Chef d'orchestre</div></div></div>
+      <div class="eq-rule"></div>
+      <p class="eq-desc">Le point de contact unique. Écoute, qualifie, oriente, agrège.</p>
+    </article>
+
+    <article class="eq-cell"><div class="eq-num">i.</div><div class="eq-icon-row"><div class="eq-icon">🏛</div><div><div class="eq-name">Auguste</div><div class="eq-domain">Juridique &amp; fiscal</div></div></div><div class="eq-rule"></div><p class="eq-desc">Veille temps réel, optimisation IR/IFI/Dutreil, structuration successorale.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">ii.</div><div class="eq-icon-row"><div class="eq-icon">📊</div><div><div class="eq-name">Léon</div><div class="eq-domain">Marchés financiers</div></div></div><div class="eq-rule"></div><p class="eq-desc">Allocation cible vs réelle, alertes drawdown, propositions d'arbitrages.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">iii.</div><div class="eq-icon-row"><div class="eq-icon">💎</div><div><div class="eq-name">Joséphine</div><div class="eq-domain">Conciergerie</div></div></div><div class="eq-rule"></div><p class="eq-desc">Hôtels Relais &amp; Châteaux, jets privés, restaurants étoilés, scolarité.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">iv.</div><div class="eq-icon-row"><div class="eq-icon">🎨</div><div><div class="eq-name">Émile</div><div class="eq-domain">Art &amp; collections</div></div></div><div class="eq-rule"></div><p class="eq-desc">Curation, valorisation, ventes Sotheby's-Christie's-Drouot, assurance.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">v.</div><div class="eq-icon-row"><div class="eq-icon">🏠</div><div><div class="eq-name">Hélène</div><div class="eq-domain">Immobilier</div></div></div><div class="eq-rule"></div><p class="eq-desc">Acquisition, gestion locative, valorisation DVF, cession, marché direct.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">vi.</div><div class="eq-icon-row"><div class="eq-icon">🌱</div><div><div class="eq-name">Augustin</div><div class="eq-domain">Private Equity</div></div></div><div class="eq-rule"></div><p class="eq-desc">Sourcing deals, due diligence, dette privée, club deals, suivi.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">vii.</div><div class="eq-icon-row"><div class="eq-icon">📋</div><div><div class="eq-name">Camille</div><div class="eq-domain">Family Secretary</div></div></div><div class="eq-rule"></div><p class="eq-desc">Échéances, paiements, courriers, archivage eIDAS, scolarité, factures.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">viii.</div><div class="eq-icon-row"><div class="eq-icon">🤲</div><div><div class="eq-name">Iris</div><div class="eq-domain">Philanthropie</div></div></div><div class="eq-rule"></div><p class="eq-desc">Structuration de fondation, sélection causes, mesure d'impact.</p></article>
+
+    <article class="eq-cell"><div class="eq-num">ix.</div><div class="eq-icon-row"><div class="eq-icon">📑</div><div><div class="eq-name">Olympe</div><div class="eq-domain">Reporting</div></div></div><div class="eq-rule"></div><p class="eq-desc">Consolide chaque trimestre les analyses des huit autres agents en synthèse claire.</p></article>
+  </div>
+</section>
+
+<!-- ═══ §II SALON PRIVÉ ═══ -->
+<section class="salon" id="salon">
+  <div class="section-mark s2">Salon privé</div>
+  <h2 class="section-h">Votre <em>espace</em>.<br>Discret. Vivant.</h2>
+  <p class="section-deck">Une seule URL, un magic-link à votre nom. Vous y retrouvez Marcel, l'équipage, vos dossiers, vos échéances. Connecté à votre logiciel patrimonial.</p>
+
+  <div class="salon-frame">
+    <aside class="salon-aside">
+      <div class="salon-aside-brand">IKCP<b>.</b></div>
+      <div class="salon-aside-section">Famille</div>
+      <div class="salon-aside-item active">📊 Tableau de bord</div>
+      <div class="salon-aside-item">🎯 Marcel</div>
+      <div class="salon-aside-item">📁 Dossiers</div>
+      <div class="salon-aside-item">📅 Échéances</div>
+      <div class="salon-aside-section">Équipage</div>
+      <div class="salon-aside-item">🏛 Auguste</div>
+      <div class="salon-aside-item">📑 Olympe</div>
+      <div class="salon-aside-item">+ 7 autres</div>
+      <div class="salon-aside-section">Compte</div>
+      <div class="salon-aside-item">⚙ Préférences</div>
+      <div class="salon-aside-item">🔓 Déconnexion</div>
+    </aside>
+
+    <div class="salon-main">
+      <div class="salon-greet">Bonjour <em>Joséphine</em>.</div>
+      <div class="salon-sub">3 informations · dernière visite hier 18h47</div>
+
+      <div class="salon-tiles">
+        <div class="salon-tile"><div class="salon-tile-l">Patrimoine</div><div class="salon-tile-v">14,2 M€</div><div class="salon-tile-m">+ 1,8 % ce trimestre</div></div>
+        <div class="salon-tile"><div class="salon-tile-l">Liquidités</div><div class="salon-tile-v">2,1 M€</div><div class="salon-tile-m">12 mois de train de vie</div></div>
+        <div class="salon-tile"><div class="salon-tile-l">Dossiers</div><div class="salon-tile-v">4</div><div class="salon-tile-m">2 à valider</div></div>
+        <div class="salon-tile"><div class="salon-tile-l">Échéance</div><div class="salon-tile-v">14 j</div><div class="salon-tile-m">Acompte IFI 2026</div></div>
+      </div>
+
+      <div class="salon-feed">
+        <h4>Activité de l'équipage</h4>
+        <div class="salon-feed-row"><span class="who">Auguste</span><span>note Dutreil cession holding · à valider</span><span class="ts">2h</span></div>
+        <div class="salon-feed-row"><span class="who">Léon</span><span>drawdown -6,2 % actions US · arbitrage proposé</span><span class="ts">5h</span></div>
+        <div class="salon-feed-row"><span class="who">Olympe</span><span>synthèse Q1 · 4 pages</span><span class="ts">hier</span></div>
+        <div class="salon-feed-row"><span class="who">Émile</span><span>cote collection +4,1 % · IFI ajusté</span><span class="ts">hier</span></div>
+        <div class="salon-feed-row"><span class="who">Camille</span><span>acte notarié archivé eIDAS</span><span class="ts">2j</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ §III INTÉGRATIONS ═══ -->
+<section class="integ" id="integ">
+  <div class="section-mark s3">Intégrations</div>
+  <h2 class="section-h">Tout <em>parle</em><br>à tout le monde.</h2>
+  <p class="section-deck">L'équipage parle à vos outils existants — signature, identité, comptes bancaires, agenda, notaire, expert-comptable, votre logiciel cabinet.</p>
+
+  <div class="integ-grid">
+    <div class="integ-cell"><div class="integ-cat">Signature</div><div class="integ-name">Yousign<em>.</em></div><div class="integ-mini">eIDAS AdES</div></div>
+    <div class="integ-cell"><div class="integ-cat">Sign. qualifiée</div><div class="integ-name">Universign<em>.</em></div><div class="integ-mini">eIDAS QES</div></div>
+    <div class="integ-cell"><div class="integ-cat">Identité</div><div class="integ-name">Ubble<em>.</em></div><div class="integ-mini">PVID ANSSI</div></div>
+    <div class="integ-cell"><div class="integ-cat">Bancaire</div><div class="integ-name">Powens<em>.</em></div><div class="integ-mini">DSP2</div></div>
+    <div class="integ-cell"><div class="integ-cat">CRM</div><div class="integ-name">Notion<em>.</em></div><div class="integ-mini">Hub central</div></div>
+    <div class="integ-cell"><div class="integ-cat">Agenda</div><div class="integ-name">Calendly<em>.</em></div><div class="integ-mini">RDV cabinet</div></div>
+    <div class="integ-cell"><div class="integ-cat">Honoraires</div><div class="integ-name">Stripe<em>.</em></div><div class="integ-mini">Encaissement</div></div>
+    <div class="integ-cell"><div class="integ-cat">Email</div><div class="integ-name">Resend<em>.</em></div><div class="integ-mini">Transactionnel</div></div>
+    <div class="integ-cell"><div class="integ-cat">Workflows</div><div class="integ-name">Make<em>.</em></div><div class="integ-mini">Automation</div></div>
+    <div class="integ-cell"><div class="integ-cat">Veille</div><div class="integ-name">Légifrance<em>.</em></div><div class="integ-mini">Sources légales</div></div>
+    <div class="integ-cell high"><div class="integ-cat">Cabinet local</div><div class="integ-name">Logiciel-GP<em>.</em></div><div class="integ-mini">Synchro bidirectionnelle</div></div>
+    <div class="integ-cell high"><div class="integ-cat">Agents IA</div><div class="integ-name">Claude Agent SDK<em>.</em></div><div class="integ-mini">Anthropic · DPA + SCC</div></div>
+  </div>
+</section>
+
+<!-- ═══ §IV SOUVERAINETÉ ═══ -->
+<section class="souv" id="souv">
+  <div class="section-mark s4">Souveraineté</div>
+  <h2 class="section-h">Vos données ne <em>quittent</em><br>pas la France.</h2>
+  <p class="section-deck">L'écosystème entier est hébergé en France ou propulsé par des partenaires européens conformes RGPD. Aucune donnée personnelle ne transite hors UE sans encadrement.</p>
+
+  <div class="souv-grid">
+    <div>
+      <p class="souv-body">Marcel et les neuf agents reposent sur le <strong>Claude Agent SDK</strong> d'Anthropic. Tous les <strong>calculs fiscaux</strong> passent par <strong>ikcp-mcp</strong>, notre serveur propriétaire hébergé à Paris.</p>
+      <p class="souv-body">Les <strong>documents réglementaires</strong> sont archivés en France avec horodatage qualifié eIDAS. La validation humaine de Maxime est <strong>systématique</strong> sur tout livrable.</p>
+    </div>
+    <div class="souv-stack">
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Edge</span><span class="val"><b>Cloudflare Workers</b> · ISO 27001 · DPA UE</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Calculs</span><span class="val"><b>Scaleway fr-par</b> · Paris · ikcp-mcp</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Données</span><span class="val"><b>Cloudflare D1 · R2 · KV</b> · UE · chiffré</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Signature</span><span class="val"><b>Yousign · Universign</b> · eIDAS QES</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Identité</span><span class="val"><b>Ubble</b> · PVID ANSSI</span></div>
+      <div class="souv-row"><span class="flag">🇪🇺</span><span class="label">Agents IA</span><span class="val"><b>Anthropic Claude Agent SDK</b> · DPA + SCC</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL — CINÉMATOGRAPHIQUE ═══ -->
+<section class="cta-final">
+  <h2 class="cta-final-h">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+  <p class="cta-final-sub">Sur recommandation. Familles à patrimoine constitué.</p>
+  <div class="hero-actions" style="justify-content:center; opacity:1; animation:none">
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office" class="btn-primary" style="background:var(--brick); color:var(--cream); border-color:var(--brick)">Demander une recommandation</a>
+    <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" class="btn-secondary" style="color:var(--brick-light); border-color:var(--brick-light)" target="_blank">Calendly →</a>
+  </div>
+</section>
+
+<footer class="proto">
+  <p class="signature">— fin du programme —</p>
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

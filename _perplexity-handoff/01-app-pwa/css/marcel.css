@@ -1,0 +1,205 @@
+/* ┌─────────────────────────────────────────────────────────────┐
+ * │  Marcel · Design System — Family Office augmenté IKCP       │
+ * │  Charte officielle 2026-05-16                              │
+ * └─────────────────────────────────────────────────────────────┘ */
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  /* Palette */
+  --bg:#FAF7F0;
+  --bg-2:#F5EFE0;
+  --bg-3:#EBE3D4;
+  --ink:#1A1814;
+  --mute:#6B655A;
+  --faint:#9B8F80;
+  --accent:#C24722;
+  --accent-soft:rgba(194,71,34,0.10);
+  --gold:#C9A96E;
+  --gold-bright:#E2C896;
+  --line:rgba(26,24,20,0.10);
+  --line-strong:rgba(26,24,20,0.18);
+  --success:#3F7A3F;
+  --warn:#B8801F;
+  --bad:#B91C1C;
+  --navy:#1B2A4A;
+  --navy-deep:#0E1729;
+  --cream:#FAFAF8;
+}
+
+html,body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"kern" 1,"liga" 1;
+  min-height:100vh;
+}
+
+/* ─── Header app ─── */
+.app-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(250,247,240,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:14px 22px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.app-brand{font-family:'Fraunces',serif;font-size:20px;font-weight:500;letter-spacing:-0.005em;color:var(--ink);text-decoration:none}
+.app-brand em{font-style:italic;color:var(--accent)}
+.app-brand-sub{display:block;font-size:9px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:500;margin-top:1px}
+.app-user{display:flex;align-items:center;gap:14px;font-size:13px}
+.app-user .avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:14px}
+.app-user .tier{font-size:9.5px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600;padding:4px 8px;border:1px solid var(--line);border-radius:999px}
+.app-user .tier.premium{color:var(--accent);border-color:var(--accent)}
+.app-user .logout{background:none;border:none;cursor:pointer;color:var(--mute);font-size:12px}
+.app-user .logout:hover{color:var(--accent)}
+
+/* ─── Bottom tab nav (mobile-first) ─── */
+.app-tabs{
+  position:fixed;bottom:0;left:0;right:0;z-index:40;
+  background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;padding:8px 0 max(8px,env(safe-area-inset-bottom));
+}
+.app-tabs a{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 4px;text-decoration:none;color:var(--mute);
+  font-size:9.5px;letter-spacing:0.08em;font-weight:600;text-transform:uppercase;
+  transition:color 0.2s;
+}
+.app-tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
+.app-tabs a:hover,.app-tabs a.active{color:var(--accent)}
+.app-tabs a.active::before{content:'';position:absolute;top:0;left:30%;right:30%;height:2px;background:var(--accent);border-radius:0 0 2px 2px}
+
+/* ─── Main content ─── */
+main.app-main{padding:24px 22px 90px;max-width:1280px;margin:0 auto}
+
+/* ─── Section title ─── */
+.section-label{font-size:10.5px;letter-spacing:0.28em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:10px;display:inline-block}
+.section-label::before{content:'◆ ';opacity:0.7}
+h1.app-h1{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,38px);line-height:1.1;font-weight:400;letter-spacing:-0.018em;margin-bottom:8px}
+h1.app-h1 em{font-style:italic;color:var(--accent)}
+p.app-lead{font-size:14.5px;color:var(--mute);line-height:1.6;margin-bottom:24px;max-width:580px}
+
+/* ─── Cards / Widgets ─── */
+.card{
+  background:var(--bg);border:1px solid var(--line);border-radius:14px;
+  padding:22px 22px 20px;display:flex;flex-direction:column;gap:10px;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 14px 30px -16px rgba(26,24,20,0.10);border-color:var(--line-strong)}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.card-cat{font-size:9.5px;letter-spacing:0.24em;color:var(--accent);font-weight:700;text-transform:uppercase}
+.card-cat::before{content:'◆ ';opacity:0.6}
+.card h3{font-family:'Fraunces',serif;font-size:20px;font-weight:500;line-height:1.2;color:var(--ink);letter-spacing:-0.012em}
+.card p{font-size:13.5px;color:var(--mute);line-height:1.55}
+.card .meta{font-size:11px;color:var(--faint);font-style:italic;letter-spacing:0.02em}
+
+/* ─── Status badges ─── */
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:0.22em;font-weight:700;
+  text-transform:uppercase;line-height:1;padding:5px 10px;border-radius:999px;
+}
+.pill.live{background:rgba(63,122,63,0.12);color:var(--success)}
+.pill.live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 0 2px rgba(63,122,63,0.2)}
+.pill.warn{background:rgba(184,128,31,0.10);color:var(--warn)}
+.pill.warn::before{content:'⚠';font-size:10px}
+.pill.bad{background:rgba(185,28,28,0.10);color:var(--bad)}
+.pill.bad::before{content:'!';font-weight:800}
+.pill.neutral{background:transparent;color:var(--mute);border:1px solid var(--line)}
+
+/* ─── Buttons ─── */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  padding:12px 22px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:0.02em;
+  text-decoration:none;transition:all 0.3s;
+}
+.btn-primary{background:var(--ink);color:var(--cream)}
+.btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line-strong)}
+.btn-ghost:hover{background:var(--bg-2);border-color:var(--accent);color:var(--accent)}
+.btn-accent{background:var(--accent);color:var(--cream)}
+.btn-accent:hover{background:#A03B1D;transform:translateY(-1px)}
+.btn-sm{padding:7px 14px;font-size:11.5px}
+
+/* ─── Marcel sphère réutilisable ─── */
+.marcel-mini{
+  width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle at 42% 32%,#F0B89B,#C24722 55%,#8B2F18);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--cream);font-family:'Fraunces',serif;font-style:italic;font-size:22px;
+  box-shadow:0 0 0 1px rgba(194,71,34,0.15),0 0 24px rgba(194,71,34,0.20);
+  animation:breathe 6s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+
+/* ─── Grids ─── */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:760px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
+@media(min-width:761px) and (max-width:1080px){
+  .grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ─── Marcel-Live champ chat sticky ─── */
+.marcel-live-bar{
+  background:var(--bg);border:1px solid var(--line);border-radius:14px;
+  padding:18px 22px;margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.marcel-live-bar:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.marcel-live-bar .label{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);flex-shrink:0}
+.marcel-live-bar input{
+  flex:1;border:none;outline:none;background:transparent;
+  font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;
+  color:var(--ink);padding:6px 0;letter-spacing:-0.005em;
+}
+.marcel-live-bar input::placeholder{color:var(--faint)}
+.marcel-live-bar button{
+  background:var(--ink);color:var(--cream);
+  border:none;border-radius:999px;
+  width:36px;height:36px;flex-shrink:0;
+  font-size:15px;line-height:1;cursor:pointer;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;
+}
+.marcel-live-bar button:hover{background:var(--accent);transform:scale(1.05)}
+
+/* ─── Loading state ─── */
+.loading{padding:40px 20px;text-align:center;color:var(--mute);font-style:italic;font-size:14px}
+.loading::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;animation:livePulse 1.4s ease-in-out infinite}
+@keyframes livePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(0.6);opacity:0.5}}
+
+/* ─── Empty state ─── */
+.empty{
+  padding:60px 20px;text-align:center;
+  background:var(--bg-2);border:1px dashed var(--line);border-radius:14px;
+}
+.empty h4{font-family:'Fraunces',serif;font-size:20px;font-style:italic;color:var(--ink);margin-bottom:8px}
+.empty p{font-size:13.5px;color:var(--mute);max-width:380px;margin:0 auto}
+
+/* ─── Toast / message ─── */
+.toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--ink);color:var(--cream);
+  padding:12px 20px;border-radius:10px;font-size:13px;
+  box-shadow:0 14px 30px -12px rgba(26,24,20,0.30);
+  z-index:200;opacity:0;transition:opacity 0.4s;
+  font-family:'Inter',sans-serif;
+}
+.toast.show{opacity:1}
+
+/* ─── Bandeau RGPD ─── */
+.rgpd{
+  position:fixed;bottom:80px;left:14px;right:14px;max-width:520px;margin:0 auto;
+  background:var(--ink);color:var(--cream);
+  padding:14px 16px;border-radius:10px;font-size:12.5px;line-height:1.5;
+  display:none;align-items:center;gap:14px;z-index:300;
+  box-shadow:0 18px 40px -14px rgba(26,24,20,0.40);
+}
+.rgpd.show{display:flex}
+.rgpd b{display:block;font-size:10.5px;letter-spacing:0.18em;color:var(--gold-bright);text-transform:uppercase;margin-bottom:4px}
+.rgpd button{background:var(--gold);color:var(--ink);border:none;padding:8px 16px;border-radius:6px;font-weight:600;font-size:12px;cursor:pointer;flex-shrink:0}

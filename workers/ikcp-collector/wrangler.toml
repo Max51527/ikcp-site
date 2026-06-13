@@ -1,0 +1,57 @@
+# Wrangler config — ikcp-collector
+#
+# Agent automatise multi-marches (montres / voitures / lego / vins / etc.)
+# Storage : D1 Paris (souverain FR)
+# Cron : scan quotidien 7h Paris
+#
+# ─── DEPLOIEMENT (premiere fois) ───
+#   cd workers/ikcp-collector
+#
+#   # 1. Creer la D1 (region weur Paris)
+#   npx wrangler d1 create ikcp_collector_db --location weur
+#   # → recuperer l'UUID retourne et l'inserer dans [[d1_databases]].database_id ci-dessous
+#
+#   # 2. Initialiser le schema
+#   npx wrangler d1 execute ikcp_collector_db --remote --file=schema.sql
+#
+#   # 3. Configurer les secrets
+#   npx wrangler secret put ADMIN_TOKEN          # generer un token long, sauvegarder Bitwarden
+#   npx wrangler secret put REBRICKABLE_API_KEY  # cle gratuite : https://rebrickable.com/api/
+#
+#   # 4. Deployer
+#   npx wrangler deploy
+#
+# ─── TEST ───
+#   curl https://ikcp-collector.maxime-ead.workers.dev/health
+#   curl -X POST -H "Authorization: Bearer <ADMIN_TOKEN>" -H "Content-Type: application/json" \
+#        https://ikcp-collector.maxime-ead.workers.dev/watches \
+#        -d '{"user_id":"max","market":"bricklink","category":"lego","query":"10497-1"}'
+#   curl https://ikcp-collector.maxime-ead.workers.dev/lookup?market=bricklink&q=10497-1
+
+name = "ikcp-collector"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+
+# D1 — region Paris (WEUR)
+# IMPORTANT : remplacer 'TO_BE_FILLED_AFTER_CREATE' par l'UUID retourne par
+# `npx wrangler d1 create ikcp_collector_db --location weur`
+[[d1_databases]]
+binding = "IKCP_COLLECTOR_DB"
+database_name = "ikcp_collector_db"
+database_id = "36917503-cb64-402d-99c3-28ad48587bd8"
+
+# Cron Triggers — multi-automations Marcel (UTC)
+# 5h00 : cote actifs surveilles (Perplexity)
+# 5h30 : daily digest email (Brevo)
+# 6h00 : veille nocturne fiscale/jurisprudence (Perplexity)
+# 9h00 lundi : detection inactivite (nudge Brevo)
+# 0h00 1er du mois : cartographie SIREN refresh (Pappers)
+[triggers]
+crons = ["0 6 * * *"]
+# Limite 5 cron Cloudflare atteinte sur le compte.
+# Autres automations (veille, digest, inactivite, refresh SIREN) appelables manuellement
+# via endpoint admin POST /trigger?type=veille|digest|cote|inactivite|refresh
+# Voir docs/AUTOMATISATIONS-AGENTS-IA.md
+
+[observability]
+enabled = true

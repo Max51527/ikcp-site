@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · ORIAS 23001568 — Conciergerie & art de vivre -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<meta name="robots" content="noindex, nofollow">
+<title>Conciergerie — IKCP Family Office</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+.wrap{max-width:1080px;margin:0 auto;padding:26px 20px 100px}
+.hero{text-align:center;margin-bottom:8px}
+.hero .eyebrow{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.hero h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(26px,4.6vw,38px);margin:6px 0 4px}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{color:var(--mute);font-size:14.5px;max-width:600px;margin:0 auto}
+.who{display:inline-flex;align-items:center;gap:8px;margin:16px auto 26px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;color:var(--mute)}
+.who b{color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.svc{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;transition:transform .18s,box-shadow .18s}
+.svc:hover{transform:translateY(-3px);box-shadow:0 16px 40px -22px rgba(26,24,20,.35)}
+.svc-h{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+.svc-h .em{font-size:26px}
+.svc-h h3{font-family:'Fraunces',serif;font-weight:500;font-size:18px}
+.svc .agent{font-size:11px;letter-spacing:.06em;color:var(--accent);font-weight:600;margin-bottom:12px}
+.req{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-bottom:8px;font-size:13px;color:var(--ink);cursor:pointer;font-family:'Inter';line-height:1.4;transition:all .15s}
+.req:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.req::before{content:'✦ ';color:var(--accent)}
+.lock{margin-top:26px;text-align:center;font-size:12.5px;color:var(--mute);background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.3);border-radius:12px;padding:14px;display:none}
+.disc{font-size:11px;color:var(--mute);font-style:italic;text-align:center;margin-top:24px;line-height:1.6;max-width:640px;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body style="background:var(--bg)">
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub" id="brandSub">Family Office augmenté</span></a>
+  <div class="app-user"><span class="tier" id="userTier">—</span><a class="logout" href="/app/dashboard.html" style="text-decoration:none">← Dashboard</a></div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Art de vivre · sur demande</div>
+    <h1>Votre <em id="heroWho">conciergerie</em>, pour toutes vos passions.</h1>
+    <p>Voyage, art, automobile, horlogerie, vins, bien-être, philanthropie. Vous formulez l'envie — <span id="whoName">Marcel</span> prépare, vous validez.</p>
+  </div>
+  <div class="who">🛎️ Orchestré par <b id="whoName2">Marcel</b> & les spécialistes IKCP · réponse immédiate, suivi humain sur demande</div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="lock" id="lockMsg">
+    🔒 La conciergerie complète fait partie de l'expérience <b>Family Office</b>. Démarrez votre <b>essai 14 jours</b> ou passez en Family Office pour tout débloquer.
+    <div style="margin-top:10px"><a href="/app/beta-invite.html" class="btn btn-sm" style="text-decoration:none">Démarrer l'essai →</a></div>
+  </div>
+
+  <div class="disc">La conciergerie fournit information, orchestration et mise en relation. Elle ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton (CIF · ORIAS 23001568) reste votre interlocuteur humain.</div>
+</main>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+let me; try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+const tier = me?.tier || 'free';
+const isFO = tier === 'fo';
+if(me){ const t={free:'Découverte',premium:'Premium',fo:'Family Office'}[tier]||'Découverte'; document.getElementById('userTier').textContent = (me.trial&&me.trial.active)?('Family Office · essai '+me.trial.days_left+'j'):t; }
+const who = isFO ? 'Marcel' : 'Marcel';
+['whoName','whoName2'].forEach(id => { const e=document.getElementById(id); if(e) e.textContent = who; });
+
+const SERVICES = [
+  { em:'✈️', nom:'Voyage & expériences', agent:'Concierge', reqs:[
+    'Organisez-moi un week-end d’exception (lieu, hôtel, expériences) selon mes goûts.',
+    'Trouvez une table étoilée disponible ce mois-ci pour 2.',
+    'Une expérience rare (loge privée, événement fermé, aviation) — que proposez-vous ?' ]},
+  { em:'🎨', nom:'Art & collections', agent:'Curateur', reqs:[
+    'Évaluez une œuvre que je possède et son potentiel de valorisation.',
+    'Je souhaite acquérir une pièce — sourcing et due diligence ?',
+    'Comment assurer, conserver et transmettre ma collection ?' ]},
+  { em:'🏎️', nom:'Automobile de collection', agent:'Curateur', reqs:[
+    'Quelle est la cote d’un véhicule de collection que je vise ?',
+    'Recherchez un modèle précis (année, état, provenance, matching numbers).',
+    'Transport, stockage climatisé et entretien d’une voiture de prestige ?' ]},
+  { em:'⌚', nom:'Horlogerie & joaillerie', agent:'Curateur', reqs:[
+    'Évaluez une montre ou une pièce de joaillerie.',
+    'Sourcing d’une référence rare (disponibilité, prix de marché, authenticité).',
+    'Entretien, assurance et stratégie de revente ?' ]},
+  { em:'🍷', nom:'Vins & gastronomie', agent:'Curateur', reqs:[
+    'Construisez la sélection de ma cave selon mon budget et mes goûts.',
+    'Quels vins d’investissement viser cette année ?',
+    'Organisez un dîner d’exception (accords, chef à domicile, lieu).' ]},
+  { em:'🌸', nom:'Bien-être & longévité', agent:'Olympe', reqs:[
+    'Médecine privée et bilan santé haut de gamme — quelles options en France ?',
+    'Une retraite bien-être / longévité de premier rang, que recommandez-vous ?',
+    'Un programme longévité personnalisé : par où commencer ?' ]},
+  { em:'🌱', nom:'Philanthropie & mécénat', agent:'Mécène', reqs:[
+    'Comment structurer une fondation ou un fonds de dotation ?',
+    'Quel mécénat optimise mon impact et ma fiscalité ?',
+    'Un projet à impact pour engager ma famille (NextGen) ?' ]},
+  { em:'🏛️', nom:'Cercle & accès privés', agent:'Concierge', reqs:[
+    'Accès à un club deal / co-investissement de premier rang ?',
+    'Mise en relation avec un cercle de pairs (dirigeants, familles) ?',
+    'Une demande sur-mesure que je ne trouve nulle part ailleurs ?' ]},
+];
+
+function goConcierge(text){
+  try{ sessionStorage.setItem('marcel_q', text); }catch(_){}
+  location.href = '/app/marcel?q=' + encodeURIComponent(text);
+}
+
+document.getElementById('grid').innerHTML = SERVICES.map((s,i) => `
+  <div class="svc">
+    <div class="svc-h"><span class="em">${s.em}</span><h3>${s.nom}</h3></div>
+    <div class="agent">✦ ${s.agent}${isFO?' · via Marcel':''}</div>
+    ${s.reqs.map((q,j) => `<button class="req" data-i="${i}" data-j="${j}">${q.replace(/</g,'&lt;')}</button>`).join('')}
+  </div>`).join('');
+
+document.querySelectorAll('.req').forEach(b => b.addEventListener('click', () => {
+  goConcierge(SERVICES[+b.dataset.i].reqs[+b.dataset.j]);
+}));
+
+// Si pas FO (ni essai) : on montre quand même les services mais on rappelle l'upgrade
+if(!isFO){ document.getElementById('lockMsg').style.display='block'; }
+</script>
+</body>
+</html>

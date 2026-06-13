@@ -1,0 +1,22 @@
+# Wrangler config — Worker IKCP Pappers
+#
+# Déploiement :
+#   cd workers/ikcp-pappers
+#   npx wrangler login                       # une fois
+#   npx wrangler kv namespace create PAPPERS_CACHE   # crée le namespace KV, copier l'ID ci-dessous
+#   npx wrangler secret put PAPPERS_API_KEY  # colle ta clé Pappers (pappers.fr/api/inscription)
+#   npx wrangler deploy                      # déploie
+#
+# Test local :
+#   npx wrangler dev                         # http://localhost:8787
+
+name = "ikcp-pappers"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+
+[[kv_namespaces]]
+binding = "PAPPERS_CACHE"
+id = "dabb785927cc4715bf3374cc0cbb9578"
+
+[observability]
+enabled = true

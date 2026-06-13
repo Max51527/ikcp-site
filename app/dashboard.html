@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel — Dashboard</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<script src="/reveal.js?v=1" defer></script>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">
+    Marcel<em>.</em>
+    <span class="app-brand-sub">Family Office augmenté</span>
+  </a>
+  <div class="app-user">
+    <span class="tier" id="userTier">Découverte</span>
+    <div class="avatar" id="userAvatar">M</div>
+    <a href="/app/console" class="logout" id="adminLnk" style="text-decoration:none;display:none" title="Tour de contrôle (admin)">⚙ Console</a>
+    <script>try{ if(localStorage.getItem('ikcp_admin_secret')) document.getElementById('adminLnk').style.display=''; }catch(_){}</script>
+    <button class="logout" onclick="logout()">Déconnexion</button>
+  </div>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Bonjour <span id="userPrenom">Maxime</span></div>
+  <h1 class="app-h1">Votre Family Office, <em>en orbite.</em></h1>
+  <p class="app-lead" id="userGreeting">Chargement de votre tableau de bord…</p>
+  <div style="display:flex;flex-wrap:wrap;gap:18px;margin:2px 0 6px">
+    <a href="/app/patrimoine-pro" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">📊 Mon cockpit patrimoine →</a>
+    <a href="/app/orbite" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">✦ Patrimoine en orbite →</a>
+    <a href="/app/simulateurs" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">🧮 Simulateurs →</a>
+    <a href="/app/diagnostic" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">🩻 Radiographie 360° →</a>
+    <a href="/app/famille" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">🌳 Famille &amp; gouvernance →</a>
+  </div>
+
+  <!-- ✦ Observation proactive de Marcel (IA personnalisée, cache 1×/jour) -->
+  <article id="marcelInsight" class="card" style="display:none;background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.22);margin:8px 0 18px">
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">✦ L'observation de Marcel</span><span class="pill" id="miPill">pour vous</span></div>
+    <div id="miBody" style="font-size:14.5px;line-height:1.6;color:var(--ink)"></div>
+  </article>
+
+  <!-- ── Marcel-Live champ sticky ── -->
+  <form class="marcel-live-bar" onsubmit="return askMarcel(event)">
+    <span class="label">Marcel</span>
+    <input id="qInput" type="text" placeholder="Posez votre question ou parlez 🎤" maxlength="280" autocomplete="off">
+    <button type="button" id="dashMic" onclick="dashToggleMic()" aria-label="Parler à Marcel" style="background:transparent;color:var(--mute);border:1px solid var(--line);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;transition:all 0.2s">🎤</button>
+    <button type="submit" aria-label="Envoyer">→</button>
+  </form>
+
+  <!-- ── Activation guidée (remplit le dashboard vide, % de progression) ── -->
+  <section id="activation" style="margin:4px 0 18px;display:none"></section>
+
+  <!-- ════ ESPACE 1 — Mon patrimoine & mes questions ════ -->
+  <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:8px 0 3px">Mon patrimoine <em style="font-style:italic;color:var(--accent)">&amp; mes questions</em></h2>
+  <p style="color:var(--mute);font-size:13.5px;margin-bottom:16px">Votre situation, vos sociétés, votre veille — et Marcel pour décider.</p>
+
+  <!-- ── Diagnostic instantané personnalisé (WOW « l'IA me connaît ») ── -->
+  <article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Marcel</span></div>
+    <h3 style="font-family:'Fraunces',serif;font-weight:500;font-size:18px">Vos 3 priorités, <em style="font-style:italic;color:var(--accent)">personnalisées</em></h3>
+    <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre Family Officer identifie vos leviers prioritaires — en direct.</p>
+    <button class="btn btn-sm" onclick="goDiagnostic()">Voir mon diagnostic →</button>
+  </article>
+
+  <!-- ── Score Patrimonial — point de départ de la découverte ── -->
+  <article class="card" id="w-score" style="margin-bottom:14px">
+    <div class="card-head"><span class="card-cat">Score Patrimonial</span><span class="pill neutral" id="scorePill">diagnostic 360°</span></div>
+    <h3 style="font-family:'Fraunces',serif;font-weight:500;font-size:18px">Où en est <em style="font-style:italic;color:var(--accent)">votre patrimoine</em> ?</h3>
+    <div id="score-body" class="loading" style="padding:8px 0">Chargement de votre score…</div>
+  </article>
+  <script>(function(){
+    var el=document.getElementById('score-body'), pill=document.getElementById('scorePill'); if(!el) return;
+    var s=null; try{ s=JSON.parse(localStorage.getItem('ikcp_score')||'null'); }catch(_){ }
+    if(s && typeof s.score==='number'){
+      var col = s.score>=75?'var(--ok,#2D7A4F)':s.score>=45?'var(--accent)':'var(--bad,#B23A2E)';
+      var verdict = s.score>=75?'Patrimoine bien tenu':s.score>=45?'De bonnes bases, des angles morts':'Patrimoine exposé';
+      if(pill){ pill.textContent='à jour'; pill.className='pill live'; }
+      el.className=''; el.style.padding='0';
+      el.innerHTML='<div style="display:flex;align-items:center;gap:16px"><div style="font-family:\'Fraunces\',serif;font-size:42px;font-weight:600;color:'+col+';line-height:1">'+s.score+'<span style="font-size:15px;color:var(--mute)">/100</span></div><div style="flex:1"><div style="font-family:\'Fraunces\',serif;font-size:16px;color:var(--ink)">'+verdict+'</div><div style="font-size:12px;color:var(--mute)">Vos 3 leviers prioritaires vous attendent dans le diagnostic.</div></div></div><a href="/app/score" class="btn btn-ghost btn-sm" style="margin-top:12px">Revoir / refaire mon score →</a>';
+    } else {
+      el.className=''; el.style.padding='0';
+      el.innerHTML='<p style="font-size:13.5px;color:var(--mute);margin:0 0 10px">Le point de départ de votre Family Office : évaluez vos 7 territoires en 2 minutes. Marcel s\'en sert pour cibler vos priorités.</p><a href="/app/score" class="btn btn-sm">Établir mon Score Patrimonial →</a>';
+    }
+  })();</script>
+
+  <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
+  <div class="grid-3" style="margin-bottom:14px">
+    <article class="card" id="w-veille">
+      <div class="card-head"><span class="card-cat">Veille du jour</span><span class="pill warn" id="alertsCount">…</span></div>
+      <h3>Alertes Marcel</h3>
+      <div id="veille-body" class="loading">Marcel agrège votre veille…</div>
+      <a href="/app/veille.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
+    </article>
+
+    <article class="card" id="w-carto">
+      <div class="card-head"><span class="card-cat">Cartographie</span><span class="pill live" id="cartoStatus">SIREN</span></div>
+      <h3 id="cartoNom">Société principale</h3>
+      <div id="carto-body" class="loading">Lecture profil société…</div>
+      <a href="/app/environnement" class="btn btn-sm" style="align-self:flex-start;margin-top:8px">Mon environnement société →</a>
+      <a href="/app/marcel?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
+    </article>
+
+    <article class="card" id="w-patrimoine">
+      <div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill neutral" id="patCount">à compléter</span></div>
+      <h3 id="patNet">Vue consolidée</h3>
+      <div id="pat-body" class="empty" style="padding:16px 0;text-align:left">
+        <p>Votre cockpit : patrimoine net, allocation par univers, indicateurs sur-mesure.</p>
+        <a href="/app/patrimoine-pro" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir mon cockpit →</a>
+      </div>
+    </article>
+    <script>(function(){
+      try{
+        var d=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null'); if(!d) return;
+        var keys=['immobilier','financier','tresorerie','societe','retraite','passion','autres'];
+        var assets=0,n=0; keys.forEach(function(k){var v=Number(d[k])||0; if(v>0){assets+=v;n++;}});
+        if(assets<=0) return;
+        var net=assets-(Number(d.passif)||0);
+        var eur=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(net));
+        var pill=document.getElementById('patCount'); if(pill){pill.textContent='synchronisé';pill.className='pill live';}
+        var h=document.getElementById('patNet'); if(h) h.innerHTML=eur+' <span style="font-size:14px;color:var(--accent)">€ net</span>';
+        var b=document.getElementById('pat-body'); if(b){b.className='';b.style.padding='6px 0 0';
+          b.innerHTML='<p style="font-size:12.5px;color:var(--mute)">'+n+' univers renseigné'+(n>1?'s':'')+' · suivi sur tous vos appareils.</p>'+
+          '<a href="/app/patrimoine-pro" class="btn btn-sm" style="margin-top:10px">Ouvrir mon cockpit →</a>';}
+      }catch(_){}
+    })();</script>
+  </div>
+
+  <!-- ── Widgets row 2 : Watches + Carnet + Documents ── -->
+  <div class="grid-3" style="margin-bottom:14px">
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Vos veilles</span><span class="pill neutral" id="watchesCount">…</span></div>
+      <h3>Actifs surveillés</h3>
+      <div id="watches-body" class="loading">Chargement des veilles…</div>
+      <a href="/app/profil.html#watches" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">+ Nouvelle veille</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Carnet privé</span><span class="pill neutral" id="contactsCount">…</span></div>
+      <h3>Vos contacts</h3>
+      <div id="contacts-body" class="loading">Chargement carnet…</div>
+      <a href="/app/carnet.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Documents</span><span class="pill neutral" id="docsCount">…</span></div>
+      <h3>Signés eIDAS</h3>
+      <div id="docs-body" class="loading">Chargement documents…</div>
+      <a href="/app/documents.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
+    </article>
+  </div>
+
+  <!-- ── Widgets row 3 : Conversations + Transmission ── -->
+  <div class="grid-2">
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Conversations</span></div>
+      <h3>Vos derniers échanges</h3>
+      <div id="convs-body" class="loading">Chargement…</div>
+      <a href="/app/marcel.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Nouvelle conversation →</a>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Transmission</span><span class="pill neutral">à préparer</span></div>
+      <h3>État préparation</h3>
+      <div id="transmission-body" class="empty" style="padding:20px;text-align:left">
+        <p>Cartographie héritiers, Pacte Dutreil, donation, mandat de protection future…</p>
+        <a href="/app/marcel?topic=transmission" class="btn btn-ghost btn-sm" style="margin-top:10px">Activer Hermès →</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- ════ ESPACE 2 — Mes passions & services ════ -->
+  <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:34px 0 3px">Mes passions <em style="font-style:italic;color:var(--accent)">&amp; services</em></h2>
+  <p style="color:var(--mute);font-size:13.5px;margin-bottom:16px">Vos univers d'art de vivre, vos actifs-passion et la conciergerie.</p>
+  <section id="univers-section" style="margin:0 0 14px;display:none">
+    <div id="univers-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px"></div>
+  </section>
+  <div class="grid-2">
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Art de vivre</span><span class="pill neutral">collections</span></div>
+      <h3>Vos passions, suivies</h3>
+      <div class="empty" style="padding:14px 0;text-align:left"><p>Art, montres, voitures, vins, voyages — valeur, veille et conciergerie.</p>
+      <a href="/app/collections.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir →</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="card-cat">Conciergerie</span><span class="pill neutral">sur demande</span></div>
+      <h3>Une demande d'exception ?</h3>
+      <div class="empty" style="padding:14px 0;text-align:left"><p>Voyage, art, automobile, vins, bien-être, philanthropie… Marcel prépare, vous validez.</p>
+      <a href="/app/conciergerie.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir la conciergerie →</a></div>
+    </article>
+  </div>
+  <p style="color:var(--mute,#8a8178);font-size:11px;font-style:italic;text-align:center;line-height:1.5;max-width:640px;margin:26px auto 6px;padding:0 16px">Informations fournies à titre informatif — elles ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568.</p>
+</main>
+
+<!-- Bottom tabs -->
+<nav class="app-tabs">
+  <a href="/app/dashboard.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Profil
+  </a>
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     WIDGET FEEDBACK BÊTA (fondateurs uniquement)
+     ══════════════════════════════════════════════ -->
+<style>
+#fb-app-trigger{
+  position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(-90deg);
+  transform-origin:right center;
+  background:var(--accent);color:#fff;
+  padding:8px 16px;
+  font-size:10.5px;letter-spacing:0.18em;font-weight:600;text-transform:uppercase;
+  border-radius:8px 8px 0 0;cursor:pointer;z-index:900;
+  box-shadow:-3px 0 18px rgba(194,71,34,0.28);
+  border:none;font-family:'Inter',sans-serif;
+  transition:background 0.2s;
+}
+#fb-app-trigger:hover{background:var(--ink)}
+#fb-app-overlay{display:none;position:fixed;inset:0;background:rgba(26,24,20,0.5);z-index:910;backdrop-filter:blur(4px)}
+#fb-app-overlay.open{display:block}
+#fb-app-panel{
+  position:fixed;right:-380px;top:0;bottom:0;width:360px;max-width:92vw;
+  background:var(--bg);border-left:1px solid var(--line);z-index:920;
+  display:flex;flex-direction:column;overflow-y:auto;
+  transition:right 0.32s cubic-bezier(0.16,1,0.3,1);
+  padding:28px 22px 40px;
+}
+#fb-app-panel.open{right:0}
+#fb-app-panel .fb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+#fb-app-panel .fb-title{font-family:'Fraunces',serif;font-size:20px;font-weight:500;letter-spacing:-0.01em}
+#fb-app-panel .fb-title em{font-style:italic;color:var(--accent)}
+#fb-app-panel .fb-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+#fb-app-panel .fb-close:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#fb-app-panel .fb-label{font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:10px;margin-top:18px}
+#fb-app-panel .fb-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+#fb-app-panel .fb-chip{padding:6px 12px;border:1.5px solid var(--line);border-radius:999px;font-size:12px;cursor:pointer;transition:all 0.18s;background:transparent;font-family:'Inter',sans-serif}
+#fb-app-panel .fb-chip:hover{border-color:var(--accent);color:var(--accent)}
+#fb-app-panel .fb-chip.on{background:rgba(194,71,34,0.08);border-color:var(--accent);color:var(--accent)}
+#fb-app-panel textarea{width:100%;min-height:90px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--ink);background:#fff}
+#fb-app-panel textarea:focus{border-color:var(--accent)}
+.fb-prio-row{display:flex;gap:8px;margin-bottom:4px}
+.fb-prio{flex:1;padding:8px 6px;text-align:center;border:1.5px solid var(--line);border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.18s;background:transparent}
+.fb-prio:hover{border-color:var(--accent)}
+.fb-prio.on{background:rgba(194,71,34,0.08);border-color:var(--accent);color:var(--accent);font-weight:600}
+#fb-app-panel input[type=email]{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;color:var(--ink);background:#fff}
+#fb-app-panel input[type=email]:focus{border-color:var(--accent)}
+#fb-app-panel .fb-submit{width:100%;margin-top:18px;padding:14px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:0.04em;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+#fb-app-panel .fb-submit:hover{background:var(--accent);transform:translateY(-1px)}
+#fb-app-panel .fb-submit:disabled{opacity:0.55;cursor:wait;transform:none}
+#fb-app-success{display:none;text-align:center;padding:30px 10px}
+#fb-app-success .fb-ok-icon{font-size:46px;display:block;margin-bottom:14px}
+#fb-app-success h3{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:8px}
+#fb-app-success p{font-size:13.5px;color:var(--mute);line-height:1.6}
+</style>
+
+<button id="fb-app-trigger" onclick="openAppFeedback()">★ Feedback bêta</button>
+<div id="fb-app-overlay" onclick="closeAppFeedback()"></div>
+<div id="fb-app-panel">
+  <div class="fb-head">
+    <div class="fb-title">Votre <em>retour</em></div>
+    <button class="fb-close" onclick="closeAppFeedback()">✕</button>
+  </div>
+
+  <div id="fb-app-form">
+    <div class="fb-label">Catégorie (plusieurs ok)</div>
+    <div class="fb-chips">
+      <button class="fb-chip" data-v="bug" onclick="toggleChip(this)">🐛 Anomalie</button>
+      <button class="fb-chip" data-v="ux" onclick="toggleChip(this)">👁 Ergonomie</button>
+      <button class="fb-chip" data-v="manquant" onclick="toggleChip(this)">➕ Fonctionnalité</button>
+      <button class="fb-chip" data-v="deal" onclick="toggleChip(this)">🔑 Deal Flow</button>
+      <button class="fb-chip" data-v="marcel" onclick="toggleChip(this)">🎼 Marcel</button>
+      <button class="fb-chip" data-v="idee" onclick="toggleChip(this)">💡 Idée</button>
+      <button class="fb-chip" data-v="bravo" onclick="toggleChip(this)">⭐ Bravo</button>
+    </div>
+
+    <div class="fb-label">Votre retour</div>
+    <textarea id="fb-app-text" placeholder="Ce qui fonctionne, ce qui manque, une idée…" maxlength="600"></textarea>
+
+    <div class="fb-label">Priorité pour vous</div>
+    <div class="fb-prio-row">
+      <button class="fb-prio" data-p="basse" onclick="setPrio(this)">🟢 Basse</button>
+      <button class="fb-prio" data-p="moyenne" onclick="setPrio(this)">🟡 Moyenne</button>
+      <button class="fb-prio" data-p="haute" onclick="setPrio(this)">🔴 Haute</button>
+    </div>
+
+    <div class="fb-label" style="margin-top:16px">Email (optionnel — pour suivi)</div>
+    <input type="email" id="fb-app-email" placeholder="votre@email.fr">
+
+    <button class="fb-submit" onclick="submitAppFeedback()">Envoyer mon retour →</button>
+    <div id="fb-app-msg" style="margin-top:10px;font-size:13px;color:var(--mute)"></div>
+  </div>
+
+  <div id="fb-app-success">
+    <span class="fb-ok-icon">✦</span>
+    <h3>Merci pour votre retour</h3>
+    <p>Maxime l'a reçu et y répondra si vous avez laissé votre email. Votre feedback façonne directement la prochaine version.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  let selectedChips = [];
+  let selectedPrio = '';
+
+  window.openAppFeedback = function(){
+    document.getElementById('fb-app-panel').classList.add('open');
+    document.getElementById('fb-app-overlay').classList.add('open');
+  };
+  window.closeAppFeedback = function(){
+    document.getElementById('fb-app-panel').classList.remove('open');
+    document.getElementById('fb-app-overlay').classList.remove('open');
+  };
+  window.toggleChip = function(el){
+    el.classList.toggle('on');
+    const v = el.dataset.v;
+    selectedChips = selectedChips.includes(v)
+      ? selectedChips.filter(x => x !== v)
+      : [...selectedChips, v];
+  };
+  window.setPrio = function(el){
+    document.querySelectorAll('.fb-prio').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    selectedPrio = el.dataset.p;
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAppFeedback();
+  });
+
+  window.submitAppFeedback = async function(){
+    const besoin = document.getElementById('fb-app-text').value.trim();
+    if (!besoin) {
+      document.getElementById('fb-app-msg').textContent = 'Merci de décrire votre retour.';
+      return;
+    }
+    const email = document.getElementById('fb-app-email').value.trim();
+    const btn = document.querySelector('#fb-app-panel .fb-submit');
+    const msgEl = document.getElementById('fb-app-msg');
+    btn.disabled = true; btn.textContent = 'Envoi…';
+    msgEl.textContent = '';
+
+    try {
+      const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          besoin,
+          categories: selectedChips,
+          priorite: selectedPrio || 'moyenne',
+          email: email || null,
+          page: window.location.pathname,
+          source: 'app-dashboard',
+        }),
+      });
+      if (!r.ok) throw new Error();
+
+      document.getElementById('fb-app-form').style.display = 'none';
+      document.getElementById('fb-app-success').style.display = 'block';
+    } catch(err) {
+      // Fallback : email direct si le worker n'est pas encore déployé
+      const subject = encodeURIComponent('[IKCP Bêta] Feedback ' + (selectedChips.join(', ') || 'général'));
+      const body = encodeURIComponent(besoin + (email ? '\n\n— ' + email : ''));
+      window.open('mailto:maxime@ikcp.fr?subject=' + subject + '&body=' + body);
+      btn.disabled = false;
+      btn.textContent = 'Envoyer mon retour →';
+      msgEl.textContent = 'Ouverture de votre messagerie email en secours.';
+    }
+  };
+})();
+</script>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+import { Voice } from '/app/js/voice.js';
+
+// Service Worker (offline)
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+
+// Voix dashboard — saisie vocale → soumet automatique
+window.dashToggleMic = function(){
+  const btn = document.getElementById('dashMic');
+  const input = document.getElementById('qInput');
+  if(!Voice.isSupported().stt){
+    alert('Reconnaissance vocale non supportée sur ce navigateur.');
+    return;
+  }
+  if(Voice.isListening()){
+    Voice.stopListening();
+    btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
+    btn.textContent = '🎤';
+    return;
+  }
+  btn.style.background='var(--accent)'; btn.style.color='var(--bg)'; btn.style.borderColor='var(--accent)';
+  btn.textContent = '⏹';
+  Voice.startListening({
+    onInterim: t => { input.value = t; },
+    onFinal: t => {
+      input.value = t;
+      btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
+      btn.textContent = '🎤';
+      sessionStorage.setItem('marcel_q', t);
+      location.href = '/app/marcel?ask=1';
+    },
+    onError: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
+    onEnd: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
+  });
+}
+
+// Vérif session + charge données
+let me = null;
+try {
+  me = await Marcel.Auth.me();
+} catch(_) {
+  location.href = '/app/index.html';
+}
+
+// Onboarding requis si pas encore complété
+if(me){
+  let profile = null;
+  try { profile = me.profile_json ? JSON.parse(me.profile_json) : null; } catch(_){}
+  if(!profile?.onboarding_completed && !localStorage.getItem('marcel_onboarding_skipped')){
+    const fromWelcome = new URLSearchParams(location.search).get('welcome');
+    if(!fromWelcome){
+      location.href = '/app/onboarding.html';
+    }
+  }
+  // Surcharge prenom si disponible
+  if(profile?.prenom) me.prenom = profile.prenom;
+  // Personnalisation : relie les passions cochées aux univers / agents
+  renderUnivers(profile);
+  // Activation : guide l'utilisateur (recalculée avec les conversations plus bas)
+  renderActivation(profile, 0);
+}
+
+if(me){
+  document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
+  document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
+  let tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
+  if(me.trial && me.trial.active){ tierLbl = 'Family Office · essai ' + me.trial.days_left + ' j'; }
+  const tierEl = document.getElementById('userTier');
+  tierEl.textContent = tierLbl;
+  if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
+  const hour = new Date().getHours();
+  const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
+  if(me.trial && me.trial.active){
+    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai Family Office</b> — Marcel, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
+  } else {
+    document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+  }
+  // Résumé « Mon patrimoine » (module patrimoine, stockage local)
+  try {
+    const _pb = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + (me.email||'invite')) || '[]');
+    if(_pb.length){
+      const _t = _pb.reduce((s,b)=>s+(+b.value||0),0);
+      const _net = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(_t);
+      const pn = document.getElementById('patNet'); if(pn) pn.textContent = _net;
+      const pc = document.getElementById('patCount'); if(pc) pc.textContent = _pb.length + ' bien' + (_pb.length>1?'s':'');
+      const pbody = document.getElementById('pat-body');
+      if(pbody) pbody.innerHTML = '<p style="font-size:13px;color:var(--mute)">Patrimoine net estimé — répartition &amp; leviers dans le module.</p><a href="/app/patrimoine.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Voir le détail →</a>';
+    }
+  } catch(_){}
+}
+
+// ─── Vos univers : relie les passions cochées (onboarding) aux agents Marcel ───
+function renderUnivers(profile){
+  const sec = document.getElementById('univers-section');
+  const grid = document.getElementById('univers-grid');
+  if(!sec || !grid) return;
+  const MAP = {
+    patrimoine:   {em:'🏛️', nom:'Patrimoine 360°',        agent:'Bâtisseur', blurb:'Vue consolidée de tout votre patrimoine.',           q:'Fais-moi un bilan patrimonial 360° de ma situation.'},
+    immobilier:   {em:'🏠', nom:'Immobilier',             agent:'Architecte',blurb:'Prix réels (DVF), arbitrages, IFI, SCI.',            page:'/app/immobilier', q:'Analyse ma stratégie immobilière et ma position IFI.'},
+    fiscalite:    {em:'📜', nom:'Fiscalité',              agent:'Codex',     blurb:'Optimisation de l’impôt, arbitrages, dispositifs.',   q:'Comment optimiser ma fiscalité cette année ?'},
+    transmission: {em:'🌳', nom:'Transmission',           agent:'Hermès',    blurb:'Succession, donation, Pacte Dutreil.',                q:'Comment préparer ma transmission sereinement ?'},
+    marches:      {em:'📊', nom:'Marchés & non coté',     agent:'Stratège',  blurb:'Allocation, placements, investissement non coté.',    q:'Comment diversifier mon allocation patrimoniale ?'},
+    voyage:       {em:'✈️', nom:'Voyage & conciergerie',  agent:'Concierge', blurb:'Voyages, tables, expériences sur-mesure.',            q:'Organisez-moi une expérience de voyage d’exception.'},
+    art:          {em:'🎨', nom:'Art & collections',      agent:'Curateur',  blurb:'Valeur, assurance, acquisition.',                     q:'Aidez-moi à évaluer et assurer ma collection d’art.'},
+    vehicules:    {em:'🏎️', nom:'Véhicules',              agent:'Curateur',  blurb:'Voitures, yachts : cote & assurance.',                q:'Quelle est la cote d’un véhicule de collection ?'},
+    horlogerie:   {em:'⌚', nom:'Horlogerie & joaillerie', agent:'Curateur',  blurb:'Montres, pièces : valeur & suivi.',                   q:'Évaluez une montre ou une pièce de joaillerie.'},
+    vins:         {em:'🍷', nom:'Vins & gastronomie',     agent:'Curateur',  blurb:'Cave, vins d’investissement.',                        q:'Conseillez-moi pour ma cave et les vins d’investissement.'},
+    bienetre:     {em:'🌸', nom:'Bien-être & longévité',  agent:'Olympe',    blurb:'Médecine privée, longévité, art de vivre.',           q:'Conseils en santé privée et longévité.'},
+    philanthropie:{em:'🌱', nom:'Philanthropie',          agent:'Mécène',    blurb:'Mécénat, fondation, impact.',                         q:'Comment structurer mon mécénat ou une fondation ?'},
+  };
+  let keys = (profile && Array.isArray(profile.spheres) && profile.spheres.length) ? profile.spheres.slice() : Object.keys(MAP);
+  keys = keys.filter(k => MAP[k]);
+  if(!keys.length) return;
+  const cnt = document.getElementById('universCount');
+  if(cnt) cnt.textContent = keys.length + (keys.length > 1 ? ' univers' : ' univers');
+  grid.innerHTML = keys.map(k => {
+    const u = MAP[k];
+    const href = u.page || ('/app/marcel?q=' + encodeURIComponent(u.q));
+    return `<a class="card" href="${href}" style="text-decoration:none;display:flex;flex-direction:column;transition:all .18s">
+      <div style="font-size:26px;line-height:1">${u.em}</div>
+      <h3 style="margin:8px 0 2px;font-size:16px">${u.nom}</h3>
+      <p style="font-size:12.5px;color:var(--mute);line-height:1.45;margin:0;flex:1">${u.blurb}</p>
+      <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:10px">${u.page ? '✦ Prix réels DVF →' : '✦ '+u.agent+' · Demander à Marcel →'}</div>
+    </a>`;
+  }).join('');
+  sec.style.display = 'block';
+}
+
+// ─── Diagnostic instantané personnalisé ───
+window.goDiagnostic = function(){
+  let p = {}; try { p = me && me.profile_json ? JSON.parse(me.profile_json) : {}; } catch(_){}
+  const bits = [];
+  if(p.profession) bits.push(p.profession);
+  if(p.situation) bits.push(p.situation);
+  if(p.siren_data && p.siren_data.nom) bits.push('dirigeant de ' + p.siren_data.nom);
+  if(Array.isArray(p.spheres) && p.spheres.length) bits.push('centres d\'intérêt : ' + p.spheres.join(', '));
+  const ctx = bits.length ? `Voici mon profil — ${bits.join(' ; ')}. ` : '';
+  const q = `${ctx}Donnez-moi mes 3 priorités patrimoniales du moment, classées, avec pour chacune l'enjeu en une phrase et la première action à envisager. Soyez concret et personnalisé.`;
+  try { sessionStorage.setItem('marcel_q', q); } catch(_){}
+  location.href = '/app/marcel?q=' + encodeURIComponent(q);
+};
+
+// ─── Activation : guide l'utilisateur quand le dashboard est vide ───
+function renderActivation(profile, convsCount){
+  const sec = document.getElementById('activation'); if(!sec) return;
+  const p = profile || {};
+  let patCount = 0;
+  try { patCount = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + ((me&&me.email)||'invite')) || '[]').length; } catch(_){}
+  const steps = [
+    { ok: !!(p.onboarding_completed || p.prenom), label:'Compléter votre profil',       href:'/app/onboarding.html',             icon:'👤' },
+    { ok: !!(p.siren_data && p.siren_data.siren), label:'Cartographier votre société',   href:'/app/marcel?topic=batisseur', icon:'🏢' },
+    { ok: patCount > 0,                            label:'Ajouter un premier bien',       href:'/app/patrimoine.html',             icon:'🏠' },
+    { ok: (convsCount||0) > 0,                     label:'Poser une question à Marcel',   href:'/app/marcel.html',                 icon:'💬' },
+  ];
+  const done = steps.filter(s=>s.ok).length;
+  const pct = Math.round(done/steps.length*100);
+  if(done >= steps.length){ sec.style.display='none'; return; }
+  sec.style.display='block';
+  sec.innerHTML = `<article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25)">
+    <div class="card-head" style="margin-bottom:6px"><span class="card-cat" style="color:var(--accent)">Activez votre Family Office</span><span class="pill premium">${pct}%</span></div>
+    <h3 style="font-family:Fraunces,serif;font-weight:500;font-size:18px;margin-bottom:2px">Encore ${steps.length-done} étape${(steps.length-done)>1?'s':''} pour tout débloquer</h3>
+    <div style="height:7px;background:var(--bg-3);border-radius:99px;overflow:hidden;margin:12px 0 16px"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:99px;transition:width .8s cubic-bezier(.2,.7,.2,1)"></div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
+      ${steps.map(s=>`<a href="${s.ok?'javascript:void 0':s.href}" style="display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;text-decoration:none;color:var(--ink);${s.ok?'opacity:.5':'background:var(--cream)'}">
+        <span style="font-size:18px">${s.ok?'✅':s.icon}</span>
+        <span style="font-size:13.5px;font-weight:500;${s.ok?'text-decoration:line-through':''}">${s.label}</span>
+        ${s.ok?'':'<span style="margin-left:auto;color:var(--accent);font-weight:700">→</span>'}
+      </a>`).join('')}
+    </div>
+  </article>`;
+}
+
+// ─── Chargement parallèle des widgets ───
+Promise.allSettled([
+  Marcel.Me.alerts(true).catch(()=>[]),
+  Marcel.Me.contacts().catch(()=>[]),
+  Marcel.Me.documents().catch(()=>[]),
+  Marcel.Me.watches().catch(()=>[]),
+  Marcel.Me.conversations().catch(()=>[]),
+]).then(([alerts, contacts, docs, watches, convs]) => {
+  // Activation : recalcule la progression avec le vrai nombre de conversations
+  try { let _p=null; try{ _p = me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){}; renderActivation(_p, (convs.value||[]).length); } catch(_){}
+  // Veille
+  const a = alerts.value || [];
+  document.getElementById('alertsCount').textContent = `${a.length} nouv.`;
+  const vbody = document.getElementById('veille-body');
+  if(a.length === 0){
+    vbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Aucune alerte ce matin. Marcel veille.</p>';
+  } else {
+    vbody.innerHTML = a.slice(0,3).map(x => `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div style="font-size:13px;color:var(--ink);font-weight:500;line-height:1.3">${x.title}</div><div style="font-size:11px;color:var(--mute);margin-top:3px">${new Date(x.created_at).toLocaleDateString('fr-FR')}</div></div>`).join('');
+  }
+
+  // Contacts
+  const c = contacts.value || [];
+  document.getElementById('contactsCount').textContent = `${c.length}/${me?.tier === 'free' ? '5' : '∞'}`;
+  const cbody = document.getElementById('contacts-body');
+  if(c.length === 0){
+    cbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez vos contacts (notaire, avocat, concierge).</p>';
+  } else {
+    cbody.innerHTML = c.slice(0,4).map(x => `<div style="font-size:13px;color:var(--ink);padding:6px 0">⭐ ${x.nom} <span style="color:var(--mute);font-size:11px"> · ${x.category}</span></div>`).join('');
+  }
+
+  // Documents
+  const d = docs.value || [];
+  document.getElementById('docsCount').textContent = `${d.length} doc.`;
+  const dbody = document.getElementById('docs-body');
+  if(d.length === 0){
+    dbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">DER bêta et Lettre de Mission à signer.</p>';
+  } else {
+    dbody.innerHTML = d.slice(0,3).map(x => `<div style="font-size:13px;padding:5px 0">📄 ${x.title} <span class="pill live" style="margin-left:6px;font-size:8px;padding:2px 6px">signé</span></div>`).join('');
+  }
+
+  // Watches
+  const w = watches.value || [];
+  document.getElementById('watchesCount').textContent = `${w.length} suivi${w.length > 1 ? 's' : ''}`;
+  const wbody = document.getElementById('watches-body');
+  if(w.length === 0){
+    wbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Surveillez vos actifs (montres, voitures, vins).</p>';
+  } else {
+    wbody.innerHTML = w.slice(0,3).map(x => `<div style="font-size:13px;padding:6px 0">👁 ${x.query} <span style="color:var(--mute);font-size:11px"> · cible ${Marcel.Utils.formatEUR(x.target_price)}</span></div>`).join('');
+  }
+
+  // Conversations
+  const cv = convs.value || [];
+  const cvbody = document.getElementById('convs-body');
+  if(cv.length === 0){
+    cvbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Pas encore de conversation. Tapez votre première question à Marcel.</p>';
+  } else {
+    cvbody.innerHTML = cv.slice(0,3).map(x => `<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="font-size:13.5px;color:var(--ink);font-weight:500">${x.title || 'Conversation'}</div><div style="font-size:11px;color:var(--mute);margin-top:2px">${x.agent_principal || 'Marcel'} · ${new Date(x.last_message_at).toLocaleDateString('fr-FR')}</div></div>`).join('');
+  }
+});
+
+// ─── Cartographie société principale ───
+if(me && me.primary_siren){
+  Marcel.cartographie(me.primary_siren).then(d => {
+    document.getElementById('cartoNom').textContent = d.nom || 'Société';
+    document.getElementById('carto-body').innerHTML = `
+      <div style="font-size:13px;line-height:1.7;color:var(--ink)">
+        <div><b>${d.forme_juridique?.split(',')[0] || '—'}</b> · ${d.ville || ''} · NAF ${d.code_naf || ''}</div>
+        <div style="margin-top:4px"><span style="color:var(--mute)">Capital</span> ${Marcel.Utils.formatEUR(d.capital || 0)} · <span style="color:var(--mute)">créée</span> ${new Date(d.date_creation).getFullYear()}</div>
+      </div>
+    `;
+    // Afficher le CTA Bâtisseur si une société est chargée
+    const batCta = document.getElementById('batisseur-cta');
+    if(batCta) batCta.style.display = 'inline-flex';
+  }).catch(_ => {
+    document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Cartographie indisponible.</p>';
+  });
+} else {
+  document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez votre SIREN dans le profil pour activer la cartographie.</p>';
+  document.getElementById('cartoNom').textContent = 'À configurer';
+}
+
+// ─── Marcel-Live ───
+window.askMarcel = function(e){
+  e.preventDefault();
+  const q = document.getElementById('qInput').value.trim();
+  if(!q) return false;
+  sessionStorage.setItem('marcel_q', q);
+  location.href = '/app/marcel?ask=1';
+  return false;
+}
+
+window.logout = async function(){
+  if(!confirm('Se déconnecter de Marcel ?')) return;
+  try { await Marcel.Auth.logout(); } catch(_) {
+    // Fallback si ikcp-client pas encore live : nettoyage local
+    document.cookie.split(';').forEach(c => {
+      const k = c.trim().split('=')[0];
+      document.cookie = k + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.ikcp.eu';
+      document.cookie = k + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+    });
+    location.href = '/app/index.html';
+  }
+}
+</script>
+
+<script src="/protect.js?v=1" defer></script>
+<script src="/app/js/pwa-install.js" defer></script>
+<script type="module">
+// ✦ L'observation de Marcel — IA proactive personnalisée (cache journalier, gating premium/FO)
+import { Marcel } from '/app/js/api.js';
+(async function(){
+  var card=document.getElementById('marcelInsight'), body=document.getElementById('miBody'); if(!card||!body) return;
+  var tier=(localStorage.getItem('ikcp_tier')||'free');
+  var profile={}; try{ profile=JSON.parse(localStorage.getItem('marcel_profile')||'{}')||{}; }catch(_){}
+  var score=null; try{ score=JSON.parse(localStorage.getItem('ikcp_score')||'null'); }catch(_){}
+  var sd=profile.siren_data||null;
+  var hasCtx=!!(profile.profession||profile.situation||(profile.spheres&&profile.spheres.length)||sd||(score&&typeof score.score==='number'));
+  function render(text, teaser){
+    card.style.display='block';
+    if(teaser) document.getElementById('miPill').textContent='essai requis';
+    body.innerHTML = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n+/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+      + (teaser ? '<a href="/app/beta-invite" class="btn btn-sm" style="margin-top:12px;display:inline-block">Activer mon essai →</a>'
+                : '<a href="/app/marcel?q='+encodeURIComponent('Approfondis ton observation sur ma situation patrimoniale.')+'" class="btn btn-ghost btn-sm" style="margin-top:12px;display:inline-block">Approfondir avec Marcel →</a>');
+  }
+  if(!hasCtx) return; // pas assez de contexte → on n'affiche rien
+  var today=new Date().toISOString().slice(0,10);
+  try{ var c=JSON.parse(localStorage.getItem('ikcp_insight')||'null'); if(c&&c.date===today&&c.text){ render(c.text); return; } }catch(_){}
+  if(tier!=='premium' && tier!=='fo'){ render('Activez votre essai Family Office : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
+  card.style.display='block'; body.innerHTML='<span style="color:var(--mute);font-style:italic">Marcel analyse votre situation…</span>';
+  var ctx=[];
+  if(profile.prenom) ctx.push('Prénom: '+profile.prenom);
+  if(profile.profession) ctx.push('Profession: '+profile.profession);
+  if(profile.situation) ctx.push('Situation familiale: '+profile.situation);
+  if(sd&&sd.nom) ctx.push('Société: '+sd.nom+' ('+(sd.forme_juridique||'')+', capital '+(sd.capital||'?')+'€)');
+  if(profile.spheres&&profile.spheres.length) ctx.push('Univers: '+profile.spheres.join(', '));
+  if(score&&typeof score.score==='number') ctx.push('Score patrimonial: '+score.score+'/100');
+  var prompt='[OBSERVATION PROACTIVE — 3 phrases maximum] À partir de ce profil, livre UNE observation patrimoniale précise et personnalisée (un angle mort ou un levier prioritaire que la personne ignore probablement), puis termine par UNE question ouverte. Dense, sans recommandation produit, sans préambule. Profil — '+ctx.join(' · ');
+  try{
+    var r=await Marcel.chat(prompt, []);
+    var t=((r&&(r.reply||r.message))||'').replace(/Cette (analyse|interface|réponse)[\s\S]*?(CoMoFi|financier)\.?/gi,'').replace(/^#+\s*/gm,'').trim();
+    if(!t){ card.style.display='none'; return; }
+    render(t);
+    try{ localStorage.setItem('ikcp_insight', JSON.stringify({date:today,text:t})); }catch(_){}
+  }catch(_){ card.style.display='none'; }
+})();
+</script>
+</body>
+</html>

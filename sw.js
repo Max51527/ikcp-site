@@ -3,7 +3,7 @@
 // Cache-first pour assets, network-first pour API
 // ══════════════════════════════════════════════════════
 
-const CACHE_NAME = 'ikcp-v6';
+const CACHE_NAME = 'ikcp-v8';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -69,8 +69,11 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // HTML pages — network-first with cache fallback
-  if (event.request.headers.get('accept')?.includes('text/html')) {
+  // Pages HTML / navigations — TOUJOURS réseau d'abord (jamais de page périmée).
+  // En ligne : version fraîche du serveur. Hors ligne uniquement : on retombe
+  // sur la MÊME page en cache, puis l'accueil — JAMAIS une autre page (fini le
+  // « /decouvrir » qui affichait « CGP Ardèche »).
+  if (event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
@@ -78,9 +81,7 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
         })
-        .catch(() => caches.match(event.request).then(cached => {
-          return cached || caches.match('/index.html');
-        }))
+        .catch(() => caches.match(event.request).then(cached => cached || caches.match('/')))
     );
     return;
   }

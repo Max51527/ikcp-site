@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · ORIAS 23001568 — Schéma d'architecture (interne) -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Architecture — IKCP Family Office</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0B1426;--panel:#101D33;--cream:#FAF7F0;--gold:#C9A96E;--gold-b:#E2C896;--navy:#1B2A4A;--mute:rgba(250,247,240,.6);--line:rgba(201,169,110,.2)}
+body{background:var(--bg);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;padding:clamp(20px,4vw,44px)}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 50% at 50% -8%,rgba(201,169,110,.08),transparent 60%),var(--bg)}
+h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(24px,4vw,34px);text-align:center}
+h1 em{font-style:italic;color:var(--gold-b)}
+.sub{text-align:center;color:var(--mute);font-size:13px;margin:6px 0 30px}
+.flow{max-width:920px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:0}
+.layer{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;text-align:center}
+.layer .tag{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{background:rgba(250,247,240,.05);border:1px solid var(--line);border-radius:9px;padding:8px 13px;font-size:12.5px}
+.chip b{color:var(--gold-b);font-weight:600}
+.chip .role{display:block;color:var(--mute);font-size:10.5px}
+.arrow{color:var(--gold);font-size:22px;line-height:1;margin:4px 0}
+.split{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%}
+@media(max-width:680px){.split{grid-template-columns:1fr}}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.col .tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px}
+.col .chip{display:block;margin-bottom:6px}
+.rail{max-width:920px;margin:24px auto 0;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.rail .r{background:rgba(201,169,110,.08);border:1px solid var(--line);border-radius:99px;padding:9px 16px;font-size:12.5px;color:var(--cream)}
+.rail .r b{color:var(--gold-b)}
+.foot{text-align:center;color:var(--mute);font-size:11px;margin-top:30px}
+.foot a{color:var(--gold-b);text-decoration:none}
+.legend{max-width:920px;margin:20px auto 0;font-size:11.5px;color:var(--mute);text-align:center}
+</style>
+</head>
+<body>
+<h1>IKCP — <em>architecture vivante</em></h1>
+<div class="sub">Comment tout se connecte · souverain France · ORIAS 23001568</div>
+
+<div class="flow">
+  <div class="layer">
+    <div class="tag">① Client</div>
+    <div class="chips"><span class="chip"><b>Visiteur / Client</b><span class="role">web · mobile PWA installable</span></span></div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <div class="layer">
+    <div class="tag">② Frontend — Cloudflare Pages · ikcp.eu</div>
+    <div class="chips">
+      <span class="chip"><b>Site public</b><span class="role">index · family-office · cassius · score</span></span>
+      <span class="chip"><b>Espace membre /app</b><span class="role">dashboard · marcel · veille · patrimoine</span></span>
+      <span class="chip"><b>Édition no-code</b><span class="role">Sveltia /admin · Studio design</span></span>
+      <span class="chip"><b>Pilotage</b><span class="role">console admin</span></span>
+    </div>
+  </div>
+  <div class="arrow">▼ &nbsp;<span style="font-size:11px;color:var(--mute)">HTTPS · jeton Bearer</span></div>
+
+  <div class="layer">
+    <div class="tag">③ Tes APIs — Cloudflare Workers</div>
+    <div class="chips">
+      <span class="chip"><b>ikcp-chat</b><span class="role">Marcel — orchestrateur</span></span>
+      <span class="chip"><b>ikcp-client</b><span class="role">auth · tiers · quotas · admin</span></span>
+      <span class="chip"><b>ikcp-veille</b><span class="role">veille + cron</span></span>
+      <span class="chip"><b>ikcp-pappers</b><span class="role">SIREN</span></span>
+      <span class="chip"><b>ikcp-temoin</b><span class="role">audit MIF II</span></span>
+      <span class="chip"><b>ikcp-voice</b><span class="role">voix</span></span>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <div class="split">
+    <div class="col">
+      <div class="tag">④ Sous-agents</div>
+      <span class="chip"><b>Codex</b><span class="role">fiscalité</span></span>
+      <span class="chip"><b>Hermès</b><span class="role">transmission</span></span>
+      <span class="chip"><b>Bâtisseur</b><span class="role">patrimoine 360°</span></span>
+      <span class="chip"><b>Lifestyle ×9</b><span class="role">art de vivre</span></span>
+    </div>
+    <div class="col">
+      <div class="tag">⑤ Données — France</div>
+      <span class="chip"><b>D1</b><span class="role">SQLite · Paris</span></span>
+      <span class="chip"><b>KV</b><span class="role">cache · thème</span></span>
+      <span class="chip"><b>R2</b><span class="role">fichiers (à venir)</span></span>
+    </div>
+    <div class="col">
+      <div class="tag">⑥ APIs externes</div>
+      <span class="chip"><b>Anthropic</b><span class="role">IA souveraine</span></span>
+      <span class="chip"><b>Perplexity</b><span class="role">veille</span></span>
+      <span class="chip"><b>Pappers · Resend</b><span class="role">SIREN · emails</span></span>
+      <span class="chip"><b>Stripe</b><span class="role">paiement (à venir)</span></span>
+    </div>
+  </div>
+</div>
+
+<div class="rail">
+  <span class="r"><b>Dev/Ops :</b> Atelier de code IA → GitHub → CI/CD → Cloudflare (auto)</span>
+  <span class="r"><b>Pilotage :</b> /app/console (santé · membres · veille)</span>
+  <span class="r"><b>Conformité :</b> MIF II · RGPD France · ORIAS 23001568</span>
+</div>
+
+<div class="legend">Le frontend ne parle jamais directement aux APIs externes : il passe par <b style="color:var(--gold-b)">tes Workers</b>, qui détiennent les clés (chiffrées chez Cloudflare). C'est ce qui protège ton environnement.</div>
+
+<div class="foot">© 2026 IKCP — <a href="/app/console.html">← Console de pilotage</a> · <a href="/app/dashboard.html">Espace membre</a></div>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel · Sécurité & Données</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+section.sec-block{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin-bottom:18px}
+section.sec-block h2{font-family:'Fraunces',serif;font-size:21px;font-weight:500;letter-spacing:-0.012em;margin-bottom:6px}
+section.sec-block h2 em{font-style:italic;color:var(--accent)}
+section.sec-block .sec-sub{font-size:13px;color:var(--mute);margin-bottom:18px;font-style:italic;line-height:1.55}
+.sec-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.sec-row:first-of-type{border-top:none;padding-top:6px}
+.sec-row-info{flex:1;min-width:220px}
+.sec-row-name{font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.3}
+.sec-row-desc{font-size:11.5px;color:var(--mute);margin-top:3px;line-height:1.5}
+.sec-row-action{flex-shrink:0}
+.sec-pill{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;letter-spacing:0.22em;font-weight:700;text-transform:uppercase;line-height:1;padding:5px 10px;border-radius:999px}
+.sec-pill.on{background:rgba(63,122,63,0.12);color:var(--success)}
+.sec-pill.on::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--success)}
+.sec-pill.off{background:transparent;color:var(--mute);border:1px solid var(--line)}
+.sec-pill.warn{background:rgba(184,128,31,0.10);color:var(--warn)}
+.sec-toggle{position:relative;width:44px;height:24px;background:var(--line);border-radius:999px;cursor:pointer;transition:background 0.2s;flex-shrink:0;border:none;padding:0}
+.sec-toggle.on{background:var(--accent)}
+.sec-toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--bg);transition:transform 0.2s}
+.sec-toggle.on::after{transform:translateX(20px)}
+.sec-btn{padding:8px 16px;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.sec-btn:hover{border-color:var(--accent);color:var(--accent)}
+.sec-btn.danger{color:var(--bad);border-color:rgba(185,28,28,0.30)}
+.sec-btn.danger:hover{background:var(--bad);color:var(--bg);border-color:var(--bad)}
+.sec-btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sec-btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+.sec-mono{font-family:'JetBrains Mono','Inter',monospace;font-size:11px;color:var(--mute);letter-spacing:0.02em}
+.audit-row{display:grid;grid-template-columns:130px 1fr auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px;align-items:center}
+.audit-row .audit-time{color:var(--mute);font-family:'JetBrains Mono',monospace;font-size:11px}
+.audit-row .audit-action{color:var(--ink)}
+.audit-row .audit-source{color:var(--faint);font-size:11px}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Sécurité & Données</span></a>
+</header>
+
+<main class="app-main">
+
+  <div class="section-label">RGPD souverain France</div>
+  <h1 class="app-h1">Vos données. <em>Vos clés.</em></h1>
+  <p class="app-lead">Marcel respecte le RGPD par conception. Vos données restent en France, vous gardez le contrôle. Cette page vous donne la transparence totale.</p>
+
+  <!-- ─── 1. Identité & session ─── -->
+  <section class="sec-block">
+    <h2>Votre <em>identité</em></h2>
+    <p class="sec-sub">Compte créé par lien sécurisé, sans mot de passe (magic link Resend). Session valide 30 jours, renouvelable.</p>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name" id="meEmail">chargement…</div>
+        <div class="sec-row-desc">Email principal · vérifié par lien magique</div>
+      </div>
+      <span class="sec-pill on">Actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">Tier d'abonnement</div>
+        <div class="sec-row-desc" id="meTier">chargement…</div>
+      </div>
+      <a href="/app/profil.html#abonnement" class="sec-btn">Gérer</a>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">Session active</div>
+        <div class="sec-row-desc"><span class="sec-mono" id="sessionDevice">— navigateur · — IP masquée</span></div>
+      </div>
+      <button class="sec-btn" onclick="logoutAll()">Déconnecter partout</button>
+    </div>
+  </section>
+
+  <!-- ─── 2. Consentements RGPD ─── -->
+  <section class="sec-block">
+    <h2>Vos <em>consentements</em></h2>
+    <p class="sec-sub">Chaque traitement nécessite votre accord. Vous pouvez retirer chacun à tout moment. Le retrait n'a pas d'effet rétroactif sur les données déjà traitées.</p>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📋 Compte & service de base</div>
+        <div class="sec-row-desc">Email, profil, conversations Marcel, audit MIF II (légalement obligatoire CIF)</div>
+      </div>
+      <span class="sec-pill on">Obligatoire</span>
+    </div>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🔎 Veille augmentée Perplexity</div>
+        <div class="sec-row-desc">Recherches temps réel sur jurisprudence, cote actifs, marchés — sur vos sujets surveillés uniquement</div>
+      </div>
+      <button class="sec-toggle on" data-consent="veille" onclick="toggleConsent('veille')" aria-label="Activer veille"></button>
+    </div>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📊 Cartographie société (Pappers)</div>
+        <div class="sec-row-desc">Données publiques RNE/INSEE/INPI sur vos sociétés rattachées</div>
+      </div>
+      <button class="sec-toggle on" data-consent="pappers" onclick="toggleConsent('pappers')" aria-label="Activer Pappers"></button>
+    </div>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">✉️ Daily digest email (Resend)</div>
+        <div class="sec-row-desc">Synthèse matin de vos alertes — Premium uniquement, envoi quotidien 7h Paris</div>
+      </div>
+      <button class="sec-toggle on" data-consent="digest" onclick="toggleConsent('digest')" aria-label="Activer digest"></button>
+    </div>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📍 Mesure d'audience anonyme</div>
+        <div class="sec-row-desc">Cloudflare Web Analytics — agrégat anonymisé, sans cookies, hébergé en Europe</div>
+      </div>
+      <button class="sec-toggle on" data-consent="analytics" onclick="toggleConsent('analytics')" aria-label="Activer analytics"></button>
+    </div>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🎯 Communication marketing</div>
+        <div class="sec-row-desc">Nouveautés produit, invitations événements bêta, newsletter UPPERCUT PATRIMOINE</div>
+      </div>
+      <button class="sec-toggle off" data-consent="marketing" onclick="toggleConsent('marketing')" aria-label="Activer marketing"></button>
+    </div>
+  </section>
+
+  <!-- ─── 3. Vos données stockées ─── -->
+  <section class="sec-block">
+    <h2>Ce que nous <em>stockons</em></h2>
+    <p class="sec-sub">Transparence totale sur vos données — où elles vivent, combien de temps, qui y accède.</p>
+
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">💾 Base D1 SQLite Paris</div>
+        <div class="sec-row-desc">Email, profil, sociétés, conversations, alertes, carnet contacts, watches, collections — chiffré at-rest AES-256</div>
+      </div>
+      <span class="sec-pill on">🇫🇷 Paris (CDG)</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📄 R2 Object Storage EU</div>
+        <div class="sec-row-desc">Photos collections, certificats, documents signés, exports PDF — chiffrement client-side (zero-knowledge)</div>
+      </div>
+      <span class="sec-pill on">🇪🇺 EU jurisdiction</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🗝️ Tokens session KV</div>
+        <div class="sec-row-desc">Magic link 15 min · session JWT 30 j · rate-limit anti-abus</div>
+      </div>
+      <span class="sec-pill on">🇫🇷 Paris</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📋 Audit eIDAS Témoin</div>
+        <div class="sec-row-desc">Hash SHA-256 de chaque interaction IA · conservation 10 ans (obligation MIF II)</div>
+      </div>
+      <span class="sec-pill on">🇫🇷 Paris</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">❌ Pas de tracking tiers</div>
+        <div class="sec-row-desc">Aucun cookie publicitaire · aucun pixel Facebook/Google · aucun service US-based dans le pipeline sensible</div>
+      </div>
+      <span class="sec-pill on">Conforme</span>
+    </div>
+  </section>
+
+  <!-- ─── 4. Sous-traitants ─── -->
+  <section class="sec-block">
+    <h2>Nos <em>sous-traitants</em></h2>
+    <p class="sec-sub">Liste publique des prestataires qui traitent vos données. Mise à jour à chaque évolution. DPA signé avec chacun.</p>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">☁️ Cloudflare</div>
+        <div class="sec-row-desc">Workers, D1, R2, KV · région WEUR Paris/Frankfurt · ISO 27001, SOC 2</div>
+      </div>
+      <span class="sec-mono">DPA 2024</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🤖 Anthropic Europe</div>
+        <div class="sec-row-desc">Moteur IA Marcel & sub-agents · endpoint EU exclusif · pas de fine-tuning sur vos données · pas de stockage</div>
+      </div>
+      <span class="sec-mono">DPA Schrems II</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🔎 Perplexity</div>
+        <div class="sec-row-desc">Veille augmentée temps réel · requêtes ponctuelles · pas de stockage permanent · pas de fine-tuning</div>
+      </div>
+      <span class="sec-mono">DPA actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📧 Resend</div>
+        <div class="sec-row-desc">Magic link auth + digest matin · email transactionnel · datacenter EU</div>
+      </div>
+      <span class="sec-mono">DPA actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🏛️ Pappers</div>
+        <div class="sec-row-desc">Cartographie société (données publiques RNE/INSEE/INPI) · prestataire FR</div>
+      </div>
+      <span class="sec-mono">DPA actif</span>
+    </div>
+  </section>
+
+  <!-- ─── 5. Journal d'audit ─── -->
+  <section class="sec-block">
+    <h2>Journal d'<em>audit</em></h2>
+    <p class="sec-sub">Chaque action sur vos données est tracée. Vous voyez ici les 20 derniers événements.</p>
+    <div id="auditLog"><div class="loading">Chargement de votre journal d'audit…</div></div>
+  </section>
+
+  <!-- ─── 6. Vos droits RGPD ─── -->
+  <section class="sec-block">
+    <h2>Vos <em>droits</em></h2>
+    <p class="sec-sub">Le RGPD vous garantit 6 droits sur vos données. Marcel les met à votre disposition en 1 clic.</p>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📦 Droit à la portabilité</div>
+        <div class="sec-row-desc">Récupérer toutes vos données au format JSON · structure documentée</div>
+      </div>
+      <button class="sec-btn primary" onclick="exportData()">Télécharger ZIP</button>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">✏️ Droit de rectification</div>
+        <div class="sec-row-desc">Modifier votre profil, vos coordonnées, vos contacts à tout moment</div>
+      </div>
+      <a href="/app/profil.html" class="sec-btn">Mon profil</a>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">⏸ Droit d'opposition / limitation</div>
+        <div class="sec-row-desc">Stopper un traitement spécifique · voir consentements ci-dessus</div>
+      </div>
+      <button class="sec-btn" onclick="scrollToConsents()">Gérer</button>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🗑 Droit à l'oubli</div>
+        <div class="sec-row-desc">Supprimer définitivement votre compte et toutes vos données · cascade D1 + R2 + KV · irréversible</div>
+      </div>
+      <button class="sec-btn danger" onclick="deleteAccount()">Tout supprimer</button>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">⚖️ Droit de réclamation</div>
+        <div class="sec-row-desc">Contacter notre DPO ou saisir la CNIL · maxime@ikcp.fr · CNIL : cnil.fr</div>
+      </div>
+      <a href="mailto:maxime@ikcp.fr?subject=Question%20RGPD%20Marcel" class="sec-btn">Contacter DPO</a>
+    </div>
+  </section>
+
+  <!-- ─── 7. Sécurité technique ─── -->
+  <section class="sec-block">
+    <h2>Sécurité <em>technique</em></h2>
+    <p class="sec-sub">Notre stack souveraine en clair.</p>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🔐 Authentification sans mot de passe</div>
+        <div class="sec-row-desc">Magic link 15 min · JWT signé HS256 96-hex · cookie HttpOnly Secure SameSite</div>
+      </div>
+      <span class="sec-pill on">Actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🛡️ Rate-limiting anti-abus</div>
+        <div class="sec-row-desc">3 magic link/heure max par email · limites tier par API</div>
+      </div>
+      <span class="sec-pill on">Actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🔑 Chiffrement at-rest AES-256</div>
+        <div class="sec-row-desc">Cloudflare D1 + R2 · clés gérées région EU</div>
+      </div>
+      <span class="sec-pill on">Actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">📜 Audit eIDAS qualifié</div>
+        <div class="sec-row-desc">Hash horodaté SHA-256 + R2 · valable juridiquement 10 ans</div>
+      </div>
+      <span class="sec-pill on">Actif</span>
+    </div>
+    <div class="sec-row">
+      <div class="sec-row-info">
+        <div class="sec-row-name">🔒 2FA TOTP (à venir Sprint 3)</div>
+        <div class="sec-row-desc">Authentification 2 facteurs via Google Authenticator / Authy</div>
+      </div>
+      <span class="sec-pill off">Q3 2026</span>
+    </div>
+  </section>
+
+</main>
+
+<nav class="app-tabs">
+  <a href="/app/dashboard.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+    Profil
+  </a>
+</nav>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+
+let me;
+try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+if(me){
+  document.getElementById('meEmail').textContent = me.email || '—';
+  const tierLbl = {free:'Découverte',premium:'Premium',fo:'Family Office','sur_mesure':'Sur-mesure IKCP'}[me.tier] || 'Découverte';
+  document.getElementById('meTier').textContent = tierLbl;
+  document.getElementById('sessionDevice').textContent = (navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge)/)?.[0] || 'Navigateur') + ' · IP masquée RGPD';
+}
+
+// Charge consentements depuis user.preferences (déclaratif côté front pour démo)
+const consents = JSON.parse(localStorage.getItem('marcel_consents') || '{"veille":true,"pappers":true,"digest":true,"analytics":true,"marketing":false}');
+Object.entries(consents).forEach(([k,v]) => {
+  const btn = document.querySelector(`[data-consent="${k}"]`);
+  if(btn) btn.classList.toggle('on', v);
+});
+
+window.toggleConsent = async function(key){
+  consents[key] = !consents[key];
+  localStorage.setItem('marcel_consents', JSON.stringify(consents));
+  const btn = document.querySelector(`[data-consent="${key}"]`);
+  if(btn) btn.classList.toggle('on', consents[key]);
+  showToast(`Consentement "${key}" ${consents[key] ? 'activé' : 'retiré'} · synchronisation…`);
+  try {
+    await Marcel.Me.saveConsents(consents);
+    showToast(`✓ Consentement "${key}" enregistré`);
+  } catch(err){
+    showToast('⚠ Synchronisation différée (réseau)');
+  }
+}
+
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// Journal d'audit · branché endpoint réel
+const auditLog = document.getElementById('auditLog');
+try {
+  const events = await Marcel.Me.auditLog();
+  if(!events.length){
+    auditLog.innerHTML = '<div class="empty" style="padding:24px"><h4>Pas encore d\'événements</h4><p>Votre journal s\'enrichira à chaque action. Première entrée : votre login d\'aujourd\'hui.</p></div>';
+  } else {
+    const ACTIONS = {
+      login: 'Connexion magic link',
+      profile_save: 'Mise à jour profil',
+      consents_update: 'Mise à jour consentements',
+      siren_add: 'Ajout société (cartographie)',
+      contact_add: 'Ajout contact carnet',
+      watch_add: 'Nouvelle veille actif',
+      account_delete: 'Suppression compte',
+    };
+    auditLog.innerHTML = events.map(e => {
+      const d = new Date(e.ts);
+      const time = d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) + ' · ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      return `<div class="audit-row">
+        <span class="audit-time">${time}</span>
+        <span class="audit-action">${ACTIONS[e.action] || e.action}</span>
+        <span class="audit-source">${e.ip_masked} · ${(e.user_agent || '').slice(0,40)}</span>
+      </div>`;
+    }).join('');
+  }
+} catch(err){
+  auditLog.innerHTML = '<div class="empty"><p style="color:var(--mute);font-style:italic">Journal indisponible · réessayez dans un instant.</p></div>';
+}
+
+window.exportData = async function(){
+  try {
+    const data = await Marcel.Me.exportRgpd();
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `marcel-export-rgpd-${new Date().toISOString().slice(0,10)}.json`; a.click();
+    URL.revokeObjectURL(url);
+    showToast('Export téléchargé');
+  }catch(e){ alert('Export indisponible — réessayez ou contactez DPO.') }
+}
+
+window.deleteAccount = async function(){
+  const ok = confirm('SUPPRIMER VOTRE COMPTE\n\nToutes vos données seront effacées définitivement :\n• Profil, conversations, collections, carnet\n• Documents R2, alertes, watches\n• Audit Témoin (hash SHA-256 archivé 10 ans obligation MIF II)\n\nAction IRRÉVERSIBLE. Continuer ?');
+  if(!ok) return;
+  await Marcel.Me.deleteAccount();
+  location.href = '/';
+}
+
+window.logoutAll = async function(){
+  if(!confirm('Déconnecter toutes vos sessions actives ?')) return;
+  await Marcel.Auth.logout();
+}
+
+window.scrollToConsents = function(){
+  document.querySelectorAll('section.sec-block')[1]?.scrollIntoView({behavior:'smooth'});
+}
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>

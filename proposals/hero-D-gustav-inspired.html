@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Proposition D · Gustav-Inspired</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #1B2A4A;
+  --navy-deep:  #0E1729;
+  --cream:      #FAFAF8;
+  --cream-2:    #F2EDE4;
+  --gold:       #C9A96E;
+  --gold-bright:#E2C896;
+  --gold-deep:  #8B6F3F;
+  --ink:        #1C1612;
+  --ink-mute:   #6B5D52;
+  --success:    #2D6A4F;
+  --warn:       #B45309;
+  --r: .75rem;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(250,250,248,.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(201,169,110,.15);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%;
+  height: 64px;
+}
+.nav-logo { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--navy); letter-spacing: .04em; }
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--ink-mute); font-size: .875rem; font-weight: 500; transition: color .2s; }
+.nav-links a:hover { color: var(--navy); }
+.nav-cta { background: var(--navy); color: var(--cream) !important; padding: .5rem 1.25rem; border-radius: 2rem; font-size: .875rem; font-weight: 600; text-decoration: none; transition: background .2s; }
+.nav-cta:hover { background: var(--navy-deep) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 88vh; display: grid; grid-template-columns: 1fr 1fr;
+  padding: 5% 5% 4%;
+  gap: 4rem; align-items: center;
+  background: var(--cream);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(201,169,110,.12); border: 1px solid rgba(201,169,110,.3);
+  color: var(--gold-deep); padding: .4rem .9rem; border-radius: 2rem;
+  font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 1.75rem;
+}
+.hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse-badge 2s infinite; }
+@keyframes pulse-badge { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  line-height: 1.15; color: var(--navy-deep);
+  margin-bottom: 1.25rem;
+}
+.hero h1 em { font-style: italic; color: var(--gold-deep); }
+
+.hero-sub {
+  font-size: 1.05rem; color: var(--ink-mute); line-height: 1.7;
+  max-width: 480px; margin-bottom: 2.25rem;
+}
+.hero-sub strong { color: var(--ink); font-weight: 600; }
+
+/* 4 pillars */
+.hero-pillars {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .75rem;
+  margin-bottom: 2.5rem;
+}
+.pillar {
+  display: flex; align-items: center; gap: .65rem;
+  background: white; border: 1px solid rgba(201,169,110,.2);
+  border-radius: .6rem; padding: .7rem .9rem;
+  font-size: .8rem; color: var(--ink); font-weight: 500;
+}
+.pillar-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--navy); color: var(--cream);
+  padding: .85rem 1.75rem; border-radius: 2rem;
+  font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 600;
+  text-decoration: none; display: inline-flex; align-items: center; gap: .5rem;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 16px rgba(14,23,41,.15);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,23,41,.2); }
+.btn-secondary { color: var(--gold-deep); font-size: .9rem; font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: .35rem; }
+.btn-secondary:hover { color: var(--navy); }
+.trial-note { font-size: .78rem; color: var(--ink-mute); margin-top: .6rem; }
+
+/* Hero RIGHT — Marcel interface mockup */
+.hero-visual {
+  background: var(--navy-deep);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 32px 80px rgba(14,23,41,.25), 0 0 0 1px rgba(201,169,110,.12);
+  position: relative;
+  overflow: hidden;
+}
+.hero-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201,169,110,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.mock-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.mock-title { color: var(--gold); font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+.mock-status { display: flex; align-items: center; gap: .4rem; font-size: .65rem; color: rgba(250,250,248,.5); }
+.mock-dot { width: 5px; height: 5px; background: #4ade80; border-radius: 50%; animation: pulse-badge 1.5s infinite; }
+
+/* SIREN input */
+.mock-siren {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(201,169,110,.2);
+  border-radius: .75rem; padding: 1rem 1.1rem; margin-bottom: 1rem;
+}
+.mock-siren-label { font-size: .65rem; color: var(--gold); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .35rem; font-family: 'JetBrains Mono', monospace; }
+.mock-siren-input { display: flex; align-items: center; gap: .75rem; }
+.mock-siren-val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--cream); letter-spacing: .12em; }
+.mock-siren-btn { margin-left: auto; background: var(--gold); color: var(--navy-deep); padding: .4rem .9rem; border-radius: 1rem; font-size: .72rem; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+
+/* Score bar */
+.mock-scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-bottom: 1rem; }
+.mock-score-card {
+  background: rgba(255,255,255,.05); border-radius: .6rem; padding: .75rem .7rem;
+  border-top: 2px solid transparent;
+}
+.mock-score-card.warn { border-top-color: #F59E0B; }
+.mock-score-card.ok { border-top-color: #4ade80; }
+.mock-score-card.info { border-top-color: #60A5FA; }
+.mock-score-val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--cream); font-weight: 500; }
+.mock-score-lbl { font-size: .62rem; color: rgba(250,250,248,.45); margin-top: .2rem; }
+.mock-score-tag { font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-top: .35rem; }
+.mock-score-card.warn .mock-score-tag { color: #FBBF24; }
+.mock-score-card.ok .mock-score-tag { color: #4ade80; }
+.mock-score-card.info .mock-score-tag { color: #93C5FD; }
+
+/* Marcel chat */
+.mock-chat { background: rgba(255,255,255,.04); border-radius: .75rem; padding: .9rem 1rem; }
+.mock-chat-header { display: flex; align-items: center; gap: .5rem; margin-bottom: .65rem; }
+.mock-avatar { width: 26px; height: 26px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: var(--navy-deep); }
+.mock-chat-name { font-size: .75rem; color: var(--cream); font-weight: 600; }
+.mock-chat-sub { font-size: .6rem; color: rgba(250,250,248,.4); }
+.mock-bubble { background: rgba(255,255,255,.08); border-radius: 0 .65rem .65rem .65rem; padding: .65rem .85rem; font-size: .72rem; color: rgba(250,250,248,.8); line-height: 1.5; }
+.mock-disclaimer { font-size: .58rem; color: rgba(250,250,248,.25); margin-top: .4rem; font-style: italic; }
+
+/* ── SECTION: 4 DOMAINS ── */
+.section-domains { padding: 6rem 5%; background: white; }
+.section-eyebrow { font-size: .7rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 1rem; }
+.section-h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--navy-deep); margin-bottom: .75rem; }
+.section-sub { font-size: 1rem; color: var(--ink-mute); line-height: 1.7; max-width: 540px; margin-bottom: 3rem; }
+
+.domains-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) { .domains-grid { grid-template-columns: repeat(2, 1fr); } }
+.domain-card {
+  border: 1px solid rgba(201,169,110,.15); border-radius: 1rem; padding: 1.5rem;
+  transition: box-shadow .25s, transform .25s;
+  background: var(--cream);
+}
+.domain-card:hover { box-shadow: 0 8px 32px rgba(201,169,110,.1); transform: translateY(-3px); }
+.domain-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+.domain-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--navy); margin-bottom: .4rem; font-weight: 700; }
+.domain-desc { font-size: .82rem; color: var(--ink-mute); line-height: 1.6; }
+.domain-tag { display: inline-block; margin-top: .75rem; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: .25rem .65rem; border-radius: 1rem; background: rgba(201,169,110,.1); color: var(--gold-deep); }
+.domain-tag.live { background: rgba(45,106,79,.1); color: var(--success); }
+
+/* ── SECTION: HOW IT WORKS ── */
+.section-how { padding: 6rem 5%; background: var(--cream-2); }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 3rem; }
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+.step { text-align: center; }
+.step-num { width: 48px; height: 48px; background: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--gold); font-weight: 600; }
+.step-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: .5rem; font-weight: 700; }
+.step-desc { font-size: .8rem; color: var(--ink-mute); line-height: 1.6; }
+
+/* ── SECTION: TRUST QUOTE ── */
+.section-trust { padding: 6rem 5%; background: var(--navy-deep); position: relative; overflow: hidden; }
+.section-trust::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 70% at 20% 50%, rgba(201,169,110,.06) 0%, transparent 70%);
+}
+.trust-inner { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.trust-quote { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem, 2.5vw, 1.9rem); color: var(--cream); line-height: 1.5; font-style: italic; }
+.trust-quote em { font-style: normal; color: var(--gold); font-weight: 700; }
+.trust-attribution { margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+.trust-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: var(--navy-deep); font-family: 'Playfair Display', serif; }
+.trust-name { font-size: .85rem; color: var(--cream); font-weight: 600; }
+.trust-title { font-size: .72rem; color: rgba(250,250,248,.5); }
+.trust-badges { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.trust-badge {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(201,169,110,.15);
+  border-radius: .75rem; padding: 1rem 1.1rem;
+  display: flex; align-items: center; gap: .75rem;
+}
+.trust-badge-icon { font-size: 1.25rem; }
+.trust-badge-text { font-size: .75rem; color: rgba(250,250,248,.7); line-height: 1.4; }
+.trust-badge-text strong { color: var(--gold-bright); display: block; font-size: .82rem; }
+
+/* ── SECTION: TESTIMONIAL ── */
+.section-testimonial { padding: 6rem 5%; background: white; text-align: center; }
+.testimonial-stars { color: var(--gold); font-size: 1.1rem; margin-bottom: 1.5rem; letter-spacing: .15em; }
+.testimonial-text { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 2vw, 1.5rem); color: var(--navy-deep); max-width: 680px; margin: 0 auto 1.75rem; font-style: italic; line-height: 1.6; }
+.testimonial-author { display: flex; align-items: center; gap: 1rem; justify-content: center; }
+.testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--cream-2); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.testimonial-name { text-align: left; }
+.testimonial-name strong { font-size: .9rem; color: var(--navy); }
+.testimonial-name span { font-size: .75rem; color: var(--ink-mute); display: block; }
+
+/* ── SECTION: FAQ ── */
+.section-faq { padding: 6rem 5%; background: var(--cream-2); }
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 3rem; max-width: 900px; }
+@media (max-width: 700px) { .faq-grid { grid-template-columns: 1fr; } }
+details.faq-item {
+  background: white; border: 1px solid rgba(201,169,110,.15);
+  border-radius: .75rem; overflow: hidden;
+}
+details.faq-item[open] { border-color: var(--gold); }
+details.faq-item summary {
+  padding: 1.1rem 1.25rem; cursor: pointer; list-style: none;
+  font-size: .88rem; font-weight: 600; color: var(--navy);
+  display: flex; justify-content: space-between; align-items: center;
+}
+details.faq-item summary::after { content: '+'; color: var(--gold); font-size: 1.2rem; font-weight: 300; transition: transform .2s; }
+details.faq-item[open] summary::after { transform: rotate(45deg); }
+.faq-body { padding: .75rem 1.25rem 1.25rem; font-size: .82rem; color: var(--ink-mute); line-height: 1.7; border-top: 1px solid rgba(201,169,110,.1); }
+
+/* ── SECTION: CTA FINAL ── */
+.section-cta { padding: 7rem 5%; background: var(--navy); text-align: center; }
+.cta-tag { display: inline-block; font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; }
+.cta-h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: var(--cream); margin-bottom: 1rem; }
+.cta-h2 em { font-style: italic; color: var(--gold); }
+.cta-sub { font-size: 1rem; color: rgba(250,250,248,.6); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.7; }
+
+/* SIREN form */
+.siren-form { display: flex; gap: 0; max-width: 480px; margin: 0 auto; }
+.siren-input {
+  flex: 1; padding: .95rem 1.25rem;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(201,169,110,.2);
+  border-right: none; border-radius: 2rem 0 0 2rem;
+  font-family: 'JetBrains Mono', monospace; font-size: .95rem;
+  color: var(--cream); outline: none;
+}
+.siren-input::placeholder { color: rgba(250,250,248,.3); }
+.siren-input:focus { border-color: var(--gold); background: rgba(255,255,255,.12); }
+.siren-submit {
+  background: var(--gold); color: var(--navy-deep);
+  border: none; padding: .95rem 1.5rem; border-radius: 0 2rem 2rem 0;
+  font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; transition: background .2s;
+}
+.siren-submit:hover { background: var(--gold-bright); }
+
+.cta-note { font-size: .72rem; color: rgba(250,250,248,.35); margin-top: 1rem; }
+.cta-alt { margin-top: 1.5rem; font-size: .85rem; color: rgba(250,250,248,.5); }
+.cta-alt a { color: var(--gold); text-decoration: none; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy-deep); padding: 3rem 5% 2rem;
+  border-top: 1px solid rgba(201,169,110,.1);
+}
+.footer-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
+.footer-brand .brand-name { font-size: 1rem; font-weight: 600; color: var(--cream); letter-spacing: .04em; }
+.footer-brand .brand-sub { font-size: .72rem; color: rgba(250,250,248,.4); margin-top: .3rem; }
+.footer-regs { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+.reg-badge { font-size: .65rem; color: rgba(250,250,248,.35); font-family: 'JetBrains Mono', monospace; }
+.footer-bottom { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,.06); font-size: .68rem; color: rgba(250,250,248,.25); text-align: center; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .trust-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* ── LABEL ── */
+.proposal-label {
+  position: fixed; bottom: 1rem; left: 1rem; z-index: 9999;
+  background: var(--navy); color: var(--gold); padding: .4rem .9rem;
+  border-radius: 2rem; font-size: .68rem; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
+}
+
+/* Entry animations */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.hero-badge, .hero h1, .hero-sub, .hero-pillars, .hero-actions { animation: fadeUp .6s ease both; }
+.hero h1 { animation-delay: .1s; }
+.hero-sub { animation-delay: .2s; }
+.hero-pillars { animation-delay: .3s; }
+.hero-actions { animation-delay: .4s; }
+.hero-visual { animation: fadeUp .7s .25s ease both; }
+</style>
+</head>
+<body>
+
+<div class="proposal-label">PROPOSITION D · GUSTAV-INSPIRED</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IKCP<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#">Fonctionnalités</a></li>
+    <li><a href="#">Sécurité</a></li>
+    <li><a href="#">Le Cabinet</a></li>
+    <li><a href="#">Tarifs</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Accéder à Marcel →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">Family Office augmenté · Bêta 50 familles</div>
+
+    <h1>
+      Reprenez le contrôle<br>
+      de votre <em>patrimoine.</em>
+    </h1>
+
+    <p class="hero-sub">
+      Marcel orchestre votre patrimoine, vos optimisations fiscales et votre transmission
+      — avec <strong>11 experts IA souverains</strong> disponibles 24h/24.
+    </p>
+
+    <div class="hero-pillars">
+      <div class="pillar"><span class="pillar-icon">🗺️</span>Cartographiez votre patrimoine</div>
+      <div class="pillar"><span class="pillar-icon">⚖️</span>Anticipez la fiscalité</div>
+      <div class="pillar"><span class="pillar-icon">🛡️</span>Protégez votre famille</div>
+      <div class="pillar"><span class="pillar-icon">🌿</span>Transmettez sereinement</div>
+    </div>
+
+    <div class="hero-actions">
+      <a href="/app/index.html" class="btn-primary">Activer Marcel →</a>
+      <a href="#siren" class="btn-secondary">Saisir mon SIREN ↓</a>
+    </div>
+    <p class="trial-note">Bêta gratuite · 50 familles fondatrices · 6 mois Premium offerts</p>
+  </div>
+
+  <!-- Hero Visual — Marcel Interface Mockup -->
+  <div class="hero-visual">
+    <div class="mock-header">
+      <div class="mock-title">Marcel · Interface patrimoine</div>
+      <div class="mock-status"><span class="mock-dot"></span>11 agents actifs</div>
+    </div>
+
+    <!-- SIREN input -->
+    <div class="mock-siren">
+      <div class="mock-siren-label">Cartographie SIREN · 30 secondes</div>
+      <div class="mock-siren-input">
+        <div class="mock-siren-val">123&nbsp;456&nbsp;789</div>
+        <div class="mock-siren-btn">Analyser →</div>
+      </div>
+    </div>
+
+    <!-- Scores -->
+    <div class="mock-scores">
+      <div class="mock-score-card warn">
+        <div class="mock-score-val">41%</div>
+        <div class="mock-score-lbl">Tranche IR</div>
+        <div class="mock-score-tag">Optimisable</div>
+      </div>
+      <div class="mock-score-card ok">
+        <div class="mock-score-val">1,2 M€</div>
+        <div class="mock-score-lbl">Patrimoine net</div>
+        <div class="mock-score-tag">Cartographié</div>
+      </div>
+      <div class="mock-score-card info">
+        <div class="mock-score-val">88 k€</div>
+        <div class="mock-score-lbl">Droits succession</div>
+        <div class="mock-score-tag">À structurer</div>
+      </div>
+    </div>
+
+    <!-- Marcel chat -->
+    <div class="mock-chat">
+      <div class="mock-chat-header">
+        <div class="mock-avatar">M</div>
+        <div>
+          <div class="mock-chat-name">Marcel</div>
+          <div class="mock-chat-sub">Chef d'orchestre · Sonnet 4.6</div>
+        </div>
+      </div>
+      <div class="mock-bubble">
+        J'identifie 3 leviers non utilisés sur votre patrimoine.
+        Voulez-vous que Codex détaille l'optimisation PER + Dutreil ?
+      </div>
+      <div class="mock-disclaimer">Cette analyse ne constitue pas un conseil personnalisé — art. L.541-1 CoMoFi</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section class="section-domains">
+  <div class="section-eyebrow">Tout votre patrimoine avec Marcel</div>
+  <h2 class="section-h2">6 univers patrimoniaux.<br>1 vision globale.</h2>
+  <p class="section-sub">
+    Votre comptable, banquier et notaire gèrent chacun leur silo.
+    Marcel voit l'ensemble — et coordonne tous vos experts.
+  </p>
+
+  <div class="domains-grid">
+    <div class="domain-card">
+      <div class="domain-icon">🏢</div>
+      <div class="domain-name">Votre entreprise</div>
+      <div class="domain-desc">Cartographie SIREN en 30 secondes. Capital social, dirigeants, bilan estimé, optimisation holding.</div>
+      <span class="domain-tag live">✓ Live · Pappers RNE</span>
+    </div>
+    <div class="domain-card">
+      <div class="domain-icon">⚖️</div>
+      <div class="domain-name">Fiscalité</div>
+      <div class="domain-desc">Codex analyse CGI, BOFIP, jurisprudence. IR, IFI, droits de succession — chaque levier identifié.</div>
+      <span class="domain-tag live">✓ Live · Codex Opus 4.7</span>
+    </div>
+    <div class="domain-card">
+      <div class="domain-icon">🏡</div>
+      <div class="domain-name">Immobilier</div>
+      <div class="domain-desc">Valorisation, plus-values latentes, optimisation SCI, LMNP — intégré à votre bilan patrimonial global.</div>
+      <span class="domain-tag">Q3 2026 · Bâtisseur</span>
+    </div>
+    <div class="domain-card">
+      <div class="domain-icon">📊</div>
+      <div class="domain-name">Investissements</div>
+      <div class="domain-desc">Performances, allocations, veille marché temps réel. Perplexity Pro analysant 15 sources chaque matin.</div>
+      <span class="domain-tag">Q3 2026 · Veille</span>
+    </div>
+    <div class="domain-card">
+      <div class="domain-icon">🌿</div>
+      <div class="domain-name">Transmission</div>
+      <div class="domain-desc">Hermès calcule droits, pacte Dutreil, démembrement, donation-cession. Jusqu'à 384 365 € d'abattements.</div>
+      <span class="domain-tag">Q3 2026 · Hermès</span>
+    </div>
+    <div class="domain-card">
+      <div class="domain-icon">✨</div>
+      <div class="domain-name">Lifestyle & Collection</div>
+      <div class="domain-desc">Art, vins, montres, voyages sur mesure. Une conciergerie patrimoniale pour ce qui compte vraiment.</div>
+      <span class="domain-tag">Q4 2026 · Lifestyle</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section-how">
+  <div class="section-eyebrow">Comment ça marche</div>
+  <h2 class="section-h2">Prêt en 3 minutes.</h2>
+  <p class="section-sub">Pas de formulaire interminable. Pas de rendez-vous imposé. Votre patrimoine se cartographie seul — vous validez.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Saisissez votre SIREN</div>
+      <div class="step-desc">Marcel cartographie votre société en 30 secondes via Pappers et le RNE officiel.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Obtenez votre bilan</div>
+      <div class="step-desc">Patrimoine, fiscalité, protection, transmission — une vue globale que personne n'avait encore faite.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Dialoguez avec Marcel</div>
+      <div class="step-desc">Posez vos vraies questions. Marcel vous répond avec la précision d'un spécialiste — sans démarche non sollicitée.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Rencontrez Maxime</div>
+      <div class="step-desc">Quand vous êtes prêt, un conseiller humain valide chaque décision. L'IA prépare, l'humain tranche.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST QUOTE -->
+<section class="section-trust">
+  <div class="trust-inner">
+    <div>
+      <p class="trust-quote">
+        « Marcel <em>ne prend jamais de décision</em> à votre place.
+        Chaque analyse reste une proposition — vous gardez les clés
+        de votre patrimoine. »
+      </p>
+      <div class="trust-attribution">
+        <div class="trust-avatar">M</div>
+        <div>
+          <div class="trust-name">Maxime Juveneton</div>
+          <div class="trust-title">Fondateur IKCP · CIF CNCEF Patrimoine</div>
+        </div>
+      </div>
+    </div>
+    <div class="trust-badges">
+      <div class="trust-badge">
+        <div class="trust-badge-icon">🇫🇷</div>
+        <div class="trust-badge-text">
+          <strong>Données souveraines</strong>
+          Serveurs Paris–Frankfurt. Aucun transfert hors UE.
+        </div>
+      </div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">🔒</div>
+        <div class="trust-badge-text">
+          <strong>MIF II · RGPD</strong>
+          Audit horodaté D1 Paris. Conformité eIDAS.
+        </div>
+      </div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">📋</div>
+        <div class="trust-badge-text">
+          <strong>ORIAS 23001568</strong>
+          CIF · COA · CNCEF Patrimoine. Indépendant.
+        </div>
+      </div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">👁️</div>
+        <div class="trust-badge-text">
+          <strong>Lecture seule</strong>
+          IKCP ne touche jamais à vos comptes ni avoirs.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="section-testimonial">
+  <div class="testimonial-stars">★★★★★</div>
+  <p class="testimonial-text">
+    « Avant IKCP, je jonglais entre mon expert-comptable, mon banquier et mon notaire.
+    Chacun voyait son bout. Avec Marcel, pour la première fois, j'ai une vision d'ensemble
+    cohérente de ce que je construis. »
+  </p>
+  <div class="testimonial-author">
+    <div class="testimonial-avatar">👤</div>
+    <div class="testimonial-name">
+      <strong>Famille F. — Famille fondatrice</strong>
+      <span>Dirigeant · Patrimoine 2,3 M€ · Ardèche</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section-faq">
+  <div class="section-eyebrow">Questions fréquentes</div>
+  <h2 class="section-h2">Une question sur Marcel ?</h2>
+
+  <div class="faq-grid">
+    <details class="faq-item">
+      <summary>L'accès bêta est-il gratuit ?</summary>
+      <p class="faq-body">Oui — les 50 familles fondatrices bénéficient de 6 mois Premium offerts. Aucune carte bancaire requise pour démarrer. La plateforme restera ensuite à un tarif préférentiel à vie pour les fondateurs.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Marcel est-il sécurisé ?</summary>
+      <p class="faq-body">Toutes les données restent en Europe (Paris-Frankfurt WEUR). Marcel n'a aucun accès à vos comptes bancaires ni à vos avoirs. Chaque échange est audité et horodaté (conformité MIF II eIDAS). RGPD natif.</p>
+    </details>
+    <details class="faq-item">
+      <summary>En quoi IKCP diffère-t-il d'un agrégateur comme Finary ?</summary>
+      <p class="faq-body">Finary agrège des données. Marcel les analyse avec la profondeur d'un Family Office : optimisation fiscale, succession, stratégie d'entreprise — puis vous connecte à un conseiller humain CIF pour les décisions importantes.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Marcel peut-il me conseiller directement ?</summary>
+      <p class="faq-body">Marcel fournit de l'information factuelle et des analyses neutres — jamais de recommandation personnalisée sans lettre de mission. Pour chaque décision patrimoniale majeure, Maxime intervient en consultation humaine. C'est notre engagement MIF II.</p>
+    </details>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="section-cta" id="cta">
+  <div class="cta-tag">Rejoindre la bêta · Places limitées</div>
+  <h2 class="cta-h2">
+    Commencez votre <em>diagnostic patrimonial.</em>
+  </h2>
+  <p class="cta-sub">
+    Entrez votre SIREN. Marcel cartographie votre patrimoine en 30 secondes.
+    Gratuit, souverain, sans engagement.
+  </p>
+
+  <div id="siren">
+    <form class="siren-form" onsubmit="event.preventDefault()">
+      <input class="siren-input" type="text" placeholder="Votre SIREN · 9 chiffres" maxlength="9" pattern="[0-9]{9}">
+      <button class="siren-submit" type="submit">Marcel s'allume →</button>
+    </form>
+  </div>
+
+  <p class="cta-note">Source RNE officielle · Données temps réel · Aucun compte requis pour démarrer</p>
+  <p class="cta-alt">Ou <a href="/app/index.html">accédez directement à votre espace privé →</a></p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-name">IKCP — Conseil Patrimonial</div>
+      <div class="brand-sub">Family Office augmenté · IA souveraine & Humain</div>
+    </div>
+    <div class="footer-regs">
+      <span class="reg-badge">ORIAS 23001568</span>
+      <span class="reg-badge">CIF · CNCEF Patrimoine</span>
+      <span class="reg-badge">COA</span>
+      <span class="reg-badge">MIF II</span>
+      <span class="reg-badge">RGPD Souverain France</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 IKCP · Maxime Juveneton · SIREN 947 972 436 · Lyon · Annonay · Megève<br>
+    Cette plateforme ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.
+  </div>
+</footer>
+
+</body>
+</html>

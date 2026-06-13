@@ -1,0 +1,24 @@
+# Wrangler config pour ikcp-lifestyle
+#
+# Worker mutualisé pour 8 sous-agents Sonnet 4.6 (lifestyle + passions + immobilier) :
+# iris, emile, leon, josephine, helene, olympe, auguste, augustin
+#
+# ─── DÉPLOIEMENT ───
+#   cd workers/ikcp-lifestyle
+#   npx wrangler secret put ANTHROPICAPIKEY   (1ère fois — coller la clé)
+#   npx wrangler deploy
+#
+# URL après déploiement : https://ikcp-lifestyle.maxime-ead.workers.dev
+#
+# ─── TEST ───
+#   curl https://ikcp-lifestyle.maxime-ead.workers.dev/health
+#   curl -X POST https://ikcp-lifestyle.maxime-ead.workers.dev/ \
+#        -H "Content-Type: application/json" \
+#        -d '{"agent":"iris","question":"Recommandez-moi 3 chalets a Megeve pour une famille de 6 fin decembre"}'
+
+name = "ikcp-lifestyle"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+
+[observability]
+enabled = true

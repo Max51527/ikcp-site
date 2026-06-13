@@ -1,0 +1,84 @@
+# ══════════════════════════════════════════════════════════════
+#  IKCP — Auto-deploy vers Hostinger via FTP
+#  Déclenchement : push sur main OU manuel (Run workflow)
+#
+#  SECRETS REQUIS dans GitHub (Settings → Secrets → Actions) :
+#  FTP_SERVER    → hPanel Hostinger → Files → FTP Accounts → Host
+#  FTP_USERNAME  → hPanel Hostinger → Files → FTP Accounts → Username
+#  FTP_PASSWORD  → hPanel Hostinger → Files → FTP Accounts → Password
+#  FTP_PATH      → /public_html/
+# ══════════════════════════════════════════════════════════════
+
+name: Deploy → Hostinger FTP
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: FTP Deploy to Hostinger
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Vérifie si les secrets FTP sont configurés
+      # Utilise $GITHUB_OUTPUT (pattern officiel GitHub Actions)
+      - name: Vérifier secrets FTP
+        id: check
+        shell: bash
+        run: |
+          SERVER="${{ secrets.FTP_SERVER }}"
+          if [[ -z "$SERVER" ]]; then
+            echo ""
+            echo "══════════════════════════════════════════════"
+            echo "  ⚠️  Secrets FTP non configurés — deploy ignoré"
+            echo "══════════════════════════════════════════════"
+            echo "  Ajouter dans GitHub :"
+            echo "  github.com/Max51527/ikcp-site/settings/secrets/actions"
+            echo ""
+            echo "  FTP_SERVER   = host FTP Hostinger (ex: ftp.ikcp.eu)"
+            echo "  FTP_USERNAME = identifiant FTP"
+            echo "  FTP_PASSWORD = mot de passe FTP"
+            echo "  FTP_PATH     = /public_html/"
+            echo ""
+            echo "  Infos dans hPanel → Files → FTP Accounts"
+            echo "══════════════════════════════════════════════"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "✅ Secrets FTP présents — déploiement en cours..."
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy via FTP
+        if: steps.check.outputs.ready == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:       ${{ secrets.FTP_SERVER }}
+          username:     ${{ secrets.FTP_USERNAME }}
+          password:     ${{ secrets.FTP_PASSWORD }}
+          server-dir:   ${{ secrets.FTP_PATH }}
+          protocol:     ftps
+          port:         21
+          dangerous-clean-slate: false
+          log-level:    standard
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            workers/**
+            docs/**
+            .github/**
+
+      - name: Résumé
+        if: always()
+        shell: bash
+        run: |
+          echo "Commit : ${{ github.sha }}"
+          echo "Auteur : ${{ github.actor }}"
+          echo "Date   : $(date -u '+%Y-%m-%d %H:%M UTC')"

@@ -1,54 +1,70 @@
+# Wrangler config — IKCP Client Portal v2 (espace membre freemium)
+#
+# ══════════════════════════════════════════════════════════════
+# DÉPLOIEMENT MINIMAL (sans Stripe) — 4 étapes :
+#
+# 1. Créer la D1 (si pas déjà fait) :
+#    npx wrangler d1 create ikcp-client-db
+#    → copier l'UUID dans [[d1_databases]].database_id ci-dessous
+#
+# 2. Créer le KV (si pas déjà fait) :
+#    npx wrangler kv namespace create CLIENT_KV
+#    → copier l'ID dans [[kv_namespaces]].id ci-dessous
+#
+# 3. Exécuter le schéma SQL :
+#    npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
+#
+# 4. Déployer :
+#    npx wrangler deploy
+#
+# → L'auth magic link fonctionne immédiatement.
+# → SANS Resend : le lien apparaît dans les logs (wrangler tail ikcp-client)
+# → AVEC Resend (recommandé) : voir secrets ci-dessous
+#
+# ══════════════════════════════════════════════════════════════
+# SECRETS (optionnels au démarrage, recommandés en prod) :
+#
+#  npx wrangler secret put RESEND_API_KEY
+#    → re_xxx depuis resend.com/api-keys (compte gratuit 3000 emails/mois)
+#    → Vérifier domaine ikcp.eu dans Resend avant → envoi depuis noreply@ikcp.eu
+#    → Sans vérification : utiliser RESEND_FROM=IKCP <onboarding@resend.dev>
+#
+#  npx wrangler secret put CABINET_TOKEN
+#    → 32 chars random : node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+#
+#  (Sprint 3 — paiement) :
+#  npx wrangler secret put STRIPE_SECRET_KEY
+#  npx wrangler secret put STRIPE_WEBHOOK_SECRET
+#
+# ══════════════════════════════════════════════════════════════
+
 name = "ikcp-client"
 main = "worker.js"
-compatibility_date = "2026-04-25"
+compatibility_date = "2026-05-01"
+
+[[d1_databases]]
+binding = "D1"
+database_name = "ikcp-client-db"
+database_id = "748a736a-4892-4ec9-b43b-877ea0296b3d"
+
+[[kv_namespaces]]
+binding = "CLIENT_KV"
+id = "88162ad75e474216b61a5fd74470124e"
+
+[vars]
+APP_URL   = "https://ikcp-client.maxime-ead.workers.dev"  # URL du worker (magic link verify)
+FRONT_URL = "https://ikcp.eu"                             # Front-end (redirections post-auth)
+IKCP_PAPPERS_URL = "https://ikcp-pappers.maxime-ead.workers.dev"
+
+# Adresse expéditeur email (à changer si domaine non vérifié dans Resend) :
+# RESEND_FROM = "IKCP <onboarding@resend.dev>"   ← décommenter si ikcp.eu pas vérifié
+
+# (Sprint 3) Stripe products — à remplir après création dans Stripe Dashboard :
+# STRIPE_PRICE_PREMIUM_MONTHLY = "price_xxx"
+# STRIPE_PRICE_PREMIUM_YEARLY  = "price_xxx"
 
 [observability]
 enabled = true
 
-# ─── D1 database ───
-# 1. Créer la DB :  npx wrangler d1 create ikcp-client-db
-# 2. Coller l'ID retourné ci-dessous
-# 3. Migrer le schéma : npx wrangler d1 execute ikcp-client-db --file=schema.sql --remote
-[[d1_databases]]
-binding = "DB"
-database_name = "ikcp-client-db"
-database_id = "REMPLACER_PAR_ID_DB"
-
-# ─── KV namespace pour magic tokens ───
-# Créer : npx wrangler kv namespace create CLIENT_TOKENS
-[[kv_namespaces]]
-binding = "TOKENS"
-id = "REMPLACER_PAR_ID_KV"
-
-# ─── R2 bucket pour les documents privés clients ───
-# Créer avant déploiement :
-#   wrangler r2 bucket create ikcp-docs-private
-[[r2_buckets]]
-binding = "DOCS_R2"
-bucket_name = "ikcp-docs-private"
-
-# ─── Service binding vers documents-mcp-server (premier sub-agent IKCP) ───
-# Permet à /api/docs/upload de classifier automatiquement le doc uploadé.
-# Latence quasi-zéro (intra-Cloudflare). Activer après déploiement du sub-agent :
-#   cd workers/documents-mcp-server && wrangler deploy
-[[services]]
-binding = "DOCUMENTS_MCP"
-service = "ikcp-documents-mcp-server"
-
-# ─── Variables (texte plain) ───
-[vars]
-RESEND_FROM = "IKCP <maxime@ikcp.eu>"
-APP_URL = "https://ikcp-client.maxime-ead.workers.dev"
-ADMIN_EMAILS = "maxime@ikcp.fr,maxime@ikcp.eu"
-
-# ─── Domaine custom (optionnel) ───
-# Pour exposer en https://client.ikcp.eu :
-#   1. Cloudflare DNS → ajouter CNAME 'client' → 'ikcp-client.maxime-ead.workers.dev' (proxy ON)
-#   2. Worker → Domains and Routes → Add Custom Domain → 'client.ikcp.eu'
-#   3. Mettre à jour APP_URL ci-dessus → https://client.ikcp.eu
-
-# ─── Secrets à pousser via wrangler (jamais dans ce fichier !) ───
-#   npx wrangler secret put JWT_SECRET          (générer 64 chars random)
-#   npx wrangler secret put RESEND_API_KEY      (re_xxx... depuis resend.com)
-#   npx wrangler secret put MCP_SHARED_SECRET   (partagé avec documents-mcp-server)
-#                                                (générer : openssl rand -hex 32)
+# Domaine custom (recommandé après bascule DNS) :
+# Cloudflare Dashboard → Workers → ikcp-client → Domains → Add → client.ikcp.eu

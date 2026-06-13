@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Conversation</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --paper:#FAF6EE; --paper-2:#F4ECDF; --paper-3:#EDDFC8; --paper-deep:#E0D2B6;
+  --ink:#2D2520; --ink-2:#3D3329; --ink-mute:#6B5D52; --ink-faint:#9B8B7C;
+  --terra:#D97757; --terra-deep:#B85A3E; --terra-light:#E8AB8E;
+  --line:#E0D4BE; --line-strong:#C9B89E;
+}
+
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:400; line-height:1.55; letter-spacing:-0.003em;
+  overflow-x:hidden; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:''; position:fixed; inset:0; z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0 0.10 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events:none; mix-blend-mode:multiply; opacity:0.5;
+}
+main{position:relative; z-index:1}
+
+/* ─── NAV ─── */
+nav.top{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:22px 56px; background:rgba(250,246,238,0.92);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.brand{font-family:'Crimson Pro',serif; font-size:26px; font-weight:600; color:var(--ink); letter-spacing:0.005em; line-height:1}
+.brand b{color:var(--terra); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-size:9.5px; letter-spacing:0.3em; color:var(--terra-deep); text-transform:uppercase; margin-top:4px; font-weight:600}
+nav .menu{display:flex; align-items:center; gap:30px}
+nav .menu a{color:var(--ink-mute); text-decoration:none; font-size:13px; font-weight:500; transition:color 0.25s}
+nav .menu a:hover{color:var(--terra)}
+nav .cta{padding:11px 22px; background:var(--ink); color:var(--paper); font-size:12px; border-radius:30px; transition:all 0.3s ease; font-weight:500}
+nav .cta:hover{background:var(--terra)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ HERO — CONVERSATION VIVANTE ════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.hero{
+  padding:140px 56px 80px; max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1.2fr; gap:64px; align-items:center; min-height:100vh;
+}
+@media (max-width:980px){section.hero{grid-template-columns:1fr; padding:110px 28px 60px; gap:40px}}
+
+.hero-text .eyebrow{
+  font-family:'Crimson Pro',serif; font-style:italic;
+  font-size:17px; color:var(--terra); margin-bottom:20px; font-weight:500;
+}
+.hero-text .eyebrow::before{content:''; display:inline-block; width:30px; height:1px; background:var(--terra); vertical-align:middle; margin-right:14px}
+.hero-text h1{
+  font-family:'Crimson Pro',serif;
+  font-size:clamp(40px, 5.4vw, 76px); line-height:1.05;
+  font-weight:500; letter-spacing:-0.025em; color:var(--ink);
+  margin-bottom:28px;
+}
+.hero-text h1 em{font-style:italic; color:var(--terra-deep)}
+.hero-text .lede{
+  font-size:17px; color:var(--ink-mute); line-height:1.7;
+  margin-bottom:36px; max-width:520px;
+}
+.hero-text .lede em{color:var(--ink); font-style:italic}
+.hero-actions{display:flex; align-items:center; gap:24px; flex-wrap:wrap; margin-bottom:32px}
+.btn-primary{
+  padding:16px 36px; background:var(--terra); color:var(--paper);
+  text-decoration:none; font-size:13.5px; font-weight:600;
+  border-radius:32px; transition:all 0.3s; box-shadow:0 6px 20px rgba(217,119,87,0.25);
+}
+.btn-primary:hover{background:var(--terra-deep); box-shadow:0 10px 28px rgba(217,119,87,0.35)}
+.btn-secondary{color:var(--ink); text-decoration:none; font-size:13.5px; font-weight:500; border-bottom:1.5px solid var(--ink); padding-bottom:3px}
+.btn-secondary:hover{color:var(--terra); border-color:var(--terra)}
+
+.hero-stats{display:flex; gap:32px; padding-top:24px; border-top:1px solid var(--line)}
+.hero-stats .stat{font-size:12px; color:var(--ink-mute); line-height:1.5; font-family:'Inter',sans-serif}
+.hero-stats .stat b{display:block; font-family:'Crimson Pro',serif; font-size:24px; color:var(--ink); font-weight:600; margin-bottom:2px}
+
+/* ─── CHAT MOCKUP — pièce maîtresse du hero ─── */
+.chat-canvas{
+  position:relative; background:var(--paper); border:1px solid var(--line-strong);
+  border-radius:24px; box-shadow:0 30px 80px rgba(45,37,32,0.14);
+  overflow:hidden;
+}
+.chat-canvas::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--terra), var(--terra-light), var(--terra));
+}
+
+.chat-bar{
+  padding:14px 20px; background:var(--paper-2); border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:10px;
+}
+.chat-bar-balloon{width:28px; height:32px; flex-shrink:0}
+.chat-bar-name{font-family:'Crimson Pro',serif; font-size:17px; color:var(--ink); font-weight:600}
+.chat-bar-status{font-size:10.5px; color:#16a34a; font-weight:500; margin-left:auto; display:flex; align-items:center; gap:6px}
+.chat-bar-status::before{content:''; width:7px; height:7px; background:#16a34a; border-radius:50%; animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.chat-body{padding:24px 26px; display:flex; flex-direction:column; gap:14px; min-height:420px; background:var(--paper)}
+
+/* Message user */
+.msg-user{
+  align-self:flex-end; max-width:85%;
+  background:var(--ink); color:var(--paper);
+  padding:14px 18px; border-radius:18px 18px 4px 18px;
+  font-size:14.5px; line-height:1.5;
+}
+
+/* Message Marcel */
+.msg-marcel{align-self:flex-start; max-width:90%}
+.msg-marcel-head{font-family:'Crimson Pro',serif; font-style:italic; font-size:13px; color:var(--terra-deep); margin-bottom:6px; font-weight:500}
+.msg-marcel-head::before{content:'🎯  '; font-style:normal}
+.msg-marcel-bubble{
+  background:var(--paper-2); padding:14px 18px;
+  border-radius:4px 18px 18px 18px; font-size:14px; color:var(--ink);
+  line-height:1.55;
+}
+
+/* Sub-agents responses (cards) */
+.msg-agents{display:flex; flex-direction:column; gap:8px; margin-top:8px; align-self:flex-start; max-width:90%}
+.agent-pill{
+  display:flex; align-items:flex-start; gap:12px;
+  background:var(--paper); border:1px solid var(--line); border-radius:14px;
+  padding:12px 16px; opacity:0; transform:translateY(8px);
+  animation:slideIn 0.6s forwards;
+}
+.agent-pill:nth-child(1){animation-delay:0.4s}
+.agent-pill:nth-child(2){animation-delay:0.9s}
+.agent-pill:nth-child(3){animation-delay:1.4s}
+@keyframes slideIn{to{opacity:1;transform:translateY(0)}}
+.agent-pill .ico{
+  width:30px; height:30px; flex-shrink:0; border-radius:50%;
+  background:var(--paper-2); display:flex; align-items:center; justify-content:center;
+  font-size:14px; border:1px solid var(--line);
+}
+.agent-pill .body{flex:1}
+.agent-pill .who{font-family:'Crimson Pro',serif; font-size:14px; color:var(--ink); font-weight:600; line-height:1.2}
+.agent-pill .who em{color:var(--terra-deep); font-style:italic; font-size:11px; letter-spacing:0.04em}
+.agent-pill .what{font-size:12.5px; color:var(--ink-mute); margin-top:3px; line-height:1.5}
+
+/* Input */
+.chat-input{
+  padding:16px 20px; border-top:1px solid var(--line); background:var(--paper);
+  display:flex; align-items:center; gap:10px;
+}
+.chat-input-field{
+  flex:1; background:var(--paper-2); border:1px solid var(--line); border-radius:30px;
+  padding:11px 18px; font-size:14px; color:var(--ink-faint); font-family:'Inter',sans-serif;
+}
+.chat-input-send{
+  width:38px; height:38px; border-radius:50%; background:var(--terra); color:var(--paper);
+  display:flex; align-items:center; justify-content:center; font-size:14px;
+}
+
+/* ─── EQUIPAGE ─── */
+section.equipage{padding:120px 56px; max-width:1320px; margin:0 auto}
+.section-head{margin-bottom:60px; max-width:760px}
+.eyebrow{font-family:'Crimson Pro',serif; font-style:italic; font-size:16px; color:var(--terra); margin-bottom:16px}
+.eyebrow::before{content:''; display:inline-block; width:30px; height:1px; background:var(--terra); vertical-align:middle; margin-right:14px}
+.section-h{font-family:'Crimson Pro',serif; font-size:clamp(34px, 4.4vw, 56px); line-height:1.06; color:var(--ink); font-weight:500; letter-spacing:-0.02em}
+.section-h em{color:var(--terra-deep); font-style:italic}
+.section-intro{font-size:16px; color:var(--ink-mute); margin-top:22px; max-width:660px; line-height:1.7}
+
+.eq-scroll{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:18px;
+  margin-top:50px;
+}
+.eq-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:18px;
+  padding:24px 22px; transition:all 0.3s; cursor:pointer;
+}
+.eq-card:hover{transform:translateY(-4px); border-color:var(--terra-light); box-shadow:0 12px 30px rgba(217,119,87,0.12)}
+.eq-card.featured{background:linear-gradient(135deg, var(--paper) 0%, var(--paper-2) 100%); border:1.5px solid var(--terra)}
+.eq-head{display:flex; align-items:center; gap:14px; margin-bottom:14px}
+.eq-icon{
+  width:48px; height:48px; border-radius:50%; background:var(--paper-2);
+  border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.eq-card.featured .eq-icon{background:var(--terra-light); border-color:var(--terra)}
+.eq-name{font-family:'Crimson Pro',serif; font-size:24px; color:var(--ink); font-weight:500; line-height:1; letter-spacing:-0.01em}
+.eq-domain{font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:0.18em; color:var(--terra-deep); text-transform:uppercase; font-weight:600; margin-top:3px}
+.eq-card.featured .eq-domain{color:var(--terra-deep)}
+.eq-desc{font-size:13.5px; color:var(--ink-mute); line-height:1.65}
+
+/* ─── ESPACE CLIENT (compact preview) ─── */
+section.espace{padding:120px 56px; max-width:1320px; margin:0 auto; border-top:1px solid var(--line)}
+.salon-card{
+  margin-top:54px; background:var(--paper); border:1px solid var(--line-strong);
+  border-radius:20px; overflow:hidden; box-shadow:0 24px 60px rgba(45,37,32,0.10);
+}
+.salon-bar{background:var(--ink); color:var(--paper); padding:14px 22px; display:flex; align-items:center; gap:10px; font-family:'Crimson Pro',serif}
+.salon-bar-dot{width:11px; height:11px; border-radius:50%; background:#3a3530}
+.salon-bar-url{margin-left:auto; font-size:12px; color:var(--terra-light); letter-spacing:0.05em; font-family:'Inter',sans-serif}
+.salon-body{padding:36px 40px}
+.salon-greet{font-family:'Crimson Pro',serif; font-size:32px; color:var(--ink); margin-bottom:6px; font-weight:500; letter-spacing:-0.01em}
+.salon-greet em{color:var(--terra-deep); font-style:italic}
+.salon-sub{font-size:14px; color:var(--ink-mute); margin-bottom:28px; font-style:italic}
+.salon-tiles{display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:28px}
+@media (max-width:760px){.salon-tiles{grid-template-columns:repeat(2, 1fr)}}
+.salon-tile{
+  background:var(--paper-2); border:1px solid var(--line); border-radius:12px; padding:18px 20px;
+  transition:all 0.25s;
+}
+.salon-tile:hover{background:var(--paper-3); transform:translateY(-2px)}
+.salon-tile-label{font-size:10px; letter-spacing:0.18em; color:var(--terra-deep); font-weight:600; text-transform:uppercase; margin-bottom:8px}
+.salon-tile-val{font-family:'Crimson Pro',serif; font-size:24px; color:var(--ink); font-weight:600; line-height:1; letter-spacing:-0.015em}
+.salon-tile-mini{font-size:11px; color:var(--ink-faint); margin-top:6px; font-style:italic}
+
+.salon-feed{
+  background:var(--paper-2); border-radius:12px; padding:22px 24px;
+}
+.salon-feed h4{font-family:'Crimson Pro',serif; font-size:17px; color:var(--ink); margin-bottom:14px; font-weight:600}
+.salon-feed-row{padding:9px 0; font-size:13px; color:var(--ink-mute); line-height:1.5; display:flex; gap:12px; border-bottom:1px dashed var(--line-strong); align-items:flex-start}
+.salon-feed-row:last-child{border-bottom:none}
+.salon-feed-row .who{color:var(--terra-deep); font-weight:600; font-family:'Crimson Pro',serif; font-size:13.5px; min-width:78px}
+.salon-feed-row .ts{color:var(--ink-faint); font-size:11px; margin-left:auto; white-space:nowrap; font-style:italic}
+
+/* ─── INTÉGRATIONS ─── */
+section.integ{padding:120px 56px; max-width:1320px; margin:0 auto; border-top:1px solid var(--line)}
+.integ-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-top:40px}
+.integ-tile{
+  background:var(--paper); border:1px solid var(--line);
+  padding:20px 18px; border-radius:14px; transition:all 0.25s;
+  text-align:center;
+}
+.integ-tile:hover{background:var(--paper-2); transform:translateY(-2px); border-color:var(--terra-light)}
+.integ-tile.highlight{background:var(--paper-3); border-color:var(--terra)}
+.integ-name{font-family:'Crimson Pro',serif; font-size:17px; color:var(--ink); font-weight:500; margin-bottom:4px; letter-spacing:-0.01em}
+.integ-cat{font-size:10px; color:var(--terra-deep); letter-spacing:0.14em; text-transform:uppercase; font-weight:600}
+
+/* ─── SOUVERAINETÉ ─── */
+section.souv{padding:120px 56px; max-width:1320px; margin:0 auto; border-top:1px solid var(--line)}
+.souv-grid{display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:50px}
+@media (max-width:900px){.souv-grid{grid-template-columns:1fr; gap:40px}}
+.souv-body{font-family:'Crimson Pro',serif; font-size:18px; color:var(--ink-mute); line-height:1.7; margin-bottom:18px; font-style:italic}
+.souv-body strong{color:var(--ink); font-weight:600; font-style:normal}
+.souv-stack{
+  background:var(--paper-2); border:1px solid var(--line-strong); border-radius:18px;
+  padding:8px 28px; box-shadow:0 8px 28px rgba(45,37,32,0.06);
+}
+.souv-row{display:grid; grid-template-columns:auto 110px 1fr; gap:16px; align-items:center; padding:18px 0; border-bottom:1px dashed var(--line-strong); font-size:13px; line-height:1.5}
+.souv-row:last-child{border-bottom:none}
+.souv-row .flag{font-size:20px; line-height:1}
+.souv-row .label{font-family:'Crimson Pro',serif; font-style:italic; font-size:14px; color:var(--terra-deep); font-weight:500}
+.souv-row .val{color:var(--ink-mute); font-size:13.5px}
+.souv-row .val b{color:var(--ink); font-weight:600}
+
+/* ─── CTA FINAL ─── */
+section.cta-final{padding:140px 56px; text-align:center; background:linear-gradient(180deg, var(--paper), var(--paper-2)); border-top:1px solid var(--line)}
+.cta-final-h{font-family:'Crimson Pro',serif; font-size:clamp(38px, 5.4vw, 70px); line-height:1.05; color:var(--ink); font-weight:500; letter-spacing:-0.025em; max-width:880px; margin:0 auto 24px}
+.cta-final-h em{color:var(--terra-deep); font-style:italic}
+.cta-final-sub{font-family:'Crimson Pro',serif; font-style:italic; font-size:17px; color:var(--ink-mute); max-width:520px; margin:0 auto 40px; line-height:1.55}
+
+footer.proto{padding:50px 32px 36px; text-align:center; border-top:1px solid var(--line); background:var(--paper-2)}
+footer.proto p{font-size:11px; color:var(--ink-faint); letter-spacing:0.06em; line-height:1.85}
+footer.proto a{color:var(--terra-deep); text-decoration:none; border-bottom:1px solid transparent}
+footer.proto a:hover{border-color:var(--terra-deep)}
+
+@media (max-width:760px){
+  nav.top{padding:16px 22px}
+  nav .menu{gap:14px}
+  nav .menu a:not(.cta){display:none}
+  section{padding-left:22px !important; padding-right:22px !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="menu">
+    <a href="#equipage">Équipage</a>
+    <a href="#salon">Salon privé</a>
+    <a href="#integ">Intégrations</a>
+    <a href="#souv">Souveraineté</a>
+    <a href="mailto:maxime@ikcp.fr" class="cta">Échanger</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO — Conversation vivante ═══ -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="eyebrow">Marcel — votre porte d'entrée</div>
+    <h1>Posez votre question.<br><em>Marcel</em> convoque<br>les bons spécialistes.</h1>
+    <p class="lede">Un seul point de contact. Marcel écoute, qualifie, et fait travailler <em>les neuf agents</em> spécialisés du Family Office. Vous recevez la synthèse. Maxime arbitre. Vous décidez.</p>
+    <div class="hero-actions">
+      <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office" class="btn-primary">Demander une recommandation</a>
+      <a href="#equipage" class="btn-secondary">Voir l'équipage →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><b>9</b>Agents IA<br>spécialisés</div>
+      <div class="stat"><b>1</b>Chef d'orchestre<br>(Marcel)</div>
+      <div class="stat"><b>0</b>Donnée hors<br>de France</div>
+    </div>
+  </div>
+
+  <!-- Chat canvas mockup -->
+  <div class="chat-canvas">
+    <div class="chat-bar">
+      <svg class="chat-bar-balloon" viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="bcc"><ellipse cx="65" cy="55" rx="48" ry="56"/></clipPath></defs>
+        <g clip-path="url(#bcc)">
+          <rect x="17" y="-1" width="32" height="112" fill="#0055A4"/>
+          <rect x="49" y="-1" width="32" height="112" fill="#FFFFFF"/>
+          <rect x="81" y="-1" width="32" height="112" fill="#EF4135"/>
+        </g>
+        <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="rgba(120,80,50,0.6)" stroke-width="1.5"/>
+        <line x1="35" y1="105" x2="50" y2="125" stroke="#3c322a" stroke-width="1.5"/>
+        <line x1="95" y1="105" x2="80" y2="125" stroke="#3c322a" stroke-width="1.5"/>
+        <rect x="50" y="125" width="30" height="20" rx="3" fill="#7a5438"/>
+      </svg>
+      <div>
+        <div class="chat-bar-name">Marcel</div>
+      </div>
+      <div class="chat-bar-status">en ligne · 9 agents</div>
+    </div>
+
+    <div class="chat-body">
+      <div class="msg-user">Je voudrais réduire les droits de succession pour mes 3 enfants.</div>
+
+      <div class="msg-marcel">
+        <div class="msg-marcel-head">Marcel</div>
+        <div class="msg-marcel-bubble">Très bien. Je convoque trois agents pour préparer 3 stratégies complémentaires. Voici ce qu'ils préparent :</div>
+      </div>
+
+      <div class="msg-agents">
+        <div class="agent-pill">
+          <div class="ico">🏛</div>
+          <div class="body">
+            <div class="who">Auguste <em>· Juridique &amp; fiscal</em></div>
+            <div class="what">Démembrement progressif + donation graduée — économie estimée 380 k€.</div>
+          </div>
+        </div>
+        <div class="agent-pill">
+          <div class="ico">🤲</div>
+          <div class="body">
+            <div class="who">Iris <em>· Philanthropie</em></div>
+            <div class="what">Fondation abritée — réduction d'IR 66 % + transmission valeurs.</div>
+          </div>
+        </div>
+        <div class="agent-pill">
+          <div class="ico">📑</div>
+          <div class="body">
+            <div class="who">Olympe <em>· Reporting</em></div>
+            <div class="what">Synthèse 1-page comparant les 3 options · soumise à Maxime.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <div class="chat-input-field">Posez votre question...</div>
+      <div class="chat-input-send">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EQUIPAGE ─── -->
+<section class="equipage" id="equipage">
+  <div class="section-head">
+    <div class="eyebrow">L'équipage</div>
+    <h2 class="section-h">Marcel et <em>neuf spécialistes</em><br>qui ne dorment jamais.</h2>
+    <p class="section-intro">Chaque agent porte un nom, un domaine, une signature. Tous écoutent Marcel. Tous parlent à votre famille. Aucun ne se substitue à votre cabinet — ils l'amplifient.</p>
+  </div>
+
+  <div class="eq-scroll">
+    <div class="eq-card featured"><div class="eq-head"><div class="eq-icon">🎯</div><div><div class="eq-name">Marcel</div><div class="eq-domain">★ Chef d'orchestre</div></div></div><p class="eq-desc">Le point de contact unique. Il écoute, qualifie, route vers le bon spécialiste, agrège les réponses.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">🏛</div><div><div class="eq-name">Auguste</div><div class="eq-domain">Juridique &amp; fiscal</div></div></div><p class="eq-desc">Veille temps réel, optimisation IR/IFI/Dutreil, structuration successorale.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">📊</div><div><div class="eq-name">Léon</div><div class="eq-domain">Marchés financiers</div></div></div><p class="eq-desc">Allocation cible vs réelle, alertes drawdown, propositions d'arbitrages.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">💎</div><div><div class="eq-name">Joséphine</div><div class="eq-domain">Conciergerie</div></div></div><p class="eq-desc">Hôtels, jets privés, restaurants étoilés, scolarité internationale.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">🎨</div><div><div class="eq-name">Émile</div><div class="eq-domain">Art &amp; collections</div></div></div><p class="eq-desc">Curation, valorisation, ventes, assurance, déclarations IFI.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">🏠</div><div><div class="eq-name">Hélène</div><div class="eq-domain">Immobilier</div></div></div><p class="eq-desc">Acquisition, gestion locative, valorisation, cession. Marché en direct.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">🌱</div><div><div class="eq-name">Augustin</div><div class="eq-domain">Private Equity</div></div></div><p class="eq-desc">Sourcing deals, due diligence, dette privée, club deals.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">📋</div><div><div class="eq-name">Camille</div><div class="eq-domain">Family Secretary</div></div></div><p class="eq-desc">Échéances, paiements, courriers, archivage, scolarité, factures.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">🤲</div><div><div class="eq-name">Iris</div><div class="eq-domain">Philanthropie</div></div></div><p class="eq-desc">Structuration de fondation, sélection causes, mesure d'impact.</p></div>
+    <div class="eq-card"><div class="eq-head"><div class="eq-icon">📑</div><div><div class="eq-name">Olympe</div><div class="eq-domain">Reporting &amp; synthèse</div></div></div><p class="eq-desc">Consolide les analyses des huit autres en synthèse trimestrielle claire.</p></div>
+  </div>
+</section>
+
+<!-- ─── SALON PRIVÉ ─── -->
+<section class="espace" id="salon">
+  <div class="section-head">
+    <div class="eyebrow">Salon privé</div>
+    <h2 class="section-h">Votre <em>espace</em>.<br>Discret. Vivant.</h2>
+    <p class="section-intro">Une seule URL, un magic-link à votre nom. Vous y retrouvez Marcel, l'équipage, vos dossiers, vos échéances.</p>
+  </div>
+
+  <div class="salon-card">
+    <div class="salon-bar">
+      <span class="salon-bar-dot" style="background:#ff5f56"></span>
+      <span class="salon-bar-dot" style="background:#ffbd2e"></span>
+      <span class="salon-bar-dot" style="background:#27c93f"></span>
+      <span class="salon-bar-url">client.ikcp.eu/salon</span>
+    </div>
+    <div class="salon-body">
+      <div class="salon-greet">Bonjour <em>Joséphine</em>.</div>
+      <div class="salon-sub">Marcel a 3 informations pour vous · dernière visite hier 18 h 47</div>
+
+      <div class="salon-tiles">
+        <div class="salon-tile"><div class="salon-tile-label">Patrimoine</div><div class="salon-tile-val">14,2 M€</div><div class="salon-tile-mini">+ 1,8 % ce trimestre</div></div>
+        <div class="salon-tile"><div class="salon-tile-label">Liquidités</div><div class="salon-tile-val">2,1 M€</div><div class="salon-tile-mini">12 mois de train de vie</div></div>
+        <div class="salon-tile"><div class="salon-tile-label">Dossiers</div><div class="salon-tile-val">4</div><div class="salon-tile-mini">2 à valider</div></div>
+        <div class="salon-tile"><div class="salon-tile-label">Échéance</div><div class="salon-tile-val">14 j</div><div class="salon-tile-mini">Acompte IFI 2026</div></div>
+      </div>
+
+      <div class="salon-feed">
+        <h4>Activité de l'équipage</h4>
+        <div class="salon-feed-row"><span class="who">Auguste</span><span>note Dutreil cession holding · à valider</span><span class="ts">2 h</span></div>
+        <div class="salon-feed-row"><span class="who">Léon</span><span>drawdown -6,2 % actions US · arbitrage proposé</span><span class="ts">5 h</span></div>
+        <div class="salon-feed-row"><span class="who">Olympe</span><span>synthèse Q1 prête · 4 pages</span><span class="ts">hier</span></div>
+        <div class="salon-feed-row"><span class="who">Camille</span><span>acte notarié archivé eIDAS</span><span class="ts">hier</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INTÉGRATIONS ─── -->
+<section class="integ" id="integ">
+  <div class="section-head">
+    <div class="eyebrow">Intégrations</div>
+    <h2 class="section-h">Une plateforme <em>connectée</em><br>à votre écosystème.</h2>
+    <p class="section-intro">L'équipage parle à vos outils existants — signature, identité, comptes bancaires, agenda, notaire, expert-comptable, votre logiciel cabinet.</p>
+  </div>
+
+  <div class="integ-grid">
+    <div class="integ-tile"><div class="integ-name">Yousign</div><div class="integ-cat">Signature</div></div>
+    <div class="integ-tile"><div class="integ-name">Universign</div><div class="integ-cat">eIDAS QES</div></div>
+    <div class="integ-tile"><div class="integ-name">Ubble</div><div class="integ-cat">KYC PVID</div></div>
+    <div class="integ-tile"><div class="integ-name">Powens</div><div class="integ-cat">Bancaire</div></div>
+    <div class="integ-tile"><div class="integ-name">Notion</div><div class="integ-cat">CRM</div></div>
+    <div class="integ-tile"><div class="integ-name">Calendly</div><div class="integ-cat">Agenda</div></div>
+    <div class="integ-tile"><div class="integ-name">Stripe</div><div class="integ-cat">Honoraires</div></div>
+    <div class="integ-tile"><div class="integ-name">Resend</div><div class="integ-cat">Email</div></div>
+    <div class="integ-tile"><div class="integ-name">Make</div><div class="integ-cat">Workflows</div></div>
+    <div class="integ-tile"><div class="integ-name">Légifrance</div><div class="integ-cat">Veille légale</div></div>
+    <div class="integ-tile highlight"><div class="integ-name">Logiciel-GP</div><div class="integ-cat">Cabinet local</div></div>
+    <div class="integ-tile highlight"><div class="integ-name">Claude Agent SDK</div><div class="integ-cat">Anthropic</div></div>
+  </div>
+</section>
+
+<!-- ─── SOUVERAINETÉ ─── -->
+<section class="souv" id="souv">
+  <div class="section-head">
+    <div class="eyebrow">Souveraineté</div>
+    <h2 class="section-h">Une infrastructure <em>souveraine.</em><br>Vos données ne quittent pas la France.</h2>
+    <p class="section-intro">L'écosystème entier est hébergé en France ou propulsé par des partenaires européens conformes RGPD. Aucune donnée personnelle ne transite hors UE sans encadrement.</p>
+  </div>
+
+  <div class="souv-grid">
+    <div>
+      <p class="souv-body">Marcel et les neuf agents reposent sur le <strong>Claude Agent SDK</strong> d'Anthropic. Tous les <strong>calculs fiscaux</strong> passent par <strong>ikcp-mcp</strong>, notre serveur propriétaire hébergé à Paris.</p>
+      <p class="souv-body">Les <strong>documents réglementaires</strong> sont archivés en France avec horodatage qualifié eIDAS. La validation humaine de Maxime est <strong>systématique</strong> sur tout livrable.</p>
+    </div>
+    <div class="souv-stack">
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Edge</span><span class="val"><b>Cloudflare Workers</b> · ISO 27001 · DPA UE</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Calculs</span><span class="val"><b>Scaleway fr-par</b> · Paris · ikcp-mcp</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Données</span><span class="val"><b>Cloudflare D1 · R2 · KV</b> · UE · chiffré</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Signature</span><span class="val"><b>Yousign · Universign</b> · eIDAS QES</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Identité</span><span class="val"><b>Ubble</b> · PVID ANSSI</span></div>
+      <div class="souv-row"><span class="flag">🇪🇺</span><span class="label">Agents IA</span><span class="val"><b>Anthropic Claude Agent SDK</b> · DPA + SCC</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <h2 class="cta-final-h">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+  <p class="cta-final-sub">Sur recommandation. Familles à patrimoine constitué.</p>
+  <div class="hero-actions" style="justify-content:center">
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office" class="btn-primary">Demander une recommandation</a>
+    <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" class="btn-secondary" target="_blank">Calendly →</a>
+  </div>
+</section>
+
+<footer class="proto">
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

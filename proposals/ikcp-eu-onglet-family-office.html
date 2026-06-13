@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Conseil Patrimonial · Family Office augmenté (Phase Bêta)</title>
+<meta name="description" content="Cabinet indépendant de conseil patrimonial en Ardèche. Nouveau · Family Office augmenté par IA, en phase bêta sur invitation.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ─── PALETTE IKCP CABINET ─── */
+:root{
+  --navy:#1B2A4A;
+  --navy-2:#2A3B5F;
+  --navy-deep:#0E1729;
+  --cream:#FAFAF8;
+  --cream-2:#F4EFE7;
+  --cream-3:#EBE3D4;
+  --gold:#C9A96E;
+  --gold-deep:#8B6F3F;
+  --gold-bright:#E2C896;
+  --ink:#2C2418;
+  --ink-mute:#6B5D52;
+  --ink-faint:#9B8F80;
+  --line:#E5DBC9;
+  --line-strong:#CFC3AB;
+  --ok:#3F7A3F;
+  --beta:#C9A96E;
+}
+
+html,body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Outfit',sans-serif; font-weight:400;
+  line-height:1.65; letter-spacing:-0.005em;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ MOCKUP BAR (preview indicator) ═══════════════ */
+/* ════════════════════════════════════════════════════════ */
+.mockup-bar{
+  background:var(--ink); color:var(--cream);
+  padding:8px 24px; display:flex; justify-content:space-between; align-items:center;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.16em; text-transform:uppercase;
+  position:sticky; top:0; z-index:200;
+}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ NAVIGATION ikcp.eu ═══════════════ */
+/* ════════════════════════════════════════════════════════ */
+nav.site{
+  background:rgba(250,250,248,0.96);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:14px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:32px; z-index:100;
+}
+.brand{font-family:'Playfair Display',serif; font-size:26px; font-weight:600; color:var(--navy); line-height:1; letter-spacing:0.005em}
+.brand .dot{color:var(--gold); font-style:italic}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.28em; color:var(--gold-deep); text-transform:uppercase; margin-top:5px; font-weight:600}
+
+nav.site .menu{display:flex; align-items:center; gap:6px}
+nav.site .menu a{
+  position:relative;
+  color:var(--ink-mute); text-decoration:none;
+  font-size:13.5px; font-weight:500; letter-spacing:0.02em;
+  padding:10px 14px; border-radius:6px;
+  transition:all 0.2s;
+}
+nav.site .menu a:hover{color:var(--navy); background:rgba(27,42,74,0.04)}
+nav.site .menu a.active{color:var(--navy); font-weight:600}
+
+/* L'onglet Family Office mis en avant */
+nav.site .menu a.fo-tab{
+  color:var(--navy); font-weight:600;
+  background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%);
+  border:1px solid var(--gold);
+  padding:9px 16px; border-radius:8px;
+  position:relative; margin:0 4px;
+}
+nav.site .menu a.fo-tab:hover{background:linear-gradient(135deg, var(--cream-3) 0%, var(--gold-bright) 50%, var(--cream-3) 100%)}
+nav.site .menu a.fo-tab .new-badge{
+  position:absolute; top:-9px; right:-12px;
+  background:var(--navy); color:var(--gold-bright);
+  font-family:'JetBrains Mono',monospace; font-size:8.5px; font-weight:700;
+  letter-spacing:0.18em; padding:3px 8px; border-radius:30px;
+  text-transform:uppercase; white-space:nowrap;
+  box-shadow:0 4px 12px rgba(27,42,74,0.25);
+  animation:pulseNew 2.4s ease-in-out infinite;
+}
+@keyframes pulseNew{
+  0%,100%{transform:scale(1); box-shadow:0 4px 12px rgba(201,169,110,0.5)}
+  50%{transform:scale(1.06); box-shadow:0 6px 18px rgba(201,169,110,0.7)}
+}
+.new-badge::before{content:'★'; margin-right:3px; color:#fff}
+
+nav.site .menu .cta{
+  margin-left:14px; padding:10px 22px;
+  background:var(--navy); color:var(--cream);
+  font-size:12.5px; font-weight:600; letter-spacing:0.04em;
+  border-radius:6px; transition:all 0.2s;
+}
+nav.site .menu .cta:hover{background:var(--navy-deep)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ BANDEAU PHASE BÊTA (sous nav) ═══════════════ */
+/* ════════════════════════════════════════════════════════ */
+.beta-banner{
+  background:linear-gradient(90deg, var(--navy-deep) 0%, var(--navy) 50%, var(--navy-deep) 100%);
+  color:var(--gold-bright); padding:11px 32px;
+  text-align:center; font-size:12.5px; letter-spacing:0.04em;
+  border-bottom:1px solid var(--gold);
+  position:relative; overflow:hidden;
+}
+.beta-banner::before{
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(226,200,150,0.18), transparent);
+  animation:shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer{0%{left:-100%}50%,100%{left:100%}}
+.beta-banner b{font-family:'Playfair Display',serif; font-style:italic; color:#fff; font-weight:500; margin-right:4px}
+.beta-banner a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep); padding-bottom:1px; font-weight:600; margin-left:6px}
+.beta-banner a:hover{color:#fff}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ HERO ikcp.eu (style cabinet existant) ═══════ */
+/* ════════════════════════════════════════════════════════ */
+section.hero-site{
+  background:linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+  padding:80px 32px 100px;
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px;
+  max-width:1280px; margin:0 auto; align-items:center;
+}
+@media (max-width:980px){section.hero-site{grid-template-columns:1fr; padding:50px 24px 60px; gap:40px}}
+
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.28em; text-transform:uppercase;
+  color:var(--gold-deep); margin-bottom:24px; font-weight:600;
+  display:inline-flex; align-items:center; gap:12px;
+}
+.eyebrow::before{content:''; width:32px; height:1px; background:var(--gold)}
+.eyebrow .live-dot{display:inline-block; width:8px; height:8px; background:var(--ok); border-radius:50%; margin-right:6px; animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+.hero-site h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px, 5.4vw, 72px); line-height:1.05;
+  font-weight:500; letter-spacing:-0.022em; color:var(--navy);
+  margin-bottom:26px;
+}
+.hero-site h1 em{font-style:italic; color:var(--gold-deep)}
+.hero-site .lede{
+  font-size:18px; color:var(--ink-mute); line-height:1.7; max-width:560px;
+  margin-bottom:36px;
+}
+.hero-site .lede em{font-family:'Playfair Display',serif; font-style:italic; color:var(--ink); font-weight:500}
+
+.hero-actions{display:flex; align-items:center; gap:24px; flex-wrap:wrap}
+.btn-primary{
+  padding:15px 32px; background:var(--navy); color:var(--cream);
+  text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.06em;
+  border-radius:6px; transition:all 0.25s;
+  box-shadow:0 6px 18px rgba(27,42,74,0.18);
+}
+.btn-primary:hover{background:var(--navy-deep); transform:translateY(-2px); box-shadow:0 10px 24px rgba(27,42,74,0.28)}
+.btn-secondary{
+  color:var(--navy); text-decoration:none; font-size:13px; font-weight:600;
+  letter-spacing:0.04em; padding:14px 24px;
+  border:1.5px solid var(--gold-deep); border-radius:6px;
+  transition:all 0.25s;
+}
+.btn-secondary:hover{background:var(--gold-deep); color:var(--cream)}
+
+/* Hero illustration card */
+.hero-card{
+  background:var(--cream); border:1px solid var(--line-strong); border-radius:18px;
+  padding:30px 32px; box-shadow:0 24px 60px rgba(27,42,74,0.08);
+  position:relative;
+}
+.hero-card::before{
+  content:''; position:absolute; top:-1px; left:24px; right:24px; height:3px;
+  background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold));
+  border-radius:0 0 3px 3px;
+}
+.hero-card-label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.hero-card-title{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:12px}
+.hero-card-title em{color:var(--gold-deep); font-style:italic}
+.hero-card-desc{font-size:14px; color:var(--ink-mute); line-height:1.6; margin-bottom:18px}
+
+.hero-card-stats{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; padding-top:18px; border-top:1px dashed var(--line-strong)}
+.hero-stat-val{font-family:'Playfair Display',serif; font-size:24px; color:var(--gold-deep); font-weight:600; line-height:1; font-style:italic}
+.hero-stat-lbl{font-size:10.5px; color:var(--ink-faint); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; font-weight:600}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION INTRO FAMILY OFFICE ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.fo-intro{
+  background:var(--navy);
+  padding:90px 32px;
+  color:var(--cream);
+  border-top:6px solid var(--gold);
+}
+.fo-intro-wrap{max-width:1080px; margin:0 auto; text-align:center}
+.fo-intro-eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.4em; text-transform:uppercase;
+  color:var(--gold-bright); margin-bottom:24px; font-weight:600;
+}
+.fo-intro h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px, 4.6vw, 56px); line-height:1.06;
+  font-weight:500; letter-spacing:-0.02em; color:var(--cream);
+  margin-bottom:28px; max-width:880px; margin-left:auto; margin-right:auto;
+}
+.fo-intro h2 em{color:var(--gold-bright); font-style:italic}
+.fo-intro .lede{
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:19px; color:rgba(250,250,248,0.85); max-width:680px;
+  margin:0 auto 40px; line-height:1.55;
+}
+
+.fo-intro-pillars{display:grid; grid-template-columns:repeat(4, 1fr); gap:0; max-width:920px; margin:50px auto 0; border-top:1px solid rgba(226,200,150,0.18); border-bottom:1px solid rgba(226,200,150,0.18); padding:32px 0}
+@media (max-width:720px){.fo-intro-pillars{grid-template-columns:repeat(2, 1fr); gap:18px 0}}
+.fo-pillar{text-align:center; padding:0 18px; border-right:1px solid rgba(226,200,150,0.14)}
+.fo-pillar:last-child{border-right:none}
+.fo-pillar-num{font-family:'Playfair Display',serif; font-style:italic; font-size:30px; color:var(--gold-bright); line-height:1; font-weight:500}
+.fo-pillar-num i{font-style:normal; font-size:18px; opacity:0.7}
+.fo-pillar-lbl{font-family:'Playfair Display',serif; font-style:italic; font-size:15px; color:var(--cream); margin-top:6px}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ 3 TIERS TARIFAIRES ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.tarifs{padding:100px 32px; max-width:1280px; margin:0 auto}
+.tarifs-head{text-align:center; margin-bottom:60px; max-width:740px; margin-left:auto; margin-right:auto}
+.tarifs-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:20px; font-weight:600}
+.tarifs-mark::before{content:'§ '; opacity:0.5}
+.tarifs-head h2{font-family:'Playfair Display',serif; font-size:clamp(32px, 4.4vw, 50px); line-height:1.08; color:var(--navy); font-weight:500; letter-spacing:-0.02em; margin-bottom:18px}
+.tarifs-head h2 em{color:var(--gold-deep); font-style:italic}
+.tarifs-head p{font-size:16px; color:var(--ink-mute); line-height:1.7}
+
+.tiers-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px}
+@media (max-width:980px){.tiers-grid{grid-template-columns:1fr}}
+
+.tier{
+  background:var(--cream); border:1px solid var(--line-strong); border-radius:18px;
+  padding:38px 32px; position:relative; transition:all 0.3s;
+}
+.tier:hover{transform:translateY(-4px); box-shadow:0 18px 50px rgba(27,42,74,0.10); border-color:var(--gold)}
+
+.tier.recommended{background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); border:2px solid var(--gold); transform:scale(1.03)}
+.tier.recommended:hover{transform:scale(1.03) translateY(-4px)}
+.tier.recommended::before{
+  content:'★  Recommandé · Phase Bêta';
+  position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+  background:var(--gold); color:var(--navy);
+  padding:5px 16px; border-radius:30px;
+  font-family:'JetBrains Mono',monospace; font-size:9.5px;
+  letter-spacing:0.18em; font-weight:700; text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.tier-icon{font-size:32px; line-height:1; margin-bottom:18px}
+.tier-name{font-family:'Playfair Display',serif; font-size:26px; font-weight:600; color:var(--navy); margin-bottom:4px; letter-spacing:-0.005em}
+.tier.recommended .tier-name{color:var(--cream)}
+.tier-name em{font-style:italic; color:var(--gold-deep)}
+.tier.recommended .tier-name em{color:var(--gold-bright)}
+.tier-tagline{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:22px}
+.tier.recommended .tier-tagline{color:var(--gold-bright)}
+
+.tier-price{margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--line-strong)}
+.tier.recommended .tier-price{border-color:rgba(226,200,150,0.2)}
+.tier-price-num{font-family:'Playfair Display',serif; font-size:46px; color:var(--navy); font-weight:500; line-height:1; letter-spacing:-0.025em}
+.tier.recommended .tier-price-num{color:var(--cream)}
+.tier-price-num em{font-style:italic; color:var(--gold-deep)}
+.tier.recommended .tier-price-num em{color:var(--gold-bright)}
+.tier-price-num .small{font-size:18px; font-style:italic; font-weight:400; color:var(--ink-faint)}
+.tier.recommended .tier-price-num .small{color:rgba(250,250,248,0.65)}
+.tier-price-note{font-size:12px; color:var(--ink-faint); margin-top:8px; font-style:italic}
+.tier.recommended .tier-price-note{color:rgba(250,250,248,0.7)}
+
+.tier-feats{display:flex; flex-direction:column; gap:0; margin-bottom:30px}
+.tier-feat{padding:10px 0; font-size:14px; color:var(--ink-mute); line-height:1.5; display:flex; gap:10px; align-items:flex-start; border-bottom:1px dotted var(--line-strong)}
+.tier-feat:last-child{border-bottom:none}
+.tier.recommended .tier-feat{color:rgba(250,250,248,0.82); border-color:rgba(226,200,150,0.12)}
+.tier-feat b{color:var(--navy); font-weight:600}
+.tier.recommended .tier-feat b{color:var(--cream)}
+.tier-feat-ico{flex-shrink:0; width:18px; height:18px; border-radius:50%; background:var(--cream-2); color:var(--gold-deep); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px}
+.tier.recommended .tier-feat-ico{background:var(--gold); color:var(--navy)}
+
+.tier-cta{display:block; padding:13px 24px; text-align:center; text-decoration:none; font-size:12.5px; font-weight:600; letter-spacing:0.08em; border-radius:6px; transition:all 0.25s}
+.tier-cta-light{background:transparent; color:var(--navy); border:1.5px solid var(--navy)}
+.tier-cta-light:hover{background:var(--navy); color:var(--cream)}
+.tier-cta-recommended{background:var(--gold); color:var(--navy); border:1.5px solid var(--gold); font-weight:700}
+.tier-cta-recommended:hover{background:var(--gold-bright)}
+.tier-cta-dark{background:transparent; color:var(--gold-bright); border:1.5px solid var(--gold-bright)}
+.tier-cta-dark:hover{background:var(--gold-bright); color:var(--navy)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ BLOC BÊTA — INFO + CODE ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.beta-info{
+  background:var(--cream-2); padding:80px 32px;
+  border-top:1px solid var(--line);
+}
+.beta-info-wrap{max-width:880px; margin:0 auto; text-align:center}
+.beta-info-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:20px; font-weight:600}
+.beta-info-mark::before{content:'★ '}
+.beta-info h2{font-family:'Playfair Display',serif; font-size:clamp(30px, 4vw, 44px); line-height:1.1; color:var(--navy); font-weight:500; letter-spacing:-0.02em; margin-bottom:18px}
+.beta-info h2 em{color:var(--gold-deep); font-style:italic}
+.beta-info p{font-size:16px; color:var(--ink-mute); line-height:1.7; max-width:620px; margin:0 auto 36px}
+
+.beta-form-mini{
+  display:inline-flex; gap:10px; background:var(--cream); padding:8px;
+  border-radius:50px; border:1.5px solid var(--gold-deep);
+  box-shadow:0 8px 24px rgba(27,42,74,0.08);
+}
+.beta-form-mini input{
+  flex:1; min-width:280px; padding:13px 20px; background:transparent; border:none;
+  font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--navy);
+  letter-spacing:0.06em; outline:none; text-transform:uppercase;
+}
+.beta-form-mini input::placeholder{color:var(--ink-faint); text-transform:none; letter-spacing:0.02em; font-family:'Outfit',sans-serif; font-size:13px}
+.beta-form-mini button{padding:13px 28px; background:var(--navy); color:var(--cream); border:none; border-radius:42px; font-size:12.5px; font-weight:600; letter-spacing:0.06em; cursor:pointer; transition:all 0.2s}
+.beta-form-mini button:hover{background:var(--navy-deep)}
+
+.beta-info-note{margin-top:24px; font-size:12px; color:var(--ink-faint); font-style:italic; line-height:1.6}
+.beta-info-note a{color:var(--gold-deep); border-bottom:1px solid var(--gold-deep)}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ FOOTER (style site IKCP) ═════════════════ */
+/* ════════════════════════════════════════════════════════ */
+footer.site{padding:50px 32px; background:var(--navy-deep); color:rgba(250,250,248,0.7); text-align:center}
+footer.site p{font-size:11.5px; letter-spacing:0.04em; line-height:1.9}
+footer.site a{color:var(--gold-bright); text-decoration:none}
+footer.site .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic}
+
+@media (max-width:760px){
+  nav.site{padding:12px 18px; flex-wrap:wrap; gap:12px}
+  nav.site .menu{flex-wrap:wrap; gap:2px}
+  nav.site .menu a:not(.fo-tab):not(.cta){display:none}
+  .mockup-bar{font-size:9.5px; padding:7px 14px}
+  section.fo-intro, section.tarifs, section.beta-info{padding:60px 20px}
+  .beta-form-mini{flex-direction:column; border-radius:14px}
+  .beta-form-mini input{min-width:auto}
+  .tier.recommended{transform:scale(1)}
+  .tier.recommended:hover{transform:translateY(-4px)}
+}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+
+/* ════════════════════════════════════════════════════════ */
+/* ═════ SECTION UNIVERS (12 cartes) ═══════════════════════ */
+/* ════════════════════════════════════════════════════════ */
+section.univers{
+  background:linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 100%);
+  padding:100px 32px;
+}
+.univers-wrap{max-width:1280px; margin:0 auto}
+.univers-head{text-align:center; max-width:780px; margin:0 auto 56px}
+.univers-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:20px; font-weight:600}
+.univers-mark::before{content:'§ '; opacity:0.5}
+.univers-head h2{font-family:'Playfair Display',serif; font-size:clamp(32px, 4.4vw, 50px); line-height:1.08; color:var(--navy); font-weight:500; letter-spacing:-0.02em; margin-bottom:16px}
+.univers-head h2 em{color:var(--gold-deep); font-style:italic}
+.univers-head p{font-size:16px; color:var(--ink-mute); line-height:1.7}
+.univers-head p em{font-family:'Playfair Display',serif; font-style:italic; color:var(--ink); font-weight:500}
+
+.univers-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:50px}
+@media (max-width:980px){.univers-grid{grid-template-columns:repeat(3, 1fr)}}
+@media (max-width:680px){.univers-grid{grid-template-columns:repeat(2, 1fr)}}
+
+.univ-card{
+  background:var(--cream); border:1px solid var(--line-strong); border-radius:14px;
+  padding:22px 20px 18px; cursor:pointer; transition:all 0.25s;
+  position:relative; overflow:hidden;
+}
+.univ-card:hover{transform:translateY(-3px); box-shadow:0 12px 32px rgba(27,42,74,0.08); border-color:var(--gold)}
+.univ-card::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--gold), var(--gold-bright)); opacity:0; transition:opacity 0.25s;
+}
+.univ-card:hover::before{opacity:1}
+.univ-ico{font-size:24px; line-height:1; margin-bottom:12px}
+.univ-name{font-family:'Playfair Display',serif; font-size:17px; color:var(--navy); font-weight:600; margin-bottom:4px; line-height:1.2}
+.univ-tagline{font-size:11.5px; color:var(--ink-faint); line-height:1.45; letter-spacing:0.01em}
+.univ-status{
+  display:inline-block; margin-top:10px;
+  font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.18em;
+  padding:3px 7px; border-radius:30px; text-transform:uppercase; font-weight:700;
+}
+.univ-status.live{background:rgba(63,122,63,0.12); color:var(--ok)}
+.univ-status.demo{background:rgba(201,169,110,0.18); color:var(--gold-deep)}
+.univ-status.soon{background:rgba(155,143,128,0.18); color:var(--ink-faint)}
+
+.univers-cta-wrap{text-align:center}
+.univers-cta{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:16px 36px; background:var(--navy); color:var(--cream);
+  text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.06em;
+  border-radius:6px; transition:all 0.25s;
+  box-shadow:0 8px 24px rgba(27,42,74,0.2);
+}
+.univers-cta:hover{background:var(--navy-deep); transform:translateY(-2px); box-shadow:0 12px 32px rgba(27,42,74,0.3)}
+.univers-cta-sub{display:block; margin-top:14px; font-size:12px; color:var(--ink-faint); font-style:italic}
+</style>
+</head>
+<body>
+
+<!-- ═══ BARRE APERÇU (mockup indicator) ═══ -->
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · ikcp.eu — intégration onglet Family Office</span>
+  <span><a href="https://ikcp.eu/" target="_blank">site live ↗</a></span>
+</div>
+
+<!-- ═══ NAV ikcp.eu (avec onglet FO + badge NEW) ═══ -->
+<nav class="site">
+  <div>
+    <div class="brand">IKCP<span class="dot">.</span></div>
+    <div class="brand-sub">IKIGAÏ Conseil Patrimonial</div>
+  </div>
+  <div class="menu">
+    <a href="#" class="active">Cabinet</a>
+    <a href="#">Méthode</a>
+    <a href="#">Simulateurs</a>
+    <a href="#" class="fo-tab">
+      Family Office
+      <span class="new-badge">NEW · Bêta</span>
+    </a>
+    <a href="#">Articles</a>
+    <a href="#" class="cta">RDV</a>
+  </div>
+</nav>
+
+<!-- ═══ BANDEAU PHASE BÊTA (sous nav) ═══ -->
+<div class="beta-banner">
+  <b>Nouveauté.</b> Le <b>Family Office augmenté par IA</b> est en phase Bêta privée — 50 familles dirigeantes sélectionnées sur le S2 2026.
+  <a href="#beta">Demander mon accès →</a>
+</div>
+
+<!-- ═══ HERO ikcp.eu (style cabinet) ═══ -->
+<section class="hero-site">
+  <div>
+    <div class="eyebrow"><span class="live-dot"></span>Conseil patrimonial indépendant · Lyon · Annonay · Megève</div>
+    <h1>Protéger ce que vous êtes<br><em>en train de bâtir.</em></h1>
+    <p class="lede">
+      Cabinet de conseil patrimonial 100 % indépendant — ORIAS 23001568 — spécialisé dans la protection patrimoniale des dirigeants, des familles et des entrepreneurs.
+      <em>Et maintenant, un Family Office augmenté par IA</em> en phase bêta sur invitation.
+    </p>
+    <div class="hero-actions">
+      <a href="univers-demandez-moi.html" class="btn-primary">Tester les 12 univers →</a>
+      <a href="#fo" class="btn-secondary">Découvrir le Family Office</a>
+    </div>
+  </div>
+
+  <!-- Card hero droite : aperçu du Family Office -->
+  <div class="hero-card">
+    <div class="hero-card-label">★ Nouveau · Phase Bêta</div>
+    <div class="hero-card-title">Demandez-<em>moi</em>.</div>
+    <p class="hero-card-desc">
+      Une interface unique. <em>Douze univers</em> branchés sur APIs réelles — immobilier, fiscalité, marchés, art, voyage, transmission, philanthropie, formation AFFO. Posez la question, l'IA exécute.
+    </p>
+    <div class="hero-card-stats">
+      <div>
+        <div class="hero-stat-val">12</div>
+        <div class="hero-stat-lbl">Univers</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">50</div>
+        <div class="hero-stat-lbl">Bêta-testeurs</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">100<small style="font-size:14px">%</small></div>
+        <div class="hero-stat-lbl">Souverain FR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INTRO FAMILY OFFICE (section dark) ═══ -->
+<section class="fo-intro" id="fo">
+  <div class="fo-intro-wrap">
+    <div class="fo-intro-eyebrow">— Le Family Office IKCP en bêta</div>
+    <h2>Une question. <em>Un univers.</em><br>Une réponse exécutée.</h2>
+    <p class="lede">
+      Pour les dirigeants d'entreprise familiale et leurs enfants. Vous demandez, l'IA exécute, Maxime arbitre. <em>Douze univers</em> branchés sur APIs réelles — patrimoine, immobilier, fiscalité, marchés, art, voyage, transmission, philanthropie, formation AFFO, administration, reporting.
+    </p>
+
+    <div class="fo-intro-pillars">
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Digitalisé</div></div>
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Automatisé</div></div>
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Sur-mesure</div></div>
+      <div class="fo-pillar"><div class="fo-pillar-num">100<i>%</i></div><div class="fo-pillar-lbl">Accessible</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION UNIVERS (12 cartes) ═══ -->
+<section class="univers" id="univers">
+  <div class="univers-wrap">
+    <div class="univers-head">
+      <div class="univers-mark">Demandez-moi · douze univers</div>
+      <h2>Une seule interface. <em>Douze univers branchés sur APIs réelles.</em></h2>
+      <p>Plus de jargon, plus de noms d'agents. <em>Vous demandez, l'IA exécute.</em> Patrimoine, immobilier, fiscalité, marchés, art, voyage, transmission — chaque univers est branché sur des données en temps réel (Pappers, DVF, marchés boursiers, cotations art).</p>
+    </div>
+
+    <div class="univers-grid">
+      <div class="univ-card"><div class="univ-ico">💼</div><div class="univ-name">Patrimoine</div><div class="univ-tagline">Bilan patrimonial · cartographie d'entreprise · Pappers</div><span class="univ-status live">● Live</span></div>
+      <div class="univ-card"><div class="univ-ico">🏠</div><div class="univ-name">Immobilier</div><div class="univ-tagline">Prix au m² par CP · DVF live · cartographie</div><span class="univ-status live">● Live</span></div>
+      <div class="univ-card"><div class="univ-ico">🏛</div><div class="univ-name">Fiscalité</div><div class="univ-tagline">IR · IFI · barème 2026 · arbitrages</div><span class="univ-status live">● Live</span></div>
+      <div class="univ-card"><div class="univ-ico">📈</div><div class="univ-name">Marchés</div><div class="univ-tagline">CAC 40 · indices · taux · arbitrage allocation</div><span class="univ-status demo">○ Démo</span></div>
+      <div class="univ-card"><div class="univ-ico">🎨</div><div class="univ-name">Art</div><div class="univ-tagline">Côte d'artiste · enchères · authentification</div><span class="univ-status demo">○ Démo</span></div>
+      <div class="univ-card"><div class="univ-ico">💎</div><div class="univ-name">Voyage</div><div class="univ-tagline">Conciergerie hôtel · jet · expériences sur-mesure</div><span class="univ-status demo">○ Démo</span></div>
+      <div class="univ-card"><div class="univ-ico">🪴</div><div class="univ-name">Private Equity</div><div class="univ-tagline">Deal flow · co-investissement · scoring</div><span class="univ-status demo">○ Démo</span></div>
+      <div class="univ-card"><div class="univ-ico">🌱</div><div class="univ-name">Transmission</div><div class="univ-tagline">Dutreil · donation · succession · simulateur</div><span class="univ-status live">● Live</span></div>
+      <div class="univ-card"><div class="univ-ico">🤲</div><div class="univ-name">Philanthropie</div><div class="univ-tagline">Don défiscalisé IR/IFI · fondation · mécénat</div><span class="univ-status live">● Live</span></div>
+      <div class="univ-card"><div class="univ-ico">🎓</div><div class="univ-name">Formation</div><div class="univ-tagline">NextGen · 6 modules sur vos chiffres réels</div><span class="univ-status demo">○ Démo</span></div>
+      <div class="univ-card"><div class="univ-ico">📋</div><div class="univ-name">Administration</div><div class="univ-tagline">Secrétariat patrimonial · archivage eIDAS</div><span class="univ-status demo">○ Démo</span></div>
+      <div class="univ-card"><div class="univ-ico">📊</div><div class="univ-name">Reporting</div><div class="univ-tagline">Synthèse trimestrielle · KPIs · alertes</div><span class="univ-status demo">○ Démo</span></div>
+    </div>
+
+    <div class="univers-cta-wrap">
+      <a href="univers-demandez-moi.html" class="univers-cta">★ Tester les 12 univers en démo →</a>
+      <span class="univers-cta-sub">Immobilier, Fiscalité, Transmission et Philanthropie : calculs réels en temps réel.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3 TIERS TARIFAIRES ═══ -->
+<section class="tarifs">
+  <div class="tarifs-head">
+    <div class="tarifs-mark">Tarification</div>
+    <h2>Trois <em>portes d'entrée</em>.</h2>
+    <p>Du test gratuit à l'accompagnement sur-mesure. <em>Pendant la Bêta, le tier mensuel est offert aux 50 familles fondatrices.</em></p>
+  </div>
+
+  <div class="tiers-grid">
+
+    <!-- ─── TIER 1 — FREEMIUM ─── -->
+    <div class="tier">
+      <div class="tier-icon">⚬</div>
+      <div class="tier-name">Freemium</div>
+      <div class="tier-tagline">Découverte · sans engagement</div>
+
+      <div class="tier-price">
+        <div class="tier-price-num"><em>0 €</em></div>
+        <div class="tier-price-note">— Aucune carte bancaire</div>
+      </div>
+
+      <div class="tier-feats">
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>3 univers</b> ouverts : Patrimoine, Marchés, Fiscalité</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Demandez-moi</b> · 30 questions / mois</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Accès aux <b>simulateurs ikcp.eu</b></span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Newsletter <b>UPPERCUT PATRIMOINE</b></span></div>
+      </div>
+
+      <a href="#beta" class="tier-cta tier-cta-light">Commencer · gratuit</a>
+    </div>
+
+    <!-- ─── TIER 2 — À venir post-Bêta ─── -->
+    <div class="tier recommended" style="opacity:0.7;pointer-events:none">
+      <div class="tier-icon" style="color:rgba(226,200,150,0.4)">⬡</div>
+      <div class="tier-name" style="opacity:.6">Family Office <em>Augmenté</em></div>
+      <div class="tier-tagline">Tarification annoncée Q4 2026</div>
+
+      <div class="tier-price">
+        <div class="tier-price-num"><em style="font-size:28px;letter-spacing:.05em">Bientôt</em></div>
+        <div class="tier-price-note">— Co-construite avec les 50 familles fondatrices après la Bêta</div>
+      </div>
+
+      <div class="tier-feats">
+        <div class="tier-feat"><span class="tier-feat-ico">·</span><span>Accès complet à tous les univers</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">·</span><span>Tarification transparente, sans engagement</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">·</span><span>Annoncée à l'issue de la Bêta fondateurs</span></div>
+      </div>
+
+      <span class="tier-cta tier-cta-recommended" style="display:block;text-align:center;opacity:.5;cursor:default">Disponible après la Bêta</span>
+    </div>
+
+    <!-- ─── TIER 3 — SUR-MESURE ─── -->
+    <div class="tier">
+      <div class="tier-icon">⬢</div>
+      <div class="tier-name">Family Office <em>Sur-mesure</em></div>
+      <div class="tier-tagline">Bespoke · sur recommandation</div>
+
+      <div class="tier-price">
+        <div class="tier-price-num"><em>Sur devis</em></div>
+        <div class="tier-price-note">— Familles ≥ 5 M€ · multi-business</div>
+      </div>
+
+      <div class="tier-feats">
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Tout Augmenté</b> · sans limite</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Univers <b>Liaison externe</b> · notaires, avocats, banquiers</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Espace dossiers chiffré · <b>archivage eIDAS</b> 10 ans</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span><b>Validation Maxime</b> systématique sur livrables</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>RDV mensuel garanti · Calendly prioritaire</span></div>
+        <div class="tier-feat"><span class="tier-feat-ico">✓</span><span>Conciergerie ad-hoc · multi-entités · international</span></div>
+      </div>
+
+      <a href="#beta" class="tier-cta tier-cta-light">Candidater</a>
+      <a href="studio-sur-mesure.html" style="display:block; text-align:center; margin-top:10px; font-size:11.5px; color:var(--gold-bright); text-decoration:none; padding:6px; border-top:1px dashed rgba(226,200,150,0.15); padding-top:14px">★ Voir le Studio Sur-mesure (admin) →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ BLOC BÊTA — filtrage 3 niveaux : SIREN + KBIS + code ═══ -->
+<section class="beta-info" id="beta">
+  <div class="beta-info-wrap" style="max-width:920px">
+    <div class="beta-info-mark">Phase Bêta · sur invitation</div>
+    <h2>Cinquante familles dirigeantes. <em>Pas une de plus.</em></h2>
+    <p>
+      Nous ouvrons la phase Bêta à 50 dirigeants d'entreprise familiale — <em>accès complet gratuit pendant 6 mois</em>, en échange d'un retour mensuel. Pour préserver la confidentialité des bêta-testeurs et écarter curiosité concurrentielle, la candidature se fait en <em>trois étapes vérifiées</em>.
+    </p>
+
+    <!-- ═══ FORMULAIRE 3 ÉTAPES ═══ -->
+    <div style="background:var(--cream); border:1.5px solid var(--gold-deep); border-radius:18px; padding:32px; margin-top:36px; box-shadow:0 16px 48px rgba(27,42,74,0.10); text-align:left">
+
+      <!-- Progression -->
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:28px; padding-bottom:22px; border-bottom:1px dashed var(--line)">
+        <div style="display:flex; align-items:center; gap:8px; flex:1">
+          <div class="beta-step-num active">1</div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; color:var(--gold-deep); font-weight:700; text-transform:uppercase">Identité société</span>
+        </div>
+        <div style="height:1px; flex:0.5; background:var(--line)"></div>
+        <div style="display:flex; align-items:center; gap:8px; flex:1">
+          <div class="beta-step-num">2</div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; color:var(--ink-faint); font-weight:700; text-transform:uppercase">Justificatif KBIS</span>
+        </div>
+        <div style="height:1px; flex:0.5; background:var(--line)"></div>
+        <div style="display:flex; align-items:center; gap:8px; flex:1">
+          <div class="beta-step-num">3</div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; color:var(--ink-faint); font-weight:700; text-transform:uppercase">Code invitation</span>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 1 — SIREN -->
+      <div id="beta-step-1">
+        <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.2em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:8px">① SIREN du dirigeant candidat</label>
+        <p style="font-size:13px; color:var(--ink-mute); margin-bottom:14px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.55">Vérification automatique de votre société : forme juridique, capital, dirigeant. <em>Cette étape exclut tout candidat sans entreprise enregistrée en France.</em></p>
+        <div style="display:flex; gap:8px">
+          <input type="text" id="beta-siren" placeholder="Votre SIREN — 9 chiffres" maxlength="11" style="flex:1; padding:14px 18px; background:var(--cream-2); border:1.5px solid var(--line-strong); border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:14.5px; color:var(--navy); outline:none; font-weight:500; letter-spacing:0.05em">
+          <button onclick="betaCheckSiren()" style="padding:14px 22px; background:var(--navy); color:var(--cream); border:none; font-size:12px; font-weight:600; letter-spacing:0.06em; border-radius:10px; cursor:pointer; font-family:'Outfit',sans-serif">Vérifier</button>
+        </div>
+        <div id="beta-siren-result" style="display:none; margin-top:14px; padding:14px 18px; background:var(--cream-2); border-left:3px solid var(--ok); border-radius:0 10px 10px 0; font-size:13.5px; line-height:1.6"></div>
+      </div>
+
+      <!-- ÉTAPE 2 — KBIS upload -->
+      <div id="beta-step-2" style="display:none; padding-top:24px; margin-top:24px; border-top:1px dashed var(--line)">
+        <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.2em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:8px">② KBIS de moins de 3 mois</label>
+        <p style="font-size:13px; color:var(--ink-mute); margin-bottom:14px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.55">Téléversez un extrait Kbis daté de moins de 90 jours. <em>Vérifie que vous êtes le dirigeant actuel, écarte les usurpations d'identité, exclut les sociétés dissoutes.</em></p>
+        <div onclick="document.getElementById('beta-kbis-file').click()" style="background:var(--cream-2); border:2px dashed var(--gold-deep); border-radius:14px; padding:32px 24px; text-align:center; cursor:pointer; transition:all 0.2s" onmouseover="this.style.borderColor='var(--gold)';this.style.background='var(--cream-3)'" onmouseout="this.style.borderColor='var(--gold-deep)';this.style.background='var(--cream-2)'">
+          <div style="font-size:36px; margin-bottom:10px; opacity:0.7">📜</div>
+          <div style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; margin-bottom:4px">Glisser-déposer votre KBIS PDF</div>
+          <div style="font-size:12px; color:var(--ink-faint); font-style:italic">Format PDF · chiffré à l'upload · supprimé après vérification</div>
+          <input type="file" id="beta-kbis-file" accept="application/pdf" style="display:none" onchange="betaCheckKbis(this)">
+        </div>
+        <div id="beta-kbis-result" style="display:none; margin-top:14px; padding:14px 18px; background:var(--cream-2); border-left:3px solid var(--ok); border-radius:0 10px 10px 0; font-size:13.5px; line-height:1.6"></div>
+      </div>
+
+      <!-- ÉTAPE 3 — code invitation -->
+      <div id="beta-step-3" style="display:none; padding-top:24px; margin-top:24px; border-top:1px dashed var(--line)">
+        <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.2em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:8px">③ Code d'invitation</label>
+        <p style="font-size:13px; color:var(--ink-mute); margin-bottom:14px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.55">Code reçu par email de Maxime ou par parrainage. <em>Si vous n'en avez pas, vous pouvez en demander un en bas de ce formulaire.</em></p>
+        <div style="display:flex; gap:8px">
+          <input type="text" id="beta-code" placeholder="BETA-FAMI-XXXX-YYYY" maxlength="19" style="flex:1; padding:14px 18px; background:var(--cream-2); border:1.5px solid var(--line-strong); border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:14.5px; color:var(--navy); outline:none; font-weight:600; text-transform:uppercase; letter-spacing:0.06em">
+          <button onclick="betaSubmit()" style="padding:14px 26px; background:var(--gold); color:var(--navy); border:none; font-size:12px; font-weight:700; letter-spacing:0.08em; border-radius:10px; cursor:pointer; font-family:'Outfit',sans-serif">Accéder à la Bêta →</button>
+        </div>
+        <div id="beta-final-result" style="display:none; margin-top:14px; padding:18px 22px; background:linear-gradient(135deg, rgba(63,122,63,0.10) 0%, rgba(63,122,63,0.04) 100%); border:1px solid var(--ok); border-radius:12px; font-size:14px; line-height:1.6; color:var(--ok); font-weight:500"></div>
+      </div>
+
+    </div>
+
+    <p class="beta-info-note">
+      Pas encore de code ? <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27invitation%20B%C3%AAta%20IKCP%20Family%20Office">Demandez votre invitation à Maxime →</a><br>
+      Réponse personnelle sous 48 heures · sans engagement · vos pièces ne sont jamais transmises à un tiers.
+    </p>
+  </div>
+</section>
+
+<style>
+.beta-step-num{
+  width:30px; height:30px; border-radius:50%;
+  background:var(--cream-2); color:var(--ink-faint);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-size:14px; font-weight:600;
+  border:1.5px solid var(--line-strong); flex-shrink:0;
+  transition:all 0.3s;
+}
+.beta-step-num.active{background:var(--gold); color:var(--navy); border-color:var(--gold); box-shadow:0 0 0 4px rgba(201,169,110,0.15)}
+.beta-step-num.done{background:var(--ok); color:var(--cream); border-color:var(--ok)}
+.beta-step-num.done::before{content:'✓'; position:absolute; font-weight:700}
+.beta-step-num.done span{display:none}
+</style>
+
+<script>
+// ─── ÉTAPE 1 : Vérification SIREN ───
+function betaCheckSiren(){
+  const v = document.getElementById('beta-siren').value.replace(/\s/g,'');
+  const r = document.getElementById('beta-siren-result');
+  if (!/^\d{9}$/.test(v)) {
+    r.style.display='block';
+    r.style.borderColor='var(--bad)';
+    r.style.color='var(--bad)';
+    r.innerHTML = '⚠ SIREN invalide — 9 chiffres requis.';
+    return;
+  }
+  r.style.display='block';
+  r.style.borderColor='var(--gold)';
+  r.style.color='var(--ink-mute)';
+  r.innerHTML = '<em>Vérification en cours auprès du Registre National des Entreprises…</em>';
+  setTimeout(()=>{
+    // Mock cohérent : SIREN valides FR mockés
+    if (v === '775670417') {
+      r.style.borderColor='var(--ok)';
+      r.style.color='var(--navy)';
+      r.innerHTML = '<strong style="color:var(--ok)">✓ Identité vérifiée.</strong><br><span style="font-size:12.5px; color:var(--ink-mute)">LVMH MOËT HENNESSY LOUIS VUITTON · SA · Paris (75008) · PDG Bernard ARNAULT</span>';
+      // Passe à étape 2
+      document.getElementById('beta-step-2').style.display='block';
+      document.querySelectorAll('.beta-step-num')[0].classList.add('done');
+      document.querySelectorAll('.beta-step-num')[0].textContent='✓';
+      document.querySelectorAll('.beta-step-num')[1].classList.add('active');
+      document.querySelectorAll('.beta-step-num')[1].parentElement.querySelector('span').style.color='var(--gold-deep)';
+      setTimeout(()=>document.getElementById('beta-step-2').scrollIntoView({behavior:'smooth',block:'center'}), 200);
+    } else {
+      r.style.borderColor='var(--ok)';
+      r.style.color='var(--navy)';
+      r.innerHTML = '<strong style="color:var(--ok)">✓ SIREN valide en France.</strong><br><span style="font-size:12.5px; color:var(--ink-mute)">Société active · données vérifiées · prêt pour l\'étape 2.</span>';
+      document.getElementById('beta-step-2').style.display='block';
+      document.querySelectorAll('.beta-step-num')[0].classList.add('done');
+      document.querySelectorAll('.beta-step-num')[0].textContent='✓';
+      document.querySelectorAll('.beta-step-num')[1].classList.add('active');
+      document.querySelectorAll('.beta-step-num')[1].parentElement.querySelector('span').style.color='var(--gold-deep)';
+      setTimeout(()=>document.getElementById('beta-step-2').scrollIntoView({behavior:'smooth',block:'center'}), 200);
+    }
+  }, 900);
+}
+
+// ─── ÉTAPE 2 : KBIS check ───
+function betaCheckKbis(input){
+  const file = input.files[0];
+  const r = document.getElementById('beta-kbis-result');
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    r.style.display='block';
+    r.style.borderColor='var(--bad)';
+    r.style.color='var(--bad)';
+    r.innerHTML = '⚠ Format PDF requis.';
+    return;
+  }
+  if (file.size > 10*1024*1024) {
+    r.style.display='block';
+    r.style.borderColor='var(--bad)';
+    r.style.color='var(--bad)';
+    r.innerHTML = '⚠ Fichier trop volumineux (max 10 Mo).';
+    return;
+  }
+  r.style.display='block';
+  r.style.borderColor='var(--gold)';
+  r.style.color='var(--ink-mute)';
+  r.innerHTML = '<em>Chiffrement et vérification de la date d\'émission…</em>';
+  setTimeout(()=>{
+    r.style.borderColor='var(--ok)';
+    r.style.color='var(--navy)';
+    r.innerHTML = '<strong style="color:var(--ok)">✓ KBIS recevable.</strong><br><span style="font-size:12.5px; color:var(--ink-mute)">Fichier : <strong>'+file.name+'</strong> · '+(file.size/1024).toFixed(0)+' Ko · daté de moins de 3 mois · cohérent avec le SIREN saisi · dirigeant identifié.</span>';
+    document.getElementById('beta-step-3').style.display='block';
+    document.querySelectorAll('.beta-step-num')[1].classList.remove('active');
+    document.querySelectorAll('.beta-step-num')[1].classList.add('done');
+    document.querySelectorAll('.beta-step-num')[1].textContent='✓';
+    document.querySelectorAll('.beta-step-num')[2].classList.add('active');
+    document.querySelectorAll('.beta-step-num')[2].parentElement.querySelector('span').style.color='var(--gold-deep)';
+    setTimeout(()=>document.getElementById('beta-step-3').scrollIntoView({behavior:'smooth',block:'center'}), 200);
+  }, 1100);
+}
+
+// ─── ÉTAPE 3 : code final ───
+function betaSubmit(){
+  const c = document.getElementById('beta-code').value.trim().toUpperCase();
+  const r = document.getElementById('beta-final-result');
+  if (!/^BETA-FAMI-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(c)) {
+    r.style.display='block';
+    r.style.background='rgba(185,28,28,0.05)';
+    r.style.borderColor='var(--bad)';
+    r.style.color='var(--bad)';
+    r.innerHTML = '⚠ Format invalide — attendu : BETA-FAMI-XXXX-YYYY';
+    return;
+  }
+  r.style.display='block';
+  r.innerHTML = '<em>Vérification du code…</em>';
+  setTimeout(()=>{
+    r.innerHTML = '<strong style="color:var(--ok)">✓ Candidature reçue et validée.</strong><br><span style="color:var(--ink-mute); font-size:13px">Vous recevez sous 24 heures un email personnel de Maxime avec votre lien magique d\'accès à la plateforme Bêta. Bienvenue dans les 50 familles fondatrices.</span>';
+    document.querySelectorAll('.beta-step-num')[2].classList.remove('active');
+    document.querySelectorAll('.beta-step-num')[2].classList.add('done');
+    document.querySelectorAll('.beta-step-num')[2].textContent='✓';
+  }, 900);
+}
+</script>
+
+<!-- ═══ FOOTER style site IKCP ═══ -->
+<footer class="site">
+  <p>
+    <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+  <p class="legal">
+    Site créé par Maxime Juveneton · Tous droits réservés · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)
+  </p>
+</footer>
+
+<!-- ═══ PROTECTION COPIE ═══ -->
+<script>
+(function(){
+  let clientIP = 'inconnue';
+  fetch('https://api.ipify.org?format=json',{cache:'no-store'}).then(r=>r.json()).then(d=>{clientIP=d.ip||'inconnue'}).catch(()=>{});
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nIP: ' + clientIP + ' · ' + new Date().toLocaleString('fr-FR') + '\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+  console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+})();
+</script>
+
+</body>
+</html>

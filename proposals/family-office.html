@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office augmenté</title>
+<meta name="description" content="Family Office augmenté du cabinet IKCP. Marcel orchestre 9 agents IA spécialisés. Pour familles à patrimoine constitué. Sur recommandation.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://ikcp.eu/family-office">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --cream:#fbf8f1; --cream-2:#f4ecdf; --cream-3:#ede4d3;
+  --ink:#1f1a16; --ink-mute:#6d5c4a; --ink-faint:#9e9080;
+  --gold:#b8956e; --gold-deep:#a07b54; --gold-bright:#c4a273;
+  --line:#e5ded2; --line-strong:#d4cab9;
+}
+
+html,body{
+  background:var(--cream); color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:400; line-height:1.55; letter-spacing:-0.005em;
+  overflow-x:hidden; min-height:100vh;
+  text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+
+main{position:relative; z-index:1}
+
+nav.top{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:24px 48px; display:flex; justify-content:space-between; align-items:center;
+  background:linear-gradient(to bottom, rgba(251,248,241,0.95), rgba(251,248,241,0.4));
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.brand-block{line-height:1.1}
+.brand{font-family:'Playfair Display',serif; font-size:24px; font-weight:600; color:var(--ink); letter-spacing:0.02em}
+.brand .dot{color:var(--gold)}
+.brand-sub{display:block; font-size:9.5px; letter-spacing:0.32em; color:var(--gold); text-transform:uppercase; margin-top:3px; font-weight:600}
+nav .menu{display:flex; align-items:center; gap:30px}
+nav .menu a{color:var(--ink-mute); text-decoration:none; font-size:13px; letter-spacing:0.02em; transition:color 0.25s}
+nav .menu a:hover{color:var(--gold)}
+nav .cta{
+  padding:11px 22px; border:1px solid var(--ink); color:var(--ink);
+  text-decoration:none; font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase;
+  border-radius:1px; transition:all 0.3s ease; font-weight:600;
+}
+nav .cta:hover{background:var(--ink); color:var(--cream)}
+
+section.hero{
+  min-height:100vh; padding:120px 32px 80px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; position:relative;
+}
+.kicker{
+  font-size:10.5px; letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:32px;
+  display:flex; align-items:center; gap:18px;
+  opacity:0; animation:fadeIn 1.2s 0.2s forwards; font-weight:600;
+}
+.kicker .rule{width:36px; height:1px; background:var(--gold)}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(48px, 7.2vw, 96px); line-height:1.04;
+  font-weight:500; letter-spacing:-0.02em; color:var(--ink);
+  margin-bottom:36px; max-width:1100px;
+  opacity:0; animation:fadeUp 1.1s 0.4s forwards;
+}
+.hero h1 em{font-style:italic; color:var(--gold)}
+.hero .lede{
+  font-size:clamp(16px, 1.5vw, 19px); color:var(--ink-mute); max-width:680px;
+  line-height:1.7; margin-bottom:54px;
+  opacity:0; animation:fadeUp 1.1s 0.7s forwards;
+}
+.hero .lede em{font-style:italic; color:var(--ink)}
+
+.cta-row{display:inline-flex; align-items:center; gap:32px; flex-wrap:wrap; justify-content:center; opacity:0; animation:fadeUp 1.1s 1s forwards}
+.cta-primary{
+  display:inline-block; padding:18px 42px; background:var(--ink); color:var(--cream);
+  text-decoration:none; font-size:12px; font-weight:600;
+  letter-spacing:0.18em; text-transform:uppercase; border-radius:1px;
+  transition:all 0.3s ease; border:1px solid var(--ink);
+}
+.cta-primary:hover{background:transparent; color:var(--ink)}
+.cta-secondary{
+  color:var(--ink-mute); text-decoration:none; font-size:12.5px;
+  letter-spacing:0.05em; border-bottom:1px solid var(--line-strong); padding-bottom:5px;
+  transition:all 0.3s ease;
+}
+.cta-secondary:hover{color:var(--gold); border-color:var(--gold)}
+.cta-note{
+  font-size:11.5px; font-style:italic; font-family:'Playfair Display',serif;
+  color:var(--ink-faint); margin-top:30px; letter-spacing:0.02em;
+  opacity:0; animation:fadeUp 1.1s 1.3s forwards;
+}
+
+.scroll-hint{
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--ink-faint);
+  letter-spacing:0.32em; text-transform:uppercase;
+  opacity:0; animation:fadeIn 1.5s 2s forwards;
+}
+.scroll-hint::after{
+  content:''; display:block; width:1px; height:20px; background:var(--gold);
+  margin:8px auto 0; animation:scroll 2s ease-in-out infinite;
+}
+@keyframes scroll{0%,100%{transform:scaleY(0.4); transform-origin:top}50%{transform:scaleY(1); transform-origin:top}}
+
+section.agents{padding:140px 40px 120px; max-width:1280px; margin:0 auto}
+.section-head{margin-bottom:60px; max-width:880px}
+.section-head h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px, 4.4vw, 58px); line-height:1.06;
+  color:var(--ink); font-weight:500; letter-spacing:-0.018em;
+}
+.section-head h2 em{font-style:italic; color:var(--gold)}
+.section-head .intro{
+  font-size:16px; color:var(--ink-mute); line-height:1.75; margin-top:24px;
+  max-width:680px;
+}
+
+.constellation{
+  position:relative; width:min(720px,90vw); height:min(720px,90vw);
+  margin:60px auto 100px;
+}
+.constellation svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+
+.constellation .center{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:178px; height:178px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright) 0%, var(--gold) 55%, var(--gold-deep) 100%);
+  box-shadow:0 0 60px rgba(184,149,110,0.32), inset 0 4px 24px rgba(255,255,255,0.25);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:14px;
+}
+.constellation .center-mark{font-size:8.5px; letter-spacing:0.28em; text-transform:uppercase; opacity:0.7; margin-bottom:6px; font-weight:600; color:var(--cream)}
+.constellation .center-name{font-family:'Playfair Display',serif; font-size:34px; font-weight:600; line-height:1; color:var(--cream)}
+.constellation .center-role{font-size:9.5px; letter-spacing:0.18em; text-transform:uppercase; margin-top:5px; font-weight:500; opacity:0.85; color:var(--cream)}
+
+.agent-node{
+  position:absolute; width:118px; height:118px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--cream); border:1px solid var(--line-strong);
+  border-radius:50%; transition:all 0.3s ease;
+  text-decoration:none; color:var(--ink);
+  box-shadow:0 4px 16px rgba(31,26,22,0.05);
+  transform:translate(-50%, -50%);
+}
+.agent-node:hover{transform:translate(-50%, -50%) scale(1.08); border-color:var(--gold); box-shadow:0 8px 28px rgba(184,149,110,0.25)}
+.agent-icon{font-size:28px; margin-bottom:4px}
+.agent-name{font-family:'Playfair Display',serif; font-size:14.5px; font-weight:500; color:var(--ink); letter-spacing:0.02em}
+.agent-domain{font-size:8.5px; color:var(--ink-faint); letter-spacing:0.12em; text-transform:uppercase; margin-top:2px}
+
+/* 9 agents — nonagone autour de Marcel */
+.agent-1{top:9%; left:50%}
+.agent-2{top:18.6%; left:76.4%}
+.agent-3{top:42.9%; left:90.4%}
+.agent-4{top:70.6%; left:85.6%}
+.agent-5{top:88.5%; left:64%}
+.agent-6{top:88.5%; left:36%}
+.agent-7{top:70.6%; left:14.4%}
+.agent-8{top:42.9%; left:9.7%}
+.agent-9{top:18.6%; left:23.6%}
+
+@media (max-width:760px){
+  .constellation{width:96vw; height:96vw}
+  .constellation .center{width:120px; height:120px}
+  .constellation .center-name{font-size:22px}
+  .agent-node{width:80px; height:80px}
+  .agent-icon{font-size:18px}
+  .agent-name{font-size:11px}
+  .agent-domain{display:none}
+}
+
+.agents-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line);
+  margin-top:60px;
+}
+.agent-card{background:var(--cream); padding:32px 28px; transition:background 0.3s}
+.agent-card:hover{background:var(--cream-2)}
+.agent-card-head{display:flex; align-items:center; gap:14px; margin-bottom:18px}
+.agent-card-icon{
+  width:46px; height:46px; border-radius:50%;
+  background:rgba(184,149,110,0.1); border:1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.agent-card-name{font-family:'Playfair Display',serif; font-size:22px; color:var(--ink); font-weight:500}
+.agent-card-role{font-size:10.5px; letter-spacing:0.18em; color:var(--gold); text-transform:uppercase; font-weight:600; margin-top:2px}
+.agent-card-desc{font-size:13.5px; color:var(--ink-mute); line-height:1.7; margin-bottom:16px}
+
+section.expertises{padding:120px 40px; max-width:1280px; margin:0 auto; border-top:1px solid var(--line)}
+.exp-grid{
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  gap:1px; background:var(--line); border:1px solid var(--line);
+  margin-top:60px;
+}
+@media (max-width:980px){.exp-grid{grid-template-columns:repeat(2, 1fr)}}
+@media (max-width:640px){.exp-grid{grid-template-columns:1fr}}
+
+.exp-card{background:var(--cream); padding:40px 32px; transition:background 0.4s ease}
+.exp-card:hover{background:var(--cream-2)}
+.exp-numeral{
+  font-family:'Playfair Display',serif; font-size:54px; font-weight:400; font-style:italic;
+  color:var(--gold); line-height:1; margin-bottom:14px; opacity:0.5;
+}
+.exp-title{font-family:'Playfair Display',serif; font-size:20px; line-height:1.2; color:var(--ink); font-weight:500; margin-bottom:14px}
+.exp-desc{font-size:13px; color:var(--ink-mute); line-height:1.7}
+.exp-agent{
+  margin-top:18px; padding-top:14px;
+  border-top:1px dashed var(--line-strong);
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  color:var(--gold-deep); letter-spacing:0.08em;
+}
+.exp-agent::before{content:'↳ '; opacity:0.5}
+
+/* ─── SOUVERAINETÉ ─── */
+section.souverainete{padding:120px 40px; max-width:1280px; margin:0 auto; border-top:1px solid var(--line)}
+.souv-grid{display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:50px}
+@media (max-width:900px){.souv-grid{grid-template-columns:1fr; gap:40px}}
+.souv-body{font-size:15.5px; color:var(--ink-mute); line-height:1.75; margin-bottom:18px}
+.souv-body strong{color:var(--ink); font-weight:500}
+.souv-stack{
+  background:var(--cream-2); border:1px solid var(--line-strong); border-radius:14px;
+  padding:8px 28px;
+}
+.souv-row{
+  display:grid; grid-template-columns:auto 100px 1fr; gap:16px; align-items:center;
+  padding:18px 0; border-bottom:1px solid var(--line);
+  font-size:13px; color:var(--ink); line-height:1.5;
+}
+.souv-row:last-child{border-bottom:none}
+.souv-row .flag{font-size:18px; line-height:1}
+.souv-row .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold-deep); font-weight:600}
+.souv-row .val{color:var(--ink-mute); font-size:13px}
+.souv-row .val b{color:var(--ink); font-weight:500}
+
+section.cta-final{
+  padding:140px 40px; text-align:center;
+  background:linear-gradient(180deg, var(--cream), var(--cream-2));
+  border-top:1px solid var(--line);
+}
+.cta-final-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px, 5.6vw, 72px); line-height:1.04;
+  color:var(--ink); font-weight:500; letter-spacing:-0.02em;
+  max-width:880px; margin:0 auto 28px;
+}
+.cta-final-h em{font-style:italic; color:var(--gold)}
+.cta-final-sub{font-size:16px; color:var(--ink-mute); max-width:560px; margin:0 auto 44px; line-height:1.7}
+
+footer.proto{padding:48px 32px 36px; text-align:center; border-top:1px solid var(--line); background:var(--cream-2)}
+footer.proto p{font-size:11px; color:var(--ink-faint); letter-spacing:0.06em; line-height:1.85}
+footer.proto a{color:var(--gold); text-decoration:none; border-bottom:1px solid transparent; transition:border 0.25s}
+footer.proto a:hover{border-color:var(--gold)}
+
+@media (max-width:760px){
+  nav.top{padding:18px 20px}
+  nav .menu{gap:14px}
+  nav .menu a:not(.cta){display:none}
+  section.hero{padding:80px 20px 60px}
+  section.agents,section.expertises,section.souverainete,section.cta-final{padding:80px 20px}
+}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div class="brand-block">
+    <div class="brand">IKCP<span class="dot">.</span></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="menu">
+    <a href="#agents">Agents</a>
+    <a href="#expertises">Expertises</a>
+    <a href="#souverainete">Souveraineté</a>
+    <a href="https://ikcp.eu/" style="font-size:11.5px">Cabinet ↗</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office%20%E2%80%94%20IKCP" class="cta">Échanger</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="kicker">
+    <span class="rule"></span>
+    Family Office augmenté · Sur recommandation
+    <span class="rule"></span>
+  </div>
+
+  <h1>Une porte d'entrée.<br>Marcel <em>orchestre.</em><br>Neuf agents <em>exécutent.</em></h1>
+
+  <p class="lede">
+    Pour les familles dont le patrimoine ne <em>s'improvise</em> plus.
+    Une équipe spécialisée. <em>Votre patrimoine en orbite.</em>
+  </p>
+
+  <div class="cta-row">
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office%20%E2%80%94%20IKCP" class="cta-primary">Demander une recommandation</a>
+    <a href="#agents" class="cta-secondary">Découvrir l'équipage →</a>
+  </div>
+  <div class="cta-note">Sur recommandation · Familles à patrimoine constitué</div>
+
+  <div class="scroll-hint">Marcel &amp; les agents</div>
+</section>
+
+<section class="agents" id="agents">
+  <div class="section-head">
+    <h2>Marcel et son <em>équipage.</em><br>Neuf agents au service de votre famille.</h2>
+    <p class="intro">Une seule porte d'entrée. Marcel écoute, qualifie et oriente. Derrière lui, un équipage spécialisé qui couvre l'ensemble de vos sujets — du juridique à l'art, du voyage à la philanthropie, du reporting à la conciergerie.</p>
+  </div>
+
+  <div class="constellation" aria-label="Marcel au centre, 9 agents en orbite">
+    <svg viewBox="0 0 720 720" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <circle cx="360" cy="360" r="260" stroke="rgba(184,149,110,0.18)" stroke-width="1" fill="none" stroke-dasharray="2 8"/>
+      <circle cx="360" cy="360" r="190" stroke="rgba(184,149,110,0.10)" stroke-width="0.6" fill="none"/>
+
+      <g stroke="rgba(184,149,110,0.28)" stroke-width="1" stroke-dasharray="3 5" fill="none">
+        <line x1="360" y1="360" x2="360" y2="65"/>
+        <line x1="360" y1="360" x2="550" y2="134"/>
+        <line x1="360" y1="360" x2="651" y2="309"/>
+        <line x1="360" y1="360" x2="616" y2="508"/>
+        <line x1="360" y1="360" x2="461" y2="637"/>
+        <line x1="360" y1="360" x2="259" y2="637"/>
+        <line x1="360" y1="360" x2="104" y2="508"/>
+        <line x1="360" y1="360" x2="70" y2="309"/>
+        <line x1="360" y1="360" x2="170" y2="134"/>
+      </g>
+
+      <g fill="#b8956e">
+        <circle r="3.5"><animateMotion dur="5.4s" repeatCount="indefinite" path="M 360 360 L 360 65"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="0.6s" repeatCount="indefinite" path="M 360 360 L 550 134"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="1.2s" repeatCount="indefinite" path="M 360 360 L 651 309"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="1.8s" repeatCount="indefinite" path="M 360 360 L 616 508"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="2.4s" repeatCount="indefinite" path="M 360 360 L 461 637"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="3.0s" repeatCount="indefinite" path="M 360 360 L 259 637"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="3.6s" repeatCount="indefinite" path="M 360 360 L 104 508"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="4.2s" repeatCount="indefinite" path="M 360 360 L 70 309"/></circle>
+        <circle r="3.5"><animateMotion dur="5.4s" begin="4.8s" repeatCount="indefinite" path="M 360 360 L 170 134"/></circle>
+      </g>
+    </svg>
+
+    <div class="center">
+      <div class="center-mark">★ Chef d'orchestre</div>
+      <div class="center-name">Marcel</div>
+      <div class="center-role">Orchestre &amp; arbitre</div>
+    </div>
+
+    <a href="#card-josephine" class="agent-node agent-1"><div class="agent-icon">💎</div><div class="agent-name">Joséphine</div><div class="agent-domain">Voyage</div></a>
+    <a href="#card-emile" class="agent-node agent-2"><div class="agent-icon">🎨</div><div class="agent-name">Émile</div><div class="agent-domain">Art</div></a>
+    <a href="#card-leon" class="agent-node agent-3"><div class="agent-icon">📊</div><div class="agent-name">Léon</div><div class="agent-domain">Marchés</div></a>
+    <a href="#card-augustin" class="agent-node agent-4"><div class="agent-icon">🌱</div><div class="agent-name">Augustin</div><div class="agent-domain">Private Equity</div></a>
+    <a href="#card-helene" class="agent-node agent-5"><div class="agent-icon">🏠</div><div class="agent-name">Hélène</div><div class="agent-domain">Immobilier</div></a>
+    <a href="#card-auguste" class="agent-node agent-6"><div class="agent-icon">🏛</div><div class="agent-name">Auguste</div><div class="agent-domain">Juridique</div></a>
+    <a href="#card-camille" class="agent-node agent-7"><div class="agent-icon">📋</div><div class="agent-name">Camille</div><div class="agent-domain">Secrétariat</div></a>
+    <a href="#card-iris" class="agent-node agent-8"><div class="agent-icon">🤲</div><div class="agent-name">Iris</div><div class="agent-domain">Philanthropie</div></a>
+    <a href="#card-olympe" class="agent-node agent-9"><div class="agent-icon">📑</div><div class="agent-name">Olympe</div><div class="agent-domain">Reporting</div></a>
+  </div>
+
+  <div class="agents-grid">
+    <article class="agent-card" id="card-marcel" style="grid-column:1/-1; background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%); border:1px solid var(--gold)">
+      <div class="agent-card-head">
+        <div class="agent-card-icon" style="background:rgba(184,149,110,0.25); border-color:var(--gold)">🎯</div>
+        <div>
+          <div class="agent-card-name">Marcel <span style="color:var(--gold-deep); font-size:13px; letter-spacing:0.08em; margin-left:8px">★ CHEF D'ORCHESTRE</span></div>
+          <div class="agent-card-role">Le point de contact unique</div>
+        </div>
+      </div>
+      <p class="agent-card-desc">Marcel écoute, qualifie votre demande, route vers le bon spécialiste et agrège les réponses. Il connaît votre famille, vos préférences, votre patrimoine.</p>
+    </article>
+
+    <article class="agent-card" id="card-auguste"><div class="agent-card-head"><div class="agent-card-icon">🏛</div><div><div class="agent-card-name">Auguste</div><div class="agent-card-role">Juridique &amp; Fiscal</div></div></div><p class="agent-card-desc">Veille fiscale temps réel, optimisation IR/IFI/PV/Dutreil, structuration successorale. Aucun chiffre sans citation de source.</p></article>
+
+    <article class="agent-card" id="card-leon"><div class="agent-card-head"><div class="agent-card-icon">📊</div><div><div class="agent-card-name">Léon</div><div class="agent-card-role">Marchés financiers</div></div></div><p class="agent-card-desc">Allocation cible vs réelle, alertes drawdown, news macro filtrées par positions, propositions d'arbitrages soumises à Maxime.</p></article>
+
+    <article class="agent-card" id="card-josephine"><div class="agent-card-head"><div class="agent-card-icon">💎</div><div><div class="agent-card-name">Joséphine</div><div class="agent-card-role">Conciergerie &amp; voyages</div></div></div><p class="agent-card-desc">Hôtels Relais &amp; Châteaux, jets privés, restaurants étoilés, événements privés, scolarité internationale.</p></article>
+
+    <article class="agent-card" id="card-emile"><div class="agent-card-head"><div class="agent-card-icon">🎨</div><div><div class="agent-card-name">Émile</div><div class="agent-card-role">Art &amp; collections</div></div></div><p class="agent-card-desc">Curation, valorisation, suivi de cotes, ventes Sotheby's/Christie's/Drouot, assurance d'œuvres.</p></article>
+
+    <article class="agent-card" id="card-helene"><div class="agent-card-head"><div class="agent-card-icon">🏠</div><div><div class="agent-card-name">Hélène</div><div class="agent-card-role">Immobilier</div></div></div><p class="agent-card-desc">Recherche d'acquisition, gestion locative, travaux, valorisation, cession. Données de marché en direct.</p></article>
+
+    <article class="agent-card" id="card-augustin"><div class="agent-card-head"><div class="agent-card-icon">🌱</div><div><div class="agent-card-name">Augustin</div><div class="agent-card-role">Private Equity</div></div></div><p class="agent-card-desc">Sourcing deals, due diligence, dette privée, club deals, suivi performance. Sélection rigoureuse.</p></article>
+
+    <article class="agent-card" id="card-camille"><div class="agent-card-head"><div class="agent-card-icon">📋</div><div><div class="agent-card-name">Camille</div><div class="agent-card-role">Family Secretary</div></div></div><p class="agent-card-desc">Échéances fiscales, paiements récurrents, courriers, archivage, scolarité, factures.</p></article>
+
+    <article class="agent-card" id="card-iris"><div class="agent-card-head"><div class="agent-card-icon">🤲</div><div><div class="agent-card-name">Iris</div><div class="agent-card-role">Philanthropie &amp; Impact</div></div></div><p class="agent-card-desc">Structuration de fondation, sélection de causes, dons défiscalisables, mesure d'impact.</p></article>
+
+    <article class="agent-card" id="card-olympe"><div class="agent-card-head"><div class="agent-card-icon">📑</div><div><div class="agent-card-name">Olympe</div><div class="agent-card-role">Reporting &amp; synthèse</div></div></div><p class="agent-card-desc">Consolide chaque trimestre les analyses des huit autres agents en synthèse claire — performance, allocations, échéances, risques. Le regard d'ensemble.</p></article>
+  </div>
+</section>
+
+<section class="expertises" id="expertises">
+  <div class="section-head">
+    <h2>Le détail des <em>neuf</em> expertises<br>et de leurs sources de données.</h2>
+  </div>
+
+  <div class="exp-grid">
+    <article class="exp-card"><div class="exp-numeral">i.</div><h3 class="exp-title">Ingénierie juridique<br>&amp; fiscale</h3><p class="exp-desc">Structuration du patrimoine personnel et professionnel. Optimisation fiscale et successorale. Veille réglementaire en temps réel.</p><div class="exp-agent">Auguste</div></article>
+    <article class="exp-card"><div class="exp-numeral">ii.</div><h3 class="exp-title">Actifs financiers<br>cotés</h3><p class="exp-desc">Actions, obligations, ETF, OPCVM, hedge-funds, produits structurés. Sélection ouverte, 100&nbsp;% indépendante.</p><div class="exp-agent">Léon</div></article>
+    <article class="exp-card"><div class="exp-numeral">iii.</div><h3 class="exp-title">Assistance administrative<br>&amp; comptable</h3><p class="exp-desc">Contrôle des échéances fiscales, suivi du budget, vérification des bilans, gestion du courrier sensible.</p><div class="exp-agent">Camille</div></article>
+    <article class="exp-card"><div class="exp-numeral">iv.</div><h3 class="exp-title">Acquisition, cession<br>&amp; transmission</h3><p class="exp-desc">Accompagnement sur l'ensemble du cycle de rotation des sociétés. Valorisation, due-diligence, montage.</p><div class="exp-agent">Augustin · Auguste</div></article>
+    <article class="exp-card"><div class="exp-numeral">v.</div><h3 class="exp-title">Private<br>Equity</h3><p class="exp-desc">Actifs non cotés — Business Angels, seed, Series A — et dettes privées. Sélection rigoureuse.</p><div class="exp-agent">Augustin</div></article>
+    <article class="exp-card"><div class="exp-numeral">vi.</div><h3 class="exp-title">Conciergerie<br>de luxe</h3><p class="exp-desc">Organisation des déplacements, planification des vacances, scolarité internationale, événements privés.</p><div class="exp-agent">Joséphine</div></article>
+    <article class="exp-card"><div class="exp-numeral">vii.</div><h3 class="exp-title">Reporting<br>&amp; pilotage</h3><p class="exp-desc">Consolidation patrimoniale, KPI, alertes, dashboards trimestriels, suivi multi-actifs.</p><div class="exp-agent">Olympe</div></article>
+    <article class="exp-card"><div class="exp-numeral">viii.</div><h3 class="exp-title">Actifs<br>immobiliers</h3><p class="exp-desc">Recherche d'acquisition, gestion locative, gestion des travaux, cession. Données de marché en direct.</p><div class="exp-agent">Hélène</div></article>
+    <article class="exp-card"><div class="exp-numeral">ix.</div><h3 class="exp-title">Philanthropie<br>&amp; art</h3><p class="exp-desc">Structuration et gestion des véhicules philanthropiques, mesure d'impact, curation de collections.</p><div class="exp-agent">Iris · Émile</div></article>
+  </div>
+</section>
+
+<!-- ─── SOUVERAINETÉ ─── -->
+<section class="souverainete" id="souverainete">
+  <div class="section-head">
+    <h2>Une infrastructure <em>souveraine.</em><br>Vos données ne quittent pas la France.</h2>
+    <p class="intro">L'écosystème entier est hébergé en France ou propulsé par des partenaires européens conformes RGPD. Aucune donnée personnelle ne transite hors UE sans encadrement. Le calcul fiscal est conçu RGPD-safe by design — anti-PII vérifié à chaque entrée.</p>
+  </div>
+
+  <div class="souv-grid">
+    <div>
+      <p class="souv-body">Marcel et les neuf agents reposent sur le <strong>Claude Agent SDK</strong> d'Anthropic. Tous les <strong>calculs fiscaux</strong> passent par <strong>ikcp-mcp</strong>, notre serveur propriétaire hébergé à Paris. Les <strong>documents réglementaires</strong> sont archivés en France avec horodatage qualifié eIDAS.</p>
+      <p class="souv-body">La validation humaine de Maxime est <strong>systématique</strong> sur tout livrable réglementaire (DER, Lettre de Mission, Rapport d'Adéquation). Rien ne part sans son contrôle.</p>
+    </div>
+
+    <div class="souv-stack">
+      <div class="souv-row">
+        <span class="flag">🇫🇷</span>
+        <span class="label">Edge</span>
+        <span class="val"><b>Cloudflare Workers</b> · ISO 27001 · DPA UE</span>
+      </div>
+      <div class="souv-row">
+        <span class="flag">🇫🇷</span>
+        <span class="label">Calculs</span>
+        <span class="val"><b>Scaleway fr-par</b> · Paris · ikcp-mcp propriétaire</span>
+      </div>
+      <div class="souv-row">
+        <span class="flag">🇫🇷</span>
+        <span class="label">Données</span>
+        <span class="val"><b>Cloudflare D1 · R2 · KV</b> · UE strict · chiffré at-rest</span>
+      </div>
+      <div class="souv-row">
+        <span class="flag">🇫🇷</span>
+        <span class="label">Signature</span>
+        <span class="val"><b>Yousign · Universign</b> · eIDAS QES · PSCo qualifié</span>
+      </div>
+      <div class="souv-row">
+        <span class="flag">🇫🇷</span>
+        <span class="label">Identité</span>
+        <span class="val"><b>Ubble</b> · PVID ANSSI</span>
+      </div>
+      <div class="souv-row">
+        <span class="flag">🇪🇺</span>
+        <span class="label">Agents IA</span>
+        <span class="val"><b>Anthropic Claude Agent SDK</b> · DPA + SCC · supervision humaine</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <h2 class="cta-final-h">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+  <p class="cta-final-sub">Family Office augmenté. Marcel à la baguette. Neuf agents IA. Une équipe humaine derrière chaque décision réglementaire.</p>
+  <div class="cta-row" style="opacity:1; animation:none">
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office%20%E2%80%94%20IKCP" class="cta-primary">Demander une recommandation</a>
+    <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" class="cta-secondary" target="_blank">Calendly →</a>
+  </div>
+  <div style="margin-top:36px; font-size:11.5px; font-style:italic; font-family:'Playfair Display',serif; color:var(--ink-faint); letter-spacing:0.02em">
+    Sur recommandation · Familles à patrimoine constitué · ORIAS 23001568
+  </div>
+</section>
+
+<footer class="proto">
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

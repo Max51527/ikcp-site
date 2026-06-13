@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · ORIAS 23001568 — Cockpit de test (interne) -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<meta name="robots" content="noindex, nofollow">
+<title>Cockpit de test — IKCP</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+.wrap{max-width:860px;margin:0 auto;padding:26px 20px 90px}
+h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(24px,4vw,32px)}
+h1 em{font-style:italic;color:var(--accent)}
+.lead{color:var(--mute);font-size:14px;margin:4px 0 22px}
+/* Barre d'avancement */
+.prog-card{background:linear-gradient(150deg,var(--accent-soft),transparent);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
+.prog-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.prog-pct{font-family:'Fraunces',serif;font-style:italic;font-size:34px;color:var(--accent);line-height:1}
+.prog-lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.prog-bar{height:12px;background:var(--bg-3);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.prog-meta{display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--mute);flex-wrap:wrap}
+.prog-meta b{color:var(--ink)}
+.phases{display:flex;gap:8px;margin:16px 0 22px;flex-wrap:wrap}
+.phase{flex:1;min-width:150px;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.phase .n{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep,#8B6F3F);font-weight:700}
+.phase h4{font-family:'Fraunces',serif;font-weight:500;font-size:15px;margin:3px 0}
+.phase p{font-size:11.5px;color:var(--mute)}
+/* Checklist */
+.step{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start;transition:opacity .2s}
+.step.done{opacity:.62}
+.step .num{font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-size:17px;min-width:24px}
+.step .body{flex:1}
+.step .t{font-weight:600;font-size:14px}
+.step .exp{font-size:12.5px;color:var(--mute);margin-top:2px}
+.step .actions{display:flex;gap:6px;margin-top:9px;align-items:center;flex-wrap:wrap}
+.sbtn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;font-size:14px;line-height:1}
+.sbtn.on-ok{background:#2D7A4F;border-color:#2D7A4F}
+.sbtn.on-warn{background:var(--warn);border-color:var(--warn)}
+.sbtn.on-bad{background:var(--bad);border-color:var(--bad)}
+.step input.note{flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:12.5px;font-family:'Inter';color:var(--ink);outline:none}
+.section-h{font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:26px 0 10px}
+.tools{display:flex;gap:10px;margin:10px 0 0;flex-wrap:wrap}
+.btn-sm2{padding:9px 15px;font-size:13px;border-radius:9px;border:none;cursor:pointer;font-weight:600}
+.btn-go{background:var(--accent);color:#fff}.btn-ghost2{background:transparent;border:1px solid var(--line);color:var(--mute)}
+/* Application volet */
+.app-card{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:12px}
+.app-feat{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.app-feat:last-child{border:none}
+.app-feat .ic{font-size:18px}.app-feat .st{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.st.ok{color:#2D7A4F}.st.soon{color:var(--warn)}
+</style>
+</head>
+<body style="background:var(--bg)">
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Cockpit de test</span></a>
+  <div class="app-user"><span class="tier" id="userTier">—</span></div>
+</header>
+
+<main class="wrap">
+  <h1>Phase de test, <em>en direct.</em></h1>
+  <p class="lead">Suivez le parcours, cochez ✅ / ⚠️ / ❌. L'avancement est sauvegardé sur cet appareil.</p>
+
+  <!-- Barre d'avancement -->
+  <div class="prog-card">
+    <div class="prog-top">
+      <div><span class="prog-pct" id="pct">0%</span></div>
+      <div class="prog-lbl" id="progState">0 / 14 étapes validées</div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="fill"></div></div>
+    <div class="prog-meta">
+      <span>✅ <b id="cOk">0</b> conformes</span>
+      <span>⚠️ <b id="cWarn">0</b> frictions</span>
+      <span>❌ <b id="cBad">0</b> bloquants</span>
+    </div>
+  </div>
+
+  <div class="phases">
+    <div class="phase"><div class="n">Phase 0</div><h4>Toi (testeur n°0)</h4><p>Tout valider · 1-2 j</p></div>
+    <div class="phase"><div class="n">Phase 1</div><h4>Famille pilote</h4><p>1 famille · 1 sem.</p></div>
+    <div class="phase"><div class="n">Phase 2</div><h4>Cercle (5)</h4><p>NPS ≥ 8 · 4-6 sem.</p></div>
+  </div>
+
+  <div class="section-h">Parcours à valider</div>
+  <div id="steps"></div>
+  <div class="tools">
+    <button class="btn-sm2 btn-ghost2" onclick="resetTest()">Réinitialiser</button>
+    <button class="btn-sm2 btn-go" onclick="copyReport()">Copier le rapport</button>
+  </div>
+  <div id="reportMsg" style="font-size:12.5px;color:#2D7A4F;margin-top:8px"></div>
+
+  <!-- Volet Application -->
+  <div class="section-h">📱 Application</div>
+  <div class="app-card">
+    <p style="font-size:13px;color:var(--mute);margin-bottom:12px">Marcel est une <b style="color:var(--ink)">application installable</b> (PWA) — pas besoin de store. Sur mobile : « Ajouter à l'écran d'accueil ».</p>
+    <button class="btn-sm2 btn-go" id="installBtn" onclick="installApp()" style="display:none">📲 Installer Marcel</button>
+    <div id="installNote" style="font-size:12.5px;color:var(--mute)"></div>
+    <div style="margin-top:14px">
+      <div class="app-feat"><span class="ic">📲</span> Installation écran d'accueil (PWA) <span class="st ok" id="pwaSt">disponible</span></div>
+      <div class="app-feat"><span class="ic">🎙️</span> Voix — dictée & lecture <span class="st ok">actif</span></div>
+      <div class="app-feat"><span class="ic">🔔</span> Notifications (veille du matin) <span class="st soon">à venir</span></div>
+      <div class="app-feat"><span class="ic">🔒</span> Déverrouillage biométrique <span class="st soon">à venir</span></div>
+      <div class="app-feat"><span class="ic">📦</span> App native iOS / Android (Capacitor) <span class="st soon">post-bêta</span></div>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+let me; try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+if(me){ const t={free:'Découverte',premium:'Premium',fo:'Family Office'}[me.tier]||'Découverte'; document.getElementById('userTier').textContent=t; }
+
+const STEPS = [
+  ['Accès', '`ikcp.eu/app/` → login sobre navy/or'],
+  ['Login', 'email → lien → arrive sur le dashboard (pas de reboucle)'],
+  ['Onboarding', 'profil + SIREN 947972436 → ✓ société identifiée ~2 s'],
+  ['Dashboard', 'bloc activation (%) + 2 espaces (patrimoine / passions)'],
+  ['Univers', 'cliquer une passion → ouvre Marcel pré-rempli'],
+  ['Marcel', '« réduire mes droits de succession ? » → réponse qui s\'écrit en direct + question + disclaimer'],
+  ['Patrimoine', 'ajouter 2-3 biens → donut + valeur nette'],
+  ['IFI', 'immobilier > 1,3 M€ → alerte IFI auto'],
+  ['Veille', 'digest du jour lisible + « Qu\'est-ce qui me concerne ? »'],
+  ['Voix', 'lecture à voix haute / micro OK'],
+  ['Thème', 'passer Premium (console) → recharger → ambiance navy/or'],
+  ['Mémoire', 'parler → quitter → revenir → « reprise du dernier échange »'],
+  ['PWA mobile', 'sur téléphone → installer l\'app'],
+  ['Conformité', 'disclaimer L.541-1 partout · 0 reco produit · 0 mention « Claude »'],
+];
+const KEY = 'ikcp_test_progress';
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(_){ state = {}; }
+
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(_){} }
+function render(){
+  document.getElementById('steps').innerHTML = STEPS.map((s,i) => {
+    const st = state[i] || {};
+    const v = st.v || '';
+    return `<div class="step ${v?'done':''}" data-i="${i}">
+      <div class="num">${i+1}</div>
+      <div class="body">
+        <div class="t">${s[0]}</div>
+        <div class="exp">${s[1]}</div>
+        <div class="actions">
+          <button class="sbtn ${v==='ok'?'on-ok':''}" data-v="ok" title="Conforme">✅</button>
+          <button class="sbtn ${v==='warn'?'on-warn':''}" data-v="warn" title="Friction">⚠️</button>
+          <button class="sbtn ${v==='bad'?'on-bad':''}" data-v="bad" title="Bloquant">❌</button>
+          <input class="note" placeholder="Note (optionnel)" value="${(st.note||'').replace(/"/g,'&quot;')}">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.step').forEach(el => {
+    const i = +el.dataset.i;
+    el.querySelectorAll('.sbtn').forEach(b => b.addEventListener('click', () => {
+      state[i] = state[i] || {}; state[i].v = (state[i].v===b.dataset.v ? '' : b.dataset.v); save(); render(); updateBar();
+    }));
+    el.querySelector('.note').addEventListener('input', e => { state[i]=state[i]||{}; state[i].note=e.target.value; save(); });
+  });
+  updateBar();
+}
+function updateBar(){
+  let ok=0,warn=0,bad=0,done=0;
+  STEPS.forEach((_,i)=>{ const v=(state[i]||{}).v; if(v){done++;} if(v==='ok')ok++; if(v==='warn')warn++; if(v==='bad')bad++; });
+  const pct = Math.round(done/STEPS.length*100);
+  document.getElementById('pct').textContent = pct+'%';
+  document.getElementById('fill').style.width = pct+'%';
+  document.getElementById('progState').textContent = `${done} / ${STEPS.length} étapes validées`;
+  document.getElementById('cOk').textContent = ok;
+  document.getElementById('cWarn').textContent = warn;
+  document.getElementById('cBad').textContent = bad;
+}
+window.resetTest = function(){ if(confirm('Réinitialiser tout le test ?')){ state={}; save(); render(); } };
+window.copyReport = function(){
+  const lines = STEPS.map((s,i)=>{ const st=state[i]||{}; const m={ok:'✅',warn:'⚠️',bad:'❌'}[st.v]||'⬜'; return `${m} ${i+1}. ${s[0]}${st.note?' — '+st.note:''}`; });
+  const txt = 'TEST IKCP — '+new Date().toLocaleString('fr-FR')+'\n\n'+lines.join('\n');
+  try{ navigator.clipboard.writeText(txt); document.getElementById('reportMsg').textContent='✓ Rapport copié — colle-le à Maxime / dans Notion.'; }catch(_){ document.getElementById('reportMsg').textContent=txt; }
+};
+render();
+
+// ─── PWA install ───
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBtn').style.display='inline-block'; });
+window.installApp = async function(){
+  if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; document.getElementById('installBtn').style.display='none'; }
+  else { document.getElementById('installNote').innerHTML = 'Sur <b>iPhone</b> : bouton Partager → « Sur l\'écran d\'accueil ». Sur <b>Android</b> : menu ⋮ → « Installer l\'application ».'; }
+};
+</script>
+</body>
+</html>

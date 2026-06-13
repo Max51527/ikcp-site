@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel — Carnet</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Carnet privé</span></a>
+  <button class="btn btn-accent btn-sm" onclick="showAdd()">+ Ajouter</button>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Carnet de contacts</div>
+  <h1 class="app-h1">Votre cercle. <em>Centralisé. Chiffré.</em></h1>
+  <p class="app-lead">Marcel enrichit vos relations, ne les remplace pas. Notaire, avocat, banquier privé, concierge, adresses confidentielles — votre cercle reste le vôtre.</p>
+
+  <div class="grid-3" id="contacts-list">
+    <div class="loading" style="grid-column:1/-1">Chargement carnet…</div>
+  </div>
+</main>
+
+<dialog id="add-modal" style="border:1px solid var(--line);border-radius:14px;padding:28px;max-width:500px;width:90%;background:var(--bg)">
+  <form method="dialog" onsubmit="return addContact(event)">
+    <h3 style="font-family:'Fraunces',serif;font-size:22px;margin-bottom:20px">+ Nouveau contact</h3>
+    <label style="font-size:11px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600">Catégorie</label>
+    <select id="c-cat" required style="width:100%;padding:10px;margin:6px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)">
+      <option value="juridique">Juridique (avocat, notaire)</option>
+      <option value="finance">Finance (banquier, gestionnaire)</option>
+      <option value="comptable">Comptable / Audit</option>
+      <option value="conciergerie">Conciergerie</option>
+      <option value="hospitalite">Hospitalité (hôtels, chalets)</option>
+      <option value="art">Art & collections</option>
+      <option value="lifestyle">Lifestyle (yachts, autos)</option>
+      <option value="sante">Santé / longévité</option>
+      <option value="education">Éducation / NextGen</option>
+    </select>
+    <label style="font-size:11px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600">Nom</label>
+    <input id="c-nom" required style="width:100%;padding:10px;margin:6px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)" placeholder="Maître Dupont">
+    <label style="font-size:11px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600">Cabinet / société</label>
+    <input id="c-societe" style="width:100%;padding:10px;margin:6px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)">
+    <label style="font-size:11px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600">Email</label>
+    <input id="c-email" type="email" style="width:100%;padding:10px;margin:6px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)">
+    <label style="font-size:11px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600">Téléphone</label>
+    <input id="c-tel" type="tel" style="width:100%;padding:10px;margin:6px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)">
+    <label style="font-size:11px;letter-spacing:0.18em;color:var(--mute);text-transform:uppercase;font-weight:600">Notes perso</label>
+    <textarea id="c-notes" rows="2" style="width:100%;padding:10px;margin:6px 0 20px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-family:inherit"></textarea>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" class="btn btn-ghost" onclick="document.getElementById('add-modal').close()">Annuler</button>
+      <button type="submit" class="btn btn-accent">Enregistrer</button>
+    </div>
+  </form>
+</dialog>
+
+<nav class="app-tabs">
+  <a href="/app/dashboard.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+    Profil
+  </a>
+</nav>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+try { await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+const CAT_LBL = {juridique:'⚖ Juridique',finance:'🏦 Finance',comptable:'📊 Comptable',conciergerie:'🛎 Conciergerie',hospitalite:'🏨 Hospitalité',art:'🎨 Art',lifestyle:'⚓ Lifestyle',sante:'👨‍⚕️ Santé',education:'🎓 Éducation'};
+
+async function refresh(){
+  const list = document.getElementById('contacts-list');
+  try {
+    const c = await Marcel.Me.contacts();
+    if(c.length === 0){
+      list.innerHTML = '<div class="empty" style="grid-column:1/-1"><h4>Carnet vide.</h4><p>Ajoutez vos contacts privés. Marcel les chiffre dans la base souveraine France.</p></div>';
+    } else {
+      list.innerHTML = c.map(x => `
+        <article class="card">
+          <div class="card-head"><span class="card-cat">${CAT_LBL[x.category] || x.category}</span>${x.is_favorite ? '<span class="pill warn" style="background:rgba(201,169,110,0.15);color:var(--gold)">⭐ Favori</span>' : ''}</div>
+          <h3>${x.nom}${x.prenom ? ' ' + x.prenom : ''}</h3>
+          ${x.societe ? `<p style="font-style:italic">${x.societe}</p>` : ''}
+          ${x.email ? `<p><a href="mailto:${x.email}" style="color:var(--accent)">${x.email}</a></p>` : ''}
+          ${x.telephone ? `<p><a href="tel:${x.telephone}" style="color:var(--accent)">${x.telephone}</a></p>` : ''}
+          ${x.notes ? `<p class="meta">${x.notes}</p>` : ''}
+        </article>
+      `).join('');
+    }
+  }catch(_){
+    list.innerHTML = '<div class="empty" style="grid-column:1/-1"><h4>Carnet indisponible.</h4><p>Réessayez.</p></div>';
+  }
+}
+refresh();
+
+window.showAdd = () => document.getElementById('add-modal').showModal();
+window.addContact = async function(e){
+  e.preventDefault();
+  const payload = {
+    category: document.getElementById('c-cat').value,
+    nom: document.getElementById('c-nom').value.trim(),
+    societe: document.getElementById('c-societe').value.trim(),
+    email: document.getElementById('c-email').value.trim(),
+    telephone: document.getElementById('c-tel').value.trim(),
+    notes: document.getElementById('c-notes').value.trim(),
+  };
+  try {
+    await Marcel.Me.addContact(payload);
+    document.getElementById('add-modal').close();
+    document.querySelector('#add-modal form').reset();
+    refresh();
+  }catch(_){alert('Impossible d\'ajouter ce contact. Réessayez.')}
+  return false;
+}
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>

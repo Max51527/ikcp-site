@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Test Harness · valider chaque worker en réel</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+  --code-bg:#0E1729;
+}
+html,body{background:var(--cream-2); color:var(--ink); font-family:'Outfit',sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; letter-spacing:-0.005em}
+
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+header.th{background:var(--cream); border-bottom:1px solid var(--line); padding:18px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:32px; z-index:100}
+.brand{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1}
+.brand b{color:var(--gold); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.32em; color:var(--gold-deep); margin-top:5px; font-weight:600; text-transform:uppercase}
+.pill{display:inline-flex; align-items:center; gap:7px; padding:5px 12px; background:rgba(63,122,63,0.10); color:var(--ok); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.14em; font-weight:700; text-transform:uppercase}
+.pill::before{content:''; width:7px; height:7px; background:var(--ok); border-radius:50%}
+
+main{max-width:1240px; margin:0 auto; padding:36px 32px 60px}
+
+/* ─── Intro ─── */
+.intro{margin-bottom:36px; max-width:880px}
+.intro-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); font-weight:700; margin-bottom:12px}
+.intro-mark::before{content:'◆ '; color:var(--gold)}
+.intro h1{font-family:'Playfair Display',serif; font-size:38px; color:var(--navy); font-weight:500; letter-spacing:-0.02em; line-height:1.08; margin-bottom:12px}
+.intro h1 em{color:var(--gold-deep); font-style:italic}
+.intro p{font-size:15.5px; color:var(--ink-mute); line-height:1.7}
+.intro p em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+.intro code{background:var(--code-bg); color:var(--gold-bright); padding:2px 7px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:0.02em}
+
+/* ─── Config bar ─── */
+.config-bar{background:var(--cream); border:1px solid var(--line-strong); border-radius:14px; padding:18px 22px; margin-bottom:28px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+@media (max-width:880px){.config-bar{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.config-bar{grid-template-columns:1fr}}
+.cfg-group label{display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.cfg-group input{width:100%; padding:9px 12px; background:var(--cream-2); border:1px solid var(--line-strong); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--navy); outline:none}
+.cfg-group input:focus{border-color:var(--gold); background:var(--cream)}
+
+/* ─── Test card ─── */
+.test{background:var(--cream); border:1px solid var(--line); border-radius:18px; margin-bottom:22px; overflow:hidden; box-shadow:0 4px 14px rgba(27,42,74,0.04)}
+.test-head{padding:18px 24px; background:var(--cream-2); border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.test-h-l h2{font-family:'Playfair Display',serif; font-size:19px; color:var(--navy); font-weight:600; line-height:1.2}
+.test-h-l h2 em{color:var(--gold-deep); font-style:italic}
+.test-h-l p{font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px}
+.test-pill{padding:4px 10px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.14em; font-weight:700; text-transform:uppercase; flex-shrink:0}
+.test-pill.live{background:rgba(63,122,63,0.10); color:var(--ok)}
+.test-pill.req{background:rgba(184,128,31,0.10); color:var(--warn)}
+
+.test-body{padding:24px 28px}
+.test-form{display:flex; gap:10px; align-items:flex-end; margin-bottom:16px; flex-wrap:wrap}
+.test-form-group{flex:1; min-width:180px}
+.test-form-group label{display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:5px}
+.test-form-group input, .test-form-group textarea, .test-form-group select{
+  width:100%; padding:11px 14px; background:var(--cream-2); border:1.5px solid var(--line-strong);
+  border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--navy); outline:none;
+  font-weight:600; letter-spacing:0.02em;
+}
+.test-form-group input:focus, .test-form-group select:focus, .test-form-group textarea:focus{border-color:var(--gold); background:var(--cream)}
+.test-form-group textarea{font-family:'Outfit',sans-serif; min-height:80px; font-weight:400; letter-spacing:0; resize:vertical}
+.test-btn{padding:11px 22px; background:var(--navy); color:var(--cream); border:none; border-radius:8px; font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s; white-space:nowrap}
+.test-btn:hover{background:var(--navy-deep); transform:translateY(-1px)}
+.test-btn:disabled{opacity:0.5; cursor:wait}
+
+.test-output{background:var(--code-bg); border-radius:10px; padding:18px 22px; font-family:'JetBrains Mono',monospace; font-size:12px; color:#9bf5b3; line-height:1.6; max-height:480px; overflow-y:auto; white-space:pre-wrap; word-break:break-word; display:none; position:relative}
+.test-output.show{display:block; animation:slideIn 0.3s ease}
+@keyframes slideIn{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
+.test-output.error{color:#ffa8a8; background:linear-gradient(135deg, var(--code-bg) 0%, #2a0e0e 100%)}
+.test-output .meta-line{color:var(--gold-bright); font-weight:700; margin-bottom:8px; border-bottom:1px solid rgba(226,200,150,0.18); padding-bottom:6px}
+
+.test-presets{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+.preset-chip{padding:5px 11px; background:transparent; border:1px solid var(--line-strong); border-radius:24px; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink-mute); cursor:pointer; transition:all 0.2s; font-weight:600; letter-spacing:0.04em}
+.preset-chip:hover{border-color:var(--gold); color:var(--navy)}
+
+.test-foot{padding:14px 24px; background:var(--cream-2); border-top:1px solid var(--line); display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:11.5px; color:var(--ink-faint); font-family:'Playfair Display',serif; font-style:italic}
+.test-foot code{background:var(--code-bg); color:var(--gold-bright); padding:1px 6px; border-radius:3px; font-family:'JetBrains Mono',monospace; font-style:normal; font-size:11px}
+
+/* ─── Stats summary ─── */
+.summary{background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); border-radius:18px; padding:26px 30px; margin-top:32px; display:grid; grid-template-columns:repeat(4,1fr); gap:18px; position:relative; overflow:hidden}
+.summary::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+@media (max-width:760px){.summary{grid-template-columns:repeat(2,1fr)}}
+.summary-stat{text-align:center}
+.summary-v{font-family:'Playfair Display',serif; font-style:italic; font-size:30px; color:var(--gold-bright); font-weight:500; line-height:1; margin-bottom:6px}
+.summary-l{font-size:11px; color:rgba(250,250,248,0.65); letter-spacing:0.14em; text-transform:uppercase; font-weight:600}
+.summary-s{font-size:11.5px; color:rgba(250,250,248,0.5); margin-top:3px; font-style:italic; font-family:'Playfair Display',serif}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>TEST HARNESS</b> · valide chaque worker Sprint 1 en réel — pas de mock</span>
+  <span><a href="ikcp-eu-onglet-family-office.html">← Family Office</a></span>
+</div>
+
+<header class="th">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Test harness · sprint 1</div>
+  </div>
+  <span class="pill" id="harness-status">Prêt</span>
+</header>
+
+<main>
+
+<div class="intro">
+  <div class="intro-mark">Sprint 1 · validation réelle</div>
+  <h1>Tester les workers <em>en réel.</em></h1>
+  <p>
+    Cette page interroge directement les <em>vrais workers Cloudflare déployés</em>. Aucun mock, aucune fake. Si un worker répond en JSON ici, alors il est opérationnel pour vos bêta-testeurs. Configurez les <code>URLs</code> ci-dessous une fois, et utilisez les boutons de test sur chaque carte.
+  </p>
+</div>
+
+<!-- ═══ CONFIG WORKERS URLs ═══ -->
+<div class="config-bar">
+  <div class="cfg-group">
+    <label>Pappers worker URL</label>
+    <input id="cfg-pappers" type="text" value="https://ikcp-pappers.maxime-ead.workers.dev">
+  </div>
+  <div class="cfg-group">
+    <label>Marcel worker URL</label>
+    <input id="cfg-marcel" type="text" value="https://ikcp-chat.maxime-ead.workers.dev">
+  </div>
+  <div class="cfg-group">
+    <label>Témoin worker URL</label>
+    <input id="cfg-temoin" type="text" value="https://ikcp-temoin.maxime-ead.workers.dev">
+  </div>
+  <div class="cfg-group">
+    <label>Universign worker URL</label>
+    <input id="cfg-universign" type="text" value="https://ikcp-universign.maxime-ead.workers.dev">
+  </div>
+</div>
+
+<!-- ═══ TEST 1 — Pappers /health ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>① Pappers — <em>health check</em></h2>
+      <p>Vérifie que le worker répond et que la clé API Pappers est configurée.</p>
+    </div>
+    <span class="test-pill live">GET /health</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form">
+      <button class="test-btn" onclick="testPappersHealth()">Lancer le test →</button>
+    </div>
+    <div class="test-output" id="out-pappers-health"></div>
+  </div>
+  <div class="test-foot">
+    Endpoint : <code id="ep-pappers-health">GET /health</code> · attendu : <code>status:"ok"</code> + <code>configured.api_key:true</code>
+  </div>
+</section>
+
+<!-- ═══ TEST 2 — Pappers /entreprise/:siren ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>② Pappers — <em>fiche entreprise réelle</em></h2>
+      <p>Interroge le RNE pour un SIREN. <strong>Source officielle, données live.</strong></p>
+    </div>
+    <span class="test-pill live">GET /entreprise/:siren</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form">
+      <div class="test-form-group">
+        <label>SIREN (9 chiffres)</label>
+        <input id="siren-input" type="text" value="775670417" maxlength="11">
+      </div>
+      <button class="test-btn" onclick="testPappersEntreprise()">Cartographier →</button>
+    </div>
+    <div class="test-presets">
+      <span class="preset-chip" onclick="document.getElementById('siren-input').value='775670417';testPappersEntreprise()">775670417 (LVMH)</span>
+      <span class="preset-chip" onclick="document.getElementById('siren-input').value='552032534';testPappersEntreprise()">552032534 (Hermès)</span>
+      <span class="preset-chip" onclick="document.getElementById('siren-input').value='552120222';testPappersEntreprise()">552120222 (TotalEnergies)</span>
+      <span class="preset-chip" onclick="document.getElementById('siren-input').value='572104891';testPappersEntreprise()">572104891 (Air Liquide)</span>
+    </div>
+    <div class="test-output" id="out-pappers-entreprise" style="margin-top:14px"></div>
+  </div>
+  <div class="test-foot">
+    Cache KV 1h · <code>X-IKCP-Cache: HIT</code> au 2e appel
+  </div>
+</section>
+
+<!-- ═══ TEST 3 — Marcel /health ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>③ Marcel — <em>health check</em></h2>
+      <p>Vérifie que Marcel répond et que la clé Anthropic est configurée.</p>
+    </div>
+    <span class="test-pill live">GET /health</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form">
+      <button class="test-btn" onclick="testMarcelHealth()">Lancer le test →</button>
+    </div>
+    <div class="test-output" id="out-marcel-health"></div>
+  </div>
+</section>
+
+<!-- ═══ TEST 4 — Marcel /chat ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>④ Marcel — <em>chat conversationnel IA</em></h2>
+      <p>Pose une question patrimoniale à Marcel. <strong>Vraie réponse Sonnet 4.6 avec calculs déterministes via tool use.</strong></p>
+    </div>
+    <span class="test-pill req">POST /</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form" style="flex-direction:column; align-items:stretch">
+      <div class="test-form-group">
+        <label>Votre question</label>
+        <textarea id="marcel-question" placeholder="Ex : Pour 120 000 € de revenus avec 2 parts, combien d'IR je paye en 2026 ?">Pour 120 000 € de revenus avec 2 parts, combien d'IR je paye en 2026 ?</textarea>
+      </div>
+      <button class="test-btn" onclick="testMarcelChat()" style="align-self:flex-start">Demander à Marcel →</button>
+    </div>
+    <div class="test-presets" style="margin-top:14px">
+      <span class="preset-chip" onclick="document.getElementById('marcel-question').value='Pour 120 000 € de revenus avec 2 parts, combien d\'IR je paye en 2026 ?'">IR 120 k€</span>
+      <span class="preset-chip" onclick="document.getElementById('marcel-question').value='Quels sont les avantages d\'un pacte Dutreil pour transmettre ma holding ?'">Pacte Dutreil</span>
+      <span class="preset-chip" onclick="document.getElementById('marcel-question').value='Combien je peux verser sur mon PER cette année pour optimiser mon IR ?'">PER</span>
+      <span class="preset-chip" onclick="document.getElementById('marcel-question').value='Patrimoine 2 M€ · 3 enfants · donation anticipée ?'">Donation 2 M€</span>
+    </div>
+    <div class="test-output" id="out-marcel-chat" style="margin-top:14px"></div>
+  </div>
+  <div class="test-foot">
+    Modèle Sonnet 4.6 · MIF II conforme (termine par question) · web search natif si actualité
+  </div>
+</section>
+
+<!-- ═══ TEST 5 — Témoin /health ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>⑤ Témoin — <em>audit log</em></h2>
+      <p>Vérifie que le D1 Paris et le R2 EU sont bien configurés.</p>
+    </div>
+    <span class="test-pill live">GET /health</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form">
+      <button class="test-btn" onclick="testTemoinHealth()">Lancer le test →</button>
+    </div>
+    <div class="test-output" id="out-temoin-health"></div>
+  </div>
+</section>
+
+<!-- ═══ TEST 6 — Témoin /log ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>⑥ Témoin — <em>enregistrer une interaction</em></h2>
+      <p>Log immutable horodaté · hash SHA-256 · D1 Paris + R2 EU 10 ans.</p>
+    </div>
+    <span class="test-pill req">POST /log</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form">
+      <button class="test-btn" onclick="testTemoinLog()">Logger une interaction test →</button>
+    </div>
+    <div class="test-output" id="out-temoin-log"></div>
+  </div>
+  <div class="test-foot">
+    Vérifiez sur Cloudflare Dashboard → D1 → ikcp_temoin_db → audit_log table que la ligne est créée.
+  </div>
+</section>
+
+<!-- ═══ TEST 7 — Universign /health ═══ -->
+<section class="test">
+  <div class="test-head">
+    <div class="test-h-l">
+      <h2>⑦ Universign — <em>health check</em></h2>
+      <p>Vérifie que la clé Dhimyotis Universign est configurée pour la signature eIDAS.</p>
+    </div>
+    <span class="test-pill live">GET /health</span>
+  </div>
+  <div class="test-body">
+    <div class="test-form">
+      <button class="test-btn" onclick="testUniversignHealth()">Lancer le test →</button>
+    </div>
+    <div class="test-output" id="out-universign-health"></div>
+  </div>
+</section>
+
+<!-- ═══ STATS RÉSUMÉ ═══ -->
+<div class="summary">
+  <div class="summary-stat">
+    <div class="summary-v" id="stat-total">0</div>
+    <div class="summary-l">Tests lancés</div>
+  </div>
+  <div class="summary-stat">
+    <div class="summary-v" id="stat-ok" style="color:#9bd197">0</div>
+    <div class="summary-l">Succès</div>
+    <div class="summary-s">Workers opérationnels</div>
+  </div>
+  <div class="summary-stat">
+    <div class="summary-v" id="stat-ko" style="color:#e9a4a4">0</div>
+    <div class="summary-l">Échecs</div>
+    <div class="summary-s">À corriger avant Bêta</div>
+  </div>
+  <div class="summary-stat">
+    <div class="summary-v" id="stat-time">0 ms</div>
+    <div class="summary-l">Dernière latence</div>
+    <div class="summary-s">Cible &lt; 500 ms</div>
+  </div>
+</div>
+
+</main>
+
+<script>
+let stats = { total: 0, ok: 0, ko: 0 };
+
+function getURL(key) {
+  return document.getElementById('cfg-' + key).value.replace(/\/$/, '');
+}
+
+function fmtJSON(obj) {
+  return JSON.stringify(obj, null, 2);
+}
+
+function showResult(outId, data, isError, meta) {
+  const el = document.getElementById(outId);
+  el.classList.add('show');
+  el.classList.toggle('error', !!isError);
+  const metaLine = meta ? `<div class="meta-line">${meta}</div>` : '';
+  el.innerHTML = metaLine + fmtJSON(data);
+
+  // Stats
+  stats.total++;
+  if (isError) stats.ko++; else stats.ok++;
+  document.getElementById('stat-total').textContent = stats.total;
+  document.getElementById('stat-ok').textContent = stats.ok;
+  document.getElementById('stat-ko').textContent = stats.ko;
+}
+
+async function call(url, opts) {
+  const t0 = performance.now();
+  try {
+    const r = await fetch(url, opts);
+    const data = await r.json();
+    const ms = Math.round(performance.now() - t0);
+    document.getElementById('stat-time').textContent = ms + ' ms';
+    return { ok: r.ok, status: r.status, data, ms, cache: r.headers.get('X-IKCP-Cache') };
+  } catch (e) {
+    const ms = Math.round(performance.now() - t0);
+    document.getElementById('stat-time').textContent = ms + ' ms';
+    return { ok: false, status: 0, data: { error: 'network_error', message: e.message }, ms };
+  }
+}
+
+async function testPappersHealth() {
+  const r = await call(getURL('pappers') + '/health');
+  showResult('out-pappers-health', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms`);
+}
+
+async function testPappersEntreprise() {
+  const siren = document.getElementById('siren-input').value.trim().replace(/\s/g, '');
+  if (!/^\d{9}$/.test(siren)) {
+    showResult('out-pappers-entreprise', { error: 'SIREN invalide (9 chiffres requis)' }, true);
+    return;
+  }
+  const r = await call(getURL('pappers') + '/entreprise/' + siren);
+  const cacheInfo = r.cache ? ` · cache: ${r.cache}` : '';
+  showResult('out-pappers-entreprise', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms${cacheInfo}`);
+}
+
+async function testMarcelHealth() {
+  const r = await call(getURL('marcel') + '/health');
+  showResult('out-marcel-health', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms`);
+}
+
+async function testMarcelChat() {
+  const msg = document.getElementById('marcel-question').value.trim();
+  if (!msg) {
+    showResult('out-marcel-chat', { error: 'Question vide' }, true);
+    return;
+  }
+  showResult('out-marcel-chat', { status: 'Marcel réfléchit...' }, false, 'En cours...');
+  const r = await call(getURL('marcel') + '/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, history: [] }),
+  });
+  showResult('out-marcel-chat', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms · model claude-sonnet-4-6`);
+}
+
+async function testTemoinHealth() {
+  const r = await call(getURL('temoin') + '/health');
+  showResult('out-temoin-health', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms`);
+}
+
+async function testTemoinLog() {
+  const r = await call(getURL('temoin') + '/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      family_id: 'test-harness-' + Date.now(),
+      user_id: 'maxime',
+      universe: 'fiscalite',
+      question: 'Test depuis test-harness Sprint 1',
+      answer_summary: 'Réponse de validation harness',
+      agent: 'marcel',
+      model: 'claude-sonnet-4-6',
+      tokens_input: 120,
+      tokens_output: 80,
+      sources: ['art. 197 CGI'],
+      mif2_compliant: true,
+    }),
+  });
+  showResult('out-temoin-log', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms`);
+}
+
+async function testUniversignHealth() {
+  const r = await call(getURL('universign') + '/health');
+  showResult('out-universign-health', r.data, !r.ok, `HTTP ${r.status} · ${r.ms}ms`);
+}
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

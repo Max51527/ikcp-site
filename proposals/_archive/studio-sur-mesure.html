@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Studio Sur-mesure · paramétrer un Family Office digitalisé</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FAFAF8; --bg-2:#F4EFE7; --bg-3:#EBE3D4; --bg-elev:#FFFFFF;
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --ink:#1B2A4A; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --line:rgba(201,169,110,0.22); --line-strong:rgba(201,169,110,0.45);
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+}
+html,body{background:var(--bg); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.6; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased}
+
+.mockup-bar{background:var(--navy-deep); color:var(--bg); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+/* ─── HEADER STUDIO ─── */
+header.studio{background:var(--bg-elev); border-bottom:1px solid var(--line); padding:16px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:32px; z-index:100}
+.brand{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1}
+.brand b{color:var(--gold); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.32em; color:var(--gold-deep); margin-top:5px; font-weight:600; text-transform:uppercase}
+.role-pill{display:flex; align-items:center; gap:14px; background:var(--bg-2); border:1px solid var(--line-strong); padding:6px 8px 6px 16px; border-radius:30px}
+.role-pill .name{font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); font-weight:500}
+.role-pill .role{padding:4px 10px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; font-weight:700; background:var(--navy); color:var(--bg)}
+.back-link{margin-right:18px; color:var(--ink-mute); font-size:12.5px; text-decoration:none; font-weight:500}
+.back-link:hover{color:var(--gold-deep)}
+
+main{max-width:1480px; margin:0 auto; padding:32px 32px 60px}
+
+/* ─── PAGE HEAD ─── */
+.head{margin-bottom:36px}
+.head-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:12px; font-weight:700}
+.head-mark::before{content:'★ '; color:var(--gold)}
+.head h1{font-family:'Playfair Display',serif; font-size:38px; color:var(--navy); font-weight:500; letter-spacing:-0.02em; line-height:1.1; margin-bottom:10px}
+.head h1 em{color:var(--gold-deep); font-style:italic}
+.head p{font-size:16px; color:var(--ink-mute); max-width:720px; line-height:1.7}
+.head p em{font-style:italic; color:var(--navy); font-weight:500; font-family:'Playfair Display',serif}
+
+/* ─── LAYOUT 2 COL ─── */
+.layout{display:grid; grid-template-columns:320px 1fr; gap:24px}
+@media (max-width:1080px){.layout{grid-template-columns:1fr}}
+
+/* ─── SIDEBAR ─── */
+aside.sidebar{
+  background:var(--bg-elev); border:1px solid var(--line); border-radius:18px;
+  padding:24px 22px; position:sticky; top:128px; align-self:start;
+  box-shadow:0 4px 18px rgba(27,42,74,0.04);
+  max-height:calc(100vh - 160px); overflow-y:auto;
+}
+.sb-section{margin-bottom:24px; padding-bottom:24px; border-bottom:1px dashed var(--line)}
+.sb-section:last-child{border-bottom:none; padding-bottom:0; margin-bottom:0}
+.sb-label{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:10px}
+.sb-h{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; margin-bottom:6px; line-height:1.25}
+.sb-h em{font-style:italic; color:var(--gold-deep)}
+.sb-p{font-size:13px; color:var(--ink-mute); line-height:1.6}
+.sb-stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
+.sb-stat{background:var(--bg-2); border-radius:10px; padding:10px 12px}
+.sb-stat-val{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600; font-style:italic; line-height:1}
+.sb-stat-lbl{font-size:10.5px; color:var(--ink-faint); margin-top:4px; letter-spacing:0.04em}
+
+.tab-list{display:flex; flex-direction:column; gap:2px; margin-top:6px}
+.tab-item{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:var(--ink-mute); cursor:pointer; transition:all 0.2s; font-size:13.5px; font-weight:500; text-decoration:none}
+.tab-item:hover{background:var(--bg-2); color:var(--navy)}
+.tab-item.active{background:var(--navy); color:var(--bg)}
+.tab-item.active .tab-count{background:var(--gold); color:var(--navy)}
+.tab-icon{font-size:16px; flex-shrink:0}
+.tab-name{flex:1}
+.tab-count{padding:2px 7px; background:var(--bg-3); color:var(--ink-mute); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700}
+
+/* ─── PANEL ─── */
+.panel{background:var(--bg-elev); border:1px solid var(--line); border-radius:18px; padding:30px 32px; box-shadow:0 4px 18px rgba(27,42,74,0.04); margin-bottom:24px}
+.panel-h{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:24px; flex-wrap:wrap}
+.panel-h-l h2{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600; letter-spacing:-0.005em; margin-bottom:4px}
+.panel-h-l p{font-size:13px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif}
+.panel-h-r{display:flex; gap:10px; flex-wrap:wrap}
+
+.btn{padding:10px 18px; border-radius:8px; text-decoration:none; cursor:pointer; font-size:12.5px; font-weight:600; letter-spacing:0.04em; transition:all 0.2s; border:none; font-family:'Outfit',sans-serif; display:inline-flex; align-items:center; gap:8px}
+.btn-primary{background:var(--navy); color:var(--bg)}
+.btn-primary:hover{background:var(--navy-deep)}
+.btn-secondary{background:transparent; color:var(--navy); border:1.5px solid var(--navy)}
+.btn-secondary:hover{background:var(--navy); color:var(--bg)}
+.btn-ghost{background:transparent; color:var(--gold-deep); border:1px solid var(--line-strong)}
+.btn-ghost:hover{border-color:var(--gold)}
+.btn-gold{background:var(--gold); color:var(--navy); font-weight:700}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-bad{background:transparent; color:var(--bad); border:1px solid var(--bad)}
+.btn-bad:hover{background:var(--bad); color:var(--bg)}
+
+/* ─── FORM INPUTS ─── */
+label.input-label{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.input-row{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px}
+@media (max-width:760px){.input-row{grid-template-columns:1fr}}
+.input-field input, .input-field select, .input-field textarea{
+  width:100%; padding:12px 14px; background:var(--bg-2); border:1.5px solid var(--line-strong);
+  border-radius:10px; font-size:14px; color:var(--navy); font-family:'Outfit',sans-serif;
+  outline:none; transition:border-color 0.2s; font-weight:500;
+}
+.input-field textarea{font-family:'Outfit',sans-serif; min-height:80px; resize:vertical}
+.input-field input:focus, .input-field select:focus, .input-field textarea:focus{border-color:var(--gold); background:var(--bg-elev)}
+.input-hint{font-size:11.5px; color:var(--ink-faint); margin-top:6px; font-style:italic; font-family:'Playfair Display',serif}
+
+/* ─── UNIVERS TOGGLES ─── */
+.toggle-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:18px}
+@media (max-width:760px){.toggle-grid{grid-template-columns:1fr}}
+.toggle-card{background:var(--bg-2); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:14px; position:relative}
+.toggle-card.on{background:linear-gradient(135deg, rgba(201,169,110,0.10) 0%, rgba(226,200,150,0.06) 100%); border-color:var(--gold)}
+.toggle-card.on::after{content:'✓'; position:absolute; top:10px; right:12px; width:20px; height:20px; background:var(--gold); color:var(--navy); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700}
+.toggle-card:hover{border-color:var(--gold)}
+.toggle-icon{font-size:22px; flex-shrink:0}
+.toggle-info{flex:1; min-width:0}
+.toggle-name{font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); font-weight:600; line-height:1.2}
+.toggle-meta{font-size:11.5px; color:var(--ink-faint); margin-top:3px; font-style:italic; font-family:'Playfair Display',serif}
+.toggle-quota{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; color:var(--gold-deep); font-weight:700; margin-top:6px}
+
+.quota-input{display:flex; align-items:center; gap:8px; margin-top:8px}
+.quota-input input{width:80px; padding:7px 10px; background:var(--bg-elev); border:1px solid var(--line-strong); border-radius:6px; font-size:12px; color:var(--navy); font-family:'JetBrains Mono',monospace; text-align:center}
+.quota-input label{font-size:11px; color:var(--ink-mute); font-style:italic}
+
+/* ─── DOCUMENT VAULT ─── */
+.vault-zone{background:var(--bg-2); border:2px dashed var(--line-strong); border-radius:14px; padding:32px 24px; text-align:center; margin-bottom:18px; cursor:pointer; transition:all 0.2s}
+.vault-zone:hover{border-color:var(--gold); background:var(--bg-3)}
+.vault-icon{font-size:38px; margin-bottom:10px; opacity:0.6}
+.vault-h{font-family:'Playfair Display',serif; font-size:17px; color:var(--navy); font-weight:600; margin-bottom:4px}
+.vault-p{font-size:13px; color:var(--ink-mute); font-style:italic}
+.vault-list{display:flex; flex-direction:column; gap:8px}
+.vault-row{display:grid; grid-template-columns:auto 1fr auto auto auto; gap:14px; align-items:center; padding:12px 16px; background:var(--bg-2); border:1px solid var(--line); border-radius:10px}
+.vault-row:hover{border-color:var(--gold)}
+.vault-row .doc-ico{font-size:20px}
+.vault-row .doc-name{font-family:'Playfair Display',serif; font-size:14.5px; color:var(--navy); font-weight:500}
+.vault-row .doc-meta{font-size:11px; color:var(--ink-faint); margin-top:2px; font-style:italic}
+.vault-row .doc-sig{padding:3px 9px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.14em; font-weight:700; text-transform:uppercase}
+.vault-row .doc-sig.signed{background:rgba(63,122,63,0.12); color:var(--ok); border:1px solid rgba(63,122,63,0.4)}
+.vault-row .doc-sig.pending{background:rgba(184,128,31,0.10); color:var(--warn); border:1px solid rgba(184,128,31,0.4)}
+.vault-row .doc-sig.draft{background:rgba(155,143,128,0.10); color:var(--ink-faint); border:1px solid rgba(155,143,128,0.3)}
+.vault-row .doc-actions{display:flex; gap:6px}
+.vault-row .doc-act{padding:6px 10px; background:transparent; border:1px solid var(--line-strong); border-radius:6px; font-size:11px; color:var(--ink-mute); cursor:pointer; transition:all 0.2s}
+.vault-row .doc-act:hover{border-color:var(--gold); color:var(--navy)}
+
+/* ─── PARTNERS ─── */
+.partners-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:18px}
+@media (max-width:880px){.partners-grid{grid-template-columns:1fr}}
+.partner-card{background:var(--bg-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px}
+.partner-head{display:flex; align-items:center; gap:12px; margin-bottom:10px}
+.partner-ico{width:38px; height:38px; border-radius:50%; background:var(--navy); color:var(--gold-bright); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0}
+.partner-name{font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); font-weight:600; line-height:1.2}
+.partner-type{font-size:11px; color:var(--gold-deep); font-family:'JetBrains Mono',monospace; letter-spacing:0.14em; font-weight:600; text-transform:uppercase; margin-top:2px}
+.partner-status{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ok); font-weight:500}
+.partner-status::before{content:''; width:7px; height:7px; background:var(--ok); border-radius:50%}
+.partner-actions{margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); display:flex; gap:6px}
+.partner-act{padding:6px 11px; background:transparent; border:1px solid var(--line-strong); border-radius:6px; font-size:11px; color:var(--ink-mute); cursor:pointer; transition:all 0.2s; text-decoration:none}
+.partner-act:hover{border-color:var(--gold); color:var(--navy)}
+
+/* ─── PRICING CONFIG ─── */
+.price-config{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px}
+@media (max-width:760px){.price-config{grid-template-columns:1fr}}
+.price-mode{background:var(--bg-2); border:2px solid var(--line); border-radius:12px; padding:18px 20px; cursor:pointer; transition:all 0.2s}
+.price-mode.active{border-color:var(--gold); background:linear-gradient(135deg, rgba(201,169,110,0.10) 0%, rgba(226,200,150,0.04) 100%)}
+.price-mode-h{font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; margin-bottom:4px}
+.price-mode-h em{color:var(--gold-deep); font-style:italic}
+.price-mode-p{font-size:12.5px; color:var(--ink-mute); line-height:1.5; font-style:italic; font-family:'Playfair Display',serif}
+
+.price-fields{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px}
+@media (max-width:760px){.price-fields{grid-template-columns:1fr}}
+
+/* ─── DEPLOYMENT BUTTON ─── */
+.deploy-zone{padding:24px 28px; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:14px; display:flex; align-items:center; justify-content:space-between; gap:20px; color:var(--bg); margin-top:30px; flex-wrap:wrap}
+.deploy-info h3{font-family:'Playfair Display',serif; font-size:20px; color:var(--bg); font-weight:600; margin-bottom:4px}
+.deploy-info p{font-size:13px; color:rgba(250,250,248,0.78); line-height:1.55}
+
+/* ─── HOW-TO STEPS ─── */
+.howto{background:var(--bg-2); border:1px solid var(--line-strong); border-radius:14px; padding:24px 26px; margin-bottom:24px}
+.howto-h{font-family:'Playfair Display',serif; font-size:17px; color:var(--navy); font-weight:600; margin-bottom:6px}
+.howto-h em{color:var(--gold-deep); font-style:italic}
+.howto-p{font-size:13px; color:var(--ink-mute); margin-bottom:14px; font-style:italic; font-family:'Playfair Display',serif}
+.howto-list{display:flex; flex-direction:column; gap:8px}
+.howto-step{display:flex; gap:14px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--line)}
+.howto-step:last-child{border-bottom:none}
+.howto-num{flex-shrink:0; width:24px; height:24px; border-radius:50%; background:var(--gold); color:var(--navy); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'JetBrains Mono',monospace}
+.howto-text{font-size:13px; color:var(--ink); line-height:1.55}
+.howto-text b{color:var(--navy); font-weight:600}
+
+footer{margin-top:60px; padding-top:32px; border-top:1px solid var(--line); text-align:center; font-size:11.5px; color:var(--ink-faint); letter-spacing:0.04em; line-height:1.9; font-family:'JetBrains Mono',monospace}
+footer a{color:var(--gold-deep); text-decoration:none}
+footer .legal{font-style:italic; opacity:0.85; margin-top:8px}
+
+@media (max-width:760px){header.studio{padding:12px 18px}main{padding:24px 18px 50px}.panel{padding:22px 20px}}
+</style>
+</head>
+<body>
+
+<!-- ═══ BARRE APERÇU ═══ -->
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · Studio Sur-mesure — paramétrer un Family Office digitalisé par famille</span>
+  <span><a href="ikcp-eu-onglet-family-office.html">← retour Family Office</a></span>
+</div>
+
+<!-- ═══ HEADER STUDIO ═══ -->
+<header class="studio">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Studio Sur-mesure · admin.ikcp.eu</div>
+  </div>
+  <div style="display:flex; align-items:center">
+    <a href="univers-demandez-moi.html" class="back-link">← Demandez-moi</a>
+    <div class="role-pill">
+      <div>
+        <div class="name">Maxime Juveneton</div>
+      </div>
+      <span class="role">Admin</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ PAGE HEAD ═══ -->
+<section class="head">
+  <div class="head-mark">Studio Sur-mesure · pour le tier Family Office Sur-mesure</div>
+  <h1>Digitalisez un Family Office <em>famille par famille</em>.</h1>
+  <p>
+    Le Studio Sur-mesure vous permet, à partir d'<em>une seule interface</em>, de configurer entièrement la plateforme pour chacune des familles que vous accompagnez : univers ouverts, quotas, dépôt de documents, signatures électroniques, branchements vers leurs notaires et avocats, tarification spécifique. <em>Vous gardez la main, l'IA fait le reste.</em>
+  </p>
+</section>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR — Famille active ═══ -->
+  <aside class="sidebar">
+
+    <div class="sb-section">
+      <div class="sb-label">Famille en cours</div>
+      <div class="sb-h">Famille <em>Dupont</em></div>
+      <div class="sb-p">3 membres · patrimoine ~14 M€ · client Sur-mesure depuis 03/2026</div>
+      <div class="sb-stats">
+        <div class="sb-stat"><div class="sb-stat-val">14,2 M€</div><div class="sb-stat-lbl">AUM total</div></div>
+        <div class="sb-stat"><div class="sb-stat-val">11/12</div><div class="sb-stat-lbl">Univers actifs</div></div>
+        <div class="sb-stat"><div class="sb-stat-val">8</div><div class="sb-stat-lbl">Documents</div></div>
+        <div class="sb-stat"><div class="sb-stat-val">3</div><div class="sb-stat-lbl">Partenaires</div></div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Sections du Studio</div>
+      <div class="tab-list">
+        <a href="#identite" class="tab-item active"><span class="tab-icon">🪪</span><span class="tab-name">Identité famille</span></a>
+        <a href="#univers" class="tab-item"><span class="tab-icon">🌐</span><span class="tab-name">12 univers</span><span class="tab-count">11/12</span></a>
+        <a href="#documents" class="tab-item"><span class="tab-icon">📁</span><span class="tab-name">Coffre-fort</span><span class="tab-count">8</span></a>
+        <a href="#partenaires" class="tab-item"><span class="tab-icon">🤝</span><span class="tab-name">Partenaires</span><span class="tab-count">3</span></a>
+        <a href="#tarification" class="tab-item"><span class="tab-icon">💳</span><span class="tab-name">Tarification</span></a>
+        <a href="#deploy" class="tab-item"><span class="tab-icon">🚀</span><span class="tab-name">Déployer</span></a>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Familles paramétrées</div>
+      <div class="tab-list">
+        <a href="#" class="tab-item"><span class="tab-icon">★</span><span class="tab-name">Famille Dupont</span></a>
+        <a href="#" class="tab-item"><span class="tab-icon">○</span><span class="tab-name">Famille Mercier</span></a>
+        <a href="#" class="tab-item"><span class="tab-icon">○</span><span class="tab-name">Famille Beaumont</span></a>
+        <a href="#" class="tab-item" style="color:var(--gold-deep); font-weight:600"><span class="tab-icon">＋</span><span class="tab-name">Ajouter une famille</span></a>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══ PANELS ═══ -->
+  <div>
+
+    <!-- ─── HOW-TO ─── -->
+    <div class="howto">
+      <div class="howto-h">Comment <em>paramétrer une nouvelle famille</em> en 6 étapes</div>
+      <div class="howto-p">Chaque famille reçoit son sous-domaine privé · ex. <b>dupont.famille.ikcp.eu</b> · isolation totale.</div>
+      <div class="howto-list">
+        <div class="howto-step"><span class="howto-num">1</span><span class="howto-text"><b>Identité</b> — saisissez le SIREN du dirigeant, l'outil reconstitue automatiquement entités, biens et ratios fiscaux.</span></div>
+        <div class="howto-step"><span class="howto-num">2</span><span class="howto-text"><b>Univers</b> — activez les univers pertinents (12 disponibles), ajustez les quotas, choisissez le mode Premium ou Sur-mesure.</span></div>
+        <div class="howto-step"><span class="howto-num">3</span><span class="howto-text"><b>Coffre-fort</b> — déposez les actes notariés, statuts, contrats. Chiffré côté client, archivé eIDAS 10 ans.</span></div>
+        <div class="howto-step"><span class="howto-num">4</span><span class="howto-text"><b>Partenaires</b> — invitez le notaire, l'avocat et l'expert-comptable de la famille (accès scope-limited).</span></div>
+        <div class="howto-step"><span class="howto-num">5</span><span class="howto-text"><b>Tarification</b> — choisissez forfait mensuel, forfait + %AUM, ou facturation horaire selon les services activés.</span></div>
+        <div class="howto-step"><span class="howto-num">6</span><span class="howto-text"><b>Déploiement</b> — bouton magique : l'instance famille est créée en 90 secondes, magic link envoyé.</span></div>
+      </div>
+    </div>
+
+    <!-- ─── PANEL 1 — IDENTITÉ ─── -->
+    <section class="panel" id="identite">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>① Identité famille</h2>
+          <p>Le squelette de la famille — détecté ou saisi manuellement.</p>
+        </div>
+        <div class="panel-h-r">
+          <button class="btn btn-secondary">↻ Re-détecter</button>
+          <button class="btn btn-primary">💾 Enregistrer</button>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-field">
+          <label class="input-label">Nom de la famille</label>
+          <input type="text" value="Famille Dupont" />
+        </div>
+        <div class="input-field">
+          <label class="input-label">Référent principal</label>
+          <input type="text" value="Jean-Marc Dupont" />
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-field">
+          <label class="input-label">SIREN holding principale</label>
+          <input type="text" value="812 345 678" style="font-family:'JetBrains Mono',monospace" />
+          <div class="input-hint">L'outil reconstitue automatiquement entités, capital, dirigeants, bénéficiaires effectifs.</div>
+        </div>
+        <div class="input-field">
+          <label class="input-label">Patrimoine consolidé estimé</label>
+          <input type="text" value="14 200 000 €" style="font-family:'JetBrains Mono',monospace" />
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-field">
+          <label class="input-label">Membres famille (séparés par virgule)</label>
+          <textarea>Jean-Marc Dupont (référent), Élisabeth Dupont (conjointe), Emma Dupont (NextGen, 24 ans)</textarea>
+        </div>
+        <div class="input-field">
+          <label class="input-label">Sous-domaine privé</label>
+          <input type="text" value="dupont.famille.ikcp.eu" style="font-family:'JetBrains Mono',monospace" />
+          <div class="input-hint">Espace isolé, HTTPS dédié, palette personnalisable.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PANEL 2 — 12 UNIVERS ─── -->
+    <section class="panel" id="univers">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>② Activer les 12 univers</h2>
+          <p>Choisissez quels univers ouvrir et leurs quotas. Le client ne voit que ceux activés.</p>
+        </div>
+        <div class="panel-h-r">
+          <button class="btn btn-ghost">Tout désactiver</button>
+          <button class="btn btn-secondary">Activer Premium standard</button>
+          <button class="btn btn-gold">Activer Sur-mesure complet</button>
+        </div>
+      </div>
+
+      <div class="toggle-grid">
+        <div class="toggle-card on">
+          <span class="toggle-icon">💼</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Patrimoine</div>
+            <div class="toggle-meta">Cartographie 360° auto</div>
+            <div class="toggle-quota">Illimité · sources officielles live</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🏠</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Immobilier</div>
+            <div class="toggle-meta">DVF live · prix m² · IFI</div>
+            <div class="toggle-quota">Illimité · 4 biens trackés</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🏛</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Fiscalité</div>
+            <div class="toggle-meta">IR · IFI · arbitrages</div>
+            <div class="toggle-quota">Illimité · veille Légifrance</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">📈</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Marchés</div>
+            <div class="toggle-meta">Indices · allocation · drift</div>
+            <div class="toggle-quota">Surveillance 24/7</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🎨</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Art &amp; Collections</div>
+            <div class="toggle-meta">Côtes · valorisation IFI</div>
+            <div class="toggle-quota">12 œuvres trackées</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">💎</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Voyage &amp; Concierge</div>
+            <div class="toggle-meta">Hôtels · jets · expériences</div>
+            <div class="toggle-quota">Mode <strong>réserve pour eux</strong></div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🪴</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Private Equity</div>
+            <div class="toggle-meta">Deal flow · NAV · capital calls</div>
+            <div class="toggle-quota">2 fonds suivis</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🌱</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Transmission</div>
+            <div class="toggle-meta">Dutreil · donation · démembrement</div>
+            <div class="toggle-quota">Pacte Dutreil signé 02/2026</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🤲</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Philanthropie</div>
+            <div class="toggle-meta">Don 66 % IR / 75 % IFI</div>
+            <div class="toggle-quota">Fondation famille en projet</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">🎓</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Formation NextGen</div>
+            <div class="toggle-meta">6 modules sur vos chiffres</div>
+            <div class="toggle-quota">Emma · 3 modules complétés</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">📋</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Administration</div>
+            <div class="toggle-meta">Échéances · courriers · signatures</div>
+            <div class="toggle-quota">Signature eIDAS qualifiée</div>
+          </div>
+        </div>
+        <div class="toggle-card on">
+          <span class="toggle-icon">📊</span>
+          <div class="toggle-info">
+            <div class="toggle-name">Reporting</div>
+            <div class="toggle-meta">Synthèse · KPIs · alertes</div>
+            <div class="toggle-quota">Trimestriel · J+1</div>
+          </div>
+        </div>
+      </div>
+      <div class="input-hint" style="margin-top:6px"><strong>Astuce :</strong> les toggles ON s'affichent dans le dashboard de la famille. Les toggles OFF restent invisibles. Vous pouvez ouvrir un univers à tout moment.</div>
+    </section>
+
+    <!-- ─── PANEL 3 — COFFRE-FORT ─── -->
+    <section class="panel" id="documents">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>③ Coffre-fort documentaire</h2>
+          <p>Chiffré côté client (zero-knowledge) · archivage légal eIDAS 10 ans · partagé scope-limited avec partenaires.</p>
+        </div>
+        <div class="panel-h-r">
+          <button class="btn btn-secondary">⤓ Exporter dossier</button>
+          <button class="btn btn-primary">+ Déposer un document</button>
+        </div>
+      </div>
+
+      <div class="vault-zone">
+        <div class="vault-icon">📁</div>
+        <div class="vault-h">Glisser-déposer vos documents ici</div>
+        <div class="vault-p">PDF, DOCX, images · chiffrés à l'upload · signature électronique disponible</div>
+      </div>
+
+      <div class="vault-list">
+        <div class="vault-row">
+          <span class="doc-ico">📜</span>
+          <div>
+            <div class="doc-name">Pacte Dutreil DUPONT HOLDING — 2026</div>
+            <div class="doc-meta">PDF · 4,2 Mo · déposé 02/2026 · partagé avec M<sup>e</sup> Lambert</div>
+          </div>
+          <span class="doc-sig signed">eIDAS signé</span>
+          <span class="doc-meta">3 signataires</span>
+          <div class="doc-actions">
+            <button class="doc-act">Ouvrir</button>
+            <button class="doc-act">Audit log</button>
+          </div>
+        </div>
+        <div class="vault-row">
+          <span class="doc-ico">🏛</span>
+          <div>
+            <div class="doc-name">Statuts DUPONT &amp; FILS — refonte 2026</div>
+            <div class="doc-meta">PDF · 8,7 Mo · déposé 04/2026 · partagé avec M<sup>e</sup> Lambert + M<sup>e</sup> Sénéchal</div>
+          </div>
+          <span class="doc-sig pending">En attente</span>
+          <span class="doc-meta">1/3 signé</span>
+          <div class="doc-actions">
+            <button class="doc-act">Relancer</button>
+            <button class="doc-act">Aperçu</button>
+          </div>
+        </div>
+        <div class="vault-row">
+          <span class="doc-ico">🏠</span>
+          <div>
+            <div class="doc-name">Acte SCI VILLA AURA — démembrement</div>
+            <div class="doc-meta">PDF · 2,1 Mo · déposé 01/2026 · partagé avec M<sup>e</sup> Lambert</div>
+          </div>
+          <span class="doc-sig signed">eIDAS signé</span>
+          <span class="doc-meta">2 signataires</span>
+          <div class="doc-actions">
+            <button class="doc-act">Ouvrir</button>
+            <button class="doc-act">Télécharger</button>
+          </div>
+        </div>
+        <div class="vault-row">
+          <span class="doc-ico">📄</span>
+          <div>
+            <div class="doc-name">Lettre de mission IKCP — 2026</div>
+            <div class="doc-meta">PDF · 0,9 Mo · déposé 03/2026 · interne IKCP</div>
+          </div>
+          <span class="doc-sig signed">eIDAS signé</span>
+          <span class="doc-meta">2 signataires</span>
+          <div class="doc-actions">
+            <button class="doc-act">Ouvrir</button>
+            <button class="doc-act">PDF</button>
+          </div>
+        </div>
+        <div class="vault-row">
+          <span class="doc-ico">📝</span>
+          <div>
+            <div class="doc-name">Note arbitrage allocation Q2 2026</div>
+            <div class="doc-meta">DOCX · 0,3 Mo · brouillon · à valider par Maxime</div>
+          </div>
+          <span class="doc-sig draft">Brouillon</span>
+          <span class="doc-meta">—</span>
+          <div class="doc-actions">
+            <button class="doc-act">Éditer</button>
+            <button class="doc-act">Envoyer signature</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PANEL 4 — PARTENAIRES ─── -->
+    <section class="panel" id="partenaires">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>④ Partenaires externes</h2>
+          <p>Notaires, avocats d'affaires, experts-comptables, banquiers privés — accès scope-limited à un dossier précis.</p>
+        </div>
+        <div class="panel-h-r">
+          <button class="btn btn-ghost">📜 Voir l'audit log</button>
+          <button class="btn btn-primary">+ Inviter un partenaire</button>
+        </div>
+      </div>
+
+      <div class="partners-grid">
+        <div class="partner-card">
+          <div class="partner-head">
+            <div class="partner-ico">⚖</div>
+            <div>
+              <div class="partner-name">M<sup>e</sup> Sophie Lambert</div>
+              <div class="partner-type">Notaire</div>
+            </div>
+          </div>
+          <p style="font-size:12px; color:var(--ink-mute); margin-bottom:8px">Lyon · Étude Lambert &amp; Associés · partenaire historique Dupont</p>
+          <span class="partner-status">Connecté · 3 dossiers actifs</span>
+          <div class="partner-actions">
+            <a href="#" class="partner-act">Dossiers</a>
+            <a href="#" class="partner-act">Permissions</a>
+            <a href="#" class="partner-act">Audit</a>
+          </div>
+        </div>
+
+        <div class="partner-card">
+          <div class="partner-head">
+            <div class="partner-ico">⚖</div>
+            <div>
+              <div class="partner-name">M<sup>e</sup> Antoine Sénéchal</div>
+              <div class="partner-type">Avocat d'affaires</div>
+            </div>
+          </div>
+          <p style="font-size:12px; color:var(--ink-mute); margin-bottom:8px">Paris · Cabinet Sénéchal · spécialité Dutreil et M&amp;A familiales</p>
+          <span class="partner-status">Connecté · 1 dossier actif</span>
+          <div class="partner-actions">
+            <a href="#" class="partner-act">Dossiers</a>
+            <a href="#" class="partner-act">Permissions</a>
+            <a href="#" class="partner-act">Audit</a>
+          </div>
+        </div>
+
+        <div class="partner-card">
+          <div class="partner-head">
+            <div class="partner-ico">📊</div>
+            <div>
+              <div class="partner-name">Cabinet Mercier &amp; Co.</div>
+              <div class="partner-type">Expert-comptable</div>
+            </div>
+          </div>
+          <p style="font-size:12px; color:var(--ink-mute); margin-bottom:8px">Lyon · expert DUPONT HOLDING + filiales · liasses fiscales</p>
+          <span class="partner-status">Connecté · sync auto annuelle</span>
+          <div class="partner-actions">
+            <a href="#" class="partner-act">Liasses</a>
+            <a href="#" class="partner-act">Permissions</a>
+            <a href="#" class="partner-act">Audit</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-hint">
+        <strong>Comment ça marche :</strong> vous invitez un partenaire externe par email. Il reçoit un lien magique scope-limited (accès uniquement aux dossiers que vous lui ouvrez, durée 24-72 h renouvelable). Toutes ses actions sont auditées et horodatées (eIDAS). <strong>Aucun cloud US, aucun partage hors UE.</strong>
+      </div>
+    </section>
+
+    <!-- ─── PANEL 5 — TARIFICATION ─── -->
+    <section class="panel" id="tarification">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>⑤ Tarification Sur-mesure</h2>
+          <p>Choisissez le mode de facturation propre à cette famille — Stripe gère les prélèvements automatiquement.</p>
+        </div>
+        <div class="panel-h-r">
+          <button class="btn btn-secondary">💳 Voir Stripe</button>
+          <button class="btn btn-primary">💾 Enregistrer</button>
+        </div>
+      </div>
+
+      <div class="price-config">
+        <div class="price-mode">
+          <div class="price-mode-h">Forfait <em>mensuel fixe</em></div>
+          <div class="price-mode-p">Identique chaque mois — pour familles avec activité stable.</div>
+        </div>
+        <div class="price-mode active">
+          <div class="price-mode-h">Forfait + <em>% AUM</em></div>
+          <div class="price-mode-p">Forfait minimum + commission décroissante selon volume — recommandé Sur-mesure.</div>
+        </div>
+      </div>
+
+      <div class="price-fields">
+        <div class="input-field">
+          <label class="input-label">Forfait mensuel</label>
+          <input type="text" value="1 200 €" style="font-family:'JetBrains Mono',monospace" />
+        </div>
+        <div class="input-field">
+          <label class="input-label">% AUM (annualisé)</label>
+          <input type="text" value="0,35 %" style="font-family:'JetBrains Mono',monospace" />
+          <div class="input-hint">Sur 14,2 M€ → 49 700 €/an</div>
+        </div>
+        <div class="input-field">
+          <label class="input-label">Total annuel estimé</label>
+          <input type="text" value="64 100 €" style="font-family:'JetBrains Mono',monospace; background:rgba(63,122,63,0.08); border-color:var(--ok); color:var(--ok); font-weight:700" readonly />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-field">
+          <label class="input-label">Mode de paiement</label>
+          <select>
+            <option>Prélèvement SEPA mensuel</option>
+            <option>Virement annuel</option>
+            <option>Carte bancaire</option>
+          </select>
+        </div>
+        <div class="input-field">
+          <label class="input-label">Lettre de mission</label>
+          <select>
+            <option>Annuelle (renouvellement tacite)</option>
+            <option>Pluriannuelle (3 ans)</option>
+          </select>
+          <div class="input-hint">Pré-rédigée et envoyée à signature eIDAS lors du déploiement.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PANEL 6 — DEPLOY ─── -->
+    <section class="panel" id="deploy">
+      <div class="panel-h">
+        <div class="panel-h-l">
+          <h2>⑥ Déployer l'espace famille</h2>
+          <p>Bouton magique. L'instance privée est créée en 90 secondes, le magic link est envoyé au référent famille.</p>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-field">
+          <label class="input-label">URL finale</label>
+          <input type="text" value="https://dupont.famille.ikcp.eu" style="font-family:'JetBrains Mono',monospace" readonly />
+        </div>
+        <div class="input-field">
+          <label class="input-label">Référent à inviter</label>
+          <input type="text" value="jean-marc.dupont@example.com" style="font-family:'JetBrains Mono',monospace" />
+        </div>
+      </div>
+
+      <div class="deploy-zone">
+        <div class="deploy-info">
+          <h3>Prêt à déployer.</h3>
+          <p>11 univers actifs · 8 documents · 3 partenaires · facturation 64 100 €/an · sous-domaine HTTPS dédié.</p>
+        </div>
+        <button class="btn btn-gold" style="font-size:14px; padding:14px 28px">🚀 Déployer maintenant</button>
+      </div>
+
+      <div class="input-hint" style="margin-top:18px">
+        <strong>Ce qui se passe lors du déploiement :</strong> (1) création du sous-domaine HTTPS · (2) provisioning de l'instance Cloudflare D1 isolée · (3) envoi du magic link au référent · (4) envoi de la lettre de mission à signature eIDAS · (5) ouverture des permissions partenaires · (6) activation Stripe SEPA · (7) trigger du premier crawl Patrimoine. <strong>Le tout en moins de 90 secondes.</strong>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+  <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  <div class="legal">Site créé par Maxime Juveneton · Studio Sur-mesure réservé administrateurs IKCP · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)</div>
+</footer>
+
+<script>
+// Toggle univers cards
+document.querySelectorAll('.toggle-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    card.classList.toggle('on');
+  });
+});
+
+// Switch price mode
+document.querySelectorAll('.price-mode').forEach(m=>{
+  m.addEventListener('click', ()=>{
+    document.querySelectorAll('.price-mode').forEach(x=>x.classList.remove('active'));
+    m.classList.add('active');
+  });
+});
+
+// Tab navigation
+document.querySelectorAll('.tab-item').forEach(t=>{
+  t.addEventListener('click', e=>{
+    if (!t.getAttribute('href') || t.getAttribute('href')==='#') return;
+    document.querySelectorAll('.tab-item').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

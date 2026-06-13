@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C24722">
+<title>Marcel — Veille</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/marcel.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Veille augmentée</span></a>
+  <div class="app-user"><span class="tier">Premium</span></div>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Veille du jour</div>
+  <h1 class="app-h1">Ce qui touche <em>vos actifs</em>.</h1>
+  <p class="app-lead">Marcel scanne chaque nuit la Loi de Finances, la jurisprudence, la cote de vos collections et le deal flow Private Equity. Sources datées et cliquables.</p>
+
+  <div id="alerts-list" class="loading">Chargement de votre veille…</div>
+</main>
+
+<nav class="app-tabs">
+  <a href="/app/dashboard.html">Dashboard</a>
+  <a href="/app/marcel.html">Marcel</a>
+  <a href="/app/veille.html" class="active">Veille</a>
+  <a href="/app/carnet.html">Carnet</a>
+  <a href="/app/profil.html">Profil</a>
+</nav>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+try { await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
+
+const list = document.getElementById('alerts-list');
+try {
+  const alerts = await Marcel.Me.alerts();
+  if(alerts.length === 0){
+    list.innerHTML = '<div class="empty"><h4>Aucune alerte aujourd\'hui.</h4><p>Marcel scanne pendant la nuit. Vous recevrez un email matin avec les nouveautés qui touchent vos actifs.</p></div>';
+  } else {
+    list.classList.remove('loading');
+    list.innerHTML = alerts.map(a => {
+      const imp = a.importance >= 2 ? '🔴' : (a.importance >= 1 ? '🟡' : '⚪');
+      const date = new Date(a.created_at).toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+      return `
+        <article class="card" style="margin-bottom:14px">
+          <div class="card-head"><span class="card-cat">${a.sphere || 'général'}</span><span class="meta">${date}</span></div>
+          <h3>${imp} ${a.title}</h3>
+          <p>${a.body || ''}</p>
+          ${a.url ? `<a href="${a.url}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" style="align-self:flex-start">Source →</a>` : ''}
+        </article>
+      `;
+    }).join('');
+  }
+}catch(_){
+  list.innerHTML = '<div class="empty"><h4>Veille temporairement indisponible.</h4><p>Réessayez dans un instant.</p></div>';
+}
+</script>
+</body>
+</html>

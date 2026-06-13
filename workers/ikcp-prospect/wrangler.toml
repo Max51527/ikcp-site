@@ -22,11 +22,10 @@ enabled = true
 # Ces bindings sont DÉJÀ en place sur le worker actuel — le redéploiement
 # conserve tous les bindings existants. Pas besoin de les recréer.
 
-# Si tu veux gérer les KV ici aussi (recommandé pour reproductibilité) :
-# [[kv_namespaces]]
-# binding = "IDEMPOTENCY"
-# id = "<id-from-dashboard>"
-#
-# [[kv_namespaces]]
-# binding = "RATE_LIMIT"
-# id = "<id-from-dashboard>"
+[[kv_namespaces]]
+binding = "IDEMPOTENCY"
+id = "74bdfd3c46a643b39d40247f64b6393d"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "b432d188bcf14fc49c9933796c27f0bb"

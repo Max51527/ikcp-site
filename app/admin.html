@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1729">
+<meta name="robots" content="noindex, nofollow">
+<title>IKCP — Admin · Familles fondatrices</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAF7F0;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.18);--ok:#2D7A4F;--bad:#b34a4a}
+body{background:var(--navy-deep);color:var(--cream);font-family:'Inter',sans-serif;font-size:15px;line-height:1.5;padding:clamp(24px,5vw,56px) clamp(18px,4vw,40px);max-width:920px;margin:0 auto}
+h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,4vw,38px);margin-bottom:6px}
+h1 em{font-style:italic;color:var(--gold-bright)}
+.sub{color:var(--mute);font-size:13.5px;margin-bottom:30px}
+.card{background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:22px}
+.card h2{font-family:'Fraunces',serif;font-weight:500;font-size:18px;margin-bottom:14px}
+label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 6px}
+input,select{width:100%;padding:12px 14px;background:rgba(250,247,240,.07);border:1.5px solid rgba(201,169,110,.22);border-radius:9px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+select option{background:var(--navy-deep)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+button{padding:12px 20px;background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+button:hover{background:var(--gold-bright)}
+button.ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(201,169,110,.4)}
+button.reject{background:transparent;color:#F0A0A0;border:1px solid rgba(200,60,60,.4)}
+button:disabled{opacity:.5;cursor:wait}
+.msg{margin-top:12px;padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.45}
+.msg.ok{background:rgba(45,122,79,.16);color:#7BCCA2;border:1px solid rgba(45,122,79,.3)}
+.msg.err{background:rgba(200,60,60,.14);color:#F0A0A0;border:1px solid rgba(200,60,60,.3)}
+.codebox{margin-top:14px;padding:12px 14px;background:rgba(201,169,110,.1);border:1px dashed rgba(201,169,110,.4);border-radius:9px;font-family:monospace;font-size:14px;color:var(--gold-bright);word-break:break-all}
+.app{border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:12px}
+.app-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.app-email{font-weight:600;font-size:15px}
+.app-meta{font-size:12.5px;color:var(--mute);line-height:1.6}
+.app-meta b{color:var(--cream);font-weight:600}
+.app-actions{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.app-actions select{flex:0 0 130px;width:auto;padding:9px 10px;font-size:13px}
+.pill{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:99px;background:rgba(201,169,110,.14);color:var(--gold-bright)}
+.empty{color:var(--mute);font-size:13.5px;font-style:italic;padding:10px 0}
+.gate{max-width:420px}
+.foot{margin-top:30px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px}
+.foot a{color:var(--mute)}
+.lnk{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:rgba(250,247,240,.06);border:1px solid var(--line);border-radius:9px;color:var(--cream);text-decoration:none;font-size:13px;font-weight:500;transition:all .2s}
+.lnk:hover{border-color:var(--gold);background:rgba(201,169,110,.1)}
+.hpill{display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:9px;font-size:12.5px}
+.hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#888}
+.hdot.up{background:#4ade80}.hdot.down{background:#e06161}.hdot.warn{background:var(--gold-bright)}
+</style>
+</head>
+<body>
+
+<div style="background:rgba(201,169,110,.12);border:1px solid var(--line);border-radius:11px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <span style="font-size:18px">🛰️</span>
+  <span style="font-size:13.5px">Nouvelle <b style="color:var(--gold-bright)">Console de pilotage</b> — back-office complet (tableau de bord, agents IA, veille, navigation latérale).</span>
+  <a href="/app/console.html" class="lnk" style="margin-left:auto">Ouvrir la console →</a>
+</div>
+
+<h1>Familles <em>fondatrices</em></h1>
+<div class="sub">Console privée — invitations, parrainages & validation des candidatures. ORIAS 23001568.</div>
+
+<!-- Gate secret -->
+<div class="card gate" id="gate">
+  <h2>Accès administrateur</h2>
+  <label for="secret">Clé admin (ADMIN_SECRET)</label>
+  <input type="password" id="secret" placeholder="••••••••••••" autocomplete="off">
+  <div style="margin-top:14px"><button id="unlockBtn" onclick="unlock()">Déverrouiller →</button></div>
+  <div id="gateMsg"></div>
+</div>
+
+<!-- Console (cachée tant que non déverrouillé) -->
+<div id="console" style="display:none">
+
+  <!-- TOUR DE CONTRÔLE : santé système + accès rapides -->
+  <div class="card">
+    <h2>🗼 Tour de contrôle <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadHealth()">↻ Santé</button></h2>
+    <div id="health" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px">
+      <div class="empty" style="grid-column:1/-1">Vérification des services…</div>
+    </div>
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:6px 0 8px">Accès rapides</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="/admin/" target="_blank" class="lnk">✏️ CMS contenu</a>
+      <a href="/" target="_blank" class="lnk">🌐 Site public</a>
+      <a href="/app/dashboard.html" target="_blank" class="lnk">👤 Espace membre</a>
+      <a href="/apercu.html" target="_blank" class="lnk">🗂️ Aperçu complet</a>
+      <a href="https://dash.cloudflare.com" target="_blank" class="lnk">☁️ Cloudflare (infra)</a>
+      <a href="https://github.com/Max51527/ikcp-site" target="_blank" class="lnk">💻 Code (GitHub)</a>
+    </div>
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Automatisations</div>
+    <div id="autos" style="font-size:13px;color:var(--mute);line-height:1.7"></div>
+  </div>
+
+  <!-- Cockpit : statistiques -->
+  <div class="card">
+    <h2>Tableau de bord <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadStats()">↻</button></h2>
+    <div id="stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div class="empty" style="grid-column:1/-1">Chargement…</div>
+    </div>
+  </div>
+
+  <!-- Générer un code -->
+  <div class="card">
+    <h2>Générer une invitation</h2>
+    <div class="row">
+      <div>
+        <label>Email destinataire (facultatif)</label>
+        <input type="email" id="invEmail" placeholder="client@email.fr">
+      </div>
+      <div>
+        <label>Utilisations max</label>
+        <input type="number" id="invMax" value="1" min="1">
+      </div>
+      <div>
+        <label>Expire (jours, 0 = jamais)</label>
+        <input type="number" id="invExp" value="30" min="0">
+      </div>
+    </div>
+    <div style="margin-top:14px"><button onclick="genCode()">Générer le code →</button></div>
+    <div id="codeOut"></div>
+  </div>
+
+  <!-- Candidatures -->
+  <div class="card">
+    <h2>Candidatures en attente <span class="pill" id="appCount">…</span></h2>
+    <div id="apps"><div class="empty">Chargement…</div></div>
+    <div style="margin-top:8px"><button class="ghost" onclick="loadApps()">↻ Rafraîchir</button></div>
+  </div>
+
+  <!-- Mode test : définir le tier d'un membre -->
+  <div class="card">
+    <h2>🧪 Espace test — définir un tier</h2>
+    <div class="sub" style="margin:-8px 0 14px">Pour vivre l'expérience « comme un client » : connecte-toi (lien magique), puis passe ton email en Family Office ici, et rafraîchis l'espace membre.</div>
+    <div class="row">
+      <div><label>Email du membre</label><input type="email" id="stEmail" placeholder="maxime@ikcp.fr"></div>
+      <div><label>Tier</label><select id="stTier"><option value="fo">Family Office (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
+    </div>
+    <div style="margin-top:14px"><button onclick="setTier()">Appliquer le tier →</button></div>
+    <div id="stMsg"></div>
+  </div>
+
+  <!-- Membres -->
+  <div class="card">
+    <h2>Membres <span class="pill" id="memCount">…</span> <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadMembers()">↻</button></h2>
+    <div id="members" style="overflow-x:auto"><div class="empty">Chargement…</div></div>
+  </div>
+
+  <!-- Retours bêta -->
+  <div class="card">
+    <h2>Retours bêta <button class="ghost" style="float:right;padding:6px 12px;font-size:11px" onclick="loadFeedback()">↻</button></h2>
+    <div id="feedback"><div class="empty">Chargement…</div></div>
+  </div>
+
+</div>
+
+<div class="foot">
+  IKCP · IKIGAÏ Conseil Patrimonial — Console privée. La clé n'est gardée que pour cette session (jamais stockée durablement).
+  · <a href="/app/dashboard.html">← Espace membre</a>
+</div>
+
+<script>
+const API = 'https://ikcp-client.maxime-ead.workers.dev';
+let SECRET = sessionStorage.getItem('ikcp_admin_secret') || '';
+
+function hdr(){ return { 'Content-Type':'application/json', 'x-admin-secret': SECRET }; }
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+async function unlock(){
+  const inp = document.getElementById('secret');
+  const msg = document.getElementById('gateMsg');
+  SECRET = inp.value.trim();
+  if(!SECRET){ return; }
+  // Test via un appel applications
+  const r = await fetch(`${API}/api/v1/admin/applications?status=pending`, { headers: hdr() });
+  if(r.status === 503){ msg.className='msg err'; msg.textContent='ADMIN_SECRET non configuré sur le worker ikcp-client. Pose-le dans Cloudflare → ikcp-client → Settings → Variables.'; return; }
+  if(r.status === 403 || r.status === 401){ msg.className='msg err'; msg.textContent='Clé incorrecte.'; return; }
+  if(!r.ok){ msg.className='msg err'; msg.textContent='Erreur '+r.status; return; }
+  sessionStorage.setItem('ikcp_admin_secret', SECRET);
+  document.getElementById('gate').style.display='none';
+  document.getElementById('console').style.display='block';
+  const data = await r.json();
+  renderApps(data);
+  loadStats(); loadMembers(); loadFeedback(); loadHealth();
+}
+
+async function loadHealth(){
+  const el = document.getElementById('health');
+  const services = [
+    {n:'Marcel',u:'https://ikcp-chat.maxime-ead.workers.dev/health'},
+    {n:'Codex',u:'https://ikcp-codex.maxime-ead.workers.dev/health'},
+    {n:'Hermès',u:'https://ikcp-hermes.maxime-ead.workers.dev/health'},
+    {n:'Bâtisseur',u:'https://ikcp-batisseur.maxime-ead.workers.dev/health'},
+    {n:'Lifestyle',u:'https://ikcp-lifestyle.maxime-ead.workers.dev/health'},
+    {n:'Veille',u:'https://ikcp-veille.maxime-ead.workers.dev/health'},
+    {n:'Voice',u:'https://ikcp-voice.maxime-ead.workers.dev/health'},
+    {n:'Pappers',u:'https://ikcp-pappers.maxime-ead.workers.dev/health'},
+    {n:'Auth/Client',u:'https://ikcp-client.maxime-ead.workers.dev/health'},
+    {n:'Témoin',u:'https://ikcp-temoin.maxime-ead.workers.dev/health'},
+  ];
+  el.innerHTML = services.map((s,i)=>`<div class="hpill" id="h${i}"><span class="hdot"></span>${s.n}</div>`).join('');
+  services.forEach(async (s,i)=>{
+    const pill = document.getElementById('h'+i); const dot = pill.querySelector('.hdot');
+    try{
+      const r = await fetch(s.u, {cache:'no-store'}); const d = await r.json().catch(()=>({}));
+      let cls='up', note='';
+      const cfg = d.configured||{};
+      if(cfg.api_key===false){ cls='down'; note=' · clé manquante'; }
+      else if(s.n==='Voice' && d.tts && d.tts.configured===false){ cls='warn'; note=' · TTS off'; }
+      dot.className='hdot '+(r.ok?cls:'down');
+      pill.innerHTML = `<span class="hdot ${r.ok?cls:'down'}"></span>${s.n}<span style="color:var(--mute);font-size:11px">${note}</span>`;
+    }catch(_){ pill.innerHTML = `<span class="hdot down"></span>${s.n}<span style="color:var(--mute);font-size:11px"> · injoignable</span>`; }
+  });
+  // Automatisations
+  const autos = document.getElementById('autos');
+  if(autos) autos.innerHTML =
+    '🟢 <b style="color:var(--cream)">Collector</b> — scan marchés collection · tous les jours 6h<br>'
+    + '🟢 <b style="color:var(--cream)">Veille nocturne</b> — digest patrimonial quotidien · 7h<br>'
+    + '⚪ <b style="color:var(--cream)">SEO</b> — sur le poste de Maxime (hors plateforme)';
+}
+
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
+
+async function loadStats(){
+  const el = document.getElementById('stats');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/stats`, { headers: hdr() });
+    const s = await r.json();
+    const stat = (val,lbl,sub) => `<div style="background:rgba(201,169,110,.07);border:1px solid var(--line);border-radius:10px;padding:14px 16px">
+      <div style="font-family:'Fraunces',serif;font-style:italic;font-size:26px;color:var(--gold-bright);line-height:1">${val}</div>
+      <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:6px">${lbl}</div>
+      ${sub?`<div style="font-size:11px;color:var(--mute);margin-top:3px">${sub}</div>`:''}</div>`;
+    el.innerHTML =
+      stat(s.members, 'Membres', `${s.by_tier.free} free · ${s.by_tier.premium} prem · ${s.by_tier.fo} FO`)
+      + stat(s.pending_applications, 'Candidatures', 'en attente')
+      + stat(s.marcel_messages_month||0, 'Messages Marcel', 'ce mois')
+      + stat('+'+s.signups_7d, 'Inscrits', '7 derniers jours')
+      + stat(eur(s.revenu_premium_estime), 'Revenu Premium', 'estimé/mois')
+      + stat(eur(s.cout_ia_estime), 'Coût IA', 'estimé/mois')
+      + stat(eur(s.marge_estimee), 'Marge', 'estimée/mois')
+      + stat(s.by_tier.fo, 'Family Office', 'sur devis');
+  }catch(_){ el.innerHTML='<div class="msg err" style="grid-column:1/-1">Stats indisponibles.</div>'; }
+}
+
+async function setTier(){
+  const email = document.getElementById('stEmail').value.trim();
+  const tier = document.getElementById('stTier').value;
+  const msg = document.getElementById('stMsg');
+  if(!email){ msg.className='msg err'; msg.textContent='Email requis.'; return; }
+  const r = await fetch(`${API}/api/v1/admin/set-tier`, { method:'POST', headers: hdr(), body: JSON.stringify({ email, tier }) });
+  const d = await r.json().catch(()=>({}));
+  if(!r.ok){ msg.className='msg err'; msg.textContent = d.error==='membre_introuvable' ? 'Membre introuvable — il doit s\'être connecté au moins une fois.' : ('Erreur '+r.status); return; }
+  msg.className='msg ok'; msg.textContent = `✓ ${email} est maintenant ${tier.toUpperCase()}. Rafraîchis l'espace membre.`;
+  loadMembers(); loadStats();
+}
+
+async function loadMembers(){
+  const el = document.getElementById('members');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/members`, { headers: hdr() });
+    const list = await r.json();
+    document.getElementById('memCount').textContent = list.length;
+    if(!list.length){ el.innerHTML='<div class="empty">Aucun membre.</div>'; return; }
+    const d = ts => ts ? new Date(ts).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '—';
+    el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="text-align:left;color:var(--gold)">'
+      + '<th style="padding:8px 6px">Email</th><th>Tier</th><th>Inscrit</th><th>Dernier accès</th><th>Marcel/mois</th></tr>'
+      + list.map(m=>`<tr style="border-top:1px solid var(--line)">
+          <td style="padding:8px 6px">${esc(m.prenom?m.prenom+' · ':'')}${esc(m.email)}</td>
+          <td><span class="pill">${esc(m.tier||'free')}</span></td>
+          <td>${d(m.created_at)}</td><td>${d(m.last_login_at)}</td>
+          <td>${m.marcel_month||0}</td></tr>`).join('')
+      + '</table>';
+  }catch(_){ el.innerHTML='<div class="msg err">Liste indisponible.</div>'; }
+}
+
+async function loadFeedback(){
+  const el = document.getElementById('feedback');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/feedback`, { headers: hdr() });
+    const list = await r.json();
+    if(!list.length){ el.innerHTML='<div class="empty">Aucun retour pour l\'instant.</div>'; return; }
+    el.innerHTML = list.map(f=>{
+      let p={}; try{ p=JSON.parse(f.payload_json||'{}'); }catch(_){}
+      const d = new Date(f.ts).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+      return `<div style="border-top:1px solid var(--line);padding:10px 0;font-size:13px">
+        <b>${esc(p.priorite||'')}</b> ${esc(p.categories||'')} <span style="color:var(--mute);float:right">${d}</span>
+        <div style="color:var(--mute);font-size:12px">${esc(p.email||'anonyme')} · ${esc(p.page||'')}</div></div>`;
+    }).join('');
+  }catch(_){ el.innerHTML='<div class="empty">Retours envoyés par email (historique structuré dès activation D1).</div>'; }
+}
+
+async function genCode(){
+  const out = document.getElementById('codeOut');
+  out.innerHTML = '';
+  const body = {
+    type:'direct',
+    email: document.getElementById('invEmail').value.trim() || null,
+    max_uses: parseInt(document.getElementById('invMax').value||'1',10),
+    expires_days: parseInt(document.getElementById('invExp').value||'0',10) || null,
+  };
+  const r = await fetch(`${API}/api/v1/admin/invitations`, { method:'POST', headers: hdr(), body: JSON.stringify(body) });
+  if(!r.ok){ out.innerHTML = `<div class="msg err">Erreur ${r.status}</div>`; return; }
+  const d = await r.json();
+  out.innerHTML = `<div class="msg ok">Code créé.</div>
+    <div class="codebox">${esc(d.code)}</div>
+    <div class="codebox">${esc(d.link)}</div>
+    <div style="margin-top:8px"><button class="ghost" onclick="navigator.clipboard.writeText('${esc(d.link)}')">Copier le lien</button></div>`;
+}
+
+async function loadApps(){
+  const r = await fetch(`${API}/api/v1/admin/applications?status=pending`, { headers: hdr() });
+  if(!r.ok){ document.getElementById('apps').innerHTML = `<div class="msg err">Erreur ${r.status}</div>`; return; }
+  renderApps(await r.json());
+}
+
+function renderApps(list){
+  const wrap = document.getElementById('apps');
+  document.getElementById('appCount').textContent = list.length;
+  if(!list.length){ wrap.innerHTML = '<div class="empty">Aucune candidature en attente.</div>'; return; }
+  wrap.innerHTML = list.map(a => {
+    const d = new Date(a.created_at).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="app" id="app-${esc(a.id)}">
+      <div class="app-head"><span class="app-email">${esc(a.prenom||'')} · ${esc(a.email)}</span><span class="pill">${esc(a.code||'—')}</span></div>
+      <div class="app-meta">
+        ${a.siren?`SIREN <b>${esc(a.siren)}</b> · `:''}Patrimoine déclaré <b>${esc(a.patrimoine_declare||'n/c')}</b> · Reçu le ${d}
+      </div>
+      <div class="app-actions">
+        <select id="tier-${esc(a.id)}">
+          <option value="fo">Family Office (bêta)</option>
+          <option value="premium">Premium</option>
+        </select>
+        <button onclick="decide('${esc(a.id)}','approve')">Approuver →</button>
+        <button class="reject" onclick="decide('${esc(a.id)}','reject')">Refuser</button>
+      </div>
+      <div id="msg-${esc(a.id)}"></div>
+    </div>`;
+  }).join('');
+}
+
+async function decide(id, decision){
+  const tier = document.getElementById('tier-'+id)?.value || 'fo';
+  const msg = document.getElementById('msg-'+id);
+  const r = await fetch(`${API}/api/v1/admin/applications/${id}/decision`, {
+    method:'POST', headers: hdr(),
+    body: JSON.stringify({ decision, grant_tier: tier }),
+  });
+  if(!r.ok){ msg.className='msg err'; msg.textContent='Erreur '+r.status; return; }
+  const d = await r.json();
+  const el = document.getElementById('app-'+id);
+  if(el) el.style.opacity = '.5';
+  msg.className='msg ok';
+  msg.textContent = decision==='approve' ? `Approuvé → accès ${d.grant_tier}. Le client obtient son espace à la prochaine connexion.` : 'Candidature refusée.';
+  setTimeout(loadApps, 1200);
+}
+
+// Auto-déverrouillage si secret déjà en session
+if(SECRET){
+  document.getElementById('secret').value = SECRET;
+  unlock();
+}
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>

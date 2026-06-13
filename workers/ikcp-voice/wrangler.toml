@@ -1,34 +1,33 @@
-# Worker voix Marcel — TTS VoxCPM2 + STT Mistral Voxtral
-# © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
 name = "ikcp-voice"
 main = "worker.js"
-compatibility_date = "2026-05-01"
+compatibility_date = "2026-05-20"
 workers_dev = true
+keep_vars = true
 
+# Région Cloudflare WEUR (Paris/Frankfurt) — RGPD souverain
 [placement]
 mode = "smart"
 
-[[routes]]
-pattern = "voice.ikcp.eu/*"
-zone_name = "ikcp.eu"
+# Cloudflare Workers AI binding (Whisper fallback STT)
+[ai]
+binding = "AI"
 
-# Vars publiques (override par 'wrangler.toml' Maxime côté local si besoin)
-[vars]
-VOXCPM_API_URL = ""                  # ex: https://xxx--voxcpm-tts.modal.run
-VOXCPM_MODEL   = "openbmb/VoxCPM2"
-VOXCPM_VOICE   = "default"
-
-# Secrets à pousser (une fois) :
-#   wrangler secret put MISTRAL_API_KEY --name ikcp-voice
-
-# KV — cache TTS + rate limit (créer une fois et mettre les IDs ci-dessous)
+# KV : cache TTS 7j
 [[kv_namespaces]]
 binding = "VOICE_CACHE"
-id = "VOTRE_KV_ID_VOICE_CACHE"
+id = "1adfd430021b4ea9aca4fdcbb846b752"
 
-[[kv_namespaces]]
-binding = "VOICE_RATE"
-id = "VOTRE_KV_ID_VOICE_RATE"
+[vars]
+# VoxCPM2 TTS (open-source, Apache 2.0)
+# Hébergement recommandé : Modal.com serverless GPU (voir deploy-voxcpm-modal.py)
+# Après déploiement Modal : copier l'URL ici (ou via wrangler secret put VOXCPM_API_URL)
+VOXCPM_API_URL = ""               # ex: https://xxx--voxcpm-tts.modal.run
+VOXCPM_MODEL = "openbmb/VoxCPM2"  # modèle à appeler
+VOXCPM_VOICE = "default"           # voix par défaut
+TTS_MAX_CHARS = "5000"             # plafond par requête TTS
+STT_PRIMARY = "voxtral"            # voxtral | whisper-cf
+CACHE_TTL_HOURS = "168"            # 7 jours
 
-[observability]
-enabled = true
+# Secrets à set via wrangler secret put (ou Dashboard Cloudflare → Workers → ikcp-voice → Settings → Variables) :
+# MISTRAL_API_KEY    — clé Voxtral STT (la-plateforme.mistral.ai) — optionnel, fallback Whisper CF
+# VOXCPM_API_KEY     — token d'auth du serveur VoxCPM si protégé — optionnel si serveur public

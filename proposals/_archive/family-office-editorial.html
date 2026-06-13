@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Family Office — Édition (proposition graphique magazine)</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --paper:#F5F1EA;       /* Cream (slightly grey) */
+  --paper-2:#EDE7DB;     /* Stronger */
+  --paper-warm:#E8DFC9;  /* Warmest */
+  --ink:#1A1612;         /* Deep ink */
+  --ink-2:#2C2620;       /* Slightly lighter */
+  --ink-mute:#5C5046;    /* Mid */
+  --ink-faint:#8B7F6F;   /* Faint */
+  --accent:#8B5A3C;      /* Deep warm brown — editorial */
+  --accent-deep:#6E4429; /* Darker */
+  --accent-light:#C4A282;/* Lighter brown */
+  --green:#3F5840;       /* Forest accent for variety */
+  --line:#D4CCBE;
+  --line-strong:#B8AC97;
+}
+
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:400; line-height:1.55; letter-spacing:-0.005em;
+  overflow-x:hidden; min-height:100vh;
+  text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+
+/* Ligne de pliure verticale type magazine */
+body::before{
+  content:''; position:fixed; left:50%; top:0; bottom:0; width:1px;
+  background:rgba(0,0,0,0.02); z-index:1; pointer-events:none;
+}
+
+main{position:relative; z-index:2}
+
+/* ─── BANDEAU MASTHEAD ─── */
+.masthead{
+  background:var(--ink); color:var(--paper);
+  padding:14px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Inter',sans-serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+}
+.masthead b{color:var(--accent-light); font-weight:500}
+.masthead .num{font-family:'Cormorant Garamond',serif; letter-spacing:0.08em; font-style:italic; text-transform:none; font-size:14px}
+
+nav.top{
+  padding:24px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--ink); background:var(--paper);
+}
+.brand{font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:600; color:var(--ink); letter-spacing:0.005em; line-height:1}
+.brand i{font-style:italic; color:var(--accent); font-weight:500}
+.brand-sub{display:block; font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.32em; color:var(--ink-mute); text-transform:uppercase; margin-top:6px; font-weight:600}
+
+nav .menu{display:flex; align-items:center; gap:28px; font-family:'Inter',sans-serif}
+nav .menu a{color:var(--ink); text-decoration:none; font-size:12.5px; letter-spacing:0.04em; font-weight:500; transition:color 0.25s}
+nav .menu a:hover{color:var(--accent)}
+nav .cta{padding:9px 18px; background:var(--ink); color:var(--paper); font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; border-radius:0; font-weight:600}
+nav .cta:hover{background:var(--accent); color:var(--paper)}
+
+/* ─── HERO MAGAZINE ─── */
+section.hero{
+  padding:80px 48px 80px; max-width:1320px; margin:0 auto;
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:80px; align-items:start;
+}
+@media (max-width:980px){section.hero{grid-template-columns:1fr; padding:50px 28px 40px}}
+
+.hero-left{position:relative}
+.hero-section-num{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:14px; color:var(--accent); margin-bottom:8px; letter-spacing:0.08em;
+}
+.hero-section-num::before{content:'§ '; opacity:0.6}
+.hero-tag{
+  font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:0.4em;
+  color:var(--ink); text-transform:uppercase; font-weight:700; margin-bottom:24px;
+  display:inline-block; border-bottom:2px solid var(--accent); padding-bottom:6px;
+}
+
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(54px, 7.4vw, 102px); line-height:0.98;
+  font-weight:500; letter-spacing:-0.025em; color:var(--ink);
+  margin-bottom:36px;
+}
+.hero h1 .em-italic{font-style:italic; color:var(--accent-deep)}
+.hero h1 .em-tiny{font-size:0.5em; vertical-align:super; font-style:italic; color:var(--accent); font-weight:500}
+
+.hero-deck{
+  font-size:18px; line-height:1.6; color:var(--ink-mute);
+  font-style:italic; max-width:540px; margin-bottom:44px;
+  font-family:'Cormorant Garamond',serif;
+}
+.hero-deck .dropcap{
+  font-family:'Cormorant Garamond',serif;
+  float:left; font-size:74px; line-height:0.85; padding:6px 12px 0 0;
+  color:var(--accent); font-weight:600; font-style:normal;
+}
+
+.hero-meta{
+  display:flex; gap:42px; padding-top:24px;
+  border-top:1px solid var(--line);
+  font-family:'Inter',sans-serif;
+}
+.hero-meta-item{font-size:12px; color:var(--ink-mute); line-height:1.5}
+.hero-meta-item b{display:block; font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--ink); font-weight:600; margin-bottom:2px; letter-spacing:-0.01em}
+
+/* Hero right — illustration + sommaire */
+.hero-right{position:sticky; top:120px}
+.hero-illustration{
+  background:linear-gradient(180deg, #DCE5DD 0%, var(--paper-warm) 100%);
+  aspect-ratio:0.78/1; border:1px solid var(--ink); position:relative; overflow:hidden;
+  margin-bottom:24px;
+}
+.hero-illustration::before{
+  content:''; position:absolute; top:8px; left:8px; right:8px; bottom:8px;
+  border:1px solid rgba(26,22,18,0.2);
+  pointer-events:none;
+}
+.hero-balloon-wrap{
+  position:absolute; top:8%; left:50%; transform:translateX(-50%);
+  width:54%; animation:floatY 7s ease-in-out infinite;
+}
+@keyframes floatY{0%,100%{transform:translateX(-50%) translateY(0) rotate(-1.5deg)}50%{transform:translateX(-50%) translateY(-12px) rotate(1deg)}}
+
+.hero-illu-caption{
+  position:absolute; bottom:24px; left:24px; right:24px;
+  font-family:'Inter',sans-serif; font-size:10px;
+  color:var(--ink); letter-spacing:0.1em; text-transform:uppercase;
+  background:var(--paper); padding:10px 14px;
+  border-left:3px solid var(--accent);
+}
+
+.hero-toc{
+  border-top:2px solid var(--ink); padding-top:18px;
+  font-family:'Inter',sans-serif;
+}
+.hero-toc-title{font-size:10.5px; letter-spacing:0.3em; text-transform:uppercase; color:var(--ink); margin-bottom:14px; font-weight:700}
+.toc-row{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:9px 0; border-bottom:1px dotted var(--line-strong);
+  font-size:13.5px; color:var(--ink); text-decoration:none;
+}
+.toc-row:hover{color:var(--accent)}
+.toc-row .num{font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--accent); margin-right:10px}
+.toc-row .page{color:var(--ink-faint); font-size:11.5px; font-style:italic}
+
+/* ─── SECTION TITLE COMMON ─── */
+.sect-num{font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--accent); font-style:italic; margin-bottom:6px}
+.sect-num::before{content:'§ '; opacity:0.6}
+.sect-tag{
+  font-family:'Inter',sans-serif; font-size:10px; letter-spacing:0.4em; text-transform:uppercase;
+  color:var(--ink); font-weight:700; margin-bottom:20px;
+  display:inline-block; border-bottom:1.5px solid var(--accent); padding-bottom:5px;
+}
+.sect-h{
+  font-family:'Cormorant Garamond',serif; font-size:clamp(40px, 5.8vw, 78px);
+  line-height:0.98; color:var(--ink); font-weight:500;
+  letter-spacing:-0.025em; margin-bottom:20px;
+}
+.sect-h em{font-style:italic; color:var(--accent-deep)}
+.sect-deck{
+  font-family:'Cormorant Garamond',serif; font-size:18px; font-style:italic;
+  color:var(--ink-mute); line-height:1.65; max-width:680px;
+}
+
+/* ─── §I MARCEL & L'ÉQUIPAGE ─── */
+section.equipage{padding:90px 48px; max-width:1320px; margin:0 auto; border-top:2px solid var(--ink)}
+
+.equipage-grid{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:0;
+  margin-top:60px; border-top:1px solid var(--ink);
+}
+@media (max-width:900px){.equipage-grid{grid-template-columns:repeat(2, 1fr)}}
+@media (max-width:580px){.equipage-grid{grid-template-columns:1fr}}
+
+.eq-card{
+  padding:32px 28px; border-bottom:1px solid var(--ink);
+  border-right:1px solid var(--line); position:relative;
+  background:var(--paper); transition:background 0.3s;
+}
+.eq-card:hover{background:var(--paper-2)}
+.eq-card:nth-child(3n){border-right:none}
+.eq-num{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:12px; color:var(--accent); margin-bottom:14px; letter-spacing:0.06em;
+}
+.eq-icon-row{display:flex; align-items:center; gap:14px; margin-bottom:14px}
+.eq-icon{
+  width:42px; height:42px; border-radius:0; background:var(--paper-warm);
+  border:1px solid var(--ink); display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+}
+.eq-name{font-family:'Cormorant Garamond',serif; font-size:30px; line-height:1; color:var(--ink); font-weight:500; letter-spacing:-0.015em}
+.eq-name em{font-style:italic; color:var(--accent-deep)}
+.eq-domain{
+  font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.28em;
+  text-transform:uppercase; color:var(--ink-mute); font-weight:700; margin-top:4px;
+}
+.eq-rule{width:36px; height:1px; background:var(--accent); margin:14px 0}
+.eq-desc{font-family:'Cormorant Garamond',serif; font-size:15.5px; line-height:1.55; color:var(--ink); font-style:italic}
+.eq-tools{
+  font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-faint);
+  margin-top:14px; padding-top:14px; border-top:1px dotted var(--line-strong);
+  letter-spacing:0.04em;
+}
+.eq-tools::before{content:'⚙ '; color:var(--accent)}
+
+/* Marcel : carte spéciale span 3 cols */
+.eq-marcel{
+  grid-column:1/-1; background:linear-gradient(90deg, var(--paper-warm) 0%, var(--paper-2) 100%);
+  display:grid; grid-template-columns:auto 1fr; gap:36px; padding:40px 36px;
+  border-bottom:1px solid var(--ink); border-right:none;
+  align-items:center;
+}
+@media (max-width:760px){.eq-marcel{grid-template-columns:1fr; gap:18px}}
+.eq-marcel .eq-icon{width:80px; height:80px; font-size:36px; background:var(--accent); border-color:var(--accent); color:var(--paper)}
+.eq-marcel .eq-name{font-size:54px}
+.eq-marcel-text{font-size:17px; line-height:1.5; color:var(--ink)}
+
+/* ─── §II MÉTHODE — citation centrale ─── */
+section.methode{
+  padding:120px 48px; max-width:1080px; margin:0 auto;
+  border-top:2px solid var(--ink);
+}
+.methode-quote{
+  font-family:'Cormorant Garamond',serif; font-size:clamp(28px, 3.2vw, 44px);
+  line-height:1.4; color:var(--ink); font-style:italic; text-align:center;
+  margin:50px 0; padding:0 5%;
+  letter-spacing:-0.01em; font-weight:400;
+}
+.methode-quote em{color:var(--accent-deep); font-style:italic; font-weight:500}
+.methode-quote::before, .methode-quote::after{
+  display:block; font-size:80px; color:var(--accent); opacity:0.45;
+  font-style:normal; line-height:0.4; height:30px;
+}
+.methode-quote::before{content:'"'}
+.methode-quote::after{content:'"'; text-align:right; margin-top:30px}
+
+.methode-cite{
+  text-align:center; font-family:'Inter',sans-serif; font-size:11.5px;
+  color:var(--ink-mute); letter-spacing:0.18em; text-transform:uppercase; font-weight:600;
+  margin-top:20px;
+}
+.methode-cite::before, .methode-cite::after{content:'— '; color:var(--accent)}
+
+.methode-3R{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:60px;
+  margin-top:90px; padding-top:60px; border-top:1px solid var(--line);
+}
+@media (max-width:900px){.methode-3R{grid-template-columns:1fr; gap:40px}}
+.methode-step{}
+.methode-step-num{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:54px; color:var(--accent); line-height:1; margin-bottom:18px; opacity:0.7;
+}
+.methode-step-h{
+  font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--ink);
+  font-weight:500; letter-spacing:-0.015em; margin-bottom:12px;
+}
+.methode-step-h em{font-style:italic; color:var(--accent-deep)}
+.methode-step-p{font-size:14.5px; line-height:1.7; color:var(--ink-mute); font-family:'Inter',sans-serif}
+
+/* ─── §III ESPACE CLIENT — section abonnés ─── */
+section.espace-client{
+  padding:120px 48px; max-width:1320px; margin:0 auto;
+  border-top:2px solid var(--ink);
+}
+
+.client-canvas{
+  margin-top:60px; background:var(--paper); border:1px solid var(--ink);
+  display:grid; grid-template-columns:240px 1fr; min-height:500px;
+}
+@media (max-width:760px){.client-canvas{grid-template-columns:1fr}}
+
+.client-sidebar{
+  background:var(--ink); color:var(--paper); padding:28px 22px;
+  font-family:'Inter',sans-serif;
+}
+.client-sidebar-brand{
+  font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--accent-light);
+  border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:14px; margin-bottom:18px;
+  letter-spacing:0.005em; font-weight:500;
+}
+.client-sidebar-brand i{font-style:italic; color:var(--paper)}
+.client-nav-section{font-size:9.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--accent-light); margin:20px 0 10px; opacity:0.7; font-weight:700}
+.client-nav-item{
+  padding:9px 12px; border-radius:0; font-size:13px; color:var(--paper); cursor:pointer;
+  transition:all 0.25s; margin-bottom:2px; display:flex; align-items:center; gap:10px;
+}
+.client-nav-item:hover{background:rgba(255,255,255,0.06); color:var(--accent-light)}
+.client-nav-item.active{background:rgba(196,162,130,0.15); color:var(--accent-light); border-left:2px solid var(--accent-light)}
+
+.client-main{padding:32px 36px}
+.client-greet{
+  font-family:'Cormorant Garamond',serif; font-size:38px; color:var(--ink);
+  margin-bottom:6px; font-weight:500; letter-spacing:-0.02em;
+}
+.client-greet em{color:var(--accent-deep); font-style:italic}
+.client-sub{font-size:13px; color:var(--ink-mute); margin-bottom:32px; font-family:'Inter',sans-serif; font-style:italic}
+
+.client-tiles{display:grid; grid-template-columns:repeat(4, 1fr); gap:0; border:1px solid var(--ink); margin-bottom:32px}
+@media (max-width:760px){.client-tiles{grid-template-columns:repeat(2, 1fr)}}
+.client-tile{padding:20px 18px; border-right:1px solid var(--line); position:relative}
+.client-tile:last-child{border-right:none}
+.client-tile-label{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--accent-deep); font-weight:700; margin-bottom:10px}
+.client-tile-val{font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--ink); font-weight:600; line-height:1; letter-spacing:-0.02em}
+.client-tile-mini{font-family:'Inter',sans-serif; font-size:10.5px; color:var(--ink-faint); margin-top:6px; font-style:italic}
+
+.client-grid-2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line)}
+@media (max-width:760px){.client-grid-2{grid-template-columns:1fr}}
+.client-block{background:var(--paper); padding:24px}
+.client-block h4{font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; color:var(--ink); margin-bottom:16px; letter-spacing:-0.01em; padding-bottom:10px; border-bottom:1px solid var(--accent)}
+
+.feed-row{padding:11px 0; font-size:13.5px; color:var(--ink); line-height:1.55; display:flex; gap:10px; border-bottom:1px dotted var(--line-strong); font-family:'Inter',sans-serif}
+.feed-row:last-child{border-bottom:none}
+.feed-row .who{color:var(--accent-deep); font-weight:600; font-family:'Cormorant Garamond',serif; font-size:14.5px; font-style:italic; min-width:80px}
+.feed-row .ts{color:var(--ink-faint); font-size:10px; margin-left:auto; white-space:nowrap; font-style:italic; font-family:'Cormorant Garamond',serif}
+
+.chat-row{padding:12px 0; border-bottom:1px dotted var(--line-strong)}
+.chat-row:last-child{border-bottom:none}
+.chat-q{font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--ink); font-size:15px; margin-bottom:5px; font-weight:500}
+.chat-q::before{content:'« '; color:var(--accent)}
+.chat-q::after{content:' »'; color:var(--accent)}
+.chat-r{font-family:'Inter',sans-serif; font-size:12px; color:var(--ink-mute); line-height:1.55; padding-left:14px}
+.chat-r::before{content:'↳ '; color:var(--accent); font-weight:600}
+
+/* ─── §IV INTÉGRATIONS ─── */
+section.integrations{
+  padding:120px 48px; max-width:1320px; margin:0 auto;
+  border-top:2px solid var(--ink);
+}
+.integ-table{
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+  background:var(--ink); border:1px solid var(--ink);
+  margin-top:60px;
+}
+@media (max-width:760px){.integ-table{grid-template-columns:repeat(2, 1fr)}}
+.integ-cell{
+  background:var(--paper); padding:24px 20px; transition:background 0.25s;
+  text-align:left;
+}
+.integ-cell:hover{background:var(--paper-2)}
+.integ-cat{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--accent-deep); font-weight:700; margin-bottom:10px}
+.integ-name{font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--ink); font-weight:500; letter-spacing:-0.015em}
+.integ-name em{font-style:italic}
+.integ-mini{font-size:11px; color:var(--ink-faint); margin-top:6px; font-style:italic}
+
+/* ─── CTA FINAL ─── */
+section.cta-final{
+  padding:140px 48px; text-align:center;
+  background:var(--ink); color:var(--paper);
+  border-top:2px solid var(--ink);
+}
+.cta-final-h{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px, 6.4vw, 88px); line-height:0.99;
+  color:var(--paper); font-weight:500; letter-spacing:-0.025em;
+  max-width:1000px; margin:0 auto 28px;
+}
+.cta-final-h em{font-style:italic; color:var(--accent-light)}
+.cta-final-sub{
+  font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px;
+  color:var(--accent-light); max-width:600px; margin:0 auto 50px; line-height:1.6;
+}
+.cta-final-row{display:inline-flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center}
+.btn-paper{
+  display:inline-block; padding:18px 38px; background:var(--paper); color:var(--ink);
+  text-decoration:none; font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:0.18em; text-transform:uppercase;
+  transition:all 0.3s ease;
+}
+.btn-paper:hover{background:var(--accent-light); color:var(--ink)}
+.btn-out{
+  color:var(--accent-light); text-decoration:none; font-family:'Inter',sans-serif;
+  font-size:12.5px; letter-spacing:0.05em;
+  border-bottom:1px solid var(--accent-light); padding-bottom:5px;
+}
+.btn-out:hover{color:var(--paper); border-color:var(--paper)}
+
+footer.colophon{
+  background:var(--ink); color:var(--paper); padding:48px 32px;
+  border-top:1px solid rgba(255,255,255,0.15); text-align:center;
+}
+footer.colophon p{font-family:'Inter',sans-serif; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.06em; line-height:1.85}
+footer.colophon a{color:var(--accent-light); text-decoration:none; border-bottom:1px solid transparent}
+footer.colophon a:hover{border-color:var(--accent-light)}
+footer.colophon .colophon-mark{font-family:'Cormorant Garamond',serif; font-size:14px; color:var(--accent-light); font-style:italic; margin-bottom:8px}
+
+@media (max-width:760px){
+  .masthead{padding:10px 20px; font-size:9.5px}
+  nav.top{padding:18px 20px}
+  nav .menu{gap:14px}
+  nav .menu a:not(.cta){display:none}
+  section.hero,section.equipage,section.methode,section.espace-client,section.integrations,section.cta-final{padding:60px 20px}
+}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
+</style>
+</head>
+<body>
+<main>
+
+<!-- ─── MASTHEAD ─── -->
+<div class="masthead">
+  <span><b>L'ÉDITION</b> · IKCP Family Office</span>
+  <span class="num"><i>n° 1 — automne 2026</i></span>
+  <span><b>3 €</b> · ORIAS 23001568</span>
+</div>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<i>.</i></div>
+    <div class="brand-sub">Family Office augmenté · Édition</div>
+  </div>
+  <div class="menu">
+    <a href="#equipage">Équipage</a>
+    <a href="#client">Salon privé</a>
+    <a href="#integrations">Intégrations</a>
+    <a href="#souverainete">Souveraineté</a>
+    <a href="mailto:maxime@ikcp.fr" class="cta">Échanger</a>
+  </div>
+</nav>
+
+<!-- ─── HERO MAGAZINE ─── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-section-num">I — édition inaugurale</div>
+    <span class="hero-tag">Family Office augmenté</span>
+    <h1>
+      Vous gardez<br>
+      <span class="em-italic">la main.</span><br>
+      Marcel orchestre<sup class="em-tiny">9</sup>
+    </h1>
+
+    <p class="hero-deck">
+      <span class="dropcap">P</span>our les familles dont le patrimoine ne s'improvise plus, le cabinet IKCP propose <em>une porte d'entrée unique</em> : Marcel, agent IA chef d'orchestre, qualifie chaque demande puis convoque, parmi neuf agents spécialisés, ceux dont l'expertise éclaire votre situation. Maxime arbitre. Vous décidez.
+    </p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item"><b>9</b>Expertises<br>Family Office</div>
+      <div class="hero-meta-item"><b>9</b>Agents IA<br>spécialisés</div>
+      <div class="hero-meta-item"><b>1</b>Chef<br>d'orchestre</div>
+      <div class="hero-meta-item"><b>0</b>Donnée hors<br>de France</div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-illustration">
+      <div class="hero-balloon-wrap">
+        <svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="bc"><ellipse cx="65" cy="55" rx="48" ry="56"/></clipPath></defs>
+          <g clip-path="url(#bc)">
+            <rect x="17" y="-1" width="32" height="112" fill="#0055A4"/>
+            <rect x="49" y="-1" width="32" height="112" fill="#FFFFFF"/>
+            <rect x="81" y="-1" width="32" height="112" fill="#EF4135"/>
+          </g>
+          <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="#1A1612" stroke-width="1.2"/>
+          <line x1="35" y1="105" x2="50" y2="125" stroke="#1A1612" stroke-width="1.2"/>
+          <line x1="95" y1="105" x2="80" y2="125" stroke="#1A1612" stroke-width="1.2"/>
+          <rect x="50" y="125" width="30" height="20" rx="2" fill="#6E4429"/>
+          <ellipse cx="65" cy="115" rx="6" ry="3" fill="#C4A282"/>
+        </svg>
+      </div>
+      <div class="hero-illu-caption">
+        Marcel survole la France · BBR · 2026
+      </div>
+    </div>
+
+    <div class="hero-toc">
+      <div class="hero-toc-title">Sommaire</div>
+      <a href="#equipage" class="toc-row"><span><span class="num">i.</span>Marcel et l'équipage</span><span class="page">p. 02</span></a>
+      <a href="#client" class="toc-row"><span><span class="num">ii.</span>Le salon privé</span><span class="page">p. 06</span></a>
+      <a href="#integrations" class="toc-row"><span><span class="num">iii.</span>Intégrations &amp; partenaires</span><span class="page">p. 09</span></a>
+      <a href="#souverainete" class="toc-row"><span><span class="num">iv.</span>Souveraineté française</span><span class="page">p. 12</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §I MARCEL & L'ÉQUIPAGE ─── -->
+<section class="equipage" id="equipage">
+  <div class="sect-num">§ i — l'équipage</div>
+  <span class="sect-tag">Composition</span>
+  <h2 class="sect-h">Marcel et <em>neuf spécialistes</em>.</h2>
+  <p class="sect-deck">Chaque agent porte un nom, un domaine, une signature. Tous écoutent Marcel. Tous parlent à votre famille. Aucun ne se substitue à votre cabinet — ils l'amplifient.</p>
+
+  <div class="equipage-grid">
+    <article class="eq-card eq-marcel">
+      <div class="eq-icon">🎯</div>
+      <div>
+        <div class="eq-name">Marcel<em>.</em></div>
+        <div class="eq-domain">★ Chef d'orchestre · point d'entrée unique</div>
+        <div class="eq-rule"></div>
+        <p class="eq-marcel-text">Marcel écoute, qualifie, oriente. Il connaît votre famille, vos préférences, votre patrimoine. Il pose les bonnes questions, jamais de recommandation directe. <em>La décision reste à Maxime, qui valide tout livrable réglementaire.</em></p>
+      </div>
+    </article>
+
+    <article class="eq-card"><div class="eq-num">i.</div><div class="eq-icon-row"><div class="eq-icon">🏛</div><div><div class="eq-name">Auguste</div><div class="eq-domain">Juridique · fiscal</div></div></div><div class="eq-rule"></div><p class="eq-desc">Veille en temps réel, optimisation IR-IFI-Dutreil, structuration successorale. Aucun chiffre sans citation de source.</p><div class="eq-tools">CGI · BOFIP · Légifrance</div></article>
+
+    <article class="eq-card"><div class="eq-num">ii.</div><div class="eq-icon-row"><div class="eq-icon">📊</div><div><div class="eq-name">Léon</div><div class="eq-domain">Marchés financiers</div></div></div><div class="eq-rule"></div><p class="eq-desc">Allocation cible vs réelle, alertes, news macro filtrées. Propositions soumises à Maxime, jamais exécutées sans validation.</p><div class="eq-tools">Portfolio · ISIN · NAV</div></article>
+
+    <article class="eq-card"><div class="eq-num">iii.</div><div class="eq-icon-row"><div class="eq-icon">💎</div><div><div class="eq-name">Joséphine</div><div class="eq-domain">Conciergerie · voyages</div></div></div><div class="eq-rule"></div><p class="eq-desc">Hôtels Relais &amp; Châteaux, jets privés, restaurants étoilés, scolarité internationale. Discrétion absolue.</p><div class="eq-tools">Hotels · Charter · Events</div></article>
+
+    <article class="eq-card"><div class="eq-num">iv.</div><div class="eq-icon-row"><div class="eq-icon">🎨</div><div><div class="eq-name">Émile</div><div class="eq-domain">Art · collections</div></div></div><div class="eq-rule"></div><p class="eq-desc">Curation, valorisation, ventes Sotheby's-Christie's-Drouot, assurance, déclarations IFI. Réseau d'experts.</p><div class="eq-tools">Artprice · Auctions · Provenance</div></article>
+
+    <article class="eq-card"><div class="eq-num">v.</div><div class="eq-icon-row"><div class="eq-icon">🏠</div><div><div class="eq-name">Hélène</div><div class="eq-domain">Immobilier</div></div></div><div class="eq-rule"></div><p class="eq-desc">Recherche d'acquisition, gestion locative, travaux, valorisation, cession. Données de marché en direct.</p><div class="eq-tools">DVF · Cadastre · Yield</div></article>
+
+    <article class="eq-card"><div class="eq-num">vi.</div><div class="eq-icon-row"><div class="eq-icon">🌱</div><div><div class="eq-name">Augustin</div><div class="eq-domain">Private Equity</div></div></div><div class="eq-rule"></div><p class="eq-desc">Sourcing deals, due diligence, dette privée, club deals, suivi performance. Sélection rigoureuse.</p><div class="eq-tools">Pipeline · TRI · IRR</div></article>
+
+    <article class="eq-card"><div class="eq-num">vii.</div><div class="eq-icon-row"><div class="eq-icon">📋</div><div><div class="eq-name">Camille</div><div class="eq-domain">Family Secretary</div></div></div><div class="eq-rule"></div><p class="eq-desc">Échéances, paiements récurrents, courriers, archivage eIDAS, scolarité, factures. La mémoire administrative.</p><div class="eq-tools">Calendar · Archive · Reminders</div></article>
+
+    <article class="eq-card"><div class="eq-num">viii.</div><div class="eq-icon-row"><div class="eq-icon">🤲</div><div><div class="eq-name">Iris</div><div class="eq-domain">Philanthropie · impact</div></div></div><div class="eq-rule"></div><p class="eq-desc">Structuration de fondation, sélection de causes, dons défiscalisables, mesure d'impact.</p><div class="eq-tools">Foundation · Causes · Impact</div></article>
+
+    <article class="eq-card"><div class="eq-num">ix.</div><div class="eq-icon-row"><div class="eq-icon">📑</div><div><div class="eq-name">Olympe</div><div class="eq-domain">Reporting · synthèse</div></div></div><div class="eq-rule"></div><p class="eq-desc">Consolide chaque trimestre les analyses des huit autres agents en synthèse claire. Performance, allocations, échéances, risques. Le regard d'ensemble.</p><div class="eq-tools">KPI · Dashboard · Quarterly</div></article>
+  </div>
+</section>
+
+<!-- ─── §II ESPACE CLIENT ─── -->
+<section class="espace-client" id="client">
+  <div class="sect-num">§ ii — salon privé</div>
+  <span class="sect-tag">Réservé aux familles</span>
+  <h2 class="sect-h">Votre <em>salon</em>.<br>Discret. Vivant. Vôtre.</h2>
+  <p class="sect-deck">Une seule URL, un magic-link à votre nom. Vous y retrouvez Marcel, votre équipage, vos dossiers, vos échéances. Connecté à votre logiciel patrimonial du cabinet.</p>
+
+  <div class="client-canvas">
+    <aside class="client-sidebar">
+      <div class="client-sidebar-brand">IKCP<i>.</i></div>
+      <div class="client-nav-section">Famille</div>
+      <div class="client-nav-item active">📊 Tableau de bord</div>
+      <div class="client-nav-item">🎯 Marcel</div>
+      <div class="client-nav-item">📁 Dossiers</div>
+      <div class="client-nav-item">📅 Échéances</div>
+      <div class="client-nav-section">Équipage</div>
+      <div class="client-nav-item">🏛 Auguste</div>
+      <div class="client-nav-item">📊 Léon</div>
+      <div class="client-nav-item">💎 Joséphine</div>
+      <div class="client-nav-item">+ 5 autres</div>
+      <div class="client-nav-section">Compte</div>
+      <div class="client-nav-item">⚙ Préférences</div>
+      <div class="client-nav-item">🔓 Déconnexion</div>
+    </aside>
+
+    <div class="client-main">
+      <div class="client-greet">Bonjour <em>Joséphine</em>.</div>
+      <div class="client-sub">Dernière visite hier à 18 h 47 — Marcel a 3 informations pour vous.</div>
+
+      <div class="client-tiles">
+        <div class="client-tile">
+          <div class="client-tile-label">Patrimoine</div>
+          <div class="client-tile-val">14,2 M€</div>
+          <div class="client-tile-mini">+ 1,8 % ce trimestre</div>
+        </div>
+        <div class="client-tile">
+          <div class="client-tile-label">Liquidités</div>
+          <div class="client-tile-val">2,1 M€</div>
+          <div class="client-tile-mini">12 mois de train de vie</div>
+        </div>
+        <div class="client-tile">
+          <div class="client-tile-label">Dossiers</div>
+          <div class="client-tile-val">4</div>
+          <div class="client-tile-mini">2 attendent votre validation</div>
+        </div>
+        <div class="client-tile">
+          <div class="client-tile-label">Échéance</div>
+          <div class="client-tile-val">14 j</div>
+          <div class="client-tile-mini">Acompte IFI 2026</div>
+        </div>
+      </div>
+
+      <div class="client-grid-2">
+        <div class="client-block">
+          <h4>Marcel — derniers échanges</h4>
+          <div class="chat-row"><div class="chat-q">Réduire les droits de succession ?</div><div class="chat-r">Auguste a préparé 3 stratégies — démembrement, donation progressive, AV clause graduée. Économie : 380 k€.</div></div>
+          <div class="chat-row"><div class="chat-q">Vendre la villa de Cap-Ferret ?</div><div class="chat-r">Hélène : 5,8 M€ (DVF). Émile : 740 k€ de PV. Léon propose un Lombard à la place.</div></div>
+          <div class="chat-row"><div class="chat-q">Megève en février ?</div><div class="chat-r">Joséphine — 2 propositions : Les Fermes de Marie · Four Seasons.</div></div>
+        </div>
+
+        <div class="client-block">
+          <h4>Activité de l'équipage</h4>
+          <div class="feed-row"><span class="who">Auguste</span><span>note Dutreil pour la cession holding · à valider</span><span class="ts">2 h</span></div>
+          <div class="feed-row"><span class="who">Léon</span><span>drawdown -6,2% actions US · arbitrage proposé</span><span class="ts">5 h</span></div>
+          <div class="feed-row"><span class="who">Émile</span><span>cote collection +4,1% · IFI ajusté</span><span class="ts">hier</span></div>
+          <div class="feed-row"><span class="who">Camille</span><span>acte notarié archivé eIDAS, accessible 10 ans</span><span class="ts">hier</span></div>
+          <div class="feed-row"><span class="who">Iris</span><span>bilan d'impact fondation Q1 · à relire</span><span class="ts">3 j</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §III INTÉGRATIONS ─── -->
+<section class="integrations" id="integrations">
+  <div class="sect-num">§ iii — intégrations</div>
+  <span class="sect-tag">Écosystème</span>
+  <h2 class="sect-h">Tout <em>parle</em><br>à tout le monde.</h2>
+  <p class="sect-deck">L'équipage parle à vos outils. Signature, identité, comptes bancaires, agenda, notaire, expert-comptable, logiciel de gestion patrimoniale. Une donnée saisie une fois, réutilisée partout.</p>
+
+  <div class="integ-table">
+    <div class="integ-cell"><div class="integ-cat">Signature</div><div class="integ-name">Yousign<em>.</em></div><div class="integ-mini">eIDAS AdES · français</div></div>
+    <div class="integ-cell"><div class="integ-cat">Signature qualifiée</div><div class="integ-name">Universign<em>.</em></div><div class="integ-mini">eIDAS QES · PSCo</div></div>
+    <div class="integ-cell"><div class="integ-cat">Identité</div><div class="integ-name">Ubble<em>.</em></div><div class="integ-mini">PVID ANSSI</div></div>
+    <div class="integ-cell"><div class="integ-cat">Comptes bancaires</div><div class="integ-name">Powens<em>.</em></div><div class="integ-mini">Agrégation DSP2</div></div>
+    <div class="integ-cell"><div class="integ-cat">CRM</div><div class="integ-name">Notion<em>.</em></div><div class="integ-mini">Hub central</div></div>
+    <div class="integ-cell"><div class="integ-cat">Agenda</div><div class="integ-name">Calendly<em>.</em></div><div class="integ-mini">RDV cabinet</div></div>
+    <div class="integ-cell"><div class="integ-cat">Honoraires</div><div class="integ-name">Stripe<em>.</em></div><div class="integ-mini">Encaissement</div></div>
+    <div class="integ-cell"><div class="integ-cat">Email</div><div class="integ-name">Resend<em>.</em></div><div class="integ-mini">Transactionnel</div></div>
+    <div class="integ-cell"><div class="integ-cat">Workflows</div><div class="integ-name">Make<em>.</em></div><div class="integ-mini">Automation</div></div>
+    <div class="integ-cell"><div class="integ-cat">Veille</div><div class="integ-name">Légifrance<em>.</em></div><div class="integ-mini">Sources légales</div></div>
+    <div class="integ-cell" style="background:var(--paper-warm)"><div class="integ-cat" style="color:var(--green)">Cabinet local</div><div class="integ-name">Logiciel-GP<em>.</em></div><div class="integ-mini">Synchro bidirectionnelle</div></div>
+    <div class="integ-cell"><div class="integ-cat">Newsletter</div><div class="integ-name">Beehiiv<em>.</em></div><div class="integ-mini">Acquisition</div></div>
+    <div class="integ-cell" style="background:var(--paper-warm)"><div class="integ-cat" style="color:var(--accent-deep)">Agents IA</div><div class="integ-name">Claude Agent SDK<em>.</em></div><div class="integ-mini">Anthropic · DPA + SCC</div></div>
+    <div class="integ-cell" style="background:var(--paper-warm)"><div class="integ-cat" style="color:var(--accent-deep)">Calculs FR</div><div class="integ-name">ikcp-mcp<em>.</em></div><div class="integ-mini">Scaleway fr-par · propriétaire</div></div>
+  </div>
+</section>
+
+<!-- ─── §IV SOUVERAINETÉ ─── -->
+<style>
+section.souverainete{padding:120px 48px; max-width:1320px; margin:0 auto; border-top:2px solid var(--ink)}
+.souv-grid{display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:60px}
+@media (max-width:900px){.souv-grid{grid-template-columns:1fr; gap:40px}}
+.souv-body{font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--ink-mute); line-height:1.65; margin-bottom:18px; font-style:italic}
+.souv-body strong{color:var(--ink); font-weight:600; font-style:normal}
+.souv-stack{background:var(--paper-2); border:1px solid var(--ink); padding:0}
+.souv-row{
+  display:grid; grid-template-columns:auto 110px 1fr; gap:16px; align-items:center;
+  padding:18px 22px; border-bottom:1px solid var(--line);
+  font-family:'Inter',sans-serif; font-size:13px; line-height:1.5;
+}
+.souv-row:last-child{border-bottom:none}
+.souv-row .flag{font-size:20px; line-height:1}
+.souv-row .label{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--accent-deep); font-weight:500; letter-spacing:0}
+.souv-row .val{color:var(--ink-mute); font-size:13px}
+.souv-row .val b{color:var(--ink); font-weight:600}
+</style>
+<section class="souverainete" id="souverainete">
+  <div class="sect-num">§ iv — souveraineté</div>
+  <span class="sect-tag">Infrastructure</span>
+  <h2 class="sect-h">Vos données ne <em>quittent</em><br>pas la France.</h2>
+  <p class="sect-deck">L'écosystème entier est hébergé en France ou propulsé par des partenaires européens conformes RGPD. Aucune donnée personnelle ne transite hors UE sans encadrement.</p>
+
+  <div class="souv-grid">
+    <div>
+      <p class="souv-body">Marcel et les neuf agents reposent sur le <strong>Claude Agent SDK</strong> d'Anthropic. Tous les <strong>calculs fiscaux</strong> passent par <strong>ikcp-mcp</strong>, notre serveur propriétaire hébergé à Paris.</p>
+      <p class="souv-body">Les <strong>documents réglementaires</strong> sont archivés en France avec horodatage qualifié eIDAS. La validation humaine de Maxime est <strong>systématique</strong> sur tout livrable réglementaire.</p>
+    </div>
+
+    <div class="souv-stack">
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Edge</span><span class="val"><b>Cloudflare Workers</b> · ISO 27001 · DPA UE</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Calculs</span><span class="val"><b>Scaleway fr-par</b> · Paris · ikcp-mcp</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Données</span><span class="val"><b>Cloudflare D1 · R2 · KV</b> · UE · chiffré at-rest</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Signature</span><span class="val"><b>Yousign · Universign</b> · eIDAS QES</span></div>
+      <div class="souv-row"><span class="flag">🇫🇷</span><span class="label">Identité</span><span class="val"><b>Ubble</b> · PVID ANSSI</span></div>
+      <div class="souv-row"><span class="flag">🇪🇺</span><span class="label">Agents IA</span><span class="val"><b>Anthropic Claude Agent SDK</b> · DPA + SCC</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ─── -->
+<section class="cta-final">
+  <h2 class="cta-final-h">Une porte. <em>Une équipe.</em><br>Votre patrimoine en orbite.</h2>
+  <p class="cta-final-sub">Sur recommandation. Familles à patrimoine constitué.</p>
+  <div class="cta-final-row">
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office" class="btn-paper">Demander une recommandation</a>
+    <a href="https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial" class="btn-out" target="_blank">Calendly →</a>
+  </div>
+</section>
+
+<footer class="colophon">
+  <div class="colophon-mark">— Colophon —</div>
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

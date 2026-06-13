@@ -1,0 +1,39 @@
+# Wrangler config — Worker IKCP Feedback (attentes bêta fondateurs)
+#
+# DÉPLOIEMENT COMPLET :
+#
+#   cd workers/ikcp-feedback
+#
+#   # 1. Créer la base D1 (Paris)
+#   npx wrangler d1 create ikcp-feedback-db --location weur
+#   # ↑ Copier l'ID renvoyé dans le bloc [[d1_databases]] ci-dessous
+#
+#   # 2. Créer la table
+#   npx wrangler d1 execute ikcp-feedback-db --remote --file=schema.sql
+#
+#   # 3. Uploader les secrets
+#   npx wrangler secret put BREVO_API_KEY          # clé API Brevo (emails)
+#   npx wrangler secret put ANTHROPIC_API_KEY      # clé Anthropic (résumé IA)
+#   npx wrangler secret put ADMIN_SECRET           # token admin (openssl rand -hex 32)
+#
+#   # 4. Déployer
+#   npx wrangler deploy
+#
+# Vérification : curl https://ikcp-feedback.maxime-ead.workers.dev/health
+
+name = "ikcp-feedback"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+
+[placement]
+mode = "smart"
+
+# Activer après avoir exécuté : npx wrangler d1 create ikcp-feedback-db --location weur
+# Remplacer XXXXXXXX par l'ID renvoyé
+# [[d1_databases]]
+# binding = "FEEDBACK_DB"
+# database_name = "ikcp-feedback-db"
+# database_id = "REMPLACER_PAR_L_ID_D1"
+
+[observability]
+enabled = true

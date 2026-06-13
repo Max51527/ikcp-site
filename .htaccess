@@ -41,5 +41,9 @@ RewriteRule ^(.+)$ $1.html [L]
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
+# Serve sitemap.xml, robots.txt and Google verification file directly (never rewrite)
+RewriteCond %{REQUEST_URI} ^/(sitemap\.xml|robots\.txt|google[a-z0-9]+\.html)$
+RewriteRule ^ - [L]
+
 # Custom 404
 ErrorDocument 404 /index.html

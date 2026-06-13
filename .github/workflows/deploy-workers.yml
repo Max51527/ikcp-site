@@ -1,113 +1,226 @@
 name: Deploy Cloudflare Workers
 
-# Auto-déploiement de chaque Worker dont le code change, sur push vers main.
-#
-# Secrets GitHub requis (déjà provisionnés) :
-#   CF_API_TOKEN  — token "Edit Workers Scripts" (dash.cloudflare.com/profile/api-tokens)
-#   CF_ACCOUNT_ID — account ID Cloudflare
-#
-# Architecture :
-#   - workers/<name>/{worker.js, wrangler.toml} = chaque Worker auto-déployé
-#   - worker/{index.js, marcel-proxy.js}        = ancienne structure (legacy, à terme déprécier)
-
 on:
   push:
     branches: [main]
     paths:
-      - 'workers/**'
-      - 'worker/**'
+      - 'workers/ikcp-marcel/**'
+      - 'workers/ikcp-voice/**'
+      - 'workers/ikcp-batisseur/**'
+      - 'workers/ikcp-hermes/**'
+      - 'workers/ikcp-veille/**'
+      - 'workers/ikcp-lifestyle/**'
+      - 'workers/ikcp-client/**'
+      - 'workers/ikcp-pappers/**'
+      - 'workers/ikcp-cms-auth/**'
+      - 'workers/ikcp-feedback/**'
   workflow_dispatch:
+    inputs:
+      target:
+        description: 'Worker à déployer'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - ikcp-marcel
+          - ikcp-voice
+          - ikcp-batisseur
+          - ikcp-hermes
+          - ikcp-veille
+          - ikcp-lifestyle
+          - ikcp-client
+          - ikcp-pappers
+          - ikcp-cms-auth
+          - ikcp-feedback
 
 jobs:
-  detect-changes:
+  deploy-ikcp-marcel:
+    name: Deploy ikcp-chat (Marcel)
     runs-on: ubuntu-latest
-    outputs:
-      marcel:    ${{ steps.filter.outputs.marcel }}
-      client:    ${{ steps.filter.outputs.client }}
-      agents:    ${{ steps.filter.outputs.agents }}
-      cms-auth:  ${{ steps.filter.outputs.cms-auth }}
-      documents: ${{ steps.filter.outputs.documents }}
-      suivi:     ${{ steps.filter.outputs.suivi }}
-      reporting: ${{ steps.filter.outputs.reporting }}
-      api:       ${{ steps.filter.outputs.api }}
-      legacy_prospect: ${{ steps.filter.outputs.legacy_prospect }}
-      legacy_marcel:   ${{ steps.filter.outputs.legacy_marcel }}
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-marcel') ||
+      github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            marcel:    'workers/ikcp-marcel/**'
-            client:    'workers/ikcp-client/**'
-            agents:    'workers/ikcp-agents/**'
-            cms-auth:  'workers/ikcp-cms-auth/**'
-            documents: 'workers/documents-mcp-server/**'
-            suivi:     'workers/suivi-mcp-server/**'
-            reporting: 'workers/reporting-mcp-server/**'
-            api:       'workers/ikcp-api/**'
-            legacy_prospect: 'worker/index.js'
-            legacy_marcel:   'worker/marcel-proxy.js'
 
-  deploy-monorepo:
-    needs: detect-changes
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { worker: ikcp-marcel,          cond: marcel }
-          - { worker: ikcp-client,          cond: client }
-          - { worker: ikcp-agents,          cond: agents }
-          - { worker: ikcp-cms-auth,        cond: cms-auth }
-          - { worker: documents-mcp-server, cond: documents }
-          - { worker: suivi-mcp-server,     cond: suivi }
-          - { worker: reporting-mcp-server, cond: reporting }
-          - { worker: ikcp-api,             cond: api }
-    steps:
-      - name: Should deploy?
-        id: check
-        run: |
-          val="${{ needs.detect-changes.outputs[matrix.cond] }}"
-          echo "deploy=$val" >> $GITHUB_OUTPUT
-
-      - uses: actions/checkout@v4
-        if: steps.check.outputs.deploy == 'true'
-
-      - name: Deploy ${{ matrix.worker }}
-        if: steps.check.outputs.deploy == 'true'
+      - name: Deploy ikcp-chat (Marcel chef d'orchestre)
         uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          workingDirectory: workers/${{ matrix.worker }}
-          wranglerVersion: 'latest'
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-marcel
 
-  # ─── LEGACY (ancien dossier worker/, à migrer progressivement) ───
-  deploy-legacy-prospect:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.legacy_prospect == 'true'
+  deploy-ikcp-voice:
+    name: Deploy ikcp-voice (TTS/STT Marcel)
     runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-voice') ||
+      github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
-      - uses: cloudflare/wrangler-action@v3
+
+      - name: Deploy ikcp-voice (ElevenLabs + Voxtral)
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          workingDirectory: worker
-          wranglerVersion: '3'
-          command: deploy index.js --name ikcp-prospect --compatibility-date 2024-01-01
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-voice
 
-  deploy-legacy-marcel:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.legacy_marcel == 'true'
+  deploy-ikcp-batisseur:
+    name: "Deploy ikcp-batisseur (Patrimoine 360\xB0)"
     runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-batisseur') ||
+      github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
-      - uses: cloudflare/wrangler-action@v3
+
+      - name: "Deploy ikcp-batisseur (B\xE2tisseur Opus 4.7)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          workingDirectory: worker
-          wranglerVersion: '3'
-          command: deploy marcel-proxy.js --name ikcp-marcel --compatibility-date 2024-01-01
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-batisseur
+
+  deploy-ikcp-hermes:
+    name: "Deploy ikcp-hermes (Transmission patrimoniale)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-hermes') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-hermes (Herm\xE8s Opus 4.7)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-hermes
+
+  deploy-ikcp-veille:
+    name: "Deploy ikcp-veille (Veille Perplexity)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-veille') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-veille (Perplexity Pro Proxy)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-veille
+
+  deploy-ikcp-lifestyle:
+    name: "Deploy ikcp-lifestyle (8 agents Sonnet)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-lifestyle') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-lifestyle (Architecte/Curateur/Concierge/Stratege...)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-lifestyle
+
+  deploy-ikcp-client:
+    name: "Deploy ikcp-client (Auth + tiers + quotas)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-client') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-client (portail membre freemium)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-client
+
+  deploy-ikcp-pappers:
+    name: "Deploy ikcp-pappers (Cartographie SIREN)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-pappers') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-pappers (RNE / Pappers)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-pappers
+
+  deploy-ikcp-cms-auth:
+    name: "Deploy ikcp-cms-auth (OAuth GitHub pour le CMS)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-cms-auth') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-cms-auth (proxy OAuth Sveltia CMS)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-cms-auth
+
+  deploy-ikcp-feedback:
+    name: "Deploy ikcp-feedback (retours bêta fondateurs)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-feedback') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-feedback (collecte attentes bêta)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-feedback

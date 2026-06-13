@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · ORIAS 23001568 — Centre des agents IA (interne) -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1426">
+<meta name="robots" content="noindex, nofollow">
+<title>Agents IA — Centre de contrôle · IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0B1426;--panel:#101D33;--panel-2:#0E1A2E;--cream:#FAF7F0;--gold:#C9A96E;--gold-b:#E2C896;--navy:#1B2A4A;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.16);--ok:#4ade80;--bad:#f87171;--warn:#fbbf24}
+body{background:var(--bg);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding:clamp(20px,4vw,42px)}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 50% at 50% -8%,rgba(201,169,110,.09),transparent 60%),var(--bg)}
+.top{display:flex;align-items:center;gap:14px;max-width:1100px;margin:0 auto 4px;flex-wrap:wrap}
+.mark{width:44px;height:44px;border-radius:12px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--gold-b);font-size:18px}
+.top h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,3.4vw,31px)}
+.top h1 em{font-style:italic;color:var(--gold-b)}
+.summary{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:13px;color:var(--mute);border:1px solid var(--line);padding:8px 15px;border-radius:99px;background:var(--panel)}
+.summary b{color:var(--gold-b);font-family:'JetBrains Mono',monospace}
+.sub{max-width:1100px;margin:6px auto 24px;color:var(--mute);font-size:13.5px}
+.wrap{max-width:1100px;margin:0 auto}
+/* Bandeau Anthropic Console */
+.console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:linear-gradient(120deg,rgba(201,169,110,.12),rgba(201,169,110,.03));border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:24px}
+.console-bar .lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.console-bar a{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);color:var(--cream);text-decoration:none;font-size:12.5px;font-weight:500;padding:8px 14px;border-radius:9px;transition:all .16s}
+.console-bar a:hover{border-color:var(--gold);transform:translateY(-2px)}
+.console-bar a b{color:var(--gold-b);font-weight:600}
+.grp{margin-bottom:26px}
+.grp h2{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.grp h2::after{content:'';flex:1;height:1px;background:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:13px}
+.ag{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px 18px;position:relative;transition:border-color .16s}
+.ag:hover{border-color:rgba(201,169,110,.4)}
+.ag .hd{display:flex;align-items:flex-start;gap:11px;margin-bottom:10px}
+.ag .ic{font-size:24px;line-height:1}
+.ag .nm{font-family:'Fraunces',serif;font-size:17px;font-weight:500;color:var(--cream)}
+.ag .role{font-size:11.5px;color:var(--mute);line-height:1.4;margin-top:1px}
+.ag .dot{position:absolute;top:16px;right:16px;width:9px;height:9px;border-radius:50%;background:var(--mute);transition:background .3s}
+.ag .dot.up{background:var(--ok);box-shadow:0 0 0 0 rgba(74,222,128,.5);animation:pulse 2.4s infinite}
+.ag .dot.down{background:var(--bad)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.45)}70%{box-shadow:0 0 0 6px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.ag .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ag .tag{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute);font-family:'JetBrains Mono',monospace}
+.ag .tag.opus{color:var(--gold-b);border-color:rgba(201,169,110,.4);background:rgba(201,169,110,.08)}
+.ag .tag.sonnet{color:#9CC4F0;border-color:rgba(127,180,232,.35)}
+.ag .tag.ppx{color:#a78bfa;border-color:rgba(167,139,250,.35)}
+.ag .status{margin-top:11px;font-size:12px;display:flex;align-items:center;gap:7px;color:var(--mute)}
+.ag .status .k{font-weight:600}
+.ag .key{font-size:11.5px;margin-top:7px;display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.ag .key.ok{color:var(--ok)} .ag .key.no{color:var(--bad)} .ag .key.na{color:var(--mute)}
+.ag.alert{border-color:rgba(248,113,113,.5);background:linear-gradient(150deg,rgba(248,113,113,.07),transparent)}
+.action{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.4);border-radius:9px;padding:10px 12px;margin-top:10px;font-size:11.5px;color:#fecaca;line-height:1.5}
+.action b{color:#fff}
+.ft{max-width:1100px;margin:26px auto 0;font-size:11px;color:var(--mute);border-top:1px solid var(--line);padding-top:14px}
+.ft a{color:var(--gold-b);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="mark">IK</div>
+  <h1>Agents <em>IA</em> · centre de contrôle</h1>
+  <div class="summary"><span class="dot up" style="position:static;width:9px;height:9px;border-radius:50%;background:var(--ok)"></span><span id="sumTxt">vérification en cours…</span></div>
+</div>
+<div class="sub">État en temps réel de l'écosystème souverain · ping <span style="font-family:'JetBrains Mono',monospace">/health</span> · souverain France · ORIAS 23001568</div>
+
+<div class="wrap">
+  <div class="console-bar">
+    <span class="lbl">🧠 Anthropic Console</span>
+    <a href="https://console.anthropic.com/settings/usage" target="_blank" rel="noopener">📊 <b>Usage &amp; coût</b></a>
+    <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">🔑 <b>Clés API</b></a>
+    <a href="https://console.anthropic.com/settings/limits" target="_blank" rel="noopener">⚙️ Limites</a>
+    <a href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers-and-pages" target="_blank" rel="noopener">☁️ Workers Cloudflare</a>
+  </div>
+  <div id="groups"></div>
+</div>
+
+<div class="ft">IKCP · IKIGAÏ Conseil Patrimonial — page interne. <a href="/app/pilot">← Poste de pilotage</a> · <a href="/app/architecture">Architecture</a></div>
+
+<script>
+var GROUPS = [
+  { g:'Orchestrateur', items:[
+    { n:'Marcel', role:'Chef d\'orchestre — point d\'entrée unique', w:'ikcp-chat', model:'Sonnet 4.6 · Opus (FO)', cls:'sonnet', prov:'Anthropic', ic:'🎼' },
+  ]},
+  { g:'Sous-agents experts (Claude)', items:[
+    { n:'Codex', role:'Fiscalité approfondie — CGI, BOFIP, jurisprudence', w:'ikcp-codex', model:'Opus 4.7', cls:'opus', prov:'Anthropic', ic:'📜' },
+    { n:'Hermès', role:'Transmission & succession', w:'ikcp-hermes', model:'Opus 4.7', cls:'opus', prov:'Anthropic', ic:'🌳' },
+    { n:'Bâtisseur', role:'Patrimoine 360° multi-entités', w:'ikcp-batisseur', model:'Opus 4.7', cls:'opus', prov:'Anthropic', ic:'🏛️' },
+    { n:'Lifestyle ×9', role:'Art de vivre & conciergerie (Architecte, Stratège, Concierge…)', w:'ikcp-lifestyle', model:'Sonnet 4.6', cls:'sonnet', prov:'Anthropic', ic:'🛎️' },
+  ]},
+  { g:'Veille & voix', items:[
+    { n:'Veille', role:'Temps réel — loi de finances, jurisprudence', w:'ikcp-veille', model:'Perplexity Pro', cls:'ppx', prov:'Perplexity', ic:'🔔' },
+    { n:'Voix', role:'Dictée (STT) + lecture des réponses', w:'ikcp-voice', model:'STT/TTS', cls:'', prov:'souverain', ic:'🎙️' },
+  ]},
+  { g:'Services & données (souverains France)', items:[
+    { n:'Pappers', role:'Cartographie SIREN (RNE)', w:'ikcp-pappers', model:'API', cls:'', prov:'Pappers FR', ic:'🗺️' },
+    { n:'Client', role:'Auth · tiers · quotas · mémoire', w:'ikcp-client', model:'D1/KV', cls:'', prov:'Cloudflare', ic:'🔑' },
+    { n:'Témoin', role:'Journal d\'audit MIF II (D1 Paris)', w:'ikcp-temoin', model:'D1', cls:'', prov:'Cloudflare', ic:'⚖️' },
+    { n:'Collector', role:'Cotations collection (cron)', w:'ikcp-collector', model:'cron', cls:'', prov:'Cloudflare', ic:'📈' },
+  ]},
+];
+
+function card(a){
+  return '<div class="ag" id="ag-'+a.w+'">'
+    + '<span class="dot" id="dot-'+a.w+'"></span>'
+    + '<div class="hd"><span class="ic">'+a.ic+'</span><div><div class="nm">'+a.n+'</div><div class="role">'+a.role+'</div></div></div>'
+    + '<div class="meta"><span class="tag '+a.cls+'">'+a.model+'</span><span class="tag">'+a.prov+'</span></div>'
+    + '<div class="status" id="st-'+a.w+'"><span class="k">…</span> vérification</div>'
+    + '<div id="key-'+a.w+'"></div>'
+    + '</div>';
+}
+document.getElementById('groups').innerHTML = GROUPS.map(function(grp){
+  return '<div class="grp"><h2>'+grp.g+'</h2><div class="grid">'+grp.items.map(card).join('')+'</div></div>';
+}).join('');
+
+var all = GROUPS.reduce(function(a,g){return a.concat(g.items);},[]);
+var up=0, done=0, keyMissing=[];
+all.forEach(function(a){
+  fetch('https://'+a.w+'.maxime-ead.workers.dev/health',{cache:'no-store'})
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(d){
+      up++; var dot=document.getElementById('dot-'+a.w); dot.className='dot up';
+      var st=document.getElementById('st-'+a.w); st.innerHTML='<span class="k" style="color:var(--ok)">●</span> opérationnel';
+      // clé API
+      var kEl=document.getElementById('key-'+a.w);
+      var cfg = d.configured || {};
+      if(a.prov==='Anthropic'){
+        if(cfg.api_key === true){ kEl.innerHTML='<div class="key ok">🔑 clé Claude reliée ✓</div>'; }
+        else if(cfg.api_key === false){
+          kEl.innerHTML='<div class="key no">🔑 clé Claude manquante</div>'
+            + '<div class="action"><b>Action :</b> dans <code>wrangler secret put ANTHROPICAPIKEY</code> (dossier <b>'+a.w+'</b>) ou via Cloudflare → puis basculer <code>live:true</code> dans Marcel. → relie '+a.n+' à Claude Console.</div>';
+          document.getElementById('ag-'+a.w).classList.add('alert');
+          keyMissing.push(a.n);
+        } else { kEl.innerHTML='<div class="key ok">🔑 reliée ✓</div>'; }
+      } else if(cfg.api_key !== undefined){
+        kEl.innerHTML='<div class="key '+(cfg.api_key?'ok':'no')+'">🔑 '+(cfg.api_key?'clé reliée ✓':'clé manquante')+'</div>';
+      }
+    })
+    .catch(function(){ var dot=document.getElementById('dot-'+a.w); if(dot) dot.className='dot down';
+      var st=document.getElementById('st-'+a.w); if(st) st.innerHTML='<span class="k" style="color:var(--bad)">●</span> hors-ligne / à vérifier'; })
+    .finally(function(){ done++; if(done===all.length){
+      var t=up+'/'+all.length+' opérationnels';
+      if(keyMissing.length) t+=' · ⚠ '+keyMissing.length+' clé(s) à relier';
+      document.getElementById('sumTxt').innerHTML='<b>'+t+'</b>';
+    }});
+});
+</script>
+</body>
+</html>

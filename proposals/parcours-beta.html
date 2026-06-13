@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>IKCP — Parcours bêta fondateur (aperçu)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAF7F0;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.2)}
+body{background:var(--navy-deep);color:var(--cream);font-family:'Inter',sans-serif;line-height:1.55;padding:clamp(30px,6vw,64px) clamp(18px,4vw,40px) 80px}
+.wrap{max-width:840px;margin:0 auto}
+.bg::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(201,169,110,.07),transparent 60%),linear-gradient(160deg,#0E1729,#1B2A4A 45%,#0E1729)}
+.eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(30px,5.5vw,48px);line-height:1.08;margin-bottom:14px}
+h1 em{font-style:italic;color:var(--gold-bright)}
+.intro{color:var(--mute);font-size:15px;max-width:600px;margin-bottom:18px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:40px;font-size:12px;color:var(--mute)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.client{background:var(--gold-bright)}
+.dot.admin{background:#7BCCA2}
+.dot.sys{background:rgba(250,247,240,.4)}
+
+/* Timeline */
+.timeline{position:relative;padding-left:46px}
+.timeline::before{content:'';position:absolute;left:17px;top:8px;bottom:30px;width:2px;background:linear-gradient(180deg,var(--gold),rgba(201,169,110,.15))}
+.step{position:relative;margin-bottom:30px}
+.step-num{position:absolute;left:-46px;top:0;width:36px;height:36px;border-radius:50%;background:var(--navy-deep);border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;color:var(--gold-bright);font-size:16px;z-index:2}
+.card{background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:14px;padding:20px 22px;transition:border-color .25s}
+.card:hover{border-color:rgba(201,169,110,.4)}
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.card-emoji{font-size:22px}
+.card h3{font-family:'Fraunces',serif;font-weight:500;font-size:20px;letter-spacing:-.01em}
+.actor{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:99px;margin-left:auto}
+.actor.client{background:rgba(226,200,150,.16);color:var(--gold-bright)}
+.actor.admin{background:rgba(123,204,162,.16);color:#7BCCA2}
+.actor.sys{background:rgba(250,247,240,.08);color:var(--mute)}
+.card p{font-size:13.5px;color:var(--mute);line-height:1.6}
+.card .where{font-size:12px;color:var(--gold-deep);margin-top:9px;font-family:monospace}
+.card .where b{color:var(--gold)}
+
+/* Final */
+.finish{margin-top:14px;padding:22px;border-radius:14px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.3);text-align:center}
+.finish h3{font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:var(--gold-bright);margin-bottom:6px}
+.finish p{font-size:13.5px;color:var(--mute)}
+.flag{position:fixed;bottom:12px;left:12px;background:var(--navy);color:var(--gold);padding:6px 13px;border-radius:99px;font-size:11px;font-weight:600;z-index:9}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="wrap">
+
+  <div class="eyebrow">IKCP Family Office · Bêta privée</div>
+  <h1>Le parcours d'une <em>famille fondatrice</em></h1>
+  <p class="intro">De l'invitation à l'espace membre complet — 100 % digital, sur invitation, sous votre validation. Vous gardez la main à chaque étape.</p>
+  <div class="legend">
+    <span><span class="dot client"></span> Action du client</span>
+    <span><span class="dot admin"></span> Action de Maxime (validation)</span>
+    <span><span class="dot sys"></span> Automatique (système)</span>
+  </div>
+
+  <div class="timeline">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="card">
+        <div class="card-top"><span class="card-emoji">🎟️</span><h3>Invitation</h3><span class="actor admin">Maxime</span></div>
+        <p>Vous générez un code d'invitation (client direct) — ou un membre existant transmet son code de parrainage. Chaque code donne un lien personnel.</p>
+        <div class="where">→ <b>ikcp.eu/app/admin</b> · console privée</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="card">
+        <div class="card-top"><span class="card-emoji">✍️</span><h3>Candidature</h3><span class="actor client">Client</span></div>
+        <p>Le candidat ouvre le lien, le code est validé en direct, puis renseigne prénom, email, SIREN et déclare un patrimoine &gt; 1 M€. Sa candidature part en attente.</p>
+        <div class="where">→ <b>ikcp.eu/app/beta-invite.html?code=…</b></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="card">
+        <div class="card-top"><span class="card-emoji">✅</span><h3>Validation</h3><span class="actor admin">Maxime</span></div>
+        <p>Vous voyez la candidature dans la console, vérifiez l'éligibilité, et approuvez en accordant l'accès <strong>Family Office bêta</strong> (ou Premium). Vous pouvez aussi refuser. Souveraineté totale.</p>
+        <div class="where">→ <b>ikcp.eu/app/admin</b> · approuver → tier accordé</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="card">
+        <div class="card-top"><span class="card-emoji">🔐</span><h3>Connexion</h3><span class="actor sys">Automatique</span></div>
+        <p>Le client se connecte avec son email : un lien magique sécurisé lui est envoyé (aucun mot de passe). Son compte s'ouvre directement au tier accordé.</p>
+        <div class="where">→ <b>ikcp.eu/app/</b> · magic link (Resend)</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="card">
+        <div class="card-top"><span class="card-emoji">🎼</span><h3>Espace membre Family Office</h3><span class="actor client">Client</span></div>
+        <p>Marcel + 11 spécialistes IA 24/7, cartographie SIREN, veille augmentée, carnet, collections, documents — mémoire de son profil, conformité MIF II garantie.</p>
+        <div class="where">→ <b>ikcp.eu/app/dashboard.html</b></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="card">
+        <div class="card-top"><span class="card-emoji">🤝</span><h3>Humain à la demande</h3><span class="actor client">Client</span></div>
+        <p>100 % digital — sauf si le client souhaite vous joindre. Vous n'intervenez jamais sans sollicitation. Le client pilote, le client décide.</p>
+        <div class="where">→ « Contacter Maxime » · sans démarche non sollicitée</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="finish">
+    <h3>Une porte. Une équipe. Votre patrimoine en orbite.</h3>
+    <p>50 familles fondatrices · accès offert en bêta · ORIAS 23001568 · RGPD souverain France</p>
+  </div>
+
+</div>
+<div class="flag">APERÇU · PARCOURS BÊTA FONDATEUR</div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 — Score Patrimonial (espace membre) -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<meta name="robots" content="noindex, nofollow">
+<title>Votre Score Patrimonial — IKCP Family Office</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F;--warn:#C0612A;--bad:#B23A2E}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:15px 0}
+.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:21px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:48px 0 20px}
+.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,5vw,46px);line-height:1.1;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:560px;margin:16px auto 0}
+.quiz{max-width:680px;margin:24px auto 30px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,36px);box-shadow:0 24px 60px -30px rgba(27,42,74,.25)}
+.progress{height:5px;background:var(--cream-2);border-radius:3px;overflow:hidden;margin-bottom:24px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));width:0;transition:width .4s cubic-bezier(.16,1,.3,1)}
+.q-num{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:6px}
+.q-terr{font-size:12px;color:var(--ink-mute);margin-bottom:4px}
+.q-text{font-family:'Playfair Display',serif;font-size:clamp(19px,3vw,25px);color:var(--navy);font-weight:500;line-height:1.25;margin-bottom:22px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:15px 18px;font-family:'Outfit',sans-serif;font-size:15px;color:var(--ink);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.opt:hover{border-color:var(--gold);background:#fff;transform:translateX(3px)}
+.opt .k{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gold-deep);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.back-q{margin-top:18px;background:none;border:none;color:var(--ink-mute);font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif}
+.back-q:hover{color:var(--gold-deep)}
+.skip{display:block;margin:10px auto 0;background:none;border:none;color:var(--ink-mute);font-size:12.5px;cursor:pointer;text-decoration:underline;font-family:'Outfit',sans-serif;text-align:center;width:100%}
+.result{display:none;max-width:760px;margin:24px auto}
+.result.show{display:block;animation:fade .5s}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.gauge-wrap{text-align:center;background:var(--navy-deep);border-radius:20px;padding:34px 24px;color:var(--cream)}
+.gauge{position:relative;width:220px;height:220px;margin:0 auto}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .num b{font-family:'Playfair Display',serif;font-size:58px;font-weight:600;color:var(--gold-bright);line-height:1}
+.gauge .num span{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,250,248,.6);margin-top:4px}
+.verdict{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--cream);margin-top:18px}
+.verdict.sub{font-style:normal;font-size:13.5px;color:rgba(250,250,248,.65);margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto}
+.terr{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}
+.terr h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:16px}
+.terr-row{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.terr-row .nm{flex:0 0 130px;font-size:13px;font-weight:600;color:var(--navy)}
+.terr-row .bar{flex:1;height:8px;background:var(--cream-2);border-radius:5px;overflow:hidden}
+.terr-row .bar i{display:block;height:100%;border-radius:5px;width:0;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.terr-row .sc{flex:0 0 38px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--ink-mute)}
+.leviers{margin-top:24px}
+.leviers h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:6px}
+.leviers .sub{color:var(--ink-mute);font-size:13.5px;margin-bottom:16px}
+.lev{display:flex;gap:14px;align-items:flex-start;background:var(--cream-2);border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-bottom:12px}
+.lev .ic{font-size:24px;flex-shrink:0}
+.lev .bd{flex:1}
+.lev .bd h4{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:3px}
+.lev .bd p{font-size:13px;color:var(--ink-mute);line-height:1.5}
+.lev .go{align-self:center;background:var(--navy);color:var(--cream);border:none;border-radius:9px;padding:9px 15px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none}
+.lev .go:hover{background:var(--gold-deep)}
+.cta-final{text-align:center;margin:30px 0 10px}
+.cta-final a{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--navy-deep);padding:15px 30px;border-radius:100px;font-weight:700;font-size:15px;box-shadow:0 14px 34px -12px rgba(201,169,110,.6)}
+.replay{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink-mute);font-size:13px;cursor:pointer;text-decoration:underline;font-family:'Outfit',sans-serif}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:600px;margin:20px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:12px;margin-top:40px}
+.ft a{color:var(--gold);margin:0 6px}
+</style>
+</head>
+<body>
+
+<header class="hd"><div class="wrap"><div class="logo">IK<span>CP</span></div><a class="back" href="/app/dashboard">← Mon espace</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Family Office · diagnostic</div>
+  <h1>Les <em>questions à se poser</em></h1>
+  <p id="heroLead">7 territoires, 7 questions qu'un Family Office aide à trancher. 2 minutes pour voir où vous en êtes — sans jugement, ni produit, ni vente. Marcel s'en sert pour cibler vos priorités.</p>
+</section>
+
+<div class="quiz" id="quiz">
+  <div class="progress"><span id="prog"></span></div>
+  <div id="qbody"></div>
+  <button class="back-q" id="backBtn" onclick="prev()" style="display:none">← Question précédente</button>
+  <button class="skip" id="skipBtn" onclick="skipToApp()" style="display:none">Passer pour l'instant →</button>
+</div>
+
+<div class="result wrap" id="result">
+  <div class="gauge-wrap">
+    <div class="gauge">
+      <svg width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="96" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="14"/>
+        <circle id="gaugeArc" cx="110" cy="110" r="96" fill="none" stroke="#E2C896" stroke-width="14" stroke-linecap="round" stroke-dasharray="603" stroke-dashoffset="603"/>
+      </svg>
+      <div class="num"><b id="scoreNum">0</b><span>/ 100</span></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="verdict sub" id="verdictSub"></div>
+  </div>
+
+  <div class="terr">
+    <h3>Votre patrimoine par territoire</h3>
+    <div id="terrBars"></div>
+  </div>
+
+  <div class="leviers">
+    <h3>Vos 3 <em style="font-style:italic;color:var(--gold-deep)">leviers prioritaires</em></h3>
+    <div class="sub">Là où l'impact est le plus fort. Chaque levier, vous l'explorez en un clic avec Marcel.</div>
+    <div id="levList"></div>
+  </div>
+
+  <div class="cta-final"><a id="finalCta" href="/app/dashboard">Entrer dans mon Family Office →</a></div>
+  <button class="replay" onclick="location.reload()">↻ Refaire le diagnostic</button>
+  <div class="disc">Diagnostic indicatif et pédagogique fondé sur vos déclarations. Il ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni un audit complet. Pour une analyse adaptée, échangez avec Maxime Juveneton (CIF · ORIAS 23001568).</div>
+</div>
+
+<footer class="ft">
+  © 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 — Ardèche · Combloux · Megève
+  <div style="margin-top:6px"><a href="/app/dashboard">Mon espace</a> · <a href="/app/marcel">Marcel</a></div>
+</footer>
+
+<script>
+var FROM_ONB = new URLSearchParams(location.search).get('from') === 'onboarding';
+// Sync D1 : si un score serveur existe et que le local est vide, on l'hydrate (multi-appareils)
+try{ var _tk=localStorage.getItem('ikcp_token'); if(_tk && !localStorage.getItem('ikcp_score')){
+  fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me',{headers:{Authorization:'Bearer '+_tk}}).then(function(r){return r.json();}).then(function(me){
+    var p={}; try{p=me.profile_json?JSON.parse(me.profile_json):{};}catch(_){ } if(p.score)localStorage.setItem('ikcp_score',JSON.stringify(p.score)); }).catch(function(){}); } }catch(_){}
+var NEXT_URL = FROM_ONB ? '/app/dashboard?welcome=1' : '/app/dashboard';
+
+// ── 7 territoires patrimoniaux · questions (chaque réponse = score 0/40/75/100) ──
+var Q = [
+  {t:'Protection', ic:'🛡️', q:'Si vous disparaissiez demain, votre famille garderait-elle son train de vie ET le contrôle de vos sociétés ?',
+   o:[['Tout repose sur moi — rien n\'est organisé',0],['Un crédit couvert, le reste à improviser',40],['Mes proches seraient protégés financièrement',75],['Train de vie ET gouvernance sécurisés',100]]},
+  {t:'Transmission', ic:'🌿', q:'Avez-vous décidé non seulement qui hérite, mais comment le pouvoir et les valeurs se transmettent ?',
+   o:[['Rien n\'est écrit — la loi décidera',0],['J\'y pense, sans rien formaliser',40],['Quelques actes posés (testament ou donation)',75],['Stratégie complète, révisée et partagée aux miens',100]]},
+  {t:'Fiscalité', ic:'⚖️', q:'Votre fiscalité est-elle pilotée comme un levier — ou subie chaque année ?',
+   o:[['Subie : je découvre l\'addition',0],['Quelques réflexes isolés',40],['Plusieurs leviers activés et coordonnés',75],['Stratégie pluriannuelle intégrée à mon patrimoine',100]]},
+  {t:'Liberté financière', ic:'🕊️', q:'Si vous cessiez votre activité demain, votre patrimoine financerait-il seul votre train de vie ?',
+   o:[['Non — mes revenus dépendent de mon activité',0],['Partiellement, pour quelques années',40],['Oui, avec un train de vie ajusté',75],['Oui, indéfiniment — je travaille par choix',100]]},
+  {t:'Allocation', ic:'📊', q:'Votre patrimoine est-il alloué selon une stratégie — ou accumulé au fil des opportunités ?',
+   o:[['Concentré sur un seul actif (société OU immobilier)',0],['Peu réparti, par hasard plus que par choix',40],['Plusieurs classes d\'actifs',75],['Allocation cible définie, pilotée, rééquilibrée',100]]},
+  {t:'Liquidité', ic:'💧', q:'Pourriez-vous saisir une belle opportunité — ou absorber un imprévu — sans brader un actif ?',
+   o:[['Non, tout est immobilisé',0],['Un coussin limité (< 3 mois)',40],['Une réserve confortable (3 à 6 mois)',75],['Réserve + lignes de crédit mobilisables à tout moment',100]]},
+  {t:'Architecture', ic:'🏛️', q:'La détention de votre patrimoine (holding, frontière pro/perso, rémunération) est-elle architecturée ?',
+   o:[['Pro et perso totalement mêlés',0],['Séparés, sans optimisation',40],['Société et détention déjà pensées',75],['Holding et schéma optimisés (fiscalité + transmission)',100]]},
+];
+var LEVIERS = {
+  'Protection':{ic:'🛡️',t:'Sécuriser la continuité',d:'Au-delà du capital : qui dirige vos sociétés, qui décide, comment vos proches gardent le contrôle. Le premier angle mort des dirigeants.',q:'Comment garantir à ma famille le train de vie ET le contrôle de mes sociétés si je disparais ?'},
+  'Transmission':{ic:'🌿',t:'Orchestrer la transmission',d:'Donation, démembrement, clause bénéficiaire, pacte Dutreil : transmettre le patrimoine, le pouvoir et les valeurs en limitant les droits.',q:'Comment organiser la transmission de mon patrimoine et de mon entreprise en limitant les droits ?'},
+  'Fiscalité':{ic:'⚖️',t:'Faire de l\'impôt un levier',d:'Rémunération, holding, enveloppes, déficit : articuler les dispositifs sur plusieurs années plutôt que subir l\'addition.',q:'Quels leviers articuler pour piloter ma fiscalité sur plusieurs années ?'},
+  'Liberté financière':{ic:'🕊️',t:'Bâtir votre indépendance',d:'Chiffrer le capital qui rend vos revenus indépendants de votre activité — et tracer le chemin pour y arriver.',q:'Quel patrimoine me rendrait financièrement indépendant de mon activité, et comment l\'atteindre ?'},
+  'Allocation':{ic:'📊',t:'Définir une allocation cible',d:'Répartir entre classes d\'actifs selon votre horizon et votre rôle de dirigeant — sortir de la sur-concentration.',q:'Quelle allocation cible pour mon patrimoine selon mon profil de dirigeant ?'},
+  'Liquidité':{ic:'💧',t:'Préserver vos marges de manœuvre',d:'Des liquidités pour saisir une opportunité ou absorber un choc sans vendre au mauvais moment.',q:'Quel niveau de liquidités viser et sur quels supports pour rester agile ?'},
+  'Architecture':{ic:'🏛️',t:'Architecturer votre détention',d:'Holding, rémunération, séparation pro/perso : la structure conditionne fiscalité, protection et transmission.',q:'Comment architecturer la détention de mon patrimoine de dirigeant (holding, rémunération) ?'},
+};
+var TERR_LABEL = {Protection:'Protection',Transmission:'Transmission',Fiscalité:'Fiscalité','Liberté financière':'Liberté financière',Allocation:'Allocation',Liquidité:'Liquidité',Architecture:'Architecture'};
+
+var idx = 0, answers = new Array(Q.length).fill(null);
+function color(v){ return v>=75?'var(--ok)':v>=45?'var(--gold-deep)':'var(--bad)'; }
+window.skipToApp = function(){ location.href = NEXT_URL; };
+
+function renderQ(){
+  var item = Q[idx];
+  document.getElementById('prog').style.width = (idx/Q.length*100)+'%';
+  document.getElementById('backBtn').style.display = idx>0 ? 'block':'none';
+  document.getElementById('skipBtn').style.display = FROM_ONB ? 'block':'none';
+  var letters=['A','B','C','D'];
+  document.getElementById('qbody').innerHTML =
+    '<div class="q-num">Question '+(idx+1)+' / '+Q.length+'</div>'
+    +'<div class="q-terr">'+item.ic+' Territoire : '+item.t+'</div>'
+    +'<div class="q-text">'+item.q+'</div>'
+    +'<div class="opts">'+item.o.map(function(o,i){
+        return '<button class="opt" onclick="answer('+o[1]+')"><span class="k">'+letters[i]+'</span>'+o[0]+'</button>';
+      }).join('')+'</div>';
+}
+window.answer = function(v){ answers[idx]=v; if(idx<Q.length-1){ idx++; renderQ(); } else { finish(); } };
+window.prev = function(){ if(idx>0){ idx--; renderQ(); } };
+
+function finish(){
+  document.getElementById('prog').style.width='100%';
+  var global = Math.round(answers.reduce(function(a,b){return a+b;},0)/Q.length);
+  document.getElementById('quiz').style.display='none';
+  var res = document.getElementById('result'); res.className='result wrap show';
+  var arc = document.getElementById('gaugeArc'), num=document.getElementById('scoreNum');
+  var full=603, off=full*(1-global/100);
+  setTimeout(function(){ arc.style.transition='stroke-dashoffset 1.2s cubic-bezier(.16,1,.3,1)'; arc.style.strokeDashoffset=off;
+    arc.setAttribute('stroke', global>=75?'#7BCCA2':global>=45?'#E2C896':'#E0856B'); },150);
+  var n=0; var step=Math.max(1,Math.round(global/40)); var iv=setInterval(function(){ n=Math.min(global,n+step); num.textContent=n; if(n>=global)clearInterval(iv); },28);
+  var verdict, sub;
+  if(global>=75){ verdict='Un patrimoine d\'architecte.'; sub='Vous pilotez déjà. L\'enjeu devient l\'optimisation fine et la transmission de votre modèle à la prochaine génération.'; }
+  else if(global>=45){ verdict='De solides fondations — des angles morts.'; sub='Plusieurs territoires méritent l\'œil d\'un Family Officer pour passer de « bien géré » à « orchestré ».'; }
+  else { verdict='Un patrimoine subi, pas encore piloté.'; sub='C\'est le cas de la plupart des dirigeants avant un Family Office — et les bons leviers redressent vite la trajectoire.'; }
+  document.getElementById('verdict').textContent=verdict;
+  document.getElementById('verdictSub').textContent=sub;
+  // CTA finale selon contexte
+  var fc = document.getElementById('finalCta');
+  fc.setAttribute('href', NEXT_URL);
+  fc.textContent = FROM_ONB ? 'Entrer dans mon Family Office →' : 'En parler à Marcel →';
+  if(!FROM_ONB) fc.setAttribute('href', '/app/marcel');
+  // Rétention : compare au dernier diagnostic + mémorise (client only, RGPD-friendly)
+  try {
+    var prev = JSON.parse(localStorage.getItem('ikcp_score') || 'null');
+    if (prev && typeof prev.score === 'number') {
+      var delta = global - prev.score;
+      var since = prev.date ? new Date(prev.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}) : '';
+      var txt = delta > 0 ? ('📈 +' + delta + ' points depuis le ' + since + '. Continuez sur cette lancée.')
+        : delta < 0 ? ('📉 ' + delta + ' points depuis le ' + since + '. Des leviers se sont relâchés.')
+        : ('Stable depuis le ' + since + '.');
+      var ev = document.createElement('div');
+      ev.style.cssText = 'margin-top:14px;display:inline-block;background:rgba(201,169,110,.16);border:1px solid rgba(201,169,110,.4);color:var(--gold-bright);padding:7px 16px;border-radius:100px;font-size:13px;font-weight:600';
+      ev.textContent = txt;
+      document.getElementById('verdictSub').insertAdjacentElement('afterend', ev);
+    }
+    localStorage.setItem('ikcp_score', JSON.stringify({ score: global, date: new Date().toISOString(), terr: Q.map(function(it,i){return {t:it.t,v:answers[i]};}) }));
+    // Sync D1 (le score suit le membre sur tous ses appareils)
+    try{ var _tks=localStorage.getItem('ikcp_token'); if(_tks){ var _C='https://ikcp-client.maxime-ead.workers.dev';
+      fetch(_C+'/api/v1/me',{headers:{Authorization:'Bearer '+_tks}}).then(function(r){return r.json();}).then(function(me){
+        var p={}; try{p=me.profile_json?JSON.parse(me.profile_json):{};}catch(_){ } p.score=JSON.parse(localStorage.getItem('ikcp_score'));
+        fetch(_C+'/api/v1/me/profile',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+_tks},body:JSON.stringify({profile_json:JSON.stringify(p)})}); }).catch(function(){}); } }catch(_){}
+  } catch (_) {}
+  document.getElementById('terrBars').innerHTML = Q.map(function(item,i){
+    var v=answers[i];
+    return '<div class="terr-row"><span class="nm">'+item.ic+' '+TERR_LABEL[item.t]+'</span>'
+      +'<span class="bar"><i style="background:'+color(v)+'" data-w="'+v+'"></i></span>'
+      +'<span class="sc">'+v+'</span></div>';
+  }).join('');
+  setTimeout(function(){ document.querySelectorAll('.terr-row .bar i').forEach(function(b){ b.style.width=b.dataset.w+'%'; }); }, 250);
+  var ranked = Q.map(function(item,i){return {t:item.t,v:answers[i]};}).sort(function(a,b){return a.v-b.v;}).slice(0,3);
+  document.getElementById('levList').innerHTML = ranked.map(function(r){
+    var L=LEVIERS[r.t];
+    var url='/app/marcel?q='+encodeURIComponent(L.q);
+    return '<div class="lev"><span class="ic">'+L.ic+'</span><div class="bd"><h4>'+L.t+'</h4><p>'+L.d+'</p></div>'
+      +'<a class="go" href="'+url+'">Explorer →</a></div>';
+  }).join('');
+  res.scrollIntoView({behavior:'smooth'});
+}
+if(FROM_ONB){ document.getElementById('heroLead').textContent = 'Dernière étape : le miroir de votre patrimoine en 7 territoires, 2 minutes. Le regard d\'un Family Office — Marcel s\'en sert pour cibler vos priorités dès votre arrivée.'; }
+renderQ();
+</script>
+<script src="/app/js/appnav.js" defer></script>
+</body>
+</html>

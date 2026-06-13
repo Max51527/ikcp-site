@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Maquette site cabinet épuré + 11 widgets premium</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+}
+html,body{background:var(--cream); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.6; -webkit-font-smoothing:antialiased; letter-spacing:-0.005em}
+
+/* ─── BARRE APERÇU ─── */
+.mockup-bar{background:var(--ink); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+/* ─── NAV ikcp.eu ─── */
+nav.site{
+  background:rgba(250,250,248,0.96); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line); padding:14px 48px;
+  display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:32px; z-index:100;
+}
+.brand{font-family:'Playfair Display',serif; font-size:26px; font-weight:600; color:var(--navy); line-height:1}
+.brand .dot{color:var(--gold); font-style:italic}
+.brand-sub{display:block; font-family:'Outfit',sans-serif; font-size:9.5px; letter-spacing:0.28em; color:var(--gold-deep); text-transform:uppercase; margin-top:5px; font-weight:600}
+nav.site .menu{display:flex; align-items:center; gap:6px}
+nav.site .menu a{color:var(--ink-mute); text-decoration:none; font-size:13.5px; font-weight:500; padding:10px 14px; border-radius:6px; transition:all 0.2s}
+nav.site .menu a:hover{color:var(--navy); background:rgba(27,42,74,0.04)}
+nav.site .menu a.active{color:var(--navy); font-weight:600}
+nav.site .menu .cta{margin-left:14px; padding:10px 22px; background:var(--navy); color:var(--cream); font-weight:600; letter-spacing:0.04em; font-size:12.5px}
+nav.site .menu .cta:hover{background:var(--navy-deep)}
+
+/* ─── HERO ÉPURÉ ─── */
+section.hero{padding:80px 32px 60px; max-width:1280px; margin:0 auto; display:grid; grid-template-columns:1.2fr 0.8fr; gap:60px; align-items:center}
+@media (max-width:980px){section.hero{grid-template-columns:1fr; gap:40px; padding:50px 24px}}
+.eyebrow{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:24px; font-weight:600; display:inline-flex; align-items:center; gap:12px}
+.eyebrow::before{content:''; width:32px; height:1px; background:var(--gold)}
+.hero h1{font-family:'Playfair Display',serif; font-size:clamp(40px,5vw,68px); line-height:1.05; font-weight:500; letter-spacing:-0.022em; color:var(--navy); margin-bottom:24px}
+.hero h1 em{font-style:italic; color:var(--gold-deep)}
+.hero .lede{font-size:18px; color:var(--ink-mute); line-height:1.75; max-width:560px; margin-bottom:32px}
+.hero .lede em{font-family:'Playfair Display',serif; font-style:italic; color:var(--ink); font-weight:500}
+.hero-actions{display:flex; gap:18px; flex-wrap:wrap}
+.btn-pri{padding:15px 32px; background:var(--navy); color:var(--cream); text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.06em; border-radius:6px; transition:all 0.25s; box-shadow:0 6px 18px rgba(27,42,74,0.2); cursor:pointer; border:none; font-family:'Outfit',sans-serif}
+.btn-pri:hover{background:var(--navy-deep); transform:translateY(-2px)}
+.btn-sec{padding:14px 24px; color:var(--navy); text-decoration:none; font-size:13px; font-weight:600; border:1.5px solid var(--gold-deep); border-radius:6px; transition:all 0.25s; cursor:pointer; background:transparent; font-family:'Outfit',sans-serif}
+.btn-sec:hover{background:var(--gold-deep); color:var(--cream)}
+
+/* Hero card (preuve sociale au lieu de Marcel) */
+.hero-proof{background:var(--cream); border:1px solid var(--line-strong); border-radius:18px; padding:28px 30px; box-shadow:0 16px 42px rgba(27,42,74,0.08); position:relative}
+.hero-proof::before{content:''; position:absolute; top:-1px; left:24px; right:24px; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold)); border-radius:0 0 3px 3px}
+.hero-proof-label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:14px}
+.hero-proof-title{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600; margin-bottom:8px}
+.hero-proof-title em{color:var(--gold-deep); font-style:italic}
+.hero-proof-desc{font-size:14px; color:var(--ink-mute); line-height:1.6; margin-bottom:18px}
+.hero-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding-top:18px; border-top:1px dashed var(--line-strong)}
+.hero-stat-v{font-family:'Playfair Display',serif; font-size:24px; color:var(--gold-deep); font-weight:600; font-style:italic; line-height:1}
+.hero-stat-l{font-size:10.5px; color:var(--ink-faint); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; font-weight:600}
+
+/* ─── SECTION HEADER ─── */
+.sect{padding:80px 32px; max-width:1280px; margin:0 auto}
+.sect.cream-2{background:var(--cream-2); max-width:none; padding-left:0; padding-right:0}
+.sect.cream-2-inner{padding:80px 32px; max-width:1280px; margin:0 auto}
+.sect-mark{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:14px; font-weight:600}
+.sect-mark::before{content:'§ '; opacity:0.6}
+.sect h2{font-family:'Playfair Display',serif; font-size:clamp(28px,4vw,42px); color:var(--navy); font-weight:500; letter-spacing:-0.018em; line-height:1.12; margin-bottom:16px}
+.sect h2 em{color:var(--gold-deep); font-style:italic}
+.sect-deck{font-size:16px; color:var(--ink-mute); line-height:1.7; max-width:680px; margin-bottom:48px}
+.sect-deck em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+
+/* ═══════════════════════════════════════════════════════════
+   WIDGETS — partagent une base commune
+═══════════════════════════════════════════════════════════ */
+.widget-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
+@media (max-width:980px){.widget-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:680px){.widget-grid{grid-template-columns:1fr}}
+
+.widget{background:var(--cream); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:0 4px 14px rgba(27,42,74,0.04); transition:all 0.25s; position:relative; overflow:hidden}
+.widget:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(27,42,74,0.08); border-color:var(--gold)}
+.widget-h{display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.widget-ico{font-size:20px; line-height:1}
+.widget-name{font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; flex:1; line-height:1.2}
+.widget-tag{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; padding:3px 7px; background:rgba(201,169,110,0.10); border-radius:30px}
+.widget-tag.private{color:var(--cream); background:var(--navy)}
+
+/* ─── 1. SPOTIFY ─── */
+.widget-spotify iframe{width:100%; border-radius:12px; min-height:152px; border:none; background:var(--cream-2)}
+.widget-spotify .note{font-size:11.5px; color:var(--ink-faint); margin-top:10px; font-style:italic; font-family:'Playfair Display',serif; line-height:1.5}
+.widget-spotify .note b{color:var(--gold-deep); font-style:normal; font-weight:600; font-family:'JetBrains Mono',monospace; font-size:10.5px; background:rgba(201,169,110,0.15); padding:2px 6px; border-radius:4px}
+
+/* ─── 2. ÉCHÉANCES FISCALES ─── */
+.widget-echeances .row-ech{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px dashed var(--line)}
+.widget-echeances .row-ech:last-child{border-bottom:none}
+.ech-jour{flex-shrink:0; width:54px; text-align:center; padding:8px 6px; background:var(--cream-2); border-radius:8px}
+.ech-jour-num{font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); font-weight:600; line-height:1; font-style:italic}
+.ech-jour-mois{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; color:var(--gold-deep); text-transform:uppercase; margin-top:2px; font-weight:700}
+.ech-info{flex:1; min-width:0}
+.ech-titre{font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:3px}
+.ech-meta{font-size:11.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif}
+.ech-dec{flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--bad); font-weight:700; letter-spacing:0.06em}
+.ech-dec.soon{color:var(--warn)}
+.ech-dec.ok{color:var(--ok)}
+
+/* ─── 3. CITATION ─── */
+.widget-quote{background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%); border-color:var(--gold)}
+.widget-quote .quote-mark{font-family:'Playfair Display',serif; font-size:54px; color:var(--gold); line-height:0.6; font-style:italic; opacity:0.6}
+.widget-quote .quote-text{font-family:'Playfair Display',serif; font-style:italic; font-size:17px; color:var(--navy); line-height:1.5; margin:8px 0 14px; font-weight:500}
+.widget-quote .quote-auth{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; color:var(--gold-deep); text-transform:uppercase; font-weight:700}
+
+/* ─── 4. MÉTÉO ─── */
+.widget-meteo .meteo-row{display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px dashed var(--line)}
+.widget-meteo .meteo-row:last-child{border-bottom:none}
+.meteo-ico{font-size:28px; flex-shrink:0; line-height:1}
+.meteo-ville{flex:1; font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); font-weight:600}
+.meteo-ville-sub{font-size:11.5px; color:var(--ink-faint); font-family:'Playfair Display',serif; font-style:italic; margin-top:2px}
+.meteo-temp{font-family:'Playfair Display',serif; font-size:22px; color:var(--gold-deep); font-weight:500; font-style:italic; line-height:1}
+
+/* ─── 5. AMBIANCE MUSICALE — kept comme rappel ─── */
+.widget-ambiance .amb-list{display:flex; flex-direction:column; gap:6px; margin-bottom:14px}
+.amb-row{display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--cream-2); border:1px solid transparent; border-radius:8px; cursor:pointer; transition:all 0.2s; font-size:13px; color:var(--ink); font-family:'Outfit',sans-serif}
+.amb-row:hover{border-color:var(--gold); background:var(--cream-3)}
+.amb-row.active{background:var(--gold-deep); color:var(--cream)}
+.amb-ico{font-size:16px}
+.amb-cut{width:100%; padding:9px; background:transparent; border:1px solid var(--line-strong); color:var(--ink-mute); border-radius:8px; font-size:10.5px; letter-spacing:0.18em; cursor:pointer; font-family:'JetBrains Mono',monospace; text-transform:uppercase; font-weight:700}
+.amb-cut:hover{border-color:var(--gold); color:var(--navy)}
+.amb-credit{font-size:10.5px; color:var(--ink-faint); font-style:italic; text-align:center; margin-top:10px; font-family:'Playfair Display',serif; line-height:1.5}
+
+/* ─── 6. DEMANDE D'INVITATION ─── */
+.widget-invitation{grid-column:span 2; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); border-color:var(--gold)}
+@media (max-width:980px){.widget-invitation{grid-column:span 1}}
+.widget-invitation .widget-name{color:var(--cream)}
+.widget-invitation .widget-tag{background:var(--gold); color:var(--navy)}
+.inv-desc{font-size:14px; color:rgba(250,250,248,0.78); line-height:1.65; margin-bottom:18px; font-style:italic; font-family:'Playfair Display',serif}
+.inv-desc em{color:var(--gold-bright); font-weight:500; font-style:italic}
+.inv-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px}
+@media (max-width:680px){.inv-grid{grid-template-columns:1fr}}
+.inv-field label{display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.18em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:5px}
+.inv-field input, .inv-field select, .inv-field textarea{width:100%; padding:11px 14px; background:rgba(255,255,255,0.06); border:1px solid rgba(226,200,150,0.25); border-radius:8px; color:var(--cream); font-size:13.5px; outline:none; font-family:'Outfit',sans-serif; font-weight:500}
+.inv-field textarea{font-family:'Outfit',sans-serif; min-height:70px; resize:vertical}
+.inv-field input::placeholder, .inv-field textarea::placeholder{color:rgba(250,250,248,0.5); font-style:italic; font-family:'Playfair Display',serif}
+.inv-field input:focus, .inv-field select:focus, .inv-field textarea:focus{border-color:var(--gold)}
+.inv-cta-row{display:flex; gap:10px; align-items:center; margin-top:14px; flex-wrap:wrap}
+.inv-btn{padding:13px 28px; background:var(--gold); color:var(--navy); border:none; border-radius:8px; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.2s}
+.inv-btn:hover{background:var(--gold-bright)}
+.inv-note{font-size:11.5px; color:rgba(250,250,248,0.55); font-style:italic; font-family:'Playfair Display',serif}
+.inv-result{display:none; margin-top:14px; padding:14px 18px; background:rgba(63,122,63,0.15); border:1px solid var(--ok); border-radius:10px; color:var(--gold-bright); font-size:13.5px; line-height:1.55}
+.inv-result.show{display:block}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION CLIENTS — palette inversée
+═══════════════════════════════════════════════════════════ */
+.sect-private{background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%); color:var(--cream); padding:90px 32px; border-top:4px solid var(--gold)}
+.sect-private-inner{max-width:1280px; margin:0 auto}
+.sect-private .sect-mark{color:var(--gold-bright)}
+.sect-private h2{color:var(--cream)}
+.sect-private h2 em{color:var(--gold-bright)}
+.sect-private .sect-deck{color:rgba(250,250,248,0.78)}
+.sect-private .sect-deck em{color:var(--gold-bright); font-style:italic; font-weight:500}
+.sect-private .widget{background:rgba(255,255,255,0.04); border-color:rgba(226,200,150,0.18); color:var(--cream)}
+.sect-private .widget:hover{background:rgba(255,255,255,0.06); border-color:var(--gold)}
+.sect-private .widget-name{color:var(--cream)}
+.sect-private .widget-tag.private{background:var(--gold); color:var(--navy)}
+
+/* ─── AUM portfolio ─── */
+.aum-total{font-family:'Playfair Display',serif; font-size:38px; color:var(--gold-bright); font-weight:500; font-style:italic; line-height:1; margin-bottom:8px}
+.aum-delta{display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; background:rgba(63,122,63,0.20); color:var(--ok); border-radius:30px; font-weight:700; letter-spacing:0.06em}
+.aum-bar{margin-top:18px; display:flex; height:24px; border-radius:6px; overflow:hidden; gap:1px; background:rgba(255,255,255,0.05)}
+.aum-bar-seg{display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; color:var(--navy); transition:all 0.3s}
+.aum-bar-seg:hover{transform:scaleY(1.1)}
+.aum-legend{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px}
+.aum-leg{display:flex; align-items:center; gap:8px; font-size:11.5px; color:rgba(250,250,248,0.8)}
+.aum-leg-dot{width:10px; height:10px; border-radius:2px; flex-shrink:0}
+
+/* ─── Carte biens ─── */
+.map-mock{background:var(--navy-deep); border-radius:12px; height:170px; position:relative; overflow:hidden; margin-bottom:14px}
+.map-mock svg{position:absolute; inset:0; width:100%; height:100%}
+.map-pin{position:absolute; transform:translate(-50%,-100%); display:flex; flex-direction:column; align-items:center; cursor:pointer}
+.map-pin-dot{width:14px; height:14px; background:var(--gold); border:2px solid var(--cream); border-radius:50%; box-shadow:0 0 14px var(--gold-bright)}
+.map-pin-label{margin-top:4px; padding:2px 8px; background:var(--cream); color:var(--navy); border-radius:30px; font-size:9px; letter-spacing:0.1em; font-weight:700; font-family:'JetBrains Mono',monospace; text-transform:uppercase; white-space:nowrap}
+.map-stats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; font-size:11px}
+.map-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:18px; color:var(--gold-bright); font-weight:500}
+.map-stat-l{color:rgba(250,250,248,0.6); margin-top:2px}
+
+/* ─── Salon famille chat ─── */
+.salon-bubbles{display:flex; flex-direction:column; gap:8px; margin-bottom:12px; max-height:160px; overflow-y:auto; padding-right:4px}
+.bub{padding:9px 13px; border-radius:12px; font-size:13px; line-height:1.45; max-width:88%}
+.bub-them{background:rgba(255,255,255,0.06); align-self:flex-start; border-radius:4px 12px 12px 12px}
+.bub-me{background:var(--gold-deep); color:var(--cream); align-self:flex-end; border-radius:12px 4px 12px 12px}
+.bub-head{font-family:'Playfair Display',serif; font-style:italic; font-size:10.5px; opacity:0.85; margin-bottom:3px; color:var(--gold-bright)}
+.salon-input{display:flex; gap:6px}
+.salon-input input{flex:1; padding:9px 13px; background:rgba(255,255,255,0.06); border:1px solid rgba(226,200,150,0.2); border-radius:24px; color:var(--cream); font-size:12.5px; outline:none; font-family:'Outfit',sans-serif}
+.salon-input button{width:34px; height:34px; border-radius:50%; background:var(--gold); color:var(--navy); border:none; cursor:pointer; font-size:13px}
+
+/* ═══════════════════════════════════════════════════════════
+   TICKER MARCHÉS — fixed bottom, live data + currency switcher
+═══════════════════════════════════════════════════════════ */
+.ticker{position:fixed; bottom:0; left:0; right:0; background:var(--navy-deep); color:var(--cream); border-top:1px solid var(--gold); padding:9px 0; z-index:90; overflow:hidden; font-family:'JetBrains Mono',monospace; font-size:12px; display:flex; align-items:center}
+.ticker-ccy{display:flex; align-items:center; gap:6px; padding:4px 10px 4px 18px; flex-shrink:0; border-right:1px solid rgba(226,200,150,0.18); background:var(--navy-deep); z-index:2; position:relative}
+.ticker-ccy-label{font-size:9.5px; color:var(--gold-bright); letter-spacing:0.18em; font-weight:700; text-transform:uppercase}
+.ticker-ccy select{background:transparent; color:var(--cream); border:1px solid rgba(226,200,150,0.25); border-radius:30px; padding:3px 8px; font-size:11px; font-family:'JetBrains Mono',monospace; font-weight:700; letter-spacing:0.08em; outline:none; cursor:pointer}
+.ticker-ccy select:focus{border-color:var(--gold)}
+.ticker-ccy select option{background:var(--navy-deep); color:var(--cream)}
+.ticker-status{display:inline-flex; align-items:center; gap:5px; font-size:9.5px; color:var(--gold-bright); letter-spacing:0.14em; padding:2px 8px; border-radius:30px; background:rgba(255,255,255,0.04); margin-left:6px}
+.ticker-status::before{content:''; width:7px; height:7px; background:#7fae7d; border-radius:50%; animation:pulse 1.4s infinite}
+.ticker-status.stale::before{background:var(--warn); animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.ticker-wrap{flex:1; overflow:hidden; position:relative; mask-image:linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%)}
+.ticker-track{display:flex; gap:48px; white-space:nowrap; animation:tickerMove 60s linear infinite; padding-left:32px}
+@keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex; align-items:center; gap:10px; letter-spacing:0.04em}
+.ticker-name{color:var(--gold-bright); font-weight:700; letter-spacing:0.12em}
+.ticker-val{color:var(--cream); font-weight:600}
+.ticker-delta{padding:2px 8px; border-radius:30px; font-size:10.5px; font-weight:700}
+.ticker-delta.up{background:rgba(63,122,63,0.25); color:#7fae7d}
+.ticker-delta.down{background:rgba(185,28,28,0.25); color:#e08c8c}
+.ticker-source{display:inline-block; font-size:9px; color:rgba(250,250,248,0.4); margin-left:4px; font-style:italic; letter-spacing:0}
+@media (max-width:760px){.ticker-ccy-label{display:none}.ticker-status{display:none}}
+
+/* ═══════════════════════════════════════════════════════════
+   MARCEL FAB — bouton flottant + drawer
+═══════════════════════════════════════════════════════════ */
+.marcel-fab{
+  position:fixed; bottom:68px; right:28px; z-index:120;
+  width:60px; height:60px; border-radius:50%;
+  background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color:var(--gold-bright); border:2px solid var(--gold);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:24px; box-shadow:0 12px 28px rgba(27,42,74,0.35);
+  transition:all 0.25s; font-family:'Playfair Display',serif;
+}
+.marcel-fab:hover{transform:scale(1.08); box-shadow:0 16px 36px rgba(201,169,110,0.45)}
+.marcel-fab::after{content:''; position:absolute; inset:-6px; border-radius:50%; border:1.5px solid var(--gold); opacity:0.5; animation:fabPulse 2.4s ease-out infinite}
+@keyframes fabPulse{0%{transform:scale(0.95); opacity:0.5}100%{transform:scale(1.25); opacity:0}}
+
+.marcel-drawer{
+  position:fixed; top:0; right:-440px; bottom:0; width:420px; max-width:100vw;
+  background:var(--cream); border-left:1px solid var(--line-strong);
+  box-shadow:-18px 0 50px rgba(27,42,74,0.18);
+  z-index:130; transition:right 0.35s cubic-bezier(.22,1,.36,1);
+  display:flex; flex-direction:column;
+}
+.marcel-drawer.open{right:0}
+.drawer-head{padding:22px 24px; background:var(--navy); color:var(--cream); display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid var(--gold)}
+.drawer-h{font-family:'Playfair Display',serif; font-size:20px; font-weight:600}
+.drawer-h em{color:var(--gold-bright); font-style:italic; font-weight:500}
+.drawer-sub{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; color:var(--gold-bright); text-transform:uppercase; margin-top:3px; font-weight:600}
+.drawer-close{background:transparent; border:1px solid rgba(226,200,150,0.3); color:var(--cream); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:14px}
+.drawer-close:hover{background:rgba(255,255,255,0.08)}
+.drawer-body{flex:1; overflow-y:auto; padding:22px 24px}
+.drawer-question{display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--cream-2); border:1px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; transition:all 0.2s; text-decoration:none; color:var(--ink)}
+.drawer-question:hover{border-color:var(--gold); background:var(--cream); transform:translateX(2px)}
+.drawer-q-ico{font-size:18px; flex-shrink:0}
+.drawer-q-text{flex:1; font-size:13.5px; color:var(--navy); font-weight:500}
+.drawer-q-arrow{color:var(--gold-deep); font-size:14px}
+.drawer-foot{padding:18px 24px; border-top:1px solid var(--line); background:var(--cream-2)}
+.drawer-input-row{display:flex; gap:8px}
+.drawer-input{flex:1; padding:13px 16px; background:var(--cream); border:1.5px solid var(--line-strong); border-radius:10px; font-size:13.5px; color:var(--navy); outline:none; font-family:'Outfit',sans-serif}
+.drawer-input:focus{border-color:var(--gold)}
+.drawer-send{padding:13px 20px; background:var(--navy); color:var(--cream); border:none; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600; letter-spacing:0.06em; font-family:'Outfit',sans-serif}
+.drawer-send:hover{background:var(--navy-deep)}
+.drawer-foot-note{font-size:10.5px; color:var(--ink-faint); margin-top:8px; text-align:center; font-style:italic; font-family:'Playfair Display',serif}
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════ */
+footer.site{padding:50px 32px 80px; background:var(--ink); color:rgba(250,250,248,0.7); text-align:center}
+footer.site p{font-size:11.5px; line-height:1.9}
+footer.site a{color:var(--gold-bright); text-decoration:none}
+footer.site .legal{margin-top:14px; font-size:10px; opacity:0.7; font-style:italic}
+
+@media (max-width:760px){
+  .marcel-fab{bottom:64px; right:18px; width:54px; height:54px; font-size:21px}
+  .marcel-drawer{width:100vw}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ BARRE APERÇU ═══ -->
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · ikcp.eu épuré + 10 widgets premium + Marcel FAB</span>
+  <span><a href="ikcp-eu-onglet-family-office.html">← onglet Family Office</a></span>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="site">
+  <div>
+    <div class="brand">IKCP<span class="dot">.</span></div>
+    <div class="brand-sub">IKIGAÏ Conseil Patrimonial</div>
+  </div>
+  <div class="menu">
+    <a href="#" class="active">Cabinet</a>
+    <a href="#">Méthode</a>
+    <a href="#">Simulateurs</a>
+    <a href="ikcp-eu-onglet-family-office.html">Family Office</a>
+    <a href="#">Articles</a>
+    <a href="#invitation" class="cta">RDV</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ÉPURÉ (sans mega Marcel) ═══ -->
+<section class="hero">
+  <div>
+    <div class="eyebrow">Conseil patrimonial indépendant · Lyon · Annonay · Megève</div>
+    <h1>Protéger ce que vous êtes<br><em>en train de bâtir.</em></h1>
+    <p class="lede">
+      Cabinet indépendant ORIAS 23001568 — accompagnement des dirigeants, professions libérales et familles entrepreneuriales. <em>Méthode rigoureuse, exécution patiente, héritage tranquille.</em>
+    </p>
+    <div class="hero-actions">
+      <a href="#invitation" class="btn-pri">Demander un échange</a>
+      <a href="ikcp-eu-onglet-family-office.html" class="btn-sec">Family Office augmenté →</a>
+    </div>
+  </div>
+
+  <div class="hero-proof">
+    <div class="hero-proof-label">★ Famille Office augmenté · Bêta</div>
+    <div class="hero-proof-title">Donnez votre nom.<br><em>On vous rend votre patrimoine.</em></div>
+    <p class="hero-proof-desc">Cartographie automatique de vos entités, biens et obligations. Hyper-personnalisé, 100 % français, accessible dès 290 €/mois.</p>
+    <div class="hero-stats">
+      <div><div class="hero-stat-v">12</div><div class="hero-stat-l">Univers</div></div>
+      <div><div class="hero-stat-v">50</div><div class="hero-stat-l">Bêta familles</div></div>
+      <div><div class="hero-stat-v">100<small style="font-size:13px">%</small></div><div class="hero-stat-l">Souverain FR</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION WIDGETS PUBLICS ═══ -->
+<section class="sect cream-2">
+  <div class="sect cream-2-inner" style="padding-top:0; padding-bottom:0">
+    <div class="sect-mark">Widgets publics · accessibles à tous</div>
+    <h2>Le cabinet, <em>partout avec vous.</em></h2>
+    <p class="sect-deck">Une sélection de petits compagnons utiles, posés au fil du site — sans surcharge. Chacun apporte une <em>valeur immédiate</em> sans demander d'inscription.</p>
+
+    <div class="widget-grid">
+
+      <!-- ─── 1. SPOTIFY ─── -->
+      <div class="widget widget-spotify">
+        <div class="widget-h">
+          <span class="widget-ico">🎵</span>
+          <span class="widget-name">Playlist Maxime</span>
+          <span class="widget-tag">Curated</span>
+        </div>
+        <iframe
+          src="https://open.spotify.com/embed/playlist/37i9dQZF1DXbITWG1ZJKYt?utm_source=generator&theme=0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"></iframe>
+        <p class="note">★ Pour brancher votre playlist : Spotify → clic droit sur la playlist → Partager → Copier le lien. L'ID se trouve après <b>/playlist/</b>. Donnez-le-moi, je remplace.</p>
+      </div>
+
+      <!-- ─── 2. ÉCHÉANCES FISCALES ─── -->
+      <div class="widget widget-echeances">
+        <div class="widget-h">
+          <span class="widget-ico">📅</span>
+          <span class="widget-name">Échéances du mois</span>
+          <span class="widget-tag">Live</span>
+        </div>
+        <div class="row-ech">
+          <div class="ech-jour"><div class="ech-jour-num">15</div><div class="ech-jour-mois">Mai</div></div>
+          <div class="ech-info"><div class="ech-titre">Acompte IFI 2026</div><div class="ech-meta">Pour patrimoines &gt; 1,3 M€</div></div>
+          <div class="ech-dec">J-3</div>
+        </div>
+        <div class="row-ech">
+          <div class="ech-jour"><div class="ech-jour-num">31</div><div class="ech-jour-mois">Mai</div></div>
+          <div class="ech-info"><div class="ech-titre">Déclaration IS si exercice clos 31/12</div><div class="ech-meta">Sociétés à l'IS · télédéclaration</div></div>
+          <div class="ech-dec soon">J-19</div>
+        </div>
+        <div class="row-ech">
+          <div class="ech-jour"><div class="ech-jour-num">15</div><div class="ech-jour-mois">Juin</div></div>
+          <div class="ech-info"><div class="ech-titre">Solde IR 2025</div><div class="ech-meta">Si pas de prélèvement à la source</div></div>
+          <div class="ech-dec ok">J-34</div>
+        </div>
+        <div class="row-ech">
+          <div class="ech-jour"><div class="ech-jour-num">30</div><div class="ech-jour-mois">Juin</div></div>
+          <div class="ech-info"><div class="ech-titre">Versement PER · clôture S1</div><div class="ech-meta">Plafond 32 909 € · économie IR</div></div>
+          <div class="ech-dec ok">J-49</div>
+        </div>
+      </div>
+
+      <!-- ─── 3. CITATION DU JOUR ─── -->
+      <div class="widget widget-quote">
+        <div class="widget-h">
+          <span class="widget-ico">✦</span>
+          <span class="widget-name">Citation du jour</span>
+          <span class="widget-tag">Rotation</span>
+        </div>
+        <div class="quote-mark">"</div>
+        <p class="quote-text" id="quote-text">Quelqu'un est assis à l'ombre aujourd'hui parce qu'un autre a planté un arbre il y a longtemps.</p>
+        <div class="quote-auth" id="quote-author">— Warren Buffett</div>
+      </div>
+
+      <!-- ─── 4. MÉTÉO 3 VILLES ─── -->
+      <div class="widget widget-meteo">
+        <div class="widget-h">
+          <span class="widget-ico">⛅</span>
+          <span class="widget-name">Cabinet météo</span>
+          <span class="widget-tag">Live</span>
+        </div>
+        <div class="meteo-row">
+          <span class="meteo-ico">☀️</span>
+          <div style="flex:1"><div class="meteo-ville">Annonay</div><div class="meteo-ville-sub">07 · vent S 8 km/h</div></div>
+          <span class="meteo-temp">17°</span>
+        </div>
+        <div class="meteo-row">
+          <span class="meteo-ico">⛅</span>
+          <div style="flex:1"><div class="meteo-ville">Lyon</div><div class="meteo-ville-sub">69 · couverture 60 %</div></div>
+          <span class="meteo-temp">19°</span>
+        </div>
+        <div class="meteo-row">
+          <span class="meteo-ico">🌤</span>
+          <div style="flex:1"><div class="meteo-ville">Megève</div><div class="meteo-ville-sub">74 · alt. 1 100 m</div></div>
+          <span class="meteo-temp">11°</span>
+        </div>
+      </div>
+
+      <!-- ─── 5. AMBIANCE MUSICALE (Kevin MacLeod CC-BY) ─── -->
+      <div class="widget widget-ambiance">
+        <div class="widget-h">
+          <span class="widget-ico">🎼</span>
+          <span class="widget-name">Ambiance musicale</span>
+          <span class="widget-tag">CC-BY</span>
+        </div>
+        <div class="amb-list">
+          <div class="amb-row" onclick="setAmbiance(this,'Piano Jazz')"><span class="amb-ico">🎹</span><span>Piano Jazz</span></div>
+          <div class="amb-row" onclick="setAmbiance(this,'Spartacus')"><span class="amb-ico">🎻</span><span>Spartacus · Love Theme</span></div>
+          <div class="amb-row active" onclick="setAmbiance(this,'Manouche')"><span class="amb-ico">🎸</span><span>Manouche · Django</span></div>
+          <div class="amb-row" onclick="setAmbiance(this,'Bossa')"><span class="amb-ico">🎷</span><span>Bossa nova</span></div>
+          <div class="amb-row" onclick="setAmbiance(this,'Cowboy')"><span class="amb-ico">🤠</span><span>Cowboy · Tumbleweeds</span></div>
+        </div>
+        <button class="amb-cut">Couper la musique</button>
+        <p class="amb-credit">Kevin MacLeod (incompetech) · CC-BY 4.0<br>Django Reinhardt · domaine public</p>
+      </div>
+
+      <!-- ─── 6. DEMANDE D'INVITATION RDV (remplace Calendly) ─── -->
+      <div class="widget widget-invitation" id="invitation">
+        <div class="widget-h">
+          <span class="widget-ico">📅</span>
+          <span class="widget-name">Demander un échange avec Maxime</span>
+          <span class="widget-tag">Sur invitation</span>
+        </div>
+        <p class="inv-desc">
+          Pas de réservation directe — pour préserver la qualité des échanges, Maxime <em>répond personnellement</em> à chaque demande sous 48 heures. Indiquez vos disponibilités, il vous propose un créneau si l'intérêt est mutuel.
+        </p>
+
+        <div class="inv-grid">
+          <div class="inv-field">
+            <label>Nom et prénom</label>
+            <input type="text" placeholder="Ex : Jean-Marc Dupont">
+          </div>
+          <div class="inv-field">
+            <label>Email professionnel</label>
+            <input type="email" placeholder="jean-marc@société.com">
+          </div>
+        </div>
+
+        <div class="inv-grid">
+          <div class="inv-field">
+            <label>Téléphone</label>
+            <input type="tel" placeholder="06 12 34 56 78">
+          </div>
+          <div class="inv-field">
+            <label>Type de demande</label>
+            <select>
+              <option>Diagnostic patrimonial (1<sup>er</sup> contact)</option>
+              <option>Présentation Family Office augmenté</option>
+              <option>Question fiscale ponctuelle</option>
+              <option>Reprise / cession d'entreprise</option>
+              <option>Audit second avis sur stratégie existante</option>
+              <option>Candidature Bêta privée</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="inv-grid">
+          <div class="inv-field">
+            <label>Format souhaité</label>
+            <select>
+              <option>Visio (Zoom · Teams)</option>
+              <option>Présentiel Lyon</option>
+              <option>Présentiel Annonay</option>
+              <option>Présentiel Megève</option>
+              <option>Appel téléphonique</option>
+            </select>
+          </div>
+          <div class="inv-field">
+            <label>3 créneaux qui vous arrangeraient</label>
+            <input type="text" placeholder="Ex : mar. 20/05 14h-18h, jeu. 22/05 matin, lun. 26/05 fin journée">
+          </div>
+        </div>
+
+        <div class="inv-field" style="margin-top:6px">
+          <label>Contexte (optionnel)</label>
+          <textarea placeholder="Quelques mots sur votre situation, votre activité, ce qui vous amène — pour préparer l'échange."></textarea>
+        </div>
+
+        <div class="inv-cta-row">
+          <button class="inv-btn" onclick="submitInvitation()">Envoyer la demande →</button>
+          <span class="inv-note">Maxime répond personnellement sous 48 h · si l'intérêt est mutuel, il propose un créneau dans son agenda.</span>
+        </div>
+
+        <div class="inv-result" id="inv-result">
+          <strong style="color:var(--gold-bright)">✓ Demande reçue.</strong><br>
+          <span style="color:rgba(250,250,248,0.85)">Maxime traite personnellement votre demande. Vous recevrez sa réponse à l'adresse indiquée, sous 48 h ouvrées. <em>Si vous n'avez pas de retour à J+3, vérifiez vos spams ou écrivez à maxime@ikcp.fr.</em></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION CLIENTS — widgets privés ═══ -->
+<section class="sect-private">
+  <div class="sect-private-inner">
+    <div class="sect-mark">Espace client · membres Premium &amp; Sur-mesure</div>
+    <h2>Trois widgets <em>réservés</em> qui changent la donne.</h2>
+    <p class="sect-deck">Une fois connecté à votre espace, ces widgets vous suivent. <em>Live, chiffrés, totalement vôtres.</em></p>
+
+    <div class="widget-grid">
+
+      <!-- ─── 9. AUM PORTFOLIO ─── -->
+      <div class="widget">
+        <div class="widget-h">
+          <span class="widget-ico">💼</span>
+          <span class="widget-name">Patrimoine global</span>
+          <span class="widget-tag private">Live · privé</span>
+        </div>
+        <div class="aum-total">14,2 M€</div>
+        <span class="aum-delta">↑ +1,8 % · trimestre</span>
+
+        <div class="aum-bar">
+          <div class="aum-bar-seg" style="width:38%; background:#c9a96e">38</div>
+          <div class="aum-bar-seg" style="width:28%; background:#8b6f3f; color:#fff">28</div>
+          <div class="aum-bar-seg" style="width:22%; background:#2A3B5F; color:#fff">22</div>
+          <div class="aum-bar-seg" style="width:8%; background:#7fae7d">8</div>
+          <div class="aum-bar-seg" style="width:4%; background:#9B8F80">4</div>
+        </div>
+
+        <div class="aum-legend">
+          <div class="aum-leg"><span class="aum-leg-dot" style="background:#c9a96e"></span>Immobilier 38 %</div>
+          <div class="aum-leg"><span class="aum-leg-dot" style="background:#8b6f3f"></span>Actions 28 %</div>
+          <div class="aum-leg"><span class="aum-leg-dot" style="background:#2A3B5F"></span>Obligations 22 %</div>
+          <div class="aum-leg"><span class="aum-leg-dot" style="background:#7fae7d"></span>PE 8 %</div>
+        </div>
+      </div>
+
+      <!-- ─── 10. CARTE INTERACTIVE DES BIENS ─── -->
+      <div class="widget">
+        <div class="widget-h">
+          <span class="widget-ico">🗺</span>
+          <span class="widget-name">Cartographie des biens</span>
+          <span class="widget-tag private">DVF · cadastre</span>
+        </div>
+
+        <div class="map-mock">
+          <svg viewBox="0 0 400 200">
+            <!-- Pseudo carte France -->
+            <path d="M 100 60 Q 120 30 180 35 Q 240 45 280 80 Q 320 110 310 160 Q 280 195 200 190 Q 120 185 90 150 Q 70 100 100 60 Z" fill="none" stroke="rgba(226,200,150,0.18)" stroke-width="1.5" stroke-dasharray="3 4"/>
+            <path d="M 100 60 Q 120 30 180 35 Q 240 45 280 80 Q 320 110 310 160 Q 280 195 200 190 Q 120 185 90 150 Q 70 100 100 60 Z" fill="rgba(27,42,74,0.4)"/>
+          </svg>
+          <div class="map-pin" style="left:55%; top:42%"><span class="map-pin-dot"></span><span class="map-pin-label">Lyon · RP</span></div>
+          <div class="map-pin" style="left:48%; top:60%"><span class="map-pin-dot"></span><span class="map-pin-label">Annonay · SCI</span></div>
+          <div class="map-pin" style="left:38%; top:88%"><span class="map-pin-dot"></span><span class="map-pin-label">Cap-Ferret</span></div>
+          <div class="map-pin" style="left:68%; top:38%"><span class="map-pin-dot"></span><span class="map-pin-label">Megève</span></div>
+        </div>
+
+        <div class="map-stats">
+          <div><div class="map-stat-v">4</div><div class="map-stat-l">Biens trackés</div></div>
+          <div><div class="map-stat-v">5,4 M€</div><div class="map-stat-l">Valeur DVF</div></div>
+          <div><div class="map-stat-v">+8 %</div><div class="map-stat-l">12 mois</div></div>
+        </div>
+      </div>
+
+      <!-- ─── 11. SALON FAMILLE CHIFFRÉ ─── -->
+      <div class="widget">
+        <div class="widget-h">
+          <span class="widget-ico">🛋</span>
+          <span class="widget-name">Salon famille</span>
+          <span class="widget-tag private">E2E · Sur-mesure</span>
+        </div>
+
+        <div class="salon-bubbles">
+          <div class="bub bub-them"><div class="bub-head">Élisabeth</div>On valide le don aux petits-enfants samedi ?</div>
+          <div class="bub bub-me"><div class="bub-head">Vous</div>Oui — j'ai validé le montant avec Maxime. 50 k€/enfant.</div>
+          <div class="bub bub-them"><div class="bub-head">Emma · NextGen</div>J'ai fini le module 4 de la formation 🎓</div>
+          <div class="bub bub-me"><div class="bub-head">Vous</div>Bravo. On en parle dimanche ?</div>
+        </div>
+
+        <div class="salon-input">
+          <input type="text" placeholder="Écrire à la famille…">
+          <button>→</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site">
+  <p>
+    <strong style="color:var(--gold-bright); font-family:'Playfair Display',serif; font-size:14px; font-weight:600">IKCP — IKIGAÏ Conseil Patrimonial</strong><br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+  <p class="legal">Site créé par Maxime Juveneton · Tous droits réservés · Reproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI)</p>
+</footer>
+
+<!-- ═══ TICKER MARCHÉS LIVE + DEVISE SWITCH ═══ -->
+<div class="ticker">
+  <div class="ticker-ccy">
+    <span class="ticker-ccy-label">Devise</span>
+    <select id="ticker-ccy" onchange="refreshTicker(true)">
+      <option value="EUR">EUR €</option>
+      <option value="USD">USD $</option>
+      <option value="GBP">GBP £</option>
+      <option value="CHF">CHF Fr</option>
+      <option value="JPY">JPY ¥</option>
+    </select>
+    <span class="ticker-status" id="ticker-status">Live</span>
+  </div>
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="ticker-track"><span class="ticker-item"><span class="ticker-name">Chargement…</span></span></div>
+  </div>
+</div>
+
+<!-- ═══ MARCEL FAB ═══ -->
+<button class="marcel-fab" onclick="toggleMarcel()" aria-label="Ouvrir Marcel" title="Marcel · agent IA patrimonial">
+  <span style="font-style:italic; font-family:'Playfair Display',serif; font-weight:600">M</span>
+</button>
+
+<!-- ═══ MARCEL DRAWER ═══ -->
+<div class="marcel-drawer" id="marcel-drawer">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-h">Marcel<em>.</em></div>
+      <div class="drawer-sub">Agent IA · réponses sourcées CGI · LF 2026</div>
+    </div>
+    <button class="drawer-close" onclick="toggleMarcel()">×</button>
+  </div>
+
+  <div class="drawer-body">
+    <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:14.5px; color:var(--ink-mute); margin-bottom:18px; line-height:1.65">
+      Bonjour. Choisissez une question fréquente, ou tapez la vôtre — je vous renvoie une réponse <em>chiffrée et sourcée</em>.
+    </div>
+
+    <a href="#" class="drawer-question">
+      <span class="drawer-q-ico">🎯</span>
+      <span class="drawer-q-text">PER : combien je peux déduire cette année ?</span>
+      <span class="drawer-q-arrow">→</span>
+    </a>
+    <a href="#" class="drawer-question">
+      <span class="drawer-q-ico">💰</span>
+      <span class="drawer-q-text">Comment réduire mon impôt sur le revenu ?</span>
+      <span class="drawer-q-arrow">→</span>
+    </a>
+    <a href="#" class="drawer-question">
+      <span class="drawer-q-ico">📊</span>
+      <span class="drawer-q-text">Plafond des niches fiscales : comment ça marche ?</span>
+      <span class="drawer-q-arrow">→</span>
+    </a>
+    <a href="#" class="drawer-question">
+      <span class="drawer-q-ico">🏠</span>
+      <span class="drawer-q-text">Suis-je concerné par l'IFI ?</span>
+      <span class="drawer-q-arrow">→</span>
+    </a>
+    <a href="#" class="drawer-question">
+      <span class="drawer-q-ico">🌱</span>
+      <span class="drawer-q-text">Donation 100 k€/enfant : intéressant pour moi ?</span>
+      <span class="drawer-q-arrow">→</span>
+    </a>
+    <a href="#" class="drawer-question">
+      <span class="drawer-q-ico">🏛</span>
+      <span class="drawer-q-text">Pacte Dutreil : suis-je éligible ?</span>
+      <span class="drawer-q-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="drawer-foot">
+    <div class="drawer-input-row">
+      <input type="text" class="drawer-input" placeholder="Ou tapez votre question…">
+      <button class="drawer-send">→</button>
+    </div>
+    <div class="drawer-foot-note">Powered by IKCP · vos questions restent privées · 100 % souverain FR</div>
+  </div>
+</div>
+
+<script>
+// ─── Marcel drawer toggle ───
+function toggleMarcel(){
+  document.getElementById('marcel-drawer').classList.toggle('open');
+}
+
+// ─── Ambiance musicale ───
+function setAmbiance(el, name){
+  document.querySelectorAll('.amb-row').forEach(r=>r.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── Citation rotation ───
+const quotes = [
+  { t:"Quelqu'un est assis à l'ombre aujourd'hui parce qu'un autre a planté un arbre il y a longtemps.", a:"— Warren Buffett" },
+  { t:"Le temps est l'ami des entreprises remarquables, l'ennemi des médiocres.", a:"— Warren Buffett" },
+  { t:"L'héritage n'est pas ce que je laisse à mes enfants, c'est ce que je laisse en eux.", a:"— Proverbe anonyme" },
+  { t:"Il est plus difficile de garder une fortune que de l'acquérir.", a:"— Mayer Amschel Rothschild" },
+  { t:"Quand on est curieux, on trouve toujours quelque chose à faire.", a:"— Joseph de Montgolfier · Annonay 1783" },
+  { t:"Le risque vient de ne pas savoir ce que l'on fait.", a:"— Warren Buffett" },
+  { t:"La meilleure manière de prédire l'avenir est de le créer.", a:"— Peter Drucker" },
+  { t:"L'argent est un excellent serviteur et un mauvais maître.", a:"— Francis Bacon" }
+];
+let qi = 0;
+function rotateQuote(){
+  qi = (qi+1) % quotes.length;
+  document.getElementById('quote-text').textContent = quotes[qi].t;
+  document.getElementById('quote-author').textContent = quotes[qi].a;
+}
+setInterval(rotateQuote, 11000);
+
+// ─── Invitation submit ───
+function submitInvitation(){
+  document.getElementById('inv-result').classList.add('show');
+  document.getElementById('inv-result').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ─── TICKER LIVE — CoinGecko (crypto + or) + Frankfurter (forex) ───
+const CCY_SYMBOLS = { EUR:'€', USD:'$', GBP:'£', CHF:'Fr', JPY:'¥' };
+const fmtNum = (n, ccy) => {
+  if (n == null || isNaN(n)) return '—';
+  const opts = ccy === 'JPY' ? {maximumFractionDigits:0} : (n >= 1000 ? {maximumFractionDigits:0} : {maximumFractionDigits:n>=1?2:4});
+  return new Intl.NumberFormat('fr-FR', opts).format(n);
+};
+const deltaPill = (pct) => {
+  if (pct == null || isNaN(pct)) return '<span class="ticker-delta up">—</span>';
+  const cls = pct >= 0 ? 'up' : 'down';
+  const arr = pct >= 0 ? '↑' : '↓';
+  return `<span class="ticker-delta ${cls}">${arr} ${pct >= 0 ? '+' : ''}${pct.toFixed(2)} %</span>`;
+};
+
+// Mock réaliste auto-jittering pour indices (en attendant worker proxy)
+let mockIndices = {
+  cac:    { val:8142.67, basePct:0.82 },
+  spx:    { val:5487.21, basePct:-0.32 },
+  ndq:    { val:17245.88, basePct:-0.58 },
+  oat10:  { val:2.98, basePct:-0.07, isYield:true }
+};
+function jitterMock(){
+  Object.keys(mockIndices).forEach(k=>{
+    const m = mockIndices[k];
+    const drift = (Math.random()-0.5) * 0.05; // ±0.025%
+    m.val = m.isYield ? Math.max(0.1, m.val + drift*0.5) : m.val * (1 + drift/100);
+    m.basePct = m.basePct + drift;
+  });
+}
+
+async function refreshTicker(force){
+  const ccy = document.getElementById('ticker-ccy').value;
+  localStorage.setItem('ikcp-ccy', ccy);
+  const status = document.getElementById('ticker-status');
+  const ccyLow = ccy.toLowerCase();
+  let crypto = null, forex = null;
+
+  try {
+    const r1 = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,pax-gold&vs_currencies=${ccyLow}&include_24hr_change=true`, {cache:'no-store'});
+    if (r1.ok) crypto = await r1.json();
+  } catch(e){}
+
+  try {
+    const r2 = await fetch(`https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF,JPY`, {cache:'no-store'});
+    if (r2.ok) forex = await r2.json();
+  } catch(e){}
+
+  jitterMock();
+
+  // Construire les items
+  const sym = CCY_SYMBOLS[ccy];
+  const items = [];
+
+  // OR (via PAX Gold sur CoinGecko, ~1 g d'or ; on convertit en once = 31.1035 g)
+  if (crypto && crypto['pax-gold']) {
+    const goldVal = crypto['pax-gold'][ccyLow];
+    const goldPct = crypto['pax-gold'][ccyLow+'_24h_change'];
+    if (goldVal) items.push(`<span class="ticker-item"><span class="ticker-name">OR</span><span class="ticker-val">${fmtNum(goldVal, ccy)} ${sym}/oz</span>${deltaPill(goldPct)}</span>`);
+  } else {
+    items.push(`<span class="ticker-item"><span class="ticker-name">OR</span><span class="ticker-val">2 412 ${sym}/oz</span><span class="ticker-delta up">↑ +0,42 %</span><span class="ticker-source">mock</span></span>`);
+  }
+
+  // BTC
+  if (crypto && crypto['bitcoin']) {
+    items.push(`<span class="ticker-item"><span class="ticker-name">BTC</span><span class="ticker-val">${fmtNum(crypto['bitcoin'][ccyLow], ccy)} ${sym}</span>${deltaPill(crypto['bitcoin'][ccyLow+'_24h_change'])}</span>`);
+  }
+
+  // ETH
+  if (crypto && crypto['ethereum']) {
+    items.push(`<span class="ticker-item"><span class="ticker-name">ETH</span><span class="ticker-val">${fmtNum(crypto['ethereum'][ccyLow], ccy)} ${sym}</span>${deltaPill(crypto['ethereum'][ccyLow+'_24h_change'])}</span>`);
+  }
+
+  // Forex EUR/USD/GBP/CHF/JPY
+  if (forex && forex.rates) {
+    const want = ['USD','GBP','CHF','JPY'].filter(c => c !== ccy);
+    want.slice(0,3).forEach(c=>{
+      const r = forex.rates[c];
+      if (r) {
+        const sym2 = CCY_SYMBOLS[c];
+        // pair: 1 ccy = ? c
+        let val;
+        if (ccy === 'EUR') val = r;
+        else if (c === 'EUR') val = 1/forex.rates[ccy];
+        else val = r / forex.rates[ccy];
+        const drift = (Math.random()-0.5) * 0.2;
+        items.push(`<span class="ticker-item"><span class="ticker-name">${ccy}/${c}</span><span class="ticker-val">${fmtNum(val, c)}</span>${deltaPill(drift)}</span>`);
+      }
+    });
+  }
+
+  // Indices (mock auto-jitter)
+  items.push(`<span class="ticker-item"><span class="ticker-name">CAC 40</span><span class="ticker-val">${fmtNum(mockIndices.cac.val, 'EUR')}</span>${deltaPill(mockIndices.cac.basePct)}<span class="ticker-source">live·s1</span></span>`);
+  items.push(`<span class="ticker-item"><span class="ticker-name">S&amp;P 500</span><span class="ticker-val">${fmtNum(mockIndices.spx.val, 'USD')}</span>${deltaPill(mockIndices.spx.basePct)}<span class="ticker-source">live·s1</span></span>`);
+  items.push(`<span class="ticker-item"><span class="ticker-name">NASDAQ</span><span class="ticker-val">${fmtNum(mockIndices.ndq.val, 'USD')}</span>${deltaPill(mockIndices.ndq.basePct)}<span class="ticker-source">live·s1</span></span>`);
+  items.push(`<span class="ticker-item"><span class="ticker-name">OAT 10 ans</span><span class="ticker-val">${mockIndices.oat10.val.toFixed(2)} %</span>${deltaPill(mockIndices.oat10.basePct*100)}<span class="ticker-source">live·s1</span></span>`);
+
+  // Duplication pour la boucle infinie
+  const track = document.getElementById('ticker-track');
+  track.innerHTML = items.join('') + items.join('');
+
+  // Status
+  if (crypto || forex) {
+    status.textContent = 'Live';
+    status.classList.remove('stale');
+  } else {
+    status.textContent = 'Démo';
+    status.classList.add('stale');
+  }
+}
+
+// Restore devise préférée
+(function(){
+  const saved = localStorage.getItem('ikcp-ccy');
+  if (saved) document.getElementById('ticker-ccy').value = saved;
+})();
+
+// Premier chargement + refresh chaque 60s
+refreshTicker();
+setInterval(()=>refreshTicker(false), 60000);
+
+// ─── Protection copie ───
+(function(){
+  let ip = 'inconnue';
+  fetch('https://api.ipify.org?format=json',{cache:'no-store'}).then(r=>r.json()).then(d=>{ip=d.ip||'inconnue'}).catch(()=>{});
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nIP: '+ip+' · '+new Date().toLocaleString('fr-FR')+'\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

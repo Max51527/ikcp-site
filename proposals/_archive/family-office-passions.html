@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP Family Office — Vos passions, vos plaisirs · application mobile</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B2A4A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP Family Office">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+
+  /* Couleurs passions (gradients lifestyle) */
+  --p-auto:linear-gradient(135deg, #2c1810 0%, #5c2818 100%);
+  --p-watch:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  --p-wine:linear-gradient(135deg, #4a1421 0%, #7a1f2e 100%);
+  --p-yacht:linear-gradient(135deg, #0c4a6e 0%, #075985 100%);
+  --p-horse:linear-gradient(135deg, #3d2817 0%, #5d3a1f 100%);
+  --p-golf:linear-gradient(135deg, #14532d 0%, #166534 100%);
+  --p-arts:linear-gradient(135deg, #581c87 0%, #6b21a8 100%);
+  --p-travel:linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  --p-gastro:linear-gradient(135deg, #92400e 0%, #b45309 100%);
+}
+html{scroll-behavior:smooth}
+html,body{background:var(--cream-2); color:var(--ink); font-family:'Outfit',sans-serif; font-weight:400; line-height:1.55; letter-spacing:-0.005em; -webkit-font-smoothing:antialiased; min-height:100vh}
+
+/* ─── BARRE APERÇU ─── */
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:1000}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT — desktop affiche un téléphone Android
+   mobile passe en fullscreen app
+═══════════════════════════════════════════════════════════ */
+.desktop-wrap{padding:30px 20px 60px; background:linear-gradient(180deg, var(--cream-2) 0%, var(--cream-3) 100%); min-height:100vh}
+.desktop-frame{display:flex; gap:48px; max-width:1280px; margin:0 auto; align-items:flex-start; flex-wrap:wrap; justify-content:center}
+.desktop-info{flex:1; min-width:280px; max-width:480px}
+.desktop-info h1{font-family:'Playfair Display',serif; font-size:38px; color:var(--navy); font-weight:500; letter-spacing:-0.02em; line-height:1.1; margin-bottom:12px}
+.desktop-info h1 em{color:var(--gold-deep); font-style:italic}
+.desktop-info p{font-size:15px; color:var(--ink-mute); margin-bottom:18px; line-height:1.7}
+.desktop-info p em{color:var(--navy); font-style:italic; font-family:'Playfair Display',serif; font-weight:500}
+.di-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.28em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:14px}
+.di-mark::before{content:'◆ '; color:var(--gold)}
+.di-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; padding-top:20px; border-top:1px dashed var(--line)}
+.di-stat{padding:12px 14px; background:var(--cream); border-radius:10px}
+.di-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:var(--gold-deep); font-weight:500; line-height:1}
+.di-stat-l{font-size:10.5px; color:var(--ink-faint); margin-top:3px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600}
+.di-install{margin-top:24px; padding:16px 20px; background:var(--navy); color:var(--cream); border-radius:14px}
+.di-install-h{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.di-install-p{font-size:13px; color:rgba(250,250,248,0.85); line-height:1.55}
+.di-install-p b{color:var(--gold-bright); font-weight:600}
+
+/* ─── PHONE FRAME (desktop) ─── */
+.phone{
+  width:393px; flex-shrink:0;
+  background:var(--navy-deep); border-radius:50px; padding:14px;
+  box-shadow:0 30px 80px rgba(27,42,74,0.30), 0 12px 32px rgba(27,42,74,0.18);
+  position:sticky; top:96px;
+}
+.phone-screen{
+  width:100%; height:780px; background:var(--cream);
+  border-radius:38px; overflow:hidden; position:relative;
+  border:1px solid #000;
+}
+.phone-notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:120px; height:24px; background:var(--navy-deep); border-radius:0 0 16px 16px; z-index:50}
+
+@media (max-width:760px){
+  .desktop-wrap{padding:0; background:var(--cream)}
+  .desktop-frame{flex-direction:column-reverse; gap:0; max-width:none}
+  .desktop-info{display:none}
+  .phone{width:100vw; padding:0; border-radius:0; box-shadow:none; position:static}
+  .phone-screen{height:100vh; border-radius:0; border:none}
+  .phone-notch{display:none}
+  .mockup-bar{display:none}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   APP UI (à l'intérieur du phone screen)
+═══════════════════════════════════════════════════════════ */
+.app{display:flex; flex-direction:column; height:100%; background:var(--cream); overflow:hidden}
+
+/* ─── APP TOPBAR ─── */
+.app-top{padding:34px 20px 14px; background:var(--cream); position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line)}
+.app-top-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
+.app-greet{font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:var(--gold-deep); font-weight:500}
+.app-avatar{width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--gold-deep)); display:flex; align-items:center; justify-content:center; color:var(--navy); font-family:'Playfair Display',serif; font-weight:600; font-style:italic; font-size:16px; box-shadow:0 4px 12px rgba(201,169,110,0.30)}
+.app-title{font-family:'Playfair Display',serif; font-size:24px; color:var(--navy); font-weight:600; line-height:1.05; letter-spacing:-0.015em}
+.app-title em{color:var(--gold-deep); font-style:italic}
+.app-sub{font-size:12px; color:var(--ink-faint); margin-top:3px; font-style:italic; font-family:'Playfair Display',serif}
+
+/* ─── CONTENT SCROLL ─── */
+.app-body{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:88px}
+.app-body::-webkit-scrollbar{width:0; display:none}
+
+/* ─── HERO SECTION ─── */
+.app-hero{padding:18px 20px 8px}
+.hero-quote{font-family:'Playfair Display',serif; font-style:italic; font-size:18px; color:var(--navy); font-weight:500; line-height:1.35; margin-bottom:8px}
+.hero-quote em{color:var(--gold-deep)}
+.hero-quote-a{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gold-deep); letter-spacing:0.16em; text-transform:uppercase; font-weight:700}
+
+/* ─── CHIPS SECTION SCROLL HORIZONTAL ─── */
+.chips-row{display:flex; gap:8px; padding:14px 20px; overflow-x:auto; -webkit-overflow-scrolling:touch}
+.chips-row::-webkit-scrollbar{display:none}
+.chip-cat{flex-shrink:0; padding:8px 14px; background:var(--cream-2); border:1px solid var(--line-strong); border-radius:30px; font-size:12px; color:var(--ink-mute); font-weight:600; cursor:pointer; transition:all 0.2s; white-space:nowrap; font-family:'Outfit',sans-serif}
+.chip-cat.active{background:var(--navy); color:var(--cream); border-color:var(--navy)}
+.chip-cat:active{transform:scale(0.95)}
+
+/* ─── PASSIONS CARDS ─── */
+.passions-grid{padding:8px 20px 20px; display:flex; flex-direction:column; gap:14px}
+
+.passion-card{
+  position:relative; border-radius:18px; overflow:hidden;
+  min-height:200px; display:flex; flex-direction:column; justify-content:flex-end;
+  padding:18px 18px 16px; cursor:pointer; transition:all 0.3s; color:#fff;
+  box-shadow:0 10px 26px rgba(0,0,0,0.14);
+}
+.passion-card:active{transform:scale(0.98)}
+.passion-card::before{content:''; position:absolute; inset:0; background:inherit; z-index:0}
+.passion-card::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 70%, rgba(0,0,0,0.75) 100%); z-index:1}
+.pc-auto{background:var(--p-auto)}
+.pc-watch{background:var(--p-watch)}
+.pc-wine{background:var(--p-wine)}
+.pc-yacht{background:var(--p-yacht)}
+.pc-horse{background:var(--p-horse)}
+.pc-golf{background:var(--p-golf)}
+.pc-arts{background:var(--p-arts)}
+.pc-travel{background:var(--p-travel)}
+.pc-gastro{background:var(--p-gastro)}
+
+.passion-ico-bg{position:absolute; top:18px; right:18px; font-size:54px; opacity:0.28; z-index:2; line-height:1}
+.passion-tag{position:absolute; top:18px; left:18px; padding:4px 9px; background:rgba(255,255,255,0.18); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.16em; color:#fff; font-weight:700; text-transform:uppercase; z-index:3}
+.passion-content{position:relative; z-index:3}
+.passion-name{font-family:'Playfair Display',serif; font-size:22px; font-weight:600; line-height:1.15; margin-bottom:6px; letter-spacing:-0.005em}
+.passion-name em{font-style:italic; color:var(--gold-bright); font-weight:500}
+.passion-desc{font-size:13px; color:rgba(255,255,255,0.82); line-height:1.55; margin-bottom:14px; max-width:280px}
+.passion-actions{display:flex; gap:8px}
+.passion-btn{padding:8px 14px; background:rgba(255,255,255,0.15); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.25); border-radius:24px; color:#fff; font-size:11.5px; font-weight:600; letter-spacing:0.04em; cursor:pointer; transition:all 0.2s; font-family:'Outfit',sans-serif}
+.passion-btn.primary{background:var(--gold); color:var(--navy); border-color:var(--gold); font-weight:700}
+.passion-btn:active{transform:scale(0.95)}
+
+/* ─── EXPERIENCES (calendrier privé) ─── */
+.section-h{padding:24px 20px 10px}
+.section-h-mark{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:6px}
+.section-h-mark::before{content:'§ '; opacity:0.6}
+.section-h-t{font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); font-weight:600; line-height:1.15; letter-spacing:-0.012em}
+.section-h-t em{color:var(--gold-deep); font-style:italic}
+.section-h-sub{font-size:12.5px; color:var(--ink-mute); font-style:italic; font-family:'Playfair Display',serif; margin-top:3px; line-height:1.5}
+
+.exp-list{padding:6px 20px 14px; display:flex; flex-direction:column; gap:10px}
+.exp-card{display:flex; align-items:center; gap:14px; background:var(--cream); border:1px solid var(--line); border-radius:14px; padding:12px 14px; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(27,42,74,0.04)}
+.exp-card:active{transform:scale(0.98); background:var(--cream-2)}
+.exp-date{flex-shrink:0; width:54px; text-align:center; padding:8px 6px; background:var(--cream-2); border-radius:10px; border:1px solid var(--line)}
+.exp-date-d{font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:var(--navy); font-weight:600; line-height:1}
+.exp-date-m{font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.12em; color:var(--gold-deep); text-transform:uppercase; margin-top:2px; font-weight:700}
+.exp-info{flex:1; min-width:0}
+.exp-name{font-family:'Playfair Display',serif; font-size:14.5px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:3px}
+.exp-meta{font-size:11.5px; color:var(--ink-faint); font-style:italic; font-family:'Playfair Display',serif; line-height:1.4}
+.exp-pill{flex-shrink:0; padding:4px 9px; border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:8.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase}
+.exp-pill.full{background:rgba(63,122,63,0.10); color:var(--ok)}
+.exp-pill.sold{background:rgba(184,128,31,0.10); color:var(--warn)}
+.exp-pill.invit{background:rgba(201,169,110,0.18); color:var(--gold-deep)}
+
+/* ─── CONCIERGERIE — banner ─── */
+.concierge-banner{margin:14px 20px; padding:20px 22px; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:18px; color:var(--cream); position:relative; overflow:hidden}
+.concierge-banner::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.cb-mark{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.22em; color:var(--gold-bright); text-transform:uppercase; font-weight:700; margin-bottom:6px}
+.cb-mark::before{content:'★ '}
+.cb-h{font-family:'Playfair Display',serif; font-size:18px; color:var(--cream); font-weight:600; line-height:1.2; margin-bottom:8px}
+.cb-h em{color:var(--gold-bright); font-style:italic}
+.cb-p{font-size:13px; color:rgba(250,250,248,0.85); line-height:1.55; margin-bottom:14px}
+.cb-input-row{display:flex; gap:6px}
+.cb-input{flex:1; padding:11px 14px; background:rgba(255,255,255,0.08); border:1px solid rgba(226,200,150,0.25); border-radius:10px; color:var(--cream); font-size:13px; outline:none; font-family:'Outfit',sans-serif}
+.cb-input::placeholder{color:rgba(250,250,248,0.55); font-style:italic; font-family:'Playfair Display',serif}
+.cb-send{padding:11px 16px; background:var(--gold); color:var(--navy); border:none; border-radius:10px; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer; font-family:'Outfit',sans-serif; flex-shrink:0}
+
+/* ─── COMMENT ÇA MARCHE ─── */
+.howto-grid{padding:6px 20px 16px; display:flex; flex-direction:column; gap:10px}
+.howto-step{display:flex; gap:14px; padding:12px 14px; background:var(--cream); border:1px solid var(--line); border-radius:12px}
+.howto-step-n{flex-shrink:0; width:34px; height:34px; border-radius:50%; background:var(--gold); color:var(--navy); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:600; font-size:16px; font-style:italic}
+.howto-step-c{flex:1}
+.howto-step-h{font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); font-weight:600; line-height:1.2; margin-bottom:2px}
+.howto-step-h em{color:var(--gold-deep); font-style:italic}
+.howto-step-p{font-size:12px; color:var(--ink-mute); line-height:1.5}
+
+/* ─── BOTTOM NAV (Android-style) ─── */
+.bottom-nav{
+  position:absolute; bottom:0; left:0; right:0;
+  height:72px; background:rgba(250,250,248,0.96); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);
+  display:grid; grid-template-columns:repeat(5,1fr);
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:30;
+}
+.bn-item{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:all 0.2s; color:var(--ink-faint); padding:8px 4px; position:relative}
+.bn-item:active{transform:scale(0.92)}
+.bn-item.active{color:var(--gold-deep)}
+.bn-item.active::before{content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:30px; height:3px; background:var(--gold); border-radius:0 0 6px 6px}
+.bn-ico{font-size:21px; line-height:1}
+.bn-lbl{font-size:9.5px; letter-spacing:0.04em; font-weight:600; text-transform:none}
+.bn-item.active .bn-lbl{color:var(--gold-deep); font-weight:700}
+
+/* ─── FOOTER (in app) ─── */
+.app-foot{padding:14px 20px 24px; text-align:center; font-size:10.5px; color:var(--ink-faint); line-height:1.7; font-style:italic; font-family:'Playfair Display',serif}
+.app-foot a{color:var(--gold-deep); text-decoration:none}
+
+/* ─── Floating "Marcel" mini FAB ─── */
+.fab-marcel{
+  position:absolute; bottom:90px; right:18px;
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+  color:var(--gold-bright); border:2px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-weight:600; font-style:italic; font-size:22px;
+  cursor:pointer; box-shadow:0 12px 24px rgba(27,42,74,0.32);
+  z-index:25;
+}
+.fab-marcel::after{content:''; position:absolute; inset:-5px; border-radius:50%; border:1.5px solid var(--gold); opacity:0.4; animation:fabP 2.4s ease-out infinite}
+@keyframes fabP{0%{transform:scale(0.95);opacity:0.5}100%{transform:scale(1.25);opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · Family Office Passions — version mobile/PWA</span>
+  <span><a href="ikcp-eu-onglet-family-office.html">← Family Office</a></span>
+</div>
+
+<div class="desktop-wrap">
+  <div class="desktop-frame">
+
+    <!-- ═══ INFO CÔTÉ GAUCHE (caché en mobile) ═══ -->
+    <div class="desktop-info">
+      <div class="di-mark">Application mobile · iOS &amp; Android · PWA</div>
+      <h1>Le Family Office <em>n'est pas qu'une affaire de chiffres.</em></h1>
+      <p>Quand on a construit ce que vous avez construit, on veut aussi <em>se faire plaisir intelligemment</em>. Collections, voyages, mécénat, gastronomie — autant de passions qui méritent d'être structurées, financées, partagées entre membres de la famille.</p>
+      <p>L'app IKCP transforme vos plaisirs en <em>projets cohérents</em> : un yacht qui devient une SCI fiscalisée, une cave Pétrus qui devient un actif IFI déclaré, une fondation d'art qui devient un levier de transmission.</p>
+
+      <div class="di-stats">
+        <div class="di-stat"><div class="di-stat-v">9</div><div class="di-stat-l">Univers passions</div></div>
+        <div class="di-stat"><div class="di-stat-v">4</div><div class="di-stat-l">Évènements/an</div></div>
+        <div class="di-stat"><div class="di-stat-v">24/7</div><div class="di-stat-l">Conciergerie</div></div>
+      </div>
+
+      <div class="di-install">
+        <div class="di-install-h">📱 Installer comme application</div>
+        <div class="di-install-p">L'app fonctionne hors ligne, s'installe en <b>1 tap</b> sur l'écran d'accueil de votre iPhone ou Android — pas de passage par l'App Store, <b>100 % souverain</b>. Manifest PWA + Service Worker EU.</div>
+      </div>
+    </div>
+
+    <!-- ═══ TÉLÉPHONE ═══ -->
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-notch"></div>
+
+        <div class="app">
+
+          <!-- ─── APP TOPBAR ─── -->
+          <div class="app-top">
+            <div class="app-top-row">
+              <span class="app-greet">Bonjour Joséphine.</span>
+              <div class="app-avatar">D</div>
+            </div>
+            <h1 class="app-title">Vos <em>passions</em>.</h1>
+            <div class="app-sub">12 mai 2026 · 3 nouveautés cette semaine</div>
+          </div>
+
+          <!-- ─── APP BODY scrollable ─── -->
+          <div class="app-body">
+
+            <!-- Hero quote -->
+            <div class="app-hero">
+              <div class="hero-quote">« La vraie richesse, c'est de pouvoir <em>se permettre ce qui nous fait vibrer</em>, sans renoncer à transmettre. »</div>
+              <div class="hero-quote-a">— Méthode IKCP</div>
+            </div>
+
+            <!-- Chips horizontaux -->
+            <div class="chips-row">
+              <div class="chip-cat active">Tout</div>
+              <div class="chip-cat">★ Suggérées</div>
+              <div class="chip-cat">Collections</div>
+              <div class="chip-cat">Sports</div>
+              <div class="chip-cat">Arts</div>
+              <div class="chip-cat">Évasion</div>
+              <div class="chip-cat">Table</div>
+            </div>
+
+            <!-- ─── 9 CARTES PASSIONS ─── -->
+            <div class="passions-grid">
+
+              <div class="passion-card pc-auto">
+                <span class="passion-tag">Collection</span>
+                <span class="passion-ico-bg">🚗</span>
+                <div class="passion-content">
+                  <div class="passion-name">Automobiles <em>de collection</em></div>
+                  <div class="passion-desc">Ferrari 250 GTO, Aston DB5, Porsche 911 air-cooled. Restoration, rallies historiques, track days privés.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Mes 3 véhicules</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-watch">
+                <span class="passion-tag">Horlogerie</span>
+                <span class="passion-ico-bg">⌚</span>
+                <div class="passion-content">
+                  <div class="passion-name">Montres <em>rares</em></div>
+                  <div class="passion-desc">Patek Philippe, AP Royal Oak, Richard Mille. Enchères Phillips et Christie's, certificats, expertises.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Côtes du jour</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-wine">
+                <span class="passion-tag">Cave</span>
+                <span class="passion-ico-bg">🍷</span>
+                <div class="passion-content">
+                  <div class="passion-name">Cave et <em>vins rares</em></div>
+                  <div class="passion-desc">Pétrus, Romanée-Conti, Yquem, Champagnes vintage. Investissement, dégustations privées, transmission.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Ma cave · 412 bouteilles</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-yacht">
+                <span class="passion-tag">Nautique</span>
+                <span class="passion-ico-bg">⛵</span>
+                <div class="passion-content">
+                  <div class="passion-name">Yachting <em>&amp; voile</em></div>
+                  <div class="passion-desc">Acquisition, charter, voilier classique, racing Monaco/St-Tropez. Marinas, équipages, optimisation MPM.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Charter Méditerranée</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-horse">
+                <span class="passion-tag">Equestrian</span>
+                <span class="passion-ico-bg">🐎</span>
+                <div class="passion-content">
+                  <div class="passion-name">Équestre <em>&amp; chasse</em></div>
+                  <div class="passion-desc">Polo, dressage, courses, chasse à courre. Haras, écuries, voyages Argentine, Royal Ascot.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Saison 2026</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-golf">
+                <span class="passion-tag">Sport</span>
+                <span class="passion-ico-bg">⛳</span>
+                <div class="passion-content">
+                  <div class="passion-name">Golf <em>premium</em></div>
+                  <div class="passion-desc">Sunningdale, Cypress Point, Augusta National (invitations). Adhésions, voyages golf, tournois privés.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Mes clubs · 3</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-arts">
+                <span class="passion-tag">Mécénat</span>
+                <span class="passion-ico-bg">🎭</span>
+                <div class="passion-content">
+                  <div class="passion-name">Mécénat <em>&amp; arts</em></div>
+                  <div class="passion-desc">Opéra Garnier, Comédie-Française, musées. Sièges nominatifs, fondations, déductibilité IR/IFI optimisée.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Saison · 8 dates</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-travel">
+                <span class="passion-tag">Évasion</span>
+                <span class="passion-ico-bg">🌍</span>
+                <div class="passion-content">
+                  <div class="passion-name">Voyages <em>exclusifs</em></div>
+                  <div class="passion-desc">Cookson Adventures, Black Tomato, expéditions Antarctique, traversées privées, lodges introuvables.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Idées 2026</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passion-card pc-gastro">
+                <span class="passion-tag">Table</span>
+                <span class="passion-ico-bg">🍽</span>
+                <div class="passion-content">
+                  <div class="passion-name">Gastronomie <em>d'exception</em></div>
+                  <div class="passion-desc">Noma, El Celler de Can Roca, Asador Etxebarri. Tables introuvables, chefs privés, vinothèques accord.</div>
+                  <div class="passion-actions">
+                    <button class="passion-btn primary">Découvrir</button>
+                    <button class="passion-btn">Réserver</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ─── ÉVÈNEMENTS PRIVÉS ─── -->
+            <div class="section-h">
+              <div class="section-h-mark">Calendrier privé · membres fondateurs</div>
+              <div class="section-h-t">Vos <em>rendez-vous</em> entre membres.</div>
+              <div class="section-h-sub">4 évènements/an organisés pour les familles du Family Office IKCP.</div>
+            </div>
+
+            <div class="exp-list">
+              <div class="exp-card">
+                <div class="exp-date"><div class="exp-date-d">14</div><div class="exp-date-m">Juin</div></div>
+                <div class="exp-info"><div class="exp-name">Soirée de l'Aigle · Megève</div><div class="exp-meta">Dîner Fermes de Marie · invitation 2 personnes</div></div>
+                <span class="exp-pill invit">Sur invitation</span>
+              </div>
+              <div class="exp-card">
+                <div class="exp-date"><div class="exp-date-d">19</div><div class="exp-date-m">Sep</div></div>
+                <div class="exp-info"><div class="exp-name">Visite cave Romanée-Conti</div><div class="exp-meta">Bourgogne · 12 membres max · M. de Villaine</div></div>
+                <span class="exp-pill sold">8/12 inscrits</span>
+              </div>
+              <div class="exp-card">
+                <div class="exp-date"><div class="exp-date-d">18</div><div class="exp-date-m">Oct</div></div>
+                <div class="exp-info"><div class="exp-name">Paris+ Art Basel · soirée vernissage</div><div class="exp-meta">Grand Palais · accès VIP · cocktail collectionneurs</div></div>
+                <span class="exp-pill full">Inscriptions ouvertes</span>
+              </div>
+              <div class="exp-card">
+                <div class="exp-date"><div class="exp-date-d">11</div><div class="exp-date-m">Déc</div></div>
+                <div class="exp-info"><div class="exp-name">Noël à l'Annonay · héritage Montgolfier</div><div class="exp-meta">Visite musée + dîner familial NextGen inclus</div></div>
+                <span class="exp-pill invit">Familles fondatrices</span>
+              </div>
+            </div>
+
+            <!-- ─── CONCIERGERIE banner ─── -->
+            <div class="concierge-banner">
+              <div class="cb-mark">Conciergerie 24/7</div>
+              <div class="cb-h">Une envie ? <em>Une question ?</em></div>
+              <p class="cb-p">Une table introuvable, un transfert hélico, une invitation Sotheby's, une expédition Antarctique en mars… <em>écrivez-nous</em>, on s'occupe du reste.</p>
+              <div class="cb-input-row">
+                <input type="text" class="cb-input" placeholder="Ex : table 4 personnes au Noma jeudi 28">
+                <button class="cb-send">→</button>
+              </div>
+            </div>
+
+            <!-- ─── COMMENT ÇA MARCHE ─── -->
+            <div class="section-h">
+              <div class="section-h-mark">L'approche IKCP</div>
+              <div class="section-h-t">Vos passions <em>structurées intelligemment</em>.</div>
+            </div>
+
+            <div class="howto-grid">
+              <div class="howto-step">
+                <div class="howto-step-n">1</div>
+                <div class="howto-step-c">
+                  <div class="howto-step-h">Dites-nous ce qui <em>vous fait vibrer</em></div>
+                  <div class="howto-step-p">Cave, automobiles, équestre, voyages — sans tabou. On vous comprend.</div>
+                </div>
+              </div>
+              <div class="howto-step">
+                <div class="howto-step-n">2</div>
+                <div class="howto-step-c">
+                  <div class="howto-step-h">On <em>structure le projet</em></div>
+                  <div class="howto-step-p">SCI dédiée, holding artistique, fondation. La passion devient un actif déclaré.</div>
+                </div>
+              </div>
+              <div class="howto-step">
+                <div class="howto-step-n">3</div>
+                <div class="howto-step-c">
+                  <div class="howto-step-h">On <em>met en relation</em> les meilleurs experts</div>
+                  <div class="howto-step-p">Courtier hippique, expert horloger Phillips, sommelier privé. Vous dictez, on orchestre.</div>
+                </div>
+              </div>
+              <div class="howto-step">
+                <div class="howto-step-n">4</div>
+                <div class="howto-step-c">
+                  <div class="howto-step-h">On <em>transmet</em> ce qui vous tient à cœur</div>
+                  <div class="howto-step-p">Collection auto, cave, œuvres — préparée pour vos enfants, sans casse fiscale.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="app-foot">
+              IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+              🇫🇷 100 % France · hébergement Cloudflare EU · D1 Paris<br>
+              <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · sur lettre de mission
+            </div>
+
+          </div>
+
+          <!-- Marcel FAB -->
+          <button class="fab-marcel" title="Marcel" onclick="alert('Mock — Marcel drawer s\'ouvre')">M</button>
+
+          <!-- Bottom Nav Android-style -->
+          <nav class="bottom-nav">
+            <div class="bn-item">
+              <span class="bn-ico">🎼</span>
+              <span class="bn-lbl">Marcel</span>
+            </div>
+            <div class="bn-item">
+              <span class="bn-ico">🌐</span>
+              <span class="bn-lbl">Univers</span>
+            </div>
+            <div class="bn-item active">
+              <span class="bn-ico">✨</span>
+              <span class="bn-lbl">Passions</span>
+            </div>
+            <div class="bn-item">
+              <span class="bn-ico">🎓</span>
+              <span class="bn-lbl">NextGen</span>
+            </div>
+            <div class="bn-item">
+              <span class="bn-ico">👤</span>
+              <span class="bn-lbl">Profil</span>
+            </div>
+          </nav>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Chips toggle
+document.querySelectorAll('.chip-cat').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('.chip-cat').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  });
+});
+
+// Bottom nav toggle
+document.querySelectorAll('.bn-item').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.bn-item').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

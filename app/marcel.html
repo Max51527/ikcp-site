@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel — Conversation</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+/* ── fallback variables manquantes dans marcel.css ── */
+:root{--faint:rgba(0,0,0,0.18);--cream:#FAFAF8;--bad:#E53E3E}
+body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
+.chat-wrap{flex:1;display:flex;flex-direction:column;max-width:780px;margin:0 auto;width:100%;padding:24px 22px 164px}
+.chat-head{text-align:center;padding:16px 0 24px;border-bottom:1px solid var(--line);margin-bottom:24px}
+.chat-head h1{font-family:'Fraunces',serif;font-size:32px;font-style:italic;color:var(--ink);font-weight:400;letter-spacing:-0.018em;margin:14px 0 4px}
+.chat-head .tagline{font-family:'Fraunces',serif;font-style:italic;font-size:12.5px;color:var(--mute);letter-spacing:0.04em}
+.chat-msgs{flex:1;display:flex;flex-direction:column;gap:18px}
+.msg{padding:16px 20px;border-radius:14px;max-width:90%;font-size:14.5px;line-height:1.6}
+.msg.u{align-self:flex-end;background:var(--ink);color:var(--cream);border-radius:14px 14px 4px 14px}
+.msg.a{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-radius:14px 14px 14px 4px;border-left:3px solid var(--accent)}
+.msg.a strong{color:var(--ink);font-weight:600}
+.msg.a em{font-style:italic;color:var(--accent)}
+.msg.a h2,.msg.a h3{font-family:'Fraunces',serif;font-weight:500;margin:14px 0 8px;color:var(--ink)}
+.msg.a h2{font-size:18px}
+.msg.a h3{font-size:15px}
+.msg.a ul,.msg.a ol{margin:8px 0 8px 20px}
+.msg.a li{margin:4px 0}
+.msg.a p{margin:9px 0}.msg.a p:first-child{margin-top:0}.msg.a p:last-child{margin-bottom:0}
+.msg.a h2:first-child,.msg.a h3:first-child{margin-top:0}
+.msg.a hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+.msg.a code{background:rgba(27,42,74,.07);padding:1px 6px;border-radius:5px;font-size:.88em;font-family:'JetBrains Mono',monospace,monospace}
+.msg.a table{display:block;overflow-x:auto}
+.msg.a td,.msg.a th{white-space:normal;vertical-align:top}
+.msg.a table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.msg.a th,.msg.a td{padding:8px 10px;border:1px solid var(--line);text-align:left}
+.msg.a th{background:var(--bg-2);font-weight:600;color:var(--ink)}
+.msg.a .disclaimer{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--mute);font-style:italic;line-height:1.5}
+.msg.loading{align-self:flex-start;color:var(--mute);font-style:italic;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.msg.loading::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent);animation:livePulse 1.4s ease-in-out infinite}
+.chat-input{
+  position:fixed;bottom:60px;left:0;right:0;
+  background:rgba(250,247,240,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:14px 22px max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--line);
+}
+.chat-input form{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;transition:border-color 0.3s}
+.chat-input form:focus-within{border-color:var(--accent)}
+.chat-input input{flex:1;border:none;outline:none;background:transparent;font-family:'Fraunces',serif;font-style:italic;font-size:14.5px;color:var(--ink);padding:8px 0;min-width:0}
+.chat-input input::placeholder{color:var(--faint)}
+.chat-input button{background:var(--ink);color:var(--cream);border:none;border-radius:999px;width:38px;height:38px;font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0}
+.chat-input button:hover{background:var(--accent)}
+.chat-input .mic{background:transparent;color:var(--ink);border:1.5px solid var(--line);width:38px;height:38px;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.chat-input .mic:hover{border-color:var(--accent);color:var(--accent)}
+.chat-input .mic.listening{background:var(--accent);color:var(--bg);border-color:var(--accent);animation:micPulse 1.2s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(194,71,34,0.6)}50%{box-shadow:0 0 0 8px rgba(194,71,34,0)}}
+.voice-bar{position:fixed;bottom:140px;left:0;right:0;background:rgba(250,247,240,0.96);backdrop-filter:blur(8px);padding:8px 22px;border-top:1px solid var(--line);display:none;align-items:center;justify-content:center;gap:14px;z-index:30;font-size:12px}
+.voice-bar.show{display:flex}
+.voice-bar .auto-read{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--mute);font-weight:500}
+.voice-bar .auto-read input{accent-color:var(--accent)}
+.voice-bar .stop{background:transparent;border:1px solid var(--line);padding:4px 12px;border-radius:999px;font-size:11px;cursor:pointer;color:var(--mute);font-family:'Inter',sans-serif}
+.voice-bar .stop:hover{border-color:var(--bad);color:var(--bad)}
+.msg .read-btn{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--mute);font-size:11px;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;letter-spacing:0.02em;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px}
+.msg .read-btn:hover{border-color:var(--accent);color:var(--accent)}
+.msg .read-btn.speaking{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+@media(max-width:680px){.chat-head h1{font-size:26px}}
+.starters{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;animation:stIn .4s ease}
+@keyframes stIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.starters .st-lead{width:100%;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:2px}
+.starters .st-chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;line-height:1.3;transition:all .18s}
+.starters .st-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.msg .tw::after{content:'▋';color:var(--accent);margin-left:1px;animation:twblink 1s steps(2) infinite}
+@keyframes twblink{50%{opacity:0}}
+.msg.orch{background:transparent;border:none;padding:0}
+.orch-lbl{font-size:13px;color:var(--mute);margin-bottom:9px;font-style:italic}
+.orch-row{display:flex;flex-wrap:wrap;gap:6px}
+.orch-ag{font-size:11.5px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);color:var(--faint);background:var(--bg);opacity:.5;transition:all .3s}
+.orch-ag.on{color:#fff;background:var(--accent);border-color:var(--accent);opacity:1;transform:scale(1.06);box-shadow:0 5px 16px -7px var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="chat-wrap">
+  <div class="chat-head">
+    <div class="marcel-mini" style="margin:0 auto">M</div>
+    <h1>Marcel</h1>
+    <div class="tagline">Clarifie · Oriente · Arbitre</div>
+  </div>
+
+  <div class="chat-msgs" id="msgs">
+    <div class="msg a">
+      <strong>Bonjour.</strong> Je suis <em>Marcel</em>, chef d'orchestre de votre Family Office.
+      <br><br>
+      Posez-moi une question — patrimoine, fiscalité, transmission, voyage, art, mécénat. Je mobilise le bon spécialiste parmi mes 12 univers.
+      <div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+    </div>
+    <div id="starters" class="starters"></div>
+  </div>
+</div>
+
+<div class="voice-bar" id="voiceBar">
+  <label class="auto-read"><input type="checkbox" id="autoRead"> Marcel lit ses réponses à voix haute</label>
+  <button class="stop" onclick="stopReading()" id="stopReadBtn" style="display:none">⏹ Stop lecture</button>
+</div>
+
+<nav class="app-tabs">
+  <a href="/app/dashboard.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/app/marcel.html" class="active">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+    Marcel
+  </a>
+  <a href="/app/veille.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    Veille
+  </a>
+  <a href="/app/carnet.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Carnet
+  </a>
+  <a href="/app/profil.html">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+    Profil
+  </a>
+</nav>
+
+<div class="chat-input">
+  <form onsubmit="return send(event)">
+    <button type="button" class="mic" id="micBtn" onclick="toggleMic()" aria-label="Parler à Marcel" title="Parler à Marcel">🎤</button>
+    <input id="q" type="text" placeholder="Posez votre question à Marcel…" maxlength="500" autocomplete="off" required>
+    <button type="submit" aria-label="Envoyer">→</button>
+  </form>
+</div>
+
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+import { Voice } from '/app/js/voice.js';
+import '/app/js/jarvis.js'; // mode vocal temps réel (orbe IA, mains libres)
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
+
+let history = [];
+let userTier = 'free';
+let me;
+try { me = await Marcel.Auth.me(); userTier = me?.tier || 'free'; } catch(_){ location.href = '/app/index.html'; }
+
+// ── Branding CASSIUS pour le tier Family Office (un cran au-dessus) ──
+if (userTier === 'fo') {
+  document.title = 'Marcel — Family Office';
+  var h1 = document.querySelector('.chat-head h1'); if (h1) h1.textContent = 'Marcel';
+  var tg = document.querySelector('.chat-head .tagline'); if (tg) tg.textContent = 'Votre Family Officer d\'élite · anticipe · orchestre · veille';
+  var mini = document.querySelector('.chat-head .marcel-mini'); if (mini) mini.textContent = 'M';
+  // Accueil vocal Marcel (effet majordome) — dégrade en silence si le navigateur bloque
+  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre Family Officer. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
+  var hello = document.querySelector('.chat-msgs .msg.a');
+  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre Family Officer. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
+}
+
+// ── Suggestions de démarrage personnalisées (selon le profil de l'utilisateur) ──
+(function(){ let _p=null; try{ _p = me && me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){} renderStarters(_p, userTier); })();
+
+// ── Mémoire : Marcel/Marcel se souvient du dernier échange (Premium/FO) ──
+if(userTier === 'premium' || userTier === 'fo'){ loadMemory(); }
+
+// ── Avant-goût gratuit : 3 échanges Marcel pour le tier Découverte ──
+// (premium / fo = illimité). Le QUOTA est désormais enforcé CÔTÉ SERVEUR
+// (ikcp-client : free = 5 échanges/mois). Le widget se contente de réagir à
+// la réponse `quota_reached` renvoyée par Marcel — anti-triche, source unique.
+function showUpgradeGate(){
+  const inp = document.getElementById('q');
+  if(inp){ inp.disabled = true; inp.placeholder = 'Passez en Premium pour continuer avec Marcel'; }
+}
+
+// Vérifie statut voix premium en arrière-plan
+let premiumVoiceAvailable = false;
+Voice.checkPremiumStatus().then(s => {
+  premiumVoiceAvailable = s.ok && (s.stt_voxtral || s.stt_whisper);
+  if(premiumVoiceAvailable && (userTier === 'premium' || userTier === 'fo')){
+    document.querySelector('.voice-bar')?.insertAdjacentHTML('beforeend',
+      `<label class="auto-read" style="margin-left:14px"><input type="checkbox" id="premiumVoiceMode"> Voix Marcel premium</label>`);
+    setTimeout(() => {
+      const cb = document.getElementById('premiumVoiceMode');
+      if(cb){
+        cb.checked = !!Voice.getPreferences().premiumMode;
+        cb.addEventListener('change', e => Voice.setPremiumMode(e.target.checked));
+      }
+    }, 100);
+  }
+});
+
+// ─── Voix Marcel (Web Speech API) ───
+const voiceSupport = Voice.isSupported();
+const prefs = Voice.getPreferences();
+const micBtn = document.getElementById('micBtn');
+const voiceBar = document.getElementById('voiceBar');
+const autoReadInput = document.getElementById('autoRead');
+const stopReadBtn = document.getElementById('stopReadBtn');
+
+if(!voiceSupport.stt){
+  micBtn.style.display = 'none';
+} else {
+  voiceBar.classList.add('show');
+  autoReadInput.checked = !!prefs.autoRead;
+}
+autoReadInput?.addEventListener('change', e => Voice.setAutoRead(e.target.checked));
+
+// ── CASSIUS 100% voix (FO) : expérience vocale activée par défaut ──
+// Lecture vocale auto + barre voix visible. Voix navigateur = 100% LOCALE
+// (aucune donnée ne quitte l'appareil → RGPD parfait). La voix premium
+// (qualité studio) s'active si configurée côté serveur, sinon fallback local.
+if (userTier === 'fo' && voiceSupport.tts) {
+  try { Voice.setAutoRead(true); } catch(_){}
+  if (autoReadInput) { autoReadInput.checked = true; autoReadInput.closest('.auto-read').lastChild.textContent = ' Marcel vous répond à voix haute'; }
+  if (voiceBar) voiceBar.classList.add('show');
+}
+
+window.toggleMic = async function(){
+  const input = document.getElementById('q');
+  const prefs = Voice.getPreferences();
+  const usePremium = prefs.premiumMode && premiumVoiceAvailable && (userTier === 'premium' || userTier === 'fo');
+
+  // Mode premium (transcription serveur)
+  if(usePremium){
+    if(Voice.isRecordingPremium()){
+      Voice.stopRecordingPremium();
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+      return;
+    }
+    input.placeholder = 'Enregistrement en cours… (10s max recommandé)';
+    Voice.startRecordingPremium({
+      onStart: () => { micBtn.classList.add('listening'); micBtn.textContent = '⏹'; },
+      onStop: () => { input.placeholder = 'Transcription…'; },
+      onFinal: (text, meta) => {
+        input.value = text;
+        micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+        input.placeholder = `Posez votre question à Marcel… `;
+        setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
+      },
+      onError: (err) => {
+        micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+        input.placeholder = 'Posez votre question à Marcel…';
+        if(err?.name === 'NotAllowedError') alert('Autorisez l\'accès au micro dans les paramètres du navigateur.');
+        else console.warn('[voice premium] fallback Web Speech', err);
+      },
+      maxSeconds: 30,
+    });
+    return;
+  }
+
+  // Mode standard Web Speech API
+  if(!voiceSupport.stt) return alert('Reconnaissance vocale non supportée. Utilisez Chrome, Edge ou Safari.');
+  if(Voice.isListening()){
+    Voice.stopListening(); micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; return;
+  }
+  micBtn.classList.add('listening'); micBtn.textContent = '⏹';
+  input.placeholder = 'Parlez à Marcel…';
+  Voice.startListening({
+    onInterim: t => { input.value = t; },
+    onFinal: t => {
+      input.value = t;
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+      input.placeholder = 'Posez votre question à Marcel…';
+      setTimeout(() => document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})), 200);
+    },
+    onError: e => {
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+      input.placeholder = 'Posez votre question à Marcel…';
+      if(e?.error === 'not-allowed') alert('Autorisez le micro dans les paramètres.');
+    },
+    onEnd: () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; input.placeholder = 'Posez votre question à Marcel…'; },
+  });
+}
+
+window.stopReading = function(){
+  Voice.stopSpeaking();
+  stopReadBtn.style.display = 'none';
+  document.querySelectorAll('.read-btn.speaking').forEach(b => b.classList.remove('speaking'));
+}
+
+// Lecture d'un message à la demande — smart speak (premium si dispo)
+window.readMessage = async function(btnId, text){
+  const btn = document.getElementById(btnId);
+  if((Voice.isSpeaking() || Voice._audioPlayer) && btn.classList.contains('speaking')){
+    Voice.stopSpeakingAll();
+    btn.classList.remove('speaking');
+    stopReadBtn.style.display = 'none';
+    return;
+  }
+  document.querySelectorAll('.read-btn.speaking').forEach(b => b.classList.remove('speaking'));
+  btn.classList.add('speaking');
+  stopReadBtn.style.display = 'inline-flex';
+
+  const mode = await Voice.smartSpeak(text, { tier: userTier });
+  if(mode === 'premium'){
+    btn.textContent = '⏸ VoxCPM2 (Marcel premium)';
+  }
+  // Détecte fin de lecture (toutes sources)
+  const check = setInterval(() => {
+    if(!Voice.isSpeaking() && !Voice._audioPlayer){
+      btn.classList.remove('speaking');
+      btn.textContent = '🔊 Écouter la réponse';
+      stopReadBtn.style.display = 'none';
+      clearInterval(check);
+    }
+  }, 500);
+}
+
+// Routing par topic (depuis dashboard CTA) et ?q= (depuis veille fallback)
+const _urlP = new URLSearchParams(location.search);
+const _topic = _urlP.get('topic');
+const _qParam = _urlP.get('q');
+const _topicPrompts = {
+  batisseur:    'Je souhaite réaliser une cartographie patrimoniale 360° : actifs immobiliers, sociétés, liquidités, contrats. Pouvez-vous orchestrer Bâtisseur ?',
+  hermes:       'Je souhaite travailler ma stratégie de transmission patrimoniale (succession, donation, Pacte Dutreil, démembrement). Pouvez-vous mobiliser Hermès ?',
+  transmission: 'Je souhaite anticiper ma transmission patrimoniale. Quelles sont mes priorités selon ma situation ?',
+  fiscal:       'Je souhaite optimiser ma situation fiscale 2026. Par où commencer ?',
+  ifi:          'Pouvez-vous m\'aider à analyser ma position IFI 2026 et identifier les leviers d\'optimisation ?',
+};
+// Question pré-remplie : sessionStorage (survit aux redirections 308) OU ?q= OU ?topic=
+let pendingQ = null;
+try { pendingQ = sessionStorage.getItem('marcel_q'); if(pendingQ) sessionStorage.removeItem('marcel_q'); } catch(_){}
+if(!pendingQ && _qParam) pendingQ = _qParam;
+if(!pendingQ && _topic && _topicPrompts[_topic]) pendingQ = _topicPrompts[_topic];
+if(pendingQ){
+  const qi = document.getElementById('q'); if(qi) qi.value = pendingQ;
+  // Auto-envoi FIABLE (requestSubmit déclenche onsubmit=send)
+  setTimeout(() => { const f = document.querySelector('.chat-input form'); if(f && f.requestSubmit){ f.requestSubmit(); } else if(window.send){ window.send(new Event('submit')); } }, 280);
+}
+
+function mdEsc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function mdInline(s){
+  return s
+    .replace(/\*\*([^*]+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*\n]+?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+?)`/g,'<code>$1</code>')
+    .replace(/\[([^\]]+?)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+// Moteur markdown bloc par bloc : titres, tableaux GFM, listes, règles, paragraphes
+function md(src){
+  var lines = mdEsc(String(src)).replace(/\r/g,'').split('\n');
+  var out = [], i = 0;
+  function row(line){ return line.trim().replace(/^\||\|$/g,'').split('|').map(function(c){return mdInline(c.trim());}); }
+  while(i < lines.length){
+    var t = lines[i].trim();
+    if(t === ''){ i++; continue; }
+    if(/^(-{3,}|\*{3,}|_{3,})$/.test(t)){ out.push('<hr>'); i++; continue; }
+    var h = t.match(/^(#{1,6})\s+(.+)$/);
+    if(h){ var lv = h[1].length <= 2 ? 2 : 3; out.push('<h'+lv+'>'+mdInline(h[2])+'</h'+lv+'>'); i++; continue; }
+    // Tableau GFM : | en-têtes | + ligne séparatrice |---|
+    if(/^\|.*\|$/.test(t) && i+1 < lines.length && /^\|?[\s:|-]+\|?$/.test(lines[i+1].trim()) && lines[i+1].indexOf('-') >= 0){
+      var head = row(lines[i]); i += 2; var body = [];
+      while(i < lines.length && /^\|.*\|$/.test(lines[i].trim())){ body.push(row(lines[i])); i++; }
+      out.push('<table><thead><tr>'+head.map(function(c){return '<th>'+c+'</th>';}).join('')
+        +'</tr></thead><tbody>'+body.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table>');
+      continue;
+    }
+    if(/^[-*]\s+/.test(t)){ var ul=[]; while(i<lines.length && /^[-*]\s+/.test(lines[i].trim())){ ul.push('<li>'+mdInline(lines[i].trim().replace(/^[-*]\s+/,''))+'</li>'); i++; } out.push('<ul>'+ul.join('')+'</ul>'); continue; }
+    if(/^\d+[.)]\s+/.test(t)){ var ol=[]; while(i<lines.length && /^\d+[.)]\s+/.test(lines[i].trim())){ ol.push('<li>'+mdInline(lines[i].trim().replace(/^\d+[.)]\s+/,''))+'</li>'); i++; } out.push('<ol>'+ol.join('')+'</ol>'); continue; }
+    var para=[];
+    while(i<lines.length){ var p=lines[i].trim();
+      if(p==='' || /^(#{1,6})\s/.test(p) || /^[-*]\s+/.test(p) || /^\d+[.)]\s+/.test(p) || /^\|.*\|$/.test(p) || /^(-{3,}|\*{3,}|_{3,})$/.test(p)) break;
+      para.push(p); i++; }
+    out.push('<p>'+mdInline(para.join('<br>'))+'</p>');
+  }
+  return out.join('');
+}
+
+// ─── Suggestions de démarrage personnalisées ───
+function sendQuick(text){
+  const inp = document.getElementById('q'); if(!inp) return;
+  inp.value = text;
+  const f = document.querySelector('.chat-input form');
+  if(f && f.requestSubmit) f.requestSubmit(); else send(new Event('submit'));
+}
+function renderStarters(profile, tier){
+  const wrap = document.getElementById('starters'); if(!wrap) return;
+  const p = profile || {};
+  const chips = [];
+  const hasSiren = !!(p.siren_data && p.siren_data.siren);
+  let patCount = 0; try{ patCount = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + ((me&&me.email)||'invite')) || '[]').length; }catch(_){}
+  if(!hasSiren) chips.push('Cartographiez ma société à partir de mon SIREN.');
+  if(patCount === 0) chips.push('Aidez-moi à évaluer ma position IFI 2026.');
+  const SPH = {
+    transmission: 'Comment préparer ma transmission (donation, Pacte Dutreil) ?',
+    fiscalite:    'Quels leviers pour optimiser ma fiscalité cette année ?',
+    immobilier:   'Détention directe ou SCI pour mon immobilier : que choisir ?',
+    marches:      'Comment diversifier mon allocation, y compris en non coté ?',
+    voyage:       'Organisez-moi une expérience de voyage d’exception.',
+    art:          'Comment évaluer et assurer ma collection ?',
+    vehicules:    'Quelle est la cote de mon véhicule de collection ?',
+    horlogerie:   'Comment suivre la valeur de mes montres ?',
+    vins:         'Conseillez-moi pour ma cave et les vins d’investissement.',
+    bienetre:     'Médecine privée et longévité : par où commencer ?',
+    philanthropie:'Comment structurer un projet de mécénat ?',
+    patrimoine:   'Faites-moi un bilan patrimonial 360°.',
+  };
+  (p.spheres || []).forEach(s => { if(SPH[s] && !chips.includes(SPH[s]) && chips.length < 5) chips.push(SPH[s]); });
+  ['Faites-moi un bilan patrimonial 360°.', 'Quelles priorités patrimoniales pour un dirigeant comme moi ?', 'Comment réduire mes droits de succession ?'].forEach(q => { if(chips.length < 3 && !chips.includes(q)) chips.push(q); });
+  const top = chips.slice(0, 5);
+  wrap.innerHTML = '<div class="st-lead">Pour démarrer, une suggestion ?</div>' +
+    top.map(q => `<button type="button" class="st-chip">${q.replace(/</g,'&lt;')}</button>`).join('');
+  wrap.querySelectorAll('.st-chip').forEach(b => b.addEventListener('click', () => sendQuick(b.textContent)));
+}
+
+// ── Mémoire conversationnelle : recharge le dernier échange ──
+async function loadMemory(){
+  try{
+    const r = await Marcel.Me.getMemory();
+    const msgs = (r && r.messages) || [];
+    if(!msgs.length) return;
+    history = msgs.slice();
+    const cont = document.getElementById('msgs');
+    const st = document.getElementById('starters'); if(st) st.remove();
+    const div = document.createElement('div');
+    div.style.cssText = 'text-align:center;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:10px 0';
+    div.textContent = '↑ reprise de votre dernier échange';
+    cont.appendChild(div);
+    msgs.forEach(m => {
+      const el = document.createElement('div');
+      if(m.role === 'user'){ el.className = 'msg u'; el.textContent = m.content; }
+      else { el.className = 'msg a'; el.innerHTML = md(m.content); }
+      cont.appendChild(el);
+    });
+    window.scrollTo({ top: document.body.scrollHeight });
+  }catch(_){}
+}
+
+window.send = async function(e){
+  e.preventDefault();
+  const inp = document.getElementById('q');
+  const q = inp.value.trim();
+  if(!q) return false;
+  if(inp.disabled) return false; // quota atteint (gate actif)
+
+  inp.value=''; inp.disabled=true;
+  const _st = document.getElementById('starters'); if(_st) _st.remove();
+  const msgs = document.getElementById('msgs');
+
+  // Message user
+  const u = document.createElement('div');
+  u.className = 'msg u';
+  u.textContent = q;
+  msgs.appendChild(u);
+  history.push({role:'user',content:q});
+
+  // Loading — ORCHESTRATION VISIBLE : les spécialistes s'allument tour à tour
+  const who = 'Marcel';
+  const AG = [['📜','Codex'],['🌳','Hermès'],['🏛️','Bâtisseur'],['🏠','Architecte'],['📊','Stratège'],['🛎️','Concierge']];
+  const ld = document.createElement('div');
+  ld.className = 'msg loading orch';
+  ld.innerHTML = `<div class="orch-lbl">${who} mobilise ses spécialistes…</div><div class="orch-row">${AG.map((a,k)=>`<span class="orch-ag" data-k="${k}">${a[0]} ${a[1]}</span>`).join('')}</div>`;
+  msgs.appendChild(ld);
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  const labels = [`${who} analyse votre question…`, `${who} mobilise ses spécialistes…`, `${who} consulte des sources en temps réel…`, `${who} croise les barèmes 2026…`, `${who} rédige votre réponse…`];
+  let ldI = 0;
+  const ldTimer = setInterval(() => {
+    ldI++;
+    const lbl = ld.querySelector('.orch-lbl');
+    if(lbl) lbl.textContent = ldI >= 7
+      ? '⏳ Recherche en temps réel — Marcel finalise (jusqu\'à ~25 s pour une donnée de marché)…'
+      : labels[ldI % labels.length];
+    const chips = ld.querySelectorAll('.orch-ag'); chips.forEach((c,k) => c.classList.toggle('on', k === (ldI % chips.length)));
+  }, 1100);
+
+  try{
+    const r = await Marcel.chat(q, history.slice(-20));
+    clearInterval(ldTimer); ld.remove();
+    const reply = r.reply || r.message || 'Marcel n\'a pas pu traiter votre demande.';
+    history.push({role:'assistant',content:reply});
+    if(userTier === 'premium' || userTier === 'fo') Marcel.Me.saveMemory(history.slice(-24)).catch(()=>{});
+
+    // Quota free atteint (enforcé serveur) → on affiche la réponse + on bloque la saisie
+    if(r.quota_reached){ showUpgradeGate(); }
+
+    const a = document.createElement('div');
+    a.className = 'msg a';
+    const msgId = 'msg-' + Date.now();
+    a.id = msgId;
+    const escaped = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+    const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}', \`${reply.replace(/`/g,'').replace(/\\/g,'\\\\').replace(/"/g,'\\"')}\`)">🔊 Écouter la réponse</button>` : '';
+    const disc = '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
+    a.innerHTML = '<span class="tw"></span>';
+    msgs.appendChild(a);
+    // ── Effet « écriture en direct » : la réponse se révèle progressivement ──
+    const tw = a.querySelector('.tw');
+    const words = reply.split(/(\s+)/);
+    const perTick = Math.max(1, Math.ceil(words.length / 90)); // ~1,8 s quelle que soit la longueur
+    let wi = 0;
+    (function typeStep(){
+      if(wi < words.length){
+        for(let k=0; k<perTick && wi<words.length; k++) tw.textContent += words[wi++];
+        window.scrollTo({ top: document.body.scrollHeight });
+        setTimeout(typeStep, 20);
+      } else {
+        a.innerHTML = md(reply) + readBtn + disc;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        if(voiceSupport.tts && Voice.getPreferences().autoRead){ setTimeout(() => readMessage('rd-' + msgId, reply), 200); }
+      }
+    })();
+  }catch(err){
+    clearInterval(ldTimer); ld.remove();
+    const a = document.createElement('div');
+    a.className = 'msg a';
+    a.innerHTML = '<strong>Erreur technique.</strong> Marcel est momentanément indisponible. <a href="mailto:maxime@ikcp.fr">Contactez Maxime</a>.';
+    msgs.appendChild(a);
+  }finally{
+    inp.disabled=false;inp.focus();
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  }
+  return false;
+}
+</script>
+<script src="/protect.js?v=1" defer></script>
+
+<script src="/app/js/pwa-install.js" defer></script>
+</body>
+</html>

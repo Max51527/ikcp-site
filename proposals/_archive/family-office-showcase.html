@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Family Office Showcase · pitch &amp; com'</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F;
+}
+html,body{background:linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%); color:var(--ink); font-family:'Outfit',sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased; letter-spacing:-0.005em; min-height:100vh}
+
+/* ─── BARRE APERÇU ─── */
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:200}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+/* ─── TOOLBAR UTILITY (capture + mode) ─── */
+.utility{position:fixed; top:50px; right:20px; z-index:150; display:flex; flex-direction:column; gap:8px}
+.util-btn{padding:11px 18px; background:var(--navy); color:var(--cream); border:1px solid var(--gold); border-radius:30px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.12em; font-weight:700; text-transform:uppercase; transition:all 0.2s; box-shadow:0 6px 16px rgba(27,42,74,0.20); display:flex; align-items:center; gap:8px}
+.util-btn:hover{background:var(--navy-deep); transform:translateY(-1px); box-shadow:0 10px 22px rgba(27,42,74,0.28)}
+.util-btn .ico{font-size:13px}
+
+/* ═══════════════════════════════════════════════════════════
+   CAPTURE ZONE — c'est cette div qui sera screenshotée
+═══════════════════════════════════════════════════════════ */
+.capture-zone{
+  width:1920px; max-width:100%;
+  margin:0 auto;
+  padding:80px 60px 70px;
+  position:relative;
+}
+@media (max-width:1980px){.capture-zone{padding:60px 30px}}
+@media (max-width:760px){.capture-zone{padding:36px 16px}}
+
+/* ─── HERO TEXT (top center) ─── */
+.hero-wrap{text-align:center; max-width:1100px; margin:0 auto 56px}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold-deep); font-weight:700; margin-bottom:20px; display:inline-flex; align-items:center; gap:16px}
+.hero-eyebrow::before, .hero-eyebrow::after{content:''; width:48px; height:1px; background:var(--gold)}
+.hero-h{font-family:'Playfair Display',serif; font-size:clamp(38px,5.4vw,72px); color:var(--navy); font-weight:500; letter-spacing:-0.024em; line-height:1; margin-bottom:18px}
+.hero-h em{color:var(--gold-deep); font-style:italic}
+.hero-sub{font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(17px,1.6vw,22px); color:var(--ink-mute); line-height:1.5; max-width:760px; margin:0 auto 12px}
+.hero-sub b{color:var(--navy); font-weight:500; font-style:normal; font-family:'Outfit',sans-serif}
+.hero-tag{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-top:14px; display:inline-block}
+.hero-tag::before{content:'★ '}
+
+/* ─── 3 PHONES ALIGNED ─── */
+.phones-row{display:flex; justify-content:center; align-items:flex-start; gap:40px; margin:0 auto 56px; flex-wrap:wrap}
+@media (max-width:1300px){.phones-row{gap:24px}}
+
+.phone-wrap{display:flex; flex-direction:column; align-items:center; gap:18px}
+
+.phone{
+  width:340px; flex-shrink:0;
+  background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  border-radius:46px; padding:12px;
+  box-shadow:0 30px 80px rgba(27,42,74,0.30), 0 12px 32px rgba(27,42,74,0.18);
+  position:relative;
+}
+.phone::before{
+  content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+  border-radius:46px;
+  background:linear-gradient(135deg, rgba(226,200,150,0.10) 0%, transparent 50%);
+  pointer-events:none;
+}
+.phone-screen{width:100%; height:680px; background:var(--cream); border-radius:34px; overflow:hidden; position:relative; border:1px solid #000}
+.phone-notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:104px; height:22px; background:var(--navy-deep); border-radius:0 0 14px 14px; z-index:50}
+
+.phone-label{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; text-align:center; line-height:1.2}
+.phone-label em{color:var(--gold-deep); font-style:italic}
+.phone-label-sub{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.22em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-top:5px}
+
+/* ═══════════════════════════════════════════════════════════
+   APP UI (commun aux 3 phones)
+═══════════════════════════════════════════════════════════ */
+.app{display:flex; flex-direction:column; height:100%; background:var(--cream)}
+.app-top{padding:34px 16px 12px; background:var(--cream); border-bottom:1px solid var(--line)}
+.app-greet{font-family:'Playfair Display',serif; font-style:italic; font-size:11.5px; color:var(--gold-deep); font-weight:500; margin-bottom:4px}
+.app-title{font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); font-weight:600; line-height:1.05; letter-spacing:-0.015em}
+.app-title em{color:var(--gold-deep); font-style:italic}
+.app-sub{font-size:10.5px; color:var(--ink-faint); margin-top:3px; font-style:italic; font-family:'Playfair Display',serif}
+
+.app-body{flex:1; overflow:hidden; padding-bottom:0}
+
+/* Bottom nav simulated */
+.bottom-nav{position:absolute; bottom:0; left:0; right:0; height:54px; background:rgba(250,250,248,0.96); border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(5,1fr)}
+.bn-item{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:var(--ink-faint); padding:6px 2px; position:relative}
+.bn-item.active{color:var(--gold-deep)}
+.bn-item.active::before{content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:24px; height:3px; background:var(--gold); border-radius:0 0 4px 4px}
+.bn-ico{font-size:17px; line-height:1}
+.bn-lbl{font-size:8px; letter-spacing:0.04em; font-weight:600}
+
+/* ─── PHONE 1 — Marcel funnel ─── */
+.f1-hero{padding:18px 16px 14px; text-align:center}
+.f1-eye{font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.3em; color:var(--gold-deep); text-transform:uppercase; font-weight:700; margin-bottom:10px}
+.f1-h{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:500; line-height:1.1; margin-bottom:8px}
+.f1-h em{color:var(--gold-deep); font-style:italic}
+.f1-sub{font-size:11.5px; color:var(--ink-mute); line-height:1.5}
+
+.f1-constel{position:relative; width:240px; height:240px; margin:14px auto 8px}
+.f1-marcel{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:72px; height:72px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-deep) 100%); display:flex; align-items:center; justify-content:center; color:var(--navy); font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:28px; box-shadow:0 0 30px rgba(201,169,110,0.45); z-index:3}
+.f1-marcel::after{content:''; position:absolute; inset:-6px; border-radius:50%; border:1.5px solid var(--gold); opacity:0.35; animation:p1 2.4s ease-out infinite}
+@keyframes p1{0%{transform:scale(0.95);opacity:0.45}100%{transform:scale(1.2);opacity:0}}
+
+.f1-u{position:absolute; width:38px; height:38px; border-radius:50%; background:var(--cream-2); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-size:14px; transform:translate(-50%,-50%); filter:grayscale(1) opacity(0.55)}
+.f1-u.on{filter:none; background:linear-gradient(135deg, var(--cream) 0%, var(--cream-2) 100%); border-color:var(--gold); box-shadow:0 4px 14px rgba(201,169,110,0.30)}
+.f1-u.u1{top:8%; left:50%} .f1-u.u2{top:18%; left:75%} .f1-u.u3{top:42%; left:90%}
+.f1-u.u4{top:72%; left:84%} .f1-u.u5{top:92%; left:62%} .f1-u.u6{top:92%; left:38%}
+.f1-u.u7{top:72%; left:16%} .f1-u.u8{top:42%; left:10%} .f1-u.u9{top:18%; left:25%}
+
+.f1-pulse{position:absolute; top:50%; left:50%; width:35%; height:1px; background:linear-gradient(90deg, var(--gold), transparent); transform-origin:0 50%; transform:translate(-50%, 0) rotate(-90deg)}
+
+.f1-input{margin:12px 14px; padding:7px; background:var(--cream); border:1.5px solid var(--gold-deep); border-radius:14px; display:flex; gap:5px}
+.f1-in{flex:1; padding:9px 12px; border:none; background:transparent; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--navy); font-weight:600; letter-spacing:0.04em; outline:none; pointer-events:none}
+.f1-btn{padding:9px 14px; background:var(--navy); color:var(--cream); border:none; border-radius:8px; font-size:9.5px; font-weight:700; letter-spacing:0.1em; font-family:'Outfit',sans-serif; text-transform:uppercase}
+
+.f1-result{margin:0 14px; padding:12px 14px; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:12px; color:var(--cream); position:relative}
+.f1-result::before{content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--gold-bright))}
+.f1-r-mark{font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.16em; color:var(--gold-bright); font-weight:700; text-transform:uppercase; margin-bottom:5px}
+.f1-r-mark::before{content:'◆ '}
+.f1-r-h{font-family:'Playfair Display',serif; font-size:12px; color:var(--cream); font-weight:600; line-height:1.25; margin-bottom:6px}
+.f1-r-h em{color:var(--gold-bright); font-style:italic}
+.f1-r-p{font-size:10.5px; color:rgba(250,250,248,0.85); line-height:1.5}
+
+/* ─── PHONE 2 — PASSIONS ─── */
+.f2-quote{padding:14px 16px 6px; font-family:'Playfair Display',serif; font-style:italic; font-size:12.5px; color:var(--navy); line-height:1.35}
+.f2-quote em{color:var(--gold-deep)}
+
+.f2-chips{display:flex; gap:5px; padding:10px 16px; overflow:hidden}
+.f2-chip{flex-shrink:0; padding:5px 10px; background:var(--cream-2); border:1px solid var(--line-strong); border-radius:24px; font-size:9.5px; color:var(--ink-mute); font-weight:600; white-space:nowrap}
+.f2-chip.on{background:var(--navy); color:var(--cream); border-color:var(--navy)}
+
+.f2-cards{padding:4px 16px 16px; display:flex; flex-direction:column; gap:10px}
+.f2-card{position:relative; border-radius:14px; overflow:hidden; min-height:115px; padding:12px 14px 10px; color:#fff; display:flex; flex-direction:column; justify-content:flex-end; box-shadow:0 8px 18px rgba(0,0,0,0.10)}
+.f2-card::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.75) 100%); z-index:1}
+.f2-card-1{background:linear-gradient(135deg, #2c1810 0%, #5c2818 100%)}
+.f2-card-2{background:linear-gradient(135deg, #4a1421 0%, #7a1f2e 100%)}
+.f2-card-3{background:linear-gradient(135deg, #0c4a6e 0%, #075985 100%)}
+.f2-tag{position:absolute; top:9px; left:9px; padding:2px 7px; background:rgba(255,255,255,0.18); backdrop-filter:blur(8px); border-radius:24px; font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.14em; color:#fff; font-weight:700; text-transform:uppercase; z-index:3}
+.f2-ico-bg{position:absolute; top:7px; right:9px; font-size:34px; opacity:0.32; z-index:2; line-height:1}
+.f2-content{position:relative; z-index:3}
+.f2-name{font-family:'Playfair Display',serif; font-size:14px; font-weight:600; line-height:1.15; margin-bottom:3px}
+.f2-name em{color:var(--gold-bright); font-style:italic; font-weight:500}
+.f2-desc{font-size:9.5px; color:rgba(255,255,255,0.82); line-height:1.4; margin-bottom:7px}
+.f2-btn-row{display:flex; gap:4px}
+.f2-btn{padding:4px 8px; background:var(--gold); color:var(--navy); border-radius:24px; font-size:8.5px; font-weight:700; letter-spacing:0.06em; font-family:'Outfit',sans-serif}
+.f2-btn.alt{background:rgba(255,255,255,0.15); backdrop-filter:blur(6px); color:#fff; border:1px solid rgba(255,255,255,0.25); font-weight:600}
+
+/* ─── PHONE 3 — NEXTGEN ─── */
+.f3-head{padding:14px 16px 8px}
+.f3-mark{font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.22em; color:var(--gold-deep); font-weight:700; text-transform:uppercase; margin-bottom:5px}
+.f3-mark::before{content:'§ '; opacity:0.5}
+.f3-h{font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); font-weight:600; line-height:1.1; margin-bottom:5px}
+.f3-h em{color:var(--gold-deep); font-style:italic}
+.f3-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:5px; padding:10px 16px; background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); margin:6px 16px 14px; border-radius:12px}
+.f3-stat{text-align:center; padding:6px 0}
+.f3-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:16px; color:var(--gold-bright); font-weight:500; line-height:1; margin-bottom:1px}
+.f3-stat-l{font-size:7.5px; color:rgba(250,250,248,0.65); letter-spacing:0.12em; text-transform:uppercase; font-weight:600}
+
+.f3-modules{padding:0 16px 14px; display:flex; flex-direction:column; gap:8px}
+.f3-mod{background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:9px 12px}
+.f3-mod-num{font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.16em; color:var(--gold-deep); font-weight:700; margin-bottom:3px}
+.f3-mod-h{font-family:'Playfair Display',serif; font-size:11.5px; color:var(--navy); font-weight:600; line-height:1.15; margin-bottom:4px}
+.f3-mod-h em{color:var(--gold-deep); font-style:italic}
+.f3-mod-progress{display:flex; align-items:center; gap:6px}
+.f3-pbar{flex:1; height:3px; background:var(--cream-2); border-radius:3px; overflow:hidden}
+.f3-pfill{height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-bright)); border-radius:3px}
+.f3-pp{font-family:'JetBrains Mono',monospace; font-size:8.5px; color:var(--gold-deep); font-weight:700; letter-spacing:0.06em; min-width:26px; text-align:right}
+.f3-mod-status{display:inline-block; padding:2px 6px; border-radius:24px; font-family:'JetBrains Mono',monospace; font-size:7.5px; letter-spacing:0.14em; font-weight:700; text-transform:uppercase; margin-top:5px}
+.f3-mod-status.done{background:rgba(63,122,63,0.12); color:var(--ok)}
+.f3-mod-status.live{background:rgba(201,169,110,0.18); color:var(--gold-deep)}
+
+/* ─── STATS RIBBON BOTTOM ─── */
+.stats-ribbon{background:linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); border-radius:24px; padding:38px 50px; color:var(--cream); position:relative; overflow:hidden; max-width:1400px; margin:0 auto 48px; box-shadow:0 20px 50px rgba(27,42,74,0.18)}
+.stats-ribbon::before{content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.sr-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px}
+@media (max-width:760px){.sr-grid{grid-template-columns:repeat(2,1fr)}}
+.sr-stat{text-align:center}
+.sr-v{font-family:'Playfair Display',serif; font-style:italic; font-size:48px; color:var(--gold-bright); font-weight:500; line-height:1; margin-bottom:6px; letter-spacing:-0.02em}
+.sr-v i{font-style:normal; font-size:26px; opacity:0.7}
+.sr-l{font-family:'Outfit',sans-serif; font-size:11.5px; color:rgba(250,250,248,0.75); letter-spacing:0.18em; text-transform:uppercase; font-weight:600}
+.sr-s{font-family:'Playfair Display',serif; font-style:italic; font-size:13px; color:rgba(250,250,248,0.55); margin-top:5px; line-height:1.4}
+
+/* ─── FOOTER LIGNE ─── */
+.foot-line{text-align:center; padding-bottom:30px; max-width:1400px; margin:0 auto}
+.foot-brand{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; letter-spacing:-0.005em}
+.foot-brand b{color:var(--gold); font-style:italic; font-weight:500}
+.foot-deets{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; color:var(--gold-deep); margin-top:8px; font-weight:600; text-transform:uppercase}
+.foot-cta{margin-top:18px; font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:var(--ink-mute); line-height:1.55}
+.foot-cta b{color:var(--navy); font-style:normal; font-family:'Outfit',sans-serif; font-weight:600}
+
+/* ─── MODE PITCH FULLSCREEN ─── */
+body.pitch-mode{overflow:hidden; cursor:none}
+body.pitch-mode .mockup-bar, body.pitch-mode .utility{display:none}
+body.pitch-mode .capture-zone{padding:60px 30px; min-height:100vh; display:flex; flex-direction:column; justify-content:center}
+
+@media (max-width:1100px){
+  .phones-row{flex-wrap:wrap}
+  .phone{width:300px}
+  .phone-screen{height:600px}
+}
+@media (max-width:760px){
+  .phones-row{flex-direction:column; gap:36px}
+  .phone{width:300px}
+}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>SHOWCASE COM'</b> · 3 écrans alignés · format pitch / LinkedIn / présentation</span>
+  <span><a href="family-office-passions.html">← App passions</a></span>
+</div>
+
+<div class="utility">
+  <button class="util-btn" onclick="capturePNG()"><span class="ico">📸</span><span>Capturer PNG</span></button>
+  <button class="util-btn" onclick="togglePitch()"><span class="ico">🎬</span><span>Mode pitch</span></button>
+  <button class="util-btn" onclick="window.print()" style="background:transparent; color:var(--navy); border:1.5px solid var(--navy)"><span class="ico">🖨</span><span>Imprimer PDF</span></button>
+</div>
+
+<!-- ═══ ZONE CAPTURABLE ═══ -->
+<div class="capture-zone" id="capture">
+
+  <!-- HERO -->
+  <div class="hero-wrap">
+    <div class="hero-eyebrow">Family Office augmenté · Bêta privée 2026</div>
+    <h1 class="hero-h">Une porte. Une équipe.<br><em>Votre patrimoine en orbite.</em></h1>
+    <p class="hero-sub">Cabinet indépendant <b>IKCP</b> · douze univers branchés sur <b>intelligence souveraine</b> · application disponible sur iOS et Android · <b>conçue pour les dirigeant(e)s d'entreprise familiale</b>.</p>
+    <div class="hero-tag">100 % France · RGPD souverain · 50 familles fondatrices</div>
+  </div>
+
+  <!-- 3 PHONES -->
+  <div class="phones-row">
+
+    <!-- PHONE 1 — MARCEL FUNNEL -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="app">
+            <div class="app-top">
+              <div class="app-greet">Découverte</div>
+              <h1 class="app-title">Bonjour. <em>Marcel</em>.</h1>
+              <div class="app-sub">12 univers · activez le premier</div>
+            </div>
+            <div class="app-body">
+              <div class="f1-hero">
+                <div class="f1-eye">◆ Aperçu démonstratif</div>
+                <div class="f1-h">Votre patrimoine <em>en 30 sec.</em></div>
+                <div class="f1-sub">Saisissez votre SIREN. Marcel cartographie.</div>
+              </div>
+
+              <div class="f1-constel">
+                <div class="f1-marcel">M</div>
+                <div class="f1-u u1 on">💼</div>
+                <div class="f1-u u2">🏠</div>
+                <div class="f1-u u3">🏛</div>
+                <div class="f1-u u4">📈</div>
+                <div class="f1-u u5">🎨</div>
+                <div class="f1-u u6">💎</div>
+                <div class="f1-u u7">🪴</div>
+                <div class="f1-u u8">🌱</div>
+                <div class="f1-u u9">🎓</div>
+              </div>
+
+              <div class="f1-input">
+                <input class="f1-in" value="947 972 436" readonly>
+                <button class="f1-btn">Activer</button>
+              </div>
+
+              <div class="f1-result">
+                <div class="f1-r-mark">Univers Patrimoine</div>
+                <div class="f1-r-h">Point d'attention : <em>holding éligible Dutreil</em></div>
+                <div class="f1-r-p">Forme compatible art. 787 B CGI · économie de droits potentielle significative.</div>
+              </div>
+            </div>
+            <nav class="bottom-nav">
+              <div class="bn-item active"><span class="bn-ico">🎼</span><span class="bn-lbl">Marcel</span></div>
+              <div class="bn-item"><span class="bn-ico">🌐</span><span class="bn-lbl">Univers</span></div>
+              <div class="bn-item"><span class="bn-ico">✨</span><span class="bn-lbl">Passions</span></div>
+              <div class="bn-item"><span class="bn-ico">🎓</span><span class="bn-lbl">NextGen</span></div>
+              <div class="bn-item"><span class="bn-ico">👤</span><span class="bn-lbl">Profil</span></div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">① <em>Marcel cartographie</em><div class="phone-label-sub">l'entrée magique</div></div>
+    </div>
+
+    <!-- PHONE 2 — PASSIONS -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="app">
+            <div class="app-top">
+              <div class="app-greet">Bonjour Joséphine</div>
+              <h1 class="app-title">Vos <em>passions</em>.</h1>
+              <div class="app-sub">12 mai · 3 nouveautés</div>
+            </div>
+            <div class="app-body">
+              <div class="f2-quote">« La vraie richesse, c'est de pouvoir <em>se permettre ce qui nous fait vibrer.</em> »</div>
+
+              <div class="f2-chips">
+                <div class="f2-chip on">Tout</div>
+                <div class="f2-chip">★ Suggérées</div>
+                <div class="f2-chip">Collection</div>
+                <div class="f2-chip">Arts</div>
+              </div>
+
+              <div class="f2-cards">
+                <div class="f2-card f2-card-1">
+                  <span class="f2-tag">Collection</span>
+                  <span class="f2-ico-bg">🚗</span>
+                  <div class="f2-content">
+                    <div class="f2-name">Automobiles <em>de collection</em></div>
+                    <div class="f2-desc">Ferrari 250 GTO · Aston DB5 · rallies historiques.</div>
+                    <div class="f2-btn-row"><span class="f2-btn">Découvrir</span><span class="f2-btn alt">3 véhicules</span></div>
+                  </div>
+                </div>
+                <div class="f2-card f2-card-2">
+                  <span class="f2-tag">Cave</span>
+                  <span class="f2-ico-bg">🍷</span>
+                  <div class="f2-content">
+                    <div class="f2-name">Cave et <em>vins rares</em></div>
+                    <div class="f2-desc">Pétrus · Romanée-Conti · Yquem · investissement.</div>
+                    <div class="f2-btn-row"><span class="f2-btn">Découvrir</span><span class="f2-btn alt">412 b.</span></div>
+                  </div>
+                </div>
+                <div class="f2-card f2-card-3">
+                  <span class="f2-tag">Nautique</span>
+                  <span class="f2-ico-bg">⛵</span>
+                  <div class="f2-content">
+                    <div class="f2-name">Yachting <em>& voile</em></div>
+                    <div class="f2-desc">Charter · racing Monaco · marinas premium.</div>
+                    <div class="f2-btn-row"><span class="f2-btn">Découvrir</span><span class="f2-btn alt">Médit.</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <nav class="bottom-nav">
+              <div class="bn-item"><span class="bn-ico">🎼</span><span class="bn-lbl">Marcel</span></div>
+              <div class="bn-item"><span class="bn-ico">🌐</span><span class="bn-lbl">Univers</span></div>
+              <div class="bn-item active"><span class="bn-ico">✨</span><span class="bn-lbl">Passions</span></div>
+              <div class="bn-item"><span class="bn-ico">🎓</span><span class="bn-lbl">NextGen</span></div>
+              <div class="bn-item"><span class="bn-ico">👤</span><span class="bn-lbl">Profil</span></div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">② <em>Vos passions structurées</em><div class="phone-label-sub">le lifestyle</div></div>
+    </div>
+
+    <!-- PHONE 3 — NEXTGEN -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="app">
+            <div class="app-top">
+              <div class="app-greet">Bonjour Emma</div>
+              <h1 class="app-title">École <em>NextGen</em>.</h1>
+              <div class="app-sub">12 mai · vous avancez bien</div>
+            </div>
+            <div class="app-body">
+              <div class="f3-head">
+                <div class="f3-mark">Génération suivante</div>
+                <div class="f3-h">Préparer <em>ceux qui vont suivre.</em></div>
+              </div>
+
+              <div class="f3-stats">
+                <div class="f3-stat"><div class="f3-stat-v">6</div><div class="f3-stat-l">Modules</div></div>
+                <div class="f3-stat"><div class="f3-stat-v">46h</div><div class="f3-stat-l">Cursus</div></div>
+                <div class="f3-stat"><div class="f3-stat-v">3</div><div class="f3-stat-l">RDV mentor</div></div>
+                <div class="f3-stat"><div class="f3-stat-v">2,5</div><div class="f3-stat-l">Modules ok</div></div>
+              </div>
+
+              <div class="f3-modules">
+                <div class="f3-mod">
+                  <div class="f3-mod-num">Module 01 · 8 h</div>
+                  <div class="f3-mod-h">Patrimoine <em>360°</em></div>
+                  <div class="f3-mod-progress"><div class="f3-pbar"><div class="f3-pfill" style="width:100%"></div></div><span class="f3-pp">100 %</span></div>
+                  <span class="f3-mod-status done">✓ Terminé</span>
+                </div>
+                <div class="f3-mod">
+                  <div class="f3-mod-num">Module 02 · 10 h</div>
+                  <div class="f3-mod-h">Fiscalité de la <em>famille</em></div>
+                  <div class="f3-mod-progress"><div class="f3-pbar"><div class="f3-pfill" style="width:100%"></div></div><span class="f3-pp">100 %</span></div>
+                  <span class="f3-mod-status done">✓ Terminé</span>
+                </div>
+                <div class="f3-mod">
+                  <div class="f3-mod-num">Module 03 · 6 h</div>
+                  <div class="f3-mod-h">Lire un <em>acte / pacte</em></div>
+                  <div class="f3-mod-progress"><div class="f3-pbar"><div class="f3-pfill" style="width:65%"></div></div><span class="f3-pp">65 %</span></div>
+                  <span class="f3-mod-status live">● En cours</span>
+                </div>
+              </div>
+            </div>
+            <nav class="bottom-nav">
+              <div class="bn-item"><span class="bn-ico">🎼</span><span class="bn-lbl">Marcel</span></div>
+              <div class="bn-item"><span class="bn-ico">🌐</span><span class="bn-lbl">Univers</span></div>
+              <div class="bn-item"><span class="bn-ico">✨</span><span class="bn-lbl">Passions</span></div>
+              <div class="bn-item active"><span class="bn-ico">🎓</span><span class="bn-lbl">NextGen</span></div>
+              <div class="bn-item"><span class="bn-ico">👤</span><span class="bn-lbl">Profil</span></div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">③ <em>École NextGen</em><div class="phone-label-sub">la transmission</div></div>
+    </div>
+
+  </div>
+
+  <!-- STATS RIBBON -->
+  <div class="stats-ribbon">
+    <div class="sr-grid">
+      <div class="sr-stat">
+        <div class="sr-v">12</div>
+        <div class="sr-l">Univers</div>
+        <div class="sr-s">Patrimoine · Passions · NextGen</div>
+      </div>
+      <div class="sr-stat">
+        <div class="sr-v">100<i>%</i></div>
+        <div class="sr-l">Souverain</div>
+        <div class="sr-s">Hébergement France · RGPD</div>
+      </div>
+      <div class="sr-stat">
+        <div class="sr-v">50</div>
+        <div class="sr-l">Familles bêta</div>
+        <div class="sr-s">Fondatrices · S2 2026</div>
+      </div>
+      <div class="sr-stat">
+        <div class="sr-v">290<i>€</i></div>
+        <div class="sr-l">/ mois</div>
+        <div class="sr-s">Bêta : 6 mois offerts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot-line">
+    <div class="foot-brand">IKCP<b>.</b> &nbsp;IKIGAÏ Conseil Patrimonial</div>
+    <div class="foot-deets">ORIAS 23001568 · CIF — CNCEF · Lyon · Annonay · Megève</div>
+    <p class="foot-cta">Le Family Office augmenté qui vous suit, <em>vous, votre famille, vos passions</em>. <br><b>Accès sur invitation · ikcp.eu</b></p>
+  </div>
+
+</div>
+
+<!-- html2canvas pour capture PNG -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+async function capturePNG(){
+  const node = document.getElementById('capture');
+  const btn = document.querySelector('.util-btn');
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '<span class="ico">⏳</span><span>Capture…</span>';
+  try {
+    const canvas = await html2canvas(node, {
+      scale:2,
+      backgroundColor:null,
+      logging:false,
+      useCORS:true,
+      windowWidth:node.scrollWidth,
+      windowHeight:node.scrollHeight
+    });
+    const link = document.createElement('a');
+    link.download = 'ikcp-family-office-showcase-'+new Date().toISOString().slice(0,10)+'.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btn.innerHTML = '<span class="ico">✓</span><span>PNG téléchargé</span>';
+    setTimeout(()=>btn.innerHTML=oldText, 2500);
+  } catch(e) {
+    btn.innerHTML = '<span class="ico">✗</span><span>Erreur</span>';
+    setTimeout(()=>btn.innerHTML=oldText, 2500);
+  }
+}
+
+function togglePitch(){
+  document.body.classList.toggle('pitch-mode');
+  if (document.body.classList.contains('pitch-mode')) {
+    document.documentElement.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+document.addEventListener('keydown', e=>{ if (e.key==='Escape') document.body.classList.remove('pitch-mode'); });
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

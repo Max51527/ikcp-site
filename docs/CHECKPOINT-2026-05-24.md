@@ -1,0 +1,134 @@
+# 📌 CHECKPOINT — État de la plateforme IKCP · 2026-05-24
+
+> Enregistrement de la session de travail (sprint bêta-readiness).
+> Clone canonique unique : `C:\Users\juven\ikcp-site` · toujours `git pull --ff-only` avant de travailler.
+
+---
+
+## ✅ FAIT cette session (déployé)
+
+### Site public (Cloudflare Pages — futur ikcp.eu)
+- **Marcel réparé** : SyntaxError fatale corrigée · widget v=20 sur 90 pages.
+- **Hero épuré** : panneau montgolfière retiré, accès Marcel via bulle flottante déployable.
+- **Rassurance homepage** : bloc fondateur Maxime (monogramme MJ si photo absente) + label « Pensé pour vous, dirigeant(e)s & familles ».
+- **Family Office** : prix 290 €/mois retiré partout (phase bêta = « offert / sur invitation »). « 50 k€/an » conservé (= coût FO traditionnel).
+- **Offre 3 niveaux** : Découverte 0€ (0 token) / Premium 29€ / FO sur devis (sans montant).
+- **Explainer animé** : modale « Voir en 90 s » sur la page Family Office.
+- **SIREN privacy** : SIREN réel retiré des démos (footers légaux conservés).
+
+### Agents IA (workers Cloudflare)
+- **Marcel** (ikcp-chat, Sonnet 4.6) LIVE · max_tokens 2048 · disclaimer MIF II garanti serveur · follow_ups avec filet de sécurité.
+- **Codex** (fiscal, Opus 4.7) LIVE + câblé.
+- **Hermès** (transmission, Opus 4.7) LIVE + activé dans Marcel.
+- **Lifestyle** (9 agents Sonnet) LIVE + activés.
+- **Veille** (Perplexity Pro) LIVE (gated utilisateur connecté).
+- **Bâtisseur** (Opus 4.7) déployé mais ⚠️ clé ANTHROPIC manquante → `live:false`.
+- **Pappers** (cartographie SIREN) LIVE · CORS corrigé (pages.dev autorisé).
+
+### Espace membre (app/)
+- 11 pages + PWA · auth magic link (Resend live) · backend ikcp-client v2.0 (D1/JWT, routes /me/*).
+- Tiers + quotas : **free = 0 token** (simulateurs + 1 cartographie) / premium / fo.
+
+### Infra / CI-CD
+- `deploy-pages.yml` : site → Pages auto.
+- `deploy-workers.yml` : marcel, voice, batisseur, hermes, veille, lifestyle, **client, pappers** (ajoutés) auto.
+- Règle CLONE UNIQUE dans CLAUDE.md + garde-fou `git pull` dans daily-run.ps1 (anti-écrasement SEO).
+
+### Tests
+- Parcours prospect « Hélène Marchand » validé de A à Z (Marcel expert + MIF II, cartographie, simulateurs, conversion magic link).
+
+---
+
+## ⏳ EN ATTENTE (action Maxime)
+1. **Bascule Cloudflare** : custom domain ikcp.eu + www → vérification DNS en cours.
+2. **Test espace membre connecté** : login magic link (email Maxime).
+3. **Clé Bâtisseur** : `cd workers/ikcp-batisseur && npx wrangler secret put ANTHROPICAPIKEY` puis flip `live:true`.
+4. Supprimer l'ancien clone Desktop (déprécié).
+
+---
+
+## 🔜 À CONSTRUIRE (validé, à faire)
+
+### #1 — Marcel : réponse courte + « Voir le détail »
+- **Constat** : réponses denses (3000+ car.) intimidantes au 1er contact.
+- **Approche** : Marcel structure déjà « *L'essentiel : …* » puis `---` puis le détail.
+  → Le widget affiche la synthèse (avant le 1er `---`) + bouton **« Voir le détail ↓ »** qui déplie le reste.
+  → Changement **widget** (chatbot-widget.js, fonction de rendu) — pas de changement worker.
+
+### #4 — SIREN → 2 agents IA (parcours augmenté)
+- **Objectif** : après la cartographie Pappers, enrichir l'analyse via 2 spécialistes.
+- **Flux proposé** :
+  1. Cartographie SIREN (Pappers) → données société (capital, forme, dirigeants…).
+  2. Bouton **« Analyser ma structure »** → envoie le contexte Pappers à Marcel.
+  3. Marcel délègue à **2 agents** :
+     - **Codex** (fiscal) — « quelle fiscalité sur cette structure ? » (LIVE)
+     - **Bâtisseur** (patrimoine 360°/holding) — « cartographie patrimoniale 360° » (⚠️ attend clé)
+       → En attendant Bâtisseur : fallback sur **Hermès** (transmission) qui est LIVE.
+  4. Enregistrement de l'analyse dans l'espace membre (D1, route /me/sirens — déjà existante).
+- **Conformité** : chaque agent termine par une question + disclaimer MIF II (déjà en place).
+
+---
+
+## 🔁 REPRISE SESSION SUIVANTE — commencer ici
+
+**Lire d'abord** : ce fichier + `CLAUDE.md` (règle clone unique). Travailler dans `C:\Users\juven\ikcp-site`, `git pull --ff-only` avant tout.
+
+### 🎯 PLAN DE DEMAIN (validé par Maxime)
+1. **B — Construire le CMS visuel (Sveltia)** : édition du site dans le navigateur (type Webflow) → commit Git → Pages publie. Sans rien casser de l'archi Workers/Marcel. Cible : `ikcp.eu/admin`.
+2. **C — Développer l'espace membre + les agents** : tester le parcours connecté (login magic link), enrichir les pages app/, clé Bâtisseur + flip live.
+*(Prérequis idéal : le fix DNS fait, ikcp.eu en ligne — voir Action n°1 ci-dessous.)*
+
+### 🔑 Action n°1 (Maxime, débloque TOUT — 2 min, sans IA)
+La bascule Cloudflare est bloquée : l'enregistrement **A racine de ikcp.eu pointe encore vers Hostinger**.
+→ CF Dashboard → Websites → ikcp.eu → DNS → supprimer l'enreg. **A `@`** (vers Hostinger) → Pages → ikcp-eu → Custom domains → re-déclencher `ikcp.eu` (+ `www`). CF recrée le CNAME Pages. ikcp.eu sert alors la nouvelle version.
+
+### 🎨 Décision édition en ligne (actée)
+- ❌ PAS Webflow (casserait l'intégration Workers/Marcel).
+- ✅ CMS visuel léger (**Sveltia/Decap**) sur le repo → édition navigateur → commit Git → Pages publie. À construire (point #7).
+- ✅ En attendant : édition via GitHub web (crayon → commit → live 30 s).
+
+### 🔜 Dev à poursuivre
+- Espace membre : tester parcours connecté (login Maxime), enrichir.
+- Agents : clé `ANTHROPICAPIKEY` sur ikcp-batisseur → flip live:true.
+- #4 déjà fait : bouton « Analyser avec Marcel » post-SIREN (→ Codex + Hermès).
+- #1 déjà fait : Marcel réponse courte + « Voir le détail » (widget v=21).
+
+---
+
+## ✅ CMS Sveltia — FAIT (session 2026-05-25)
+
+- **admin/** = Sveltia CMS · backend GitHub direct · worker `ikcp-cms-auth` (OAuth, in CI/CD).
+- **Auth** : soit GitHub OAuth App (SETUP-CMS.md), soit "Sign In Using Access Token" (PAT scope repo) — testé OK.
+- **Moteur** : `cms-hydrate.js` lit `_data/*.json` → applique aux éléments `[data-cms="prefix.chemin"]` (préfixes : home, fo, global, news). HTML garde le texte par défaut (SEO/fallback).
+- **Champs déjà câblés** (édition CMS → visible sur site) :
+  - Accueil : `home.hero.headline_1`, `home.hero.headline_em`
+  - Family Office : `fo.hero.headline_1`, `fo.hero.headline_em`, `fo.hero.cta_primary`, `fo.hero.cta_secondary`
+
+### 🔧 Recette pour câbler un nouveau champ (2 gestes)
+1. Dans le HTML : ajouter `data-cms="prefix.chemin.cle"` sur l'élément (texte simple). Pour du HTML riche : ajouter aussi l'attribut `data-cms-html`.
+2. Vérifier que `_data/<fichier>.json` contient la clé AVEC le texte ACTUEL du HTML (sinon l'hydratation changerait le contenu).
+⚠️ Champs NON câblés car JSON ≠ HTML actuel : `fo.hero.lede`, `fo.faq`, `home.hero.subtitle`, SEO meta → aligner le JSON sur le live AVANT de tagger.
+
+---
+
+## ✅ Session 2026-05-25 — FAIT
+
+- **🚀 ikcp.eu EN LIGNE sur Cloudflare Pages** : zone ikcp.eu créée dans CF (zone ID d0a45e43...), NS basculés (frida/harlan.ns.cloudflare.com), A racine supprimé, CNAME `@ → ikcp-eu.pages.dev` (proxied). Emails @ikcp.eu + Resend intacts (MX/DKIM en DNS only, les 5 CNAME mail passés en DNS only). www actif aussi.
+- **CMS Sveltia étendu** : homepage édite désormais **titre + sous-titre (data-cms-html) + CTA bilan** (en plus du hero FO). Login = token GitHub (PAT scope repo) ou OAuth App.
+  → `ikcp.eu/admin/#/collections/homepage` = éditeur de la page d'accueil : modifie les textes sans code → Publish → commit Git → site à jour ~1 min. Le « Webflow » du contenu.
+- **Archi IA clarifiée** : Claude = cerveau (Marcel + Codex/Hermès/Lifestyle), Perplexity Pro = veille temps réel (tool `consult_veille`). Déjà reliés. Perplexity ne « crée » pas Marcel — c'est un outil que Marcel appelle.
+- **4 options hero** proposées (`proposals/hero-fill-options.html`) pour meubler l'espace droit : 1·Score patrimonial 2·Chiffre signature 3·Montgolfière raffinée 4·Vidéo. **En attente du choix de Maxime.**
+
+## ⏳ EN ATTENTE Maxime
+- Choisir l'**option hero** (1/2/3/4) à intégrer dans index.html.
+- Donner le **lien Spotify** playlist (bug : `SPOTIFY_PLAYLIST_URL=''` vide ligne ~3973 index.html) → à brancher.
+- Clé **ANTHROPICAPIKEY** sur ikcp-batisseur → flip live:true.
+
+## 🎯 PLAN DE DEMAIN (C — espace membre / agents)
+1. **Mise en place agents IA** : activer Bâtisseur (clé), vérifier la délégation Marcel→tous les agents en live, tester un appel Perplexity veille via Marcel.
+2. **Tier par utilisateur** : dans l'espace membre, Marcel doit passer le **tier réel du membre connecté** à la veille (`consult_veille`) au lieu du défaut « max ». Petit branchement : récupérer le tier via la session ikcp-client (/api/v1/me) et le transmettre dans l'appel veille. → cœur de C.
+3. Tester le parcours connecté de bout en bout (login magic link Maxime).
+
+---
+
+© 2026 IKCP · checkpoint session bêta-readiness

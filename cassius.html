@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Créé par IKCP.EU -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marcel — votre Family Officer augmenté · IKCP</title>
+<meta name="description" content="Marcel : le Family Officer augmenté d'IKCP, réservé au cercle Family Office. Intelligence patrimoniale d'élite, conciergerie, 100% voix, et un humain (Maxime). Sur recommandation.">
+<link rel="canonical" href="https://ikcp.eu/cassius.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0B1426;--cream:#FAF7F0;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--mute:rgba(250,247,240,.6);--line:rgba(201,169,110,.22)}
+body{font-family:'Outfit',sans-serif;background:var(--navy-deep);color:var(--cream);line-height:1.65;-webkit-font-smoothing:antialiased}
+.bg::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(201,169,110,.12),transparent 60%),radial-gradient(ellipse 60% 50% at 50% 100%,rgba(27,42,74,.6),transparent 55%),var(--navy-deep)}
+a{color:var(--gold-bright);text-decoration:none}
+.wrap{max-width:940px;margin:0 auto;padding:0 22px}
+.hd{padding:16px 0}.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:21px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid var(--line);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:60px 0 30px}
+.eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold-bright);font-weight:600;margin-bottom:18px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(34px,6.5vw,62px);line-height:1.05}
+.hero h1 em{font-style:italic;color:var(--gold-bright)}
+.hero .sub{color:var(--mute);max-width:580px;margin:18px auto 0;font-size:17px}
+.orb{width:120px;height:120px;border-radius:50%;margin:0 auto 26px;background:radial-gradient(circle at 40% 32%,#3a4d72,#1B2A4A 60%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px -10px rgba(201,169,110,.4),inset 0 6px 26px rgba(201,169,110,.15);animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.orb .c{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;color:var(--gold-bright)}
+
+.wedge{max-width:680px;margin:34px auto;text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(19px,3vw,26px);line-height:1.4;color:var(--cream)}
+.wedge b{color:var(--gold-bright);font-style:normal;font-weight:600}
+
+.sec{padding:38px 0}
+.sec-label{text-align:center;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px}
+.sec h2{text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(24px,4vw,36px);margin-bottom:24px}
+.feats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:640px){.feats{grid-template-columns:1fr}}
+.feat{background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:16px;padding:22px}
+.feat .e{font-size:26px}.feat h3{font-family:'Playfair Display',serif;font-size:19px;margin:8px 0 5px;color:var(--gold-bright)}
+.feat p{font-size:13.5px;color:var(--mute);line-height:1.6}
+
+.tbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+.tbl th,.tbl td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:center}
+.tbl th{font-weight:600;color:var(--mute);font-size:11.5px}
+.tbl td:first-child,.tbl th:first-child{text-align:left;color:var(--cream)}
+.tbl .ikcp{color:var(--gold-bright);font-weight:700}
+.tbl tr td.ikcp{background:rgba(201,169,110,.08)}
+
+.cta{text-align:center;padding:46px 0 20px}
+.cta a{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--navy-deep);padding:16px 32px;border-radius:100px;font-weight:700;font-size:15px;box-shadow:0 16px 40px -14px rgba(201,169,110,.6);margin:5px}
+.cta a.ghost{background:transparent;border:1px solid var(--gold);color:var(--gold-bright)}
+.cta .rare{font-size:12.5px;color:var(--mute);margin-top:16px;font-style:italic}
+.disc{font-size:11px;color:var(--mute);text-align:center;max-width:640px;margin:24px auto 0;line-height:1.6;font-style:italic}
+.ft{text-align:center;padding:26px;font-size:12px;color:var(--mute);border-top:1px solid var(--line);margin-top:30px}.ft a{margin:0 6px}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<header class="hd"><div class="wrap"><div class="logo">IK<span>CP</span></div><a class="back" href="/family-office">← Family Office</a></div></header>
+
+<section class="hero wrap">
+  <div class="orb"><span class="c">M</span></div>
+  <div class="eyebrow">Family Office · cercle restreint</div>
+  <h1>Marcel, votre <em>Family Officer</em> augmenté.</h1>
+  <p class="sub">Un cran au-dessus de tout ce que vous connaissez. L'expertise d'un Family Office à 30 M€ — l'agilité d'une intelligence souveraine — la chaleur d'un humain. Réservé au cercle Family Office.</p>
+</section>
+
+<div class="wedge wrap">« Les autres vous <b>montrent</b> votre patrimoine.<br>Marcel vous dit <b>quoi en faire</b> — et l'orchestre avec vous. »</div>
+
+<section class="sec wrap">
+  <div class="sec-label">Ce que Marcel fait, qu'aucun autre ne fait</div>
+  <h2>Un majordome <em style="font-style:italic;color:var(--gold-bright)">patrimonial d'élite</em></h2>
+  <div class="feats">
+    <div class="feat"><div class="e">🧠</div><h3>Intelligence d'élite</h3><p>Le modèle le plus puissant, en permanence. Fiscalité, transmission, rémunération dirigeant, patrimoine 360° — raisonnement de niveau CGP senior, sources à l'appui.</p></div>
+    <div class="feat"><div class="e">🎙️</div><h3>100 % voix</h3><p>Parlez, Marcel répond à voix haute. Une conversation naturelle, où que vous soyez — voix 100 % locale (vos données ne quittent pas votre appareil).</p></div>
+    <div class="feat"><div class="e">🛎️</div><h3>Conciergerie & art de vivre</h3><p>Voyage, tables d'exception, expériences, collections : Marcel prépare, vous validez. Le patrimoine, c'est aussi en profiter.</p></div>
+    <div class="feat"><div class="e">🤝</div><h3>L'humain, en priorité</h3><p>100 % digital — mais Maxime (CIF · ORIAS) reste votre interlocuteur, joignable à votre demande. La machine n'efface jamais l'humain.</p></div>
+    <div class="feat"><div class="e">🔔</div><h3>Veille active permanente</h3><p>Loi de finances, jurisprudence, marchés, cote de vos actifs : Marcel veille en continu et vous alerte avant les échéances.</p></div>
+    <div class="feat"><div class="e">🛡️</div><h3>Souverain & confidentiel</h3><p>Hébergement France, RGPD par conception, contenu protégé. Votre univers reste le vôtre.</p></div>
+  </div>
+</section>
+
+<section class="sec wrap">
+  <div class="sec-label">Pourquoi IKCP, et pas un autre</div>
+  <h2>Le seul à <em style="font-style:italic;color:var(--gold-bright)">tout</em> cocher</h2>
+  <table class="tbl">
+    <tr><th></th><th>Banque privée</th><th>Robo-advisor</th><th>Agrégateur</th><th>IA grand public</th><th class="ikcp">IKCP</th></tr>
+    <tr><td>Indépendant (0 produit vendu)</td><td>✕</td><td>✕</td><td>~</td><td>✓</td><td class="ikcp">✓</td></tr>
+    <tr><td>Expertise patrimoniale FR profonde</td><td>✓</td><td>✕</td><td>~</td><td>✕</td><td class="ikcp">✓</td></tr>
+    <tr><td>Disponible 24/7</td><td>✕</td><td>~</td><td>✓</td><td>✓</td><td class="ikcp">✓</td></tr>
+    <tr><td>Humain dédié</td><td>✓</td><td>✕</td><td>~</td><td>✕</td><td class="ikcp">✓</td></tr>
+    <tr><td>Conciergerie / art de vivre</td><td>~</td><td>✕</td><td>✕</td><td>✕</td><td class="ikcp">✓</td></tr>
+    <tr><td>Souverain France / RGPD</td><td>~</td><td>✓</td><td>~</td><td>✕</td><td class="ikcp">✓</td></tr>
+    <tr><td>Accessible</td><td>✕</td><td>✓</td><td>✓</td><td>✓</td><td class="ikcp">✓</td></tr>
+  </table>
+</section>
+
+<div class="cta wrap">
+  <a href="/family-office.html#beta">Demander un accès Family Office →</a>
+  <a class="ghost" href="/score">Évaluer mon patrimoine d'abord</a>
+  <div class="rare">Cercle restreint · sur recommandation · accès offert pendant la phase fondatrice.</div>
+</div>
+<div class="disc wrap">Marcel est une intelligence souveraine au service de votre réflexion patrimoniale. Il fournit information et analyses, jamais un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier — celui-ci relève d'une mission dédiée avec Maxime Juveneton (CIF · ORIAS 23001568).</div>
+
+<footer class="ft">© 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
+  <div style="margin-top:6px"><a href="/family-office">Family Office</a> · <a href="/score">Score</a> · <a href="/family-office-definition">C'est quoi un FO ?</a></div>
+</footer>
+<script src="/protect.js?v=1" defer></script>
+<script src="/reveal.js?v=1" defer></script>
+</body>
+</html>

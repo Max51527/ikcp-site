@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · ORIAS 23001568 — Univers Immobilier · prix réels DVF -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<meta name="robots" content="noindex, nofollow">
+<title>Immobilier · prix réels — IKCP Family Office</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="/app/js/vendor/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-b:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+.hd{background:var(--navy-deep);padding:14px 0}
+.hd .w{max-width:860px;margin:0 auto;padding:0 22px;display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:20px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:7px;text-decoration:none}
+.w{max-width:860px;margin:0 auto;padding:0 22px}
+.hero{padding:34px 0 8px}
+.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);font-weight:700}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(26px,4.4vw,40px);line-height:1.1;color:var(--navy);margin-top:8px}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero .sub{color:var(--ink-mute);margin-top:8px;font-size:14.5px}
+.search{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin:22px 0;box-shadow:0 20px 50px -34px rgba(27,42,74,.3)}
+.search label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);font-weight:600;margin-bottom:8px}
+.search-row{display:flex;gap:10px;flex-wrap:wrap}
+.search-row input{flex:1;min-width:200px;border:1.5px solid var(--line);border-radius:11px;padding:13px 16px;font-size:16px;color:var(--ink);outline:none}
+.search-row input:focus{border-color:var(--gold)}
+.btn{background:var(--navy);color:#fff;border:none;border-radius:11px;padding:13px 22px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .2s}
+.btn:hover{background:var(--gold-deep)}.btn.gold{background:var(--gold);color:var(--navy-deep)}.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--navy)}
+.hint{font-size:12px;color:var(--ink-mute);margin-top:10px}
+.state{text-align:center;padding:30px;color:var(--ink-mute)}
+.spin{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#res{display:none}
+.res-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.res-head h2{font-family:'Playfair Display',serif;font-weight:500;font-size:24px;color:var(--navy)}
+.res-head .badge{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--ink-mute);border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:520px){.tiles{grid-template-columns:1fr}}
+.tile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center}
+.tile .ic{font-size:26px}
+.tile .v{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--navy);line-height:1;margin:6px 0 2px}
+.tile .v small{font-size:14px;color:var(--ink-mute);font-weight:400}
+.tile .l{font-size:12px;color:var(--ink-mute)}
+.block{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+.block h3{font-family:'Playfair Display',serif;font-weight:500;font-size:17px;color:var(--navy);margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);font-weight:600}
+td .m2{font-family:'JetBrains Mono',monospace;color:var(--gold-deep);font-weight:600}
+.cta{text-align:center;margin:22px 0 8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:640px;margin:18px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:12px;margin-top:36px}
+.ft a{color:var(--gold);text-decoration:none;margin:0 6px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="w"><div class="logo">IK<span>CP</span></div><a href="/app/dashboard">← Mon espace</a></div></header>
+
+<section class="hero w">
+  <div class="eyebrow">Univers · Immobilier</div>
+  <h1>Prix immobiliers <em>réels</em></h1>
+  <div class="sub">Données officielles des ventes (DVF · data.gouv.fr). Médiane €/m² et transactions récentes, commune par commune — la base pour arbitrer direct vs SCI, estimer un bien, ou préparer une cession.</div>
+</section>
+
+<div class="w">
+  <div class="search">
+    <label>Commune ou code postal</label>
+    <div class="search-row">
+      <input id="q" type="text" placeholder="ex. Annonay, ou 07100" autocomplete="off">
+      <button class="btn gold" onclick="go()">Voir les prix réels →</button>
+    </div>
+    <div class="hint">Source : Demandes de Valeurs Foncières (État) — souverain, gratuit, sans inscription.</div>
+  </div>
+
+  <div class="state" id="loading" style="display:none"><div class="spin"></div>Lecture des transactions DVF…</div>
+  <div class="state" id="err" style="display:none"></div>
+
+  <div id="res">
+    <div class="res-head"><h2 id="rCommune">—</h2><span class="badge" id="rBadge"></span></div>
+    <div class="tiles">
+      <div class="tile"><div class="ic">🏠</div><div class="v" id="rMaison">—</div><div class="l" id="rMaisonN">Maison · médiane</div></div>
+      <div class="tile"><div class="ic">🏢</div><div class="v" id="rAppart">—</div><div class="l" id="rAppartN">Appartement · médiane</div></div>
+    </div>
+    <div class="block"><h3>Maison vs Appartement (médiane €/m²)</h3><div style="position:relative;height:170px"><canvas id="dvfChart"></canvas></div></div>
+    <div class="block" id="recentBlock"><h3>Ventes récentes</h3><div style="overflow-x:auto"><table id="recentTable"></table></div></div>
+    <div class="cta">
+      <a class="btn gold" id="ctaMarcel" href="/app/marcel">Analyser avec Marcel (direct / SCI / IFI) →</a>
+      <a class="btn ghost" href="/app/patrimoine">Ajouter ce bien à mon patrimoine</a>
+    </div>
+    <div class="disc">Médianes calculées sur les ventes publiées (mutations à un seul bâti). Indicatif et pédagogique — ne constitue pas une estimation officielle ni un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. IKCP · ORIAS 23001568.</div>
+  </div>
+</div>
+
+<footer class="ft">© 2026 IKCP — souverain France · données DVF data.gouv.fr <div style="margin-top:5px"><a href="/app/dashboard">Mon espace</a> · <a href="/app/marcel">Marcel</a></div></footer>
+
+<script>
+var DVF='https://ikcp-pappers.maxime-ead.workers.dev/dvf?q=';
+function $(id){return document.getElementById(id);}
+function eur(n){ if(n==null||isNaN(n)) return '—'; return Math.round(n).toLocaleString('fr-FR')+' €'; }
+var _chart;
+window.go=function(){ var q=($('q').value||'').trim(); if(q.length<2){ $('q').style.borderColor='#c0392b'; return; } load(q); };
+
+function load(q){
+  $('err').style.display='none'; $('res').style.display='none'; $('loading').style.display='block';
+  fetch(DVF+encodeURIComponent(q),{cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      $('loading').style.display='none';
+      if(d.error || d.no_data || (!d.maison.median_m2 && !d.appartement.median_m2)){
+        $('err').style.display='block';
+        $('err').innerHTML='<p style="color:var(--navy);font-weight:600">'+(d.commune||q)+' — pas assez de ventes publiées.</p><p style="margin-top:6px">Essayez une commune voisine plus grande, ou demandez à Marcel.</p>';
+        return;
+      }
+      render(d);
+    })
+    .catch(function(){ $('loading').style.display='none'; $('err').style.display='block'; $('err').textContent='Service momentanément indisponible. Réessayez.'; });
+}
+
+function render(d){
+  $('res').style.display='block';
+  $('rCommune').textContent=d.commune+(d.cp?' ('+d.cp+')':'');
+  $('rBadge').textContent=d.total_ventes+' ventes · '+(d.year||'')+' · DVF';
+  $('rMaison').innerHTML = d.maison.median_m2 ? (d.maison.median_m2.toLocaleString('fr-FR')+' <small>€/m²</small>') : '—';
+  $('rMaisonN').textContent = d.maison.count ? ('Maison · médiane ('+d.maison.count+' ventes)') : 'Maison · n/d';
+  $('rAppart').innerHTML = d.appartement.median_m2 ? (d.appartement.median_m2.toLocaleString('fr-FR')+' <small>€/m²</small>') : '—';
+  $('rAppartN').textContent = d.appartement.count ? ('Appartement · médiane ('+d.appartement.count+' ventes)') : 'Appartement · n/d';
+  // Chart
+  if(_chart) _chart.destroy();
+  if(typeof Chart!=='undefined'){
+    _chart=new Chart($('dvfChart'),{ type:'bar',
+      data:{ labels:['🏠 Maison','🏢 Appartement'], datasets:[{ data:[d.maison.median_m2||0, d.appartement.median_m2||0], backgroundColor:['#C9A96E','#1B2A4A'], borderRadius:7, maxBarThickness:90 }] },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return ' '+c.parsed.y.toLocaleString('fr-FR')+' €/m²'; } } } },
+        scales:{ x:{ grid:{display:false}, ticks:{ color:'#1C1612', font:{size:13} } }, y:{ grid:{color:'rgba(27,42,74,.08)'}, ticks:{ color:'#6B5D52', callback:function(v){ return v.toLocaleString('fr-FR')+' €'; } } } },
+        animation:{ duration:850, easing:'easeOutQuart' } }
+    });
+  }
+  // Ventes récentes
+  var rows=(d.recent||[]).map(function(s){
+    var dt = s.date ? s.date.split('-').reverse().join('/') : '';
+    return '<tr><td>'+dt+'</td><td>'+s.type+'</td><td style="color:var(--ink-mute)">'+(s.voie||'')+'</td><td>'+s.surface+' m²</td><td>'+eur(s.valeur)+'</td><td class="m2">'+s.prix_m2.toLocaleString('fr-FR')+' €/m²</td></tr>';
+  }).join('');
+  $('recentTable').innerHTML = rows ? ('<tr><th>Date</th><th>Type</th><th>Voie</th><th>Surface</th><th>Prix</th><th>€/m²</th></tr>'+rows) : '';
+  $('recentBlock').style.display = rows ? 'block' : 'none';
+  // CTA Marcel contextualisé
+  var q='À '+d.commune+', la médiane est de '+(d.maison.median_m2||'?')+' €/m² (maison) et '+(d.appartement.median_m2||'?')+' €/m² (appartement). Pour mon patrimoine immobilier : détention directe ou via SCI, impact IFI et transmission — quels sont mes leviers ?';
+  $('ctaMarcel').setAttribute('href','/app/marcel?q='+encodeURIComponent(q));
+}
+
+// Pré-remplissage : commune du siège société (profil) si dispo
+(function(){
+  var pre=''; try{ var p=JSON.parse(localStorage.getItem('marcel_profile')||'{}'); if(p.siren_data){ pre=p.siren_data.ville || (p.siren_data.siege&&p.siren_data.siege.ville) || p.siren_data.cp || ''; } }catch(_){}
+  var u=new URLSearchParams(location.search).get('q'); if(u) pre=u;
+  if(pre){ $('q').value=pre; load(pre); }
+})();
+</script>
+</body>
+</html>

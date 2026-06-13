@@ -1,0 +1,31 @@
+name = "ikcp-veille"
+main = "worker.js"
+compatibility_date = "2025-04-01"
+workers_dev = true
+keep_vars = true
+
+# ─── Cloudflare WEUR Paris (RGPD souverain) ─────────────────────
+[placement]
+mode = "smart"
+
+# ─── Automatisation : veille patrimoniale quotidienne (06:00 UTC) ─
+[triggers]
+crons = ["0 6 * * *"]
+
+# ─── KV — rate limit + cache 24 h des recherches ────────────────
+[[kv_namespaces]]
+binding = "VEILLE_CACHE"
+id = "9f572e6724df464c8f14a2885e374391"
+
+# ─── Vars ───────────────────────────────────────────────────────
+[vars]
+PERPLEXITY_MODEL_QUICK = "sonar"
+PERPLEXITY_MODEL_DEEP = "sonar-deep-research"
+RATE_LIMIT_QUICK_PER_DAY = "10"      # premium_essentiel
+RATE_LIMIT_DEEP_PER_MONTH = "2"      # premium_fo
+CACHE_TTL_QUICK_HOURS = "24"
+
+# ─── Secrets (à set manuellement via wrangler secret put) ───────
+# PERPLEXITY_API_KEY     — clé Perplexity Pro
+# CLIENT_AUTH_PUBKEY     — clé publique pour vérifier les tokens user (HMAC ou JWT)
+# TEMOIN_INTERNAL_TOKEN  — pour appeler ikcp-temoin /log

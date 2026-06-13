@@ -1,12 +1,4 @@
-/**
- * © 2026 IKCP — IKIGAÏ Conseil Patrimonial
- * Maxime Juveneton · ORIAS 23001568 · maxime@ikcp.fr
- *
- * Ce fichier est la propriété exclusive d'IKCP. Sa reproduction, même
- * partielle, et son adaptation sont interdites sans autorisation écrite
- * préalable. Code protégé par le Code de la propriété intellectuelle
- * français (CPI L111-1, L113-9, L122-4).
- *
+﻿/**
  * IKCP Marcel Worker v2 — Cloudflare Worker
  *
  * Remplace ikcp-chat avec :
@@ -15,10 +7,9 @@
  *  - Exemples few-shot de réponses idéales
  *  - Règles de conformité MIF II renforcées
  *  - Logging anonyme dans KV (TTL 90 jours)
- *  - Rate limit anti-scraping (30 q/h IP+UA non-auth)
  *
  * Input (format conservé pour compat frontend) :
- *   POST { "message": string, "history": [{role, content}], "theme"?: string }
+ *   POST { "message": string, "history": [{role, content}] }
  *
  * Output :
  *   { "reply": string, "web_search_used": boolean, "season": string }
@@ -26,7 +17,6 @@
  * Bindings requis :
  *   ANTHROPICAPIKEY  (secret)   — clé API Anthropic sk-ant-...
  *   MARCEL_LOGS      (KV binding, optionnel) — logs anonymisés
- *   RATE_LIMIT       (KV binding, optionnel) — compteurs anti-scraping
  */
 
 const ALLOWED_ORIGINS = [
@@ -34,9 +24,183 @@ const ALLOWED_ORIGINS = [
   'https://www.ikcp.eu',
   'https://ikcp.fr',
   'https://www.ikcp.fr',
+  'https://marcel.ikcp.eu',
+  'https://famille.ikcp.eu',
+  'https://admin.ikcp.eu',
+  'https://app.ikcp.eu',
+  'https://ikcp-eu.pages.dev',       // Cloudflare Pages (production)
   'http://localhost:3000',
+  'http://localhost:5500',
+  'http://localhost:8765',
+  'http://localhost:8787',
+  'http://127.0.0.1:3000',
   'http://127.0.0.1:5500',
+  'http://127.0.0.1:8765',
+  'null', // file:// (test local depuis test-harness.html)
+  '',     // GET direct depuis navigateur (pas d'Origin header)
 ];
+
+// ──────────────────────────────────────────────────────────────
+// SPECIALISTS REGISTRY — workers vers lesquels Marcel delegue
+// ──────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────
+// SPECIALISTS REGISTRY — 12 agents alignés sur les univers Family Office
+// Noms synchronisés avec UNIVERS_DATA dans family-office.html
+// ──────────────────────────────────────────────────────────────
+const SPECIALISTS_REGISTRY = {
+  // ✅ LIVE Sprint 1
+  codex:     { url: 'https://ikcp-codex.maxime-ead.workers.dev/',     displayName: 'Codex',       role: 'Fiscalité experte · arbitrages CGI · jurisprudence fiscale',              model: 'opus-4-7',   live: true  },
+  // 🟡 Sprint 2 — workers dédiés (ikcp-batisseur / ikcp-hermes), déployables via CI/CD
+  batisseur: { url: 'https://ikcp-batisseur.maxime-ead.workers.dev/', displayName: 'Bâtisseur',   role: 'Cartographie patrimoine 360° · bilan dirigeant · holding · governance',    model: 'opus-4-7',   live: false },
+  hermes:    { url: 'https://ikcp-hermes.maxime-ead.workers.dev/',    displayName: 'Hermès',      role: 'Transmission patrimoniale · succession · donation · pacte Dutreil',        model: 'opus-4-7',   live: true  },
+  // 🔴 Sprint 3 — mutualisé sur ikcp-lifestyle
+  // agentKey = clé réelle dans ikcp-lifestyle/prompts.js (≠ registry key)
+  architecte:{ url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Architecte',  role: 'Immobilier & Foncier · DVF · IFI · SCI · montages locatifs',              model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'augustin'   },
+  stratege:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Stratège',    role: 'Marchés · allocation · produits financiers · diversification',             model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'stratege'   },
+  // 🔴 Sprint 4 — lifestyle mutualisé
+  curateur:  { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Curateur',    role: 'Art · Horlogerie · Collections · Vins · Joaillerie · valeur & assurance',  model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'curateur'   },
+  concierge: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Concierge',   role: 'Voyage · Conciergerie · Mode · Bien-être · Aviation · expériences',        model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'iris'       },
+  capital:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Capital',     role: 'Capital investissement · private equity · actifs alternatifs · dette privée', model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'capital'   },
+  // 🔴 Sprint 5
+  mecene:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Mécène',      role: 'Philanthropie · Fondations · mécénat fiscal · NextGen · impact',           model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'olympe'     },
+  pedagogue: { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Pédagogue',   role: 'Éducation financière · sensibilisation patrimoniale · formation NextGen',   model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'pedagogue'  },
+  camille:   { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Camille',     role: 'Assistance & Onboarding · coordination · support familles fondatrices',    model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'camille'    },
+  olympe:    { url: 'https://ikcp-lifestyle.maxime-ead.workers.dev/', displayName: 'Olympe',      role: 'Bien-être · santé · médecine privée · art de vivre & longévité',           model: 'sonnet-4-6', live: true,  mutualisé: true, agentKey: 'helene'     },
+};
+// Filtre — Marcel ne peut déléguer qu'aux spécialistes déjà déployés
+const SPECIALISTS_IDS_LIVE = Object.entries(SPECIALISTS_REGISTRY).filter(([,v]) => v.live).map(([k]) => k);
+const SPECIALISTS_IDS = Object.keys(SPECIALISTS_REGISTRY);
+
+// ──────────────────────────────────────────────────────────────
+// COLLECTOR API — profil collectionneur perso (montres, voitures, lego...)
+// ──────────────────────────────────────────────────────────────
+const COLLECTOR_URL = 'https://ikcp-collector.maxime-ead.workers.dev';
+
+async function collectorFetch(env, path, method = 'GET', body = null) {
+  if (!env.COLLECTOR_ADMIN_TOKEN) {
+    return { error: 'COLLECTOR_ADMIN_TOKEN non configure sur Marcel' };
+  }
+  try {
+    const opts = {
+      method,
+      headers: {
+        'Authorization': `Bearer ${env.COLLECTOR_ADMIN_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(`${COLLECTOR_URL}${path}`, opts);
+    if (!r.ok) return { error: `Collector HTTP ${r.status}`, detail: (await r.text()).slice(0, 200) };
+    return await r.json();
+  } catch (e) {
+    return { error: `Collector reseau : ${e.message}` };
+  }
+}
+
+async function fetchUserContextFromClient(request) {
+  try {
+    // Transmet le cookie ET le jeton (Authorization) reçus du navigateur,
+    // pour identifier le membre quelle que soit la méthode de session.
+    const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', {
+      headers: {
+        Cookie: request.headers.get('Cookie') || '',
+        Authorization: request.headers.get('Authorization') || '',
+      },
+    });
+    if (!r.ok) return null;
+    const me = await r.json();
+    const lines = [];
+    let profile = {};
+    try { profile = me.profile_json ? JSON.parse(me.profile_json) : {}; } catch (_) {}
+    if (profile.prenom) lines.push(`Prénom : ${profile.prenom}`);
+    if (profile.age) lines.push(`Âge : ${profile.age} ans`);
+    if (profile.situation) lines.push(`Situation : ${profile.situation.replace(/_/g, ' ')}`);
+    if (profile.profession) lines.push(`Activité : ${profile.profession.replace(/_/g, ' ')}`);
+    if (profile.spheres && profile.spheres.length) lines.push(`Univers favoris : ${profile.spheres.join(', ')}`);
+    if (me.sirens && me.sirens.length) {
+      lines.push(`Sociétés rattachées (${me.sirens.length}) :`);
+      me.sirens.slice(0, 3).forEach(s => lines.push(`  • ${s.nom_societe} · ${s.siren} · ${s.forme_juridique || ''}`));
+    }
+    if (me.tier) lines.push(`Tier abonnement : ${me.tier}`);
+    // On expose aussi le tier + identifiant réels pour propager les quotas
+    // (ex. veille Perplexity) au lieu d'un défaut « fo » servi à tout le monde.
+    return {
+      context: lines.length ? lines.join('\n') : null,
+      tier: me.tier || null,
+      userId: me.id || me.email || null,
+    };
+  } catch (_) { return null; }
+}
+
+// ── SECOURS SOUVERAIN — Mistral (FR, tier free) ──
+// Utilisé UNIQUEMENT si l'appel Claude échoue (résilience). Réponse texte
+// simple (sans outils), conforme MIF II. Gated par MISTRAL_API_KEY ; si la
+// clé est absente, renvoie null → Marcel garde son message d'erreur normal.
+async function callMistralFallback(env, systemText, messages) {
+  if (!env.MISTRAL_API_KEY) return null;
+  try {
+    const lastUser = [...(messages || [])].reverse().find(m => m.role === 'user');
+    const userText = typeof lastUser?.content === 'string'
+      ? lastUser.content
+      : (Array.isArray(lastUser?.content) ? lastUser.content.map(c => c.text || '').join(' ') : '');
+    if (!userText) return null;
+    const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: env.MISTRAL_MODEL || 'mistral-small-latest',
+        max_tokens: 1200,
+        temperature: 0.3,
+        messages: [
+          { role: 'system', content: (systemText || '').slice(0, 6000) + "\n\nRéponds en français, de façon utile et pédagogue. Termine TOUJOURS par une question (jamais une recommandation produit). Ajoute en fin : \"Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.\"" },
+          { role: 'user', content: userText },
+        ],
+      }),
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content || null;
+  } catch (_) { return null; }
+}
+
+async function delegateToSpecialist(agentId, question, context, isPaidMember = false) {
+  const spec = SPECIALISTS_REGISTRY[agentId];
+  if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS_LIVE.join(', ')}` };
+  // Guard — bloquer délégation vers workers pas encore déployés
+  if (!spec.live) return { error: `Specialiste ${agentId} (${spec.role}) n'est pas encore déployé (Sprint 3-5). Traite la question directement.` };
+  // Garde-fou COÛTS (défense en profondeur) : agents Opus = payant + connecté.
+  // Si non payant, on refuse l'appel coûteux → Marcel répond avec ses moyens
+  // (Sonnet) et invite à l'accompagnement Premium/FO, sans message d'erreur brut.
+  if ((spec.model || '').includes('opus') && !isPaidMember) {
+    return { gated: true, reason: 'premium_required',
+      message: `L'analyse approfondie par ${spec.displayName} (expertise senior) fait partie de l'accompagnement Premium / Family Office. Traite la question avec tes propres moyens (information générale + question), puis mentionne avec tact que l'analyse experte détaillée est réservée aux membres.` };
+  }
+  try {
+    // Pour les workers mutualisés (ikcp-lifestyle), utiliser agentKey (clé dans PROMPTS)
+    // sinon agentId — évite les mismatch si le registry key ≠ clé dans prompts.js
+    const body = spec.mutualisé
+      ? { agent: spec.agentKey || agentId, question, context }
+      : { question, context };
+    const r = await fetch(spec.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!r.ok) {
+      const errTxt = await r.text().catch(() => '');
+      return { error: `Specialiste ${agentId} indisponible (${r.status})`, detail: errTxt.slice(0, 200) };
+    }
+    const data = await r.json();
+    return {
+      specialiste: data.agent || agentId,
+      role: data.role || spec.role,
+      reponse: data.reply || '',
+      model: data.model,
+    };
+  } catch (e) {
+    return { error: `Erreur reseau vers ${agentId}: ${e.message}` };
+  }
+}
 
 // ──────────────────────────────────────────────────────────────
 // TOOL DEFINITIONS — calculs déterministes (pas de hallucination LLM)
@@ -68,95 +232,99 @@ const TOOLS_FISCAL = [
     },
   },
   {
-    name: 'calc_donation',
-    description: "Calcule les droits de donation parent → enfant en 2026 (art. 779 I CGI abattement 100 000€/15 ans, barème art. 777 CGI). Utilise pour toute simulation de donation. Tient compte de l'antériorité (donation < 15 ans qui consomme l'abattement).",
+    name: 'get_user_profile',
+    description: "Lit le profil collectionneur de l'utilisateur (montres détenues, voitures wishlist, Lego, vins, art, voyages, sport, NextGen). Utilise ce tool dès qu'une question touche aux PASSIONS PERSONNELLES de l'utilisateur ou pour personnaliser une réponse selon ses goûts.",
     input_schema: {
       type: 'object',
       properties: {
-        montant: { type: 'number', description: 'Montant de la donation envisagée (en euros)' },
-        donation_anterieure: { type: 'number', description: "Montant déjà donné par le même parent au même enfant dans les 15 dernières années (0 si aucune)" },
-        don_familial_31865: { type: 'boolean', description: "Cumul du don familial 31 865€ (CGI 790 G) — uniquement si parent < 80 ans + enfant majeur. Défaut false." },
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
       },
-      required: ['montant'],
+      required: [],
     },
   },
   {
-    name: 'calc_ifi',
-    description: "Calcule l'IFI 2026 (art. 964 et suivants CGI). Seuil 1 300 000€ de patrimoine immobilier net, abattement 30% résidence principale, barème progressif 0,5% à 1,5%. Utilise pour toute estimation IFI.",
+    name: 'get_user_watches',
+    description: "Liste les items que l'utilisateur surveille sur les marchés collectionneurs (montres, voitures, Lego, vins, art, sneakers, yachts). Filtre optionnel par marché.",
     input_schema: {
       type: 'object',
       properties: {
-        patrimoine_immo_brut: { type: 'number', description: "Patrimoine immobilier brut (résidence principale + secondaire + locatif + parts SCI)" },
-        residence_principale: { type: 'number', description: "Valeur de la résidence principale (avant abattement 30%) — 0 si pas de RP" },
-        dettes_immo: { type: 'number', description: "Dettes immobilières en cours (crédits restant dus)" },
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+        market: { type: 'string', description: "Filtrer par marché (chrono24, classic, bricklink, idealwine, stockx, etc.)" },
       },
-      required: ['patrimoine_immo_brut'],
+      required: [],
     },
   },
   {
-    name: 'calc_plus_value_immo',
-    description: "Calcule la plus-value immobilière de cession et les abattements pour durée de détention (CGI 150 U). Exonération IR à 22 ans, prélèvements sociaux à 30 ans. Surtaxe PV élevée éventuelle (CGI 1609 nonies G).",
+    name: 'get_user_alerts',
+    description: "Liste les alertes générées par l'agent collecteur (opportunités, baisses de prix, nouvelles listings, enchères imminentes). Filtre optionnel sur les non-lues.",
     input_schema: {
       type: 'object',
       properties: {
-        prix_acquisition: { type: 'number', description: "Prix d'acquisition initial (en euros)" },
-        prix_cession: { type: 'number', description: 'Prix de cession (en euros)' },
-        annees_detention: { type: 'number', description: 'Années de détention complètes' },
-        residence_principale: { type: 'boolean', description: 'Cession de la résidence principale (exonération totale CGI 150 U II 1°). Défaut false.' },
-        travaux_justifies: { type: 'number', description: 'Travaux effectivement réalisés et justifiés (en euros) — pour majorer le prix d\'acquisition. Défaut 0.' },
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+        unread: { type: 'boolean', description: "Si true, ne renvoie que les alertes non encore vues" },
       },
-      required: ['prix_acquisition', 'prix_cession', 'annees_detention'],
+      required: [],
     },
   },
   {
-    name: 'calc_demembrement',
-    description: "Calcule la valeur de la nue-propriété et de l'usufruit selon le barème fiscal art. 669 CGI (en fonction de l'âge de l'usufruitier). Utile pour donation en NP, démembrement viager, donation-partage avec démembrement.",
+    name: 'add_user_watch',
+    description: "Ajoute un nouvel item à surveiller pour l'utilisateur. Le collecteur scrutera ce marché chaque jour 7h Paris et alertera si correspondance. Utilise ce tool quand l'utilisateur exprime un souhait d'acquisition ou demande à suivre un item.",
     input_schema: {
       type: 'object',
       properties: {
-        valeur_pleine_propriete: { type: 'number', description: 'Valeur du bien en pleine propriété (en euros)' },
-        age_usufruitier: { type: 'number', description: "Âge de l'usufruitier au moment du démembrement (années révolues)" },
+        user_id: { type: 'string', description: "Identifiant utilisateur (par défaut 'max')" },
+        market: { type: 'string', description: "Marché : chrono24, classic, bricklink, idealwine, stockx, artprice, yachtworld, histovec, etc." },
+        category: { type: 'string', description: "Catégorie : montre, voiture, lego, vin, art, sneaker, yacht, etc." },
+        query: { type: 'string', description: "Recherche précise (ex: 'Patek 5711A', 'Porsche 964 RS', '10497-1')" },
+        target_price: { type: 'number', description: "Prix cible en EUR — alerte si listing < target_price" },
       },
-      required: ['valeur_pleine_propriete', 'age_usufruitier'],
+      required: ['market', 'category', 'query'],
     },
   },
   {
-    name: 'calc_exit_tax',
-    description: "Calcule l'exit tax (CGI 167 bis) pour un résident fiscal français qui transfère son domicile à l'étranger. S'applique aux titres détenus > 50% d'une société ou portefeuille > 800 k€ avec PV latente. PFU 30% (12,8% IR + 17,2% PS). Sursis automatique 6 ans si départ vers UE/EEE.",
+    name: 'delegate_to_specialist',
+    description: `Délègue à un spécialiste de l'équipe Family Office IKCP. RÈGLE : délègue AUTOMATIQUEMENT dès que la question dépasse tes outils de calcul déterministe.
+
+DÉLÉGUER OBLIGATOIREMENT à :
+- codex : fiscalité experte (arbitrage multi-articles CGI, jurisprudence Cass./CE, comparaison apport-cession vs donation vs démembrement, Dutreil, CEHR)
+- hermes : transmission patrimoniale (succession hors ligne directe, pacte Dutreil complexe, donation-partage, SCI familiale + transmission)
+- batisseur : cartographie patrimoine 360° (bilan multi-entités dirigeant, restructuration holding, analyse Pappers complète)
+- architecte : immobilier & foncier (DVF précis, SCI IS/IR, plus-value immo complexe, LMNP/LMP, nue-propriété)
+- stratege : marchés & allocation (questions produits financiers, allocation d'actifs, diversification, private equity)
+- curateur : art/horlogerie/collections/vins/joaillerie (valeur, assurance, cession, fiscalité œuvres d'art)
+- concierge : lifestyle (voyage, aviation, mode, conciergerie, expériences luxe)
+- capital : capital investissement (private equity, dette privée, actifs alternatifs, club deals)
+- mecene : philanthropie (fondations, mécénat fiscal art. 238 bis, NextGen, impact investing)
+- pedagogue : éducation financière (formation NextGen, sensibilisation patrimoniale)
+- camille : onboarding & support (aide utilisation plateforme, questions générales FO)
+- olympe : bien-être & santé (médecine privée, art de vivre, longévité, bien-être senior)
+
+NE PAS déléguer pour : calculs IR simple, IFI de base, abattements donation standard → utilise tes tools déterministes directement.
+Tu peux déléguer à PLUSIEURS spécialistes simultanément.`,
     input_schema: {
       type: 'object',
       properties: {
-        valeur_titres: { type: 'number', description: 'Valeur des titres au moment du départ (en euros)' },
-        prix_acquisition: { type: 'number', description: "Prix d'acquisition (apport ou achat) — pour calculer la PV latente" },
-        pays_destination: { type: 'string', description: 'Pays de destination (EU/EEE = sursis automatique 6 ans, hors UE = sursis sur garantie)' },
-        controle_majoritaire: { type: 'boolean', description: 'Contrôle > 50% société ? (active CGI 167 bis sans plafond)' },
+        agent: {
+          type: 'string',
+          enum: ['codex','hermes','batisseur','architecte','stratege','curateur','concierge','capital','mecene','pedagogue','camille','olympe'],
+          description: 'Identifiant du spécialiste (doit être dans SPECIALISTS_REGISTRY)',
+        },
+        question: { type: 'string', description: 'Question précise à transmettre au spécialiste — formule clairement le besoin' },
+        context: { type: 'string', description: "Contexte client utile : situation familiale, données Pappers, patrimoine estimé, calculs déjà faits" },
       },
-      required: ['valeur_titres', 'prix_acquisition'],
+      required: ['agent', 'question'],
     },
   },
   {
-    name: 'compare_holding_jurisdictions',
-    description: "Compare la fiscalité d'une holding pour détenir des participations selon 4 juridictions : France (SAS/SARL holding), Luxembourg (SOPARFI), Suisse (SA), Pays-Bas (BV). Donne IS effectif sur dividendes reçus, PV cession, et fiscalité de remontée vers actionnaire personne physique française.",
+    name: 'consult_veille',
+    description: "Lance une veille approfondie via Perplexity Pro sur un sujet patrimonial, fiscal, marché ou actualité récente. Utilise cet outil quand l'utilisateur demande une veille spécifique, les dernières actualités fiscales, l'évolution d'un marché ou une recherche documentaire récente (< 30 jours).",
     input_schema: {
       type: 'object',
       properties: {
-        type_actif: { type: 'string', description: 'Type d\'actif détenu : participations_op (sociétés opérationnelles), pe_funds, immo, ip_marques' },
-        valeur_participation: { type: 'number', description: 'Valeur de la participation (en euros)' },
-        actionnaire_resident_fr: { type: 'boolean', description: 'L\'actionnaire ultime est-il résident fiscal français ?' },
+        query: { type: 'string', description: "Requête de recherche précise (en français de préférence)" },
+        mode: { type: 'string', enum: ['quick', 'deep'], description: "'quick' pour une info rapide (< 10s), 'deep' pour une analyse approfondie (30-60s)" },
       },
-      required: ['type_actif'],
-    },
-  },
-  {
-    name: 'calc_forfait_suisse',
-    description: "Calcule l'imposition d'après la dépense (forfait fiscal suisse) — réservé aux non-actifs en Suisse, non-résidents pendant 5 ans précédents. Base : 5-7× valeur locative ou loyer payé selon canton, minimum 400 k CHF de dépense imposable depuis 2016 (Vaud, Genève, Valais).",
-    input_schema: {
-      type: 'object',
-      properties: {
-        loyer_ou_valeur_locative: { type: 'number', description: 'Loyer annuel payé ou valeur locative (en CHF)' },
-        canton: { type: 'string', description: 'Canton de résidence (vd, ge, vs, fr, ti — exemples). Détermine le taux cantonal.' },
-      },
-      required: ['loyer_ou_valeur_locative'],
+      required: ['query'],
     },
   },
 ];
@@ -242,353 +410,6 @@ function calcSuccession(patrimoineNet, nbEnfants, avVal) {
   };
 }
 
-// Barème DMTG ligne directe 2026 (art. 777 CGI) — même grille que succession
-const DMTG_BRACKETS = SUCC_BRACKETS;
-
-function calcDonation(montant, donationAnterieure = 0, donFamilial31865 = false) {
-  const ABATTEMENT = 100000; // CGI 779 I
-  const DON_FAMILIAL = 31865; // CGI 790 G
-  const abattementResiduel = Math.max(0, ABATTEMENT - (donationAnterieure || 0));
-  const donFamilialApplicable = donFamilial31865 ? DON_FAMILIAL : 0;
-  const baseTaxable = Math.max(0, montant - abattementResiduel - donFamilialApplicable);
-
-  let droits = 0;
-  let prev = 0;
-  for (const b of DMTG_BRACKETS) {
-    if (baseTaxable <= b.max) {
-      droits += (baseTaxable - prev) * b.rate;
-      break;
-    }
-    droits += (b.max - prev) * b.rate;
-    prev = b.max;
-  }
-  droits = Math.round(droits);
-  return {
-    droits_dus: droits,
-    montant_donation: montant,
-    abattement_applique: abattementResiduel,
-    abattement_consomme_15ans: donationAnterieure || 0,
-    don_familial_cumule: donFamilialApplicable,
-    base_taxable: Math.round(baseTaxable),
-    montant_net_recu: montant - droits,
-    sources: 'art. 779 I CGI (abattement 100k€/15 ans) · art. 790 G CGI (don familial) · art. 777 CGI (barème DMTG)',
-  };
-}
-
-// IFI 2026 — barème art. 977 CGI (inchangé depuis 2018)
-const IFI_BRACKETS = [
-  { max: 800000, rate: 0 },
-  { max: 1300000, rate: 0.005 }, // tranche 800k-1,3M : 0,5% mais déclenchement à 1,3M
-  { max: 2570000, rate: 0.007 },
-  { max: 5000000, rate: 0.01 },
-  { max: 10000000, rate: 0.0125 },
-  { max: Infinity, rate: 0.015 },
-];
-
-function calcIFI(patrimoineImmoBrut, residencePrincipale = 0, dettesImmo = 0) {
-  const SEUIL = 1300000;
-  const ABATTEMENT_RP_PCT = 0.30;
-  const rpAbattue = (residencePrincipale || 0) * (1 - ABATTEMENT_RP_PCT);
-  const horsRP = Math.max(0, patrimoineImmoBrut - (residencePrincipale || 0));
-  const assietteBrute = rpAbattue + horsRP;
-  const assietteNette = Math.max(0, assietteBrute - (dettesImmo || 0));
-
-  if (assietteNette < SEUIL) {
-    return {
-      ifi_du: 0,
-      assiette_nette: Math.round(assietteNette),
-      seuil_assujettissement: SEUIL,
-      assujetti: false,
-      note: `Patrimoine immobilier net ${Math.round(assietteNette).toLocaleString('fr-FR')}€ inférieur au seuil 1 300 000€ — non assujetti à l'IFI 2026.`,
-      sources: 'art. 964 CGI (seuil) · art. 977 CGI (barème)',
-    };
-  }
-
-  let ifi = 0;
-  let prev = 0;
-  for (const b of IFI_BRACKETS) {
-    if (assietteNette <= b.max) {
-      ifi += (assietteNette - prev) * b.rate;
-      break;
-    }
-    ifi += (b.max - prev) * b.rate;
-    prev = b.max;
-  }
-  // Décote (CGI 977-bis) entre 1,3M et 1,4M
-  if (assietteNette >= SEUIL && assietteNette < 1400000) {
-    const decote = 17500 - 1.25 * assietteNette / 100;
-    ifi = Math.max(0, ifi - decote);
-  }
-  ifi = Math.round(ifi);
-  return {
-    ifi_du: ifi,
-    assiette_nette: Math.round(assietteNette),
-    residence_principale_apres_abattement: Math.round(rpAbattue),
-    abattement_rp_30pct_applique: residencePrincipale ? Math.round((residencePrincipale || 0) * ABATTEMENT_RP_PCT) : 0,
-    dettes_deduites: dettesImmo || 0,
-    sources: 'art. 964 CGI (seuil 1,3M€) · art. 968 CGI (RP -30%) · art. 977 CGI (barème) · art. 977-bis CGI (décote)',
-  };
-}
-
-// Abattements PV immo CGI 150 V C — barème depuis 2014
-function calcPlusValueImmo(prixAcq, prixCess, annees, rp = false, travauxJustifies = 0) {
-  if (rp) {
-    return {
-      pv_brute: 0,
-      impot_du: 0,
-      exoneration: 'Résidence principale exonérée totalement',
-      sources: 'art. 150 U II 1° CGI',
-    };
-  }
-  // Frais d'acquisition forfait 7,5% (ou réels si prouvés)
-  const fraisAcq = prixAcq * 0.075;
-  const acqMajore = prixAcq + fraisAcq + (travauxJustifies || 0);
-  const pvBrute = Math.max(0, prixCess - acqMajore);
-  if (pvBrute === 0) {
-    return { pv_brute: 0, impot_du: 0, note: 'Aucune plus-value', sources: 'art. 150 U CGI' };
-  }
-  // Abattement IR : 6%/an de 6 à 21, 4% à 22 → exo 22 ans
-  let abIR = 0;
-  if (annees >= 22) abIR = 1;
-  else if (annees > 5) abIR = Math.min(1, (annees - 5) * 0.06 + (annees >= 21 ? 0.04 : 0));
-  // Recalcul propre :
-  abIR = 0;
-  for (let y = 6; y <= Math.min(annees, 21); y++) abIR += 0.06;
-  if (annees >= 22) abIR += 0.04;
-  abIR = Math.min(1, abIR);
-
-  // Abattement PS : 1,65%/an 6-21, 1,60% à 22, 9% par an 23-30 → exo 30 ans
-  let abPS = 0;
-  for (let y = 6; y <= Math.min(annees, 21); y++) abPS += 0.0165;
-  if (annees >= 22) abPS += 0.016;
-  for (let y = 23; y <= Math.min(annees, 30); y++) abPS += 0.09;
-  abPS = Math.min(1, abPS);
-
-  const pvIR = pvBrute * (1 - abIR);
-  const pvPS = pvBrute * (1 - abPS);
-  const ir = pvIR * 0.19;
-  const ps = pvPS * 0.172;
-  const totalImpot = Math.round(ir + ps);
-
-  // Surtaxe PV élevée (CGI 1609 nonies G) si pvIR > 50 000
-  let surtaxe = 0;
-  if (pvIR > 50000) {
-    if (pvIR <= 100000) surtaxe = (pvIR - 50000) * 0.02;
-    else if (pvIR <= 150000) surtaxe = 1000 + (pvIR - 100000) * 0.03;
-    else if (pvIR <= 200000) surtaxe = 2500 + (pvIR - 150000) * 0.04;
-    else if (pvIR <= 250000) surtaxe = 4500 + (pvIR - 200000) * 0.05;
-    else surtaxe = 7000 + (pvIR - 250000) * 0.06;
-  }
-
-  return {
-    pv_brute: Math.round(pvBrute),
-    pv_apres_abattement_ir: Math.round(pvIR),
-    pv_apres_abattement_ps: Math.round(pvPS),
-    abattement_ir_pct: Math.round(abIR * 100),
-    abattement_ps_pct: Math.round(abPS * 100),
-    impot_ir_19pct: Math.round(ir),
-    prelevements_sociaux_172pct: Math.round(ps),
-    surtaxe_pv_elevee: Math.round(surtaxe),
-    impot_du: totalImpot + Math.round(surtaxe),
-    annees_detention: annees,
-    sources: 'art. 150 U CGI · art. 150 V C CGI (abattements) · art. 1609 nonies G CGI (surtaxe PV élevée)',
-  };
-}
-
-// Démembrement — barème art. 669 CGI
-const USUFRUIT_BAREME = [
-  { ageMax: 20, usufruit: 0.90 },
-  { ageMax: 30, usufruit: 0.80 },
-  { ageMax: 40, usufruit: 0.70 },
-  { ageMax: 50, usufruit: 0.60 },
-  { ageMax: 60, usufruit: 0.50 },
-  { ageMax: 70, usufruit: 0.40 },
-  { ageMax: 80, usufruit: 0.30 },
-  { ageMax: 90, usufruit: 0.20 },
-  { ageMax: Infinity, usufruit: 0.10 },
-];
-
-function calcDemembrement(valeurPP, ageUsufruitier) {
-  const tranche = USUFRUIT_BAREME.find(t => ageUsufruitier <= t.ageMax);
-  const usuPct = tranche.usufruit;
-  const npPct = 1 - usuPct;
-  return {
-    valeur_pleine_propriete: valeurPP,
-    age_usufruitier: ageUsufruitier,
-    valeur_usufruit: Math.round(valeurPP * usuPct),
-    valeur_nue_propriete: Math.round(valeurPP * npPct),
-    usufruit_pct: Math.round(usuPct * 100),
-    nue_propriete_pct: Math.round(npPct * 100),
-    note: `À ${ageUsufruitier} ans, l'usufruit vaut ${Math.round(usuPct * 100)}% et la NP ${Math.round(npPct * 100)}% (barème fiscal). En donation NP, seule la NP est taxée — l'usufruit revient gratuitement à la NP au décès de l'usufruitier (CGI 1133).`,
-    sources: 'art. 669 CGI (barème usufruit) · art. 1133 CGI (extinction usufruit)',
-  };
-}
-
-// ──────────────────────────────────────────────────────────────
-// Exit tax — CGI 167 bis (transfert domicile fiscal hors France)
-// PFU 30% sur PV latente · sursis automatique 6 ans pour UE/EEE
-// ──────────────────────────────────────────────────────────────
-const EU_EEE = ['allemagne','autriche','belgique','bulgarie','chypre','croatie','danemark','espagne','estonie','finlande','grece','hongrie','irlande','italie','lettonie','lituanie','luxembourg','malte','pays-bas','pologne','portugal','republique tcheque','roumanie','slovaquie','slovenie','suede','islande','liechtenstein','norvege'];
-
-function calcExitTax(valeurTitres, prixAcq, paysDest = '', controleMaj = false) {
-  const pv = Math.max(0, valeurTitres - prixAcq);
-  if (pv === 0) {
-    return { exit_tax_due: 0, note: 'Aucune plus-value latente — exit tax non applicable.', sources: 'art. 167 bis CGI' };
-  }
-  const ir = pv * 0.128; // PFU IR
-  const ps = pv * 0.172; // prélèvements sociaux
-  const total = Math.round(ir + ps);
-
-  const paysClean = (paysDest || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-  const sursisUE = EU_EEE.includes(paysClean);
-  const sursis = {
-    automatique: sursisUE,
-    duree: sursisUE ? '6 ans (sursis automatique UE/EEE — CGI 167 bis II.1)' : 'Sursis sur garantie hors UE/EEE (constitution d\'une garantie auprès du Trésor)',
-    extinction: 'PV purgée si conservation des titres > 6 ans après le départ + retour en France (sinon imposition définitive au terme)',
-  };
-
-  const seuilPlafond = 800000;
-  const sousSeuil = !controleMaj && valeurTitres < seuilPlafond;
-
-  return {
-    exit_tax_due: total,
-    plus_value_latente: Math.round(pv),
-    ir_12_8_pct: Math.round(ir),
-    prelevements_sociaux_17_2_pct: Math.round(ps),
-    sursis,
-    sous_seuil_800k: sousSeuil,
-    note: sousSeuil
-      ? 'Patrimoine titres < 800 k€ et pas de contrôle majoritaire → exit tax non applicable (CGI 167 bis I.1).'
-      : 'Exit tax applicable. Sursis recommandé. Obligations déclaratives au départ + chaque année du sursis.',
-    sources: 'art. 167 bis CGI · BOFIP-RPPM-PVBMI-50 · convention bilatérale destination',
-  };
-}
-
-// ──────────────────────────────────────────────────────────────
-// Comparatif holdings — France vs Luxembourg vs Suisse vs Pays-Bas
-// Données indicatives 2026 (à valider par juriste fiscaliste)
-// ──────────────────────────────────────────────────────────────
-function compareHoldingJurisdictions(typeActif = 'participations_op', valeurParticipation = 0, actionnaireFr = true) {
-  const grilles = {
-    france: {
-      label: 'France (SAS/SARL holding)',
-      is_dividendes_recus: '0% (régime mère-fille CGI 145 sous condition 5% + 2 ans, quote-part frais 5%)',
-      is_pv_cession: '0% (long terme, titres de participation > 2 ans, quote-part 12% — CGI 219 I a quinquies)',
-      remontee_actionnaire_fr: 'PFU 30% (12,8% IR + 17,2% PS) sur dividendes versés',
-      cout_setup: '1-3 k€',
-      avantage: 'Aucun droit de douane/TVA, simplicité, conventions FR-130+ pays',
-      inconvenient: 'CSG-CRDS sur PV future à la sortie',
-    },
-    luxembourg: {
-      label: 'Luxembourg SOPARFI',
-      is_dividendes_recus: '0% (régime participation exemption — LIR art. 166, 10% détention ou 1,2 M€ + 1 an)',
-      is_pv_cession: '0% (mêmes conditions que dividendes)',
-      remontee_actionnaire_fr: 'Retenue source 0% à 15% selon convention LUX-FR (5/15% standard) + PFU FR 30% avec crédit d\'impôt',
-      cout_setup: '15-30 k€ (constitution + domiciliation + admin annuelle 8-15 k€)',
-      avantage: 'Régulation fiable, RAIF possible pour structures PE, gouvernance souple SCA',
-      inconvenient: 'Substance économique exigée (real activity test), coûts récurrents, BEPS / ATAD',
-    },
-    suisse: {
-      label: 'Suisse SA / Sàrl holding',
-      is_dividendes_recus: '95% exonération (réduction holding — capital ≥ 100 k CHF + détention ≥ 10%)',
-      is_pv_cession: 'Exonération sur PV de participation (impôt cantonal et fédéral)',
-      remontee_actionnaire_fr: 'Retenue source CH 35% — récupérable via convention CH-FR à 15% + PFU 30%',
-      cout_setup: '20-40 k€ (constitution SA capital 100 k CHF, admin 10-20 k€/an)',
-      avantage: 'Stabilité juridique, secret bancaire dégressif mais gouvernance privée préservée, AVS distincte',
-      inconvenient: 'Coût constitution SA, fiscalité cantonale variable (à choisir : Zoug, Zurich, Genève)',
-    },
-    pays_bas: {
-      label: 'Pays-Bas BV holding',
-      is_dividendes_recus: '0% (participation exemption — détention ≥ 5%)',
-      is_pv_cession: '0% (mêmes conditions)',
-      remontee_actionnaire_fr: 'Retenue source NL 15% conventionnel, récupérable à 15% via crédit FR + PFU 30%',
-      cout_setup: '8-15 k€',
-      avantage: 'Réseau de conventions, holding active flexibility, position sortie EU favorable',
-      inconvenient: 'Substance test renforcé depuis 2024, ATAD III en discussion',
-    },
-  };
-
-  const recommandation = (() => {
-    if (typeActif === 'participations_op' && valeurParticipation > 5000000) {
-      return 'Pour > 5 M€ de participations opérationnelles, privilégier France (simple) ou Luxembourg (si réseau international). Suisse pertinente si actionnaire envisage résidence fiscale CH.';
-    }
-    if (typeActif === 'pe_funds') {
-      return 'Pour PE/VC, Luxembourg RAIF ou SCA est l\'option standard (réservé professionnels, fiscalité 0% IS sous conditions).';
-    }
-    if (typeActif === 'immo') {
-      return 'Pour l\'immobilier, attention : la plupart des juridictions prélèvent dans le pays de situation (lex rei sitae). Holding pertinente surtout pour structurer la gouvernance, moins pour optimiser fiscalement.';
-    }
-    if (typeActif === 'ip_marques') {
-      return 'Pour la propriété intellectuelle, Luxembourg ou Pays-Bas avec leurs régimes IP-box (taux IS effectif réduit ~5-9% sous BEPS 5).';
-    }
-    return 'Recommandation à affiner avec juriste fiscaliste international + audit BEPS/ATAD.';
-  })();
-
-  return {
-    type_actif: typeActif,
-    valeur_participation: valeurParticipation,
-    juridictions: grilles,
-    recommandation,
-    avertissement: 'Comparatif indicatif. Une décision de structuration internationale doit être validée par un juriste fiscaliste, en tenant compte de la substance économique exigée (BEPS, ATAD, convention bilatérale, GAAR).',
-    sources: 'CGI 145, 219 I a quinquies (FR) · LIR 166 (LUX) · LIFD 69 (CH) · Wet Vpb (NL) · Modèle OCDE',
-  };
-}
-
-// ──────────────────────────────────────────────────────────────
-// Forfait fiscal Suisse — imposition d'après la dépense
-// Loi sur l'imposition d'après la dépense (LFID 2014, applicable 2016+)
-// ──────────────────────────────────────────────────────────────
-const CANTONS_FORFAIT = {
-  // Cantons qui acceptent encore le forfait (depuis 2016)
-  vd: { label: 'Vaud', taux_eff_estime: 0.32, dispo: true, min_chf: 415000 },
-  vs: { label: 'Valais', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
-  ge: { label: 'Genève', taux_eff_estime: 0.40, dispo: true, min_chf: 400000 },
-  fr: { label: 'Fribourg', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
-  ti: { label: 'Tessin', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
-  ne: { label: 'Neuchâtel', taux_eff_estime: 0.32, dispo: true, min_chf: 400000 },
-  ju: { label: 'Jura', taux_eff_estime: 0.30, dispo: true, min_chf: 400000 },
-  be: { label: 'Berne', taux_eff_estime: 0.34, dispo: true, min_chf: 400000 },
-  // Cantons qui ont aboli le forfait
-  zh: { label: 'Zurich', dispo: false, raison: 'Aboli par votation 2009' },
-  bs: { label: 'Bâle-Ville', dispo: false, raison: 'Aboli 2010' },
-  sh: { label: 'Schaffhouse', dispo: false, raison: 'Aboli 2014' },
-  ar: { label: 'Appenzell RE', dispo: false, raison: 'Aboli 2014' },
-};
-
-function calcForfaitSuisse(loyerOuVL, canton = 'vd') {
-  const c = CANTONS_FORFAIT[canton.toLowerCase()];
-  if (!c || !c.dispo) {
-    return {
-      eligible: false,
-      canton: c ? c.label : canton,
-      raison: c ? c.raison : 'Canton inconnu',
-      sources: 'LFID 2014 · Loi sur l\'imposition d\'après la dépense',
-    };
-  }
-
-  // Base imposable : 7× loyer/valeur locative depuis 2016, plancher cantonal
-  const baseFromHousing = loyerOuVL * 7;
-  const baseImposable = Math.max(baseFromHousing, c.min_chf);
-  const impotEstime = Math.round(baseImposable * c.taux_eff_estime);
-
-  return {
-    eligible: true,
-    canton: c.label,
-    base_imposable_chf: Math.round(baseImposable),
-    methode_calcul: `7 × loyer/valeur locative (${Math.round(baseFromHousing).toLocaleString('fr-CH')} CHF) ou plancher cantonal (${c.min_chf.toLocaleString('fr-CH')} CHF) — le plus élevé`,
-    impot_total_estime_chf: impotEstime,
-    taux_effectif_estime_pct: Math.round(c.taux_eff_estime * 100),
-    conditions: 'Non actif en Suisse (pas d\'activité professionnelle CH) · non-résident CH 5 ans précédents · ressortissant non-suisse',
-    note: 'Estimation indicative. Le calcul réel intègre fédéral (taux progressif jusqu\'à 11,5%) + cantonal + communal. Validation par fiscaliste local recommandée.',
-    sources: 'LFID 2014 · LIFD 14 · pratique cantonale ' + c.label,
-  };
-}
-
-async function sha256(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 function executeTool(name, input) {
   try {
     if (name === 'calc_impot_revenu') {
@@ -597,180 +418,11 @@ function executeTool(name, input) {
     if (name === 'calc_droits_succession') {
       return calcSuccession(+input.patrimoine_net || 0, +input.nb_enfants || 0, +input.assurance_vie || 0);
     }
-    if (name === 'calc_donation') {
-      return calcDonation(+input.montant || 0, +input.donation_anterieure || 0, !!input.don_familial_31865);
-    }
-    if (name === 'calc_ifi') {
-      return calcIFI(+input.patrimoine_immo_brut || 0, +input.residence_principale || 0, +input.dettes_immo || 0);
-    }
-    if (name === 'calc_plus_value_immo') {
-      return calcPlusValueImmo(+input.prix_acquisition || 0, +input.prix_cession || 0, +input.annees_detention || 0, !!input.residence_principale, +input.travaux_justifies || 0);
-    }
-    if (name === 'calc_demembrement') {
-      return calcDemembrement(+input.valeur_pleine_propriete || 0, +input.age_usufruitier || 0);
-    }
-    if (name === 'calc_exit_tax') {
-      return calcExitTax(+input.valeur_titres || 0, +input.prix_acquisition || 0, input.pays_destination || '', !!input.controle_majoritaire);
-    }
-    if (name === 'compare_holding_jurisdictions') {
-      return compareHoldingJurisdictions(input.type_actif || 'participations_op', +input.valeur_participation || 0, input.actionnaire_resident_fr !== false);
-    }
-    if (name === 'calc_forfait_suisse') {
-      return calcForfaitSuisse(+input.loyer_ou_valeur_locative || 0, input.canton || 'vd');
-    }
     return { error: 'Unknown tool: ' + name };
   } catch (e) {
     return { error: 'Tool execution error: ' + e.message };
   }
 }
-
-// ──────────────────────────────────────────────────────────────
-// CONTEXTES THÉMATIQUES — injectés dans le system prompt quand le front
-// envoie un `theme` (page family-office). Permet à Marcel de focaliser sa
-// réponse sur la bonne expertise, sans changer l'identité ni les règles MIF II.
-// ──────────────────────────────────────────────────────────────
-const THEME_CONTEXTS = {
-  art:
-    "FOCUS THÉMATIQUE — MARCHÉ DE L'ART. Tu réponds avec : (1) ordre de grandeur d'estimation " +
-    "si la question le permet (cite Artprice/Artnet/maisons de vente comme référentiel), (2) régime " +
-    "fiscal applicable (exclusion IFI art. 885 I CGI, taxation forfaitaire 6,5% du prix de cession " +
-    "art. 150 V bis CGI, exonération PV générale après 22 ans). (3) Si patrimoine art > 1 M€, mentionne " +
-    "1-2 schémas de structuration (SC dédiée, fondation abritée, OBO art via holding).",
-  markets:
-    "FOCUS THÉMATIQUE — MARCHÉS FINANCIERS. Tu donnes des éléments de cadrage (multiples indicatifs, " +
-    "fiscalité par enveloppe : PEA art. 150-0 D CGI, AV art. 125-0 A et 990 I CGI, PER art. 163 " +
-    "quatervicies CGI). Tu ne nommes JAMAIS de produit ou fonds spécifique. Tu rappelles que la " +
-    "sélection de valeurs/UC relève de la recommandation personnalisée — donc validation Maxime obligatoire.",
-  fiscal:
-    "FOCUS THÉMATIQUE — INGÉNIERIE FISCALE. Utilise SYSTÉMATIQUEMENT tes tools (calc_impot_revenu, " +
-    "calc_droits_succession, calc_donation, calc_ifi, calc_plus_value_immo, calc_demembrement). " +
-    "Cite l'article CGI applicable et le millésime du barème.",
-  juridique:
-    "FOCUS THÉMATIQUE — JURIDIQUE & SUCCESSION. Réponds en citant le Code civil, le CGI et la " +
-    "jurisprudence pertinente. Pour le pacte Dutreil (art. 787 B CGI), rappelle les 4 conditions " +
-    "(engagement collectif 2 ans / engagement individuel 4 ans / fonction de direction 3 ans / " +
-    "holding animatrice si pertinent — Cass. com. 2024 a durci l'appréciation).",
-  immo:
-    "FOCUS THÉMATIQUE — ACTIFS IMMOBILIERS. Pour les estimations, indique que la source est DVF " +
-    "(api.gouv.fr — données officielles ventes). Utilise calc_ifi et calc_plus_value_immo dès qu'un " +
-    "calcul est possible. Cite art. 964 CGI (IFI), art. 150 U CGI (PV), art. 31 CGI (déductibilité).",
-  pe:
-    "FOCUS THÉMATIQUE — PRIVATE EQUITY. Maîtrise art. 150-0 B ter CGI (apport-cession holding), " +
-    "art. 199 terdecies-0 A CGI (IR-PME), art. 219 I a quinquies CGI (exonération PV holding). " +
-    "Pour les FPCI, mentionne les conditions 75% titres éligibles non cotés, durée minimale 5 ans.",
-  transmission:
-    "FOCUS THÉMATIQUE — TRANSMISSION D'ENTREPRISE. Pour toute valorisation > 1 M€, présente 4 " +
-    "schémas comparés : (A) cession 100% à un tiers — PFU 30%, (B) donation-cession enfants avant " +
-    "cession — purge PV pour la part donnée, (C) holding apport CGI 150-0 B ter — report PV, (D) " +
-    "Dutreil familial complet CGI 787 B — abattement 75%. Chiffre l'impact fiscal de chacun.",
-  financement:
-    "FOCUS THÉMATIQUE — FINANCEMENT. Pour le Lombard, base les taux indicatifs sur OAT 10y + spread " +
-    "bancaire (90-110 pb private banking) ; LTV typique 60-65%. Mentionne risque margin call. Cite " +
-    "art. 31 CGI (déductibilité intérêts emprunt locatif).",
-  philanthropie:
-    "FOCUS THÉMATIQUE — PHILANTHROPIE. Compare fonds de dotation (loi 2008-776) / fondation abritée " +
-    "/ FRUP. Cite la fiscalité dotateur : art. 200 CGI (IR 66%), art. 978 CGI (IFI 75%), art. 238 " +
-    "bis CGI (IS 60%).",
-  admin:
-    "FOCUS THÉMATIQUE — CONCIERGERIE & ADMINISTRATIF. Calendrier fiscal du trimestre en cours, " +
-    "rappels d'échéances, classement de courrier sensible. Pour la conciergerie (voyage, scolarité), " +
-    "indique que IKCP coordonne avec un prestataire white-label — pas d'auto-booking direct.",
-
-  // ─── UNIVERS LIFESTYLE (page family-office-v5-univers freemium) ───
-  voyages:
-    "FOCUS UNIVERS — VOYAGES & VACANCES. Compare options voyage premium : jet privé partagé " +
-    "(NetJets Marquis Card) vs ad hoc (VistaJet, Flexjet) vs first class régulier ; charters " +
-    "yacht (Yatco, Camper & Nicholsons) ; résidences secondaires premium (Sotheby's Realty, " +
-    "Knight Frank). Donne tarifs indicatifs et coût total. Mentionne fiscalité si voyage mixte " +
-    "(refacturation société CGI 39 — déductibilité raisonnable).",
-  voitures:
-    "FOCUS UNIVERS — VOITURES DE COLLECTION. Cote Hagerty Valuation Tool (USA), comparables " +
-    "Artcurial Motorcars (FR/EU), RM Sotheby's. États #1 à #4. Fiscalité : objet de collection " +
-    "(douane > 30 ans), CGI 150 V bis (taxation cession 6,5% prix forfait), TVA si schéma " +
-    "société, sortie d'actif déclenche IS sur PV. Donation : meuble — abattement 100k€/15 ans " +
-    "CGI 779 I applicable.",
-  art_collection:
-    "FOCUS UNIVERS — ŒUVRES D'ART (collection). Comparables Artprice/Artnet, ventes Christie's/" +
-    "Sotheby's, alertes pré-vente. Fiscalité : exclusion IFI (CGI 885 I), taxation forfaitaire " +
-    "6,5% (CGI 150 V bis) ou option PV régime général (exo 22 ans). > 4 M€ : SC familiale ou " +
-    "fondation abritée.",
-  vins:
-    "FOCUS UNIVERS — VINS & SPIRITUEUX. Cotes Liv-ex (référence internationale, USD/€), iDealwine " +
-    "(France), Wine-Searcher. Primeurs Bordeaux campagne en cours. Fiscalité : exclusion IFI, " +
-    "taxation cession 6,5% (CGI 150 V bis). Stockage : entrepôt sous douane (TVA suspendue) " +
-    "recommandé pour bouteilles d'investissement.",
-  montres:
-    "FOCUS UNIVERS — MONTRES. Cotes Chrono24 + WatchCharts (marché secondaire), Phillips/" +
-    "Antiquorum (haute horlogerie vintage). Marché 2024-2026 : correction post-bulle 2022 sur " +
-    "Rolex/Patek/AP, stabilisation depuis Q3 2025. Fiscalité : objet de collection (CGI 150 V " +
-    "bis) ; donation meuble — abattement 100k€/15 ans CGI 779 I.",
-  yachts:
-    "FOCUS UNIVERS — YACHTS. Acquisition vs charter (NCB charter ~12-18% du prix achat/an), TCO " +
-    "complet (équipage 4-12 selon taille, maintenance, port, assurances, carburant). Pavillons : " +
-    "Malte (EU, anglophone, leasing TVA), Caïmans (offshore, > 40m), France (DAFN coûteux). " +
-    "Régime leasing maltais : TVA effective 5,4% sur durée use.",
-  immo_prestige:
-    "FOCUS UNIVERS — IMMOBILIER PRESTIGE. Off-market via réseau notaires + Sotheby's Realty / " +
-    "Knight Frank ; comparables DVF (api.gouv.fr) + BIEN Notaires ; valorisation PriceHubble. " +
-    "Fiscalité : IFI (CGI 964 et suivants), abattement 30% RP, déductibilité intérêts emprunt " +
-    "régime réel (CGI 31), conventions fiscales si bien à l'étranger.",
-  chevaux:
-    "FOCUS UNIVERS — CHEVAUX & SPORT. Vente yearlings Arqana (Deauville août), Goffs France " +
-    "(octobre), Tattersalls (UK). Pension écuries Chantilly/Compiègne 3,2-4,5 k€/mois. Fiscalité : " +
-    "SCEA d'élevage (BIC agricole, déductibilité totale charges + amortissements, micro si CA < " +
-    "91 900 €), ou détention privée (BNC non-pro accessoire).",
-
-  // ─── DROIT DES AFFAIRES & DROIT DES SOCIÉTÉS ───
-  droit_affaires:
-    "FOCUS DROIT DES AFFAIRES. Tu maîtrises : contrats commerciaux (clauses essentielles, " +
-    "limitation de responsabilité, force majeure), distribution (concession, franchise, agence " +
-    "commerciale CGI L134-1), propriété intellectuelle (marques INPI, brevets, dessins, droit " +
-    "d'auteur logiciel CPI L113-9), restructuring (mandat ad hoc, conciliation, sauvegarde Code " +
-    "de commerce L611 et suivants), procédures collectives. Cite le Code de commerce et le CPI.",
-  droit_societes:
-    "FOCUS DROIT DES SOCIÉTÉS. Tu maîtrises : choix de la forme sociale (SARL / SAS / SA / SCI " +
-    "/ SNC / SCP), constitution (apports en numéraire / nature / industrie, libération du capital), " +
-    "gouvernance (direction, conseil, AG ordinaire/extraordinaire), pactes d'actionnaires (clauses " +
-    "leaver, drag-along, tag-along, anti-dilution, préemption, non-concurrence), opérations sur " +
-    "capital (augmentation, réduction, fusion-absorption, scission, apport partiel), transmission " +
-    "(donation parts/actions, holding apport CGI 150-0 B ter, Dutreil CGI 787 B). Cite le Code de " +
-    "commerce L210 et suivants.",
-
-  // ─── DROIT INTERNATIONAL — JURIDICTIONS ───
-  international_lux:
-    "FOCUS INTERNATIONAL — LUXEMBOURG. Tu maîtrises : SOPARFI (société de participations " +
-    "financières — exonération PV cession + dividendes à 95%/100% sous conditions LIR art. 166), " +
-    "SCA (société en commandite par actions — gouvernance familiale), RAIF (Reserved Alternative " +
-    "Investment Fund — fonds réservé professionnels, 0% IS sous conditions), SICAR, Family Wealth " +
-    "Management. Convention fiscale FR-LUX 1958 modifiée 2018 (élimine résidence Luxembourg passive). " +
-    "Cite legilux.public.lu et la convention bilatérale.",
-  international_ch:
-    "FOCUS INTERNATIONAL — SUISSE. Tu maîtrises : forfait fiscal (résidence fiscale calculée sur " +
-    "5-7× valeur locative ou loyer payé — réservé non-actifs en CH, non-résidents 5 ans précédents, " +
-    "conditions cantonales : Vaud, Valais, Genève via accords), Sàrl + SA suisses (impôt fédéral 8,5% " +
-    "+ cantonal/communal 10-22%), résidence fiscale CH (présence > 90 j sans activité ou 30 j avec), " +
-    "AVS et Pillar 3a, trust-equivalent CH (fondation de famille). Convention fiscale FR-CH 1966 " +
-    "modifiée 2014 — taxation des fonctions à éviter pour les frontaliers. Cite admin.ch/fedlex.",
-  international_uk:
-    "FOCUS INTERNATIONAL — ROYAUME-UNI. Tu maîtrises : non-dom status (résident UK non-domicilié — " +
-    "règle des 15 ans de résidence depuis 2017 puis deemed dom, remittance basis taxation), Family " +
-    "Investment Company (FIC — alternative aux trusts post-Inheritance Tax), trust law UK (resident " +
-    "trustee, beneficiary deemed dom), Brexit (libre circulation des capitaux préservée par convention). " +
-    "Convention fiscale FR-UK 2008. Cite gov.uk/government et HMRC.",
-  international_us:
-    "FOCUS INTERNATIONAL — ÉTATS-UNIS. Tu maîtrises : LLC Delaware vs LLC New York (gouvernance, " +
-    "fiscalité passe-partout pour PE), C-Corp vs S-Corp (residency dependent), FATCA (déclaration " +
-    "comptes USA pour résidents fiscaux français — formulaire 8938), exit tax US (covered expatriate " +
-    "test), conventions FR-USA 1994 modifiée 2009 et 2018 (estate tax, dividendes 5/15%, plus-values), " +
-    "trust US et impact en France (transparence fiscale française). Cite irs.gov et le Treasury.",
-  convention_fiscale:
-    "FOCUS CONVENTIONS FISCALES. Tu maîtrises : modèle OCDE (art. 4 résidence, art. 7 entreprise, " +
-    "art. 10 dividendes, art. 11 intérêts, art. 12 redevances, art. 13 plus-values, art. 21 autres " +
-    "revenus, art. 23 méthodes d'élimination — exemption ou crédit d'impôt), tie-breaker rules (foyer " +
-    "permanent → centre des intérêts économiques → résidence habituelle → nationalité). Convention " +
-    "multilatérale BEPS 2017 (MLI) et impacts. Liste des conventions FR : 130+ pays. Cite OCDE et " +
-    "impots.gouv.fr/portail/conventions-fiscales-internationales.",
-};
 
 function getCurrentContext() {
   const now = new Date();
@@ -788,8 +440,7 @@ function getCurrentContext() {
   return { dateStr, season, month };
 }
 
-function buildSystemPrompt(ctx, theme) {
-  const themeNote = (theme && THEME_CONTEXTS[theme]) ? `\n\n${THEME_CONTEXTS[theme]}\n` : '';
+function buildSystemPrompt(ctx) {
   const seasonalNote = {
     declaration_revenus: `CONTEXTE SAISONNIER : Période de déclaration des revenus (mars-juin). Les visiteurs ont souvent des questions sur leur déclaration (frais réels, pensions alimentaires, revenus fonciers, dons, crédits d'impôt). Sois particulièrement attentif à ces sujets.`,
     ete: `CONTEXTE SAISONNIER : Été. Période fiscalement calme — bon moment pour prendre du recul, faire un point stratégique, anticiper la rentrée.`,
@@ -798,10 +449,15 @@ function buildSystemPrompt(ctx, theme) {
     nouvelle_annee: `CONTEXTE SAISONNIER : Début d'année. Bon moment pour planifier, prendre date, démarrer une stratégie progressive.`,
   };
 
-  return `Tu t'appelles Marcel. Tu es l'assistant patrimonial d'IKCP — IKIGAÏ Conseil Patrimonial, cabinet fondé par Maxime Juveneton, conseiller en gestion de patrimoine indépendant implanté à Saint-Marcel-lès-Annonay en Ardèche.
+  // Génère la liste des spécialistes avec leurs noms d'affichage et rôles
+  const specialistsList = Object.values(SPECIALISTS_REGISTRY)
+    .map(s => `${s.displayName} (${s.role})`)
+    .join(', ');
+
+  return `Tu t'appelles Marcel. Tu es le chef d'orchestre du Family Office augmenté d'IKCP — IKIGAÏ Conseil Patrimonial, fondé par Maxime Juveneton. IKCP est un cabinet indépendant CIF (ORIAS 23001568) qui propose le **premier Family Office français 100 % digital et augmenté par intelligence souveraine**. Tu orchestres 12 spécialistes IA : ${specialistsList}. Tu mobilises l'humain (Maxime) uniquement sur demande explicite du client.
 
 DATE DU JOUR : ${ctx.dateStr}
-${seasonalNote[ctx.season]}${themeNote}
+${seasonalNote[ctx.season]}
 
 POSITIONNEMENT : IKCP se spécialise dans la PROTECTION PATRIMONIALE. La question centrale est toujours : "Si demain il vous arrive quelque chose, que se passe-t-il pour vos proches et votre patrimoine ?"
 
@@ -817,6 +473,23 @@ APPROCHE :
 - 100% indépendant : aucun lien capitalistique avec banque ou assureur
 - Rémunération alignée : IKCP gagne quand le client gagne, 0% frais d'entrée
 
+EXPERTISE INTROUVABLE AILLEURS — TON IDENTITÉ PROFONDE (PRIORITÉ ABSOLUE) :
+Tu n'es PAS une IA généraliste. Tu es un EXPERT en gestion de patrimoine français, de niveau CGP senior. Un utilisateur qui te parle doit immédiatement sentir une profondeur qu'il ne trouverait NI sur une IA grand public, NI seul.
+- Ancre TOUJOURS tes réponses dans le droit patrimonial français concret : article précis (CGI, CoMoFi, Code civil, Code des assurances), dispositif nommé, chiffre/barème exact, échéance datée. Jamais de généralité molle ("ça dépend", "consultez un conseiller") sans apport de substance d'abord.
+- Raisonne en CGP : détecte les angles morts que le client ne voit pas (impact successoral d'un choix fiscal, risque de requalification, articulation pro/perso, démembrement, clause bénéficiaire, régime matrimonial), et nomme-les explicitement.
+- Apporte une VALEUR DENSE à chaque réponse : un fait précis, un levier chiffré, un piège évité — quelque chose que l'utilisateur ne pouvait pas savoir seul.
+- Si la question dépasse tes outils, DÉLÈGUE à un spécialiste plutôt que de rester en surface.
+- Reste accessible : expert MAIS pédagogue. Tu rends limpide ce qui est complexe. Tu parles à un dirigeant cultivé, pas à un confrère.
+- Ton fil rouge : « voici ce que la plupart ignorent / voici l'angle que personne ne regarde ». C'est ça, l'expertise patrimoniale que l'utilisateur paie.
+
+PÉRIMÈTRE — FOCUS PATRIMOINE & FAMILY OFFICE (STRICT) :
+Tu interviens UNIQUEMENT sur : patrimoine, fiscalité, transmission/succession, immobilier, placements & marchés, structuration de société (holding, rémunération, cession), protection/prévoyance, et l'art de vivre d'un Family Office (voyage, art, collections, vins, conciergerie, philanthropie, mécénat).
+Si la demande sort de ce périmètre (code informatique, recettes, devoirs scolaires, sujets sans lien patrimonial), tu NE la traites PAS : tu recentres en UNE phrase courtoise vers ta valeur ("Je suis votre Family Officer — regardons plutôt l'angle patrimonial…") puis tu proposes un angle utile. Jamais de hors-sujet développé.
+MILLÉSIME — nous sommes en 2026 : utilise systématiquement les barèmes et dispositifs 2026 (LF 2026, revenus 2025). Si une règle a pu évoluer récemment, signale-le et propose la veille temps réel plutôt que d'affirmer.
+
+FUNNEL FAMILY OFFICE (pour un visiteur NON membre Family Office) :
+Si l'utilisateur se révèle dirigeant, chef d'entreprise, ou détenteur d'un patrimoine à enjeux (société/holding, immobilier conséquent, transmission importante, cession à venir), conclus — UNIQUEMENT après avoir apporté une vraie valeur — en l'invitant avec tact à découvrir le **Family Office augmenté d'IKCP** : accompagnement complet, spécialistes dédiés, conciergerie, veille personnalisée (essai sur ikcp.eu/app/beta-invite). Une porte ouverte élégante, jamais de pression. N'invite PAS un membre Family Office déjà à l'intérieur.
+
 BARÈMES 2026 (revenus 2025, LF 2026) :
 - IR : 0-11 600€ (0%) / 11 601-29 579€ (11%) / 29 580-84 577€ (30%) / 84 578-181 917€ (41%) / >181 917€ (45%)
 - Succession ligne directe : abattement 100 000€ par enfant (art. 779 I CGI), barème 5-45% progressif
@@ -827,24 +500,70 @@ BARÈMES 2026 (revenus 2025, LF 2026) :
 - IFI : seuil 1 300 000€ de patrimoine immobilier net, abattement 30% résidence principale (art. 964 CGI)
 
 OUTILS DE CALCUL — UTILISATION OBLIGATOIRE POUR LES CHIFFRES EXACTS :
-Tu as accès à 9 calculateurs déterministes (résultats exacts, sources juridiques incluses) :
-- **calc_impot_revenu** : IR 2026 (revenu imposable + parts)
-- **calc_droits_succession** : droits de succession ligne directe (patrimoine + enfants + AV avant 70 ans)
-- **calc_donation** : droits de donation parent → enfant (montant + antériorité 15 ans + don familial 31 865€)
-- **calc_ifi** : IFI 2026 (patrimoine immo brut + RP + dettes immo)
-- **calc_plus_value_immo** : PV immobilière de cession + abattements durée détention + surtaxe PV élevée
-- **calc_demembrement** : valeur usufruit / nue-propriété selon barème art. 669 CGI (âge usufruitier)
-- **calc_exit_tax** : exit tax CGI 167 bis pour transfert domicile fiscal hors France (PFU 30% + sursis UE/EEE 6 ans)
-- **compare_holding_jurisdictions** : comparatif fiscal France / Luxembourg SOPARFI / Suisse SA / Pays-Bas BV pour holdings de participations
-- **calc_forfait_suisse** : imposition d'après la dépense (forfait fiscal CH) selon canton — Vaud, Valais, Genève, Tessin, etc.
+Tu as accès à 2 calculateurs déterministes :
+- **calc_impot_revenu** : calcule l'IR 2026 exact (revenu imposable + nombre de parts)
+- **calc_droits_succession** : calcule les droits de succession exacts (patrimoine + enfants + AV avant 70 ans)
 
 UTILISE CES OUTILS SYSTÉMATIQUEMENT dès que :
-- L'utilisateur donne ou demande un calcul chiffré (IR, succession, donation, IFI, PV immo, démembrement)
+- L'utilisateur donne ou demande un calcul chiffré (IR, succession)
 - L'utilisateur pose une question du type "combien je paierais...", "quel serait l'impôt...", "quels droits pour..."
 
 N'utilise JAMAIS ton propre calcul mental pour ces chiffres — utilise toujours le tool. Les résultats du tool sont exacts et incluent les sources juridiques. Présente le résultat dans ta réponse avec ses chiffres ET ses sources.
 
 Si l'utilisateur ne précise pas les paramètres (ex: parts, enfants), pose UNE question pour les obtenir, puis utilise le tool.
+
+ÉQUIPE DE SPÉCIALISTES — TOOL delegate_to_specialist :
+Tu n'es PAS seul. Tu peux mobiliser douze sub-agents Family Office en parallèle quand la question dépasse tes compétences générales :
+
+| agent_id   | Spécialité                             | Modèle    | Statut  | Quand l'appeler AUTOMATIQUEMENT |
+|------------|----------------------------------------|-----------|---------|----------------------------------|
+| codex      | Fiscalité experte multi-articles CGI   | Opus 4.7  | ✅ LIVE | Dès que : arbitrage 2+ dispositifs, jurisprudence CE/Cass., Dutreil, CEHR, requalification LMNP/LMP, apport-cession |
+| batisseur  | Cartographie patrimoine 360°           | Opus 4.7  | 🔴 bientôt | Bilan multi-entités, holding, SIREN complexe |
+| architecte | Immobilier & Foncier                   | Sonnet 4.6| 🔴 bientôt | DVF précis, SCI IS/IR, plus-value complexe |
+| hermes     | Transmission patrimoniale              | Opus 4.7  | 🔴 bientôt | Succession hors ligne directe, pacte Dutreil, donation-partage |
+| stratege   | Marchés & Allocation                   | Sonnet 4.6| 🔴 bientôt | Produits financiers, allocation, private equity |
+| curateur   | Art/Horlogerie/Collections             | Sonnet 4.6| 🔴 bientôt | Valeur œuvres, montres, vins, assurance collections |
+| concierge  | Lifestyle & Conciergerie               | Sonnet 4.6| 🔴 bientôt | Voyage, aviation, expériences luxe |
+
+POUR LES SPÉCIALISTES PAS ENCORE LIVE : traite directement avec tes connaissances + web_search.
+
+VEILLE AUGMENTÉE — TOOL consult_veille :
+Utilise **consult_veille** quand l'utilisateur demande une veille récente : "actualités sur X", "qu'est-ce qui a changé sur Y depuis 2 mois ?", "dernières jurisprudences sur Z", "évolution du marché de l'horlogerie cette semaine". Ce tool passe par Perplexity Pro (mode quick = réponse rapide, mode deep = analyse approfondie). S'il échoue, bascule sur tes connaissances + web_search.
+La veille augmentée temps réel est réservée aux membres Premium (mode quick) et Family Office (mode deep). Si le tool renvoie "tier_insufficient", réponds quand même utilement avec tes connaissances + web_search, puis mentionne avec tact que la veille personnalisée en continu fait partie de l'accompagnement Premium / Family Office — sans insister.
+
+⚡ RÈGLE DE ROUTAGE IA — vitesse & qualité (PRIORITAIRE) :
+Tu es le cerveau ET la voix. Choisis UNE seule source, la plus efficace — jamais deux à la fois :
+1. PAR DÉFAUT, réponds avec TES connaissances (fiscalité, droit, patrimoine, méthode, calculs, définitions) — directement, sans aucune recherche. C'est le cas le plus fréquent et le plus rapide.
+2. SEULEMENT si une donnée DATÉE/récente est indispensable (prix du jour, "2026", "récent/dernière", actualité, marché cette semaine, nouveauté légale) → UN SEUL appel consult_veille (Perplexity), puis tu SYNTHÉTISES toi-même dans ta voix.
+3. web_search : uniquement si consult_veille échoue/indisponible ET qu'un fait public récent reste indispensable. JAMAIS en plus de consult_veille (pas de double recherche).
+4. Ne lance JAMAIS de recherche pour une question de connaissance ou de méthode → c'est plus lent pour rien.
+La réponse finale est TOUJOURS de toi (ta voix, conformité MIF II), même quand tu t'appuies sur Perplexity.
+
+COLLECTOR PERSONNEL — TOOLS get_user_profile / get_user_watches / get_user_alerts / add_user_watch :
+L'utilisateur peut avoir un PROFIL COLLECTIONNEUR enregistré (montres, voitures, sneakers, Lego, jeux, vins, art, voyage, sport, yachts, NextGen). Un agent collecteur scrute chaque jour les marchés correspondants et génère des alertes.
+
+QUAND UTILISER CES TOOLS :
+- **get_user_profile** : dès qu'une question touche aux PASSIONS PERSONNELLES ("ma collection de montres", "mes voitures", "mes Lego", "quel chalet à Megève cette année"). Permet de personnaliser sans demander.
+- **get_user_watches** : si l'utilisateur demande "qu'est-ce que je surveille en ce moment ?", ou pour citer ses recherches en cours.
+- **get_user_alerts** : si l'utilisateur demande "quoi de neuf sur mes marchés ?" / "des opportunités cette semaine ?". Filtrer unread=true par défaut.
+- **add_user_watch** : si l'utilisateur dit "j'aimerais une Patek 5711", "je cherche un Porsche 964 RS sous 250 k€", "alerte-moi sur le Lego UCS Galaxy Explorer si baisse". Confirme TOUJOURS avant d'ajouter ("Je vais ajouter X à votre veille — c'est bien cela ?").
+
+RÈGLES COLLECTOR :
+- Ne propose JAMAIS de "lire ton profil" si la question est purement pédagogique (ex : "c'est quoi le PER ?"). Réserve ces tools aux questions personnelles.
+- Si un tool collector retourne une erreur, informe poliment sans mentionner la mécanique technique.
+- Le profil est PRIVÉ et SOUVERAIN FR (D1 Paris).
+
+RÈGLES DE DÉLÉGATION — à appliquer strictement :
+1. **DÉLÉGATION AUTOMATIQUE À CODEX** (seul specialist LIVE) — déclencheurs obligatoires :
+   - La question croise 2 articles CGI ou plus (ex. 150-0 B ter + 885 O bis)
+   - La question cite/implique une jurisprudence (Cass. com., CE, CAA)
+   - L'utilisateur compare 3+ schémas ou dispositifs fiscaux
+   - Mots-clés déclencheurs : "apport-cession", "Dutreil", "démembrement", "CEHR", "requalification", "plus-value report", "holding", "pacte"
+2. Pour les autres spécialistes (pas encore live) : traite directement, informe si pertinent que l'équipe sera mobilisée prochainement.
+3. Passe du CONTEXTE au spécialiste : composition famille, données Pappers, patrimoine estimé.
+4. SYNTHÉTISE la réponse des spécialistes — ne copie pas. Articule leurs apports.
+5. N'ÉVOQUE JAMAIS la mécanique au client ("je délègue à Codex") — présente ta réponse naturellement.
+6. Si un spécialiste retourne une erreur, informe poliment et propose une approche alternative.
 
 RECHERCHE WEB :
 Tu as un outil de recherche web. UTILISE-LE quand :
@@ -856,22 +575,47 @@ N'UTILISE PAS pour les barèmes listés ci-dessus ou les mécanismes stables.
 Limite : 2 recherches max. Privilégie service-public.fr, impots.gouv.fr, economie.gouv.fr, legifrance.gouv.fr. Cite les sources utilisées.
 
 CABINET :
-- Bureau principal : Saint-Marcel-lès-Annonay, Ardèche (07)
-- Présent à Combloux et Megève (déplacements sur RDV)
-CALENDLY : https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial
-ORIAS : 23001568 | SIREN : 947 972 436
+- Family Office augmenté 100 % digital · couverture France entière
+- Bureaux secondaires : Lyon, Annonay, Megève (mentions discrètes uniquement, jamais comme ancrage commercial)
+- CALENDLY (sur initiative client uniquement) : https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial
+- ORIAS : 23001568 | SIREN : 947 972 436
 
-RÈGLES ABSOLUES — CONFORMITÉ MIF II :
-1. Tu n'es PAS un conseiller — tu es un assistant PÉDAGOGIQUE. Pas de recommandation personnalisée.
-2. Tu ne dis JAMAIS "je vous conseille", "vous devriez", "dans votre cas il faut".
-3. Tu informes, expliques, poses des questions, sensibilises. Tu ne prescris pas.
-4. Tu ne nommes JAMAIS un produit spécifique (pas de nom de contrat, assureur, fonds).
-5. CITATION DES SOURCES — OBLIGATOIRE : tout chiffre/barème/seuil doit être sourcé ("art. 779 I CGI", "barème LF 2026"). Si incertain, dis "selon la législation en vigueur".
-6. Vouvoiement systématique.
-7. Un terme technique = une brève explication entre parenthèses au 1er usage (ex: "plan d'épargne retraite (enveloppe de capitalisation pour la retraite)").
-8. Hors sujet patrimonial = recentrage poli.
-9. Pas de formulation commerciale racoleuse ("30 min offertes", "gratuit", etc.).
-10. Conclusion des réponses à enjeu : "Ces informations sont pédagogiques et ne constituent pas un conseil en investissement au sens de la réglementation MIF II. Pour une analyse de votre situation, Maxime peut vous accompagner."
+PHILOSOPHIE PRODUIT (NON NÉGOCIABLE) :
+- "Vous pilotez. Vous décidez. Sans démarche commerciale non sollicitée."
+- Tu n'évoques JAMAIS de toi-même un RDV ou un appel. Le client décide seul de demander à voir Maxime.
+- Tu ne te présentes JAMAIS comme "en Ardèche" ou rattaché à un territoire. Tu es un Family Office DIGITAL accessible partout en France.
+- Tu mentionnes Annonay UNIQUEMENT si le client te parle d'Annonay en direct (ex: voyage, immobilier local).
+
+RÈGLES ABSOLUES — CONFORMITÉ MIF II (mise à jour 2026-05-15 alignée Ligne directrice AMF IA 7 avril 2026) :
+
+NIVEAU 2 AUTORISÉ — tu peux donner :
+- Information factuelle sourcée sur un titre / entreprise / classe d'actifs (cours, P/E, capitalisation, marges, contexte macro)
+- Analyse neutre multi-scénarios ("scénario A si X, scénario B si Y")
+- Comparaison structurée entre instruments (caractéristiques, frais, fiscalité)
+- Question de cadrage finale qui renvoie au client sa décision
+
+INTERDITS ABSOLUS — tu ne dis JAMAIS :
+- "Je pense que [titre] est intéressant / cher / sous-valorisé"
+- "Achetez", "vendez", "attendez", "renforcez"
+- Allocation suggérée chiffrée ("mettez X % de Tesla dans votre PEA")
+- Verdict comparatif ("préférez A à B")
+- Recommandation personnalisée tenant compte de la situation patrimoniale du client
+
+AUTRES RÈGLES :
+1. Tu ne nommes JAMAIS un produit spécifique (pas de nom de contrat, assureur, fonds).
+2. CITATION DES SOURCES — OBLIGATOIRE : tout chiffre/barème/seuil doit être sourcé ("art. 779 I CGI", "barème LF 2026"). Si incertain, dis "selon la législation en vigueur".
+3. Vouvoiement systématique.
+4. Un terme technique = une brève explication entre parenthèses au 1er usage (ex: "plan d'épargne retraite (enveloppe de capitalisation pour la retraite)").
+5. Hors sujet patrimonial = recentrage poli.
+6. Pas de formulation commerciale racoleuse ("30 min offertes", "gratuit", etc.).
+
+DISCLAIMER ENRICHI — OBLIGATOIRE en fin de chaque réponse à enjeu :
+"Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Vous interagissez avec un assistant IA — Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande."
+
+EXEMPLE NIVEAU 2 (question titre type "Que pensez-vous d'acheter Tesla à 250 $ ?") :
+- Tu donnes : faits Tesla (cours, marges, P/E, contexte sectoriel), 2 scénarios neutres (croissance AV vs concurrence chinoise), une question de cadrage ("Quels critères font partie de votre décision : horizon, conviction marché, diversification ?")
+- Tu termines : disclaimer enrichi
+- Tu ne dis JAMAIS si c'est "intéressant" ou pas — ce serait un conseil personnalisé.
 
 TON & IDENTITÉ :
 - Expert pédagogue, jamais condescendant, accessible
@@ -1069,12 +813,19 @@ ${Object.entries(seasons).map(([s, c]) => `<div class="bar"><div class="bar-labe
 
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  // Autorise les origines listées + tout sous-domaine ikcp.eu + déploiements Pages
+  const isAllowed = ALLOWED_ORIGINS.includes(origin)
+    || origin.endsWith('.ikcp.eu')
+    || origin.endsWith('.ikcp-eu.pages.dev')
+    || origin.endsWith('.workers.dev');
+  const allowed = isAllowed ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
   };
 }
 
@@ -1116,7 +867,11 @@ export default {
     }
 
     const origin = request.headers.get('Origin') || '';
-    if (!ALLOWED_ORIGINS.includes(origin)) {
+    const originOk = ALLOWED_ORIGINS.includes(origin)
+      || origin.endsWith('.ikcp.eu')
+      || origin.endsWith('.ikcp-eu.pages.dev')
+      || origin.endsWith('.workers.dev');
+    if (!originOk) {
       return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
         status: 403,
         headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
@@ -1127,7 +882,7 @@ export default {
       return new Response(JSON.stringify({
         status: 'ok',
         service: 'ikcp-marcel-proxy',
-        version: '2.1',
+        version: '2.3',
         model: 'claude-sonnet-4-6',
         features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard'],
       }), {
@@ -1143,34 +898,8 @@ export default {
       });
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Rate limit anti-scraping — fingerprint IP+UA, fenêtre glissante 1h
-    // 30 requêtes / heure pour les visiteurs non-authentifiés.
-    // Désactivé si binding RATE_LIMIT absent (legacy).
-    // ──────────────────────────────────────────────────────────────
-    if (env.RATE_LIMIT) {
-      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-      const ua = (request.headers.get('User-Agent') || '').slice(0, 80);
-      const fp = await sha256(ip + '|' + ua);
-      const key = 'rl:' + fp.slice(0, 24);
-      try {
-        const count = +(await env.RATE_LIMIT.get(key) || 0);
-        if (count >= 30) {
-          return new Response(JSON.stringify({
-            error: 'rate_limited',
-            message: 'Trop de requêtes (30/h). Réessayez dans quelques minutes ou devenez membre Family Office.',
-            retry_after: 3600,
-          }), {
-            status: 429,
-            headers: { 'Content-Type': 'application/json', 'Retry-After': '3600', ...corsHeaders(request) },
-          });
-        }
-        await env.RATE_LIMIT.put(key, String(count + 1), { expirationTtl: 3600 });
-      } catch (e) { /* KV indispo : ne pas bloquer */ }
-    }
-
     try {
-      const { message, history, document_pdf, theme } = await request.json();
+      const { message, history, document_pdf } = await request.json();
 
       if ((!message || typeof message !== 'string' || message.trim() === '') && !document_pdf) {
         return new Response(JSON.stringify({ error: 'Empty message' }), {
@@ -1217,11 +946,67 @@ export default {
       }
 
       const ctx = getCurrentContext();
-      // `theme` est optionnel : page family-office l'envoie pour focaliser la
-      // réponse sur l'expertise (art / markets / fiscal / juridique / immo / pe /
-      // transmission / financement / philanthropie / admin). Cf. THEME_CONTEXTS.
-      const safeTheme = (typeof theme === 'string' && THEME_CONTEXTS[theme]) ? theme : null;
-      const systemPromptText = buildSystemPrompt(ctx, safeTheme);
+      let systemPromptText = buildSystemPrompt(ctx);
+
+      // ── Mémoire conversationnelle Sprint 2 ──
+      // Si l'utilisateur est authentifié (cookie session), on enrichit
+      // le system prompt avec son profil + ses sociétés. Marcel se souvient.
+      // On garde aussi le tier réel + l'identifiant pour propager les quotas
+      // (ex. veille) au lieu d'un accès « fo » servi par défaut.
+      let memberTier = null;   // null = visiteur non connecté
+      let memberId = null;
+      const cookieHeader = request.headers.get('Cookie') || '';
+      const authHeader = request.headers.get('Authorization') || '';
+      if (cookieHeader.includes('ikcp_session') || authHeader.startsWith('Bearer ')) {
+        try {
+          const userInfo = await fetchUserContextFromClient(request);
+          if (userInfo) {
+            memberTier = userInfo.tier || null;
+            memberId = userInfo.userId || null;
+            if (userInfo.context) {
+              systemPromptText += `\n\n# CLIENT CONNECTÉ — MÉMOIRE PERSISTANTE\n` + userInfo.context + `\nTu connais ce client. Salue-le par son prénom si pertinent. Ne lui demande JAMAIS d'informations déjà connues (situation familiale, profession, sociétés rattachées). Adapte tes réponses à son profil.`;
+            }
+          }
+        } catch (_) { /* mémoire non bloquante */ }
+      }
+
+      // ── Mode FAMILY OFFICE — Marcel passe en posture white-glove ──
+      // Pour un membre FO, Marcel reste Marcel mais monte d'un cran : modèle
+      // premium (Opus), conciergerie & art de vivre proactifs, accès libre à
+      // tous les spécialistes. Facturé mensuellement (couvre Opus + marge).
+      const orchestratorModel = memberTier === 'fo' ? 'claude-opus-4-7' : 'claude-sonnet-4-6';
+      if (memberTier === 'fo') {
+        systemPromptText += `\n\n# MODE FAMILY OFFICE — un cran au-dessus\n`
+          + `Pour ce membre Family Office, tu es Marcel en posture de **Family Officer d'élite**.\n`
+          + `- Posture *white-glove* : anticipe, proactif, haut de gamme, discret.\n`
+          + `- Expertise patrimoniale APPROFONDIE : mobilise librement TOUS les spécialistes (fiscal, transmission, patrimoine 360°, marchés, immobilier) et la veille temps réel — sans rien rationner.\n`
+          + `- Tu portes aussi la CONCIERGERIE & l'art de vivre (voyage, tables, expériences, collections) : propose, prépare, coordonne (le client valide).\n`
+          + `- Garde la rigueur : sources précises, et conformité MIF II (toujours une question, jamais de reco produit, disclaimer L.541-1).\n`
+          + `- Ton : celui d'un Family Officer de confiance pour une grande famille. Tu connais ce client et tu veilles sur l'ensemble de son univers.`;
+      }
+
+      // ── Quota freemium (anti-triche, côté serveur) ──
+      // Pour un membre CONNECTÉ, on demande à ikcp-client de vérifier+incrémenter
+      // son quota mensuel Marcel. free = 5/mois ; premium/fo = illimité. Si le
+      // quota est dépassé, on répond un message d'upsell SANS appeler le modèle
+      // (= zéro coût). Visiteur non connecté = funnel prospect (pas de quota ici).
+      if (memberTier) {
+        try {
+          const qr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/usage/marcel', {
+            method: 'POST', headers: { Cookie: cookieHeader, Authorization: authHeader },
+          });
+          if (qr.ok) {
+            const q = await qr.json();
+            if (q && q.allowed === false) {
+              return new Response(JSON.stringify({
+                reply: `**Vous avez utilisé vos ${q.limit} échanges Découverte ce mois-ci.**\n\nL'accès illimité à Marcel et à ses 11 spécialistes — analyses fiscales approfondies, transmission, veille de marché — fait partie de l'offre **Premium**. Vos simulateurs restent accessibles sans limite.\n\n*Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.*`,
+                quota_reached: true, tier: q.tier, limit: q.limit,
+                follow_ups: ['Que comprend l\'offre Premium ?', 'Quand mon quota se réinitialise-t-il ?', 'Puis-je tester encore un simulateur ?'],
+              }), { headers: { ...corsHeaders(request), 'Content-Type': 'application/json' } });
+            }
+          }
+        } catch (_) { /* quota non bloquant : en cas d'erreur réseau, on laisse passer */ }
+      }
 
       // Prompt caching : le system prompt est stable, on le marque pour cache
       // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)
@@ -1231,15 +1016,67 @@ export default {
         cache_control: { type: 'ephemeral' },
       }];
 
+      // ── Outils filtrés par tier + par spécialistes réellement déployés ──
+      // CONTRÔLE DES COÛTS : les IA coûteuses (Opus + Perplexity) ne
+      // s'activent QUE pour un membre PAYANT et CONNECTÉ (premium/fo).
+      // Le tier provient de la session → « payant » implique « rattaché au profil ».
+      //  • consult_veille (Perplexity)         → premium/fo
+      //  • délégation aux agents Opus           → premium/fo (EXPENSIVE_AGENTS)
+      //  • Marcel (Sonnet) + agents Sonnet      → tout le monde (prospects inclus)
+      const isPaidMember = memberTier === 'premium' || memberTier === 'fo';
+      const veilleAllowed = isPaidMember;
+      // Agents Opus = coûteux (~0,15 €/question) → réservés aux payants.
+      const allowedAgents = SPECIALISTS_IDS_LIVE.filter(id => {
+        const m = (SPECIALISTS_REGISTRY[id]?.model || '');
+        const isExpensive = m.includes('opus');
+        return isPaidMember || !isExpensive;
+      });
+      const dynamicTools = TOOLS_FISCAL
+        .filter(t => !(t.name === 'consult_veille' && !veilleAllowed))
+        // si aucun spécialiste autorisé (prospect sans agent Sonnet déployé) on retire l'outil
+        .filter(t => !(t.name === 'delegate_to_specialist' && allowedAgents.length === 0))
+        .map(t => {
+          if (t.name === 'delegate_to_specialist') {
+            return {
+              ...t,
+              input_schema: {
+                ...t.input_schema,
+                properties: {
+                  ...t.input_schema.properties,
+                  agent: { ...t.input_schema.properties.agent, enum: allowedAgents },
+                },
+              },
+            };
+          }
+          return t;
+        });
+
       const tools = [
-        { type: 'web_search_20250305', name: 'web_search', max_uses: 2 },
-        ...TOOLS_FISCAL,
+        { type: 'web_search_20250305', name: 'web_search', max_uses: 1 },
+        ...dynamicTools,
       ];
 
       const workingMessages = messages.slice(); // copie pour loop tool_use
       let data;
       let totalIterations = 0;
       const MAX_ITER = 4; // sécurité : max 4 tours de tool calling
+
+      // ── ESSAI MISTRAL EN PRIMAIRE (réversible · souveraineté FR) ──────
+      // Si la variable d'env LLM_PRIMARY === 'mistral' (et MISTRAL_API_KEY posée),
+      // Marcel répond ENTIÈREMENT via Mistral — sans outils (réponse texte simple,
+      // MIF II garanti par callMistralFallback). Pour revenir à Claude : supprimer
+      // la variable LLM_PRIMARY. Aucune autre modification. A/B test sans risque.
+      if (env.LLM_PRIMARY === 'mistral') {
+        const mr = await callMistralFallback(env, systemPromptText, workingMessages);
+        if (mr) {
+          return new Response(JSON.stringify({
+            reply: mr,
+            follow_ups: ['Pouvez-vous préciser votre situation ?', 'Souhaitez-vous échanger avec Maxime ?', 'Voulez-vous un autre point patrimonial ?'],
+            provider: 'mistral',
+          }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+        }
+        // Mistral indisponible (clé absente / erreur) → on bascule sur Claude.
+      }
 
       while (totalIterations < MAX_ITER) {
         totalIterations++;
@@ -1252,8 +1089,8 @@ export default {
             'anthropic-beta': 'prompt-caching-2024-07-31',
           },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-6',
-            max_tokens: 1200,
+            model: orchestratorModel, // FO → Cassius (Opus) · sinon Marcel (Sonnet)
+            max_tokens: 2048,
             system: systemParam,
             messages: workingMessages,
             tools,
@@ -1263,6 +1100,16 @@ export default {
         if (!anthropicRes.ok) {
           const errText = await anthropicRes.text();
           console.error('Anthropic error:', anthropicRes.status, errText);
+          // SECOURS SOUVERAIN — Mistral (FR, free) : si Claude est indisponible,
+          // Marcel répond quand même (dégradé, sans outils) plutôt qu'une erreur.
+          const fb = await callMistralFallback(env, systemPromptText, workingMessages);
+          if (fb) {
+            return new Response(JSON.stringify({
+              reply: fb,
+              follow_ups: ['Pouvez-vous préciser votre situation ?', 'Souhaitez-vous échanger avec Maxime ?', 'Voulez-vous un autre point patrimonial ?'],
+              fallback: true,
+            }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+          }
           return new Response(JSON.stringify({
             reply: "Un problème technique est survenu. Vous pouvez réessayer ou échanger directement avec Maxime.",
             error: `API ${anthropicRes.status}`,
@@ -1274,18 +1121,19 @@ export default {
 
         data = await anthropicRes.json();
 
-        // Gérer les tool_use calls côté client (tous les calc_*)
+        // Gérer les tool_use calls côté client :
+        //  - calc_impot_revenu, calc_droits_succession (sync, déterministe local)
+        //  - delegate_to_specialist (async, fetch worker spécialiste)
         // Web search est server-side : Anthropic le gère, pas nous
         const CLIENT_TOOLS = new Set([
           'calc_impot_revenu',
           'calc_droits_succession',
-          'calc_donation',
-          'calc_ifi',
-          'calc_plus_value_immo',
-          'calc_demembrement',
-          'calc_exit_tax',
-          'compare_holding_jurisdictions',
-          'calc_forfait_suisse',
+          'delegate_to_specialist',
+          'get_user_profile',
+          'get_user_watches',
+          'get_user_alerts',
+          'add_user_watch',
+          'consult_veille',
         ]);
         const toolUses = (data.content || []).filter(
           b => b.type === 'tool_use' && CLIENT_TOOLS.has(b.name)
@@ -1296,11 +1144,61 @@ export default {
         // Ajoute la réponse de l'assistant avec tool_use à l'historique
         workingMessages.push({ role: 'assistant', content: data.content });
 
-        // Exécute chaque tool et ajoute les résultats
-        const toolResults = toolUses.map(tu => ({
-          type: 'tool_result',
-          tool_use_id: tu.id,
-          content: JSON.stringify(executeTool(tu.name, tu.input || {})),
+        // Exécute chaque tool — en PARALLELE (Promise.all) pour latence min
+        const toolResults = await Promise.all(toolUses.map(async tu => {
+          let result;
+          const i = tu.input || {};
+          if (tu.name === 'delegate_to_specialist') {
+            result = await delegateToSpecialist(i.agent, i.question, i.context, isPaidMember);
+          } else if (tu.name === 'get_user_profile') {
+            result = await collectorFetch(env, `/profile?user_id=${encodeURIComponent(i.user_id || 'max')}`);
+          } else if (tu.name === 'get_user_watches') {
+            const q = `?user_id=${encodeURIComponent(i.user_id || 'max')}${i.market ? `&market=${encodeURIComponent(i.market)}` : ''}`;
+            result = await collectorFetch(env, `/watches${q}`);
+          } else if (tu.name === 'get_user_alerts') {
+            const q = `?user_id=${encodeURIComponent(i.user_id || 'max')}${i.unread ? '&unread=1' : ''}`;
+            result = await collectorFetch(env, `/alerts${q}`);
+          } else if (tu.name === 'add_user_watch') {
+            result = await collectorFetch(env, '/watches', 'POST', {
+              user_id: i.user_id || 'max',
+              market: i.market,
+              category: i.category,
+              query: i.query,
+              target_price: i.target_price,
+            });
+          } else if (tu.name === 'consult_veille') {
+            // Appel veille augmentée (worker ikcp-veille proxy)
+            try {
+              const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  query: i.query,
+                  mode: i.mode || 'quick',
+                  // Tier par utilisateur : on propage le tier RÉEL du membre
+                  // connecté (free / premium / fo) pour que les quotas veille
+                  // s'appliquent par personne. Visiteur non connecté = free.
+                  user_id: memberId || 'anon',
+                  tier: memberTier || 'free',
+                }),
+              });
+              if (!vr.ok) {
+                const errBody = await vr.text();
+                result = { error: 'veille_unavailable', status: vr.status, detail: errBody.slice(0, 200) };
+              } else {
+                result = await vr.json();
+              }
+            } catch (err) {
+              result = { error: 'veille_network', message: err.message };
+            }
+          } else {
+            result = executeTool(tu.name, i);
+          }
+          return {
+            type: 'tool_result',
+            tool_use_id: tu.id,
+            content: JSON.stringify(result),
+          };
         }));
         workingMessages.push({ role: 'user', content: toolResults });
       }
@@ -1323,7 +1221,22 @@ export default {
         // Retirer le commentaire du texte visible
         fullText = fullText.replace(followUpsMatch[0], '').trim();
       }
-      const reply = fullText;
+      // Filet de sécurité : si le bloc follow-ups a été tronqué (réponse longue),
+      // on garantit 3 questions de relance (UX + esprit MIF II « termine par une question »).
+      if (followUps.length === 0) {
+        followUps = [
+          'Faire un mini-bilan patrimonial',
+          'Quels leviers pour réduire mes impôts ?',
+          'Comment anticiper ma transmission ?',
+        ];
+      }
+      // Garantie MIF II — le disclaimer doit TOUJOURS être présent, même si le
+      // modèle l'a omis ou que la réponse a été tronquée (max_tokens). Anti-risque conformité.
+      const MIF2_DISCLAIMER = "*Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Vous interagissez avec un assistant IA — Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande.*";
+      let reply = fullText;
+      if (!/L\.?\s*541[-\s]?1/i.test(reply)) {
+        reply = reply.trimEnd() + "\n\n---\n\n" + MIF2_DISCLAIMER;
+      }
 
       const webSearchUsed = (data.content || []).some(
         b => b.type === 'web_search_tool_use' || b.type === 'server_tool_use'

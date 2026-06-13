@@ -1,0 +1,34 @@
+name: Deploy IKCP Site to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'workers/**'
+      - 'docs/**'
+      - '_archive/**'
+      - '*.md'
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stamp version (rend visible chaque mise à jour Claude Code)
+        run: |
+          echo "{\"sha\":\"$(echo $GITHUB_SHA | cut -c1-7)\",\"deployed_at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"ref\":\"$GITHUB_REF_NAME\",\"run\":\"$GITHUB_RUN_NUMBER\"}" > version.json
+          cat version.json
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          command: pages deploy . --project-name ikcp-eu --branch=main --commit-dirty=true

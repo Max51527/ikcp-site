@@ -5,13 +5,6 @@ compatibility_date = "2026-04-25"
 [observability]
 enabled = true
 
-# ─── Service binding vers Marcel ───
-# Permet à /v1/agents/ask de déléguer à Marcel sans coût d'invocation ni latence
-# réseau. Le Worker `ikcp-chat` (qui contient Marcel v2) doit être déployé.
-[[services]]
-binding = "MARCEL"
-service = "ikcp-chat"
-
 # ─── Variables et secrets à configurer dans Cloudflare Dashboard ───
 #
 # Onglet Settings → Variables and Secrets :

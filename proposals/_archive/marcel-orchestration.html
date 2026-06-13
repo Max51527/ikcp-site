@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Marcel orchestration · pilote/mute</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#1B2A4A; --navy-2:#2A3B5F; --navy-deep:#0E1729;
+  --cream:#FAFAF8; --cream-2:#F4EFE7; --cream-3:#EBE3D4;
+  --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+  --ink:#2C2418; --ink-mute:#6B5D52; --ink-faint:#9B8F80;
+  --line:#E5DBC9; --line-strong:#CFC3AB;
+  --ok:#3F7A3F; --warn:#B8801F; --bad:#B91C1C;
+}
+html,body{background:var(--cream-2); color:var(--ink); font-family:'Outfit',sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; letter-spacing:-0.005em}
+
+.mockup-bar{background:var(--navy-deep); color:var(--cream); padding:8px 24px; display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; position:sticky; top:0; z-index:1000}
+.mockup-bar b{color:var(--gold-bright); font-weight:600}
+.mockup-bar a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid var(--gold-deep)}
+
+main{max-width:1280px; margin:0 auto; padding:40px 28px 80px}
+
+.head{text-align:center; margin-bottom:36px}
+.head-mark{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:14px; font-weight:700}
+.head-mark::before{content:'◆ '; color:var(--gold)}
+.head h1{font-family:'Playfair Display',serif; font-size:clamp(32px,4.4vw,48px); color:var(--navy); font-weight:500; letter-spacing:-0.02em; line-height:1.08; margin-bottom:14px}
+.head h1 em{color:var(--gold-deep); font-style:italic}
+.head p{max-width:680px; margin:0 auto; font-size:16px; color:var(--ink-mute); line-height:1.7}
+.head p em{font-style:italic; color:var(--navy); font-family:'Playfair Display',serif; font-weight:500}
+
+/* ─── ORCHESTRATION DIAGRAM ─── */
+.orch-diagram{background:var(--cream); border:1px solid var(--line); border-radius:20px; padding:36px 32px; margin-bottom:36px; box-shadow:0 8px 24px rgba(27,42,74,0.06)}
+.diagram{position:relative; min-height:480px; display:flex; flex-direction:column; align-items:center; gap:30px}
+
+/* Marcel center node */
+.marcel-node{
+  width:148px; height:148px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright) 0%, var(--gold) 40%, var(--gold-deep) 80%, var(--navy) 100%);
+  border:2px solid var(--gold);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:var(--cream); padding:14px; text-align:center;
+  box-shadow:0 14px 36px rgba(201,169,110,0.30);
+  position:relative; flex-shrink:0;
+}
+.marcel-node::before{content:''; position:absolute; inset:-10px; border-radius:50%; border:2px solid var(--gold); opacity:0.35; animation:mP 2.4s ease-out infinite}
+@keyframes mP{0%{transform:scale(0.95);opacity:0.5}100%{transform:scale(1.20);opacity:0}}
+.marcel-mark{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.24em; opacity:0.85; font-weight:700; color:var(--gold-bright); margin-bottom:3px}
+.marcel-name{font-family:'Playfair Display',serif; font-size:30px; font-weight:500; font-style:italic; line-height:1}
+.marcel-role{font-family:'Playfair Display',serif; font-style:italic; font-size:10.5px; margin-top:5px; color:var(--gold-bright)}
+
+/* Lines emanating from Marcel to sub-agents */
+.lines-svg{position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1}
+
+/* Sub-agents grid */
+.sub-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; width:100%; margin-top:10px}
+@media (max-width:880px){.sub-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.sub-grid{grid-template-columns:1fr}}
+
+.sub-agent{background:var(--cream-2); border:1px solid var(--line-strong); border-radius:14px; padding:14px 16px; text-align:left; transition:all 0.25s; cursor:pointer; position:relative; z-index:2}
+.sub-agent:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(27,42,74,0.08); border-color:var(--gold)}
+.sa-head{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+.sa-ico{font-size:22px; line-height:1}
+.sa-name{font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); font-weight:600; line-height:1.2; flex:1}
+.sa-model{font-family:'JetBrains Mono',monospace; font-size:8.5px; padding:2px 6px; border-radius:30px; letter-spacing:0.06em; font-weight:700; text-transform:uppercase; background:rgba(27,42,74,0.08); color:var(--gold-deep); white-space:nowrap}
+.sa-model.opus{background:rgba(184,128,31,0.14); color:var(--warn)}
+.sa-model.sonnet{background:rgba(201,169,110,0.16); color:var(--gold-deep)}
+.sa-model.haiku{background:rgba(63,122,63,0.10); color:var(--ok)}
+.sa-univ{font-size:11px; color:var(--ink-faint); margin-bottom:6px; font-style:italic; font-family:'Playfair Display',serif}
+.sa-tools{font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--gold-deep); letter-spacing:0.04em; line-height:1.5}
+
+/* ─── CHAT DEMO 2 COLS ─── */
+.demo-row{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:36px}
+@media (max-width:880px){.demo-row{grid-template-columns:1fr}}
+.demo-col{background:var(--cream); border:1px solid var(--line); border-radius:20px; padding:24px; box-shadow:0 6px 20px rgba(27,42,74,0.05)}
+.demo-col-h{display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--line); gap:12px}
+.demo-col-h-t{font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); font-weight:600; line-height:1.2}
+.demo-col-h-t em{color:var(--gold-deep); font-style:italic}
+.demo-col-h-sub{font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--gold-deep); letter-spacing:0.14em; text-transform:uppercase; font-weight:700; margin-top:2px}
+.mute-toggle{display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:30px; background:var(--cream-2); border:1px solid var(--line-strong); cursor:pointer; transition:all 0.2s; flex-shrink:0; font-size:11px; font-weight:600; color:var(--ink-mute); font-family:'Outfit',sans-serif}
+.mute-toggle:hover{border-color:var(--gold)}
+.mute-toggle.muted{background:var(--navy); color:var(--gold-bright); border-color:var(--navy)}
+.mute-ico{font-size:13px}
+
+/* Bulles chat */
+.chat{display:flex; flex-direction:column; gap:10px; max-height:480px; overflow-y:auto; padding-right:4px}
+.chat::-webkit-scrollbar{width:5px}
+.chat::-webkit-scrollbar-thumb{background:var(--line-strong); border-radius:3px}
+.bub{padding:11px 15px; border-radius:14px; font-size:13.5px; line-height:1.55; max-width:92%; animation:bIn 0.4s ease}
+@keyframes bIn{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:translateY(0)}}
+.bub-u{background:var(--navy); color:var(--cream); align-self:flex-end; border-radius:14px 14px 4px 14px}
+.bub-m{background:var(--cream-2); align-self:flex-start; border-radius:4px 14px 14px 14px; border-left:3px solid var(--gold)}
+.bub-a{background:rgba(201,169,110,0.10); align-self:flex-start; border-radius:4px 14px 14px 14px; border-left:3px solid var(--gold-deep)}
+.bub-head{font-family:'Playfair Display',serif; font-style:italic; font-size:11px; margin-bottom:4px; font-weight:600}
+.bub-head-m{color:var(--gold-deep)}
+.bub-head-a{color:var(--ink-mute)}
+.bub-head .who{margin-right:6px}
+.bub-head .agent-tag{font-family:'JetBrains Mono',monospace; font-style:normal; font-size:8.5px; padding:2px 6px; background:rgba(27,42,74,0.10); border-radius:20px; color:var(--navy); letter-spacing:0.1em; font-weight:700; text-transform:uppercase}
+.bub strong{color:var(--gold-deep); font-weight:700}
+.bub em{font-style:italic; color:var(--ink-mute)}
+.bub-u strong{color:var(--gold-bright)}
+.bub-u em{color:rgba(250,250,248,0.65)}
+
+/* Indicator "Marcel délègue à..." */
+.delegating{display:flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(201,169,110,0.10); border-radius:30px; align-self:center; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gold-deep); letter-spacing:0.14em; font-weight:700; text-transform:uppercase; animation:bIn 0.4s ease}
+.delegating::before{content:''; width:8px; height:8px; background:var(--gold); border-radius:50%; animation:dPulse 1.2s infinite}
+@keyframes dPulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.muted-note{padding:10px 14px; background:rgba(155,143,128,0.08); border:1px dashed var(--line-strong); border-radius:10px; font-size:11.5px; color:var(--ink-faint); font-style:italic; font-family:'Playfair Display',serif; text-align:center; margin:6px 0}
+
+/* ─── COST PANEL ─── */
+.cost-card{background:var(--navy); color:var(--cream); border-radius:20px; padding:28px 32px; position:relative; overflow:hidden}
+.cost-card::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--gold), var(--gold-bright), var(--gold))}
+.cost-h{font-family:'Playfair Display',serif; font-size:22px; color:var(--cream); font-weight:600; margin-bottom:6px}
+.cost-h em{color:var(--gold-bright); font-style:italic}
+.cost-sub{font-family:'Playfair Display',serif; font-style:italic; color:rgba(250,250,248,0.65); margin-bottom:24px}
+.cost-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+@media (max-width:760px){.cost-grid{grid-template-columns:1fr}}
+.cost-stat{padding:18px 20px; background:rgba(255,255,255,0.05); border:1px solid rgba(226,200,150,0.18); border-radius:14px}
+.cost-stat-v{font-family:'Playfair Display',serif; font-style:italic; font-size:30px; color:var(--gold-bright); font-weight:500; line-height:1; margin-bottom:6px}
+.cost-stat-l{font-size:11px; color:rgba(250,250,248,0.7); letter-spacing:0.12em; text-transform:uppercase; font-weight:600}
+.cost-stat-s{font-size:11.5px; color:rgba(250,250,248,0.55); margin-top:6px; font-style:italic; font-family:'Playfair Display',serif}
+</style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span><b>APERÇU</b> · Orchestration Marcel + 12 sub-agents Claude SDK · mode pilote / mute</span>
+  <span><a href="cassius-admin.html">→ Cassius admin</a></span>
+</div>
+
+<main>
+
+<div class="head">
+  <div class="head-mark">Architecture orchestration · Claude Agent SDK</div>
+  <h1>Marcel <em>orchestre</em>. Les spécialistes <em>exécutent</em>.</h1>
+  <p>Un chef d'orchestre qui pose les bonnes questions, douze solistes qui interviennent dans leur expertise. <em>Vous pouvez le mettre en sourdine</em> quand vous savez exactement ce que vous voulez — l'agent spécialiste prend alors le relais direct.</p>
+</div>
+
+<!-- ═══ DIAGRAMME ORCHESTRATION ═══ -->
+<section class="orch-diagram">
+  <div class="diagram">
+    <div class="marcel-node">
+      <div class="marcel-mark">★ CHEF D'ORCHESTRE</div>
+      <div class="marcel-name">M</div>
+      <div class="marcel-role">Marcel · Sonnet 4.6</div>
+    </div>
+
+    <div class="sub-grid">
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">💼</span><span class="sa-name">Bâtisseur</span><span class="sa-model opus">Opus 4.7</span></div>
+        <div class="sa-univ">univ. Patrimoine</div>
+        <div class="sa-tools">→ RNE · Pappers · INSEE · INPI</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🏠</span><span class="sa-name">Architecte</span><span class="sa-model sonnet">Sonnet 4.6</span></div>
+        <div class="sa-univ">univ. Immobilier</div>
+        <div class="sa-tools">→ DVF · cadastre · MeilleursAgents</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🏛</span><span class="sa-name">Codex</span><span class="sa-model opus">Opus 4.7</span></div>
+        <div class="sa-univ">univ. Fiscalité</div>
+        <div class="sa-tools">→ Légifrance · BOFIP · ikcp-mcp</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">📈</span><span class="sa-name">Stratège</span><span class="sa-model sonnet">Sonnet 4.6</span></div>
+        <div class="sa-univ">univ. Marchés</div>
+        <div class="sa-tools">→ Stooq · Yahoo · CoinGecko</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🎨</span><span class="sa-name">Curateur</span><span class="sa-model haiku">Haiku 4.5</span></div>
+        <div class="sa-univ">univ. Art</div>
+        <div class="sa-tools">→ Artprice · Sotheby · Europeana</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">💎</span><span class="sa-name">Concierge</span><span class="sa-model sonnet">Sonnet 4.6</span></div>
+        <div class="sa-univ">univ. Voyage &amp; Passions</div>
+        <div class="sa-tools">→ Booking · Smith · Amadeus · TheFork</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🪴</span><span class="sa-name">Capital</span><span class="sa-model opus">Opus 4.7</span></div>
+        <div class="sa-univ">univ. Private Equity</div>
+        <div class="sa-tools">→ Pitchbook · Crunchbase · Pappers</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🌱</span><span class="sa-name">Hermès</span><span class="sa-model opus">Opus 4.7</span></div>
+        <div class="sa-univ">univ. Transmission</div>
+        <div class="sa-tools">→ Notaires.fr · CGI 787 B · eIDAS</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🤲</span><span class="sa-name">Mécène</span><span class="sa-model sonnet">Sonnet 4.6</span></div>
+        <div class="sa-univ">univ. Philanthropie</div>
+        <div class="sa-tools">→ Fond. France · ESUS · CGI 200/978</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">🎓</span><span class="sa-name">Pédagogue</span><span class="sa-model sonnet">Sonnet 4.6</span></div>
+        <div class="sa-univ">univ. Formation NextGen</div>
+        <div class="sa-tools">→ KB IKCP · vidéos · quiz</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">📋</span><span class="sa-name">Camille</span><span class="sa-model haiku">Haiku 4.5</span></div>
+        <div class="sa-univ">univ. Administration</div>
+        <div class="sa-tools">→ calendrier · mail · YouSign eIDAS</div>
+      </div>
+
+      <div class="sub-agent">
+        <div class="sa-head"><span class="sa-ico">📊</span><span class="sa-name">Olympe</span><span class="sa-model sonnet">Sonnet 4.6</span></div>
+        <div class="sa-univ">univ. Reporting</div>
+        <div class="sa-tools">→ agrège · synthétise · PDF J+1</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DEMO 2 COLS — Marcel actif vs mute ═══ -->
+<section class="demo-row">
+
+  <!-- Colonne 1 — Marcel pilote -->
+  <div class="demo-col">
+    <div class="demo-col-h">
+      <div>
+        <div class="demo-col-h-t">Mode <em>pilote</em></div>
+        <div class="demo-col-h-sub">Marcel clarifie + orchestre</div>
+      </div>
+      <div class="mute-toggle"><span class="mute-ico">🎼</span><span>Actif</span></div>
+    </div>
+
+    <div class="chat">
+      <div class="bub bub-u">Je veux passer 4 jours à Megève avec ma femme en juillet.</div>
+
+      <div class="bub bub-m">
+        <div class="bub-head bub-head-m"><span class="who">Marcel</span><span class="agent-tag">Conducteur</span></div>
+        Avec plaisir. Trois éléments pour vous proposer la meilleure expérience :<br>
+        <strong>(1)</strong> Préférence <em>chalet privé</em> ou <em>hôtel-spa</em> ?<br>
+        <strong>(2)</strong> Budget approximatif/nuit (vous étiez à 1 850 €/nuit aux Fermes en mars) ?<br>
+        <strong>(3)</strong> Activités prioritaires : spa, gastronomie, randonnée ?
+      </div>
+
+      <div class="bub bub-u">Chalet privé, 2 500 €/nuit max, spa + table 3 étoiles.</div>
+
+      <div class="delegating">Marcel délègue · 💎 Concierge + 🍽 Gastronomie</div>
+
+      <div class="bub bub-a">
+        <div class="bub-head bub-head-a"><span class="who">Concierge</span><span class="agent-tag">Sonnet 4.6</span></div>
+        Trois chalets correspondent : <strong>Mont d'Arbois Lodge</strong> (2 300 €), <strong>Chalet Edelweiss</strong> (2 450 €), <strong>Mont Joly Estate</strong> (2 500 €). Disponibilités du 12-16 juillet confirmées sur les trois.
+      </div>
+
+      <div class="bub bub-a">
+        <div class="bub-head bub-head-a"><span class="who">Gastronomie</span><span class="agent-tag">Haiku 4.5</span></div>
+        Tables 3 étoiles : <strong>Flocons de Sel</strong> (Emmanuel Renaut · à 12 min) — souvent réservé 3 semaines à l'avance, j'ai une fenêtre vendredi 13.
+      </div>
+
+      <div class="bub bub-m">
+        <div class="bub-head bub-head-m"><span class="who">Marcel</span></div>
+        <strong>Recommandation :</strong> Chalet Edelweiss (2 450 €/nuit · vue Mont-Blanc · spa privé piscine) + dîner Flocons vendredi.<br>
+        <em>Voulez-vous que je réserve les deux, ou souhaitez-vous valider chaque option séparément ?</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- Colonne 2 — Mute -->
+  <div class="demo-col">
+    <div class="demo-col-h">
+      <div>
+        <div class="demo-col-h-t">Mode <em>mute</em></div>
+        <div class="demo-col-h-sub">Vous savez ce que vous voulez</div>
+      </div>
+      <div class="mute-toggle muted"><span class="mute-ico">🔇</span><span>Muet</span></div>
+    </div>
+
+    <div class="muted-note">Marcel est en sourdine. Votre requête va directement à l'agent spécialiste. <em>30 % d'économie en tokens.</em></div>
+
+    <div class="chat">
+      <div class="bub bub-u">Chalet Megève 4 nuits juillet, 2 500 €/nuit max, spa, table 3 étoiles vendredi.</div>
+
+      <div class="delegating">💎 Concierge prend la main directement</div>
+
+      <div class="bub bub-a">
+        <div class="bub-head bub-head-a"><span class="who">Concierge</span><span class="agent-tag">Sonnet 4.6</span></div>
+        Voici 3 options pour les 12-16 juillet :<br>
+        <strong>① Chalet Edelweiss</strong> · 2 450 €/nuit · vue Mont-Blanc · spa privé piscine<br>
+        <strong>② Mont Joly Estate</strong> · 2 500 €/nuit · majordome dédié<br>
+        <strong>③ Mont d'Arbois Lodge</strong> · 2 300 €/nuit · accès golf inclus<br><br>
+        Pour la table : <strong>Flocons de Sel</strong> (Renaut · 3★) — fenêtre disponible vendredi 13 à 19h30.<br><br>
+        <em>Tapez ①, ② ou ③ pour réserver le chalet ; OK pour la table.</em>
+      </div>
+
+      <div class="bub bub-u">① + OK</div>
+
+      <div class="bub bub-a">
+        <div class="bub-head bub-head-a"><span class="who">Concierge</span><span class="agent-tag">Sonnet 4.6</span></div>
+        ✓ Chalet Edelweiss bloqué 12-16 juillet · pré-réservation Flocons vendredi 19h30 · paiement à venir sur votre Stripe enregistré. Confirmation par email dans 2 minutes.
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ COÛT ═══ -->
+<section class="cost-card">
+  <div class="cost-h">L'économie <em>du modèle</em>.</div>
+  <div class="cost-sub">Coût Claude API par interaction-type avec cache aggressive · facturation Anthropic EU endpoint.</div>
+
+  <div class="cost-grid">
+    <div class="cost-stat">
+      <div class="cost-stat-v">~0,12 €</div>
+      <div class="cost-stat-l">Question simple · mode mute</div>
+      <div class="cost-stat-s">1 agent · Haiku 4.5 · cache 70 %</div>
+    </div>
+    <div class="cost-stat">
+      <div class="cost-stat-v">~0,28 €</div>
+      <div class="cost-stat-l">Conversation pilote · 1 univers</div>
+      <div class="cost-stat-s">Marcel + 1 agent · Sonnet 4.6</div>
+    </div>
+    <div class="cost-stat">
+      <div class="cost-stat-v">~0,80 €</div>
+      <div class="cost-stat-l">Multi-univers · arbitrage</div>
+      <div class="cost-stat-s">Marcel + 3 agents · 1 Opus 4.7</div>
+    </div>
+  </div>
+
+  <p style="margin-top:24px; font-size:13.5px; color:rgba(250,250,248,0.78); line-height:1.65; font-style:italic; font-family:'Playfair Display',serif">
+    Sur un client Premium à 290 €/mois avec une activité moyenne (15 questions/mois dont 30 % multi-univers), <em>coût Claude réel ~6 €/mois</em>. <strong style="color:var(--gold-bright)">Marge brute &gt; 97 %.</strong> Sur le tier Sur-mesure (5 000 €+/mois), même calcul → marge &gt; 99 %.
+  </p>
+</section>
+
+</main>
+
+<script>
+// Toggle mute (démo visuelle)
+document.querySelectorAll('.mute-toggle').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    t.classList.toggle('muted');
+    const lbl = t.querySelector('span:last-child');
+    const ico = t.querySelector('.mute-ico');
+    if (t.classList.contains('muted')) { lbl.textContent='Muet'; ico.textContent='🔇'; }
+    else { lbl.textContent='Actif'; ico.textContent='🎼'; }
+  });
+});
+
+// Protection copie
+(function(){
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+})();
+
+console.log('%c© Maxime Juveneton — IKCP', 'color:#C9A96E;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+</script>
+
+</body>
+</html>

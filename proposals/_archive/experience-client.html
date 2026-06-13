@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP · Une journée chez nous — l'expérience cliente</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght,opsz@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#FAF6EE; --paper-2:#F4ECDF; --paper-3:#EDDFC8; --paper-deep:#E0D2B6;
+  --ink:#2D2520; --ink-mute:#6B5D52; --ink-faint:#9B8B7C;
+  --terra:#D97757; --terra-deep:#B85A3E; --terra-light:#E8AB8E; --terra-glow:#F2C5A3;
+  --gold:#C9A96E; --gold-deep:#8e7345;
+  --green:#15803d;
+  --line:#E0D4BE; --line-strong:#C9B89E;
+}
+html,body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter',sans-serif; font-weight:400; line-height:1.65;
+  min-height:100vh; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0 0.10 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:multiply; opacity:0.5;
+}
+main{position:relative; z-index:1}
+
+/* ─── NAV ─── */
+nav.top{
+  position:sticky; top:0; z-index:100;
+  background:rgba(250,246,238,0.92); backdrop-filter:blur(12px);
+  padding:18px 32px; display:flex; justify-content:space-between; align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:24px; font-weight:600; line-height:1}
+.brand b{color:var(--terra); font-style:italic; font-weight:500}
+.brand-sub{display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.32em; color:var(--terra-deep); margin-top:5px; font-weight:600; text-transform:uppercase}
+.back{color:var(--ink-mute); text-decoration:none; font-size:13px; transition:color 0.2s}
+.back:hover{color:var(--terra)}
+
+/* ─── HERO ─── */
+section.hero{padding:120px 32px 80px; max-width:1080px; margin:0 auto; text-align:center}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:14px;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--terra); margin-bottom:32px; font-weight:600;
+}
+.eyebrow::before, .eyebrow::after{content:''; width:36px; height:1px; background:var(--terra)}
+
+.hero h1{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:clamp(44px, 6.4vw, 88px); line-height:1.04;
+  font-weight:400; letter-spacing:-0.025em; color:var(--ink); margin-bottom:30px;
+}
+.hero h1 em{color:var(--terra-deep); font-style:italic}
+.hero-deck{
+  font-family:'Fraunces',serif; font-style:italic;
+  font-size:clamp(17px, 1.8vw, 22px); color:var(--ink-mute);
+  max-width:680px; margin:0 auto 42px; line-height:1.55;
+}
+.hero-stats{display:flex; gap:48px; justify-content:center; flex-wrap:wrap; padding-top:32px; border-top:1px solid var(--line); max-width:760px; margin:0 auto}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:48px; line-height:1; color:var(--ink); font-weight:500; letter-spacing:-0.025em}
+.hero-stat-num em{color:var(--terra-deep); font-style:italic}
+.hero-stat-lbl{font-size:11.5px; letter-spacing:0.18em; color:var(--ink-mute); text-transform:uppercase; margin-top:8px; font-weight:600}
+
+/* ─── DAY CONTAINER ─── */
+section.day{padding:80px 32px 40px; max-width:1040px; margin:0 auto}
+.day-head{margin-bottom:48px; max-width:760px}
+.day-head h2{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:clamp(34px, 4.6vw, 56px); line-height:1.05; color:var(--ink); font-weight:500; letter-spacing:-0.025em; margin-bottom:18px}
+.day-head h2 em{color:var(--terra-deep); font-style:italic}
+.day-head p{color:var(--ink-mute); font-size:16px; line-height:1.7; max-width:640px}
+.day-head p em{color:var(--ink); font-style:italic}
+
+/* ─── TIMELINE ─── */
+.timeline{position:relative; padding-left:80px; padding-top:20px}
+.timeline::before{
+  content:''; position:absolute; top:20px; bottom:20px; left:30px; width:2px;
+  background:linear-gradient(180deg, var(--terra-light), var(--terra), var(--gold), var(--terra-deep));
+}
+
+.scene{position:relative; padding-bottom:54px}
+.scene:last-child{padding-bottom:0}
+.scene-time{
+  position:absolute; left:-80px; top:0;
+  width:60px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:13px;
+  color:var(--terra-deep); font-weight:600; letter-spacing:0.04em;
+}
+.scene-time::before{
+  content:''; position:absolute; left:50%; top:30px; transform:translateX(-50%);
+  width:14px; height:14px; border-radius:50%; background:var(--terra);
+  border:3px solid var(--paper); box-shadow:0 0 0 1px var(--terra), 0 0 16px rgba(217,119,87,0.4);
+}
+.scene-time-label{display:block; font-family:'Fraunces',serif; font-style:italic; font-size:10.5px; color:var(--ink-faint); margin-top:4px; font-weight:400; letter-spacing:0}
+
+.scene-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:18px;
+  padding:24px 28px; box-shadow:0 6px 20px rgba(45,37,32,0.04);
+  transition:all 0.25s;
+}
+.scene-card:hover{box-shadow:0 12px 30px rgba(45,37,32,0.08); border-color:var(--terra-light)}
+
+.scene-context{font-family:'Fraunces',serif; font-style:italic; font-size:14px; color:var(--ink-faint); margin-bottom:8px}
+.scene-title{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:22px; color:var(--ink); font-weight:500; line-height:1.3; margin-bottom:14px; letter-spacing:-0.015em}
+.scene-title em{color:var(--terra-deep); font-style:italic}
+
+.bubble-user{
+  background:var(--ink); color:var(--paper);
+  padding:14px 20px; border-radius:18px 18px 4px 18px;
+  font-size:14.5px; line-height:1.55;
+  display:inline-block; max-width:90%; margin-bottom:14px;
+  position:relative;
+}
+.bubble-user::before{content:'Vous'; display:block; font-family:'Fraunces',serif; font-style:italic; font-size:11px; color:var(--terra-light); margin-bottom:4px; opacity:0.85}
+
+.bubble-marcel{
+  background:var(--paper-2); color:var(--ink);
+  padding:14px 20px; border-radius:4px 18px 18px 18px;
+  font-size:14.5px; line-height:1.55;
+  display:inline-block; max-width:92%; margin-bottom:14px;
+}
+.bubble-marcel::before{content:'🎼  Marcel'; display:block; font-family:'Fraunces',serif; font-style:italic; font-size:11px; color:var(--terra-deep); margin-bottom:4px; font-weight:500}
+.bubble-marcel em{color:var(--ink); font-style:italic; font-weight:500}
+
+.agents-pulse{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+.agent-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(217,119,87,0.08); border:1px solid var(--terra-light);
+  padding:5px 11px; border-radius:30px;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  color:var(--terra-deep); font-weight:600; letter-spacing:0.02em;
+}
+
+.scene-result{
+  margin-top:14px; padding-top:14px; border-top:1px dashed var(--line-strong);
+  font-size:13.5px; color:var(--ink-mute); line-height:1.65;
+}
+.scene-result strong{color:var(--ink); font-weight:500}
+.scene-result .num{font-family:'Fraunces',serif; color:var(--terra-deep); font-weight:600; font-size:16px}
+
+.scene-feeling{
+  margin-top:12px; padding:12px 18px;
+  background:linear-gradient(135deg, rgba(217,119,87,0.08), rgba(232,171,142,0.05));
+  border-left:3px solid var(--terra); border-radius:0 8px 8px 0;
+  font-family:'Fraunces',serif; font-style:italic; font-size:14px;
+  color:var(--ink); line-height:1.5;
+}
+.scene-feeling::before{content:'Ressenti — '; color:var(--terra-deep); font-weight:500; font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; margin-right:6px}
+
+/* ─── COMPARATIF AVANT/APRÈS ─── */
+section.compare{padding:80px 32px; max-width:1140px; margin:0 auto}
+.compare-grid{display:grid; grid-template-columns:1fr auto 1fr; gap:32px; margin-top:50px; align-items:stretch}
+@media (max-width:880px){.compare-grid{grid-template-columns:1fr; gap:18px}}
+
+.compare-side{
+  border-radius:20px; padding:36px 32px;
+}
+.compare-side.before{background:var(--paper-2); border:1px solid var(--line-strong)}
+.compare-side.after{background:linear-gradient(135deg, var(--ink) 0%, #14110d 100%); color:var(--paper); border:1.5px solid var(--terra)}
+.compare-tag{
+  display:inline-block; padding:5px 12px; border-radius:30px;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700;
+  margin-bottom:18px;
+}
+.compare-side.before .compare-tag{background:var(--paper-3); color:var(--ink-mute)}
+.compare-side.after .compare-tag{background:var(--terra); color:var(--paper)}
+.compare-h{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:28px; line-height:1.1; font-weight:500; letter-spacing:-0.02em; margin-bottom:24px}
+.compare-side.before .compare-h{color:var(--ink)}
+.compare-side.after .compare-h{color:var(--paper)}
+.compare-side.after .compare-h em{color:var(--terra-light); font-style:italic}
+
+.compare-list{display:flex; flex-direction:column; gap:14px}
+.compare-row{display:flex; align-items:flex-start; gap:14px; font-size:14px; line-height:1.6}
+.compare-side.before .compare-row{color:var(--ink-mute)}
+.compare-side.after .compare-row{color:rgba(250,246,238,0.85)}
+.compare-icon{flex-shrink:0; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700}
+.compare-side.before .compare-icon{background:rgba(185,28,28,0.1); color:#b91c1c}
+.compare-side.after .compare-icon{background:var(--terra-light); color:var(--ink)}
+.compare-row b{color:inherit; font-weight:600}
+.compare-side.after .compare-row b{color:var(--paper)}
+
+.compare-arrow{
+  align-self:center; font-family:'Fraunces',serif; font-style:italic; font-size:32px; color:var(--terra);
+  text-align:center;
+}
+@media (max-width:880px){.compare-arrow{transform:rotate(90deg)}}
+
+.compare-bottom{
+  background:linear-gradient(135deg, var(--terra) 0%, var(--terra-deep) 100%); color:var(--paper);
+  border-radius:20px; padding:36px 40px; margin-top:32px; text-align:center;
+}
+.compare-bottom-num{
+  font-family:'Fraunces',serif; font-variation-settings:"opsz" 144;
+  font-size:clamp(54px, 8vw, 96px); line-height:1; font-weight:500; letter-spacing:-0.04em;
+}
+.compare-bottom-num em{font-style:italic; opacity:0.95}
+.compare-bottom-lbl{font-family:'Fraunces',serif; font-style:italic; font-size:18px; margin-top:12px; opacity:0.95}
+
+/* ─── MINI-SCENES (3 autres cas) ─── */
+section.mini{padding:80px 32px; max-width:1280px; margin:0 auto}
+.mini-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; margin-top:48px}
+@media (max-width:980px){.mini-grid{grid-template-columns:1fr}}
+.mini-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:18px;
+  padding:28px 26px; transition:all 0.3s;
+}
+.mini-card:hover{transform:translateY(-4px); border-color:var(--terra-light); box-shadow:0 14px 32px rgba(217,119,87,0.10)}
+.mini-context{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:0.18em; color:var(--terra-deep); font-weight:600; text-transform:uppercase; margin-bottom:12px}
+.mini-q{font-family:'Fraunces',serif; font-style:italic; font-size:18px; color:var(--ink); line-height:1.3; margin-bottom:14px; font-weight:500}
+.mini-q::before{content:'« '; color:var(--terra)}
+.mini-q::after{content:' »'; color:var(--terra)}
+.mini-flow{display:flex; flex-direction:column; gap:10px; margin-bottom:14px}
+.mini-step{display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink-mute); line-height:1.5}
+.mini-step .arrow{color:var(--terra); flex-shrink:0; font-weight:600; font-family:'Fraunces',serif}
+.mini-step b{color:var(--ink); font-weight:500}
+.mini-result{
+  background:var(--paper-2); border-left:3px solid var(--terra);
+  padding:12px 16px; border-radius:0 10px 10px 0;
+  font-size:13.5px; color:var(--ink); line-height:1.55;
+}
+.mini-result-time{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.1em; color:var(--terra-deep); font-weight:600; margin-bottom:4px}
+
+/* ─── FOOTER CTA ─── */
+section.cta-final{
+  padding:120px 32px; text-align:center;
+  background:linear-gradient(180deg, var(--paper), var(--paper-2));
+  border-top:1px solid var(--line);
+}
+.cta-final-h{font-family:'Fraunces',serif; font-variation-settings:"opsz" 144; font-size:clamp(38px, 5.4vw, 70px); line-height:1.05; color:var(--ink); font-weight:500; letter-spacing:-0.025em; max-width:880px; margin:0 auto 28px}
+.cta-final-h em{color:var(--terra-deep); font-style:italic}
+.cta-final-sub{font-family:'Fraunces',serif; font-style:italic; font-size:18px; color:var(--ink-mute); max-width:560px; margin:0 auto 44px; line-height:1.55}
+.cta-row{display:inline-flex; gap:24px; flex-wrap:wrap; justify-content:center}
+.btn{padding:16px 32px; border-radius:32px; text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.04em; transition:all 0.3s; display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:'Inter',sans-serif}
+.btn-primary{background:var(--terra); color:var(--paper); box-shadow:0 6px 20px rgba(217,119,87,0.25)}
+.btn-primary:hover{background:var(--terra-deep); transform:translateY(-2px); box-shadow:0 12px 28px rgba(217,119,87,0.35)}
+.btn-ghost{color:var(--ink); border:1.5px solid var(--ink-mute); background:transparent}
+.btn-ghost:hover{border-color:var(--terra); color:var(--terra)}
+
+footer{padding:40px 32px; text-align:center; color:var(--ink-faint); font-size:11.5px; border-top:1px solid var(--line); background:var(--paper-2)}
+footer a{color:var(--terra-deep); text-decoration:none}
+
+@media (max-width:760px){
+  .timeline{padding-left:60px}
+  .timeline::before{left:18px}
+  .scene-time{left:-60px; width:48px}
+  .scene-time::before{left:50%}
+  .scene-card{padding:20px 22px}
+}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Une journée chez nous</div>
+  </div>
+  <a href="membre-preview.html" class="back">← Retour salon membre</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="eyebrow">L'expérience IKCP · une vraie journée</div>
+  <h1>Voici ce que <em>vous vivez</em><br>quand vous êtes Premium chez IKCP.</h1>
+  <p class="hero-deck">Pas de PowerPoint. Pas de promesse abstraite. <em>Une journée vécue par Joséphine</em>, cliente Premium depuis 14 mois — vendredi 15 juin 2026, au cœur d'une cession patrimoniale critique.</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">7<em> j</em></div>
+      <div class="hero-stat-lbl">Du SMS à la signature</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">11</div>
+      <div class="hero-stat-lbl">Agents mobilisés</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num"><em>1,48 M€</em></div>
+      <div class="hero-stat-lbl">Économie fiscale</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">0</div>
+      <div class="hero-stat-lbl">Stress · 0 papier perdu</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JOURNAL DE LA JOURNÉE ═══ -->
+<section class="day">
+  <div class="day-head">
+    <h2>Vendredi 15 juin 2026<br><em>· la journée d'une cession ·</em></h2>
+    <p>Joséphine reçoit une offre de 8 M€ sur sa holding à 9h47. Elle a sept jours pour répondre. Elle est <em>seule au calme</em> dans sa maison de Cap-Ferret. Elle ouvre son téléphone.</p>
+  </div>
+
+  <div class="timeline">
+
+    <!-- ─── SCÈNE 1 — 8h12 ─── -->
+    <article class="scene">
+      <div class="scene-time">08:12<span class="scene-time-label">au lever</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Notification push reçue · Olympe</div>
+        <div class="scene-title">La synthèse Q2 est prête.</div>
+        <div class="bubble-marcel">
+          <em>Olympe</em> a posté votre synthèse trimestrielle. 4 pages · 12 min de lecture. Performance +3,2 % vs cible. 2 alertes seuil. 3 opportunités.<br>
+          <span class="agents-pulse"><span class="agent-pill">📑 Olympe · auto</span></span>
+        </div>
+        <div class="scene-result">
+          <strong>Action de Joséphine</strong> : aucune. Elle lit en buvant son café.
+        </div>
+        <div class="scene-feeling">Tout est sous contrôle. Quelqu'un veille pendant que je dors.</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 2 — 9h47 ─── -->
+    <article class="scene">
+      <div class="scene-time">09:47<span class="scene-time-label">le SMS</span></div>
+      <div class="scene-card">
+        <div class="scene-context">SMS reçu — repreneur potentiel</div>
+        <div class="scene-title">L'offre arrive. <em>8 millions d'euros.</em></div>
+        <div class="bubble-user">On confirme l'offre à 8 M€ pour la holding. Réponse demandée vendredi prochain. Fiscalité à étudier.</div>
+        <div class="scene-context" style="margin-top:8px">Joséphine ouvre son salon IKCP, tape :</div>
+        <div class="bubble-user">Marcel, j'ai une offre 8 M€ sur ma holding. Réponse vendredi. Je dois préparer quoi ?</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 3 — 9h48 ─── -->
+    <article class="scene">
+      <div class="scene-time">09:48<span class="scene-time-label">+ 30 secondes</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Marcel comprend, qualifie, oriente</div>
+        <div class="scene-title">Marcel <em>convoque</em> l'équipage.</div>
+        <div class="bubble-marcel">
+          Très bien Joséphine. Je convoque <em>quatre agents en parallèle</em> :<br><br>
+          • <em>Auguste</em> évalue le pacte Dutreil et l'apport-cession (150-0 B ter).<br>
+          • <em>Augustin</em> regarde le marché PE pour valider le multiple.<br>
+          • <em>Théodore</em> simule la structure post-cession.<br>
+          • <em>Olympe</em> prépare la synthèse 1-page.<br><br>
+          Maxime sera notifié pour validation finale.<br>
+          <strong>Synthèse dans 12 minutes.</strong>
+          <div class="agents-pulse">
+            <span class="agent-pill">🏛 Auguste</span>
+            <span class="agent-pill">🌱 Augustin</span>
+            <span class="agent-pill">📐 Théodore</span>
+            <span class="agent-pill">📑 Olympe</span>
+            <span class="agent-pill">🎯 Maxime · validation</span>
+          </div>
+        </div>
+        <div class="scene-result">
+          <strong>Action de Joséphine</strong> : aucune. Elle continue son café.
+        </div>
+        <div class="scene-feeling">Je n'ai pas eu à appeler 5 personnes différentes. Une porte. Une équipe.</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 4 — 10h00 ─── -->
+    <article class="scene">
+      <div class="scene-time">10:00<span class="scene-time-label">12 min plus tard</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Synthèse arrivée · push notification</div>
+        <div class="scene-title">Trois <em>options chiffrées</em>. Une page.</div>
+        <div class="bubble-marcel">
+          <em>Olympe</em> a consolidé. Voici la synthèse 1-page :<br><br>
+          <strong>Option A · Cession sèche</strong><br>
+          Plus-value 6,2 M€ → IS + flat tax <span style="color:var(--green)">1,86 M€ d'impôts</span><br><br>
+          <strong>Option B · Pacte Dutreil + holding interposée</strong><br>
+          Exonération 75 % → <span style="color:var(--green)">0,38 M€ d'impôts</span> · économie <span style="font-family:Fraunces,serif;font-size:18px;color:var(--terra-deep);font-style:italic;font-weight:600">1,48 M€</span><br><br>
+          <strong>Option C · Apport-cession 150-0 B ter</strong><br>
+          Report d'imposition · réinvestissement obligatoire<br><br>
+          <em>Auguste</em> recommande l'option B (engagement collectif déjà en place).<br>
+          <em>Théodore</em> prépare la cartographie post-cession.
+          <div class="agents-pulse">
+            <span class="agent-pill">📊 PDF généré</span>
+            <span class="agent-pill">⚖ art. 787 B CGI cité</span>
+            <span class="agent-pill">🔒 archivé eIDAS</span>
+          </div>
+        </div>
+        <div class="scene-result">
+          <strong>Action de Joséphine</strong> : elle lit la synthèse pendant 6 minutes. Elle valide l'option B en cliquant.
+        </div>
+        <div class="scene-feeling">Je comprends la décision en 6 minutes. Avant, ça aurait pris 6 semaines.</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 5 — 14h30 ─── -->
+    <article class="scene">
+      <div class="scene-time">14:30<span class="scene-time-label">après-midi</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Notification discrète · Hermès</div>
+        <div class="scene-title"><em>Hermès</em> a parlé à votre notaire.</div>
+        <div class="bubble-marcel">
+          <em>Hermès</em> a contacté Maître Lambert (votre notaire à Annonay) avec la note Dutreil de Auguste.<br>
+          Maître Lambert confirme : engagement collectif valable, prêt à recevoir l'acte.<br>
+          Rendez-vous proposé mardi 19 juin à 10 h. Calendly synchronisé avec votre agenda.
+          <div class="agents-pulse">
+            <span class="agent-pill">🤝 Hermès → Me Lambert</span>
+            <span class="agent-pill">📅 RDV mardi 10h</span>
+          </div>
+        </div>
+        <div class="scene-result"><strong>Action de Joséphine</strong> : valide le créneau. 1 clic.</div>
+        <div class="scene-feeling">Le notaire est briefé avant moi. La conversation va être courte et efficace.</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 6 — 16h00 ─── -->
+    <article class="scene">
+      <div class="scene-time">16:00<span class="scene-time-label">moment de respiration</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Joséphine pense au week-end</div>
+        <div class="scene-title">Un week-end à Megève ?</div>
+        <div class="bubble-user">Megève samedi-dimanche, famille 4 personnes, suite spa ?</div>
+        <div class="bubble-marcel">
+          <em>Joséphine</em> (votre conciergerie) propose deux options :<br><br>
+          <strong>Les Fermes de Marie</strong> · suite Mont Joly · 1 850 €/nuit · spa privé · score 0,94<br>
+          <strong>Four Seasons Megève</strong> · suite Mont d'Arbois · 2 200 €/nuit · chef privé · score 0,91<br><br>
+          Préférences détectées : bois clair, vue mer/montagne, allergie crustacés notée pour le restaurant.
+          <div class="agents-pulse">
+            <span class="agent-pill">💎 Joséphine</span>
+            <span class="agent-pill">🍷 Bacchus · cave proposée</span>
+          </div>
+        </div>
+        <div class="scene-result"><strong>Action</strong> : Joséphine choisit Les Fermes de Marie. Camille débite la CB stockée. Confirmation 8 secondes plus tard.</div>
+        <div class="scene-feeling">Je n'ai même pas eu à expliquer mes goûts. Ils les connaissent.</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 7 — 18h45 ─── -->
+    <article class="scene">
+      <div class="scene-time">18:45<span class="scene-time-label">soirée</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Email · Maxime (humain)</div>
+        <div class="scene-title">Maxime <em>arbitre</em>.</div>
+        <div class="bubble-marcel">
+          Email reçu de <strong>Maxime Juveneton</strong> :<br><br>
+          <em>"Joséphine — j'ai relu la note Dutreil d'Auguste. L'engagement collectif est solide, le multiple validé. Je confirme l'option B. Je vous propose un appel demain matin 8h pour discuter le timing du réinvestissement. — Maxime"</em>
+          <div class="agents-pulse">
+            <span class="agent-pill" style="background:var(--ink);color:var(--paper);border-color:var(--ink)">★ validation humaine</span>
+            <span class="agent-pill">📧 archivage eIDAS</span>
+          </div>
+        </div>
+        <div class="scene-feeling">Ce n'est pas un robot qui décide. Maxime relit, valide, signe. Je suis tranquille.</div>
+      </div>
+    </article>
+
+    <!-- ─── SCÈNE 8 — 20h12 ─── -->
+    <article class="scene">
+      <div class="scene-time">20:12<span class="scene-time-label">avant le dîner</span></div>
+      <div class="scene-card">
+        <div class="scene-context">Dernière notification de la journée</div>
+        <div class="scene-title">Tout est prêt. Vous, vous <em>dînez</em>.</div>
+        <div class="bubble-marcel">
+          <em>Camille</em> récapitule votre journée :<br>
+          ✓ Synthèse Q2 lue<br>
+          ✓ Stratégie Dutreil validée par Maxime<br>
+          ✓ RDV notaire mardi 10h (Annonay)<br>
+          ✓ Suite spa Megève réservée (samedi-dimanche)<br>
+          ✓ 17 documents archivés eIDAS aujourd'hui<br><br>
+          Demain : appel Maxime 8h. Bon dîner.
+        </div>
+        <div class="scene-feeling">14 mois de Premium. Je ne savais pas qu'on pouvait gérer un patrimoine comme ça.</div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ═══ AVANT / APRÈS ═══ -->
+<section class="compare">
+  <div class="day-head">
+    <h2>La même journée, <em>sans IKCP</em>.</h2>
+    <p>Joséphine recevrait le même SMS. Et puis ?</p>
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-side before">
+      <div class="compare-tag">Sans IKCP — la vie d'avant</div>
+      <h3 class="compare-h">6 semaines.<br>5 prestataires.<br>30 000 € d'honoraires.</h3>
+      <div class="compare-list">
+        <div class="compare-row"><div class="compare-icon">⏱</div><div><b>J0-J3</b> — Appels à 5 pros (notaire, avocat fiscal, expert-comptable, courtier, banquier)</div></div>
+        <div class="compare-row"><div class="compare-icon">⏱</div><div><b>J4-J10</b> — Attente devis avocat fiscal (entre 8 et 15 k€)</div></div>
+        <div class="compare-row"><div class="compare-icon">⏱</div><div><b>J11</b> — RDV cabinet · découverte des chiffres pendant le RDV</div></div>
+        <div class="compare-row"><div class="compare-icon">⏱</div><div><b>J12-J20</b> — Aller-retours mails · documents perdus · sourcing engagement collectif</div></div>
+        <div class="compare-row"><div class="compare-icon">⏱</div><div><b>J21-J35</b> — Décision · révision · 2e RDV cabinet</div></div>
+        <div class="compare-row"><div class="compare-icon">⏱</div><div><b>J36-J42</b> — Acte chez le notaire · signatures multiples</div></div>
+        <div class="compare-row"><div class="compare-icon">⚠</div><div><b>Risque</b> : Dutreil pas activé à temps · 1,48 M€ d'impôt en plus</div></div>
+        <div class="compare-row"><div class="compare-icon">⚠</div><div><b>Stress</b> : 6 semaines de charge mentale</div></div>
+      </div>
+    </div>
+
+    <div class="compare-arrow">→</div>
+
+    <div class="compare-side after">
+      <div class="compare-tag">Avec IKCP Premium</div>
+      <h3 class="compare-h">7 jours.<br><em>Une porte.</em><br>Frais déjà inclus.</h3>
+      <div class="compare-list">
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>09:48</b> — Marcel comprend en 30 secondes</div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>10:00</b> — 4 agents ont produit la synthèse 1-page</div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>14:30</b> — Hermès a brieffé le notaire · RDV pris</div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>18:45</b> — Maxime a validé · trace eIDAS</div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>J+5</b> — Acte rédigé par le notaire (briefé par Hermès)</div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>J+7</b> — Signature Yousign sur iPad</div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>Économie</b> : Dutreil activé à temps · <b>1 480 000 €</b></div></div>
+        <div class="compare-row"><div class="compare-icon">✓</div><div><b>Sérénité</b> : 1 porte d'entrée · 0 papier perdu</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-bottom">
+    <div class="compare-bottom-num"><em>1 480 000 €</em></div>
+    <div class="compare-bottom-lbl">économisés en 7 jours · <strong style="color:var(--paper)">5 000 fois le coût de l'abonnement Premium annuel</strong></div>
+  </div>
+</section>
+
+<!-- ═══ MINI-SCÈNES (autres cas) ═══ -->
+<section class="mini">
+  <div class="day-head">
+    <h2><em>Trois autres</em> moments<br>vécus par nos clients.</h2>
+    <p>La cession est un cas extrême. Au quotidien, c'est plus simple — et tout aussi élégant.</p>
+  </div>
+
+  <div class="mini-grid">
+
+    <!-- Cas 1 — Drawdown -->
+    <div class="mini-card">
+      <div class="mini-context">22:08 · un mardi soir</div>
+      <p class="mini-q">J'ai vu aux infos que la bourse US a chuté. Ça m'impacte ?</p>
+      <div class="mini-flow">
+        <div class="mini-step"><span class="arrow">→</span><div><b>Léon</b> a déjà alerté à 21h05. Drawdown -6,2 % poche US.</div></div>
+        <div class="mini-step"><span class="arrow">→</span><div><b>Olympe</b> a recalculé l'allocation drift. Cible 22 %, réel 28 %.</div></div>
+        <div class="mini-step"><span class="arrow">→</span><div><b>Marcel</b> propose 2 arbitrages soumis à Maxime.</div></div>
+      </div>
+      <div class="mini-result">
+        <div class="mini-result-time">RÉPONSE EN 12 SECONDES</div>
+        Réponse complète, sourcée, soumise à Maxime pour validation. Vous dormez tranquille.
+      </div>
+    </div>
+
+    <!-- Cas 2 — Don défiscalisé -->
+    <div class="mini-card">
+      <div class="mini-context">Lundi 14h · café avec un ami</div>
+      <p class="mini-q">Comment je donne 500 k€ à une cause sans payer plein impôt ?</p>
+      <div class="mini-flow">
+        <div class="mini-step"><span class="arrow">→</span><div><b>Iris</b> propose 3 fondations alignées avec vos valeurs (transmission · éducation · environnement).</div></div>
+        <div class="mini-step"><span class="arrow">→</span><div><b>Auguste</b> calcule : 75 % réduction IFI dans la limite 50 k€/an + 66 % IR sur le solde.</div></div>
+        <div class="mini-step"><span class="arrow">→</span><div><b>Hermès</b> contacte la fondation et prépare la convention de don.</div></div>
+      </div>
+      <div class="mini-result">
+        <div class="mini-result-time">DOSSIER PRÊT EN 24 H</div>
+        Convention rédigée, fondation briefée, RDV signature programmé. Plus qu'à dire oui.
+      </div>
+    </div>
+
+    <!-- Cas 3 — Voiture de prestige -->
+    <div class="mini-card">
+      <div class="mini-context">Samedi matin · vente RM Sotheby's en direct</div>
+      <p class="mini-q">La Daytona 1972 est en vente lundi. Vaut le coup ?</p>
+      <div class="mini-flow">
+        <div class="mini-step"><span class="arrow">→</span><div><b>Diane</b> sort le rapport Hagerty : matching numbers, papiers OK, estimation 380-420 k€.</div></div>
+        <div class="mini-step"><span class="arrow">→</span><div><b>Émile</b> compare les 12 dernières ventes Daytona.</div></div>
+        <div class="mini-step"><span class="arrow">→</span><div><b>Théodore</b> simule l'impact sur l'allocation. <b>Auguste</b> regarde la PV potentielle.</div></div>
+      </div>
+      <div class="mini-result">
+        <div class="mini-result-time">SYNTHÈSE EN 4 MINUTES</div>
+        Note d'opportunité 1-page, prêt à enchérir lundi via Hermès. Stop-loss à 410 k€.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="cta-final">
+  <h2 class="cta-final-h">Vous gardez la main.<br><em>L'équipage exécute.</em></h2>
+  <p class="cta-final-sub">Premium · 29 €/mois · résiliable à tout moment.<br>Family Office · sur recommandation.</p>
+  <div class="cta-row">
+    <a href="membre-preview.html#abonnement" class="btn btn-primary">Souscrire Premium →</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Demande%20Family%20Office%20%E2%80%94%20IKCP" class="btn btn-ghost">Candidater Family Office</a>
+  </div>
+  <div style="margin-top:36px; font-family:'Fraunces',serif; font-style:italic; font-size:14px; color:var(--ink-faint)">— Maxime Juveneton, Maxime arbitre. Marcel orchestre.</div>
+</section>
+
+<footer>
+  <p>
+    IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a><br>
+    <span style="opacity:0.7; margin-top:8px; display:inline-block">Site créé par Maxime Juveneton · Tous droits réservés (art. L.111-1, L.122-4, L.335-2 CPI)</span>
+  </p>
+</footer>
+
+</main>
+
+<!-- ═══ PROTECTION COPIE ═══ -->
+<script>
+(function(){
+  let clientIP = 'inconnue';
+  fetch('https://api.ipify.org?format=json',{cache:'no-store'}).then(r=>r.json()).then(d=>{clientIP=d.ip||'inconnue'}).catch(()=>{});
+  document.addEventListener('copy', function(e){
+    const sel = document.getSelection().toString();
+    if (sel.length > 8) {
+      try {
+        const att = '\n\n────────────────────────────\n© Site créé par Maxime JUVENETON — IKCP\nORIAS 23001568 · https://ikcp.eu\nIP: ' + clientIP + ' · ' + new Date().toLocaleString('fr-FR') + '\nReproduction interdite (art. L.111-1, L.122-4, L.335-2 CPI).\n────────────────────────────';
+        e.clipboardData.setData('text/plain', sel + att);
+        e.preventDefault();
+      } catch(_){}
+    }
+  });
+  console.log('%c© Maxime Juveneton — IKCP', 'color:#D97757;font-size:18px;font-weight:bold;font-family:Georgia,serif');
+})();
+</script>
+
+</body>
+</html>

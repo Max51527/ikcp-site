@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 · Créé par IKCP.EU -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transmission intergénérationnelle — combien recevront vraiment vos héritiers · IKCP</title>
+<meta name="description" content="Simulez la transmission de votre patrimoine sur plusieurs générations : droits de succession sans vs avec anticipation (donations, assurance-vie, démembrement, petits-enfants). Barèmes 2026. IKCP · ORIAS 23001568.">
+<link rel="canonical" href="https://ikcp.eu/transmission.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F;--bad:#B23A2E}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:15px 0}.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:21px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:48px 0 18px}
+.eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(27px,4.6vw,44px);line-height:1.1;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:580px;margin:15px auto 0}
+
+.panel{display:grid;grid-template-columns:1fr 1.1fr;gap:24px;margin:28px auto;align-items:start}
+@media(max-width:780px){.panel{grid-template-columns:1fr}}
+.controls{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}
+.ctrl{margin-bottom:18px}
+.ctrl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-mute);margin-bottom:7px;font-weight:500}
+.ctrl label b{color:var(--navy);font-family:'JetBrains Mono',monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--gold-deep);height:5px}
+.seg{display:flex;gap:6px;margin-top:4px}
+.seg button{flex:1;padding:8px;border:1.5px solid var(--line);background:var(--cream);border-radius:8px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:var(--ink);font-weight:600}
+.seg button.on{background:var(--gold);border-color:var(--gold);color:var(--navy-deep)}
+
+.out{background:var(--navy-deep);border-radius:16px;padding:26px;color:var(--cream)}
+.out .big{text-align:center;margin-bottom:20px}
+.out .big .lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,250,248,.55);font-weight:600}
+.out .big .v{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(30px,6vw,46px);color:var(--gold-bright);line-height:1.1;margin-top:4px}
+.cmp{margin-top:18px}
+.cmp .row{margin-bottom:14px}
+.cmp .row .t{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.cmp .row .t .amt{font-family:'JetBrains Mono',monospace;font-weight:600}
+.bar{height:13px;border-radius:7px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:7px;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.save{margin-top:18px;text-align:center;background:rgba(45,122,79,.18);border:1px solid rgba(123,204,162,.3);border-radius:12px;padding:14px}
+.save .v{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;color:#7BCCA2}
+.save .l{font-size:12px;color:rgba(250,250,248,.6)}
+
+.gen{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:8px}
+.gen h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:16px}
+.gen-flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.gen-node{flex:1;min-width:120px;background:var(--cream-2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.gen-node .e{font-size:26px}
+.gen-node .n{font-weight:600;color:var(--navy);font-size:14px;margin-top:4px}
+.gen-node .d{font-size:11.5px;color:var(--ink-mute);margin-top:4px;line-height:1.4}
+.gen-arrow{align-self:center;color:var(--gold);font-size:20px}
+
+.leviers{margin-top:24px}
+.leviers h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:14px}
+.lev{display:flex;gap:13px;align-items:flex-start;background:var(--cream-2);border:1px solid var(--line);border-radius:13px;padding:15px 17px;margin-bottom:11px}
+.lev .ic{font-size:22px;flex-shrink:0}.lev .bd{flex:1}
+.lev .bd h4{font-size:14.5px;font-weight:600;color:var(--navy)}
+.lev .bd p{font-size:12.5px;color:var(--ink-mute);line-height:1.5;margin-top:2px}
+.lev .go{align-self:center;background:var(--navy);color:var(--cream);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:600;white-space:nowrap}
+.lev .go:hover{background:var(--gold-deep)}
+.cta-final{text-align:center;margin:28px 0 8px}
+.cta-final a{display:inline-flex;gap:8px;background:var(--gold);color:var(--navy-deep);padding:14px 28px;border-radius:100px;font-weight:700;font-size:15px}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:640px;margin:18px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:12px;margin-top:38px}.ft a{color:var(--gold);margin:0 6px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap"><div class="logo">IK<span>CP</span></div><a class="back" href="/">← Site IKCP</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Outil intergénérationnel</div>
+  <h1>Combien vos héritiers <em>recevront vraiment</em></h1>
+  <p>Visualisez la transmission de votre patrimoine — et de combien l'anticipation réduit les droits, sur plusieurs générations. Barèmes France 2026.</p>
+</section>
+
+<div class="panel wrap">
+  <div class="controls">
+    <div class="ctrl"><label>Patrimoine net transmissible <b id="vPat">1 500 000 €</b></label><input type="range" id="pat" min="100000" max="10000000" step="50000" value="1500000"></div>
+    <div class="ctrl"><label>Votre âge <b id="vAge">55 ans</b></label><input type="range" id="age" min="40" max="85" step="1" value="55"></div>
+    <div class="ctrl"><label>Nombre d'enfants <b id="vEnf">2</b></label><input type="range" id="enf" min="1" max="6" step="1" value="2"></div>
+    <div class="ctrl"><label>Petits-enfants (saut de génération) <b id="vPe">0</b></label><input type="range" id="pe" min="0" max="10" step="1" value="0"></div>
+    <div class="ctrl"><label>Assurance-vie placée avant 70 ans <b id="vAv">200 000 €</b></label><input type="range" id="av" min="0" max="2000000" step="10000" value="200000"></div>
+  </div>
+
+  <div class="out">
+    <div class="big"><div class="lbl">Transmis sans aucun droit (avec stratégie)</div><div class="v" id="franchise">—</div></div>
+    <div class="cmp">
+      <div class="row"><div class="t"><span>Droits SANS anticipation</span><span class="amt" id="droitsSans">—</span></div><div class="bar"><i id="barSans" style="background:var(--bad)"></i></div></div>
+      <div class="row"><div class="t"><span>Droits AVEC stratégie</span><span class="amt" id="droitsAvec">—</span></div><div class="bar"><i id="barAvec" style="background:#7BCCA2"></i></div></div>
+    </div>
+    <div class="save"><div class="v" id="economie">—</div><div class="l">d'économie potentielle de droits, par l'anticipation</div></div>
+  </div>
+</div>
+
+<div class="gen wrap">
+  <h3>Votre chaîne de transmission</h3>
+  <div class="gen-flow" id="genFlow"></div>
+</div>
+
+<div class="leviers wrap">
+  <h3>Les <em style="font-style:italic;color:var(--gold-deep)">leviers</em> de l'anticipation</h3>
+  <div id="levList"></div>
+</div>
+
+<div class="cta-final wrap"><a href="/family-office.html?q=Comment%20organiser%20la%20transmission%20de%20mon%20patrimoine%20%C3%A0%20mes%20enfants%20et%20petits-enfants%20en%20limitant%20les%20droits%20%3F">Construire ma stratégie avec Marcel & Hermès →</a></div>
+<div class="disc wrap">Simulation pédagogique fondée sur les barèmes 2026 (art. 777, 779, 790, 990 I, 669 CGI), hypothèses simplifiées (ligne directe, espérance ~90 ans pour les cycles de donation, hors cas particuliers). Ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 CoMoFi ni un acte notarié. Pour une stratégie adaptée : Maxime Juveneton (CIF · ORIAS 23001568) + votre notaire.</div>
+
+<footer class="ft">© 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
+  <div style="margin-top:6px"><a href="/score">Score patrimonial</a> · <a href="/investir">Investir</a> · <a href="/cgu">CGU</a></div>
+</footer>
+
+<script>
+var SUCC=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
+function droitsParPart(part){ var d=0,prev=0; for(var i=0;i<SUCC.length;i++){var m=SUCC[i][0],r=SUCC[i][1]; if(part<=m){d+=(part-prev)*r;break;} d+=(m-prev)*r;prev=m;} return d; }
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
+
+function compute(){
+  var pat=+pat_.value, age=+age_.value, enf=+enf_.value, pe=+pe_.value, av=+av_.value;
+  vPat.textContent=eur(pat); vAge.textContent=age+' ans'; vEnf.textContent=enf; vPe.textContent=pe; vAv.textContent=eur(av);
+
+  // ── SANS anticipation : tout au décès, 1 abattement 100k/enfant + AV exonérée 152.5k/enfant ──
+  var avExo=Math.min(av,152500*enf);
+  var baseSans=Math.max(0, pat - avExo - 100000*enf);
+  var droitsSans=droitsParPart(baseSans/enf)*enf;
+
+  // ── AVEC stratégie ──
+  // 1) donations anticipées : abattement 100k/enfant renouvelable / 15 ans jusqu'à ~88 ans
+  var cycles=Math.max(1, Math.floor((88-age)/15)+1);
+  var abattDon=100000*enf*cycles;
+  // 2) don familial de sommes (art 790 G) : 31 865€/enfant, 1 fois (si <80 ans)
+  var donFam=age<80 ? 31865*enf : 0;
+  // 3) petits-enfants : abattement 31 865€/petit-enfant (art 790 B)
+  var abattPe=31865*pe;
+  // 4) AV avant 70 : 152 500€/bénéficiaire exonéré
+  var franchiseTotale=abattDon+donFam+abattPe+avExo;
+  // base taxable résiduelle (au décès) après avoir « sorti » ce qui passe en franchise
+  var baseAvec=Math.max(0, pat - franchiseTotale);
+  // démembrement : si on donne la nue-propriété, seule la NP est taxée (barème 669 selon âge)
+  var npRate = age<=20?.90:age<=30?.80:age<=40?.70:age<=50?.60:age<=60?.50:age<=70?.40:age<=80?.30:age<=90?.20:.10;
+  // npRate ici = part usufruit ; valeur nue-propriété = 1 - usufruit
+  var npVal = 1 - npRate;
+  var baseDemembree = baseAvec * npVal; // on suppose le résiduel donné en NP
+  var droitsAvec=droitsParPart(baseDemembree/enf)*enf;
+
+  var franchise=Math.min(pat, franchiseTotale + baseAvec*(1-npVal)); // transmis sans droit
+  var eco=Math.max(0, droitsSans-droitsAvec);
+
+  franchiseEl.textContent=eur(franchise);
+  droitsSansEl.textContent=eur(droitsSans);
+  droitsAvecEl.textContent=eur(droitsAvec);
+  economieEl.textContent=eur(eco);
+  var maxD=Math.max(droitsSans,1);
+  barSans.style.width='100%';
+  barAvec.style.width=Math.round(droitsAvec/maxD*100)+'%';
+
+  // chaîne générationnelle
+  var nodes=[{e:'👤',n:'Vous',d:eur(pat)+' · '+age+' ans'},
+    {e:'👨‍👩‍👧',n:enf+' enfant'+(enf>1?'s':''),d:'abattement '+eur(100000)+' ×'+cycles+' (donations 15 ans)'}];
+  if(pe>0) nodes.push({e:'🧒',n:pe+' petit'+(pe>1?'s':'')+'-enfant'+(pe>1?'s':''),d:'abattement '+eur(31865)+' chacun (saut de génération)'});
+  genFlow.innerHTML=nodes.map(function(nd,i){
+    return (i>0?'<div class="gen-arrow">→</div>':'')+'<div class="gen-node"><div class="e">'+nd.e+'</div><div class="n">'+nd.n+'</div><div class="d">'+nd.d+'</div></div>';
+  }).join('');
+
+  // leviers
+  var L=[
+    {ic:'🎁',h:'Donations échelonnées',p:'L\'abattement de '+eur(100000)+'/enfant se renouvelle tous les 15 ans. À '+age+' ans, ~'+cycles+' cycle'+(cycles>1?'s':'')+' possible'+(cycles>1?'s':'')+' → '+eur(abattDon)+' transmis sans droit.',q:'Comment échelonner mes donations pour optimiser les abattements sur 15 ans ?'},
+    {ic:'🛡️',h:'Assurance-vie avant 70 ans',p:eur(152500)+'/bénéficiaire exonérés (art. 990 I). Ici '+eur(avExo)+' hors droits.',q:'Comment utiliser l\'assurance-vie avant 70 ans pour transmettre hors succession ?'},
+    {ic:'🔑',h:'Démembrement de propriété',p:'Donner la nue-propriété ne taxe qu\'une fraction ('+Math.round(npVal*100)+'% à votre âge, art. 669) ; l\'usufruit vous reste.',q:'Le démembrement (donation de nue-propriété) est-il pertinent dans ma situation ?'}
+  ];
+  if(pe>0) L.push({ic:'🧒',h:'Saut de génération',p:'Transmettre directement aux petits-enfants ('+eur(31865)+' d\'abattement chacun) allège la chaîne de droits.',q:'Faut-il transmettre une partie à mes petits-enfants (saut de génération) ?'});
+  levList.innerHTML=L.map(function(l){return '<div class="lev"><span class="ic">'+l.ic+'</span><div class="bd"><h4>'+l.h+'</h4><p>'+l.p+'</p></div><a class="go" href="/family-office.html?q='+encodeURIComponent(l.q)+'">Explorer →</a></div>';}).join('');
+}
+var pat_=document.getElementById('pat'),age_=document.getElementById('age'),enf_=document.getElementById('enf'),pe_=document.getElementById('pe'),av_=document.getElementById('av');
+var vPat=document.getElementById('vPat'),vAge=document.getElementById('vAge'),vEnf=document.getElementById('vEnf'),vPe=document.getElementById('vPe'),vAv=document.getElementById('vAv');
+var franchiseEl=document.getElementById('franchise'),droitsSansEl=document.getElementById('droitsSans'),droitsAvecEl=document.getElementById('droitsAvec'),economieEl=document.getElementById('economie');
+var barSans=document.getElementById('barSans'),barAvec=document.getElementById('barAvec'),genFlow=document.getElementById('genFlow'),levList=document.getElementById('levList');
+[pat_,age_,enf_,pe_,av_].forEach(function(e){e.addEventListener('input',compute);});
+compute();
+</script>
+<script src="/protect.js?v=1" defer></script>
+<script src="/reveal.js?v=1" defer></script>
+</body>
+</html>

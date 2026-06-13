@@ -1,0 +1,20 @@
+# ════════════════════════════════════════════════════════════════════
+#  IKCP — Cloudflare Pages headers
+#  © 2026 Maxime Juveneton · ORIAS 23001568
+# ════════════════════════════════════════════════════════════════════
+
+# Modules JS de l'espace membre + scripts racine : toujours revalider.
+# 'no-cache' = le navigateur garde une copie MAIS revalide à chaque fois
+# (ETag → 304 si inchangé, 200 frais si modifié). Évite le code périmé
+# en cache qui faisait planter Marcel/cartographie après un déploiement.
+/app/js/*
+  Cache-Control: no-cache
+
+/*.js
+  Cache-Control: no-cache
+
+# Service worker : jamais mis en cache (doit toujours être frais)
+/sw.js
+  Cache-Control: no-cache
+/app/sw.js
+  Cache-Control: no-cache

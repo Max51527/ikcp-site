@@ -505,7 +505,9 @@ window._ikcpBuildGallery=buildGallery;
 window._ikcpShowSchema=showSchema;
 })();
 (function(){
+// ── Endpoint Marcel (Cloudflare Worker — LIVE) ────────────────────────────
 var PROXY='https://ikcp-chat.maxime-ead.workers.dev';
+// ─────────────────────────────────────────────────────────────────────────
 var MAX=15,count=0,history=[],isOpen=false,isExpanded=false;
 
 // ──────────────────────────────────────────────────────────────
@@ -886,6 +888,11 @@ css.textContent=`
 .ikcp-msg .ikcp-calendly-link{display:inline-block;margin:8px 0 4px;padding:8px 16px;background:linear-gradient(135deg,#b8956e,#a07b54);color:#fff!important;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none}
 .ikcp-msg .ikcp-disclaimer{font-size:10px;color:#a09080;font-style:italic;margin-top:10px;padding-top:8px;border-top:1px dashed #e5ded2;line-height:1.5}
 .ikcp-msg em{color:#5f5248;font-style:italic}
+.ikcp-detail-toggle{display:inline-flex;align-items:center;gap:6px;margin:10px 0 2px;padding:7px 14px;background:#1f1a16;color:#f5efe3;border:none;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.ikcp-detail-toggle:hover{background:#2c2418}
+.ikcp-detail-toggle .ikcp-dt-arrow{font-size:11px}
+.ikcp-msg .ikcp-detail{margin-top:8px;padding-top:10px;border-top:1px dashed #e5ded2;animation:ikcpDetailIn .3s ease}
+@keyframes ikcpDetailIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 /* ═══ Affichage des schémas pédagogiques (SVG bibliothèque Marcel) ═══ */
 .ikcp-msg .ikcp-schema-block{margin:6px 0}
 .ikcp-msg .ikcp-schema-title{font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:600;color:#1f1a16;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e5ded2}
@@ -910,6 +917,12 @@ css.textContent=`
 /* B5 — Preuve sociale */
 .ikcp-social-stat{margin-top:8px;padding:6px 10px;background:linear-gradient(90deg,rgba(184,149,110,0.08),transparent);border-left:2px solid #b8956e;border-radius:0 6px 6px 0;font-size:11px;color:#5f5248}
 .ikcp-social-stat em{font-style:italic;color:#3a2f24}
+.ikcp-app-cta{margin-top:14px;padding:12px 14px;background:linear-gradient(135deg,#1B2A4A,#0E1729);border-radius:12px;display:flex;align-items:center;gap:12px;border:1px solid rgba(201,169,110,0.25)}
+.ikcp-app-cta-icon{font-size:22px;flex-shrink:0}
+.ikcp-app-cta-title{font-size:12.5px;font-weight:700;color:#E2C896;font-family:'DM Sans',system-ui,sans-serif;margin-bottom:2px}
+.ikcp-app-cta-text{font-size:10.5px;color:rgba(250,250,248,0.55);line-height:1.4}
+.ikcp-app-cta-btn{display:inline-block;background:#C9A96E;color:#1B2A4A;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:all 0.15s;font-family:'DM Sans',system-ui,sans-serif}
+.ikcp-app-cta-btn:hover{background:#E2C896;transform:translateY(-1px)}
 /* A2 — Bouton "Envoyer à Maxime" + B1 toggle TTS dans le header */
 #ikcp-export-conv{background:none;border:none;color:#b8956e;cursor:pointer;padding:4px 6px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all 0.15s}
 #ikcp-export-conv:hover{color:white;background:rgba(255,255,255,0.08)}
@@ -981,8 +994,8 @@ css.textContent=`
 .ikcp-followup-btn{background:white;border:1px solid #e5ded2;color:#2e2520;border-radius:10px;padding:8px 12px;font-size:12px;font-family:'DM Sans',system-ui,sans-serif;cursor:pointer;text-align:left;transition:all 0.15s;font-weight:500;line-height:1.4}
 .ikcp-followup-btn:hover{background:#1f1a16;color:white;border-color:#1f1a16;transform:translateX(2px)}
 .ikcp-loading-bubble{display:flex;align-items:center;gap:12px;padding:12px 16px}
-.ikcp-balloon-wrap{flex-shrink:0;width:32px;height:42px;display:flex;align-items:center;justify-content:center;animation:ikcp-balloon-rise 2.2s ease-in-out infinite}
-.ikcp-balloon-svg{width:30px;height:auto;filter:drop-shadow(0 3px 4px rgba(31,26,22,0.18))}
+.ikcp-balloon-wrap{flex-shrink:0!important;width:32px!important;height:42px!important;max-width:32px!important;max-height:42px!important;display:flex;align-items:center;justify-content:center;animation:ikcp-balloon-rise 2.2s ease-in-out infinite;box-sizing:border-box}
+.ikcp-balloon-svg{width:30px!important;height:40px!important;max-width:30px!important;max-height:40px!important;flex-shrink:0;filter:drop-shadow(0 3px 4px rgba(31,26,22,0.18))}
 @keyframes ikcp-balloon-rise{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
 .ikcp-loading-text{font-size:12px;color:#907b65;font-style:italic;font-weight:500}
 .ikcp-loading-dots{display:inline-block;animation:ikcp-ellipsis 1.5s infinite;width:20px}
@@ -1101,9 +1114,15 @@ _pageCtxSent=true;
 }
 var prefix=[pageLine,ctx].filter(Boolean).join('\n');
 var txtWithCtx=prefix?prefix+'\n\n'+txt:txt;
-var r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf})});
+var _abort=new AbortController();var _killTimer=setTimeout(function(){_abort.abort();},70000);
+// CF Worker Marcel (ikcp-chat)
+var chatUrl=PROXY;
+var chatBody=JSON.stringify({message:txtWithCtx,history:history.slice(-20),document_pdf:currentPdf});
+var r=await fetch(chatUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:chatBody,signal:_abort.signal});
+clearTimeout(_killTimer);
 var d=await r.json();
-var reply=d.reply||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
+// Compatibilité CF Worker (d.reply) + ikcp-agents (d.message) + Claude raw (d.content[])
+var reply=d.reply||d.message||d.content&&d.content[0]&&d.content[0].text||'Erreur. Réessayez.';
 var followUps=Array.isArray(d.follow_ups)?d.follow_ups:[];
 history.push({role:'assistant',content:reply});
 var html=formatReply(reply);
@@ -1134,15 +1153,25 @@ fuHtml+='</div></div>';
 html+=fuHtml;
 }
 // (Calendly désactivé — contact via recommandation, voir email mailto en footer)
-}
 // Badge profil mémorisé
 var pCtx=profileAsContext();
 if(pCtx&&count===1){
 html+='<div class="ikcp-profile-pill">🧠 '+pCtx.replace('[Contexte du visiteur : ','').replace(']','')+' · mémorisé pour cette session</div>';
 }
 // Messages de rate limit
-if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges utilisés. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Poursuivre avec Maxime →</a></p>';
-else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) restant(s) avant rdv</p>';
+if(count>=MAX)html+='<p class="ikcp-meta" style="color:#b8956e;border-top:1px solid #e5ded2;padding-top:8px;margin-top:10px">'+MAX+'/'+MAX+' échanges publics utilisés. <a href="/app/index.html" style="color:#b8956e;font-weight:700">Accéder à votre espace privé (illimité) →</a></p>';
+else if(count>=MAX-3)html+='<p class="ikcp-meta">'+(MAX-count)+' échange(s) gratuit(s) restant(s) · <a href="/app/index.html" style="color:#b8956e">Espace privé illimité</a></p>';
+// App upsell — après 3 échanges (premier point d'engagement)
+if(count===3){
+html+='<div class="ikcp-app-cta">'
++'<span class="ikcp-app-cta-icon">🔓</span>'
++'<div style="flex:1;min-width:0">'
++'<div class="ikcp-app-cta-title">Votre espace privé IKCP</div>'
++'<div class="ikcp-app-cta-text">Mémoire longue · SIREN cartographié · Marcel 24/7 · Veille patrimoniale</div>'
++'</div>'
++'<a href="/app/index.html" class="ikcp-app-cta-btn">Ouvrir →</a>'
++'</div>';
+}
 // Hot lead alert (non bloquant)
 maybeFireLeadAlert(reply);
 // B1 : Lecture vocale si TTS activé
@@ -1153,8 +1182,10 @@ saveConv(msgs,count);
 hideLoading();
 typeOutMessage(reply,html);
 return;
-}catch(e){msgs.push({role:'assistant',html:'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>'});saveConv(msgs,count);}
-hideLoading();render();
+}catch(e){
+var errMsg=(e&&e.name==='AbortError')?'<p>Marcel a mis trop de temps à répondre (timeout 70 s). Réessayez votre question, ou <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">contactez Maxime directement</a>.</p>':'<p>Erreur technique. <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank">Contactez Maxime directement</a>.</p>';
+msgs.push({role:'assistant',html:errMsg});saveConv(msgs,count);
+}finally{hideLoading();render();}
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -1164,7 +1195,7 @@ hideLoading();render();
 function typeOutMessage(plainReply,fullHtml){
 // Extraire la partie "réponse" du HTML (avant les blocs enrichis)
 // Chercher le début des blocs à préserver (follow-ups, schema, calendly, profile, rate limit)
-var markers=['<div class="ikcp-schema-hint"','<div class="ikcp-followups"','<div class="ikcp-calendly-inline"','<div class="ikcp-profile-pill"','<p class="ikcp-meta"'];
+var markers=['<button type="button" class="ikcp-detail-toggle"','<div class="ikcp-schema-hint"','<div class="ikcp-followups"','<div class="ikcp-calendly-inline"','<div class="ikcp-profile-pill"','<p class="ikcp-meta"'];
 var splitIdx=fullHtml.length;
 markers.forEach(function(m){var i=fullHtml.indexOf(m);if(i>=0&&i<splitIdx)splitIdx=i;});
 var replyHtml=fullHtml.substring(0,splitIdx);
@@ -1243,8 +1274,26 @@ html=html.replace(/\(?(art\.?\s*[\d]+(?:[\s-][\dIVXAaberis]+)*\s*(?:du\s)?(?:CGI
 html=html.replace(/(https:\/\/calendly\.com\/[^\s<"]+)/g,'<a href="$1" target="_blank" class="ikcp-calendly-link">📅 Prendre rendez-vous →</a>');
 // Disclaimer MIF II : style discret
 html=html.replace(/(Ces informations sont pédagogiques[^<]*MIF\s*II[^<]*\.)/gi,'<p class="ikcp-disclaimer">$1</p>');
+// #1 — Réponse courte : synthèse (avant le 1er <hr>) visible, détail replié.
+var hrIdx=html.search(/<hr\s*\/?>/i);
+if(hrIdx>40){
+var synth=html.substring(0,hrIdx);
+var detail=html.substring(hrIdx);
+if(detail.replace(/<[^>]+>/g,'').trim().length>220){
+html=synth
++'<button type="button" class="ikcp-detail-toggle" onclick="window._ikcpToggleDetail(this)">📖 Voir le détail <span class="ikcp-dt-arrow">↓</span></button>'
++'<div class="ikcp-detail" style="display:none">'+detail+'</div>';
+}
+}
 return html;
 }
+window._ikcpToggleDetail=function(btn){
+var d=btn.nextElementSibling;
+if(!d||!d.classList.contains('ikcp-detail'))return;
+var open=d.style.display==='none';
+d.style.display=open?'block':'none';
+btn.innerHTML=open?'Masquer le détail <span class="ikcp-dt-arrow">↑</span>':'📖 Voir le détail <span class="ikcp-dt-arrow">↓</span>';
+};
 
 function quick(key){
 var txt=QS[key];

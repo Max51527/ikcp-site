@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Fond crème (Marcel charte) -->
+  <rect width="512" height="512" rx="96" fill="#FAF7F0"/>
+
+  <!-- Sphère Marcel gradient terra -->
+  <defs>
+    <radialGradient id="marcelGrad" cx="42%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#F0B89B"/>
+      <stop offset="22%" stop-color="#E08161"/>
+      <stop offset="55%" stop-color="#C24722"/>
+      <stop offset="100%" stop-color="#8B2F18"/>
+    </radialGradient>
+    <filter id="halo">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+
+  <!-- Halo soft autour -->
+  <circle cx="256" cy="256" r="180" fill="#C24722" opacity="0.18" filter="url(#halo)"/>
+
+  <!-- Marcel sphère -->
+  <circle cx="256" cy="256" r="170" fill="url(#marcelGrad)"/>
+
+  <!-- Étoile chef d'orchestre -->
+  <text x="256" y="180" text-anchor="middle" fill="#FFE3CC" font-family="Inter,sans-serif" font-size="20" font-weight="600" letter-spacing="6">★</text>
+
+  <!-- M cursive central -->
+  <text x="256" y="305" text-anchor="middle" fill="#FAF7F0"
+        font-family="Fraunces,Playfair Display,Georgia,serif" font-style="italic"
+        font-size="200" font-weight="400" letter-spacing="-4">M</text>
+
+  <!-- Tagline -->
+  <text x="256" y="360" text-anchor="middle" fill="#FFE3CC"
+        font-family="Fraunces,Playfair Display,Georgia,serif" font-style="italic"
+        font-size="18" opacity="0.85">Family Office</text>
+</svg>

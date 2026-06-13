@@ -1,25 +1,7 @@
-# OAuth proxy GitHub pour Sveltia CMS
-# © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
 name = "ikcp-cms-auth"
 main = "worker.js"
-compatibility_date = "2026-05-01"
-workers_dev = false
+compatibility_date = "2024-12-01"
 
-[placement]
-mode = "smart"
-
-[[routes]]
-pattern = "auth.ikcp.eu/*"
-zone_name = "ikcp.eu"
-
-# Secrets à provisionner :
-#   wrangler secret put GITHUB_CLIENT_ID --name ikcp-cms-auth
-#   wrangler secret put GITHUB_CLIENT_SECRET --name ikcp-cms-auth
-#
-# GitHub OAuth App à créer ici : https://github.com/settings/developers
-#   Application name        : IKCP CMS
-#   Homepage URL            : https://ikcp.eu
-#   Authorization callback  : https://auth.ikcp.eu/callback
-
-[observability]
-enabled = true
+# Secrets à pousser (une fois) :
+#   npx wrangler secret put GITHUB_CLIENT_ID
+#   npx wrangler secret put GITHUB_CLIENT_SECRET
