@@ -61,7 +61,7 @@
     + '.ikcp-appnav a.fab:active .orb{transform:scale(.94)}'
     + '.ikcp-appnav a.fab.active .orb{box-shadow:0 0 0 4px rgba(201,169,110,.22),0 12px 26px -8px rgba(14,23,41,.55)}'
     + '.ikcp-appnav a.fab span{margin-top:5px}'
-    + 'body.has-appnav{padding-bottom:calc(74px + env(safe-area-inset-bottom))!important}'
+    + 'body.has-appnav{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}'
     + '@media(min-width:780px){.ikcp-appnav{max-width:540px;margin:0 auto;border-radius:22px 22px 0 0;border-left:1px solid rgba(27,42,74,.08);border-right:1px solid rgba(27,42,74,.08)}}';
   var st = document.createElement('style');
   st.textContent = css;
