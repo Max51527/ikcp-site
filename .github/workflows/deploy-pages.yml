@@ -19,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Stamp version (rend visible chaque mise à jour Claude Code)
+        run: |
+          echo "{\"sha\":\"$(echo $GITHUB_SHA | cut -c1-7)\",\"deployed_at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"ref\":\"$GITHUB_REF_NAME\",\"run\":\"$GITHUB_RUN_NUMBER\"}" > version.json
+          cat version.json
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         env:

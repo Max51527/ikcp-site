@@ -192,7 +192,8 @@ select option{background:var(--navy-deep)}
       <a href="#reglages"><span class="ic">⚙</span> Réglages & liens</a>
     </nav>
     <div class="side-foot">
-      <div style="margin-bottom:8px">v1.0 · ORIAS 23001568</div>
+      <div style="margin-bottom:4px">v1.0 · ORIAS 23001568</div>
+      <div id="buildInfo" style="font-size:10px;opacity:.55;margin-bottom:8px">déploiement…</div>
       <button onclick="logout()">↪ Verrouiller la console</button>
     </div>
   </aside>
@@ -451,6 +452,11 @@ async function unlock(){
 function logout(){ sessionStorage.removeItem('ikcp_admin_secret'); localStorage.removeItem('ikcp_admin_secret'); location.reload(); }
 // Mémorisation : si la clé a déjà été saisie sur cet appareil, on déverrouille tout seul (plus de mot de passe à retaper).
 if (SECRET) { setTimeout(unlock, 50); }
+// Dernière mise à jour déployée (stampée par GitHub Actions à chaque push Claude Code)
+fetch('/version.json?cb='+Date.now()).then(function(r){return r.json();}).then(function(v){
+  var e=document.getElementById('buildInfo'); if(!e)return;
+  e.textContent='MAJ '+v.sha+' · '+new Date(v.deployed_at).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+}).catch(function(){ var e=document.getElementById('buildInfo'); if(e)e.textContent=''; });
 
 /* ─── NAV / ROUTER ─── */
 const TITLES = {
