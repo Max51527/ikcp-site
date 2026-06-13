@@ -418,6 +418,13 @@ async function handleFeedback(request, env) {
   const sent = await sendEmail(env, { to: 'maxime@ikcp.fr', subject: `[IKCP Bêta] Retour ${prio}${cats ? ' · ' + cats : ''}`, html });
   // Accusé de réception automatique au prospect (demande d'invitation /decouvrir)
   if (source === 'decouvrir-invitation' && email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    // Stockage en base : la demande devient une candidature « pending » (visible dans la console → Bêta & invitations)
+    try {
+      await ensureGovernanceTables(env);
+      const ex = await env.D1.prepare("SELECT id FROM member_applications WHERE email = ? AND status = 'pending'").bind(email).first();
+      if (!ex) await env.D1.prepare("INSERT INTO member_applications (id, email, profile_json, status, created_at) VALUES (?, ?, ?, 'pending', ?)")
+        .bind(crypto.randomUUID(), email, JSON.stringify({ source: 'decouvrir', message: besoin }), Date.now()).run();
+    } catch (_) { /* table absente : la demande reste tracée par l'email + l'événement */ }
     const ack = `<div style="font-family:Georgia,serif;max-width:540px;margin:auto;background:#0E1729;color:#FAFAF8;border-radius:14px;padding:34px 30px">
       <p style="font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:#E2C896;margin:0 0 14px">IKCP · Family Office augmenté</p>
       <h2 style="font-weight:500;font-size:22px;margin:0 0 12px">Votre demande est <em style="color:#E2C896">bien reçue.</em></h2>

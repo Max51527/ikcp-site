@@ -142,6 +142,8 @@ select option{background:var(--navy-deep)}
 
 /* ─── MOBILE ─── */
 .menu-btn{display:none;background:none;color:var(--gold-bright);font-size:22px;padding:0 4px}
+.side-close{display:none;position:absolute;right:14px;top:15px;background:none;border:0;color:var(--mute);font-size:22px;line-height:1;cursor:pointer;z-index:3}
+.side-close:hover{color:var(--gold-bright)}
 @media(max-width:840px){
   .app{grid-template-columns:1fr}
   .side{position:fixed;left:0;top:0;width:262px;z-index:60;transform:translateX(-105%);box-shadow:0 0 60px rgba(0,0,0,.5);transition:transform .28s}
@@ -149,6 +151,7 @@ select option{background:var(--navy-deep)}
   .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55}
   .scrim.show{display:block}
   .menu-btn{display:block}
+  .side-close{display:block}
   .kpis{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:520px){.kpis{grid-template-columns:1fr 1fr}.top h1{font-size:18px}.sys .sysdot span{display:none}}
@@ -174,6 +177,7 @@ select option{background:var(--navy-deep)}
 
   <!-- SIDEBAR -->
   <aside class="side" id="side">
+    <button class="side-close" onclick="toggleMenu(false)" aria-label="Fermer le menu">✕</button>
     <div class="brand">
       <div class="mark">IK</div>
       <div class="t">Console<small>Pilotage IKCP</small></div>
