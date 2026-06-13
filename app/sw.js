@@ -4,7 +4,7 @@
  * Région : Cloudflare Pages (souveraineté France)
  */
 
-const CACHE_VERSION = 'marcel-v1.0.8';
+const CACHE_VERSION = 'marcel-v1.0.9';
 const STATIC_CACHE = `marcel-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `marcel-runtime-${CACHE_VERSION}`;
 
@@ -47,6 +47,9 @@ self.addEventListener('activate', event => {
       keys.filter(k => k.startsWith('marcel-') && k !== STATIC_CACHE && k !== RUNTIME_CACHE)
           .map(k => caches.delete(k))
     )).then(() => self.clients.claim())
+     // ANTI-PAGE-PÉRIMÉE : à chaque nouvelle version du SW, on recharge les
+     // onglets ouverts pour qu'ils prennent le HTML frais (network-first).
+     .then(() => self.clients.matchAll({ type: 'window' }).then(cs => cs.forEach(c => { try { c.navigate(c.url); } catch (_) {} })))
   );
 });
 
