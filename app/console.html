@@ -184,6 +184,7 @@ select option{background:var(--navy-deep)}
     <nav class="nav" id="nav">
       <a href="#dashboard" class="on"><span class="ic">◆</span> Tableau de bord</a>
       <a href="#synthese"><span class="ic">◈</span> Synthèse &amp; feuille de route</a>
+      <a href="#code"><span class="ic">⌥</span> Code &amp; outils</a>
       <a href="#membres"><span class="ic">👤</span> Membres & familles</a>
       <a href="#beta"><span class="ic">✦</span> Bêta & invitations <span class="badge" id="bdgBeta"></span></a>
       <a href="#agents"><span class="ic">⬡</span> Agents IA</a>
@@ -356,6 +357,42 @@ select option{background:var(--navy-deep)}
         </div>
       </section>
 
+      <!-- ═══ CODE & OUTILS ═══ -->
+      <section class="view" id="v-code">
+        <div class="card" style="margin-top:0">
+          <h2>📦 Ton dépôt &amp; déploiement</h2>
+          <div class="desc">GitHub = ta vérité unique. Chaque push (Claude Code ou toi) déploie tout. Tu choisis quoi déployer ici.</div>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site" target="_blank">💻 Dépôt GitHub (code source)</a>
+          <a class="lnk" href="https://github.com/Max51527/ikcp-site/actions" target="_blank">🚀 Actions — vérifier / relancer un déploiement</a>
+          <a class="lnk" href="https://github.dev/Max51527/ikcp-site" target="_blank">⌨️ Éditeur web (modifier un fichier en ligne)</a>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Ce qu'un push déploie (déployer ou non = activer/ignorer le workflow)</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>Workflow</th><th>Déploie</th><th>Déclencheur</th></tr>
+            <tr><td>deploy-pages</td><td>Site + SaaS + PWA</td><td><span class="pill">push (auto)</span></td></tr>
+            <tr><td>deploy-workers</td><td>10 agents IA / API</td><td><span class="pill">push workers/ (auto)</span></td></tr>
+            <tr><td>deploy-hostinger</td><td>Miroir FTP</td><td><span class="pill free">push (si secrets)</span></td></tr>
+            <tr><td>health-monitor</td><td>Ping agents</td><td><span class="pill">cron 9h</span></td></tr>
+          </table></div>
+          <div class="alert ok" style="margin-top:12px"><span class="x">✓</span><div>Pour <b>ne pas</b> déployer un changement : commit sur une branche autre que <code>main</code>, ou demande-moi « ne déploie pas » → je pousse sans merger. Le déploiement n'arrive que sur <code>main</code>.</div></div>
+        </div>
+
+        <div class="card">
+          <h2>🧰 Briques externes — <em style="font-style:italic;color:var(--gold-bright)">mon tri pour TOI</em></h2>
+          <div class="desc">Tu pars d'une stack souveraine qui marche (Cloudflare + Marcel + voix). La règle : n'ajoute que ce qui n'existe pas déjà chez toi — et ne jette JAMAIS du code qui tourne.</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>Brique</th><th>Verdict</th><th>Pourquoi pour toi</th></tr>
+            <tr><td><a href="https://github.com/OpenBMB/VoxCPM" target="_blank">VoxCPM</a></td><td><span class="pill fo">✅ déjà chez toi</span></td><td>C'est déjà ton moteur voix (ikcp-voice).</td></tr>
+            <tr><td><a href="https://github.com/livekit/agents" target="_blank">LiveKit Agents</a></td><td><span class="pill premium">🟡 plus tard</span></td><td>Vrai upgrade « voix temps réel / Jarvis », mais infra WebRTC lourde. Ta voix actuelle suffit pour la bêta.</td></tr>
+            <tr><td><a href="https://github.com/n8n-io/n8n" target="_blank">n8n</a></td><td><span class="pill premium">🟡 à évaluer</span></td><td>Alternative <b>self-hosted souveraine</b> à Make.com. Pertinent si tu rapatries l'automatisation en France.</td></tr>
+            <tr><td>Open SaaS · BoxyHQ · Vercel Sub.</td><td><span class="pill free">❌ piège</span></td><td>Tu as DÉJÀ ta base SaaS (Workers + D1 + auth + tiers). Migrer = jeter du code qui marche + perdre la souveraineté (stack US/Postgres).</td></tr>
+            <tr><td>LangChain · Langflow</td><td><span class="pill free">❌ inutile</span></td><td>Marcel orchestre déjà (Option A validée). Ajouter = la complexité que tu as justement évitée.</td></tr>
+            <tr><td>OpenHands</td><td><span class="pill free">❌ redondant</span></td><td>Tu as déjà Claude Code (moi) pour coder/refacto.</td></tr>
+            <tr><td><a href="https://github.com/wildminder/awesome-ai-voice" target="_blank">Awesome lists</a></td><td><span class="pill">📌 veille</span></td><td>À garder en favori pour surveiller le domaine — pas à adopter.</td></tr>
+          </table></div>
+          <div class="alert warn" style="margin-top:12px"><span class="x">🎯</span><div><b>Verdict :</b> sur 10 repos, <b>2 valent vraiment</b> pour toi (n8n si souveraineté auto · LiveKit si voix temps réel) — et <b>plus tard</b>. Le reste, tu l'as déjà. Le piège serait d'empiler des outils au lieu d'avoir tes 10 premiers testeurs.</div></div>
+        </div>
+      </section>
+
       <!-- ═══ RÉGLAGES ═══ -->
       <section class="view" id="v-reglages">
         <div class="card" style="margin-top:0">
@@ -462,6 +499,7 @@ fetch('/version.json?cb='+Date.now()).then(function(r){return r.json();}).then(f
 const TITLES = {
   dashboard:['Tableau de <em>bord</em>','Vue d\'ensemble de la plateforme'],
   synthese:['Synthèse &amp; <em>feuille de route</em>','Où en est le projet · Top 10 à améliorer'],
+  code:['Code &amp; <em>outils</em>','Dépôt GitHub, déploiement, et briques externes triées'],
   membres:['Membres & <em>familles</em>','Comptes, tiers et activité'],
   beta:['Bêta & <em>invitations</em>','Familles fondatrices, codes et candidatures'],
   agents:['Agents <em>IA</em>','État live des intelligences souveraines'],
