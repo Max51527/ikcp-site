@@ -180,6 +180,7 @@ select option{background:var(--navy-deep)}
     </div>
     <nav class="nav" id="nav">
       <a href="#dashboard" class="on"><span class="ic">◆</span> Tableau de bord</a>
+      <a href="#synthese"><span class="ic">◈</span> Synthèse &amp; feuille de route</a>
       <a href="#membres"><span class="ic">👤</span> Membres & familles</a>
       <a href="#beta"><span class="ic">✦</span> Bêta & invitations <span class="badge" id="bdgBeta"></span></a>
       <a href="#agents"><span class="ic">⬡</span> Agents IA</a>
@@ -303,6 +304,54 @@ select option{background:var(--navy-deep)}
         </div>
       </section>
 
+      <!-- ═══ SYNTHÈSE & FEUILLE DE ROUTE ═══ -->
+      <section class="view" id="v-synthese">
+        <div class="grid kpis">
+          <div class="kpi"><span class="ic">⬡</span><div class="v">10</div><div class="l">Agents / API live</div></div>
+          <div class="kpi"><span class="ic">▦</span><div class="v">15+</div><div class="l">Écrans membre</div></div>
+          <div class="kpi"><span class="ic">🧮</span><div class="v">9</div><div class="l">Simulateurs</div></div>
+          <div class="kpi"><span class="ic">✦</span><div class="v">50</div><div class="l">Places bêta</div></div>
+        </div>
+
+        <div class="alert warn" style="margin-top:16px"><span class="x">⚠️</span><div><b>Vérité produit :</b> aucun retour terrain à ce jour. Le prochain levier n'est pas une fonctionnalité — c'est ton <b>premier utilisateur réel</b>. Modèle : ① prestation directe aux dirigeants · ② SaaS white-label aux confrères CGP.</div></div>
+
+        <div class="card" style="margin-top:16px">
+          <h2>✅ Socle livré</h2>
+          <div class="digest">
+            <b>IA</b> — Marcel orchestrateur (MIF II serveur) · Codex · Hermès · Lifestyle · Veille Perplexity Pro · Vocal · Mistral en secours.<br>
+            <b>API réelles</b> — Pappers (SIREN) · DVF (prix m²) · Perplexity.<br>
+            <b>SaaS</b> — Auth lien magique · tiers/quotas · gating bêta 50 + accusé auto · sync D1 (patrimoine + famille) · onboarding adaptatif (typologie).<br>
+            <b>Membre</b> — Cockpit · Radiographie 360° · 9 simulateurs · Famille &amp; gouvernance · Score « questions à se poser » · Immobilier · nav native unifiée.<br>
+            <b>App</b> — PWA installable · APK Android · manifest store-ready.<br>
+            <b>Funnel</b> — bandeau accueil → /decouvrir (vidéo + formulaire) → email · Configurateur white-label.<br>
+            <b>Conformité</b> — MIF II natif · ORIAS · RGPD (sous-traitants nommés) · jamais « Claude » client.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🎯 Top 10 à améliorer <span class="pill">par levier</span></h2>
+          <div class="desc">Classé par impact réel sur le lancement, pas par difficulté.</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>#</th><th>Action</th><th>Qui</th><th>Statut</th></tr>
+            <tr><td>1</td><td>Tes 3 gestes : clé Bâtisseur (11ᵉ agent) · ADMIN_SECRET · test login complet</td><td>Maxime</td><td><span class="pill free">à faire</span></td></tr>
+            <tr><td>2</td><td>Obtenir 1 vrai retour terrain (toi 1 semaine → ton ami CGP)</td><td>Maxime</td><td><span class="pill free">à faire</span></td></tr>
+            <tr><td>3</td><td>Relecture avocat AMF (disclaimers + simulateurs)</td><td>Maxime</td><td><span class="pill free">à faire</span></td></tr>
+            <tr><td>4</td><td>Sync D1 Collections + Score (vrai SaaS multi-appareils)</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>5</td><td>Perception latence Marcel (indicateur « réfléchit… » vivant)</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>6</td><td>White-label couche 2 : masquage réel des onglets selon la config</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>7</td><td>Consolider : 6 univers parfaits &gt; 12 coquilles (brancher IA+data à collections/veille/carnet, ou retirer)</td><td>Claude</td><td><span class="pill premium">à arbitrer</span></td></tr>
+            <tr><td>8</td><td>Cloudflare Web Analytics — mesurer le funnel réel (RGPD-friendly)</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>9</td><td>Éponger la dette : nav unique · .html → URLs propres · workers legacy</td><td>Claude</td><td><span class="pill premium">prêt à coder</span></td></tr>
+            <tr><td>10</td><td>Vidéos d'usage LinkedIn + barème IR millésime 2026</td><td>Mixte</td><td><span class="pill free">en attente</span></td></tr>
+          </table></div>
+        </div>
+
+        <div class="card">
+          <h2>📅 Cap septembre</h2>
+          <div class="digest"><b>Juin</b> — tes 3 gestes + finitions (Top 10 n°4-9).<br><b>Juillet</b> — bêta douce 5-10 testeurs + vidéos.<br><b>Août</b> — itérations + relecture AMF + liste des 50.<br><b>Septembre</b> — ouverture publique. <b>Verdict : confortable</b>, seul vrai risque = la couverture juridique (n°3).</div>
+        </div>
+      </section>
+
       <!-- ═══ RÉGLAGES ═══ -->
       <section class="view" id="v-reglages">
         <div class="card" style="margin-top:0">
@@ -403,6 +452,7 @@ if (SECRET) { setTimeout(unlock, 50); }
 /* ─── NAV / ROUTER ─── */
 const TITLES = {
   dashboard:['Tableau de <em>bord</em>','Vue d\'ensemble de la plateforme'],
+  synthese:['Synthèse &amp; <em>feuille de route</em>','Où en est le projet · Top 10 à améliorer'],
   membres:['Membres & <em>familles</em>','Comptes, tiers et activité'],
   beta:['Bêta & <em>invitations</em>','Familles fondatrices, codes et candidatures'],
   agents:['Agents <em>IA</em>','État live des intelligences souveraines'],
