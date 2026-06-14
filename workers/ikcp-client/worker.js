@@ -408,6 +408,8 @@ async function handleFeedback(request, env) {
   const email = (b.email || '').toString().slice(0, 254);
   const page = (b.page || '').toString().slice(0, 200);
   const source = (b.source || '').toString().slice(0, 60);
+  const type = (b.type || '').toString().slice(0, 30);
+  const score = (typeof b.score === 'number') ? b.score : null;
   const esc = s => (s == null ? '' : String(s)).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
   const html = `<div style="font-family:Arial,sans-serif;max-width:560px">
     <h2 style="color:#1B2A4A">📨 Retour bêta IKCP</h2>
@@ -435,7 +437,36 @@ async function handleFeedback(request, env) {
     await sendEmail(env, { to: email, subject: 'Votre demande d’invitation — IKCP Family Office', html: ack }).catch(() => {});
   }
   await emitEvent(env, null, 'beta_feedback', { categories: cats, priorite: prio, email, page, source }).catch(() => {});
-  return json({ ok: true, emailed: !!sent });
+  const notioned = await pushToNotion(env, { besoin, page, email, source, priorite: prio, type, score });
+  return json({ ok: true, emailed: !!sent, notion: notioned });
+}
+
+// Miroir best-effort du feedback → base Notion « Bêta — Retours testeurs IKCP ».
+// Sans NOTION_TOKEN configuré, no-op silencieux (ne bloque jamais le feedback).
+async function pushToNotion(env, f) {
+  if (!env.NOTION_TOKEN) return false;
+  const DB = env.NOTION_FEEDBACK_DB || '287f73500d774c15a7b514d3b4b78966';
+  const PRIO = { haute: 'P1 majeur', moyenne: 'P2 mineur', basse: 'P2 mineur' };
+  const TYPE_CAT = { bug: 'Bug', idee: 'Idée / amélioration', manque: 'UX / parcours' };
+  const cat = f.source === 'marcel-rating' ? 'Contenu' : (TYPE_CAT[f.type] || null);
+  const title = (f.email || ('Retour ' + (f.source || 'app'))).slice(0, 90);
+  const props = {
+    'Testeur': { title: [{ text: { content: title } }] },
+    'Verbatim complet': { rich_text: [{ text: { content: (f.besoin || '').slice(0, 1800) } }] },
+    'Page concernée': { rich_text: [{ text: { content: (f.page || '').slice(0, 180) } }] },
+    'Priorité': { select: { name: PRIO[f.priorite] || 'P2 mineur' } },
+  };
+  if (f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) props['Email'] = { email: f.email };
+  if (cat) props['Catégorie'] = { multi_select: [{ name: cat }] };
+  if (typeof f.score === 'number') props['NPS /10'] = { number: f.score };
+  try {
+    const r = await fetch('https://api.notion.com/v1/pages', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + env.NOTION_TOKEN, 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ parent: { database_id: DB }, properties: props }),
+    });
+    return r.ok;
+  } catch (_) { return false; }
 }
 
 // ──────────────────────────────────────────────────────────────
