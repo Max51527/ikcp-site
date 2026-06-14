@@ -190,6 +190,7 @@ select option{background:var(--navy-deep)}
       <a href="#agents"><span class="ic">⬡</span> Agents IA</a>
       <a href="#veille"><span class="ic">◷</span> Veille & contenu</a>
       <a href="#feedback"><span class="ic">✎</span> Retours testeurs <span class="badge" id="bdgFb"></span></a>
+      <a href="#app"><span class="ic">📱</span> Application & sur-mesure</a>
       <a href="#reglages"><span class="ic">⚙</span> Réglages & liens</a>
     </nav>
     <div class="side-foot">
@@ -474,6 +475,45 @@ select option{background:var(--navy-deep)}
         </div>
       </section>
 
+      <!-- ═══ APPLICATION & SUR-MESURE ═══ -->
+      <section class="view" id="v-app">
+        <div class="card" style="margin-top:0">
+          <h2>📱 Application mobile <span class="pill fo">PWA</span></h2>
+          <div class="desc">L'espace membre EST l'application : installable « écran d'accueil » sur iOS et Android, sans store. Elle se met à jour toute seule à chaque déploiement.</div>
+          <div id="appInfo"><div class="empty">Lecture de la version…</div></div>
+          <div class="alert ok" style="margin-top:12px"><span class="x">♻️</span><div><b>Mise à jour automatique</b> — à chaque push de code, le service worker recharge les membres connectés en ~30 s. Aucune action « store » nécessaire.</div></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+            <button onclick="forceAppUpdate()">♻️ Forcer la mise à jour (cet appareil)</button>
+            <button onclick="loadAppInfo(true)">↻ Revérifier la version</button>
+            <a class="lnk" href="/app/dashboard" target="_blank" style="margin:0">📲 Ouvrir l'app (installer)</a>
+          </div>
+          <div class="desc" style="margin-top:12px">📦 <b>APK Android</b> : construit localement (Bubblewrap TWA · eu.ikcp.app), pointe sur le site live. Distribution Play Store = ton compte développeur Google (je rebuild, tu soumets).</div>
+        </div>
+
+        <div class="card">
+          <h2>👁️ Aperçu de l'espace membre</h2>
+          <div class="desc">Ce que voit un membre, en direct (avec ta session).</div>
+          <div style="border:1px solid var(--line);border-radius:12px;overflow:hidden;height:520px;background:#fff">
+            <iframe src="/app/dashboard" title="Aperçu espace membre" loading="lazy" style="width:100%;height:100%;border:0"></iframe>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+            <a class="lnk" href="/app/dashboard" target="_blank" style="margin:0">🏠 Accueil</a>
+            <a class="lnk" href="/app/patrimoine-pro" target="_blank" style="margin:0">📊 Cockpit patrimoine</a>
+            <a class="lnk" href="/app/simulateurs" target="_blank" style="margin:0">🧮 Simulateurs</a>
+            <a class="lnk" href="/app/univers" target="_blank" style="margin:0">🌌 Univers</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🎨 Sur-mesure — « Claude design »</h2>
+          <div class="desc">Ajuster le sur-mesure d'un espace Family Office, sans coder. Trois leviers :</div>
+          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur Family Office (white-label) — packager un espace de marque pour un confrère CGP</a>
+          <a class="lnk" href="/app/studio.html" target="_blank">🎨 Studio design — palettes, typographies, composants</a>
+          <div class="alert ok" style="margin-top:10px"><span class="x">💬</span><div><b>Claude design (le plus puissant)</b> — ouvre la page à ajuster et dis « Claude, change X ici ». Modif → push GitHub → en ligne en ~30 s.</div></div>
+          <div class="alert warn" style="margin-top:10px"><span class="x">🌌</span><div><b>Univers créés par le client</b> (chaque famille compose ses propres univers) = prochaine brique produit. Dis « go univers clients » et je câble l'éditeur côté membre + stockage D1.</div></div>
+        </div>
+      </section>
+
     </div>
   </main>
 </div>
@@ -532,6 +572,7 @@ const TITLES = {
   agents:['Agents <em>IA</em>','État live des intelligences souveraines'],
   veille:['Veille & <em>contenu</em>','Digest quotidien, CMS et publication'],
   feedback:['Retours <em>testeurs</em>','Ce que disent les premiers utilisateurs'],
+  app:['Application & <em>sur-mesure</em>','Mise à jour mobile, aperçu membre, studios de personnalisation'],
   reglages:['Réglages & <em>liens</em>','Infrastructure, configuration, conformité'],
 };
 function route(){
@@ -557,6 +598,7 @@ function load(sec, force){
   if(sec==='veille'){ loadDigest(); }
   if(sec==='feedback'){ loadFeedback('feedback'); }
   if(sec==='reglages'){ loadConfig(); }
+  if(sec==='app'){ loadAppInfo(); }
 }
 function refreshAll(){ Object.keys(loaded).forEach(k=>loaded[k]=false); route(); loadHealth(); }
 
@@ -803,6 +845,31 @@ async function loadConfig(){
     }catch(_){ checks.push([s.n,'✗ injoignable',true]); }
   }));
   el.innerHTML = `<table><tbody>${checks.map(c=>`<tr><td>${c[0]}</td><td style="color:${c[2]?'var(--warn)':'#9FE6B8'}">${c[1]}</td></tr>`).join('')}</tbody></table>`;
+}
+
+/* ─── APPLICATION ─── */
+async function loadAppInfo(force){
+  const el = document.getElementById('appInfo'); if(!el) return;
+  if(force) el.innerHTML = '<div class="empty">Vérification…</div>';
+  try{
+    const v = await (await fetch('/version.json?cb='+Date.now(),{cache:'no-store'})).json();
+    let sw = 'non enregistré';
+    try{ if('serviceWorker' in navigator){ const r = await navigator.serviceWorker.getRegistration(); if(r) sw = r.active ? 'actif' : 'en attente'; } }catch(_){}
+    const d = v.deployed_at ? new Date(v.deployed_at).toLocaleString('fr-FR') : '—';
+    el.innerHTML = '<table><tbody>'
+      + '<tr><td>Version en ligne</td><td style="font-family:monospace;color:var(--gold)">'+esc(v.sha||'—')+'</td></tr>'
+      + '<tr><td>Déployée le</td><td>'+esc(d)+'</td></tr>'
+      + '<tr><td>Service worker (cet appareil)</td><td>'+esc(sw)+'</td></tr>'
+      + '</tbody></table>';
+  }catch(e){ el.innerHTML = '<div class="alert warn"><span class="x">!</span><div>Version en ligne indisponible.</div></div>'; }
+}
+async function forceAppUpdate(){
+  try{
+    if('serviceWorker' in navigator){ const rs = await navigator.serviceWorker.getRegistrations(); for(const r of rs){ try{ await r.unregister(); }catch(_){} } }
+    if(window.caches){ const ks = await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); }
+    alert('Caches vidés et service worker réinitialisé sur cet appareil. La page recharge la dernière version.');
+    location.reload(true);
+  }catch(e){ alert('Erreur : '+(e.message||e)); }
 }
 
 /* ─── INIT ─── */
