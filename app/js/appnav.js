@@ -12,7 +12,7 @@
  */
 (function () {
   // Pages qui reçoivent la barre (sans .html, URLs propres Cloudflare Pages)
-  var SHOW_ON = ['dashboard', 'patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'famille', 'conciergerie', 'collections', 'veille', 'carnet', 'documents', 'profil', 'securite'];
+  var SHOW_ON = ['dashboard', 'patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'famille', 'univers', 'conciergerie', 'collections', 'veille', 'carnet', 'documents', 'profil', 'securite'];
 
   // Page courante : dernier segment, sans extension
   var seg = (location.pathname.replace(/\/+$/, '').split('/').pop() || '').replace(/\.html$/, '');
