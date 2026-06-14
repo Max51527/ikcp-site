@@ -243,7 +243,7 @@ export default {
           service: 'ikcp-codex',
           agent: 'Codex',
           role: 'Sub-agent fiscal expert',
-          model: 'claude-opus-4-7',
+          model: 'ikcp-souverain',
           configured: { api_key: !!env.ANTHROPICAPIKEY },
           timestamp: new Date().toISOString(),
         },

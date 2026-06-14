@@ -163,7 +163,7 @@ export default {
         service: 'ikcp-hermes',
         agent: 'Hermès',
         role: 'Transmission Patrimoniale',
-        model: 'claude-opus-4-7',
+        model: 'ikcp-souverain',
         configured: { api_key: !!env.ANTHROPICAPIKEY },
       }, { headers: corsHeaders(origin) });
     }

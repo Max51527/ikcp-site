@@ -902,9 +902,9 @@ export default {
     if (request.method === 'GET') {
       return new Response(JSON.stringify({
         status: 'ok',
-        service: 'ikcp-marcel-proxy',
+        service: 'marcel',
         version: '2.3',
-        model: 'claude-sonnet-4-6',
+        model: 'ikcp-souverain',
         features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard'],
       }), {
         status: 200,

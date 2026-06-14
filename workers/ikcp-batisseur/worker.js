@@ -152,7 +152,7 @@ export default {
           service: 'ikcp-batisseur',
           agent: 'Bâtisseur',
           role: 'Sub-agent Patrimoine 360°',
-          model: 'claude-opus-4-7',
+          model: 'ikcp-souverain',
           configured: { api_key: !!env.ANTHROPICAPIKEY },
           timestamp: new Date().toISOString(),
         },
