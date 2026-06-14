@@ -99,8 +99,35 @@ async function auditLog(env, userId, action, metadata) {
   } catch (_) { /* audit non-bloquant */ }
 }
 
-// ─── Perplexity API call ─────────────────────────────────────────
+// ─── Veille — Perplexity (défaut) OU Mistral souverain (LLM_PRIMARY=mistral) ───
 async function callPerplexity(env, query, mode) {
+  // ── VEILLE SOUVERAINE — Mistral (FR) si LLM_PRIMARY=mistral (zéro US) ──
+  // Caveat honnête : Mistral n'a pas la recherche web LIVE de Perplexity → veille
+  // basée sur les connaissances du modèle (moins fraîche, mais 100 % souveraine).
+  // En mode souverain on NE retombe PAS sur Perplexity (US). Pour du temps réel
+  // souverain : ajouter Qwant API (FR) + Mistral (brique future).
+  if (env.LLM_PRIMARY === 'mistral' && env.MISTRAL_API_KEY) {
+    try {
+      const mr = await fetch('https://api.mistral.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: env.MISTRAL_MODEL || 'mistral-large-latest',
+          temperature: 0.2, max_tokens: 1800,
+          messages: [
+            { role: 'system', content: `Tu es l'agent de veille souverain du Family Office IKCP. Réponds en français, structuré markdown, pour dirigeants français fortunés (patrimoine / fiscal / lifestyle / collections). Distingue clairement les faits établis des estimations et signale quand une donnée mérite une vérification à jour. Termine par une question d'orientation (jamais de recommandation produit — conformité MIF II).` },
+            { role: 'user', content: query },
+          ],
+        }),
+      });
+      if (mr.ok) {
+        const md = await mr.json();
+        const summary = md.choices && md.choices[0] && md.choices[0].message && md.choices[0].message.content;
+        if (summary) return { summary, sources: [], model: 'ikcp-souverain', usage: md.usage };
+      }
+    } catch (_) { /* pas de repli US en mode souverain */ }
+    return { summary: 'Veille souveraine momentanément indisponible — merci de réessayer.', sources: [], model: 'ikcp-souverain' };
+  }
   const model = mode === 'deep' ? env.PERPLEXITY_MODEL_DEEP : env.PERPLEXITY_MODEL_QUICK;
   const r = await fetch('https://api.perplexity.ai/chat/completions', {
     method: 'POST',
