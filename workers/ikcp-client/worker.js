@@ -1044,24 +1044,15 @@ async function handleAdmin(request, env, path, method) {
     const rows = await env.D1.prepare('SELECT * FROM member_applications WHERE status = ? ORDER BY created_at DESC LIMIT 200').bind(status).all();
     return json(rows.results || []);
   }
-  // ✦ TRI IA des demandes — Marcel classe les candidatures par priorité, avec argument + tier conseillé
+  // ✦ TRI IA — renvoie la liste des demandes ; Marcel les classe côté console (browser → Marcel)
   if (path === '/api/v1/admin/triage' && method === 'GET') {
     await ensureGovernanceTables(env);
-    const rows = (await env.D1.prepare("SELECT id, email, profile_json, created_at FROM member_applications WHERE status = 'pending' ORDER BY created_at DESC LIMIT 40").all()).results || [];
-    if (!rows.length) return json({ count: 0, analysis: 'Aucune demande en attente — rien à trier.' });
+    const rows = (await env.D1.prepare("SELECT email, profile_json FROM member_applications WHERE status = 'pending' ORDER BY created_at DESC LIMIT 40").all()).results || [];
     const list = rows.map((r, i) => {
       let p = {}; try { p = JSON.parse(r.profile_json || '{}'); } catch (_) {}
       return `${i + 1}. ${r.email} — ${(p.message || p.objectif || 'objectif non précisé').replace(/\s+/g, ' ').slice(0, 200)}`;
     }).join('\n');
-    let analysis = '';
-    try {
-      const rr = await fetch('https://ikcp-chat.maxime-ead.workers.dev/', {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Origin': 'https://ikcp-chat.maxime-ead.workers.dev' },
-        body: JSON.stringify({ message: `Tu es l'assistant de sélection des 50 familles fondatrices d'un Family Office (bêta sur invitation). Demandes reçues :\n\n${list}\n\nClasse-les par priorité d'admission. Réponds UNIQUEMENT par une liste numérotée, une ligne par demande, format exact : « N. email — Priorité: haute/moyenne/basse · Tier conseillé: Découverte/Premium/Family Office · Argument: <une phrase concrète sur les signaux de l'objectif> ». Aucune introduction, aucun disclaimer.`, history: [] }),
-      });
-      const d = await rr.json(); analysis = (d.reply || d.message || '').replace(/\*?Cette information ne constitue[^]*$/i, '').trim();
-    } catch (_) {}
-    return json({ count: rows.length, analysis: analysis || 'Tri IA momentanément indisponible — voir les demandes par date ci-dessous.' });
+    return json({ count: rows.length, list });
   }
   // Décision sur une candidature (approve → accorde un tier bêta)
   const dm = path.match(/^\/api\/v1\/admin\/applications\/([a-f0-9-]+)\/decision$/);

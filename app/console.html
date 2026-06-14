@@ -679,11 +679,15 @@ async function setTier(){
 
 /* ─── BÊTA ─── */
 async function loadTriage(){
-  const el=document.getElementById('triageOut'); el.innerHTML='<div class="empty">✦ Marcel analyse les demandes… (quelques secondes)</div>';
+  const el=document.getElementById('triageOut'); el.innerHTML='<div class="empty">Chargement des demandes…</div>';
   try{
     const r=await fetch(`${API}/api/v1/admin/triage`,{headers:hdr()}); const d=await r.json();
     if(!d.count){ el.innerHTML='<div class="empty">Aucune demande en attente.</div>'; return; }
-    el.innerHTML='<div style="white-space:pre-wrap;font-size:13px;line-height:1.75;color:var(--cream)">'+esc(d.analysis)+'</div><div style="font-size:11px;color:var(--mute);margin-top:8px">'+d.count+' demande(s) · classées par Marcel. Approuve ci-dessous → chaque admis reçoit sa clé d\'accès.</div>';
+    el.innerHTML='<div class="empty">✦ Marcel classe '+d.count+' demande(s)… (quelques secondes)</div>';
+    const prompt = "Tu es l'assistant de selection des 50 familles fondatrices d'un Family Office (beta sur invitation). Demandes recues :\n\n"+d.list+"\n\nClasse-les par priorite d'admission. Reponds UNIQUEMENT par une liste numerotee, une ligne par demande, format : « N. email — Priorite: haute/moyenne/basse · Tier conseille: Decouverte/Premium/Family Office · Argument: <phrase courte sur les signaux de l'objectif> ». Aucune introduction, aucun disclaimer.";
+    const m=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:prompt,history:[]})});
+    const md=await m.json(); let txt=(md.reply||md.message||'').replace(/\*?Cette information ne constitue[^]*$/i,'').replace(/^---+\s*$/gm,'').trim();
+    el.innerHTML='<div style="white-space:pre-wrap;font-size:13px;line-height:1.8;color:var(--cream)">'+esc(txt||'(pas de réponse)')+'</div><div style="font-size:11px;color:var(--mute);margin-top:10px">'+d.count+' demande(s) classées par Marcel. Approuve ci-dessous → chaque admis reçoit sa clé d\'accès (« Générer une invitation »).</div>';
   }catch(e){ el.innerHTML='<div class="msg err">Erreur : '+esc(e.message||'tri indisponible')+'</div>'; }
 }
 async function loadApps(){
