@@ -53,27 +53,27 @@
 </header>
 
 <main class="sims">
-  <div class="section-label">Outils déterministes</div>
-  <h1>Vos <em>simulateurs</em> patrimoniaux.</h1>
-  <p class="lead">Neuf calculs exacts, barèmes officiels codés en clair. Chaque simulation s'achève par une question — jamais par une recommandation (art. L.541-1 CoMoFi).</p>
+  <div class="section-label">Vos décisions, chiffrées</div>
+  <h1>Vos <em>projets de vie</em>, chiffrés.</h1>
+  <p class="lead">Posez votre question de dirigeant, obtenez le chiffre — en clair, sans jargon. Chaque réponse se termine par une vraie question, jamais par une vente (art. L.541-1 du Code monétaire et financier).</p>
 
   <div class="mif" style="margin-bottom:18px">⚠️ <b>Avertissement.</b> Outils pédagogiques fournis « en l'état », sans garantie. Les résultats sont indicatifs, ne valent ni conseil ni engagement d'IKCP, et ne se substituent ni à la législation en vigueur ni à une étude personnalisée (lettre de mission préalable). IKCP décline toute responsabilité quant à l'usage qui en serait fait.</div>
   <div class="tabs" id="tabs">
-    <button class="on" data-s="ir">Impôt sur le revenu</button>
-    <button data-s="ifi">IFI</button>
-    <button data-s="don">Donation</button>
-    <button data-s="succ">Succession</button>
-    <button data-s="dutreil">Pacte Dutreil</button>
-    <button data-s="pv">Cession de titres</button>
-    <button data-s="av">Assurance-vie</button>
-    <button data-s="rem">Rémunération dirigeant</button>
-    <button data-s="eps">Épargne salariale</button>
-    <button data-s="strat">🔒 Stratégie</button>
+    <button class="on" data-s="ir">Mes impôts</button>
+    <button data-s="ifi">Impôt immobilier</button>
+    <button data-s="don">Aider mes proches</button>
+    <button data-s="succ">Ce que je transmets</button>
+    <button data-s="dutreil">Transmettre mon entreprise</button>
+    <button data-s="pv">Vendre mon entreprise</button>
+    <button data-s="av">Protéger mes proches</button>
+    <button data-s="rem">Comment me payer</button>
+    <button data-s="eps">Récompenser mes équipes</button>
+    <button data-s="strat">🔒 Ma vision d'ensemble</button>
   </div>
 
   <!-- IR -->
   <section class="sim on" id="s-ir">
-    <h2>Impôt sur le revenu</h2>
+    <h2>Combien d'impôt vais-je payer&nbsp;?</h2>
     <span class="mille">Barème LF 2025 · revenus 2024 — vérifier le millésime avant tout usage client</span>
     <div class="frm">
       <div><label>Revenu net imposable (€)</label><input id="ir_r" type="number" placeholder="120 000"></div>
@@ -86,7 +86,7 @@
 
   <!-- IFI -->
   <section class="sim" id="s-ifi">
-    <h2>Impôt sur la fortune immobilière</h2>
+    <h2>Suis-je concerné par l'impôt immobilier&nbsp;?</h2>
     <span class="mille">Barème en vigueur · seuil 1,3 M€ · décote 1,3–1,4 M€</span>
     <div class="frm">
       <div><label>Patrimoine immobilier net taxable (€)</label><input id="ifi_p" type="number" placeholder="1 800 000"></div>
@@ -97,7 +97,7 @@
 
   <!-- DONATION -->
   <section class="sim" id="s-don">
-    <h2>Donation</h2>
+    <h2>Aider mes proches de mon vivant</h2>
     <span class="mille">Abattements art. 779 &amp; 790 G CGI · barème DMTG en vigueur</span>
     <div class="frm">
       <div><label>Montant donné (€)</label><input id="don_m" type="number" placeholder="250 000"></div>
@@ -113,7 +113,7 @@
 
   <!-- SUCCESSION -->
   <section class="sim" id="s-succ">
-    <h2>Succession</h2>
+    <h2>Ce que mes proches recevront</h2>
     <span class="mille">Par héritier · conjoint et PACS exonérés (loi TEPA)</span>
     <div class="frm">
       <div><label>Part nette reçue par l'héritier (€)</label><input id="suc_m" type="number" placeholder="400 000"></div>
@@ -127,7 +127,7 @@
 
   <!-- DUTREIL -->
   <section class="sim" id="s-dutreil">
-    <h2>Pacte Dutreil — transmission d'entreprise</h2>
+    <h2>Transmettre mon entreprise à mes enfants</h2>
     <span class="mille">Art. 787 B CGI · exonération 75 % · engagements 2 + 4 ans</span>
     <div class="frm">
       <div><label>Valeur des titres transmis (€)</label><input id="dut_v" type="number" placeholder="3 000 000"></div>
@@ -140,7 +140,7 @@
 
   <!-- PLUS-VALUE -->
   <section class="sim" id="s-pv">
-    <h2>Cession de titres — plus-value</h2>
+    <h2>Vendre mon entreprise</h2>
     <span class="mille">PFU 30 % vs abattement dirigeant retraite (150-0 D ter : 500 000 €)</span>
     <div class="frm">
       <div><label>Prix de cession (€)</label><input id="pv_c" type="number" placeholder="3 000 000"></div>
@@ -153,7 +153,7 @@
 
   <!-- ASSURANCE-VIE -->
   <section class="sim" id="s-av">
-    <h2>Assurance-vie — transmission</h2>
+    <h2>Transmettre un capital à mes proches</h2>
     <span class="mille">Art. 990 I CGI · primes versées avant 70 ans · 152 500 € / bénéficiaire</span>
     <div class="frm">
       <div><label>Capitaux décès (€)</label><input id="av_k" type="number" placeholder="800 000"></div>
@@ -165,7 +165,7 @@
 
   <!-- RÉMUNÉRATION DIRIGEANT -->
   <section class="sim" id="s-rem">
-    <h2>Rémunération du dirigeant·e</h2>
+    <h2>Me payer&nbsp;: salaire ou dividendes&nbsp;?</h2>
     <span class="mille">Approximation pédagogique · taux moyens cotisations TNS ~45 % / assimilé salarié ~82 % du net · IS 25 % · PFU 30 %</span>
     <div class="frm">
       <div><label>Enveloppe société disponible (€/an)</label><input id="rem_e" type="number" placeholder="120 000"></div>
@@ -177,7 +177,7 @@
 
   <!-- ÉPARGNE SALARIALE -->
   <section class="sim" id="s-eps">
-    <h2>Épargne salariale — prime vs intéressement + PEE</h2>
+    <h2>Faire fructifier l'argent de mon entreprise</h2>
     <span class="mille">Entreprise &lt; 50 salariés : forfait social 0 % · CSG/CRDS 9,7 % · blocage 5 ans</span>
     <div class="frm">
       <div><label>Budget entreprise (€)</label><input id="eps_b" type="number" placeholder="10 000"></div>
@@ -189,7 +189,7 @@
 
   <!-- STRATÉGIE — réservé FO -->
   <section class="sim" id="s-strat">
-    <h2>Stratégie patrimoniale globale</h2>
+    <h2>Ma vision patrimoniale d'ensemble</h2>
     <span class="mille">Réservé aux membres Family Office</span>
     <div id="strat-body"></div>
   </section>
