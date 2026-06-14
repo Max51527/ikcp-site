@@ -267,6 +267,22 @@ document.getElementById('siren').addEventListener('input', (e) => {
   sirenT = setTimeout(() => tryCartographie(v, status), 600);
 });
 
+// ── RELAIS public → app : si le SIREN a été saisi sur ikcp.eu, on le reprend ici ──
+// Le client ne re-saisit RIEN : sa société est déjà cartographiée, on enchaîne.
+(function prefillSirenFromPublic(){
+  try{
+    const raw = localStorage.getItem('ikcp_pending_siren'); if(!raw) return;
+    const p = JSON.parse(raw); if(!p || !p.siren) return;
+    const inp = document.getElementById('siren');
+    if(inp) inp.value = String(p.siren).replace(/(\d{3})(\d{3})(\d{3})/,'$1 $2 $3');
+    data.siren_data = { siren:p.siren, nom:p.nom, forme_juridique:p.forme_juridique, capital:p.capital, date_creation:p.date_creation, code_naf:p.code_naf, libelle_code_naf:p.libelle_code_naf, siege:p.siege };
+    const status = document.getElementById('sirenStatus');
+    if(status){ status.className = 'siren-status show ok';
+      status.innerHTML = '<b>✓ '+(p.nom||'Société identifiée')+'</b><span class="meta">Déjà cartographiée sur ikcp.eu — rien à re-saisir.</span>'; }
+    localStorage.removeItem('ikcp_pending_siren');
+  }catch(_){}
+})();
+
 // Cartographie robuste : ne bloque JAMAIS l'onboarding.
 // - SIREN inexistant (404) → message « vérifiez le numéro » + on peut continuer
 // - bug technique (réseau/CORS/timeout) → on n'accuse pas l'utilisateur, on propose
@@ -322,6 +338,7 @@ window.finishOnboarding = async function(skipSiren = false){
     patrimoine_range: data.patrimoine,
     typologie: data.typologie,
     spheres: data.spheres,
+    siren_data: data.siren_data || null,
     onboarding_completed: true,
     onboarded_at: new Date().toISOString(),
     // Trace du consentement (preuve de cadre MIF II accepté)

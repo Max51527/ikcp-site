@@ -452,6 +452,17 @@ async function lookupSiren() {
     if (!res.ok) throw new Error('SIREN introuvable au RNE');
     const data = await res.json();
 
+    // ── RELAIS public → app : on garde la société pour pré-remplir l'onboarding + le cockpit ──
+    // Le client qui saisit son SIREN ici n'a PAS à le re-saisir une fois dans l'app.
+    try {
+      localStorage.setItem('ikcp_pending_siren', JSON.stringify({
+        siren: siren, nom: data.nom, forme_juridique: data.forme_juridique,
+        capital: data.capital, date_creation: data.date_creation,
+        code_naf: data.code_naf, libelle_code_naf: data.libelle_code_naf,
+        siege: data.siege, ts: Date.now()
+      }));
+    } catch (_) {}
+
     // #4 — Contexte société transmis à Marcel (→ délègue à Codex fiscal + Hermès transmission)
     window._ikcpSirenCtx = `Voici ma société (source RNE) : ${data.nom || ''}, ${data.forme_juridique || ''}, capital ${data.capital ? Math.round(data.capital).toLocaleString('fr-FR') + ' €' : 'n.c.'}, activité ${data.libelle_code_naf || data.code_naf || 'n.c.'}, siège ${data.siege?.ville || ''}. Quels sont les principaux leviers fiscaux ET de transmission à étudier pour cette structure ?`;
 
