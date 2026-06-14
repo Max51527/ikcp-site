@@ -203,6 +203,26 @@ export default {
       userContent = `CONTEXTE FOURNI PAR MARCEL :\n${context}\n\n---\n\nQUESTION CLIENT :\n${question}`;
     }
 
+    // ── BÂTISSEUR SOUVERAIN — Mistral Large (FR) si LLM_PRIMARY=mistral (réversible) ──
+    if (env.LLM_PRIMARY === 'mistral' && env.MISTRAL_API_KEY) {
+      try {
+        const mr = await fetch('https://api.mistral.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: env.MISTRAL_MODEL || 'mistral-large-latest',
+            max_tokens: 3000, temperature: 0.2,
+            messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userContent }],
+          }),
+        });
+        if (mr.ok) {
+          const md = await mr.json();
+          const reply = md.choices && md.choices[0] && md.choices[0].message && md.choices[0].message.content;
+          if (reply) return Response.json({ reply, agent: 'Bâtisseur', model: 'ikcp-souverain', delegated_by: context ? 'Marcel' : 'direct' }, { headers: corsHeaders(origin) });
+        }
+      } catch (_) { /* fallback Anthropic */ }
+    }
+
     try {
       const apiResponse = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
