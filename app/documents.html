@@ -21,8 +21,8 @@
 
 <main class="app-main">
   <div class="section-label">Vos documents</div>
-  <h1 class="app-h1">Signés. <em>Conservés 10 ans.</em></h1>
-  <p class="app-lead">DER, Lettre de Mission, rapports, cartographies. Signature eIDAS qualifiée, hébergement R2 EU, audit conforme MIF II.</p>
+  <h1 class="app-h1">Horodatés. <em>Conservés 10 ans.</em></h1>
+  <p class="app-lead">DER, Lettre de Mission, rapports, cartographies. Horodatage et journal d'audit souverain, hébergement EU, conforme MIF II. <em>(Signature électronique qualifiée eIDAS — en cours d'intégration.)</em></p>
 
   <div id="docs-list" class="loading">Chargement…</div>
 
@@ -82,7 +82,7 @@ try {
     list.classList.remove('loading');
     list.innerHTML = '<div class="grid-2">' + docs.map(d => `
       <article class="card">
-        <div class="card-head"><span class="card-cat">${d.type}</span>${d.signed_at ? '<span class="pill live">signé eIDAS</span>' : '<span class="pill warn">en attente</span>'}</div>
+        <div class="card-head"><span class="card-cat">${d.type}</span>${d.signed_at ? '<span class="pill live">horodaté</span>' : '<span class="pill warn">en attente</span>'}</div>
         <h3>📄 ${d.title}</h3>
         <p class="meta">${d.signed_at ? 'Signé le ' + Marcel.Utils.formatDate(d.signed_at) : 'Créé le ' + Marcel.Utils.formatDate(d.created_at)}</p>
         <span class="btn btn-ghost btn-sm" style="align-self:flex-start;opacity:.55;cursor:default" title="Le téléchargement sécurisé sera activé prochainement">Téléchargement bientôt disponible</span>
