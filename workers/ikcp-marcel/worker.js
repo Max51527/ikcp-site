@@ -1098,21 +1098,63 @@ export default {
       let totalIterations = 0;
       const MAX_ITER = 4; // sécurité : max 4 tours de tool calling
 
-      // ── ESSAI MISTRAL EN PRIMAIRE (réversible · souveraineté FR) ──────
-      // Si la variable d'env LLM_PRIMARY === 'mistral' (et MISTRAL_API_KEY posée),
-      // Marcel répond ENTIÈREMENT via Mistral — sans outils (réponse texte simple,
-      // MIF II garanti par callMistralFallback). Pour revenir à Claude : supprimer
-      // la variable LLM_PRIMARY. Aucune autre modification. A/B test sans risque.
-      if (env.LLM_PRIMARY === 'mistral') {
-        const mr = await callMistralFallback(env, systemPromptText, workingMessages);
-        if (mr) {
-          return new Response(JSON.stringify({
-            reply: mr,
-            follow_ups: ['Pouvez-vous préciser votre situation ?', 'Souhaitez-vous échanger avec Maxime ?', 'Voulez-vous un autre point patrimonial ?'],
-            provider: 'mistral',
-          }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+      // ── MARCEL SOUVERAIN — Mistral (FR) AVEC ses outils (réversible) ──────
+      // Si LLM_PRIMARY === 'mistral' (+ MISTRAL_API_KEY) : Marcel raisonne ENTIÈREMENT
+      // via Mistral Large (FR/EU), boucle agentique complète (calculateurs, délégation,
+      // veille, collector). Données déjà souveraines (Cloudflare WEUR / D1 Paris).
+      // En cas d'échec Mistral → bascule transparente sur Anthropic. Réversible :
+      // retirer la variable LLM_PRIMARY. Aucune autre modification.
+      if (env.LLM_PRIMARY === 'mistral' && env.MISTRAL_API_KEY) {
+        try {
+          const MIF2_SOUV = "*Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Vous interagissez avec un assistant IA — Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande.*";
+          const mTools = dynamicTools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+          const mMsgs = [{ role: 'system', content: systemPromptText }];
+          for (const m of workingMessages) {
+            const c = typeof m.content === 'string' ? m.content : (Array.isArray(m.content) ? m.content.map(x => x.text || '').join(' ') : '');
+            mMsgs.push({ role: m.role, content: c });
+          }
+          let mFinal = '';
+          for (let mIter = 0; mIter < MAX_ITER; mIter++) {
+            const mr = await fetch('https://api.mistral.ai/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ model: env.MISTRAL_MODEL || 'mistral-large-latest', max_tokens: 2048, temperature: 0.3, messages: mMsgs, tools: mTools, tool_choice: 'auto' }),
+            });
+            if (!mr.ok) throw new Error('mistral_' + mr.status);
+            const md = await mr.json();
+            const msg = md.choices && md.choices[0] && md.choices[0].message;
+            if (!msg) throw new Error('mistral_empty');
+            const calls = msg.tool_calls || [];
+            if (!calls.length) { mFinal = msg.content || ''; break; }
+            mMsgs.push({ role: 'assistant', content: msg.content || '', tool_calls: calls });
+            for (const tc of calls) {
+              let args = {}; try { args = JSON.parse(tc.function.arguments || '{}'); } catch (_) {}
+              const nm = tc.function.name; let result;
+              if (nm === 'delegate_to_specialist') result = await delegateToSpecialist(args.agent, args.question, args.context, isPaidMember);
+              else if (nm === 'get_user_profile') result = await collectorFetch(env, `/profile?user_id=${encodeURIComponent(args.user_id || 'max')}`);
+              else if (nm === 'get_user_watches') result = await collectorFetch(env, `/watches?user_id=${encodeURIComponent(args.user_id || 'max')}${args.market ? `&market=${encodeURIComponent(args.market)}` : ''}`);
+              else if (nm === 'get_user_alerts') result = await collectorFetch(env, `/alerts?user_id=${encodeURIComponent(args.user_id || 'max')}${args.unread ? '&unread=1' : ''}`);
+              else if (nm === 'add_user_watch') result = await collectorFetch(env, '/watches', 'POST', { user_id: args.user_id || 'max', market: args.market, category: args.category, query: args.query, target_price: args.target_price });
+              else if (nm === 'consult_veille') {
+                try { const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: args.query, mode: args.mode || 'quick', user_id: memberId || 'anon', tier: memberTier || 'free' }) }); result = vr.ok ? await vr.json() : { error: 'veille_unavailable' }; }
+                catch (e) { result = { error: 'veille_network' }; }
+              } else result = executeTool(nm, args);
+              mMsgs.push({ role: 'tool', tool_call_id: tc.id, name: nm, content: JSON.stringify(result) });
+            }
+          }
+          if (mFinal) {
+            let mReply = mFinal, mFollow = [];
+            const fm = mReply.match(/<!--\s*follow_ups\s*:\s*(\[[\s\S]*?\])\s*-->/i);
+            if (fm) { try { const p = JSON.parse(fm[1]); if (Array.isArray(p)) mFollow = p.filter(q => typeof q === 'string' && q.length > 0 && q.length < 120).slice(0, 3); } catch (_) {} mReply = mReply.replace(fm[0], '').trim(); }
+            if (!mFollow.length) mFollow = ['Faire un mini-bilan patrimonial', 'Quels leviers pour réduire mes impôts ?', 'Comment anticiper ma transmission ?'];
+            if (!/L\.?\s*541[-\s]?1/i.test(mReply)) mReply = mReply.trimEnd() + "\n\n---\n\n" + MIF2_SOUV;
+            await logQuestion(env, message, mReply, ctx, false);
+            return new Response(JSON.stringify({ reply: mReply, follow_ups: mFollow, provider: 'mistral-souverain', season: ctx.season }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+          }
+          // Mistral n'a rien produit → on bascule sur Anthropic ci-dessous.
+        } catch (e) {
+          console.error('Marcel souverain (Mistral) error:', e.message); // → fallback Anthropic
         }
-        // Mistral indisponible (clé absente / erreur) → on bascule sur Claude.
       }
 
       while (totalIterations < MAX_ITER) {
