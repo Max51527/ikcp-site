@@ -1159,8 +1159,10 @@ async function handleProfileSave(request, session, env) {
   const body = await request.json().catch(() => ({}));
   const { profile_json, prenom } = body;
   if (!profile_json) return json({ error: 'profile_json_required' }, 400);
-  await env.D1.prepare('UPDATE users SET profile_json = ?, prenom = COALESCE(?, prenom), last_seen = ? WHERE id = ?')
-    .bind(profile_json, prenom || null, Date.now(), session.user_id).run();
+  // Écriture essentielle (toujours), puis last_seen en best-effort (colonne optionnelle).
+  await env.D1.prepare('UPDATE users SET profile_json = ?, prenom = COALESCE(?, prenom) WHERE id = ?')
+    .bind(profile_json, prenom || null, session.user_id).run();
+  try { await env.D1.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(Date.now(), session.user_id).run(); } catch (_) {}
   await audit(env, session.user_id, 'profile_save', request, { has_prenom: !!prenom });
   return json({ ok: true });
 }
@@ -1169,8 +1171,9 @@ async function handleConsentsSave(request, session, env) {
   const body = await request.json().catch(() => ({}));
   const { consents } = body;
   if (typeof consents !== 'object' || consents === null) return json({ error: 'consents_required' }, 400);
-  await env.D1.prepare('UPDATE users SET consents_json = ?, marketing_consent = ?, last_seen = ? WHERE id = ?')
-    .bind(JSON.stringify(consents), consents.marketing ? 1 : 0, Date.now(), session.user_id).run();
+  await env.D1.prepare('UPDATE users SET consents_json = ?, marketing_consent = ? WHERE id = ?')
+    .bind(JSON.stringify(consents), consents.marketing ? 1 : 0, session.user_id).run();
+  try { await env.D1.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(Date.now(), session.user_id).run(); } catch (_) {}
   await audit(env, session.user_id, 'consents_update', request, { keys: Object.keys(consents) });
   return json({ ok: true, saved: consents });
 }
