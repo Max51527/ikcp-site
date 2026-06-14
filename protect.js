@@ -1,16 +1,43 @@
 /* ════════════════════════════════════════════════════════════════
-   IKCP — Dissuasion copie + attribution + filigrane
+   IKCP — Dissuasion copie + attribution + filigrane traçable
    © 2026 IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568
    ----------------------------------------------------------------
    Honnête : ce sont des DISSUASIONS (copier-coller, clic droit,
-   capture). Un utilisateur déterminé (devtools) peut contourner —
-   la vraie protection juridique = mentions légales + dépôt.
-   Objectif : décourager le vol casual + tracer l'origine partout.
+   capture, impression). Un utilisateur déterminé (devtools, view-source)
+   peut contourner — la vraie protection juridique = mentions légales,
+   dépôt, et la TRAÇABILITÉ (filigrane nominatif côté membre connecté).
+   Objectif : décourager le vol casual + tracer l'origine partout +
+   rendre tout screenshot d'un membre identifiable.
    ════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
   var ATTRIB = 'Créé par IKCP.EU — cabinet de gestion de patrimoine indépendant · Ardèche · Combloux · Megève. Reproduction interdite.';
   var CONTACT = 'maxime@ikcp.eu';
+  var IN_APP = (function () { try { return location.pathname.indexOf('/app/') === 0; } catch (_) { return false; } });
+
+  // ── 0. Toast de dissuasion (message visible, premium, auto-disparition) ──
+  var _toastTimer = null;
+  function shield(msg) {
+    try {
+      var t = document.getElementById('ikcp-shield');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'ikcp-shield';
+        t.setAttribute('role', 'status');
+        t.style.cssText =
+          'position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);' +
+          'z-index:2147483646;max-width:min(92vw,520px);padding:13px 18px;border-radius:13px;' +
+          'background:rgba(14,23,41,.96);color:#FAFAF8;border:1px solid rgba(201,169,110,.5);' +
+          'box-shadow:0 18px 50px rgba(0,0,0,.4);font:500 13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;' +
+          'letter-spacing:.01em;opacity:0;transition:opacity .22s ease,transform .22s ease;pointer-events:none;text-align:center;';
+        document.body.appendChild(t);
+      }
+      t.innerHTML = '<span style="color:#E2C896;font-weight:700">⬡ Contenu IKCP protégé.</span> ' + msg;
+      requestAnimationFrame(function () { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(function () { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(12px)'; }, 3200);
+    } catch (_) {}
+  }
 
   // ── 1. Interception du copier (Ctrl+C / clic droit Copier) ──
   document.addEventListener('copy', function (e) {
@@ -26,6 +53,7 @@
           'La copie intégrale de ce contenu est désactivée. ' +
           'Pour toute réutilisation, demande écrite à ' + CONTACT + '.\n' +
           '« Vous lisez une analyse propriétaire. La recopier ne la rend pas vôtre. »';
+        shield('Copie intégrale désactivée — toute reproduction est tracée (art. L.111-1 CPI).');
       } else {
         // Petite sélection (citation) tolérée, mais signée
         payload = sel + '\n\n— ' + ATTRIB;
@@ -55,49 +83,125 @@
       var tag = (e.target && e.target.tagName) || '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
       e.preventDefault();
+      shield('Clic droit désactivé. Pour réutiliser un contenu : ' + CONTACT + '.');
     });
   }
 
-  // ── 4. Filigrane discret (visible aussi sur capture d'écran) ──
-  // Très faible opacité pour préserver le rendu premium + lisibilité.
-  // Activé par défaut ; désactivable via data-no-watermark sur <body>.
+  // ── 3b. Raccourcis de capture/source/impression : interception + dissuasion ──
+  // On NE bloque pas dans les champs de saisie. Ctrl/Cmd + S (enregistrer),
+  // U (source), P (imprimer). La capture écran OS n'est pas interceptable JS
+  // → c'est le filigrane nominatif (module 4) qui la couvre.
+  document.addEventListener('keydown', function (e) {
+    try {
+      var t = e.target, tag = (t && t.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+      var mod = e.ctrlKey || e.metaKey;
+      if (!mod) return;
+      var k = (e.key || '').toLowerCase();
+      if (k === 's') { e.preventDefault(); shield('Enregistrement de page désactivé. Le contenu reste la propriété d\'IKCP.'); }
+      else if (k === 'u') { e.preventDefault(); shield('Affichage du code source désactivé.'); }
+      else if (k === 'p') { /* on laisse l\'impression mais on la marque (module 6) */ }
+    } catch (_) {}
+  });
+
+  // ── 4. Filigrane ──
+  //  • Pages publiques : tuile « IKCP.EU » très discrète + crédit bas de page.
+  //  • Espace membre (/app/) : filigrane TRAÇABLE nominatif (email/identifiant
+  //    du membre + date) → tout screenshot d'un membre devient identifiable.
+  //    Opacité très faible pour préserver le rendu premium.
+  function memberTag() {
+    var who = '';
+    try { who = localStorage.getItem('ikcp_email') || localStorage.getItem('ikcp_member_email') || ''; } catch (_) {}
+    if (!who) {
+      try {
+        var tok = localStorage.getItem('ikcp_token') || '';
+        if (tok) {
+          var part = tok.split('.')[1];
+          if (part) {
+            var pad = part.replace(/-/g, '+').replace(/_/g, '/');
+            var dec = JSON.parse(decodeURIComponent(escape(atob(pad))));
+            who = dec.email || dec.sub || dec.uid || '';
+          }
+          if (!who) who = '#' + tok.slice(-6); // empreinte courte → traçable par IKCP
+        }
+      } catch (_) {}
+    }
+    return who || 'espace-confidentiel';
+  }
+  function dateTag() {
+    try { return new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+    catch (_) { return ''; }
+  }
+
   function addWatermark() {
     if (!document.body || document.body.hasAttribute('data-no-watermark')) return;
-    // Espace membre connecté (/app/) : AUCUN filigrane visible — rendu premium
-    // pour les clients. L'anti-copie (copier/clic droit) reste actif partout.
-    try { if (location.pathname.indexOf('/app/') === 0) return; } catch (_) {}
     if (document.getElementById('ikcp-wm')) return;
-    var txt = 'IKCP.EU · IKCP.EU · IKCP.EU · ';
+
+    var inApp = IN_APP();
+    var tileTxt, op, credit;
+    if (inApp) {
+      // Filigrane NOMINATIF traçable, ultra discret (rendu membre premium préservé)
+      var who = memberTag();
+      tileTxt = 'IKCP · ' + who + ' · ';
+      op = '0.045';
+      credit = 'Espace confidentiel IKCP · ' + who + ' · ' + dateTag();
+    } else {
+      tileTxt = 'IKCP.EU · IKCP.EU · IKCP.EU · ';
+      op = '0.035';
+      credit = 'Créé par IKCP.EU · Ardèche · Combloux · Megève';
+    }
+
     var svg =
-      "data:image/svg+xml;utf8," +
+      'data:image/svg+xml;utf8,' +
       encodeURIComponent(
-        "<svg xmlns='http://www.w3.org/2000/svg' width='420' height='220'>" +
-        "<text x='0' y='110' transform='rotate(-24 0 110)' " +
-        "font-family='Arial' font-size='15' fill='%231B2A4A' fill-opacity='0.035'>" + txt + "</text></svg>"
+        "<svg xmlns='http://www.w3.org/2000/svg' width='460' height='240'>" +
+        "<text x='0' y='120' transform='rotate(-24 0 120)' " +
+        "font-family='Arial' font-size='14' fill='%231B2A4A' fill-opacity='" + op + "'>" + tileTxt + '</text></svg>'
       );
     var wm = document.createElement('div');
     wm.id = 'ikcp-wm';
     wm.setAttribute('aria-hidden', 'true');
     wm.style.cssText =
       'position:fixed;inset:0;z-index:2147483640;pointer-events:none;' +
-      "background-image:url(\"" + svg + "\");background-repeat:repeat;";
+      'background-image:url("' + svg + '");background-repeat:repeat;';
     document.body.appendChild(wm);
 
-    // Crédit permanent discret en bas (toujours visible, capture incluse)
-    var credit = document.createElement('div');
-    credit.id = 'ikcp-credit';
-    credit.setAttribute('aria-hidden', 'true');
-    credit.textContent = 'Créé par IKCP.EU · Ardèche · Combloux · Megève';
-    credit.style.cssText =
+    var c = document.createElement('div');
+    c.id = 'ikcp-credit';
+    c.setAttribute('aria-hidden', 'true');
+    c.textContent = credit;
+    c.style.cssText =
       'position:fixed;bottom:4px;right:8px;z-index:2147483641;pointer-events:none;' +
-      'font:600 9px/1 Arial,sans-serif;letter-spacing:.08em;color:rgba(27,42,74,.22);' +
+      'font:600 9px/1 Arial,sans-serif;letter-spacing:.08em;color:rgba(27,42,74,' + (inApp ? '.28' : '.22') + ');' +
       'text-transform:uppercase;user-select:none;';
-    document.body.appendChild(credit);
+    document.body.appendChild(c);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addWatermark);
   else addWatermark();
 
-  // ── 5. Helper de partage propre (icônes prévues) ──
+  // ── 5. Anti-glisser / anti-enregistrement des images ──
+  document.addEventListener('dragstart', function (e) {
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'IMG' || tag === 'svg' || tag === 'CANVAS' || tag === 'PICTURE') { e.preventDefault(); }
+  });
+
+  // ── 6. Protection à l'impression (PDF / Ctrl+P) : bandeau d'attribution ──
+  try {
+    var ps = document.createElement('style');
+    ps.id = 'ikcp-print-guard';
+    ps.textContent =
+      '@media print{' +
+      'body::before{content:"' + (IN_APP() ? 'IKCP — Espace confidentiel · reproduction interdite' : 'IKCP.EU — contenu protégé · reproduction interdite') + '";' +
+      'display:block;text-align:center;font:700 11px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;' +
+      'color:#8B6F3F;border-bottom:1px solid #C9A96E;padding:6px 0;margin-bottom:8px;}' +
+      'body::after{content:"© IKCP · ORIAS 23001568 · maxime@ikcp.eu · toute reproduction est tracée";' +
+      'position:fixed;bottom:0;left:0;right:0;text-align:center;font:600 8px Arial,sans-serif;color:#6B5D52;padding:4px 0;}' +
+      '#ikcp-wm{opacity:1 !important;}' +
+      '}';
+    (document.head || document.documentElement).appendChild(ps);
+  } catch (_) {}
+
+  // ── 7. Helper de partage propre (icônes prévues) ──
   // window.ikcpShare('linkedin'|'email'|'copy', {url, title})
   window.ikcpShare = function (platform, opts) {
     opts = opts || {};
