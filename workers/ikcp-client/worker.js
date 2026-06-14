@@ -999,6 +999,19 @@ async function ensureGovernanceTables(env) {
   `).run();
   // Migration douce si la table existait avant l'ajout de grant_tier
   try { await env.D1.prepare('ALTER TABLE member_applications ADD COLUMN grant_tier TEXT').run(); } catch (_) { /* colonne déjà présente */ }
+  // Réseau de partenaires (gestion de fortune) — CRM interne, publication contrôlée
+  await env.D1.prepare(`
+    CREATE TABLE IF NOT EXISTS partners (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, category TEXT,
+      region TEXT, contact_email TEXT, contact_phone TEXT, website TEXT,
+      points_forts TEXT,
+      paid INTEGER DEFAULT 0,                     -- 1 = abonnement payé · 0 = curé/gratuit
+      forfait TEXT,                               -- libellé forfait (ex: "Annuel 1200 €")
+      status TEXT DEFAULT 'actif',                -- 'actif' | 'pending' | 'inactif'
+      published INTEGER DEFAULT 0,                -- 1 = visible côté public (réseau de confiance)
+      notes TEXT, created_at INTEGER, updated_at INTEGER
+    )
+  `).run();
 }
 
 function genInviteCode() {
@@ -1162,6 +1175,50 @@ async function handleAdmin(request, env, path, method) {
       const rows = await env.D1.prepare("SELECT id, payload_json, ts FROM events WHERE type='beta_feedback' ORDER BY ts DESC LIMIT 100").all();
       return json(rows.results || []);
     } catch (_) { return json([]); }
+  }
+  // ─── PARTENAIRES — réseau gestion de fortune (CRM interne admin) ───
+  if (path === '/api/v1/admin/partners' && method === 'GET') {
+    try {
+      const rows = await env.D1.prepare('SELECT * FROM partners ORDER BY paid DESC, name ASC LIMIT 500').all();
+      return json(rows.results || []);
+    } catch (_) { return json([]); }
+  }
+  if (path === '/api/v1/admin/partners' && method === 'POST') {
+    const b = await request.json().catch(() => ({}));
+    const name = (b.name || '').toString().trim();
+    if (!name) return json({ error: 'name_required' }, 400);
+    const now = Date.now();
+    const id = (b.id || '').toString().trim() || crypto.randomUUID();
+    const f = {
+      category: (b.category || '').toString().slice(0, 60),
+      region: (b.region || '').toString().slice(0, 80),
+      contact_email: (b.contact_email || '').toString().slice(0, 254),
+      contact_phone: (b.contact_phone || '').toString().slice(0, 40),
+      website: (b.website || '').toString().slice(0, 254),
+      points_forts: (b.points_forts || '').toString().slice(0, 600),
+      paid: b.paid ? 1 : 0,
+      forfait: (b.forfait || '').toString().slice(0, 80),
+      status: (b.status || 'actif').toString().slice(0, 20),
+      published: b.published ? 1 : 0,
+      notes: (b.notes || '').toString().slice(0, 600),
+    };
+    await env.D1.prepare(`
+      INSERT INTO partners (id, name, category, region, contact_email, contact_phone, website, points_forts, paid, forfait, status, published, notes, created_at, updated_at)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ON CONFLICT(id) DO UPDATE SET name=excluded.name, category=excluded.category, region=excluded.region,
+        contact_email=excluded.contact_email, contact_phone=excluded.contact_phone, website=excluded.website,
+        points_forts=excluded.points_forts, paid=excluded.paid, forfait=excluded.forfait, status=excluded.status,
+        published=excluded.published, notes=excluded.notes, updated_at=excluded.updated_at
+    `).bind(id, name, f.category, f.region, f.contact_email, f.contact_phone, f.website,
+      f.points_forts, f.paid, f.forfait, f.status, f.published, f.notes, now, now).run();
+    return json({ ok: true, id });
+  }
+  if (path === '/api/v1/admin/partners/delete' && method === 'POST') {
+    const b = await request.json().catch(() => ({}));
+    const id = (b.id || '').toString().trim();
+    if (!id) return json({ error: 'id_required' }, 400);
+    await env.D1.prepare('DELETE FROM partners WHERE id = ?').bind(id).run();
+    return json({ ok: true });
   }
   return json({ error: 'not_found' }, 404);
 }
