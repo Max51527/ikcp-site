@@ -148,8 +148,8 @@ async function callMistralFallback(env, systemText, messages) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: env.MISTRAL_MODEL || 'mistral-small-latest',
-        max_tokens: 1200,
+        model: env.MISTRAL_MODEL || 'mistral-large-latest',
+        max_tokens: 1500,
         temperature: 0.3,
         messages: [
           { role: 'system', content: (systemText || '').slice(0, 6000) + "\n\nRéponds en français, de façon utile et pédagogue. Termine TOUJOURS par une question (jamais une recommandation produit). Ajoute en fin : \"Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.\"" },
