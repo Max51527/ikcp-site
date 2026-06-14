@@ -283,6 +283,28 @@ select option{background:var(--navy-deep)}
           <div style="overflow-x:auto" id="agents"><div class="empty">Sondage en cours…</div></div>
         </div>
         <div class="card">
+          <h2>🔌 API connectées <span class="pill fo">6 actives</span></h2>
+          <div class="desc">Les services externes qui alimentent la plateforme. Pour les modifier : onglet « Réglages &amp; liens » (consoles fournisseurs) — ou demande-moi.</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>API</th><th>Rôle</th><th>État</th></tr>
+            <tr><td>Anthropic (intelligence souveraine)</td><td>Marcel + 11 agents</td><td><span class="pill fo">active</span></td></tr>
+            <tr><td>Perplexity Pro</td><td>Veille temps réel</td><td><span class="pill fo">active</span></td></tr>
+            <tr><td>Pappers</td><td>Cartographie SIREN</td><td><span class="pill fo">active</span></td></tr>
+            <tr><td>DVF (data.gouv)</td><td>Prix immobilier au m²</td><td><span class="pill fo">active · sans clé</span></td></tr>
+            <tr><td>Mistral (Voxtral)</td><td>Voix + secours souverain</td><td><span class="pill fo">active</span></td></tr>
+            <tr><td>Resend</td><td>Emails (accès, accusés)</td><td><span class="pill fo">active</span></td></tr>
+          </table></div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">À brancher — quand le besoin se déclenche</div>
+          <div style="overflow-x:auto"><table>
+            <tr><th>API</th><th>Pour quoi</th><th>Quand</th></tr>
+            <tr><td>Stripe</td><td>Paiement / abonnement (code prêt)</td><td><span class="pill premium">monétisation</span></td></tr>
+            <tr><td>GoCardless / Powens (DSP2)</td><td>Agrégation bancaire souveraine</td><td><span class="pill premium">post-bêta</span></td></tr>
+            <tr><td>INSEE Sirene</td><td>Données entreprises (gratuit, complète Pappers)</td><td><span class="pill premium">option</span></td></tr>
+            <tr><td>Histovec</td><td>Historique véhicules (univers passions)</td><td><span class="pill free">option</span></td></tr>
+          </table></div>
+          <div class="alert warn" style="margin-top:12px"><span class="x">🛠️</span><div><b>Activer / désactiver un agent en 1 clic</b> depuis la console (sans toucher au code) = prochaine brique : un interrupteur en base que Marcel lit. Dis-moi si tu le veux.</div></div>
+        </div>
+        <div class="card">
           <h2>◷ Automatisations (CRON)</h2>
           <div id="autos" class="digest"></div>
         </div>
@@ -483,7 +505,7 @@ async function unlock(){
     sessionStorage.setItem('ikcp_admin_secret', SECRET);
     localStorage.setItem('ikcp_admin_secret', SECRET); // mémorisé sur cet appareil → plus jamais à retaper
     document.getElementById('gate').style.display='none';
-    document.getElementById('app').style.display='grid';
+    document.getElementById('app').style.display='flex';
     route();
     loadHealth(); // alimente la pastille système globale
   }catch(e){
