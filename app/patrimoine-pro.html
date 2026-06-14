@@ -188,7 +188,7 @@
   <!-- ════ HERO COCKPIT ════ -->
   <section class="hero reveal-up">
     <div class="hero-l">
-      <div class="hero-eyebrow"><span class="dot"></span> Patrimoine net consolidé</div>
+      <div class="hero-eyebrow"><span class="dot"></span> Mon patrimoine net</div>
       <div class="hero-total num" id="heroTotal">—</div>
       <div class="hero-sub">
         <span class="delta flat" id="heroDelta">—</span>
@@ -205,7 +205,7 @@
       <div class="donut-wrap">
         <canvas id="donutCv" width="200" height="200"></canvas>
         <div class="donut-center">
-          <span class="k">Actifs bruts</span>
+          <span class="k">Total de mes biens</span>
           <span class="v num" id="donutTotal">—</span>
           <span class="u" id="donutCount">— univers</span>
         </div>
@@ -268,13 +268,13 @@ import { Marcel } from '/app/js/api.js';
 window.__Marcel = Marcel;
 
 const CATS = [
-  { key:'immobilier', label:'Immobilier',         icon:'🏠', color:'#A8884D', href:'/app/immobilier' },
-  { key:'financier',  label:'Actifs financiers',  icon:'📈', color:'#1B2A4A', href:'/app/marcel?topic=marches' },
-  { key:'tresorerie', label:'Trésorerie',         icon:'💧', color:'#5B8A8C', href:'/app/marcel?topic=tresorerie' },
-  { key:'societe',    label:'Société · non coté', icon:'🏛️', color:'#7A5C2E', href:'/app/environnement' },
-  { key:'retraite',   label:'Épargne & retraite', icon:'🛡️', color:'#C9A96E', href:'/app/marcel?topic=retraite' },
-  { key:'passion',    label:'Objets de passion',  icon:'🎨', color:'#B23A2E', href:'/app/collections' },
-  { key:'autres',     label:'Autres actifs',      icon:'✦',  color:'#9AA0AE', href:'/app/marcel' },
+  { key:'immobilier', label:'Mon immobilier',     icon:'🏠', color:'#A8884D', href:'/app/immobilier' },
+  { key:'financier',  label:'Mes placements',     icon:'📈', color:'#1B2A4A', href:'/app/marcel?topic=marches' },
+  { key:'tresorerie', label:'Mes liquidités',     icon:'💧', color:'#5B8A8C', href:'/app/marcel?topic=tresorerie' },
+  { key:'societe',    label:'Mon entreprise',     icon:'🏛️', color:'#7A5C2E', href:'/app/environnement' },
+  { key:'retraite',   label:'Ma retraite',        icon:'🛡️', color:'#C9A96E', href:'/app/marcel?topic=retraite' },
+  { key:'passion',    label:'Mes passions',       icon:'🎨', color:'#B23A2E', href:'/app/collections' },
+  { key:'autres',     label:'Autres',             icon:'✦',  color:'#9AA0AE', href:'/app/marcel' },
 ];
 const TYPO = {
   indep:  {label:'L’Indépendant',           short:'Indépendant',      sub:'TNS · libéral',     topic:'retraite',     cta:'Optimiser ma rémunération'},

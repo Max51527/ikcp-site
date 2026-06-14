@@ -265,6 +265,11 @@ select option{background:var(--navy-deep)}
           <div id="codeOut"></div>
         </div>
         <div class="card">
+          <h2>✦ Tri IA des demandes <button class="btn sm" onclick="loadTriage()" style="margin-left:auto">Trier par priorité →</button></h2>
+          <div class="desc">Marcel classe les demandes en attente par priorité d'admission, avec un argument et un tier conseillé pour chacune.</div>
+          <div id="triageOut" class="digest"><div class="empty">Cliquez « Trier » — l'IA analyse les demandes et te dit qui inviter en premier.</div></div>
+        </div>
+        <div class="card">
           <h2>Candidatures en attente <span class="pill" id="appCount">…</span><button class="btn ghost sm tools" onclick="loadApps()">↻</button></h2>
           <div id="apps"><div class="empty">Chargement…</div></div>
         </div>
@@ -673,6 +678,14 @@ async function setTier(){
 }
 
 /* ─── BÊTA ─── */
+async function loadTriage(){
+  const el=document.getElementById('triageOut'); el.innerHTML='<div class="empty">✦ Marcel analyse les demandes… (quelques secondes)</div>';
+  try{
+    const r=await fetch(`${API}/api/v1/admin/triage`,{headers:hdr()}); const d=await r.json();
+    if(!d.count){ el.innerHTML='<div class="empty">Aucune demande en attente.</div>'; return; }
+    el.innerHTML='<div style="white-space:pre-wrap;font-size:13px;line-height:1.75;color:var(--cream)">'+esc(d.analysis)+'</div><div style="font-size:11px;color:var(--mute);margin-top:8px">'+d.count+' demande(s) · classées par Marcel. Approuve ci-dessous → chaque admis reçoit sa clé d\'accès.</div>';
+  }catch(e){ el.innerHTML='<div class="msg err">Erreur : '+esc(e.message||'tri indisponible')+'</div>'; }
+}
 async function loadApps(){
   const r = await fetch(`${API}/api/v1/admin/applications?status=pending`, { headers: hdr() });
   if(!r.ok){ document.getElementById('apps').innerHTML = `<div class="msg err">Erreur ${r.status}</div>`; return; }
