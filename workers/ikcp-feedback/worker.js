@@ -145,9 +145,21 @@ async function handleFeedback(request, env, origin) {
     }
   }
 
-  // ── 2. Résumé IA (Claude Haiku) ───────────────────────
+  // ── 2. Résumé IA (souverain Mistral si LLM_PRIMARY=mistral, sinon Claude Haiku) ──
   let aiSummary = '';
-  if (env.ANTHROPIC_API_KEY) {
+  const summaryPrompt = `Feedback bêta testeur Family Office IKCP.
+En 1 courte phrase (12 mots max), résume le besoin fonctionnel clé :
+"${besoin.substring(0, 400)}"`;
+  if (env.LLM_PRIMARY === 'mistral' && env.MISTRAL_API_KEY) {
+    try {
+      const mr = await fetch('https://api.mistral.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: env.MISTRAL_MODEL_SMALL || 'mistral-small-latest', max_tokens: 60, messages: [{ role: 'user', content: summaryPrompt }] }),
+      });
+      if (mr.ok) { const md = await mr.json(); aiSummary = (md.choices && md.choices[0] && md.choices[0].message && md.choices[0].message.content || '').trim(); }
+    } catch (err) { console.error('[AI mistral]', err.message); }
+  } else if (env.ANTHROPIC_API_KEY) {
     try {
       const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -159,12 +171,7 @@ async function handleFeedback(request, env, origin) {
         body: JSON.stringify({
           model: 'claude-haiku-4-5',
           max_tokens: 80,
-          messages: [{
-            role: 'user',
-            content: `Feedback bêta testeur Family Office IKCP.
-En 1 courte phrase (12 mots max), résume le besoin fonctionnel clé :
-"${besoin.substring(0, 400)}"`,
-          }],
+          messages: [{ role: 'user', content: summaryPrompt }],
         }),
       });
       if (aiRes.ok) {
