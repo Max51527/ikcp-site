@@ -141,4 +141,41 @@
     };
   }
   if (document.body) mountFb(); else document.addEventListener('DOMContentLoaded', mountFb);
+
+  // ── Pulse NPS — 1 question, au 3ᵉ passage, une seule fois (→ console Retours testeurs) ──
+  function mountNps() {
+    try {
+      if (localStorage.getItem('ikcp_nps_done')) return;
+      var v = (parseInt(localStorage.getItem('ikcp_visits') || '0', 10) || 0) + 1;
+      localStorage.setItem('ikcp_visits', String(v));
+      if (v < 3) return;
+    } catch (_) { return; }
+    var css = document.createElement('style');
+    css.textContent = '.ikcp-nps{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(12px);z-index:160;max-width:min(94vw,440px);background:#fff;border:1px solid rgba(27,42,74,.12);border-radius:16px;box-shadow:0 16px 44px -12px rgba(14,23,41,.4);padding:16px 18px;opacity:0;transition:.3s}'
+      + '.ikcp-nps.on{opacity:1;transform:translateX(-50%) translateY(0)}'
+      + '.ikcp-nps h4{font-family:Fraunces,"Playfair Display",serif;font-weight:500;font-size:15px;margin:0 0 3px;color:#1B2A4A}'
+      + '.ikcp-nps p{font-size:11.5px;color:#6E7689;margin:0 0 10px}'
+      + '.ikcp-nps .sc{display:flex;flex-wrap:wrap;gap:5px}'
+      + '.ikcp-nps .sc button{flex:1;min-width:26px;border:1px solid rgba(27,42,74,.14);background:#fff;border-radius:7px;padding:7px 0;font:600 12px Outfit,system-ui,sans-serif;cursor:pointer;color:#1B2A4A}'
+      + '.ikcp-nps .sc button:hover{background:#1B2A4A;color:#fff;border-color:#1B2A4A}'
+      + '.ikcp-nps .x{position:absolute;top:7px;right:11px;background:none;border:0;color:#9aa3b2;font-size:16px;cursor:pointer;line-height:1}';
+    document.head.appendChild(css);
+    var box = document.createElement('div'); box.className = 'ikcp-nps';
+    var scale = ''; for (var n = 0; n <= 10; n++) scale += '<button type="button" data-n="' + n + '">' + n + '</button>';
+    box.innerHTML = '<button class="x" type="button" aria-label="Fermer">×</button><h4>Une question rapide</h4><p>De 0 à 10, recommanderiez-vous IKCP à un proche dirigeant ?</p><div class="sc">' + scale + '</div>';
+    document.body.appendChild(box);
+    setTimeout(function () { box.classList.add('on'); }, 1600);
+    function done() { try { localStorage.setItem('ikcp_nps_done', '1'); } catch (_) {} box.classList.remove('on'); setTimeout(function () { box.remove(); }, 300); }
+    box.querySelector('.x').onclick = done;
+    box.querySelector('.sc').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-n]'); if (!b) return;
+      var nn = parseInt(b.getAttribute('data-n'), 10); var tier = ''; try { tier = localStorage.getItem('ikcp_tier') || ''; } catch (_) {}
+      box.innerHTML = '<h4>Merci 🙏</h4><p>Votre note nourrit directement la prochaine version.</p>';
+      try { fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ besoin: 'NPS ' + nn + '/10', type: 'nps', score: nn, categories: ['📊 NPS ' + nn + '/10'], priorite: (nn <= 6 ? 'haute' : 'basse'), page: location.pathname, tier: tier, source: 'nps-pulse' }) }).catch(function () {}); } catch (_) {}
+      try { localStorage.setItem('ikcp_nps_done', '1'); } catch (_) {}
+      setTimeout(done, 1700);
+    });
+  }
+  if (document.body) mountNps(); else document.addEventListener('DOMContentLoaded', mountNps);
 })();

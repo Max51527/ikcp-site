@@ -482,6 +482,7 @@ window.send = async function(e){
     a.className = 'msg a';
     const msgId = 'msg-' + Date.now();
     a.id = msgId;
+    window.__rate = window.__rate || {}; window.__rate[msgId] = { q: q, reply: reply };
     const escaped = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
     const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}', \`${reply.replace(/`/g,'').replace(/\\/g,'\\\\').replace(/"/g,'\\"')}\`)">🔊 Écouter la réponse</button>` : '';
     const disc = '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
@@ -498,7 +499,7 @@ window.send = async function(e){
         window.scrollTo({ top: document.body.scrollHeight });
         setTimeout(typeStep, 20);
       } else {
-        a.innerHTML = md(reply) + readBtn + disc;
+        a.innerHTML = md(reply) + readBtn + disc + ratingHtml(msgId);
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         if(voiceSupport.tts && Voice.getPreferences().autoRead){ setTimeout(() => readMessage('rd-' + msgId, reply), 200); }
       }
@@ -515,7 +516,35 @@ window.send = async function(e){
   }
   return false;
 }
+
+/* ── Rating 👍/👎 sur chaque réponse de Marcel → console Retours testeurs ── */
+function ratingHtml(id){
+  return '<div class="rate" id="rate-'+id+'"><span class="rate-q">Cette réponse vous a aidé ?</span>'
+    + '<button class="rate-b" type="button" onclick="rateMarcel(\''+id+'\',1)" aria-label="Utile">👍</button>'
+    + '<button class="rate-b" type="button" onclick="rateMarcel(\''+id+'\',-1)" aria-label="À améliorer">👎</button></div>';
+}
+function rateMarcel(id, val){
+  var d = (window.__rate && window.__rate[id]) || {};
+  var el = document.getElementById('rate-'+id);
+  if(el) el.innerHTML = '<span class="rate-q">Merci 🙏 — votre retour affine Marcel.</span>';
+  var tier=''; try{ tier=localStorage.getItem('ikcp_tier')||''; }catch(_){}
+  try{
+    fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/feedback', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        besoin:'['+(val>0?'👍 utile':'👎 à améliorer')+'] Q: '+String(d.q||'').slice(0,180)+' — R: '+String(d.reply||'').slice(0,260),
+        type:'marcel-rating',
+        categories:[ val>0 ? '👍 Marcel utile' : '👎 Marcel à améliorer' ],
+        priorite:(val>0?'basse':'haute'), page:location.pathname, tier:tier, source:'marcel-rating' }) }).catch(function(){});
+  }catch(e){}
+}
+window.rateMarcel = rateMarcel;
 </script>
+<style>
+  .msg.a .rate{display:flex;align-items:center;gap:7px;margin-top:11px;padding-top:9px;border-top:1px solid rgba(27,42,74,.08)}
+  .msg.a .rate-q{font-size:11.5px;color:var(--mute,#6E7689)}
+  .msg.a .rate-b{background:transparent;border:1px solid rgba(27,42,74,.14);border-radius:8px;padding:3px 10px;font-size:14px;cursor:pointer;line-height:1;transition:.15s}
+  .msg.a .rate-b:hover{border-color:var(--accent,#C9A96E);background:rgba(201,169,110,.12);transform:translateY(-1px)}
+</style>
 <script src="/protect.js?v=1" defer></script>
 
 <script src="/app/js/pwa-install.js" defer></script>

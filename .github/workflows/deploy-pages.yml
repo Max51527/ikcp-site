@@ -19,10 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Stamp version (rend visible chaque mise à jour Claude Code)
+      - name: Stamp version + service workers (propagation auto, anti-JS-périmé)
         run: |
-          echo "{\"sha\":\"$(echo $GITHUB_SHA | cut -c1-7)\",\"deployed_at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"ref\":\"$GITHUB_REF_NAME\",\"run\":\"$GITHUB_RUN_NUMBER\"}" > version.json
+          SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          echo "{\"sha\":\"$SHA\",\"deployed_at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"ref\":\"$GITHUB_REF_NAME\",\"run\":\"$GITHUB_RUN_NUMBER\"}" > version.json
           cat version.json
+          # Stampe la version des service workers avec le SHA → SW unique à chaque déploiement
+          # → réinstallation + rechargement automatique des membres (élimine le JS périmé).
+          if [ -f app/sw.js ]; then sed -i "s/const CACHE_VERSION = '[^']*'/const CACHE_VERSION = 'marcel-$SHA'/" app/sw.js; grep -n "CACHE_VERSION =" app/sw.js | head -1; fi
+          if [ -f sw.js ]; then sed -i "s/const CACHE_NAME = '[^']*'/const CACHE_NAME = 'ikcp-$SHA'/" sw.js; grep -n "CACHE_NAME =" sw.js | head -1; fi
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
