@@ -58,6 +58,27 @@
     <button type="submit" aria-label="Envoyer">→</button>
   </form>
 
+  <!-- ── Questions suggérées : valeur en 1 tap (onboarding « valeur d'abord ») ── -->
+  <div id="marcelStarters" style="display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 18px"></div>
+  <script>
+  (function(){
+    var el = document.getElementById('marcelStarters'); if(!el) return;
+    var Q = [
+      ['🛡️','Et si demain il m\'arrive quelque chose ?','Si demain il m\'arrive quelque chose, ma famille et mon patrimoine sont-ils protégés ?'],
+      ['📊','Payer moins d\'impôts sur ma société','Comment optimiser légalement la fiscalité de ma société : arbitrage IR/IS, dividendes ou rémunération ?'],
+      ['🎁','Transmettre à mes enfants','Combien puis-je transmettre à mes enfants sans droits de succession ?'],
+      ['💶','Ma trésorerie d\'entreprise','Que faire de la trésorerie excédentaire de mon entreprise ?']
+    ];
+    el.innerHTML = Q.map(function(q){
+      return '<a href="/app/marcel?q='+encodeURIComponent(q[2])+'" '
+        + 'style="display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;color:var(--ink);text-decoration:none;background:var(--bg);transition:.15s" '
+        + 'onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" '
+        + 'onmouseout="this.style.borderColor=\'var(--line)\';this.style.color=\'var(--ink)\'">'
+        + q[0]+' '+q[1]+'</a>';
+    }).join('');
+  })();
+  </script>
+
   <!-- ── Activation guidée (remplit le dashboard vide, % de progression) ── -->
   <section id="activation" style="margin:4px 0 18px;display:none"></section>
 
