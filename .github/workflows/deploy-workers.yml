@@ -7,6 +7,7 @@ on:
       - 'workers/ikcp-marcel/**'
       - 'workers/ikcp-voice/**'
       - 'workers/ikcp-batisseur/**'
+      - 'workers/ikcp-codex/**'
       - 'workers/ikcp-hermes/**'
       - 'workers/ikcp-veille/**'
       - 'workers/ikcp-lifestyle/**'
@@ -26,6 +27,7 @@ on:
           - ikcp-marcel
           - ikcp-voice
           - ikcp-batisseur
+          - ikcp-codex
           - ikcp-hermes
           - ikcp-veille
           - ikcp-lifestyle
@@ -91,6 +93,25 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-batisseur
+
+  deploy-ikcp-codex:
+    name: "Deploy ikcp-codex (Fiscalite experte)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-codex') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-codex (Codex souverain)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-codex
 
   deploy-ikcp-hermes:
     name: "Deploy ikcp-hermes (Transmission patrimoniale)"

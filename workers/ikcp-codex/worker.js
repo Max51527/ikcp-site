@@ -255,7 +255,7 @@ export default {
       return Response.json(
         {
           service: 'ikcp-codex',
-          version: '1.0',
+          version: '1.1',
           purpose: 'Sub-agent fiscal expert · délégation depuis Marcel',
           endpoints: ['GET /health', 'POST / { question, context? }'],
         },
