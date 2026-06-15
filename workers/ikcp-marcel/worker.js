@@ -885,6 +885,38 @@ async function logQuestion(env, userMessage, responseText, ctx, webSearchUsed) {
   }
 }
 
+// ── AUTO-AMÉLIORATION (supervisée) ───────────────────────────────────────────
+// Marcel analyse un échantillon de son usage RÉEL (questions + aperçu réponses)
+// et PROPOSE des améliorations concrètes de son prompt. Il ne s'applique JAMAIS
+// rien tout seul : Maxime valide via POST /admin/learn (conformité MIF II +
+// responsabilité du cabinet). 100 % souverain (Mistral FR).
+async function analyzeAndPropose(env) {
+  if (!env.MARCEL_LOGS) return { error: 'MARCEL_LOGS absent' };
+  if (!env.MISTRAL_API_KEY) return { error: 'MISTRAL_API_KEY absent (auto-amélioration souveraine indisponible)' };
+  const list = await env.MARCEL_LOGS.list({ prefix: 'q_', limit: 100 });
+  const samples = [];
+  for (const k of list.keys.slice(0, 50)) {
+    try { const v = JSON.parse(await env.MARCEL_LOGS.get(k.name)); if (v && v.q) samples.push({ q: v.q, r: v.r_preview || '' }); } catch (_) {}
+  }
+  if (samples.length < 3) return { generated_at: new Date().toISOString(), sample_size: samples.length, note: "Pas encore assez d'usage pour analyser (minimum 3 échanges)." };
+  const sys = `Tu es l'auditeur qualité de "Marcel", IA patrimoniale d'un cabinet de gestion de patrimoine CIF français (ORIAS 23001568), soumis à MIF II. On te fournit un échantillon de questions de clients et l'aperçu des réponses de Marcel. Détecte les FAIBLESSES RÉCURRENTES : imprécision, manque de chiffrage en euros, oubli du disclaimer L.541-1, nuance gérant majoritaire (TNS) vs minoritaire/SAS manquée, sujets mal couverts, ton inadapté. Puis propose des AMÉLIORATIONS CONCRÈTES, prêtes à coller dans le prompt système de Marcel. RÈGLE ABSOLUE : toutes tes propositions restent strictement INFORMATIVES et conformes MIF II — jamais de recommandation produit, jamais d'allocation chiffrée, toujours finir par une question. Réponds en JSON STRICT : {"score_qualite":<0-100>,"faiblesses":["..."],"ameliorations_proposees":["phrase prête à coller dans le prompt"],"sujets_a_renforcer":["..."]}.`;
+  const usr = "Échantillon d'usage réel :\n" + samples.map((s, i) => `${i + 1}. Q: ${s.q}\n   R(aperçu): ${s.r}`).join('\n');
+  try {
+    const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: env.MISTRAL_MODEL || 'mistral-large-latest', max_tokens: 1600, temperature: 0.2, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: sys }, { role: 'user', content: usr }] }),
+    });
+    if (!r.ok) return { error: 'mistral_' + r.status };
+    const d = await r.json();
+    let parsed = {};
+    try { parsed = JSON.parse(d.choices[0].message.content); } catch (_) { parsed = { raw: d.choices?.[0]?.message?.content || '' }; }
+    const proposal = { generated_at: new Date().toISOString(), sample_size: samples.length, ...parsed };
+    try { await env.MARCEL_LOGS.put('marcel_improvement_proposal', JSON.stringify(proposal), { expirationTtl: 60 * 60 * 24 * 60 }); } catch (_) {}
+    return proposal;
+  } catch (e) { return { error: e.message }; }
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') {
@@ -903,6 +935,39 @@ export default {
       return renderDashboard(env);
     }
 
+    // ── AUTO-AMÉLIORATION supervisée (token admin) ──
+    // GET  /admin/improve → analyse l'usage réel et PROPOSE des améliorations
+    // GET  /admin/learn   → état actuel (validé + dernière proposition)
+    // POST /admin/learn { text, mode:'append'|'replace' } → VALIDE une amélioration
+    if (urlEarly.pathname.startsWith('/admin/')) {
+      const tok = urlEarly.searchParams.get('token') || (request.headers.get('Authorization') || '').replace('Bearer ', '');
+      if (!env.ADMIN_TOKEN || tok !== env.ADMIN_TOKEN) return new Response('Unauthorized', { status: 401 });
+      const jh = { 'Content-Type': 'application/json; charset=utf-8' };
+      if (request.method === 'GET' && urlEarly.pathname === '/admin/improve') {
+        return new Response(JSON.stringify(await analyzeAndPropose(env), null, 2), { status: 200, headers: jh });
+      }
+      if (request.method === 'GET' && urlEarly.pathname === '/admin/learn') {
+        const learned = (env.MARCEL_LOGS && await env.MARCEL_LOGS.get('marcel_learned')) || '';
+        const prop = (env.MARCEL_LOGS && await env.MARCEL_LOGS.get('marcel_improvement_proposal')) || '';
+        return new Response(JSON.stringify({ learned, learned_len: learned.length, last_proposal: prop ? JSON.parse(prop) : null }, null, 2), { status: 200, headers: jh });
+      }
+      if (request.method === 'POST' && urlEarly.pathname === '/admin/learn') {
+        if (!env.MARCEL_LOGS) return new Response(JSON.stringify({ error: 'MARCEL_LOGS absent' }), { status: 500, headers: jh });
+        let body = {}; try { body = await request.json(); } catch (_) {}
+        const text = (body.text || '').toString().trim();
+        if (!text) return new Response(JSON.stringify({ error: 'text requis' }), { status: 400, headers: jh });
+        let next = text;
+        if (body.mode !== 'replace') {
+          const prev = (await env.MARCEL_LOGS.get('marcel_learned')) || '';
+          next = (prev ? prev + '\n' : '') + text;
+        }
+        next = next.slice(-6000); // borne la taille du prompt appris
+        await env.MARCEL_LOGS.put('marcel_learned', next);
+        return new Response(JSON.stringify({ ok: true, learned_len: next.length }), { status: 200, headers: jh });
+      }
+      return new Response(JSON.stringify({ error: 'admin_endpoint_not_found' }), { status: 404, headers: jh });
+    }
+
     const origin = request.headers.get('Origin') || '';
     const originOk = ALLOWED_ORIGINS.includes(origin)
       || origin.endsWith('.ikcp.eu')
@@ -919,9 +984,9 @@ export default {
       return new Response(JSON.stringify({
         status: 'ok',
         service: 'marcel',
-        version: '2.3',
+        version: '2.4',
         model: 'ikcp-souverain',
-        features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard'],
+        features: ['web_search', 'seasonal_context', 'few_shot_examples', 'kv_logging', 'tool_calling', 'prompt_caching', 'follow_ups', 'admin_dashboard', 'self_improvement_supervised'],
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
@@ -984,6 +1049,19 @@ export default {
 
       const ctx = getCurrentContext();
       let systemPromptText = buildSystemPrompt(ctx);
+
+      // ── AUTO-AMÉLIORATION appliquée (supervisée) ──
+      // Marcel applique en live UNIQUEMENT les améliorations VALIDÉES par le
+      // cabinet (KV 'marcel_learned', alimenté via POST /admin/learn). 100 %
+      // humain-approuvé → zéro risque MIF II. Réversible (suppression de la clé).
+      if (env.MARCEL_LOGS) {
+        try {
+          const learned = await env.MARCEL_LOGS.get('marcel_learned');
+          if (learned && learned.trim()) {
+            systemPromptText += `\n\n# AMÉLIORATIONS VALIDÉES PAR LE CABINET (apprises de l'usage réel)\n${learned.trim()}`;
+          }
+        } catch (_) {}
+      }
 
       // ── Mémoire conversationnelle Sprint 2 ──
       // Si l'utilisateur est authentifié (cookie session), on enrichit
@@ -1381,5 +1459,13 @@ export default {
         headers: { 'Content-Type': 'application/json', ...corsHeaders(request) },
       });
     }
+  },
+
+  // ── CRON hebdomadaire (lundi 7h UTC) ──
+  // Marcel analyse son usage réel et écrit une proposition d'amélioration que
+  // Maxime valide ensuite via /admin/learn. Auto-amélioration SUPERVISÉE :
+  // rien ne s'applique au prompt sans validation humaine (MIF II + responsabilité).
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(analyzeAndPropose(env).catch((e) => console.error('auto-improve cron:', e && e.message)));
   },
 };

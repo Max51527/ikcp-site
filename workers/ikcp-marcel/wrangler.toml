@@ -31,3 +31,9 @@ enabled = true
 
 [vars]
 LLM_PRIMARY = "mistral"
+
+# CRON — auto-amélioration supervisée : chaque lundi 7h UTC, Marcel analyse son
+# usage réel et écrit une proposition d'amélioration (validée ensuite par Maxime
+# via /admin/learn). Rien ne s'applique au prompt sans validation humaine.
+[triggers]
+crons = ["0 7 * * 1"]
