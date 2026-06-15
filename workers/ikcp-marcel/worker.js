@@ -1151,10 +1151,23 @@ export default {
             await logQuestion(env, message, mReply, ctx, false);
             return new Response(JSON.stringify({ reply: mReply, follow_ups: mFollow, provider: 'mistral-souverain', season: ctx.season }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
           }
-          // Mistral n'a rien produit → on bascule sur Anthropic ci-dessous.
+          // Mistral n'a rien produit → secours souverain (Mistral dégradé), JAMAIS les US.
         } catch (e) {
-          console.error('Marcel souverain (Mistral) error:', e.message); // → fallback Anthropic
+          console.error('Marcel souverain (Mistral) error:', e.message);
         }
+        // ── SOUVERAINETÉ STRICTE ────────────────────────────────────────────
+        // En mode Mistral, on ne bascule JAMAIS sur Anthropic (US). Secours =
+        // Mistral dégradé (sans outils). Garantit « zéro dépendance américaine ».
+        try {
+          const fb = await callMistralFallback(env, systemPromptText, workingMessages);
+          if (fb) {
+            let r = fb;
+            if (!/L\.?\s*541[-\s]?1/i.test(r)) r = r.trimEnd() + "\n\n---\n\n*Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande.*";
+            await logQuestion(env, message, r, ctx, false);
+            return new Response(JSON.stringify({ reply: r, follow_ups: ['Pouvez-vous préciser votre situation ?', 'Souhaitez-vous échanger avec Maxime ?', 'Voulez-vous un autre point patrimonial ?'], provider: 'mistral-souverain', fallback: true, season: ctx.season }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+          }
+        } catch (_) {}
+        return new Response(JSON.stringify({ reply: "Marcel est momentanément indisponible. Vous pouvez réessayer dans un instant, ou échanger directement avec Maxime.", provider: 'mistral-souverain', error: 'sovereign_unavailable' }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
       }
 
       while (totalIterations < MAX_ITER) {
