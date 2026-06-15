@@ -1045,6 +1045,30 @@ export default {
         } catch (_) { /* quota non bloquant : en cas d'erreur réseau, on laisse passer */ }
       }
 
+      // ── PLAFOND GLOBAL (anti-dépassement coût, phase bêta) ───────────────
+      // Garde-fou : si le nb total d'appels Marcel du mois dépasse
+      // MARCEL_GLOBAL_CAP, on répond un message poli SANS appeler le modèle
+      // (= coût borné, quoi qu'il arrive). Opt-in : ne s'active QUE si la
+      // variable est définie (dashboard Cloudflare). Best-effort (KV non
+      // atomique → léger dépassement possible, sans risque). Réversible.
+      if (env.MARCEL_GLOBAL_CAP && env.MARCEL_LOGS) {
+        try {
+          const cap = parseInt(env.MARCEL_GLOBAL_CAP, 10) || 0;
+          if (cap > 0) {
+            const mk = 'mcap_' + new Date().toISOString().slice(0, 7); // mcap_2026-06
+            const cur = parseInt((await env.MARCEL_LOGS.get(mk)) || '0', 10);
+            if (cur >= cap) {
+              return new Response(JSON.stringify({
+                reply: "**Marcel connaît une très forte affluence en ce moment.** Notre Family Office augmenté est en phase bêta, à capacité volontairement limitée. Réessayez un peu plus tard — ou laissez vos coordonnées pour un accès prioritaire.",
+                capacity_reached: true,
+                follow_ups: ['Demander un accès prioritaire', 'Découvrir l\'offre Family Office', 'Quand Marcel sera-t-il de nouveau disponible ?'],
+              }), { headers: { ...corsHeaders(request), 'Content-Type': 'application/json' } });
+            }
+            await env.MARCEL_LOGS.put(mk, String(cur + 1), { expirationTtl: 60 * 60 * 24 * 40 });
+          }
+        } catch (_) { /* plafond non bloquant : en cas d'erreur, on laisse passer */ }
+      }
+
       // Prompt caching : le system prompt est stable, on le marque pour cache
       // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)
       const systemParam = [{
