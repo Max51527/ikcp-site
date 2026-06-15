@@ -285,6 +285,17 @@ select option{background:var(--navy-deep)}
           <div style="overflow-x:auto" id="agents"><div class="empty">Sondage en cours…</div></div>
         </div>
         <div class="card">
+          <h2>🧠 Auto-amélioration de Marcel <span class="pill fo">supervisée</span></h2>
+          <div class="desc">Marcel analyse son usage réel (souverain 🇫🇷) et propose des améliorations. <b>Rien ne s'applique sans ta validation</b> (MIF II). Une proposition est générée automatiquement chaque lundi.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0">
+            <input id="aiTok" type="password" placeholder="Token admin Marcel" style="flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--cream-2);font-size:13px;color:var(--ink)">
+            <button class="btn sm" onclick="aiAnalyze()">⟳ Analyser l'usage</button>
+            <button class="btn ghost sm" onclick="aiState()">État actuel</button>
+          </div>
+          <div id="aiOut"><div class="empty">Colle ton token admin Marcel, puis « Analyser l'usage ».</div></div>
+        </div>
+        <script>(function(){var t=localStorage.getItem('marcelAdminTok');var e=document.getElementById('aiTok');if(t&&e)e.value=t;})();</script>
+        <div class="card">
           <h2>🔌 API connectées <span class="pill fo">6 actives</span></h2>
           <div class="desc">Les services externes qui alimentent la plateforme. Pour les modifier : onglet « Réglages &amp; liens » (consoles fournisseurs) — ou demande-moi.</div>
           <div style="overflow-x:auto"><table>
@@ -755,6 +766,58 @@ const AGENTS = [
   {n:'Pappers',role:'Cartographie SIREN',model:'',u:W('pappers')+'/health'},
   {n:'Témoin',role:'Audit MIF II',model:'',u:W('temoin')+'/health'},
 ];
+/* ═══ Auto-amélioration Marcel (supervisée) ═══ */
+const AI_MARCEL='https://ikcp-chat.maxime-ead.workers.dev';
+let _aiProps=[];
+function aiTok(){const e=document.getElementById('aiTok');const t=(e&&e.value.trim())||'';if(t)localStorage.setItem('marcelAdminTok',t);return t||localStorage.getItem('marcelAdminTok')||'';}
+function aiEsc(s){return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function aiWarn(m){return '<div class="alert warn"><span class="x">!</span><div>'+aiEsc(m)+'</div></div>';}
+function aiHtml(d){
+  if(!d||d.error) return aiWarn((d&&d.error)||'Réponse vide.');
+  if(d.note) return '<div class="empty">'+aiEsc(d.note)+'</div>';
+  let h='';
+  if(typeof d.score_qualite!=='undefined') h+='<div class="desc">Score qualité estimé : <b>'+aiEsc(d.score_qualite)+'/100</b> · échantillon '+aiEsc(d.sample_size||0)+' échanges</div>';
+  if(Array.isArray(d.faiblesses)&&d.faiblesses.length) h+='<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 6px">Faiblesses détectées</div><ul style="margin:0 0 8px 18px;font-size:13px;line-height:1.5">'+d.faiblesses.map(f=>'<li>'+aiEsc(f)+'</li>').join('')+'</ul>';
+  _aiProps=Array.isArray(d.ameliorations_proposees)?d.ameliorations_proposees.slice():[];
+  if(_aiProps.length){
+    h+='<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 6px">Améliorations proposées — valide ce que tu approuves</div>';
+    h+=_aiProps.map((a,i)=>'<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;padding:10px;background:var(--cream-2);border-radius:8px"><div style="flex:1;font-size:13px;line-height:1.5">'+aiEsc(a)+'</div><button class="btn sm" onclick="aiValidate('+i+')">✓ Valider</button></div>').join('');
+  }
+  if(Array.isArray(d.sujets_a_renforcer)&&d.sujets_a_renforcer.length) h+='<div class="desc" style="margin-top:10px">Sujets à renforcer : '+d.sujets_a_renforcer.map(aiEsc).join(' · ')+'</div>';
+  return h||'<div class="empty">Aucune proposition.</div>';
+}
+async function aiAnalyze(){
+  const tok=aiTok();const out=document.getElementById('aiOut');
+  if(!tok){out.innerHTML=aiWarn('Token admin Marcel requis.');return;}
+  out.innerHTML='<div class="empty">Marcel analyse son usage réel… (15-30 s)</div>';
+  try{
+    const r=await fetch(AI_MARCEL+'/admin/improve?token='+encodeURIComponent(tok));
+    if(r.status===401){out.innerHTML=aiWarn('Token refusé.');return;}
+    out.innerHTML=aiHtml(await r.json());
+  }catch(e){out.innerHTML=aiWarn(e.message);}
+}
+async function aiState(){
+  const tok=aiTok();const out=document.getElementById('aiOut');
+  if(!tok){out.innerHTML=aiWarn('Token admin Marcel requis.');return;}
+  try{
+    const r=await fetch(AI_MARCEL+'/admin/learn?token='+encodeURIComponent(tok));
+    if(r.status===401){out.innerHTML=aiWarn('Token refusé.');return;}
+    const d=await r.json();
+    let h='<div class="desc"><b>Améliorations déjà validées</b> ('+(d.learned_len||0)+' caractères, appliquées en live) :</div>';
+    h+='<pre style="white-space:pre-wrap;background:var(--cream-2);padding:12px;border-radius:8px;font-size:12px;max-height:200px;overflow:auto">'+(aiEsc(d.learned)||'(aucune pour l\'instant)')+'</pre>';
+    if(d.last_proposal){h+='<div class="desc" style="margin-top:12px">Dernière proposition ('+aiEsc((d.last_proposal.generated_at||'').slice(0,10))+') :</div>'+aiHtml(d.last_proposal);}
+    out.innerHTML=h;
+  }catch(e){out.innerHTML=aiWarn(e.message);}
+}
+async function aiValidate(i){
+  const text=_aiProps[i];const tok=aiTok();if(!text||!tok)return;
+  try{
+    const r=await fetch(AI_MARCEL+'/admin/learn?token='+encodeURIComponent(tok),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text,mode:'append'})});
+    const d=await r.json();
+    if(d.ok)alert('✓ Validé — Marcel applique désormais cette amélioration ('+d.learned_len+' car.).');
+    else alert('Erreur : '+(d.error||'inconnue'));
+  }catch(e){alert('Erreur : '+e.message);}
+}
 async function loadAgents(){
   const el = document.getElementById('agents');
   el.innerHTML = `<table><thead><tr><th>Agent</th><th>Rôle</th><th>Modèle</th><th>État</th><th>Note</th></tr></thead><tbody>${
