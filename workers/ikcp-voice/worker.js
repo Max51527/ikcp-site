@@ -163,9 +163,15 @@ export default {
       }
 
       const t0 = Date.now();
+      // ── SOUVERAINETÉ VOIX ────────────────────────────────────────────────
+      // Dès que la clé Mistral est présente, on transcrit via Voxtral (FR) et on
+      // NE bascule JAMAIS sur Whisper (US), même en cas d'échec. La voix est une
+      // donnée personnelle → zéro dépendance américaine. Whisper n'intervient
+      // QUE si aucune clé souveraine n'est configurée (transition).
+      const sovereign = !!env.MISTRAL_API_KEY && (env.STT_PRIMARY || 'voxtral') === 'voxtral';
       let result;
       try {
-        if (env.STT_PRIMARY === 'voxtral' && env.MISTRAL_API_KEY) {
+        if (sovereign) {
           result = await transcribeVoxtral(env, audioBlob);
         } else if (env.AI) {
           result = await transcribeWhisperCF(env, audioBlob);
@@ -173,12 +179,12 @@ export default {
           return json({ error: 'no_stt_provider_configured' }, 500, origin);
         }
       } catch (err) {
-        // Fallback automatique sur Whisper CF si Voxtral échoue
-        if (env.AI) {
+        // En mode souverain : pas de repli américain. Échec propre.
+        if (!sovereign && env.AI) {
           try { result = await transcribeWhisperCF(env, audioBlob); }
           catch (err2) { return json({ error: 'stt_all_providers_failed', detail: err.message }, 502, origin); }
         } else {
-          return json({ error: 'stt_failed', detail: err.message }, 502, origin);
+          return json({ error: 'stt_failed_sovereign', detail: err.message }, 502, origin);
         }
       }
 
