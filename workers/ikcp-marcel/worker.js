@@ -1036,7 +1036,7 @@ export default {
             const q = await qr.json();
             if (q && q.allowed === false) {
               return new Response(JSON.stringify({
-                reply: `**Vous avez utilisé vos ${q.limit} échanges Découverte ce mois-ci.**\n\nL'accès illimité à Marcel et à ses 11 spécialistes — analyses fiscales approfondies, transmission, veille de marché — fait partie de l'offre **Premium**. Vos simulateurs restent accessibles sans limite.\n\n*Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.*`,
+                reply: `**Vous avez utilisé vos ${q.limit} échanges Découverte ce mois-ci.**\n\nL'accès illimité à Marcel et à ses spécialistes — analyses fiscales approfondies, transmission, veille de marché — fait partie de l'offre **Premium**. Vos simulateurs restent accessibles sans limite.\n\n*Cette information ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.*`,
                 quota_reached: true, tier: q.tier, limit: q.limit,
                 follow_ups: ['Que comprend l\'offre Premium ?', 'Quand mon quota se réinitialise-t-il ?', 'Puis-je tester encore un simulateur ?'],
               }), { headers: { ...corsHeaders(request), 'Content-Type': 'application/json' } });
