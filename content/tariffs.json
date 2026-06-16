@@ -1,8 +1,10 @@
 {
-  "updated_at": "2026-06-09T00:00:00.000Z",
+  "updated_at": "2026-06-16T20:55:00.000Z",
+  "_note": "Les IDs techniques s'alignent sur la stack existante (free/premium/fo dans users.tier). Les libellés commerciaux sont éditables via Sveltia.",
   "tiers": [
     {
-      "id": "freemium",
+      "id": "free",
+      "commercial_name": "Freemium",
       "name": "Freemium",
       "price_eur": 0,
       "price_label": "Gratuit",
@@ -15,10 +17,12 @@
         "Newsletter UPPERCUT publique"
       ],
       "cta_label": "Commencer",
-      "cta_href": "/proposals/family-office-v5-univers.html"
+      "cta_href": "/proposals/family-office-v5-univers.html",
+      "stripe_plan": null
     },
     {
-      "id": "decouverte",
+      "id": "premium",
+      "commercial_name": "Découverte",
       "name": "Découverte",
       "price_eur": 1800,
       "price_label": "1 800€ · 3 mois",
@@ -34,10 +38,12 @@
         "Lettre de mission digitale eIDAS"
       ],
       "cta_label": "Tester 3 mois",
-      "cta_href": "/proposals/onboarding-paiement.html?tier=decouverte"
+      "cta_href": "/proposals/onboarding-paiement.html?plan=decouverte",
+      "stripe_plan": "decouverte"
     },
     {
-      "id": "augmente",
+      "id": "premium",
+      "commercial_name": "Augmenté",
       "name": "Family Office augmenté",
       "price_eur": 6800,
       "price_label": "6 800€/an",
@@ -45,7 +51,7 @@
       "highlight": true,
       "features": [
         "Marcel chat illimité 24/7",
-        "9 agents spécialisés : patrimoine, transmission, rémunération, fiscalité (OCR avis IR), immobilier, défiscalisation, reporting, documents, suivi trimestriel",
+        "9 agents spécialisés : patrimoine, transmission, rémunération, fiscalité OCR, immobilier, défiscalisation, reporting, documents, suivi",
         "Memory store famille — Marcel se souvient",
         "Newsletter perso hebdomadaire (vendredi 10h)",
         "Voix Marcel + Vision documents",
@@ -53,11 +59,13 @@
         "Lettre de mission eIDAS qualifiée",
         "RDV Maxime sur demande"
       ],
-      "cta_label": "Demander un code beta",
-      "cta_href": "/proposals/onboarding-paiement.html?tier=augmente"
+      "cta_label": "Souscrire",
+      "cta_href": "/proposals/onboarding-paiement.html?plan=augmente",
+      "stripe_plan": "augmente"
     },
     {
-      "id": "bespoke",
+      "id": "fo",
+      "commercial_name": "Bespoke",
       "name": "Bespoke",
       "price_eur": 15000,
       "price_label": "Dès 15 000€/an",
@@ -65,22 +73,25 @@
       "highlight": false,
       "features": [
         "Tout de l'offre Augmenté",
-        "+ 4 agents Bespoke : stratégie patrimoniale 5 ans · fortune HNW · gouvernance familiale · éditorial sur mesure",
+        "+ 4 agents Bespoke : stratégie 5 ans · fortune HNW · gouvernance familiale · éditorial sur mesure",
         "Co-construction d'agents Marcel dédiés",
-        "Intégration partenaires (notaire, avocat, expert-comptable) via MCP",
+        "Intégration partenaires (notaire, avocat, EC) via MCP",
         "Reporting consolidé multi-générationnel",
         "Maxime joignable directement (SLA 24h)"
       ],
       "cta_label": "Échange confidentiel",
-      "cta_href": "mailto:maxime@ikcp.fr?subject=IKCP%20Bespoke%20—%20demande%20d'échange"
+      "cta_href": "mailto:maxime@ikcp.fr?subject=IKCP%20Bespoke",
+      "stripe_plan": "bespoke"
     },
     {
-      "id": "partner_cgp",
+      "id": "fo",
+      "commercial_name": "Partner CGP",
       "name": "Partner CGP",
       "price_eur": 12000,
       "price_label": "12 000€/an",
-      "tagline": "Pour cabinets CGP qui veulent white-label Marcel",
+      "tagline": "Cabinets CGP qui veulent white-label Marcel",
       "highlight": false,
+      "_hidden_from_public": true,
       "features": [
         "Marcel chat + 13 agents intégrés à votre marque",
         "Sous-domaine dédié (marcel.votre-cabinet.fr)",
@@ -90,7 +101,13 @@
         "SLA 99% + support prioritaire"
       ],
       "cta_label": "Devenir partenaire CGP",
-      "cta_href": "mailto:maxime@ikcp.fr?subject=IKCP%20Partner%20CGP%20—%20intérêt"
+      "cta_href": "mailto:maxime@ikcp.fr?subject=IKCP%20Partner%20CGP",
+      "stripe_plan": null
     }
-  ]
+  ],
+  "_mapping_technique": {
+    "free": "Tier technique 'free' = Freemium (gratuit)",
+    "premium": "Tier technique 'premium' = Découverte 3 mois OU Augmenté annuel — différencié par stripe_plan en métadonnée subscription",
+    "fo": "Tier technique 'fo' = Bespoke OU Partner CGP — différencié par stripe_plan en métadonnée subscription"
+  }
 }

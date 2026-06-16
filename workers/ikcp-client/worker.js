@@ -518,18 +518,41 @@ async function handlePappersLookup(request, session, env) {
 // ──────────────────────────────────────────────────────────────
 async function handleStripeCheckout(request, session, env) {
   const { plan } = await request.json().catch(() => ({}));
-  const priceMap = { monthly: env.STRIPE_PRICE_PREMIUM_MONTHLY, yearly: env.STRIPE_PRICE_PREMIUM_YEARLY };
-  const priceId = priceMap[plan];
-  if (!priceId) return json({ error: 'invalid_plan' }, 400);
+  // Mapping plan commercial → Stripe price ID + tier cible après webhook
+  // - legacy monthly/yearly conservés pour rétro-compatibilité
+  // - decouverte = test 3 mois 1 800€ (sub Stripe avec cancel_at_period_end = 3 mois)
+  // - augmente   = abonnement annuel 6 800€/an
+  // - bespoke    = abonnement annuel 15 000€/an (Family Office complet)
+  const PLAN_MAP = {
+    monthly:    { price: env.STRIPE_PRICE_PREMIUM_MONTHLY,  mode: 'subscription', tier: 'premium', commercial: 'premium_monthly' },
+    yearly:     { price: env.STRIPE_PRICE_PREMIUM_YEARLY,   mode: 'subscription', tier: 'premium', commercial: 'premium_yearly' },
+    decouverte: { price: env.STRIPE_PRICE_DECOUVERTE,       mode: 'subscription', tier: 'premium', commercial: 'decouverte', duration_months: 3 },
+    augmente:   { price: env.STRIPE_PRICE_AUGMENTE_YEARLY,  mode: 'subscription', tier: 'premium', commercial: 'augmente' },
+    bespoke:    { price: env.STRIPE_PRICE_BESPOKE_YEARLY,   mode: 'subscription', tier: 'fo',      commercial: 'bespoke' },
+  };
+
+  const planCfg = PLAN_MAP[plan];
+  if (!planCfg) return json({ error: 'invalid_plan', accepted: Object.keys(PLAN_MAP) }, 400);
+  if (!planCfg.price) return json({ error: 'plan_not_configured_in_stripe', plan }, 500);
 
   const params = new URLSearchParams();
-  params.append('mode', 'subscription');
-  params.append('line_items[0][price]', priceId);
+  params.append('mode', planCfg.mode);
+  params.append('line_items[0][price]', planCfg.price);
   params.append('line_items[0][quantity]', '1');
   params.append('customer_email', session.email);
-  params.append('success_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html?upgraded=1`);
-  params.append('cancel_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html`);
+  params.append('allow_promotion_codes', 'true');
+  params.append('success_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html?upgraded=${planCfg.commercial}`);
+  params.append('cancel_url', `${env.FRONT_URL || 'https://ikcp.eu'}/proposals/onboarding-paiement.html?plan=${plan}&cancelled=1`);
   params.append('metadata[user_id]', session.user_id);
+  params.append('metadata[plan]', planCfg.commercial);
+  params.append('metadata[tier]', planCfg.tier);
+
+  // Pour Découverte : cancel auto après 3 mois (one-shot 1 800€)
+  if (planCfg.duration_months) {
+    const cancelTs = Math.floor(Date.now() / 1000) + (planCfg.duration_months * 30 * 86400);
+    params.append('subscription_data[cancel_at]', String(cancelTs));
+    params.append('subscription_data[metadata][duration_months]', String(planCfg.duration_months));
+  }
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
@@ -538,7 +561,7 @@ async function handleStripeCheckout(request, session, env) {
   });
   const data = await res.json();
   if (!res.ok) return json({ error: 'stripe_failed', detail: data }, 502);
-  return json({ checkout_url: data.url });
+  return json({ checkout_url: data.url, plan: planCfg.commercial, tier_target: planCfg.tier });
 }
 
 async function handleStripePortal(session, env) {
@@ -574,12 +597,30 @@ async function handleStripeWebhook(request, env) {
   switch (event.type) {
     case 'checkout.session.completed':
       if (userId) {
-        await env.D1.prepare('UPDATE users SET tier = ?, stripe_customer_id = ?, stripe_subscription_id = ? WHERE id = ?')
-          .bind('premium', obj.customer, obj.subscription, userId).run();
-        await audit(env, userId, 'tier_upgraded', request, { from: 'free', to: 'premium' });
-        await emitEvent(env, userId, 'subscription_upgraded', { from_tier: 'free', to_tier: 'premium' });
+        // Le tier cible est passé en metadata par handleStripeCheckout
+        // (premium pour découverte/augmente, fo pour bespoke). Fallback premium si absent.
+        const targetTier = (obj.metadata?.tier === 'fo' || obj.metadata?.tier === 'premium')
+          ? obj.metadata.tier : 'premium';
+        const plan = obj.metadata?.plan || 'premium';
+
+        // Récupère le tier précédent pour audit
+        const beforeRow = await env.D1.prepare('SELECT tier FROM users WHERE id = ?').bind(userId).first();
+        const fromTier = beforeRow?.tier || 'free';
+
+        await env.D1.prepare(
+          'UPDATE users SET tier = ?, stripe_customer_id = ?, stripe_subscription_id = ? WHERE id = ?'
+        ).bind(targetTier, obj.customer, obj.subscription, userId).run();
+
+        await audit(env, userId, 'tier_upgraded', request, { from: fromTier, to: targetTier, plan });
+        await emitEvent(env, userId, 'subscription_upgraded', { from_tier: fromTier, to_tier: targetTier, plan });
+
         const u = await env.D1.prepare('SELECT email FROM users WHERE id = ?').bind(userId).first();
-        if (u) await sendEmail(env, { to: u.email, subject: 'Bienvenue Premium · IKCP', html: emailTemplatePremiumWelcome() });
+        if (u) {
+          const subject = targetTier === 'fo'
+            ? 'Bienvenue Bespoke · IKCP Family Office'
+            : (plan === 'decouverte' ? 'Bienvenue Découverte 3 mois · IKCP' : 'Bienvenue Augmenté · IKCP Family Office');
+          await sendEmail(env, { to: u.email, subject, html: emailTemplatePremiumWelcome() });
+        }
       }
       break;
     case 'customer.subscription.deleted': {

@@ -224,13 +224,16 @@ header.top {
 const AGENTS_BASE = window.IKCP_AGENTS_URL || 'https://agents.ikcp.eu';
 const CLIENT_BASE = window.IKCP_CLIENT_URL || 'https://client.ikcp.eu';
 
+// Alignement sur les IDs techniques du worker ikcp-client : free / premium / fo
+// premium = Découverte 3 mois OU Augmenté annuel (9 agents)
+// fo = Bespoke OU Partner CGP (13 agents)
 const TIER_AGENTS = {
-  freemium: [],
-  augmente: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
-             'immobilier', 'defiscalisation', 'transmission', 'remuneration'],
-  bespoke: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
-            'immobilier', 'defiscalisation', 'transmission', 'remuneration',
-            'fortune', 'gouvernance', 'editorial', 'strategie'],
+  free: [],
+  premium: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
+            'immobilier', 'defiscalisation', 'transmission', 'remuneration'],
+  fo: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
+       'immobilier', 'defiscalisation', 'transmission', 'remuneration',
+       'fortune', 'gouvernance', 'editorial', 'strategie'],
 };
 
 const ALL_AGENTS = [
@@ -370,9 +373,9 @@ document.addEventListener('vision-start', (e) => {
   if (!me) return;
   const userName = me.name || me.email?.split('@')[0] || 'cher membre';
   document.getElementById('user-name').textContent = userName;
-  document.getElementById('user-tag').textContent = `${userName} · ${me.tier || 'freemium'}`;
+  document.getElementById('user-tag').textContent = `${userName} · ${me.tier || 'free'}`;
 
-  renderAgents(me.tier || 'freemium');
+  renderAgents(me.tier || 'free');
   renderMemory(await fetchMemory());
   renderNewsletters(await fetchNewsletters());
 })();

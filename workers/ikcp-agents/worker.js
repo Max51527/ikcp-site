@@ -899,16 +899,19 @@ async function handleScheduled(event, env) {
 async function runWeeklyNewsletters(env) {
   const week = getIsoWeek(new Date());
 
-  // Sélectionne les users tier "augmente" ou "bespoke" qui n'ont pas
-  // déjà reçu la newsletter de cette semaine
+  // Sélectionne les users tier payant (premium = Découverte/Augmenté, fo = Bespoke/Partner)
+  // qui n'ont pas déjà reçu la newsletter de cette semaine.
+  // Note alignement schéma : `users.display_name` côté ikcp-client (pas `name`).
+  // marketing_consent = 1 (opt-in newsletter) — colonne existante dans users.
   const candidates = await env.DB.prepare(`
-    SELECT u.id, u.email, u.name, u.tier, u.memory_store_id
+    SELECT u.id, u.email, COALESCE(u.prenom, u.display_name) AS name, u.tier, u.memory_store_id
     FROM users u
     LEFT JOIN newsletter_log n
       ON n.user_id = u.id AND n.week_iso = ?
-    WHERE u.tier IN ('augmente', 'bespoke')
+    WHERE u.tier IN ('premium', 'fo')
       AND u.email IS NOT NULL
-      AND (u.newsletter_optin IS NULL OR u.newsletter_optin = 1)
+      AND u.deleted_at IS NULL
+      AND (u.marketing_consent = 1 OR u.tier = 'fo')
       AND n.id IS NULL
     LIMIT 100
   `).bind(week).all();
@@ -916,16 +919,47 @@ async function runWeeklyNewsletters(env) {
   const users = candidates.results || [];
   console.log(`[CRON] ${users.length} users to newsletter this week (${week})`);
 
-  let queued = 0;
+  // ─── CIRCUIT BREAKER : compteur d'échecs consécutifs ───
+  // Si 3 échecs d'affilée → on stoppe la cohorte pour éviter de spam
+  // une API en panne. Maxime sera notifié via push_log.
+  let queued = 0, failed = 0, consecutiveFailures = 0;
   for (const user of users) {
+    if (consecutiveFailures >= 3) {
+      console.error(`[CRON] CIRCUIT BREAKER tripped after ${consecutiveFailures} consecutive failures — abandoning cohort`);
+      // Log dans push_log pour alerter Maxime au prochain reload du cockpit
+      try {
+        await env.DB.prepare(`
+          INSERT INTO push_log (id, user_id, kind, title, body, status, created_at)
+          VALUES (?, ?, 'ops_alert', 'Newsletter cron cassé', ?, 'queued', ?)
+        `).bind(
+          `alert_${week}_breaker`, 'admin', `Circuit breaker activé semaine ${week} après ${consecutiveFailures} échecs. ${queued}/${users.length} traités.`,
+          Date.now(),
+        ).run();
+      } catch (_) { /* push_log peut ne pas exister yet */ }
+      break;
+    }
     try {
       await queueNewsletterFor(user, week, env);
       queued++;
+      consecutiveFailures = 0;
     } catch (e) {
-      console.error(`[CRON] failed for user ${user.id}:`, e?.message);
+      failed++;
+      consecutiveFailures++;
+      console.error(`[CRON] failed for user ${user.id} (consecutive=${consecutiveFailures}):`, e?.message);
+      // Marquer comme failed dans newsletter_log pour retry manuel
+      try {
+        const newsletterId = `nl_${week}_${user.id.slice(0, 12)}_failed`;
+        await env.DB.prepare(`
+          INSERT OR IGNORE INTO newsletter_log
+            (id, user_id, week_iso, status, created_at, metadata_json)
+          VALUES (?, ?, ?, 'failed', ?, ?)
+        `).bind(newsletterId, user.id, week, Date.now(),
+          JSON.stringify({ error: String(e?.message || e).slice(0, 200) }),
+        ).run();
+      } catch (_) { /* ignore */ }
     }
   }
-  console.log(`[CRON] ${queued}/${users.length} newsletters queued`);
+  console.log(`[CRON] ${queued}/${users.length} queued, ${failed} failed`);
 }
 
 async function queueNewsletterFor(user, week, env) {
