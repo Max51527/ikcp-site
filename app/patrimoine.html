@@ -100,6 +100,30 @@
   <h1 class="app-h1" style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(26px,5vw,38px);letter-spacing:-0.01em;margin-bottom:6px">Mon patrimoine, <em style="font-style:italic;color:var(--accent)">en clair.</em></h1>
   <p class="app-lead" style="color:var(--mute);margin-bottom:22px;max-width:640px">Une vue consolidée et visuelle de ce que vous possédez. Ajoutez vos biens, Marcel s'occupe d'en tirer les leviers — fiscalité, transmission, arbitrages.</p>
 
+  <!-- ═══ Connexion bancaire Powens (DSP2 · souverain France) ═══ -->
+  <section id="powens-connect" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--card,#fff);border:1px solid var(--line,#e7e0d4);border-radius:14px;padding:18px 20px;margin-bottom:22px;box-shadow:0 6px 22px rgba(20,20,20,.05)">
+    <div style="flex:1;min-width:220px">
+      <div style="font-weight:600;font-size:15px;color:var(--ink,#1f1a16);margin-bottom:3px">🏦 Connectez vos comptes en 1 minute</div>
+      <div style="font-size:13px;color:var(--mute,#6b675f);line-height:1.5">Agrégation automatique (banque, assurance-vie, comptes patrimoniaux). 🇫🇷 Données en France, jamais revendues. Ou ajoutez vos biens à la main ci-dessous.</div>
+    </div>
+    <button class="btn" id="powensBtn" onclick="powensConnect()">Connecter mes comptes →</button>
+  </section>
+  <script>
+  async function powensConnect(){
+    var b=document.getElementById('powensBtn'); if(!b) return; var t=b.textContent; b.disabled=true; b.textContent='Connexion…';
+    var user='me';
+    try{ if(window.Marcel&&Marcel.Auth&&Marcel.Auth.email){ user=Marcel.Auth.email; } else { var s=localStorage.getItem('ikcp_email')||localStorage.getItem('email'); if(s) user=s; } }catch(_){}
+    try{
+      var r=await fetch('https://ikcp-powens.maxime-ead.workers.dev/connect?user='+encodeURIComponent(user),{method:'POST',headers:{'Content-Type':'application/json'}});
+      var d=await r.json().catch(function(){return {};});
+      if(d.webview_url){ window.location.href=d.webview_url; return; }
+      if(d.error==='powens_not_configured'){ alert('La connexion bancaire arrive très bientôt — encore quelques réglages côté banque. En attendant, vous pouvez ajouter vos biens à la main.'); }
+      else { alert('Service de connexion momentanément indisponible. Réessayez plus tard.'); }
+    }catch(e){ alert('Connexion impossible (réseau). Réessayez.'); }
+    b.disabled=false; b.textContent=t;
+  }
+  </script>
+
   <!-- Overview -->
   <section class="pat-hero" id="overview" style="display:none">
     <div class="donut-wrap">
