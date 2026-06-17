@@ -1,0 +1,27 @@
+name = "ikcp-powens"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+
+[observability]
+enabled = true
+
+# ── Réglages NON secrets (ici OU dans le dashboard Cloudflare) ──
+# Décommente et remplace par TON domain une fois le sandbox créé.
+[vars]
+# POWENS_DOMAIN = "ikigai-sandbox"   # → https://ikigai-sandbox.biapi.pro/2.0
+# POWENS_REDIRECT_URI = "https://ikcp-powens.maxime-ead.workers.dev/callback"
+# POWENS_WEBVIEW = "https://webview.powens.com"
+
+# ── SECRETS (JAMAIS dans ce fichier) ──
+# Dashboard Cloudflare → Workers → ikcp-powens → Settings → Variables (type Secret) :
+#   POWENS_CLIENT_ID
+#   POWENS_CLIENT_SECRET
+
+# ── Base D1 Paris pour ranger les jetons (à créer une seule fois) ──
+#   npx wrangler d1 create ikcp-powens-db --location weur
+#   npx wrangler d1 execute ikcp-powens-db --remote --file=schema.sql
+#   puis colle l'id renvoyé ci-dessous et décommente le bloc :
+# [[d1_databases]]
+# binding = "POWENS_DB"
+# database_name = "ikcp-powens-db"
+# database_id = "REMPLACE_PAR_L_ID"
