@@ -727,6 +727,7 @@ const SERVICES = [
   {n:'Veille',u:W('veille')+'/health'},
   {n:'Voice',u:W('voice')+'/health'},
   {n:'Pappers',u:W('pappers')+'/health'},
+  {n:'Powens (banque)',u:W('powens')+'/health'},
   {n:'Auth/Comptes',u:W('client')+'/health'},
   {n:'Témoin',u:W('temoin')+'/health'},
 ];
@@ -738,9 +739,10 @@ async function loadHealth(){
     const pill = document.getElementById('h'+i);
     try{
       const r = await fetch(s.u, {cache:'no-store'}); const d = await r.json().catch(()=>({}));
-      const cfg = d.configured||{}; let cls='up', note='';
-      if(r.ok && cfg.api_key===false){ cls='warn'; note='clé manquante'; warn++; }
-      else if(!r.ok){ cls='down'; down++; }
+      const cfg = (d.configured && typeof d.configured==='object') ? d.configured : {}; let cls='up', note='';
+      if(!r.ok){ cls='down'; down++; }
+      else if(cfg.api_key===false){ cls='warn'; note='clé manquante'; warn++; }
+      else if(d.configured===false){ cls='warn'; note='à configurer'; warn++; }
       else { up++; }
       if(pill) pill.innerHTML = `<span class="hdot ${cls}"></span>${s.n}${note?`<span class="note">${note}</span>`:''}`;
     }catch(_){ down++; if(pill) pill.innerHTML = `<span class="hdot down"></span>${s.n}<span class="note">injoignable</span>`; }
