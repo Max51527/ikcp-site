@@ -44,6 +44,13 @@
     try {
       var sel = (window.getSelection && window.getSelection().toString()) || '';
       if (!sel) return;
+      // Exemption : zones explicitement partageables (ex. réponses de démo en direct)
+      // marquées [data-allow-copy] → copie normale autorisée (bouche-à-oreille).
+      try {
+        var _an = window.getSelection().anchorNode;
+        var _el = _an && (_an.nodeType === 1 ? _an : _an.parentElement);
+        if (_el && _el.closest && _el.closest('[data-allow-copy]')) return;
+      } catch (_) {}
       var payload;
       if (sel.length > 240) {
         // Grosse sélection = tentative de pillage → on remplace par un leurre + attribution
