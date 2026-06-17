@@ -466,6 +466,21 @@ async function lookupSiren() {
       }));
     } catch (_) {}
 
+    // ── AUTOMATISATION SIREN → Diagnostic dirigeant ──
+    // La forme juridique (source RNE/Pappers) pilote automatiquement le statut du
+    // diagnostic plus bas (TNS vs assimilé-salarié). « On part toujours du SIREN. »
+    try {
+      var _fj = (data.forme_juridique || '').toUpperCase();
+      var _st = /SARL|EURL|SELARL|SNC/.test(_fj) ? 'tns'
+              : (/SAS|SASU|ACTIONS|SELAS|\bSA\b/.test(_fj) ? 'sas' : null);
+      window._ikcpCapital = data.capital || 0;
+      if (_st && typeof window.diagSetStatut === 'function') {
+        window.diagSetStatut(_st);
+        var _h = document.getElementById('diag-hint');
+        if (_h) _h.innerHTML = '✦ Pré-rempli depuis votre SIREN — <b>' + (data.nom || 'votre société') + '</b> · ' + (_st === 'tns' ? 'gérant majoritaire présumé (TNS)' : 'président SAS (assimilé-salarié)') + '. Ajustez si nécessaire.';
+      }
+    } catch (_) {}
+
     // #4 — Contexte société transmis à Marcel (→ délègue à Codex fiscal + Hermès transmission)
     window._ikcpSirenCtx = `Voici ma société (source RNE) : ${data.nom || ''}, ${data.forme_juridique || ''}, capital ${data.capital ? Math.round(data.capital).toLocaleString('fr-FR') + ' €' : 'n.c.'}, activité ${data.libelle_code_naf || data.code_naf || 'n.c.'}, siège ${data.siege?.ville || ''}. Quels sont les principaux leviers fiscaux ET de transmission à étudier pour cette structure ?`;
 
@@ -660,6 +675,8 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
       <h2 style="font-family:'Playfair Display',serif; font-size:clamp(27px,4vw,40px); color:var(--navy,#1B2A4A); font-weight:600; line-height:1.15; margin:0 0 12px;">Vos leviers de dirigeant, <em style="font-style:italic; color:var(--gold-deep,#8B6F3F);">en 60 secondes.</em></h2>
       <p style="max-width:580px; margin:0 auto; color:var(--ink-mute,#6B5D52); font-size:15px; line-height:1.6;">Salaire ou dividendes, IFI, transmission — ce que votre expert-comptable ne calcule pas. Tout se met à jour en temps réel.</p>
     </div>
+
+    <div id="diag-hint" style="text-align:center; font-size:12.5px; color:var(--gold-deep,#8B6F3F); margin-bottom:16px; min-height:16px; font-weight:600;"></div>
 
     <div style="background:#fff; border:1px solid var(--line,#E4DCCD); border-radius:16px; padding:24px; margin-bottom:20px; box-shadow:0 8px 30px rgba(27,42,74,.06);">
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:18px;">

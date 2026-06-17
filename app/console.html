@@ -851,7 +851,7 @@ async function loadMembers(){
     document.getElementById('memCount').textContent = list.length;
     if(!list.length){ el.innerHTML='<div class="empty">Aucun membre encore. Génère une invitation dans « Bêta ».</div>'; return; }
     el.innerHTML = `<table><thead><tr><th>Membre</th><th>Tier</th><th>Inscrit</th><th>Dernier accès</th><th>Marcel/mois</th></tr></thead><tbody>${
-      list.map(m=>`<tr><td>${esc(m.prenom?m.prenom+' · ':'')}${esc(m.email)}</td>
+      list.map(m=>`<tr><td>${esc(m.prenom?m.prenom+' · ':'')}${esc(m.email||m.id||'(profil incomplet)')}${m.siren_nom?'<br><span style="font-size:11px;color:var(--mute)">🏛️ '+esc(m.siren_nom)+'</span>':''}</td>
         <td><span class="pill ${esc(m.tier||'free')}">${esc(m.tier||'free')}</span></td>
         <td style="color:var(--mute)">${fdate(m.created_at)}</td>
         <td style="color:var(--mute)">${fdate(m.last_login_at)}</td>
