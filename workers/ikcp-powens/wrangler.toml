@@ -8,9 +8,9 @@ enabled = true
 # ── Réglages NON secrets (ici OU dans le dashboard Cloudflare) ──
 # Décommente et remplace par TON domain une fois le sandbox créé.
 [vars]
-# POWENS_DOMAIN = "ikigai-sandbox"   # → https://ikigai-sandbox.biapi.pro/2.0
-# POWENS_REDIRECT_URI = "https://ikcp-powens.maxime-ead.workers.dev/callback"
-# POWENS_WEBVIEW = "https://webview.powens.com"
+POWENS_DOMAIN = "marcel-ia"   # → https://marcel-ia.biapi.pro/2.0
+POWENS_REDIRECT_URI = "https://ikcp-powens.maxime-ead.workers.dev/callback"
+POWENS_WEBVIEW = "https://webview.powens.com"
 
 # ── SECRETS (JAMAIS dans ce fichier) ──
 # Dashboard Cloudflare → Workers → ikcp-powens → Settings → Variables (type Secret) :
