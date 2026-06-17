@@ -11,6 +11,9 @@
 <meta name="author" content="Maxime Juveneton — IKCP">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://ikcp.eu/family-office.html">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="/assets/logos/marcel-ia-emblem-fr.svg">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -717,7 +720,7 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
       <div class="diag-card" style="background:var(--navy,#1B2A4A); border-color:var(--navy,#1B2A4A);">
         <h3 style="color:var(--gold-bright,#E2C896);">✦ Synthèse</h3>
         <p id="d-synth" style="color:var(--cream,#FAFAF8); font-size:13.5px; line-height:1.55; margin:0 0 14px; min-height:60px;">—</p>
-        <a href="#siren-funnel" style="display:block; text-align:center; padding:11px; background:var(--gold,#C9A96E); color:var(--navy,#1B2A4A); border-radius:10px; font-weight:700; font-size:13px; text-decoration:none;">Affiner avec Marcel →</a>
+        <a href="#" onclick="diagToMarcel();return false;" style="display:block; text-align:center; padding:11px; background:var(--gold,#C9A96E); color:var(--navy,#1B2A4A); border-radius:10px; font-weight:700; font-size:13px; text-decoration:none;">Affiner avec Marcel →</a>
       </div>
     </div>
 
@@ -766,6 +769,14 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
     if(ifi>0) msg += ' IFI estimé : ' + fmt(ifi) + '/an à optimiser.';
     if(transmis>0) msg += ' ' + fmt(transmis*2) + ' transmissibles sans droits (couple, /15 ans).';
     set('d-synth', msg);
+  };
+  // ── Continuité outil → IA : envoie la situation chiffrée à Marcel ──
+  window.diagToMarcel = function(){
+    var benef=num('diag-benef'), immo=num('diag-immo'), enf=Math.max(0,Math.round(num('diag-enf')));
+    var tns=window._diagStatut==='tns';
+    var netSoc=benef/(tns?1.45:1.75), ps=netSoc-baremeIR(netSoc), pd=benef*0.75*0.70, ec=Math.abs(ps-pd), ifi=calcIFI(immo);
+    var q='Voici ma situation de dirigeant : '+(tns?'gérant majoritaire (TNS)':'président de SAS (assimilé-salarié)')+', '+fmt(benef)+' à extraire de ma société, '+enf+' enfant(s), patrimoine immobilier '+fmt(immo)+'. Le diagnostic indique un écart salaire/dividendes d\'environ '+fmt(ec)+'/an'+(ifi>0?(' et un IFI estimé de '+fmt(ifi)+'/an'):'')+'. Comment optimiser concrètement, étape par étape ?';
+    window.location.href='/app/marcel?q='+encodeURIComponent(q);
   };
   diagCalc();
 })();
