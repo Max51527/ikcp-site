@@ -9,3 +9,11 @@ CREATE TABLE IF NOT EXISTS powens_tokens (
   id_user      INTEGER,            -- l'id utilisateur côté Powens
   created_at   TEXT                -- horodatage (ISO)
 );
+
+-- Journal des événements reçus par /webhook (connexion ajoutée, sync, transactions…).
+CREATE TABLE IF NOT EXISTS powens_events (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  received_at TEXT,
+  type        TEXT,
+  payload     TEXT
+);

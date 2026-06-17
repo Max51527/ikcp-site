@@ -131,6 +131,20 @@ export default {
       return json({ connected: true, accounts: d.accounts || d }, 200, o);
     }
 
+    // ── /webhook : reçoit les événements Powens (connexion ajoutée, sync, nouvelles transactions) ──
+    // Powens attend un 200 en réponse. On accuse réception et on logge (D1 si dispo)
+    // pour réagir plus tard (ex. rafraîchir le cockpit du membre). Souverain : tout reste à Paris.
+    if (url.pathname === '/webhook' && req.method === 'POST') {
+      let evt = {}; try { evt = await req.json(); } catch (_) {}
+      try {
+        if (env.POWENS_DB) {
+          await env.POWENS_DB.prepare('INSERT INTO powens_events (received_at, type, payload) VALUES (?,?,?)')
+            .bind(new Date().toISOString(), (evt && (evt.type || evt.event)) || 'unknown', JSON.stringify(evt).slice(0, 4000)).run();
+        }
+      } catch (_) {}
+      return json({ received: true }, 200, o);
+    }
+
     return json({ error: 'not_found', path: url.pathname }, 404, o);
   },
 };
