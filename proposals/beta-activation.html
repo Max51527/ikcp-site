@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Beta privée · 25 familles fondatrices</title>
+<meta name="description" content="Accès beta IKCP Family Office augmenté — 25 familles fondatrices, gratuit pendant l'été 2026. Sur invitation.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c; --gold-dark: #8b6f3f;
+  --line: rgba(196, 162, 115, 0.14); --line-strong: rgba(196, 162, 115, 0.32);
+  --warn: #d4a85a; --ok: #7fae7d; --err: #b85a5a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif;
+             font-weight: 300; line-height: 1.65; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+main { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+nav.top { display: flex; justify-content: space-between; align-items: center;
+          padding: 20px 24px; max-width: 720px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em;
+             color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.beta-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em;
+  padding: 6px 14px; border: 1px solid var(--gold); color: var(--gold);
+  text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px;
+}
+.beta-pill::before { content: '●'; color: var(--gold); animation: blink 1.8s ease-in-out infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+h1 { font-family: 'Playfair Display', serif; font-weight: 400;
+     font-size: clamp(32px, 5vw, 48px); line-height: 1.1;
+     letter-spacing: -0.02em; margin: 56px 0 24px; }
+h1 em { font-style: italic; color: var(--gold); }
+.lede { color: var(--ink-mute); font-size: 16px; margin-bottom: 40px; max-width: 580px; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+.benefits {
+  margin: 32px 0 40px; padding: 28px 32px;
+  background: var(--bg-2); border: 1px solid var(--line);
+}
+.benefits h3 {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 16px; color: var(--gold); margin-bottom: 16px;
+}
+.benefits ul { list-style: none; padding: 0; }
+.benefits li { padding: 6px 0; font-size: 14px; color: var(--ink); }
+.benefits li::before { content: '✓ '; color: var(--ok); font-weight: 600; margin-right: 8px; }
+
+.card { background: var(--bg-2); border: 1px solid var(--line); padding: 32px; }
+.code-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.code-row input {
+  flex: 1; min-width: 220px; padding: 16px 20px;
+  background: var(--bg); border: 1px solid var(--line);
+  color: var(--gold-bright); font-family: 'JetBrains Mono', monospace;
+  font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase;
+  text-align: center; transition: border-color 0.2s;
+}
+.code-row input:focus { outline: none; border-color: var(--gold); }
+.code-row input::placeholder { color: var(--ink-faint); }
+
+.btn {
+  padding: 14px 28px; background: var(--gold); color: var(--bg);
+  border: 1px solid var(--gold); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all 0.2s;
+}
+.btn:hover { background: transparent; color: var(--gold); }
+.btn:disabled { opacity: 0.4; cursor: wait; }
+
+.feedback {
+  margin-top: 14px; padding: 12px 16px;
+  font-size: 13px; font-style: italic; font-family: 'Playfair Display', serif;
+  display: none; line-height: 1.6;
+}
+.feedback.show { display: block; }
+.feedback.error { color: var(--err); background: rgba(184,90,90,0.06); border-left: 3px solid var(--err); }
+.feedback.success { color: var(--ok); background: rgba(127,174,125,0.06); border-left: 3px solid var(--ok); }
+
+.no-code {
+  margin-top: 32px; padding: 24px 28px;
+  background: var(--bg-3); border: 1px solid var(--line);
+}
+.no-code h4 { font-family: 'Playfair Display', serif; font-style: italic;
+              font-size: 15px; color: var(--gold); margin-bottom: 12px; }
+.no-code p { font-size: 13px; color: var(--ink-mute); margin-bottom: 14px; }
+.no-code a { color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--line); }
+.no-code a:hover { border-color: var(--gold); }
+
+footer { padding: 48px 24px; text-align: center;
+         font-size: 10.5px; color: var(--ink-faint); line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="beta-pill">Beta · sur invitation</div>
+</nav>
+
+<main>
+
+<h1>Vous avez un <em>code beta</em>.<br>Bienvenue.</h1>
+<p class="lede">
+  Vous faites partie des 25 familles fondatrices invitées à tester
+  l'IKCP Family Office augmenté pendant l'été 2026. <em>Tout est gratuit.</em>
+  En contrepartie : votre retour mensuel sur ce qui marche, ce qui manque,
+  ce qui doit changer.
+</p>
+
+<div class="benefits">
+  <h3>Ce qui vous est ouvert pendant la beta</h3>
+  <ul>
+    <li>Marcel chat illimité · 24/7 · 25 contextes thématiques</li>
+    <li>OCR avis IR, IFI, Kbis, actes notariés (avec extraction structurée)</li>
+    <li>Analyse patrimoniale 360° (rapport PDF avec visuels)</li>
+    <li>Memory store famille — Marcel se souvient de votre situation</li>
+    <li>Voix Marcel — vous lui parlez, il vous répond vocalement</li>
+    <li>DER trimestriel auto-généré</li>
+    <li>App mobile en pré-version (TestFlight)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <label for="beta-code" style="display:block;font-size:11px;letter-spacing:0.18em;color:var(--ink-mute);text-transform:uppercase;margin-bottom:10px;">Code d'invitation</label>
+  <div class="code-row">
+    <input id="beta-code" type="text" placeholder="BETA-FAMI-XXXX-YYYY" maxlength="19" autocomplete="off">
+    <button class="btn" id="submit-code">Activer l'accès →</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<div class="no-code">
+  <h4>Pas encore de code ?</h4>
+  <p>
+    L'accès est sur invitation personnelle. <a href="mailto:maxime@ikcp.fr?subject=Beta%20IKCP%20Family%20Office%20%E2%80%94%20demande%20d%27invitation&body=Bonjour%20Maxime%2C%0A%0AJe%20suis%20dirigeant(e)%20d%27une%20entreprise%20familiale.%0A%0A-%20Activit%C3%A9%20%3A%0A-%20CA%20%3A%0A-%20Patrimoine%20net%20approximatif%20%3A%0A-%20Enfants%20concern%C3%A9s%20%3A%0A%0AJ%27aimerais%20recevoir%20un%20code%20d%27acc%C3%A8s%20%C3%A0%20la%20beta%20IKCP.">
+    Écrivez à Maxime →</a>
+  </p>
+  <p style="font-size:12px;color:var(--ink-faint);">Réponse personnelle sous 48 heures · sans engagement.</p>
+</div>
+
+</main>
+
+<footer>
+  Beta IKCP Family Office augmenté · IKIGAÏ Conseil Patrimonial<br>
+  ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
+  25 familles fondatrices · été 2026 · feedback mensuel attendu<br>
+  Vous interagissez avec un système IA classifié risque limité (AI Act EU 2024/1689 art. 50)
+</footer>
+
+<script>
+const CLIENT_BASE = window.IKCP_CLIENT_URL || 'https://ikcp-client.maxime-ead.workers.dev';
+const codeInput = document.getElementById('beta-code');
+const btn = document.getElementById('submit-code');
+const fb = document.getElementById('feedback');
+
+// Auto-formatage XXXX-XXXX-XXXX-XXXX
+codeInput.addEventListener('input', e => {
+  let v = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+  const clean = v.replace(/-/g, '');
+  const segs = [];
+  for (let i = 0; i < clean.length && i < 16; i += 4) segs.push(clean.slice(i, i + 4));
+  e.target.value = segs.join('-');
+});
+
+function show(msg, type) {
+  fb.textContent = msg;
+  fb.className = `feedback show ${type}`;
+}
+
+btn.addEventListener('click', async () => {
+  const code = codeInput.value.trim();
+  if (!code || code.length < 8) return show('Format attendu : BETA-FAMI-XXXX-YYYY', 'error');
+
+  btn.disabled = true;
+  fb.className = 'feedback';
+
+  // Étape 1 : vérifier que le code existe et est valide
+  try {
+    const checkR = await fetch(`${CLIENT_BASE}/api/v1/invite/check`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    const check = await checkR.json();
+
+    if (!checkR.ok || !check.valid) {
+      show('Code non reconnu ou déjà utilisé. Vérifiez ou contactez Maxime.', 'error');
+      btn.disabled = false;
+      return;
+    }
+
+    // Étape 2 : demander email pour magic-link
+    const email = prompt('Entrez votre email pour recevoir le lien d\'accès :');
+    if (!email || !email.includes('@')) {
+      show('Email valide requis pour recevoir le lien magic-link.', 'error');
+      btn.disabled = false;
+      return;
+    }
+
+    // Étape 3 : applique l'invitation + envoie le magic-link
+    const applyR = await fetch(`${CLIENT_BASE}/api/v1/invite/apply`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ code, email }),
+    });
+    const apply = await applyR.json();
+
+    if (applyR.ok && apply.success !== false) {
+      show(`Code accepté. Un lien d'accès vient d'être envoyé à ${email}. Vérifiez votre boîte (et les spams).`, 'success');
+      codeInput.value = '';
+    } else {
+      show(apply.error || 'Erreur lors de l\'activation. Réessayez ou contactez Maxime.', 'error');
+      btn.disabled = false;
+    }
+  } catch (e) {
+    show(`Erreur réseau : ${e.message}`, 'error');
+    btn.disabled = false;
+  }
+});
+
+// Submit on Enter
+codeInput.addEventListener('keypress', e => { if (e.key === 'Enter') btn.click(); });
+</script>
+
+</body>
+</html>

@@ -892,8 +892,78 @@ async function handleScheduled(event, env) {
   if (cron === '0 8 * * 5') {
     return await runWeeklyNewsletters(env);
   }
+  if (cron === '0 3 * * *') {
+    return await runDailyMemoryBackup(env);
+  }
 
   console.log(`[CRON] unhandled cron pattern: ${cron}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BACKUP QUOTIDIEN MEMORY STORES → R2
+// Empêche la perte irréversible si bug Anthropic ou suppression accidentelle.
+// Sauve chaque memory store en JSON dans R2 (rétention 30 jours).
+// ═══════════════════════════════════════════════════════════════════
+
+async function runDailyMemoryBackup(env) {
+  if (!env.DOCS) {
+    console.warn('[BACKUP] R2 binding DOCS missing — skipping memory backup');
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  console.log(`[BACKUP] memory stores → R2 (${today})`);
+
+  // Tous les users avec un memory store
+  const users = await env.DB.prepare(`
+    SELECT id, memory_store_id FROM users
+    WHERE memory_store_id IS NOT NULL AND deleted_at IS NULL
+  `).all();
+
+  const list = users.results || [];
+  console.log(`[BACKUP] ${list.length} memory stores à sauver`);
+
+  let saved = 0, failed = 0;
+  for (const u of list) {
+    try {
+      // Lister tous les fichiers du memory store
+      const filesList = await anthropicFetch(env, 'GET',
+        `/v1/memory_stores/${u.memory_store_id}/memories?view=full`);
+
+      const snapshot = {
+        user_id: u.id,
+        memory_store_id: u.memory_store_id,
+        backup_date: today,
+        backup_ts: Date.now(),
+        files_count: (filesList.data || []).length,
+        files: filesList.data || [],
+      };
+
+      const key = `memory-backups/${today}/${u.id}.json`;
+      await env.DOCS.put(key, JSON.stringify(snapshot, null, 2), {
+        httpMetadata: { contentType: 'application/json' },
+        customMetadata: {
+          user_id: u.id,
+          memory_store_id: u.memory_store_id,
+          backup_date: today,
+        },
+      });
+      saved++;
+    } catch (e) {
+      failed++;
+      console.error(`[BACKUP] failed for ${u.id}:`, e?.message);
+    }
+  }
+
+  // Index global du jour
+  await env.DOCS.put(`memory-backups/${today}/_index.json`, JSON.stringify({
+    date: today, ts: Date.now(),
+    total: list.length, saved, failed,
+  }, null, 2));
+
+  // Cleanup : supprimer les backups > 30 jours
+  // (R2 lifecycle rules sont l'idéal — fait via dashboard CF ; ici on log juste)
+  console.log(`[BACKUP] ${saved}/${list.length} memory stores sauvés (${failed} échecs)`);
 }
 
 async function runWeeklyNewsletters(env) {

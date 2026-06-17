@@ -37,10 +37,11 @@ bucket_name = "ikcp-templates"
 binding = "AGENT_KV"
 id = "VOTRE_KV_ID"
 
-# Cron triggers — newsletter hebdo
-# Vendredi 8h UTC = 10h Paris (heure d'été) / 9h Paris (heure d'hiver)
+# Cron triggers
+# Vendredi 8h UTC = 10h Paris (été) : newsletter perso hebdo
+# Tous les jours 3h UTC = 5h Paris : backup quotidien des memory stores en R2
 [triggers]
-crons = ["0 8 * * 5"]
+crons = ["0 8 * * 5", "0 3 * * *"]
 
 # Secrets à provisionner via wrangler secret put :
 #   ANTHROPICAPIKEY                  — clé API Anthropic Enterprise (DPA signé)

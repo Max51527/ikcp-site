@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accord de bêta-testeur — IKCP Family Office</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0d0b">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --ink: #f4ece1; --ink-mute: #8c857a;
+  --ink-faint: #524d47; --gold: #c4a273; --line: rgba(196,162,115,0.14);
+  --ok: #7fae7d; --err: #b85a5a; --warn: #d4a85a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif;
+             font-weight: 300; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+main { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px; font-size: 14.5px; }
+nav.top { padding: 18px 24px; border-bottom: 1px solid var(--line); }
+.brand { font-family: 'Playfair Display', serif; font-size: 16px; letter-spacing: 0.16em;
+         max-width: 780px; margin: 0 auto; }
+.brand b { color: var(--gold); }
+
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 32px;
+     line-height: 1.15; margin-bottom: 8px; }
+h1 em { font-style: italic; color: var(--gold); }
+.meta { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--ink-mute); margin-bottom: 36px; }
+
+h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic;
+     font-size: 20px; color: var(--gold); margin: 32px 0 14px;
+     border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+p { margin-bottom: 12px; color: var(--ink); }
+ul, ol { margin: 12px 0 18px 24px; }
+li { margin-bottom: 6px; }
+strong { color: var(--gold); font-weight: 500; }
+
+.warn-box { padding: 16px 22px; background: rgba(212,168,90,0.06);
+            border-left: 3px solid var(--warn); margin: 22px 0;
+            font-size: 13.5px; color: var(--ink); }
+.warn-box strong { color: var(--warn); }
+
+.signature-block { margin-top: 40px; padding: 28px; background: var(--bg-2);
+                   border: 1px solid var(--line); }
+.signature-block h3 { font-family: 'Playfair Display', serif; font-style: italic;
+                      font-size: 18px; color: var(--gold); margin-bottom: 14px; }
+.signature-block label {
+  display: flex; gap: 12px; align-items: flex-start;
+  margin: 14px 0; font-size: 13.5px; line-height: 1.6; cursor: pointer;
+}
+.signature-block input[type=checkbox] {
+  width: 20px; height: 20px; margin-top: 2px; accent-color: var(--gold); cursor: pointer; flex-shrink: 0;
+}
+.signature-block .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+@media (max-width: 600px) { .signature-block .fields { grid-template-columns: 1fr; } }
+.signature-block input[type=text], .signature-block input[type=email] {
+  padding: 12px 14px; background: var(--bg); border: 1px solid var(--line);
+  color: var(--ink); font-family: 'Inter', sans-serif; font-size: 13.5px;
+}
+.signature-block .small-label {
+  display: block; font-size: 10px; letter-spacing: 0.16em; color: var(--ink-mute);
+  text-transform: uppercase; margin-bottom: 4px;
+}
+
+.btn { padding: 14px 28px; background: var(--gold); color: var(--bg);
+       border: 1px solid var(--gold); font-size: 11px; font-weight: 600;
+       letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+       font-family: 'Inter', sans-serif; transition: all 0.2s; margin-top: 24px; }
+.btn:hover { background: transparent; color: var(--gold); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.status { margin-top: 16px; padding: 14px 18px; font-size: 13px;
+          font-style: italic; font-family: 'Playfair Display', serif;
+          display: none; }
+.status.show { display: block; }
+.status.success { color: var(--ok); background: rgba(127,174,125,0.06); border-left: 3px solid var(--ok); }
+.status.error { color: var(--err); background: rgba(184,90,90,0.06); border-left: 3px solid var(--err); }
+</style>
+</head>
+<body>
+
+<nav class="top"><div class="brand">IKCP<b>.</b> — IKIGAÏ Conseil Patrimonial</div></nav>
+
+<main>
+
+<h1>Accord <em>bêta-testeur</em></h1>
+<div class="meta">Version 1.0 · 16 juin 2026 · IKCP Family Office augmenté</div>
+
+<h2>1. Préambule</h2>
+<p>
+  Vous êtes invité(e) à participer à la phase bêta de la plateforme IKCP
+  Family Office augmenté (« la Plateforme »), éditée par
+  <strong>IKIGAÏ Conseil Patrimonial</strong>, ORIAS 23001568, CIF — CNCEF
+  Patrimoine, COA, représentée par Maxime Juveneton.
+</p>
+<p>
+  L'accès vous est consenti <strong>à titre gratuit</strong> du 1er juillet
+  2026 au 30 septembre 2026, en échange d'un feedback mensuel sur l'usage,
+  les bugs, les manques et les améliorations souhaitées.
+</p>
+
+<h2>2. Périmètre de la bêta</h2>
+<p>Pendant la bêta, vous avez accès à :</p>
+<ul>
+  <li>Marcel chat (Sonnet 4.6 + 9 calculateurs fiscaux JS)</li>
+  <li>Agents Managed Anthropic (DER, patrimoine 360°, transmission, OCR avis IR, défiscalisation — la liste évolue)</li>
+  <li>Voix Marcel (TTS VoxCPM2 + STT Mistral Voxtral)</li>
+  <li>Vision Marcel (lecture de documents par drag-drop)</li>
+  <li>Memory store personnel (Marcel se souvient de votre situation)</li>
+  <li>App mobile en pré-version (TestFlight iOS / Internal Testing Android)</li>
+</ul>
+
+<div class="warn-box">
+  <strong>⚠ Devoir de conseil</strong> — Les agents IA produisent des
+  analyses pédagogiques. Le devoir de conseil patrimonial reste de la
+  responsabilité exclusive du CGP (Maxime Juveneton, ORIAS 23001568). Aucune
+  décision patrimoniale ne devrait être prise sur la seule base des
+  livrables IA, sans validation préalable par votre CGP.
+</div>
+
+<h2>3. Confidentialité réciproque</h2>
+<p>
+  Vous vous engagez à <strong>ne pas divulguer publiquement</strong> :
+</p>
+<ul>
+  <li>Les écrans, captures, vidéos de la Plateforme (sauf accord écrit préalable)</li>
+  <li>Les tarifs envisagés pour la phase commerciale</li>
+  <li>Les bugs identifiés (à partager privément à <strong>maxime@ikcp.fr</strong>)</li>
+  <li>Les fonctionnalités en cours de développement non publiées</li>
+</ul>
+<p>
+  IKCP s'engage en miroir à ne pas divulguer publiquement vos données
+  patrimoniales, votre identité réelle, ou tout élément confidentiel
+  que vous partageriez avec la Plateforme.
+</p>
+
+<h2>4. Données personnelles (RGPD)</h2>
+<p>
+  Vos données sont hébergées sur Cloudflare WEUR (Paris/Frankfurt). Sous-traitants :
+  Anthropic (USA, DPA standard), Mistral La Plateforme (France),
+  Modal.run (USA/EU), Resend (USA, EU residency activée).
+</p>
+<p>
+  Vous pouvez exercer vos droits RGPD à tout moment :
+</p>
+<ul>
+  <li><strong>Droit d'accès / portabilité</strong> : endpoint <code>/api/v1/me/export</code></li>
+  <li><strong>Droit à l'effacement</strong> : endpoint <code>DELETE /api/v1/me</code> ou email à maxime@ikcp.fr</li>
+  <li><strong>Droit d'opposition</strong> : désinscription newsletter en bas de chaque email</li>
+</ul>
+
+<h2>5. AI Act EU 2024/1689</h2>
+<p>
+  La Plateforme est classifiée <strong>système IA à risque limité</strong>
+  au sens de l'art. 50 du Règlement (UE) 2024/1689 (AI Act). Vous êtes
+  informé(e) que vous interagissez avec un système d'intelligence
+  artificielle.
+</p>
+
+<h2>6. Durée et fin de la bêta</h2>
+<p>
+  La bêta se termine le 30 septembre 2026. À cette date :
+</p>
+<ul>
+  <li>Soit vous souscrivez à un plan commercial (Découverte 1 800€/3 mois ou Augmenté 6 800€/an) — <strong>1 mois offert si signature avant le 31 octobre 2026</strong></li>
+  <li>Soit vous arrêtez l'usage et vos données sont supprimées sous 30 jours (vous pouvez les exporter avant)</li>
+</ul>
+
+<h2>7. Limitation de responsabilité</h2>
+<p>
+  La Plateforme est fournie « <em>en l'état</em> » pendant la bêta.
+  Disponibilité non garantie, bugs attendus. Aucune décision
+  irréversible ne devrait être prise sur la seule base d'un livrable IA
+  produit pendant cette phase, sans validation explicite par votre CGP.
+</p>
+
+<h2>8. Droit applicable</h2>
+<p>
+  Droit français. En cas de litige, médiation préalable obligatoire
+  (CM2C). Juridiction : tribunal de votre domicile (consommateur) ou
+  siège IKCP (professionnel).
+</p>
+
+<!-- ─── BLOC DE SIGNATURE ─── -->
+<div class="signature-block">
+  <h3>Signature électronique</h3>
+
+  <label>
+    <input type="checkbox" id="c1">
+    <span>J'accepte les conditions de la bêta IKCP exposées ci-dessus, y compris l'engagement de confidentialité (article 3).</span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="c2">
+    <span>Je reconnais que les livrables IA sont pédagogiques et que le devoir de conseil reste à la charge du CGP humain (Maxime Juveneton, ORIAS 23001568).</span>
+  </label>
+
+  <label>
+    <input type="checkbox" id="c3">
+    <span>Je consens au traitement de mes données dans le cadre RGPD + AI Act décrit aux articles 4 et 5.</span>
+  </label>
+
+  <div class="fields">
+    <div>
+      <label class="small-label">Nom complet</label>
+      <input type="text" id="nom" placeholder="Maxime Juveneton">
+    </div>
+    <div>
+      <label class="small-label">Email (lié au code beta)</label>
+      <input type="email" id="email" placeholder="vous@cabinet.fr">
+    </div>
+  </div>
+
+  <button class="btn" id="sign">Signer →</button>
+
+  <div class="status" id="status"></div>
+</div>
+
+</main>
+
+<script>
+const CLIENT_BASE = window.IKCP_CLIENT_URL || 'https://ikcp-client.maxime-ead.workers.dev';
+const status = document.getElementById('status');
+
+function show(msg, type) {
+  status.textContent = msg;
+  status.className = `status show ${type}`;
+}
+
+document.getElementById('sign').addEventListener('click', async (e) => {
+  const c1 = document.getElementById('c1').checked;
+  const c2 = document.getElementById('c2').checked;
+  const c3 = document.getElementById('c3').checked;
+  const nom = document.getElementById('nom').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  if (!c1 || !c2 || !c3) return show('Cocher les 3 cases pour valider.', 'error');
+  if (!nom || nom.length < 3) return show('Nom complet requis.', 'error');
+  if (!email || !email.includes('@')) return show('Email valide requis.', 'error');
+
+  e.target.disabled = true;
+
+  try {
+    // Enregistré comme feedback type "nda_signed" pour traçabilité
+    const r = await fetch('https://ikcp-feedback.maxime-ead.workers.dev/feedback', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        type: 'nda_signed',
+        message: `NDA bêta v1.0 signé par ${nom} <${email}>. Conditions acceptées : confidentialité ✓ · devoir de conseil ✓ · RGPD/AI Act ✓.`,
+        email,
+        page: '/proposals/legal/beta-nda.html',
+        user_agent: navigator.userAgent.slice(0, 200),
+        ts: new Date().toISOString(),
+        meta: { nom, version: '1.0', date_signature: new Date().toISOString() },
+      }),
+    });
+
+    if (r.ok) {
+      show(`Merci ${nom}. Une copie vous a été envoyée à ${email}. Vous pouvez maintenant utiliser votre code beta sur la page d'activation.`, 'success');
+      setTimeout(() => {
+        window.location.href = '/proposals/beta-activation.html';
+      }, 2500);
+    } else {
+      show('Erreur d\'enregistrement. Envoyez votre signature à maxime@ikcp.fr', 'error');
+      e.target.disabled = false;
+    }
+  } catch (err) {
+    show(`Réseau indisponible : ${err.message}`, 'error');
+    e.target.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
