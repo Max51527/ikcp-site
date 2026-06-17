@@ -638,6 +638,119 @@ document.getElementById('siren-input')?.addEventListener('keypress', e => { if (
 })();
 </script>
 
+<!-- ═══ DIAGNOSTIC DIRIGEANT — outil interactif temps réel (Marcel IA) ═══ -->
+<section id="diagnostic" style="background:var(--cream-2,#F4EFE7); border-top:1px solid var(--line,#E4DCCD); border-bottom:1px solid var(--line,#E4DCCD); padding:72px 24px;">
+  <style>
+    .diag-lbl{display:block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-mute,#6B5D52); font-weight:700; margin-bottom:7px;}
+    .diag-in{width:100%; padding:12px 14px; background:var(--cream,#FAFAF8); border:1.5px solid var(--line-strong,#D8CFBE); border-radius:10px; font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--navy,#1B2A4A); font-weight:600; outline:none; box-sizing:border-box;}
+    .diag-toggle{flex:1; padding:12px 10px; background:var(--cream,#FAFAF8); border:1.5px solid var(--line-strong,#D8CFBE); border-radius:10px; font-size:13px; color:var(--ink-mute,#6B5D52); font-weight:600; cursor:pointer; transition:.15s; line-height:1.3;}
+    .diag-toggle.diag-on{background:var(--navy,#1B2A4A); color:var(--cream,#FAFAF8); border-color:var(--navy,#1B2A4A); box-shadow:0 4px 12px rgba(27,42,74,.2);}
+    .diag-card{background:#fff; border:1px solid var(--line,#E4DCCD); border-radius:14px; padding:20px; box-shadow:0 6px 24px rgba(27,42,74,.05);}
+    .diag-card h3{font-family:'Playfair Display',serif; font-size:16px; color:var(--navy,#1B2A4A); font-weight:600; margin:0 0 12px;}
+    .diag-row{display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; font-size:13.5px; color:var(--ink-mute,#6B5D52);}
+    .diag-val{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy,#1B2A4A); font-size:14px;}
+    .diag-big{font-family:'Playfair Display',serif; font-style:italic; font-size:22px; color:var(--gold-deep,#8B6F3F); font-weight:600;}
+  </style>
+  <div style="max-width:1080px; margin:0 auto;">
+    <div style="text-align:center; margin-bottom:30px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; color:var(--gold-deep,#8B6F3F); text-transform:uppercase; font-weight:700; margin-bottom:12px;">◆ Marcel IA · Diagnostic dirigeant</div>
+      <h2 style="font-family:'Playfair Display',serif; font-size:clamp(27px,4vw,40px); color:var(--navy,#1B2A4A); font-weight:600; line-height:1.15; margin:0 0 12px;">Vos leviers de dirigeant, <em style="font-style:italic; color:var(--gold-deep,#8B6F3F);">en 60 secondes.</em></h2>
+      <p style="max-width:580px; margin:0 auto; color:var(--ink-mute,#6B5D52); font-size:15px; line-height:1.6;">Salaire ou dividendes, IFI, transmission — ce que votre expert-comptable ne calcule pas. Tout se met à jour en temps réel.</p>
+    </div>
+
+    <div style="background:#fff; border:1px solid var(--line,#E4DCCD); border-radius:16px; padding:24px; margin-bottom:20px; box-shadow:0 8px 30px rgba(27,42,74,.06);">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:18px;">
+        <div style="grid-column:1/-1;">
+          <label class="diag-lbl">Votre statut de dirigeant</label>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" id="diag-tns" class="diag-toggle diag-on" onclick="diagSetStatut('tns')">Gérant majoritaire · SARL (TNS)</button>
+            <button type="button" id="diag-sas" class="diag-toggle" onclick="diagSetStatut('sas')">Président · SAS (assimilé-salarié)</button>
+          </div>
+        </div>
+        <div><label class="diag-lbl">Résultat à extraire (€/an)</label><input id="diag-benef" class="diag-in" type="number" min="0" step="1000" value="120000" oninput="diagCalc()"></div>
+        <div><label class="diag-lbl">Patrimoine immobilier net (€)</label><input id="diag-immo" class="diag-in" type="number" min="0" step="50000" value="0" oninput="diagCalc()"></div>
+        <div><label class="diag-lbl">Nombre d'enfants</label><input id="diag-enf" class="diag-in" type="number" min="0" max="12" step="1" value="2" oninput="diagCalc()"></div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr)); gap:16px;">
+      <div class="diag-card">
+        <h3>💶 Salaire vs Dividendes</h3>
+        <div class="diag-row"><span>En poche, voie salaire</span><span class="diag-val" id="d-sal">—</span></div>
+        <div class="diag-row"><span>En poche, voie dividendes</span><span class="diag-val" id="d-div">—</span></div>
+        <div class="diag-row" style="border-top:1px dashed var(--line,#E4DCCD); margin-top:6px; padding-top:9px;"><span>Voie la plus efficace</span><span class="diag-val" id="d-best" style="color:var(--gold-deep,#8B6F3F);">—</span></div>
+        <div style="text-align:center; margin-top:8px;"><span style="font-size:11px; color:var(--ink-mute);">écart annuel</span><br><span class="diag-big" id="d-ecart">—</span></div>
+        <p style="font-size:10.5px; color:var(--ink-faint,#9B8F80); margin:8px 0 0; line-height:1.45;">Nuance TNS : dividendes &gt; 10 % du capital social = cotisations en plus.</p>
+      </div>
+      <div class="diag-card">
+        <h3>🏛️ Impôt immobilier (IFI)</h3>
+        <div style="text-align:center; padding:14px 0;"><span class="diag-big" id="d-ifi">—</span></div>
+        <div class="diag-row"><span>Seuil d'assujettissement</span><span class="diag-val">1,3 M€</span></div>
+        <p style="font-size:10.5px; color:var(--ink-faint,#9B8F80); margin:8px 0 0; line-height:1.45;">Calcul par tranches dès 800 k€ une fois le seuil franchi.</p>
+      </div>
+      <div class="diag-card">
+        <h3>🎁 Transmission sans droits</h3>
+        <div class="diag-row"><span>Par parent / 15 ans</span><span class="diag-val" id="d-trans">—</span></div>
+        <div class="diag-row"><span>En couple / 15 ans</span><span class="diag-val" id="d-transc">—</span></div>
+        <p style="font-size:10.5px; color:var(--ink-faint,#9B8F80); margin:8px 0 0; line-height:1.45;">Abattement 100 000 € / enfant / parent (art. 779 CGI), renouvelable.</p>
+      </div>
+      <div class="diag-card" style="background:var(--navy,#1B2A4A); border-color:var(--navy,#1B2A4A);">
+        <h3 style="color:var(--gold-bright,#E2C896);">✦ Synthèse</h3>
+        <p id="d-synth" style="color:var(--cream,#FAFAF8); font-size:13.5px; line-height:1.55; margin:0 0 14px; min-height:60px;">—</p>
+        <a href="#siren-funnel" style="display:block; text-align:center; padding:11px; background:var(--gold,#C9A96E); color:var(--navy,#1B2A4A); border-radius:10px; font-weight:700; font-size:13px; text-decoration:none;">Affiner avec Marcel →</a>
+      </div>
+    </div>
+
+    <p style="max-width:760px; margin:22px auto 0; text-align:center; font-size:11.5px; color:var(--ink-faint,#9B8F80); line-height:1.55; font-style:italic;">Estimation simplifiée (1 part fiscale, millésime 2026) à visée pédagogique. Ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Souhaitez-vous affiner ces chiffres avec un conseiller CIF (ORIAS 23001568) ?</p>
+  </div>
+</section>
+<script>
+(function(){
+  window._diagStatut = 'tns';
+  function fmt(n){ if(!isFinite(n)||n<0) n=0; return Math.round(n).toLocaleString('fr-FR') + ' €'; }
+  function num(id){ var e=document.getElementById(id); var v=e?parseFloat(e.value):0; return (isFinite(v)&&v>0)?v:0; }
+  function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+  function baremeIR(R){ // barème 2026 estimé, 1 part
+    var t=[[11497,0],[29315,0.11],[83823,0.30],[180294,0.41],[Infinity,0.45]], prev=0, ir=0;
+    for(var i=0;i<t.length;i++){ if(R>prev){ ir += (Math.min(R,t[i][0])-prev)*t[i][1]; prev=t[i][0]; } else break; }
+    return ir;
+  }
+  function calcIFI(p){ if(p<=1300000) return 0;
+    var t=[[800000,0],[1300000,0.005],[2570000,0.007],[5000000,0.01],[10000000,0.0125],[Infinity,0.015]], prev=0, ifi=0;
+    for(var i=0;i<t.length;i++){ if(p>prev){ ifi += (Math.min(p,t[i][0])-prev)*t[i][1]; prev=t[i][0]; } else break; }
+    return ifi;
+  }
+  window.diagSetStatut = function(s){
+    window._diagStatut = s;
+    var a=document.getElementById('diag-tns'), b=document.getElementById('diag-sas');
+    if(a) a.classList.toggle('diag-on', s==='tns');
+    if(b) b.classList.toggle('diag-on', s==='sas');
+    diagCalc();
+  };
+  window.diagCalc = function(){
+    var benef=num('diag-benef'), immo=num('diag-immo'), enf=Math.max(0,Math.round(num('diag-enf')));
+    var tns = window._diagStatut==='tns';
+    var chargeFactor = tns ? 1.45 : 1.75;          // charges sociales rapportées au net
+    var netSocial = benef / chargeFactor;          // net (avant IR) si tout en salaire
+    var pocheSalaire = netSocial - baremeIR(netSocial);
+    var pocheDiv = benef * (1 - 0.25) * 0.70;       // IS 25% (simplifié) puis PFU 30%
+    var best = pocheSalaire >= pocheDiv ? 'Salaire' : 'Dividendes';
+    var ecart = Math.abs(pocheSalaire - pocheDiv);
+    var ifi = calcIFI(immo);
+    var transmis = enf * 100000;
+    set('d-sal', fmt(pocheSalaire)); set('d-div', fmt(pocheDiv));
+    set('d-best', best); set('d-ecart', fmt(ecart));
+    set('d-ifi', ifi>0 ? fmt(ifi) + ' /an' : 'Non concerné');
+    set('d-trans', fmt(transmis)); set('d-transc', fmt(transmis*2));
+    var msg = 'En arbitrant salaire/dividendes : jusqu’à ' + fmt(ecart) + '/an d’écart.';
+    if(ifi>0) msg += ' IFI estimé : ' + fmt(ifi) + '/an à optimiser.';
+    if(transmis>0) msg += ' ' + fmt(transmis*2) + ' transmissibles sans droits (couple, /15 ans).';
+    set('d-synth', msg);
+  };
+  diagCalc();
+})();
+</script>
+
 <!-- ═══ CONCIERGERIE — démo agent Concierge en direct ═══ -->
 <section style="max-width:1080px; margin:0 auto; padding:48px 24px;">
   <div style="text-align:center; margin-bottom:26px;">
