@@ -78,6 +78,14 @@
   .row button:hover:not(:disabled){transform:translateY(-1px)}
   .nav-cta{transition:transform .15s}
   .nav-cta:hover{transform:translateY(-1px)}
+  .team-sec h2{font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:var(--navy);margin:4px 0 6px}
+  .team-sec .lead2{color:var(--ink-soft);font-weight:300;font-size:14px;max-width:48ch}
+  .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:12px;margin-top:18px}
+  .tm{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;transition:transform .15s,box-shadow .15s,border-color .15s;animation:riseIn .6s ease both}
+  .tm:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(27,42,74,.09);border-color:var(--gold)}
+  .tm .ic{font-size:24px;display:block;margin-bottom:7px}
+  .tm b{display:block;font-family:'Playfair Display',serif;color:var(--navy);font-size:15px;font-weight:600;margin-bottom:1px}
+  .tm em{font-style:normal;font-size:11.5px;color:var(--ink-soft)}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -134,6 +142,27 @@
       <span class="chip" onclick="ask('Comment fonctionne le pacte Dutreil ?')">Pacte Dutreil ?</span>
     </div>
     <div class="out" id="qOut" data-allow-copy></div>
+  </section>
+
+  <!-- L'ÉQUIPE QUE MARCEL ORCHESTRE -->
+  <section class="team-sec act" style="display:block">
+    <div class="act-tag"><span class="dot"></span>Une équipe · un seul interlocuteur</div>
+    <h2>Marcel ne travaille pas seul.</h2>
+    <p class="lead2">Il orchestre une équipe de spécialistes — chacun expert d'un territoire de votre patrimoine. Vous, vous ne parlez qu'à lui.</p>
+    <div class="team">
+      <div class="tm" style="animation-delay:.04s"><span class="ic">⚖️</span><b>Codex</b><em>Fiscalité</em></div>
+      <div class="tm" style="animation-delay:.08s"><span class="ic">🏛️</span><b>Hermès</b><em>Transmission</em></div>
+      <div class="tm" style="animation-delay:.12s"><span class="ic">🏗️</span><b>Bâtisseur</b><em>Patrimoine 360°</em></div>
+      <div class="tm" style="animation-delay:.16s"><span class="ic">🏠</span><b>Architecte</b><em>Immobilier</em></div>
+      <div class="tm" style="animation-delay:.20s"><span class="ic">📈</span><b>Stratège</b><em>Marchés</em></div>
+      <div class="tm" style="animation-delay:.24s"><span class="ic">🎨</span><b>Curateur</b><em>Art & collections</em></div>
+      <div class="tm" style="animation-delay:.28s"><span class="ic">✈️</span><b>Concierge</b><em>Voyage & art de vivre</em></div>
+      <div class="tm" style="animation-delay:.32s"><span class="ic">💼</span><b>Capital</b><em>Private equity</em></div>
+      <div class="tm" style="animation-delay:.36s"><span class="ic">🕊️</span><b>Mécène</b><em>Philanthropie</em></div>
+      <div class="tm" style="animation-delay:.40s"><span class="ic">📚</span><b>Pédagogue</b><em>NextGen</em></div>
+      <div class="tm" style="animation-delay:.44s"><span class="ic">🤝</span><b>Camille</b><em>Accompagnement</em></div>
+      <div class="tm" style="animation-delay:.48s"><span class="ic">🌿</span><b>Olympe</b><em>Bien-être &amp; longévité</em></div>
+    </div>
   </section>
 
   <div class="trust">🇫🇷 <b>IA française souveraine</b> · données en France · IKCP · ORIAS 23001568</div>
