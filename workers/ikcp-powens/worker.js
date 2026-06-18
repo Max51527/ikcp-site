@@ -177,6 +177,29 @@ export default {
       return json({ connected: true, accounts: d.accounts || d }, 200, o);
     }
 
+    // ── 4) /wealth : vue patrimoniale (produit « Wealth & Loans ») ──────────────
+    // Un seul appel pour le cockpit : comptes + investissements + crédits du membre.
+    // Alimente directement la base patrimoniale unifiée (cf. ikcp-patrimoine).
+    if (url.pathname === '/wealth') {
+      const memberId = url.searchParams.get('user') || 'anon';
+      if (!env.POWENS_DB) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-powens-db et bind POWENS_DB.' }, 500, o);
+      const row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first();
+      if (!row) return json({ connected: false, accounts: [], investments: [], loans: [] }, 200, o);
+      const H = { 'Authorization': 'Bearer ' + row.access_token };
+      // Appels parallèles ; chaque brique est best-effort (un endpoint absent ne casse pas la vue).
+      const [ac, inv, ln] = await Promise.all([
+        fetch(base(env) + '/users/me/accounts', { headers: H }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(base(env) + '/users/me/investments', { headers: H }).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(base(env) + '/users/me/loans', { headers: H }).then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+      return json({
+        connected: true,
+        accounts: (ac && (ac.accounts || ac)) || [],
+        investments: (inv && (inv.investments || inv)) || [],
+        loans: (ln && (ln.loans || ln)) || [],
+      }, 200, o);
+    }
+
     // ── /webhook[/TYPE] : reçoit les événements Powens (asynchrones, JSON) ──
     // Powens POST ici quand un compte se synchronise, etc. On ACQUITTE en 200 RAPIDE
     // (sinon Powens réessaie), on LOG en D1 Paris, et on DISPATCHE vers un handler par type.
