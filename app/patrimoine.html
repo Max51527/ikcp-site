@@ -115,6 +115,16 @@
   .audit-constat{font-size:13px;color:var(--mute);margin-bottom:8px}
   .audit-alerte{font-size:12.5px;color:var(--warn,#C9942B);font-weight:600;line-height:1.4}
   .audit-cta{margin-top:auto;padding-top:10px;font-size:12.5px;color:var(--accent);font-weight:600}
+
+  /* PDF de l'audit 360° : on masque les boutons/inputs, on garde la photo */
+  @media print{
+    #powens-connect,.oppo-profil,#oppoResults,.oppo-grid,.audit-cta{display:none!important}
+    .audit-card{break-inside:avoid;border:1px solid #ddd!important;box-shadow:none!important;transform:none!important}
+    .audit-card.warn{border-left:3px solid #C9942B!important}
+    .audit-synth{-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#1B2A4A!important}
+    #auditSection{margin-top:8px!important}
+    #auditSection h2{font-size:19px}
+  }
 </style>
 </head>
 <body>
@@ -244,6 +254,7 @@
       <div class="oppo-profil-h">8 dimensions analysées · chaque axe approfondi par un agent souverain dédié</div>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <button class="btn" id="auditBtn">✦ Lancer mon audit 360°</button>
+        <button class="btn btn-ghost btn-sm2" onclick="auditPdf()">📄 En PDF</button>
         <span style="font-size:12px;color:var(--mute)">Basé sur vos biens + profil. Connectez Powens (Premium) pour l'enrichir automatiquement.</span>
       </div>
     </div>
@@ -494,14 +505,45 @@ async function detectOppo(){
 document.getElementById('detectBtn')?.addEventListener('click', detectOppo);
 
 // ─── Audit patrimonial 360° (8 dimensions + agent Mistral par axe) ───
+// Enrichi par les comptes Powens si le membre a connecté sa banque (sinon manuel).
+function _powensUser(){ try{ if(window.Marcel&&Marcel.Auth&&Marcel.Auth.email) return Marcel.Auth.email; var s=localStorage.getItem('ikcp_email')||localStorage.getItem('email'); if(s) return s; }catch(_){} return 'me'; }
+async function powensActifs(){
+  try{
+    const r = await fetch('https://ikcp-powens.maxime-ead.workers.dev/wealth?user='+encodeURIComponent(_powensUser()));
+    const d = await r.json().catch(function(){return{};});
+    if(!d || !d.connected) return null;
+    const actifs=[], dettes=[];
+    const catOf = function(t){ t=(t||'').toLowerCase();
+      if(/life|assurance/.test(t)) return 'assurance_vie';
+      if(/pea/.test(t)) return 'pea';
+      if(/per|retraite/.test(t)) return 'per';
+      if(/market|titre|broker|cto/.test(t)) return 'cto';
+      if(/saving|epargne|livret/.test(t)) return 'livret';
+      return 'compte'; };
+    (d.accounts||[]).forEach(function(a){ const bal=+(a.balance!=null?a.balance:(a.value||0)); const t=a.type||a.account_type||'';
+      if(/loan|credit|pret/i.test(t)) dettes.push({categorie:'credit',type:'credit',capital_restant_cents:Math.round(Math.abs(bal)*100),source_donnee:'powens'});
+      else actifs.push({categorie:catOf(t),valorisation_cents:Math.round(bal*100),source_donnee:'powens'}); });
+    (d.investments||[]).forEach(function(i){ const v=+(i.valuation!=null?i.valuation:(i.value||i.balance||0)); actifs.push({categorie:'assurance_vie',valorisation_cents:Math.round(v*100),source_donnee:'powens'}); });
+    (d.loans||[]).forEach(function(l){ dettes.push({categorie:'credit',type:'credit',capital_restant_cents:Math.round(Math.abs(+(l.balance||l.remaining||0))*100),source_donnee:'powens'}); });
+    return {actifs:actifs, dettes:dettes, count:(d.accounts||[]).length+(d.investments||[]).length};
+  }catch(_){ return null; }
+}
+async function auditPayload(){
+  const p = mapPayload();
+  const pw = await powensActifs();
+  if(pw){ p.actifs=(p.actifs||[]).concat(pw.actifs); p.dettes=(p.dettes||[]).concat(pw.dettes); p._powens=pw.count; }
+  return p;
+}
 async function runAudit(){
   const out = document.getElementById('auditResults');
   const synth = document.getElementById('auditSynth');
   synth.innerHTML = ''; out.innerHTML = '<div class="oppo-load">Audit souverain en cours — analyse des 8 dimensions…</div>';
   try{
-    const r = await fetch(PAT_API + '/audit360', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(mapPayload()) });
+    const payload = await auditPayload();
+    const r = await fetch(PAT_API + '/audit360', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
     const d = await r.json();
-    synth.innerHTML = '<div class="audit-synth"><div class="s">'+escapeHtml(d.synthese||'')+'</div><div class="d">'+escapeHtml(d.disclaimer||'')+'</div></div>';
+    const src = payload._powens ? '<span style="color:#7FE3B0;font-weight:600">✓ '+payload._powens+' comptes Powens inclus</span> · ' : '';
+    synth.innerHTML = '<div class="audit-synth"><div class="s">'+escapeHtml(d.synthese||'')+'</div><div class="d">'+src+escapeHtml(d.disclaimer||'')+'</div></div>';
     out.innerHTML = (d.dimensions||[]).map(function(x,i){
       return '<div class="audit-card '+(x.alerte?'warn':'')+'" data-titre="'+escapeHtml(x.titre)+'" style="animation-delay:'+(i*50)+'ms">'
         + '<div class="audit-top"><h4>'+escapeHtml(x.titre)+'</h4><span class="audit-agent">'+escapeHtml(x.agent)+'</span></div>'
@@ -511,6 +553,11 @@ async function runAudit(){
     }).join('');
   }catch(e){ out.innerHTML = '<div class="oppo-empty">Service momentanément indisponible. Réessayez.</div>'; }
 }
+window.auditPdf = async function(){
+  const out = document.getElementById('auditResults');
+  if(!out.querySelector('.audit-card')){ await runAudit(); }
+  setTimeout(function(){ window.print(); }, 500); // l'utilisateur enregistre en PDF
+};
 document.getElementById('auditResults').addEventListener('click', function(e){
   const card = e.target.closest('.audit-card'); if(!card) return;
   goMarcel('Dans le cadre de mon audit patrimonial 360°, approfondis l\'axe « '+card.dataset.titre+' » de ma situation de dirigeant : analyse, leviers chiffrés, points de vigilance, et termine par une question.');
