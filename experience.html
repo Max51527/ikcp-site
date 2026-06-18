@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marcel IA · L'expérience patrimoniale souveraine — IKCP</title>
+<meta name="description" content="Saisissez votre SIREN. Marcel cartographie votre société et en révèle les leviers, en direct. Intelligence patrimoniale française, souveraine. IKCP · ORIAS 23001568.">
+<link rel="canonical" href="https://ikcp.eu/experience">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="/assets/logos/marcel-ia-emblem-fr.svg">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF9F5; --paper-2:#F4EDE1; --ink:#1A1714; --mute:#6B6155; --faint:#A89E8E;
+    --navy:#1B2A4A; --navy-deep:#0E1729; --gold:#B8956E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+    --red:#C0414C; --line:#E6DECF; --line-soft:#EFE8DA;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  /* grain papier subtil */
+  body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Playfair Display',Georgia,serif}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .eyebrow{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);font-weight:600}
+  .eyebrow .ln{width:34px;height:1px;background:var(--gold)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:30;background:rgba(251,249,245,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:500;font-size:18px;color:var(--navy);letter-spacing:.01em}
+  .brand svg{height:30px;width:30px}
+  .nav-r{display:flex;align-items:center;gap:26px;font-size:14px}
+  .nav-r .lk{color:var(--mute)}
+  .nav-r .lk:hover{color:var(--ink)}
+  .nav-r .cta{padding:9px 18px;border:1px solid var(--navy);border-radius:2px;color:var(--navy);font-weight:500;transition:.2s}
+  .nav-r .cta:hover{background:var(--navy);color:var(--paper)}
+  @media(max-width:620px){.nav-r .lk{display:none}}
+
+  /* HERO */
+  .hero{padding:64px 0 60px}
+  .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-r{order:-1}}
+  .hero h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(42px,6.4vw,76px);line-height:1.02;letter-spacing:-.02em;color:var(--navy);margin:26px 0 22px}
+  .hero h1 em{font-style:italic;color:var(--gold-deep)}
+  .hero .lede{font-size:clamp(16px,1.6vw,18px);color:var(--mute);font-weight:300;max-width:42ch;margin-bottom:30px}
+  .siren-form{display:flex;border:1px solid var(--navy);border-radius:2px;overflow:hidden;max-width:440px;background:#fff}
+  .siren-form input{flex:1;border:none;outline:none;padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.06em;color:var(--navy);background:transparent}
+  .siren-form input::placeholder{color:var(--faint);letter-spacing:.02em}
+  .siren-form button{border:none;background:var(--navy);color:var(--paper);padding:0 24px;font-size:14px;font-weight:500;letter-spacing:.04em;cursor:pointer;transition:background .2s}
+  .siren-form button:hover{background:var(--navy-deep)}
+  .microtrust{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--faint)}
+  .hero-r{display:flex;justify-content:center}
+  .bal-xl{width:min(260px,64vw);height:auto;filter:drop-shadow(0 22px 40px rgba(27,42,74,.14))}
+
+  /* SALON (révélation navy) */
+  .salon{display:none;background:var(--navy-deep);color:var(--paper);padding:60px 0;margin:10px 0 0;position:relative}
+  .salon::before{content:'';position:absolute;inset:0;opacity:.4;pointer-events:none;background:radial-gradient(680px 320px at 75% 0%,rgba(184,149,110,.14),transparent 70%)}
+  .salon .eyebrow{color:var(--gold-bright)}
+  .salon .eyebrow .ln{background:var(--gold)}
+  .salon h2{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(26px,3.6vw,40px);color:var(--paper);margin:16px 0 28px;letter-spacing:-.01em}
+  .salon h2 em{font-style:italic;color:var(--gold-bright)}
+  .co{border:1px solid rgba(226,200,150,.28);border-radius:3px;padding:20px 22px;margin-bottom:22px;background:rgba(255,255,255,.02)}
+  .co .nm{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold-bright);margin-bottom:8px}
+  .co .meta{font-size:13.5px;color:rgba(251,249,245,.82);line-height:1.85}
+  .co .meta b{color:var(--paper);font-weight:500}
+  .co .src{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.05em;color:var(--gold)}
+  .ans{font-size:15px;line-height:1.72;color:rgba(251,249,245,.92);animation:fade .8s ease both}
+  .ans p{margin:0 0 11px}.ans strong{color:var(--gold-bright);font-weight:600}
+  .ans-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .pill{padding:9px 15px;border-radius:2px;font-size:12.5px;cursor:pointer;font-weight:500;transition:.18s}
+  .pill.spk{background:var(--gold);color:var(--navy-deep);border:none}
+  .pill.spk:hover{background:var(--gold-bright)}
+  .pill.gh{background:transparent;color:var(--paper);border:1px solid rgba(226,200,150,.4)}
+  .pill.gh:hover{border-color:var(--gold-bright)}
+  .disc{margin-top:16px;font-size:11px;color:rgba(251,249,245,.5);font-style:italic;line-height:1.5}
+  .loader{display:flex;align-items:center;gap:7px;color:var(--gold-bright);font-style:italic;font-family:'Playfair Display',serif}
+  .loader i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:bnce 1s infinite}
+  .loader i:nth-child(2){animation-delay:.15s}.loader i:nth-child(3){animation-delay:.3s}
+  .cont{display:flex;gap:10px;margin-top:22px;max-width:520px;border:1px solid rgba(226,200,150,.3);border-radius:2px;overflow:hidden}
+  .cont input{flex:1;border:none;outline:none;background:transparent;color:var(--paper);padding:13px 16px;font-size:14px;font-family:'Outfit',sans-serif}
+  .cont input::placeholder{color:rgba(251,249,245,.4)}
+  .cont button{border:none;background:var(--gold);color:var(--navy-deep);padding:0 20px;font-weight:600;font-size:13px;cursor:pointer}
+
+  /* ORCHESTRATION */
+  .block{padding:72px 0;border-top:1px solid var(--line)}
+  .block h2{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(26px,3.6vw,40px);color:var(--navy);margin:14px 0 6px;letter-spacing:-.01em}
+  .block h2 em{font-style:italic;color:var(--gold-deep)}
+  .block .sub{color:var(--mute);font-weight:300;max-width:48ch;margin-bottom:30px}
+  .spec{border-top:1px solid var(--line)}
+  .spec .row{display:grid;grid-template-columns:24px 1.1fr 2fr;gap:18px;align-items:baseline;padding:15px 4px;border-bottom:1px solid var(--line-soft);transition:padding-left .2s,background .2s}
+  .spec .row:hover{padding-left:14px;background:var(--paper-2)}
+  .spec .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint)}
+  .spec .nm{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy)}
+  .spec .ro{font-size:13.5px;color:var(--mute)}
+  @media(max-width:620px){.spec .row{grid-template-columns:20px 1fr}.spec .ro{grid-column:2;font-size:12.5px}}
+
+  /* SOUVERAINETE */
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line)}
+  @media(max-width:620px){.facts{grid-template-columns:1fr}}
+  .fact{padding:26px 24px;border-right:1px solid var(--line)}
+  .fact:last-child{border-right:none}
+  @media(max-width:620px){.fact{border-right:none;border-bottom:1px solid var(--line)}.fact:last-child{border-bottom:none}}
+  .fact .k{font-family:'JetBrains Mono',monospace;font-size:28px;color:var(--navy);font-weight:600}
+  .fact .l{font-size:13px;color:var(--mute);margin-top:6px;line-height:1.5}
+
+  /* CTA + FOOTER */
+  .cta-s{padding:88px 0;text-align:center;border-top:1px solid var(--line)}
+  .cta-s h2{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(28px,4vw,46px);color:var(--navy);max-width:18ch;margin:0 auto 26px;letter-spacing:-.01em}
+  .cta-s a{display:inline-block;padding:15px 32px;background:var(--navy);color:var(--paper);border-radius:2px;font-weight:500;letter-spacing:.02em;transition:.2s}
+  .cta-s a:hover{background:var(--navy-deep);transform:translateY(-1px)}
+  footer{border-top:1px solid var(--line);padding:30px 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--faint);text-align:center}
+
+  /* MOTION */
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  @keyframes bnce{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-7px);opacity:1}}
+  .hero .eyebrow{animation:rise .8s ease both}
+  .hero h1{animation:rise .9s ease .1s both}
+  .hero .lede{animation:rise .9s ease .2s both}
+  .siren-form{animation:rise .9s ease .3s both}
+  .microtrust{animation:rise .9s ease .4s both}
+  .bal-xl{animation:rise 1s ease .2s both,float 6s ease-in-out 1.2s infinite}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <clipPath id="balC" clipPathUnits="userSpaceOnUse"><path d="M33 5 C 48 5 56 17 56 30 C 56 39 51 46 42 51 L 24 51 C 15 46 10 39 10 30 C 10 17 18 5 33 5 Z"/></clipPath>
+  <g id="bal">
+    <g clip-path="url(#balC)"><rect x="10" y="3" width="15.3" height="50" fill="#1B2A4A"/><rect x="25.3" y="3" width="15.4" height="50" fill="#FBF9F5"/><rect x="40.7" y="3" width="15.3" height="50" fill="#C0414C"/></g>
+    <path d="M33 5 C 48 5 56 17 56 30 C 56 39 51 46 42 51 L 24 51 C 15 46 10 39 10 30 C 10 17 18 5 33 5 Z" fill="none" stroke="#1B2A4A" stroke-width="1" stroke-opacity=".22"/>
+    <line x1="25.3" y1="6" x2="25.3" y2="51" stroke="#1B2A4A" stroke-width=".6" stroke-opacity=".18"/><line x1="40.7" y1="6" x2="40.7" y2="51" stroke="#1B2A4A" stroke-width=".6" stroke-opacity=".18"/>
+    <line x1="28" y1="51" x2="30" y2="57" stroke="#1B2A4A" stroke-width="1"/><line x1="38" y1="51" x2="36" y2="57" stroke="#1B2A4A" stroke-width="1"/>
+    <path d="M28 57 L 38 57 L 36.4 64 L 29.6 64 Z" fill="#B8956E"/>
+  </g>
+</defs></svg>
+
+<nav><div class="wrap nav-in">
+  <a href="/" class="brand"><svg viewBox="0 0 66 70"><use href="#bal"/></svg>Marcel IA</a>
+  <div class="nav-r"><a href="/family-office" class="lk">Le Family Office</a><a href="/app/" class="cta">Espace membre</a></div>
+</div></nav>
+
+<header class="hero"><div class="wrap hero-grid">
+  <div class="hero-l">
+    <div class="eyebrow"><span class="ln"></span>01 — Souverain · France</div>
+    <h1 class="serif">Votre patrimoine,<br><em>lu en un chiffre.</em></h1>
+    <p class="lede">Saisissez votre SIREN. Marcel cartographie votre société, en révèle les leviers, et répond — en direct. Sans un mot de trop.</p>
+    <form class="siren-form" onsubmit="goSiren();return false">
+      <input id="siren" inputmode="numeric" maxlength="11" placeholder="SIREN — 9 chiffres" aria-label="Votre SIREN">
+      <button type="submit">Révéler</button>
+    </form>
+    <div class="microtrust">FR · Données en France · ORIAS 23001568 · 0 dépendance américaine</div>
+  </div>
+  <div class="hero-r"><svg class="bal-xl" viewBox="0 0 66 70"><use href="#bal"/></svg></div>
+</div></header>
+
+<!-- SALON — la révélation -->
+<section class="salon" id="salon"><div class="wrap">
+  <div class="eyebrow"><span class="ln"></span>La révélation</div>
+  <h2 class="serif">Marcel a lu votre société. <em>Voici ce qu'il en tire.</em></h2>
+  <div id="coCard"></div>
+  <div id="marcelOut" class="out" data-allow-copy></div>
+  <div class="cont">
+    <input id="q" placeholder="Posez une autre question — Marcel garde le contexte" onkeydown="if(event.key==='Enter')goAsk()">
+    <button onclick="goAsk()">Demander</button>
+  </div>
+</div></section>
+
+<!-- ORCHESTRATION -->
+<section class="block"><div class="wrap">
+  <div class="eyebrow"><span class="ln"></span>02 — L'orchestration</div>
+  <h2 class="serif">Un chef. <em>Douze spécialistes.</em></h2>
+  <p class="sub">Vous ne parlez qu'à Marcel. En coulisse, il mobilise l'expert du territoire concerné. Cliquez-en un.</p>
+  <div class="spec" id="spec"></div>
+</div></section>
+
+<!-- SOUVERAINETE -->
+<section class="block"><div class="wrap">
+  <div class="eyebrow"><span class="ln"></span>03 — Souveraineté</div>
+  <h2 class="serif">Tout reste <em>en France.</em></h2>
+  <div class="facts" style="margin-top:8px">
+    <div class="fact"><div class="k">100%</div><div class="l">Intelligence & données hébergées en France. Aucune dépendance américaine.</div></div>
+    <div class="fact"><div class="k">L.541-1</div><div class="l">Cadre MIF II : information, jamais conseil personnalisé sans lettre de mission.</div></div>
+    <div class="fact"><div class="k">24/7</div><div class="l">Marcel et ses spécialistes, disponibles en continu. ORIAS 23001568.</div></div>
+  </div>
+</div></section>
+
+<section class="cta-s"><div class="wrap">
+  <h2 class="serif">L'accès se mérite. Il ne s'achète pas.</h2>
+  <a href="/family-office#beta">Demander un accès →</a>
+</div></section>
+
+<footer><div class="wrap">© 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · <a href="/mentions-legales">Mentions légales</a></div></footer>
+
+<script>
+  var PAP='https://ikcp-pappers.maxime-ead.workers.dev', CHAT='https://ikcp-chat.maxime-ead.workers.dev/';
+  var DISC='<div class="disc">Information, pas un conseil personnalisé (art. L.541-1 CoMoFi). Un conseiller humain CIF (ORIAS 23001568) peut intervenir à votre demande.</div>';
+  window._ctx=''; window._spk='';
+  function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  function md(t){return '<p>'+esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>')+'</p>'}
+  function speak(){try{if(!window._spk)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(window._spk.slice(0,1500));u.lang='fr-FR';u.rate=1.03;var v=(speechSynthesis.getVoices()||[]).filter(function(x){return /fr/i.test(x.lang)})[0];if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+
+  var SP=['Codex (fiscalité)','Hermès (transmission)','Bâtisseur (360°)','Architecte (immobilier)','Stratège (marchés)','Curateur (collections)','Concierge (art de vivre)','Capital (private equity)','Mécène (philanthropie)'];
+  async function marcelAsk(message){
+    var el=document.getElementById('marcelOut');
+    el.innerHTML='<div class="loader"><i></i><i></i><i></i><span id="lm">Marcel mobilise ses spécialistes…</span></div>';
+    var i=0,iv=setInterval(function(){var m=document.getElementById('lm');if(m)m.textContent='Marcel consulte '+SP[i++%SP.length]+'…'},950);
+    try{
+      var r=await fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message,history:[]})});
+      var d=await r.json();clearInterval(iv);
+      var reply=d.reply||'Un instant — réessayez.';
+      window._spk=String(reply).replace(/[*_#>`]/g,'').replace(/\s+/g,' ');
+      var h='<div class="ans">'+md(reply)+'</div><div class="ans-bar"><button class="pill spk" onclick="speak()">🔊 Écouter Marcel</button>';
+      if(Array.isArray(d.follow_ups))h+=d.follow_ups.slice(0,2).map(function(f){return '<button class="pill gh" onclick="ask('+JSON.stringify(f).replace(/"/g,'&quot;')+')">'+esc(f)+'</button>'}).join('');
+      el.innerHTML=h+'</div>'+DISC;
+    }catch(e){clearInterval(iv);el.innerHTML='<div class="ans">Service momentanément indisponible. Réessayez.</div>'}
+  }
+  function reveal(){var s=document.getElementById('salon');s.style.display='block';}
+  async function goSiren(){
+    var v=(document.getElementById('siren').value||'').replace(/\D/g,'').slice(0,9);
+    if(v.length<9){document.getElementById('siren').focus();return}
+    reveal();
+    var card=document.getElementById('coCard');card.innerHTML='';
+    document.getElementById('marcelOut').innerHTML='<div class="loader"><i></i><i></i><i></i><span>Marcel interroge le Registre National des Entreprises…</span></div>';
+    document.getElementById('salon').scrollIntoView({behavior:'smooth',block:'start'});
+    try{
+      var r=await fetch(PAP+'/entreprise/'+v+'/short',{headers:{'Accept':'application/json'}});
+      if(!r.ok)throw 0;var d=await r.json();
+      var cap=d.capital?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(d.capital):'n.c.';
+      window._ctx='Ma société (source RNE) : '+(d.nom||'')+', '+(d.forme_juridique||'')+', capital '+cap+', activité '+(d.libelle_code_naf||d.code_naf||'')+', siège '+((d.siege&&d.siege.ville)||'')+'.';
+      card.innerHTML='<div class="co"><div class="nm">'+esc(d.nom||'—')+'</div><div class="meta"><b>Forme</b> '+esc(d.forme_juridique||'—')+' &nbsp;·&nbsp; <b>Capital</b> '+cap+'<br><b>Activité</b> '+esc(d.libelle_code_naf||d.code_naf||'—')+' &nbsp;·&nbsp; <b>Siège</b> '+esc((d.siege&&d.siege.ville)||'—')+'</div><div class="src">✓ Source officielle RNE · données en France</div></div>';
+      marcelAsk(window._ctx+' Donne-moi mes 3 principaux leviers — rémunération/dividendes, fiscalité, transmission — pour cette structure. Concret et chiffré.');
+    }catch(e){card.innerHTML='';document.getElementById('marcelOut').innerHTML='<div class="ans">Société introuvable. Essayez 552 032 534 (Danone).</div>'}
+  }
+  function ask(q){reveal();document.getElementById('q').value=q;goAsk();document.getElementById('salon').scrollIntoView({behavior:'smooth',block:'start'})}
+  async function goAsk(){var q=(document.getElementById('q').value||'').trim();if(q.length<4)return;await marcelAsk((window._ctx?window._ctx+' ':'')+q)}
+
+  // Orchestration — liste filets
+  (function(){
+    var S=[['Codex','Fiscalité','Quels sont mes principaux leviers fiscaux ?'],['Hermès','Transmission','Comment optimiser la transmission de mon patrimoine ?'],['Bâtisseur','Patrimoine 360°','Fais-moi une lecture 360° de mon patrimoine de dirigeant.'],['Architecte','Immobilier','Comment optimiser la détention de mon immobilier ?'],['Stratège','Marchés','Comment diversifier mon patrimoine financier ?'],['Curateur','Art & collections','Comment intégrer mes collections à mon patrimoine ?'],['Concierge','Voyage & art de vivre','Que propose le Family Office côté art de vivre ?'],['Capital','Private equity','Comment accéder au private equity ?'],['Mécène','Philanthropie','Comment structurer ma philanthropie ?'],['Pédagogue','NextGen','Comment préparer la nouvelle génération ?'],['Camille','Accompagnement','Comment se passe l\'accompagnement au quotidien ?'],['Olympe','Longévité','Comment lier patrimoine, santé et longévité ?']];
+    document.getElementById('spec').innerHTML=S.map(function(s,i){return '<div class="row" onclick="ask('+JSON.stringify(s[2]).replace(/"/g,'&quot;')+')"><span class="n">'+(i<9?'0':'')+(i+1)+'</span><span class="nm">'+s[0]+'</span><span class="ro">'+s[1]+'</span></div>'}).join('');
+  })();
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
