@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IKCP Family Office — Mon espace</title>
+<meta name="theme-color" content="#0a0d0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c; --gold-dark: #8b6f3f;
+  --line: rgba(196, 162, 115, 0.14);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --warn: #d4a85a; --ok: #7fae7d; --err: #b85a5a;
+}
+html, body {
+  background: var(--bg); color: var(--ink);
+  font-family: 'Inter', sans-serif; font-weight: 300;
+  line-height: 1.65; min-height: 100vh; -webkit-font-smoothing: antialiased;
+}
+main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+/* ─── Header ─── */
+header.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 24px; border-bottom: 1px solid var(--line); margin-bottom: 32px;
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.user-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+  padding: 6px 12px; border: 1px solid var(--gold); color: var(--gold);
+  text-transform: uppercase;
+}
+
+/* ─── Salutation ─── */
+.hello {
+  margin-bottom: 48px; padding: 32px;
+  background: var(--bg-2); border: 1px solid var(--line);
+}
+.hello h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 4vw, 42px); line-height: 1.1; margin-bottom: 16px;
+}
+.hello h1 em { font-style: italic; color: var(--gold); }
+.hello p { color: var(--ink-mute); max-width: 680px; font-size: 15px; }
+.hello-actions {
+  margin-top: 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+}
+
+/* ─── Grid de blocs ─── */
+.dashboard-grid {
+  display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 48px;
+}
+@media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--bg-2); border: 1px solid var(--line); padding: 28px;
+}
+.card h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: 20px; margin-bottom: 6px;
+}
+.card h2 em { font-style: italic; color: var(--gold); }
+.card .sub {
+  font-size: 11px; letter-spacing: 0.2em; color: var(--ink-faint);
+  text-transform: uppercase; margin-bottom: 20px;
+}
+
+/* ─── Agents quick actions ─── */
+.agent-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+}
+.agent-btn {
+  padding: 16px; background: var(--bg); border: 1px solid var(--line);
+  cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+  text-decoration: none; color: var(--ink); font-family: inherit; text-align: left;
+}
+.agent-btn:hover { border-color: var(--gold); background: rgba(196,162,115,0.04); }
+.agent-btn .name {
+  font-family: 'Playfair Display', serif; font-size: 16px; color: var(--gold);
+}
+.agent-btn .desc { font-size: 12px; color: var(--ink-mute); }
+.agent-btn.locked { opacity: 0.4; cursor: not-allowed; }
+.agent-btn.locked:hover { border-color: var(--line); background: var(--bg); }
+.agent-btn .lock { font-size: 10px; color: var(--warn); margin-left: auto;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.15em; }
+
+/* ─── Memory store ─── */
+.memory-list { list-style: none; }
+.memory-list li {
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-mute);
+  display: flex; justify-content: space-between;
+}
+.memory-list li:last-child { border-bottom: none; }
+.memory-list .path { color: var(--gold); }
+
+/* ─── Newsletters ─── */
+.nl-item {
+  padding: 14px 0; border-bottom: 1px solid var(--line);
+}
+.nl-item:last-child { border-bottom: none; }
+.nl-week {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.18em; color: var(--ink-faint);
+}
+.nl-title {
+  font-family: 'Playfair Display', serif; font-size: 15px;
+  margin: 4px 0 6px; color: var(--ink);
+}
+.nl-preview { font-size: 12.5px; color: var(--ink-mute); }
+
+/* ─── Drop zone ─── */
+.drop-section { margin-bottom: 48px; }
+
+/* ─── Quick btn ─── */
+.btn {
+  padding: 12px 22px; background: var(--gold); color: var(--bg);
+  border: 1px solid var(--gold); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.btn:hover { background: transparent; color: var(--gold); }
+.btn.ghost { background: transparent; color: var(--gold); }
+.btn.ghost:hover { background: var(--gold); color: var(--bg); }
+
+.footer-note {
+  font-size: 11px; color: var(--ink-faint); font-style: italic;
+  font-family: 'Playfair Display', serif; line-height: 1.7;
+  text-align: center; margin-top: 48px;
+}
+</style>
+</head>
+<body>
+
+<main>
+
+<header class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Mon Family Office</div>
+  </div>
+  <div class="user-tag" id="user-tag">— · membre</div>
+</header>
+
+<!-- ═══ HELLO + VOIX ═══ -->
+<section class="hello">
+  <h1>Bonjour <em id="user-name">…</em>.</h1>
+  <p id="hello-text">
+    Bienvenue dans votre espace. Vous pouvez parler à Marcel, déposer
+    un document, lancer une analyse, ou consulter vos newsletters
+    hebdomadaires. Tout est à un clic.
+  </p>
+  <div class="hello-actions">
+    <marcel-voice id="voice"
+                  tts-url="https://voice.ikcp.eu/tts"
+                  stt-url="https://voice.ikcp.eu/stt"></marcel-voice>
+    <button class="btn ghost" id="btn-greet">🔊 Salutation vocale</button>
+  </div>
+</section>
+
+<!-- ═══ DROP DOCUMENT ═══ -->
+<section class="drop-section">
+  <marcel-vision agents-url="https://agents.ikcp.eu"
+                 marcel-url="https://chat.ikcp.eu"></marcel-vision>
+</section>
+
+<!-- ═══ GRID PRINCIPAL ═══ -->
+<div class="dashboard-grid">
+
+  <!-- ─── Agents disponibles ─── -->
+  <div class="card">
+    <h2>Lancer une <em>analyse</em></h2>
+    <div class="sub">7 agents · spécialisés family office</div>
+    <div class="agent-grid" id="agent-grid">
+      <!-- rendu en JS selon tier user -->
+    </div>
+  </div>
+
+  <!-- ─── Mémoire Marcel ─── -->
+  <div class="card">
+    <h2>La mémoire de <em>votre famille</em></h2>
+    <div class="sub">Ce que Marcel se souvient — modifiable</div>
+    <ul class="memory-list" id="memory-list">
+      <li><span class="path">chargement…</span></li>
+    </ul>
+    <button class="btn ghost" id="btn-init-memory" style="margin-top:16px;display:none;">+ Initialiser ma mémoire</button>
+  </div>
+
+</div>
+
+<!-- ═══ NEWSLETTERS REÇUES ═══ -->
+<div class="card">
+  <h2>Vos <em>newsletters</em> hebdomadaires</h2>
+  <div class="sub">Personnalisées · vendredi 10h · adaptées à votre situation</div>
+  <div id="newsletters-list">
+    <p style="color:var(--ink-mute);font-size:13px;">Chargement…</p>
+  </div>
+</div>
+
+<p class="footer-note">
+  Espace personnel sécurisé · données EU sur Cloudflare · DPA Anthropic Enterprise + Zero Data Retention.<br>
+  IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · COA.
+</p>
+
+</main>
+
+<script type="module" src="/assets/marcel-voice.js"></script>
+<script type="module" src="/assets/marcel-vision.js"></script>
+<script type="module" src="/assets/marcel-feedback.js"></script>
+<marcel-feedback feedback-url="https://ikcp-feedback.maxime-ead.workers.dev"></marcel-feedback>
+<script>
+const AGENTS_BASE = window.IKCP_AGENTS_URL || 'https://agents.ikcp.eu';
+const CLIENT_BASE = window.IKCP_CLIENT_URL || 'https://client.ikcp.eu';
+
+// Alignement sur les IDs techniques du worker ikcp-client : free / premium / fo
+// premium = Découverte 3 mois OU Augmenté annuel (9 agents)
+// fo = Bespoke OU Partner CGP (13 agents)
+const TIER_AGENTS = {
+  free: [],
+  premium: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
+            'immobilier', 'defiscalisation', 'transmission', 'remuneration'],
+  fo: ['documents', 'suivi', 'patrimoine', 'reporting', 'fiscalite_impots',
+       'immobilier', 'defiscalisation', 'transmission', 'remuneration',
+       'fortune', 'gouvernance', 'editorial', 'strategie'],
+};
+
+const ALL_AGENTS = [
+  { kind: 'patrimoine',       name: 'Patrimoine 360°',     desc: 'Analyse + 5 visuels (Opus 4.8)' },
+  { kind: 'transmission',     name: 'Transmission',        desc: 'Donations / Dutreil / succession' },
+  { kind: 'remuneration',     name: 'Rémunération',        desc: 'Salaire / dividendes / management package' },
+  { kind: 'fiscalite_impots', name: 'OCR fiscalité',       desc: 'Avis IR/IFI/2042 case par case' },
+  { kind: 'immobilier',       name: 'Immobilier',          desc: 'Direct + papier + DVF' },
+  { kind: 'defiscalisation',  name: 'Défiscalisation',     desc: 'PER, FCPI, Girardin, dons' },
+  { kind: 'reporting',        name: 'DER trimestriel',     desc: 'Rapport + 3 charts (Fable 5)' },
+  { kind: 'documents',        name: 'OCR document',        desc: 'Extraction JSON générique' },
+  { kind: 'suivi',            name: 'Planning trimestre',  desc: 'Échéances + arbitrages' },
+  { kind: 'strategie',        name: 'Stratégie 5 ans',     desc: 'Feuille de route intégrée (BESPOKE)' },
+  { kind: 'fortune',          name: 'Stratégie HNW',       desc: 'Structures internationales (BESPOKE)' },
+  { kind: 'gouvernance',      name: 'Charte familiale',    desc: 'Gouvernance + NextGen (BESPOKE)' },
+  { kind: 'editorial',        name: 'Newsletter perso',    desc: 'Article sur mesure (BESPOKE)' },
+];
+
+const voice = document.getElementById('voice');
+
+async function fetchMe() {
+  try {
+    const r = await fetch(`${CLIENT_BASE}/api/me`, { credentials: 'include' });
+    if (r.status === 401) {
+      window.location.href = `${CLIENT_BASE}/login?next=${encodeURIComponent(location.href)}`;
+      return null;
+    }
+    return await r.json();
+  } catch (e) { return null; }
+}
+
+async function fetchMemory() {
+  try {
+    const r = await fetch(`${AGENTS_BASE}/api/me/memory`, { credentials: 'include' });
+    return await r.json();
+  } catch { return { files: [] }; }
+}
+
+async function fetchNewsletters() {
+  try {
+    const r = await fetch(`${AGENTS_BASE}/api/me/newsletters`, { credentials: 'include' });
+    return await r.json();
+  } catch { return { newsletters: [] }; }
+}
+
+function renderAgents(tier) {
+  const grid = document.getElementById('agent-grid');
+  const accessible = TIER_AGENTS[tier] || [];
+  grid.innerHTML = ALL_AGENTS.map(a => {
+    const locked = !accessible.includes(a.kind);
+    return `
+      <a class="agent-btn ${locked ? 'locked' : ''}"
+         ${locked ? '' : `href="${CLIENT_BASE}/dashboard/new-task?kind=${a.kind}"`}
+         ${locked ? `title="Upgrade pour débloquer"` : ''}>
+        <div class="name">${a.name}</div>
+        <div class="desc">${a.desc}</div>
+        ${locked ? '<div class="lock">🔒 Upgrade</div>' : ''}
+      </a>`;
+  }).join('');
+}
+
+function renderMemory(memory) {
+  const list = document.getElementById('memory-list');
+  if (!memory.memory_store_id) {
+    list.innerHTML = '<li><span class="path">Mémoire non initialisée</span></li>';
+    document.getElementById('btn-init-memory').style.display = 'inline-block';
+    return;
+  }
+  if (!memory.files.length) {
+    list.innerHTML = '<li><span class="path">Vide pour l\'instant — Marcel y écrira au fil des sessions</span></li>';
+    return;
+  }
+  list.innerHTML = memory.files.slice(0, 6).map(f => `
+    <li>
+      <span class="path">${escapeHtml(f.path)}</span>
+      <span>${formatBytes(f.size || 0)}</span>
+    </li>
+  `).join('');
+}
+
+function renderNewsletters(data) {
+  const wrap = document.getElementById('newsletters-list');
+  const items = data.newsletters || [];
+  if (!items.length) {
+    wrap.innerHTML = `<p style="color:var(--ink-mute);font-size:13px;">
+      Aucune newsletter encore. La première arrive vendredi prochain à 10h.
+    </p>`;
+    return;
+  }
+  wrap.innerHTML = items.map(n => `
+    <div class="nl-item">
+      <div class="nl-week">— ${n.week_iso}</div>
+      <div class="nl-title">${escapeHtml(n.subject || 'Newsletter UPPERCUT')}</div>
+      <div class="nl-preview">${escapeHtml(n.preview || '')}</div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[<>"'&]/g, c =>
+    ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));
+}
+function formatBytes(b) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024*1024) return `${(b/1024).toFixed(1)} KB`;
+  return `${(b/1048576).toFixed(1)} MB`;
+}
+
+document.getElementById('btn-greet').addEventListener('click', async () => {
+  const name = document.getElementById('user-name').textContent || 'cher membre';
+  await voice.speak(`Bonjour ${name}. Heureux de vous retrouver. Je peux vous aider avec un rapport, une analyse patrimoniale, ou lire un document que vous me déposez. Sur quoi voulez-vous travailler aujourd'hui ?`, 'marcel_fr');
+});
+
+document.getElementById('btn-init-memory').addEventListener('click', async () => {
+  const r = await fetch(`${AGENTS_BASE}/api/me/memory/init`, {
+    method: 'POST', credentials: 'include',
+  });
+  const data = await r.json();
+  alert(`Mémoire initialisée (${data.status})`);
+  renderMemory(await fetchMemory());
+});
+
+// ─── Vision events → voix Marcel commente ───
+document.addEventListener('vision-done', async (e) => {
+  const text = e.detail.full_text || '';
+  // Marcel commente vocalement le résumé court
+  const summary = text.slice(0, 300);
+  await voice.speak(`J'ai lu votre document. ${summary}`, 'default');
+});
+document.addEventListener('vision-start', (e) => {
+  voice.setStatus && voice.setStatus(`Marcel lit ${e.detail.filename}…`);
+});
+
+// ─── Boot ───
+(async () => {
+  const me = await fetchMe();
+  if (!me) return;
+  const userName = me.name || me.email?.split('@')[0] || 'cher membre';
+  document.getElementById('user-name').textContent = userName;
+  document.getElementById('user-tag').textContent = `${userName} · ${me.tier || 'free'}`;
+
+  renderAgents(me.tier || 'free');
+  renderMemory(await fetchMemory());
+  renderNewsletters(await fetchNewsletters());
+})();
+</script>
+
+</body>
+</html>

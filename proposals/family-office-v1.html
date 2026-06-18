@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Family Office augmenté · Proposition v1</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0c0f0d;
+  --bg-2: #11161300;
+  --ink: #f4ece1;
+  --ink-mute: #9a9388;
+  --ink-faint: #5e5851;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.18);
+  --grid: rgba(255, 255, 255, 0.03);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Grille de fond subtile */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── NAV ─── */
+nav.top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 22px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(12,15,13,0.95), rgba(12,15,13,0));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.brand b { color: var(--gold); font-weight: 500; }
+.brand-sub {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+nav .menu {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+nav .menu a {
+  color: var(--ink-mute);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+nav .menu a:hover { color: var(--gold); }
+nav .cta {
+  padding: 10px 22px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+nav .cta:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── HERO ─── */
+section.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 140px 40px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeIn 1s 0.2s forwards;
+}
+.kicker::before, .kicker::after {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 1px;
+  background: var(--gold);
+  vertical-align: middle;
+  margin: 0 14px;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(40px, 6.5vw, 84px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  opacity: 0;
+  animation: fadeUp 1s 0.4s forwards;
+}
+h1 em {
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 400;
+}
+h1 .accent {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.lede {
+  max-width: 620px;
+  font-size: 16px;
+  color: var(--ink-mute);
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp 1s 0.6s forwards;
+}
+.lede em {
+  color: var(--ink);
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ─── ORCHESTRATION DIAGRAM ─── */
+.orchestration {
+  position: relative;
+  width: min(720px, 95vw);
+  height: min(720px, 95vw);
+  margin: 30px auto 60px;
+  opacity: 0;
+  animation: fadeIn 1.2s 0.9s forwards;
+}
+
+.orch-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.orch-line {
+  stroke: var(--gold);
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.3;
+  stroke-dasharray: 4 6;
+  animation: dashFlow 6s linear infinite;
+}
+
+@keyframes dashFlow {
+  to { stroke-dashoffset: -100; }
+}
+
+.orch-pulse {
+  fill: var(--gold);
+  opacity: 0;
+}
+.orch-pulse.p1 { animation: pulseFlow 4s 0s linear infinite; }
+.orch-pulse.p2 { animation: pulseFlow 4s 0.7s linear infinite; }
+.orch-pulse.p3 { animation: pulseFlow 4s 1.4s linear infinite; }
+.orch-pulse.p4 { animation: pulseFlow 4s 2.1s linear infinite; }
+.orch-pulse.p5 { animation: pulseFlow 4s 2.8s linear infinite; }
+.orch-pulse.p6 { animation: pulseFlow 4s 3.5s linear infinite; }
+
+@keyframes pulseFlow {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Centre — Maxime + IA maître */
+.orch-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  z-index: 4;
+}
+.orch-center::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  animation: ringPulse 5s ease-in-out infinite;
+}
+.orch-center::after {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: ringPulse2 5s ease-in-out infinite;
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(1.05); opacity: 0.3; }
+}
+@keyframes ringPulse2 {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50%      { transform: scale(0.95); opacity: 0.7; }
+}
+
+.orch-center-disk {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #1c2218, #0c0f0d 70%);
+  border: 1.5px solid var(--gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 80px rgba(196, 162, 115, 0.18);
+  position: relative;
+  z-index: 5;
+}
+.orch-center-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.orch-center-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.orch-center-role {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin-top: 6px;
+}
+
+/* Agents satellites */
+.orch-agent {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 3;
+}
+.orch-agent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(196, 162, 115, 0.04);
+  border: 1px solid var(--line);
+  transition: all 0.3s;
+}
+.orch-agent:hover::before {
+  background: rgba(196, 162, 115, 0.1);
+  border-color: var(--gold);
+  transform: scale(1.06);
+}
+.orch-agent-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1;
+  filter: grayscale(0.3) sepia(0.2);
+}
+.orch-agent-name {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+.orch-agent-desc {
+  font-size: 9px;
+  color: var(--ink-faint);
+  margin-top: 3px;
+  position: relative;
+  z-index: 1;
+  font-style: italic;
+}
+
+/* Positions des 6 agents (cercle) */
+.agent-1 { top: 4%;   left: 50%; transform: translateX(-50%); }   /* Triage */
+.agent-2 { top: 22%;  right: 4%; }                                /* Fiscal */
+.agent-3 { bottom: 22%; right: 4%; }                              /* Juridique */
+.agent-4 { bottom: 4%; left: 50%; transform: translateX(-50%); }  /* Reporting */
+.agent-5 { bottom: 22%; left: 4%; }                               /* Suivi */
+.agent-6 { top: 22%;  left: 4%; }                                 /* Documents */
+
+/* ─── BULLETS ─── */
+.values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto 60px;
+  opacity: 0;
+  animation: fadeUp 1s 1.2s forwards;
+}
+.value {
+  text-align: left;
+  padding: 0 20px;
+  border-left: 1px solid var(--line);
+}
+.value-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.value-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.value-desc {
+  font-size: 13px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+}
+
+/* ─── CTA BLOCK ─── */
+.cta-block {
+  text-align: center;
+  margin: 0 auto;
+  opacity: 0;
+  animation: fadeUp 1s 1.5s forwards;
+}
+.cta-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cta-primary {
+  display: inline-block;
+  padding: 16px 40px;
+  background: var(--gold);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: all 0.25s;
+  border: 1px solid var(--gold);
+}
+.cta-primary:hover {
+  background: transparent;
+  color: var(--gold);
+}
+.cta-secondary {
+  color: var(--ink-mute);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+  transition: all 0.2s;
+}
+.cta-secondary:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.cta-note {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin-top: 24px;
+  letter-spacing: 0.02em;
+}
+
+/* ─── FOOTER MINI ─── */
+footer.proto {
+  position: relative;
+  z-index: 1;
+  padding: 50px 40px 30px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+footer.proto p {
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.03em;
+}
+footer.proto a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav.top { padding: 16px 20px; }
+  nav .menu { display: none; }
+  section.hero { padding: 100px 20px 60px; }
+  .orchestration { width: min(540px, 92vw); height: min(540px, 92vw); }
+  .orch-center, .orch-center-disk { width: 130px; height: 130px; }
+  .orch-center-name { font-size: 16px; }
+  .orch-agent { width: 80px; height: 80px; }
+  .orch-agent-icon { font-size: 18px; }
+  .orch-agent-name { font-size: 8px; }
+  .orch-agent-desc { display: none; }
+  .values { grid-template-columns: 1fr; gap: 24px; }
+  .value { border-left: none; border-top: 1px solid var(--line); padding: 16px 0 0; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="menu">
+    <a href="#methode">Méthode</a>
+    <a href="#agents">Agents</a>
+    <a href="#offre">Accompagnement</a>
+    <a href="#cabinet">Le cabinet</a>
+    <a href="#client" class="cta">Espace client</a>
+  </div>
+</nav>
+
+<section class="hero">
+
+  <div class="kicker">PROPOSITION VISUELLE · V1</div>
+
+  <h1>
+    <em>Un</em> chef d'orchestre.<br>
+    <span class="accent">Six</span> agents experts.
+  </h1>
+
+  <p class="lede">
+    Vous gardez le pilotage. Maxime arbitre. Une intelligence artificielle maîtresse coordonne. Six agents IA spécialisés exécutent —
+    <em>fiscal, juridique, suivi, documents, reporting, triage.</em>
+  </p>
+
+  <!-- ═══ Orchestration diagram ═══ -->
+  <div class="orchestration">
+
+    <!-- Lignes radiales animées -->
+    <svg class="orch-svg" viewBox="0 0 720 720" preserveAspectRatio="xMidYMid meet">
+      <!-- Cercles concentriques décoratifs -->
+      <circle cx="360" cy="360" r="240" stroke="rgba(196,162,115,0.08)" stroke-width="1" fill="none" stroke-dasharray="2 8"/>
+      <circle cx="360" cy="360" r="180" stroke="rgba(196,162,115,0.05)" stroke-width="1" fill="none"/>
+
+      <!-- Lignes du centre vers chaque agent -->
+      <!-- Agent 1 — top center (Triage) -->
+      <line class="orch-line" x1="360" y1="360" x2="360" y2="80"/>
+      <circle class="orch-pulse p1" r="3"><animateMotion dur="4s" repeatCount="indefinite" path="M 360 360 L 360 80"/></circle>
+
+      <!-- Agent 2 — top right (Fiscal) -->
+      <line class="orch-line" x1="360" y1="360" x2="600" y2="200"/>
+      <circle class="orch-pulse p2" r="3"><animateMotion dur="4s" begin="0.7s" repeatCount="indefinite" path="M 360 360 L 600 200"/></circle>
+
+      <!-- Agent 3 — bottom right (Juridique) -->
+      <line class="orch-line" x1="360" y1="360" x2="600" y2="520"/>
+      <circle class="orch-pulse p3" r="3"><animateMotion dur="4s" begin="1.4s" repeatCount="indefinite" path="M 360 360 L 600 520"/></circle>
+
+      <!-- Agent 4 — bottom center (Reporting) -->
+      <line class="orch-line" x1="360" y1="360" x2="360" y2="640"/>
+      <circle class="orch-pulse p4" r="3"><animateMotion dur="4s" begin="2.1s" repeatCount="indefinite" path="M 360 360 L 360 640"/></circle>
+
+      <!-- Agent 5 — bottom left (Suivi) -->
+      <line class="orch-line" x1="360" y1="360" x2="120" y2="520"/>
+      <circle class="orch-pulse p5" r="3"><animateMotion dur="4s" begin="2.8s" repeatCount="indefinite" path="M 360 360 L 120 520"/></circle>
+
+      <!-- Agent 6 — top left (Documents) -->
+      <line class="orch-line" x1="360" y1="360" x2="120" y2="200"/>
+      <circle class="orch-pulse p6" r="3"><animateMotion dur="4s" begin="3.5s" repeatCount="indefinite" path="M 360 360 L 120 200"/></circle>
+    </svg>
+
+    <!-- Centre : IA maître + Maxime -->
+    <div class="orch-center">
+      <div class="orch-center-disk">
+        <div class="orch-center-label">★ Chef d'orchestre</div>
+        <div class="orch-center-name">Maxime<br>+ IA maître</div>
+        <div class="orch-center-role">Arbitre · décide</div>
+      </div>
+    </div>
+
+    <!-- Agents satellites -->
+    <div class="orch-agent agent-1" title="Triage : qualifie chaque demande entrante">
+      <div class="orch-agent-icon">📥</div>
+      <div class="orch-agent-name">Triage</div>
+      <div class="orch-agent-desc">qualifie</div>
+    </div>
+    <div class="orch-agent agent-2" title="Fiscal : calculs IR, IFI, succession, donation">
+      <div class="orch-agent-icon">🏛️</div>
+      <div class="orch-agent-name">Fiscal</div>
+      <div class="orch-agent-desc">calcule</div>
+    </div>
+    <div class="orch-agent agent-3" title="Juridique : analyse actes notariés et contrats">
+      <div class="orch-agent-icon">⚖️</div>
+      <div class="orch-agent-name">Juridique</div>
+      <div class="orch-agent-desc">analyse</div>
+    </div>
+    <div class="orch-agent agent-4" title="Reporting : synthèse trimestrielle par famille">
+      <div class="orch-agent-icon">📊</div>
+      <div class="orch-agent-name">Reporting</div>
+      <div class="orch-agent-desc">synthétise</div>
+    </div>
+    <div class="orch-agent agent-5" title="Suivi : tâches, échéances, relances partenaires">
+      <div class="orch-agent-icon">🔄</div>
+      <div class="orch-agent-name">Suivi</div>
+      <div class="orch-agent-desc">orchestre</div>
+    </div>
+    <div class="orch-agent agent-6" title="Documents : indexe et résume les pièces">
+      <div class="orch-agent-icon">📁</div>
+      <div class="orch-agent-name">Documents</div>
+      <div class="orch-agent-desc">indexe</div>
+    </div>
+  </div>
+
+  <!-- ═══ 3 valeurs ═══ -->
+  <div class="values">
+    <div class="value">
+      <div class="value-num">i.</div>
+      <div class="value-title">Une seule porte d'entrée</div>
+      <div class="value-desc">Vos sujets de patrimoine convergent vers nous. Plus de dispersion entre cinq interlocuteurs.</div>
+    </div>
+    <div class="value">
+      <div class="value-num">ii.</div>
+      <div class="value-title">Vos partenaires coordonnés</div>
+      <div class="value-desc">Notaire, avocat, expert-comptable, gérant — un écosystème resserré, briefé, réactif.</div>
+    </div>
+    <div class="value">
+      <div class="value-num">iii.</div>
+      <div class="value-title">Une vision claire, suivie</div>
+      <div class="value-desc">Tableaux de bord, rapports trimestriels, échéances anticipées. Le patrimoine ne dort jamais.</div>
+    </div>
+  </div>
+
+  <!-- ═══ CTA ═══ -->
+  <div class="cta-block">
+    <div class="cta-row">
+      <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20Family%20Office%20IKCP" class="cta-primary">Demander une recommandation</a>
+      <a href="#methode" class="cta-secondary">Découvrir la méthode →</a>
+    </div>
+    <div class="cta-note">Sur recommandation · Familles à patrimoine constitué (>2 M€)</div>
+  </div>
+
+</section>
+
+<footer class="proto">
+  <p>
+    Prototype visuel · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine<br>
+    <a href="../index.html">← Retour site actuel</a>
+  </p>
+</footer>
+
+<script>
+// Tilt léger au hover sur centre (juste pour le fun)
+const center = document.querySelector('.orch-center-disk');
+const wrapper = document.querySelector('.orchestration');
+if (center && wrapper) {
+  wrapper.addEventListener('mousemove', (e) => {
+    const r = wrapper.getBoundingClientRect();
+    const x = (e.clientX - r.left - r.width / 2) / r.width;
+    const y = (e.clientY - r.top - r.height / 2) / r.height;
+    center.style.transform = `rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+  });
+  wrapper.addEventListener('mouseleave', () => {
+    center.style.transform = '';
+  });
+}
+</script>
+
+</body>
+</html>

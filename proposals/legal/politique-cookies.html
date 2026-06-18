@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Politique de cookies</title>
+<meta name="theme-color" content="#0a0d0b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg: #0a0d0b; --ink: #f4ece1; --ink-mute: #8c857a; --gold: #c4a273; --line: rgba(196,162,115,0.14); --bg-2: #0d100e; }
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+main { max-width: 800px; margin: 0 auto; padding: 60px 32px 80px; }
+nav { padding: 20px 32px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+nav a { color: var(--ink-mute); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 40px; line-height: 1.1; margin-bottom: 32px; letter-spacing: -0.02em; }
+h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 22px; margin: 36px 0 14px; color: var(--gold); }
+p { font-size: 14.5px; color: var(--ink-mute); margin-bottom: 14px; }
+p strong { color: var(--ink); font-weight: 500; }
+table { width: 100%; border-collapse: collapse; margin: 18px 0; background: var(--bg-2); border: 1px solid var(--line); }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+th { color: var(--gold); font-weight: 500; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; background: rgba(196,162,115,0.04); }
+td.mono { font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink); }
+a.link { color: var(--gold); }
+.update { font-size: 11.5px; color: var(--ink-mute); font-style: italic; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.actions { background: rgba(196,162,115,0.05); padding: 22px 26px; border-left: 2px solid var(--gold); margin: 24px 0; }
+button.consent-action { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 9px 18px; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; margin-right: 10px; margin-top: 10px; }
+button.consent-action:hover { background: var(--gold); color: var(--bg); }
+footer { text-align: center; font-size: 11px; color: var(--ink-mute); padding: 28px 32px; border-top: 1px solid var(--line); }
+footer a { color: var(--gold); text-decoration: none; }
+</style>
+</head>
+<body>
+<nav><div class="brand">IKCP<b>.</b></div><a href="../index.html">← Retour</a></nav>
+
+<main>
+<div class="eyebrow">— Politique de cookies</div>
+<h1>Politique de cookies</h1>
+<p class="update">Dernière mise à jour : 9 mai 2026 · Version 1.0</p>
+
+<h2>Notre approche</h2>
+<p>IKCP utilise <strong>uniquement les cookies strictement nécessaires</strong> au fonctionnement du site et de l'Application. Aucun cookie publicitaire, de profilage tiers ou de tracking comportemental n'est déposé sans votre consentement explicite.</p>
+
+<h2>Cookies utilisés</h2>
+<table>
+<thead><tr><th>Nom</th><th>Finalité</th><th>Durée</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td class="mono">ikcp_session</td><td>Session magic-link authentifiée (espace client)</td><td>30 jours</td><td>Strictement nécessaire</td></tr>
+<tr><td class="mono">ikcp_freemium_count_v1</td><td>Compteur freemium 3 questions par session (localStorage)</td><td>Session</td><td>Strictement nécessaire</td></tr>
+<tr><td class="mono">ikcp_marcel_conv_v1</td><td>Reprise de conversation Marcel (localStorage)</td><td>7 jours</td><td>Fonctionnel</td></tr>
+<tr><td class="mono">ikcp_install_dismissed_until</td><td>Mémorise le rejet du banner d'installation PWA (localStorage)</td><td>7 jours</td><td>Fonctionnel</td></tr>
+<tr><td class="mono">ikcp_consent_v1</td><td>Mémorise votre choix sur le banner cookies</td><td>13 mois max (CNIL)</td><td>Strictement nécessaire</td></tr>
+<tr><td class="mono">_cf_*</td><td>Sécurité Cloudflare (anti-bot, anti-DDoS)</td><td>Session-30 j</td><td>Strictement nécessaire</td></tr>
+</tbody>
+</table>
+
+<p><strong>Cookies analytiques tiers</strong> : aucun. IKCP utilise Cloudflare Web Analytics qui ne dépose pas de cookie tracker côté client. Aucun Google Analytics, aucun pixel Facebook, aucun cookie publicitaire.</p>
+
+<h2>Stockage local (localStorage)</h2>
+<p>L'application stocke certaines informations dans le <code>localStorage</code> de votre navigateur pour améliorer l'expérience (reprise de conversation, compteur freemium, préférences). Ces données restent <strong>uniquement sur votre appareil</strong> et ne sont jamais transmises à un serveur.</p>
+
+<h2>Vos choix et préférences</h2>
+<div class="actions">
+<p style="margin-bottom: 0;"><strong>Vous pouvez modifier vos préférences à tout moment</strong> :</p>
+<button class="consent-action" id="reset-consent">Réafficher le banner cookies</button>
+<button class="consent-action" id="clear-storage">Effacer toutes mes données locales</button>
+</div>
+
+<h2>Sous-traitants et tiers</h2>
+<p>IKCP utilise des sous-traitants conformes RGPD pour le fonctionnement de la plate-forme :</p>
+<ul style="margin: 12px 0 16px 22px; color: var(--ink-mute); font-size: 14px;">
+<li><strong>Cloudflare</strong> (hébergement EU) — DORA, ISO 27001, SOC 2, DPA signé</li>
+<li><strong>Anthropic</strong> (modèle IA Claude) — conservation 30 jours max, pas de retraining sur vos données, DPA + Standard Contractual Clauses</li>
+<li><strong>Resend</strong> (envoi email) — DPA, pas de stockage du contenu après envoi</li>
+<li><strong>Notion</strong> (CRM prospect uniquement) — DPA, données limitées</li>
+</ul>
+<p>Détails complets dans la <a class="link" href="../../docs/CHARTE-BETA-TESTER.md">Charte beta-tester §5.3</a>.</p>
+
+<h2>Comment refuser les cookies</h2>
+<p>Le banner cookies vous propose lors de votre première visite de :</p>
+<ul style="margin: 12px 0 16px 22px; color: var(--ink-mute); font-size: 14px;">
+<li><strong>Tout accepter</strong> (cookies strictement nécessaires + fonctionnels)</li>
+<li><strong>Tout refuser</strong> (cookies strictement nécessaires uniquement — votre choix mémorisé 13 mois)</li>
+<li><strong>Personnaliser</strong> (choix par catégorie)</li>
+</ul>
+<p>Vous pouvez aussi configurer votre navigateur pour bloquer les cookies. Notez que le blocage des cookies strictement nécessaires peut empêcher l'authentification au dashboard.</p>
+
+<h2>Durée de conservation</h2>
+<p>Conformément aux recommandations CNIL, le consentement cookie est stocké pour une durée maximale de <strong>13 mois</strong>. Au-delà, le banner se réaffichera pour refresh de votre choix.</p>
+
+<h2>Contact</h2>
+<p>Pour toute question relative à cette politique :</p>
+<ul style="margin: 12px 0 16px 22px; color: var(--ink-mute); font-size: 14px;">
+<li>DPO IKCP : <a class="link" href="mailto:dpo@ikcp.eu">dpo@ikcp.eu</a></li>
+<li>CNIL (réclamation) : <a class="link" href="https://www.cnil.fr/fr/plaintes" target="_blank">cnil.fr/fr/plaintes</a></li>
+</ul>
+
+</main>
+
+<footer>
+IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
+<a href="./mentions-legales.html">Mentions légales</a> · <a href="./cgu.html">CGU</a>
+</footer>
+
+<script>
+document.getElementById('reset-consent').addEventListener('click', () => {
+  localStorage.removeItem('ikcp_consent_v1');
+  alert('Préférences cookies réinitialisées. Le banner s\'affichera lors de votre prochaine visite.');
+});
+document.getElementById('clear-storage').addEventListener('click', () => {
+  if (!confirm('Effacer toutes les données IKCP stockées localement (consentement, conversations Marcel, préférences) ?')) return;
+  Object.keys(localStorage).filter(k => k.startsWith('ikcp_')).forEach(k => localStorage.removeItem(k));
+  alert('Données locales effacées. Recharge de la page recommandée.');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Formation NextGen · Parcours hyper-personnalisé</title>
+<meta name="description" content="Six modules pédagogiques bâtis sur votre patrimoine réel. Pour les enfants de dirigeants d'entreprise familiale. Marcel + Maxime, sans MOOC générique.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.14); --line-strong: rgba(196, 162, 115, 0.32); --line-faint: rgba(196, 162, 115, 0.05);
+  --ok: #7fae7d;
+}
+html, body {
+  background: var(--bg); color: var(--ink);
+  font-family: 'Inter', sans-serif; font-weight: 300;
+  line-height: 1.7; letter-spacing: -0.003em; min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+
+nav.top { display: flex; justify-content: space-between; align-items: center; padding: 28px 48px; max-width: 1080px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+nav .menu { display: flex; gap: 28px; align-items: center; }
+nav a { color: var(--ink-mute); text-decoration: none; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.3s; }
+nav a:hover { color: var(--gold); }
+
+section.hero { padding: 80px 0 100px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(36px, 5vw, 60px); line-height: 1.08; letter-spacing: -0.022em; margin-bottom: 32px; max-width: 880px; }
+h1 em { font-style: italic; color: var(--gold); }
+.lede { max-width: 660px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+.progress-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  margin-top: 50px; padding-top: 32px; border-top: 1px solid var(--line); gap: 0;
+}
+.prog-cell { padding: 18px 24px 0; border-right: 1px solid var(--line); }
+.prog-cell:last-child { border-right: none; }
+.prog-num { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 28px; line-height: 1; margin-bottom: 8px; font-weight: 400; }
+.prog-label { font-size: 10.5px; color: var(--ink-mute); letter-spacing: 0.06em; line-height: 1.5; }
+
+section.bloc { padding: 80px 0; border-bottom: 1px solid var(--line); }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 14px; }
+.section-titre {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em;
+  margin-bottom: 36px;
+}
+.section-titre em { font-style: italic; color: var(--gold); }
+
+.modules-list { border-top: 1px solid var(--line); }
+.module-row {
+  padding: 36px 0; border-bottom: 1px solid var(--line-faint);
+  display: grid; grid-template-columns: 90px 1fr 200px;
+  gap: 36px; align-items: start;
+  transition: background 0.25s;
+  cursor: pointer;
+  position: relative;
+}
+.module-row:hover { background: rgba(196,162,115,0.02); }
+.module-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 38px; color: var(--gold); line-height: 1;
+}
+.module-content h3 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: 24px; line-height: 1.2; margin-bottom: 10px; letter-spacing: -0.005em;
+}
+.module-content h3 em { font-style: italic; color: var(--gold); }
+.module-pitch { font-size: 14.5px; color: var(--ink-mute); line-height: 1.7; margin-bottom: 18px; }
+.module-pitch em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.module-pitch strong { color: var(--gold); font-weight: 500; }
+
+.module-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.meta-chip {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  padding: 4px 10px; border: 1px solid var(--line-strong);
+  color: var(--ink-mute); letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+.module-cas {
+  margin-top: 18px; padding: 16px 22px;
+  background: rgba(196,162,115,0.04);
+  border-left: 2px solid var(--gold);
+}
+.module-cas-label {
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.module-cas-text {
+  font-size: 13px; color: var(--ink); line-height: 1.65;
+  font-family: 'Playfair Display', serif; font-style: italic;
+}
+
+.module-side {
+  display: flex; flex-direction: column; gap: 12px;
+  font-size: 11.5px; color: var(--ink-mute); align-items: flex-start;
+}
+.module-side .duree { font-family: 'JetBrains Mono', monospace; color: var(--gold-bright); font-size: 13px; }
+.module-side .niveau {
+  padding: 4px 10px; border: 1px solid var(--line-strong); font-size: 10px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+.module-side .niveau.intro { color: var(--ok); border-color: rgba(127,174,125,0.3); }
+.module-side .niveau.inter { color: var(--gold); }
+.module-side .niveau.avance { color: var(--gold-bright); border-color: rgba(196,162,115,0.5); }
+.module-side .quiz { font-size: 11px; color: var(--ink-faint); font-style: italic; font-family: 'Playfair Display', serif; }
+
+/* CTA final */
+section.cta-final { padding: 110px 0 80px; text-align: center; }
+section.cta-final h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15; margin-bottom: 24px; letter-spacing: -0.018em; }
+section.cta-final h2 em { font-style: italic; color: var(--gold); }
+section.cta-final p { font-size: 15px; color: var(--ink-mute); line-height: 1.75; max-width: 580px; margin: 0 auto 36px; }
+.cta-row { display: inline-flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.btn-primary { padding: 16px 36px; background: var(--gold); color: var(--bg); border: 1px solid var(--gold); text-decoration: none; font-weight: 600; font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase; transition: all 0.3s; }
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-secondary { color: var(--ink-mute); text-decoration: none; font-size: 12.5px; letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid transparent; transition: all 0.3s; }
+.btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+footer.proto { padding: 36px 48px; text-align: center; border-top: 1px solid var(--line); max-width: 1080px; margin: 0 auto; }
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+
+@media (max-width: 900px) {
+  main, nav.top, footer.proto { padding-left: 22px !important; padding-right: 22px !important; }
+  .module-row { grid-template-columns: 60px 1fr; gap: 18px; padding: 28px 0; }
+  .module-num { font-size: 28px; }
+  .module-side { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .progress-strip { grid-template-columns: repeat(2, 1fr); }
+  .prog-cell:nth-child(2) { border-right: none; }
+  .prog-cell:nth-child(1), .prog-cell:nth-child(2) { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 22px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Formation NextGen</div>
+  </div>
+  <div class="menu">
+    <a href="./landing-beta-dirigeants.html">← Beta</a>
+    <a href="./conviction-overview.html">Conviction</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Formation%20NextGen%20%E2%80%94%20question">Échanger</a>
+  </div>
+</nav>
+
+<main>
+
+<section class="hero">
+  <div class="eyebrow">— Formation NextGen · parcours hyper-personnalisé</div>
+  <h1>Six modules. <em>Votre patrimoine.</em><br>Pas un MOOC.</h1>
+  <p class="lede">
+    Le parcours n'est pas écrit à l'avance. Il <em>s'écrit autour de vous</em> : votre société, vos chiffres, vos pactes. Marcel adapte chaque exercice à votre situation. Maxime valide à la fin de chaque module. Quiz, cas pratiques, validation, certification IKCP.
+  </p>
+  <div class="progress-strip">
+    <div class="prog-cell"><div class="prog-num">6</div><div class="prog-label">Modules · 4 à 8 semaines au rythme libre</div></div>
+    <div class="prog-cell"><div class="prog-num">100%</div><div class="prog-label">Bâti sur votre patrimoine réel — pas un cas générique</div></div>
+    <div class="prog-cell"><div class="prog-num">12 h</div><div class="prog-label">Estimation totale (rythme 1-2 modules par mois)</div></div>
+    <div class="prog-cell"><div class="prog-num">∞</div><div class="prog-label">Marcel disponible 24/7 + 1 RDV Maxime / module</div></div>
+  </div>
+</section>
+
+<section class="bloc">
+  <div class="section-num">— Le parcours</div>
+  <h2 class="section-titre">Du <em>découvrir</em> à <em>l'agir</em>.<br>De l'intuition à la maîtrise.</h2>
+
+  <div class="modules-list">
+
+    <!-- MODULE 1 -->
+    <div class="module-row">
+      <div class="module-num">i.</div>
+      <div class="module-content">
+        <h3>Comprendre <em>votre</em> famille.<br>Le patrimoine vu d'<em>en haut</em>.</h3>
+        <p class="module-pitch">
+          La carte du patrimoine familial : <em>vue 360°</em>. Que possède la famille ? Comment c'est structuré ? Où sont les actifs, les dettes, les flux ? Première brique : <strong>savoir ce qu'on regarde</strong>.
+        </p>
+        <div class="module-meta">
+          <span class="meta-chip">Vue 360°</span>
+          <span class="meta-chip">Allocation</span>
+          <span class="meta-chip">Drift cible</span>
+          <span class="meta-chip">Bilan consolidé</span>
+        </div>
+        <div class="module-cas">
+          <div class="module-cas-label">— Cas pratique sur VOTRE famille</div>
+          <div class="module-cas-text">
+            « Ouvrir le dashboard. Identifier les 3 plus gros actifs. Identifier le drift par classe d'actif. Discuter avec papa/maman du choix de telle SCI vs telle SARL. »
+          </div>
+        </div>
+      </div>
+      <div class="module-side">
+        <span class="duree">~ 1 h 30</span>
+        <span class="niveau intro">Niveau intro</span>
+        <span class="quiz">Quiz 8 questions · validation Maxime visio 30 min</span>
+      </div>
+    </div>
+
+    <!-- MODULE 2 -->
+    <div class="module-row">
+      <div class="module-num">ii.</div>
+      <div class="module-content">
+        <h3>Les <em>chiffres</em> qui comptent.<br>Fiscalité de votre famille.</h3>
+        <p class="module-pitch">
+          IR · IFI · DMTG · donation · plus-values. Tu sors de ce module en sachant <em>combien paie ta famille</em>, <em>pourquoi</em>, et <strong>quelles sont les 3 leviers d'optimisation accessibles</strong>. Tools déterministes Marcel — aucune hallucination.
+        </p>
+        <div class="module-meta">
+          <span class="meta-chip">CGI 779</span>
+          <span class="meta-chip">CGI 964 IFI</span>
+          <span class="meta-chip">CGI 150 U PV</span>
+          <span class="meta-chip">CGI 790 G don familial</span>
+        </div>
+        <div class="module-cas">
+          <div class="module-cas-label">— Cas pratique</div>
+          <div class="module-cas-text">
+            « Calculer l'IR foyer parental. Calculer les droits de succession sans préparation. Calculer-les avec donation 100 k€/15 ans + démembrement. Mesurer l'écart en €. »
+          </div>
+        </div>
+      </div>
+      <div class="module-side">
+        <span class="duree">~ 2 h 30</span>
+        <span class="niveau intro">Niveau intro+</span>
+        <span class="quiz">Quiz 12 questions · 2 cas pratiques chiffrés</span>
+      </div>
+    </div>
+
+    <!-- MODULE 3 -->
+    <div class="module-row">
+      <div class="module-num">iii.</div>
+      <div class="module-content">
+        <h3>Lire un <em>acte</em>.<br>Clauses, pactes, transmission.</h3>
+        <p class="module-pitch">
+          Un pacte d'actionnaires de 18 pages se lit en 30 minutes — quand on sait ce qu'on cherche. Drag-along, tag-along, anti-dilution, leaver, préemption, non-concurrence. <strong>À la fin du module, tu lis le pacte de la SARL familiale et tu repères les 5 clauses sensibles.</strong>
+        </p>
+        <div class="module-meta">
+          <span class="meta-chip">Pacte d'actionnaires</span>
+          <span class="meta-chip">Pacte Dutreil 787 B</span>
+          <span class="meta-chip">Clauses bénéficiaires AV</span>
+          <span class="meta-chip">Donation-partage</span>
+        </div>
+        <div class="module-cas">
+          <div class="module-cas-label">— Cas pratique</div>
+          <div class="module-cas-text">
+            « Lire (vraiment) le pacte d'associés de la société familiale. Annoter avec Marcel. Préparer 5 questions à poser au notaire de la famille. »
+          </div>
+        </div>
+      </div>
+      <div class="module-side">
+        <span class="duree">~ 2 h</span>
+        <span class="niveau inter">Niveau intermédiaire</span>
+        <span class="quiz">Annotation guidée · validation Maxime + relais notaire</span>
+      </div>
+    </div>
+
+    <!-- MODULE 4 -->
+    <div class="module-row">
+      <div class="module-num">iv.</div>
+      <div class="module-content">
+        <h3>Choisir une <em>stratégie</em>.<br>Démembrement · OBO · Dutreil · holding apport.</h3>
+        <p class="module-pitch">
+          Quatre outils, quatre logiques. <em>Quand utiliser quoi ?</em> Module bâti sur la valorisation réelle de la société familiale : tu compares les 4 schémas chiffrés, tu vois ce que chaque option donne en € et en autonomie.
+        </p>
+        <div class="module-meta">
+          <span class="meta-chip">CGI 669 démembrement</span>
+          <span class="meta-chip">CGI 150-0 B ter holding</span>
+          <span class="meta-chip">CGI 787 B Dutreil</span>
+          <span class="meta-chip">CGI 200 A PFU</span>
+        </div>
+        <div class="module-cas">
+          <div class="module-cas-label">— Cas pratique</div>
+          <div class="module-cas-text">
+            « Sur la société familiale (valorisation X M€), simuler les 4 schémas avec Marcel. Préparer un mémo de 2 pages pour la prochaine réunion CA familial. »
+          </div>
+        </div>
+      </div>
+      <div class="module-side">
+        <span class="duree">~ 2 h 30</span>
+        <span class="niveau avance">Niveau avancé</span>
+        <span class="quiz">Mémo 2 pages signé Maxime + cédant</span>
+      </div>
+    </div>
+
+    <!-- MODULE 5 -->
+    <div class="module-row">
+      <div class="module-num">v.</div>
+      <div class="module-content">
+        <h3>Diriger : <em>gouvernance</em> et famille.</h3>
+        <p class="module-pitch">
+          La gouvernance n'est pas un mot d'avocat. C'est ce qui empêche les conflits dans 5 ans. Charte familiale, conseil de famille, règles de transmission, traitement des conjoints, sanctions des écarts. <strong>Tu rédiges la première mouture de la charte familiale.</strong>
+        </p>
+        <div class="module-meta">
+          <span class="meta-chip">Charte familiale</span>
+          <span class="meta-chip">Conseil de famille</span>
+          <span class="meta-chip">Pacte de famille</span>
+          <span class="meta-chip">Médiation</span>
+        </div>
+        <div class="module-cas">
+          <div class="module-cas-label">— Cas pratique</div>
+          <div class="module-cas-text">
+            « Rédiger v0 de la charte (10 pages avec Marcel). Soumettre à la fratrie. Convoquer le 1er conseil de famille en visio. Animer 1 h. »
+          </div>
+        </div>
+      </div>
+      <div class="module-side">
+        <span class="duree">~ 3 h</span>
+        <span class="niveau avance">Niveau avancé</span>
+        <span class="quiz">Charte v0 + 1er conseil de famille animé</span>
+      </div>
+    </div>
+
+    <!-- MODULE 6 -->
+    <div class="module-row">
+      <div class="module-num">vi.</div>
+      <div class="module-content">
+        <h3>Le passage de <em>relais</em>.<br>L'art de la transmission.</h3>
+        <p class="module-pitch">
+          La transmission n'est pas un événement, c'est un parcours qui se prépare 10 ans à l'avance. Tu ressors de ce module avec <strong>un calendrier de 10 ans</strong> coécrit avec ton parent dirigeant : qui prend quoi, quand, comment, et avec quels filets de sécurité.
+        </p>
+        <div class="module-meta">
+          <span class="meta-chip">Plan 10 ans</span>
+          <span class="meta-chip">Donation progressive</span>
+          <span class="meta-chip">Cession partielle</span>
+          <span class="meta-chip">Mandat à effet posthume</span>
+        </div>
+        <div class="module-cas">
+          <div class="module-cas-label">— Cas pratique final · certification IKCP</div>
+          <div class="module-cas-text">
+            « Construire le calendrier de transmission 10 ans pour votre famille — chiffré, sourcé, signé par les deux générations + validé Maxime. Délivrance du certificat IKCP NextGen. »
+          </div>
+        </div>
+      </div>
+      <div class="module-side">
+        <span class="duree">~ 4 h</span>
+        <span class="niveau avance">Niveau expert</span>
+        <span class="quiz">Calendrier 10 ans + certification IKCP NextGen</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-final">
+  <h2>Une famille. <em>Un parcours.</em><br>Six modules. Une transmission préparée.</h2>
+  <p>
+    Le parcours NextGen est inclus dans la beta. Les 50 familles sélectionnées y ont accès gratuitement pendant 6 mois — pour les parents <em>et</em> pour les enfants, sans coût additionnel.
+  </p>
+  <div class="cta-row">
+    <a href="./landing-beta-dirigeants.html#beta" class="btn-primary">Demander un code beta</a>
+    <a href="./conviction-overview.html" class="btn-secondary">Voir la conviction →</a>
+    <a href="./dashboard-famille-office.html" class="btn-secondary">Voir un dashboard membre →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Formation NextGen · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+    Pour les enfants de dirigeants d'entreprise familiale · 100% digital · 100% personnalisé<br>
+    <a href="./landing-beta-dirigeants.html">Beta</a> &nbsp;·&nbsp;
+    <a href="./conviction-overview.html">Conviction</a> &nbsp;·&nbsp;
+    <a href="./expertise-internationale.html">International</a> &nbsp;·&nbsp;
+    <a href="./dashboard-famille-office.html">Dashboard</a>
+  </p>
+</footer>
+
+</body>
+</html>

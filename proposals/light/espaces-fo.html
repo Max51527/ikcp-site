@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Trois espaces · version claire</title>
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#faf6ee">
+<link rel="manifest" href="../../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="../../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #faf6ee; --bg-2: #f4ecdf; --bg-3: #ede2cf;
+  --ink: #1f1a16; --ink-mute: #6d5c4a; --ink-faint: #9e9080;
+  --gold: #b8956e; --gold-deep: #8b6f3f;
+  --line: rgba(139,111,63,0.18); --line-strong: rgba(139,111,63,0.4); --line-faint: rgba(139,111,63,0.08);
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; line-height: 1.7; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+main { max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+
+nav.top { display: flex; justify-content: space-between; align-items: center; padding: 28px 48px; max-width: 1180px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold-deep); font-weight: 500; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; background: rgba(31,26,22,0.04); border: 1px solid var(--line); font-size: 11px; letter-spacing: 0.12em; color: var(--ink-mute); text-decoration: none; text-transform: uppercase; transition: all 0.25s; font-family: 'Inter', sans-serif; font-weight: 500; }
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+.theme-toggle::before { content: '◐'; font-size: 13px; }
+
+section.hero { padding: 60px 0 80px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 32px; font-weight: 500; }
+h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(36px, 5vw, 64px); line-height: 1.08; letter-spacing: -0.022em; margin-bottom: 32px; max-width: 880px; color: var(--ink); }
+h1 em { font-style: italic; color: var(--gold-deep); }
+.lede { max-width: 660px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+.promesse-100 { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.p100 { padding: 22px 28px; border-right: 1px solid var(--line); }
+.p100:last-child { border-right: none; }
+.p100-num { font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic; color: var(--gold-deep); font-size: 38px; line-height: 1; margin-bottom: 12px; letter-spacing: -0.02em; }
+.p100-num span { font-size: 22px; font-style: normal; opacity: 0.7; margin-left: 2px; }
+.p100-label { font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); margin-bottom: 10px; font-weight: 500; }
+.p100-label em { font-style: italic; color: var(--gold-deep); font-weight: 400; letter-spacing: 0; text-transform: none; font-size: 16px; font-family: 'Playfair Display', serif; display: block; }
+.p100-desc { font-size: 12px; color: var(--ink-mute); line-height: 1.6; }
+@media (max-width: 1100px) {
+  .promesse-100 { grid-template-columns: repeat(2, 1fr); }
+  .p100:nth-child(2) { border-right: none; }
+  .p100:nth-child(1), .p100:nth-child(2) { border-bottom: 1px solid var(--line); padding-bottom: 28px; }
+}
+
+section.bloc { padding: 80px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 50px; gap: 40px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold-deep); letter-spacing: 0.2em; }
+.section-titre { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em; max-width: 720px; margin-top: 12px; color: var(--ink); }
+.section-titre em { font-style: italic; color: var(--gold-deep); }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; max-width: 280px; }
+
+.espaces-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.espace { background: var(--bg); padding: 40px 32px 36px; display: flex; flex-direction: column; position: relative; }
+.espace.featured { background: linear-gradient(180deg, rgba(184,149,110,0.06) 0%, var(--bg-2) 100%); border-top: 2px solid var(--gold-deep); margin-top: -2px; }
+.espace.featured::before { content: 'Le plus choisi'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold-deep); color: var(--bg); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 14px; font-weight: 600; }
+.espace-tier { font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 14px; font-weight: 500; }
+.espace-name { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 14px; letter-spacing: -0.005em; line-height: 1.15; color: var(--ink); }
+.espace-name em { font-style: italic; color: var(--gold-deep); }
+.espace-target { font-size: 11.5px; color: var(--ink-mute); padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 22px; line-height: 1.6; font-style: italic; font-family: 'Playfair Display', serif; }
+.espace-target strong { color: var(--ink); font-weight: 500; font-style: normal; font-family: 'Inter', sans-serif; }
+.espace-price { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--ink); margin: 6px 0 4px; letter-spacing: -0.01em; font-weight: 400; }
+.espace-price em { font-style: italic; color: var(--gold-deep); }
+.espace-price small { font-size: 13px; color: var(--ink-mute); margin-left: 6px; font-family: 'Inter', sans-serif; font-style: normal; font-weight: 400; }
+.espace-price-note { font-size: 11.5px; color: var(--gold-deep); margin-bottom: 22px; }
+.espace-pitch { font-size: 13px; color: var(--ink-mute); margin-bottom: 22px; line-height: 1.6; min-height: 50px; }
+.espace-features { list-style: none; padding: 0; margin: 0 0 26px; flex: 1; }
+.espace-features li { font-size: 12.5px; color: var(--ink); padding: 7px 0 7px 18px; position: relative; line-height: 1.5; border-bottom: 1px solid var(--line-faint); }
+.espace-features li:last-child { border-bottom: none; }
+.espace-features li::before { content: '✓'; position: absolute; left: 0; color: var(--gold-deep); font-weight: 600; }
+.espace-features li strong { color: var(--gold-deep); font-weight: 500; }
+.espace-features li.x { color: var(--ink-faint); text-decoration: line-through; opacity: 0.55; }
+.espace-features li.x::before { content: '·'; color: var(--ink-faint); }
+.espace-cta { text-align: center; padding: 14px 24px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; font-weight: 600; }
+.espace-cta.outline { border: 1px solid var(--line-strong); color: var(--ink); }
+.espace-cta.outline:hover { border-color: var(--gold-deep); color: var(--gold-deep); }
+.espace-cta.solid { background: var(--gold-deep); color: var(--bg); border: 1px solid var(--gold-deep); }
+.espace-cta.solid:hover { background: transparent; color: var(--gold-deep); }
+
+.bespoke-band { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; padding: 28px 36px; background: var(--bg-2); border: 1px solid var(--line); border-top: none; }
+.bespoke-tier { font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 8px; }
+.bespoke-name { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 6px; color: var(--ink); }
+.bespoke-name em { font-style: italic; color: var(--gold-deep); }
+.bespoke-desc { font-size: 13px; color: var(--ink-mute); line-height: 1.6; max-width: 720px; }
+.bespoke-desc strong { color: var(--ink); font-weight: 500; }
+
+footer.proto { padding: 36px 48px; text-align: center; border-top: 1px solid var(--line); max-width: 1180px; margin: 0 auto; }
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold-deep); text-decoration: none; transition: opacity 0.25s; }
+
+@media (max-width: 1100px) {
+  main, nav.top, footer.proto { padding-left: 24px !important; padding-right: 24px !important; }
+  .espaces-grid { grid-template-columns: 1fr; }
+  .espace.featured { margin-top: 0; }
+  .bespoke-band { grid-template-columns: 1fr; gap: 16px; }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-meta { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Trois espaces · version claire</div>
+  </div>
+  <a href="../espaces-fo.html" class="theme-toggle" title="Basculer vers la version sombre">Sombre</a>
+</nav>
+
+<main>
+
+<section class="hero">
+  <div class="eyebrow">— Family Office Digital · la promesse</div>
+  <h1>Trois <em>espaces</em>.<br>Une plate-forme.<br>Votre <em>famille</em>.</h1>
+  <p class="lede">
+    Du dirigeant TPE qui découvre, à la famille à patrimoine constitué qui structure sa transmission. Chaque espace a sa <em>profondeur</em>, son <em>tarif</em>, sa <em>promesse</em>. Le passage de l'un à l'autre se fait sans friction. Application installable, espace client en ligne, <em>jamais de RDV obligatoire</em> pour démarrer.
+  </p>
+
+  <div class="promesse-100">
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Digitalisé</em></div>
+      <div class="p100-desc">Web, mobile, ordinateur. Aucun papier, aucun RDV obligatoire pour démarrer.</div>
+    </div>
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Automatisé</em></div>
+      <div class="p100-desc">Marcel + 6 agents transversaux. Cron, alertes, rapports générés sans intervention.</div>
+    </div>
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Sur-mesure</em></div>
+      <div class="p100-desc">Bâti sur votre patrimoine réel. Aucun MOOC, aucun template figé.</div>
+    </div>
+    <div class="p100">
+      <div class="p100-num">100<span>%</span></div>
+      <div class="p100-label"><em>Accessible</em></div>
+      <div class="p100-desc">Trois espaces, du gratuit au sur-mesure. La porte est ouverte à chaque étape.</div>
+    </div>
+  </div>
+</section>
+
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 01</div>
+      <h2 class="section-titre">Trois <em>portes d'entrée</em>.<br>Trois engagements lisibles.</h2>
+    </div>
+    <div class="section-meta">Tarification annuelle<br>Sans frais cachés · MIF II</div>
+  </div>
+
+  <div class="espaces-grid">
+    <div class="espace">
+      <div class="espace-tier">— Découverte</div>
+      <div class="espace-name">Freemium</div>
+      <div class="espace-target"><strong>Pour qui ?</strong> Tout visiteur curieux. Tester avant de décider, sans engagement.</div>
+      <div class="espace-price"><em>Gratuit</em></div>
+      <div class="espace-price-note">Aucun email requis · 3 questions / session</div>
+      <div class="espace-pitch">Marcel comparateur sur 8 univers de vie. Sources publiques sourcées. Découverte 100% libre.</div>
+      <ul class="espace-features">
+        <li><strong>8 univers</strong> comparateurs</li>
+        <li>3 questions Marcel par session</li>
+        <li>Sources publiques (Légifrance, DVF, INSEE)</li>
+        <li class="x">Conseil patrimonial premium</li>
+        <li class="x">Formation NextGen</li>
+        <li class="x">Maxime · contact direct</li>
+        <li class="x">Dashboard family office</li>
+      </ul>
+      <a href="../family-office-v5-univers.html" class="espace-cta outline">Découvrir gratuitement →</a>
+    </div>
+
+    <div class="espace">
+      <div class="espace-tier">— TPE / petite famille</div>
+      <div class="espace-name">Family Office <em>Essentiel</em></div>
+      <div class="espace-target"><strong>Pour qui ?</strong> Dirigeants TPE · CA &lt; 2 M€ · patrimoine net &lt; 3 M€.</div>
+      <div class="espace-price">2 400 €<small>/ an</small></div>
+      <div class="espace-price-note">Soit <strong>200 €/mois</strong> · facturation annuelle</div>
+      <div class="espace-pitch">L'essentiel d'un FO digital pour la TPE familiale. Marcel illimité, dashboard simplifié, formation NextGen 3 modules.</div>
+      <ul class="espace-features">
+        <li>Tout Freemium</li>
+        <li><strong>Marcel illimité</strong> · contexte famille mémorisé</li>
+        <li><strong>Dashboard allégé</strong> (patrimoine, échéances, livrables)</li>
+        <li><strong>Formation NextGen</strong> — 3 modules</li>
+        <li><strong>Maxime · 1 visio / trimestre</strong></li>
+        <li>2 sous-comptes enfants inclus</li>
+        <li>Coffre-fort R2 chiffré (5 GB)</li>
+        <li>Tarifs négociés (signature, Lombard light)</li>
+        <li class="x">Dénicheur d'offres scoré</li>
+        <li class="x">Expertise internationale</li>
+      </ul>
+      <a href="./landing-beta-dirigeants.html" class="espace-cta outline">Demander un code beta →</a>
+    </div>
+
+    <div class="espace featured">
+      <div class="espace-tier">— ETI / patrimoine constitué</div>
+      <div class="espace-name">Family Office <em>Augmenté</em></div>
+      <div class="espace-target"><strong>Pour qui ?</strong> Dirigeants ETI/PME · patrimoine &gt; 3 M€ · besoin international.</div>
+      <div class="espace-price">6 800 €<small>/ an</small></div>
+      <div class="espace-price-note">Soit <strong>566 €/mois</strong> · vs 25-40 k€/an plate-forme classique</div>
+      <div class="espace-pitch">Le FO digital complet : Marcel + Maxime + dashboard + dénicheur d'offres + international + formation complète + services premium.</div>
+      <ul class="espace-features">
+        <li>Tout <strong>Essentiel</strong></li>
+        <li><strong>Conseil patrimonial premium</strong> (10 expertises FR)</li>
+        <li><strong>Expertise internationale</strong> (Lux, CH, UK, USA, OCDE)</li>
+        <li><strong>Maxime · 1 visio / mois</strong> + chat 24h</li>
+        <li><strong>Dashboard complet</strong> (patrimoine 360°, drift, alertes push)</li>
+        <li><strong>Dénicheur d'offres scoré</strong> par profil</li>
+        <li><strong>Formation NextGen 6 modules</strong> + certification</li>
+        <li>4 sous-comptes enfants/co-titulaires</li>
+        <li>Coffre-fort R2 (50 GB) + horodatage eIDAS</li>
+        <li>Services premium (governance · cyber · health · audit)</li>
+        <li>Tarifs négociés écosystème complet</li>
+      </ul>
+      <a href="./landing-beta-dirigeants.html" class="espace-cta solid">Demander un code beta</a>
+    </div>
+  </div>
+
+  <div class="bespoke-band">
+    <div>
+      <div class="bespoke-tier">— Bespoke · sur devis</div>
+      <div class="bespoke-name">Family Office <em>Bespoke</em></div>
+      <div class="bespoke-desc">
+        Pour familles avec gouvernance complexe : <strong>multi-juridictions</strong> (FR/CH/USA/UK), <strong>FRUP ou fondation abritée</strong>, <strong>équipe dédiée</strong>, branding propre, hébergement single-tenant. À partir de <strong>36 k€/an</strong> + setup forfaitaire 120 k€.
+      </div>
+    </div>
+    <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Bespoke" class="espace-cta outline">Échanger avec Maxime →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Trois espaces · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine<br>
+    Version graphique <strong>claire</strong> · cohérente avec le site ikcp.eu actuel<br>
+    <a href="../espaces-fo.html">Version sombre →</a> ·
+    <a href="./landing-beta-dirigeants.html">Beta (clair)</a> ·
+    <a href="../../index.html">Site live</a>
+  </p>
+</footer>
+
+</body>
+</html>

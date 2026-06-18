@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Souscription — IKCP Family Office</title>
+<meta name="description" content="Souscription IKCP Family Office augmenté. Profil, mandat, paiement sécurisé Stripe. 14 jours rétractation.">
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c; --gold-dark: #8b6f3f;
+  --line: rgba(196, 162, 115, 0.14); --line-strong: rgba(196, 162, 115, 0.32);
+  --warn: #d4a85a; --ok: #7fae7d; --err: #b85a5a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif;
+             font-weight: 300; line-height: 1.65; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+main { max-width: 720px; margin: 0 auto; padding: 32px 24px 80px; }
+
+header.top { display: flex; justify-content: space-between; align-items: center;
+             padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 40px; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em;
+             color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.secure-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; padding: 6px 12px; border: 1px solid var(--ok); color: var(--ok);
+}
+
+/* ─── Stepper ─── */
+.stepper { display: flex; gap: 8px; margin-bottom: 36px; }
+.stepper .step {
+  flex: 1; padding: 12px 8px; text-align: center;
+  border-bottom: 2px solid var(--line);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint);
+}
+.stepper .step.active { border-color: var(--gold); color: var(--gold); }
+.stepper .step.done { border-color: var(--ok); color: var(--ok); }
+
+/* ─── Cartes ─── */
+.card { background: var(--bg-2); border: 1px solid var(--line); padding: 32px; margin-bottom: 24px; display: none; }
+.card.active { display: block; }
+.card h1 { font-family: 'Playfair Display', serif; font-weight: 400;
+           font-size: 28px; line-height: 1.15; margin-bottom: 8px; }
+.card h1 em { font-style: italic; color: var(--gold); }
+.card .lede { color: var(--ink-mute); font-size: 14.5px; margin-bottom: 28px; max-width: 580px; }
+
+label { display: block; font-size: 11px; letter-spacing: 0.18em;
+        color: var(--ink-mute); text-transform: uppercase; margin: 18px 0 8px; }
+input, select, textarea {
+  width: 100%; padding: 14px 16px; background: var(--bg); border: 1px solid var(--line);
+  color: var(--ink); font-family: 'Inter', sans-serif; font-size: 14px; transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+input::placeholder { color: var(--ink-faint); }
+textarea { resize: vertical; min-height: 80px; }
+
+.checkbox-row { display: flex; gap: 12px; align-items: flex-start; margin: 14px 0;
+                font-size: 13.5px; color: var(--ink-mute); cursor: pointer; }
+.checkbox-row input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--gold); cursor: pointer; }
+.checkbox-row a { color: var(--gold); text-decoration: none; border-bottom: 1px solid var(--line); }
+
+.actions { display: flex; gap: 12px; margin-top: 32px; align-items: center; }
+.btn { padding: 14px 28px; background: var(--gold); color: var(--bg);
+       border: 1px solid var(--gold); font-size: 11px; font-weight: 600;
+       letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+       font-family: 'Inter', sans-serif; transition: all 0.2s; }
+.btn:hover { background: transparent; color: var(--gold); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--gold); }
+.btn.ghost:hover { background: var(--gold); color: var(--bg); }
+
+.recap { background: var(--bg-3); border: 1px solid var(--line); padding: 22px 24px; margin-bottom: 24px; }
+.recap .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+.recap .row .lbl { color: var(--ink-mute); }
+.recap .row .val { color: var(--gold); }
+.recap .total { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px;
+                font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; }
+
+.warn-box {
+  padding: 16px 18px; background: rgba(212,168,90,0.06); border-left: 3px solid var(--warn);
+  font-size: 13px; color: var(--warn); margin: 20px 0;
+}
+.warn-box.error { background: rgba(184,90,90,0.08); border-color: var(--err); color: var(--err); }
+.warn-box.ok { background: rgba(127,174,125,0.06); border-color: var(--ok); color: var(--ok); }
+</style>
+</head>
+<body>
+
+<main>
+
+<header class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Souscription Family Office</div>
+  </div>
+  <div class="secure-tag">🔒 Stripe · 14j rétractation</div>
+</header>
+
+<!-- ─── Stepper ─── -->
+<div class="stepper">
+  <div class="step active" data-step="1">1. Profil</div>
+  <div class="step" data-step="2">2. Plan</div>
+  <div class="step" data-step="3">3. Mandat</div>
+  <div class="step" data-step="4">4. Paiement</div>
+</div>
+
+<!-- ═══ ÉTAPE 1 — PROFIL ═══ -->
+<section class="card active" data-card="1">
+  <h1>Faisons <em>connaissance</em>.</h1>
+  <p class="lede">
+    Quelques questions pour adapter Marcel à votre situation. Vous restez
+    libre de modifier ou supprimer ces informations à tout moment depuis
+    votre espace.
+  </p>
+
+  <label for="prenom">Prénom</label>
+  <input type="text" id="prenom" placeholder="Maxime">
+
+  <label for="email">Email</label>
+  <input type="email" id="email" placeholder="vous@cabinet.fr" required>
+
+  <label for="situation">Situation patrimoniale</label>
+  <select id="situation">
+    <option value="">— Choisir —</option>
+    <option value="dirigeant_pme">Dirigeant d'entreprise familiale</option>
+    <option value="profession_liberale">Profession libérale</option>
+    <option value="cadre_dirigeant">Cadre dirigeant</option>
+    <option value="retraite_actif">Retraité actif / consolidation</option>
+    <option value="autre">Autre</option>
+  </select>
+
+  <label for="patrimoine_approx">Patrimoine net approximatif</label>
+  <select id="patrimoine_approx">
+    <option value="">— Choisir —</option>
+    <option value="lt_500k">Moins de 500 k€</option>
+    <option value="500k_2m">500 k€ - 2 M€</option>
+    <option value="2m_10m">2 M€ - 10 M€</option>
+    <option value="10m_50m">10 M€ - 50 M€</option>
+    <option value="gt_50m">Plus de 50 M€</option>
+    <option value="prefere_pas">Préfère ne pas dire</option>
+  </select>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="rgpd_consent">
+    <label for="rgpd_consent" style="cursor:pointer;margin:0;letter-spacing:normal;text-transform:none;font-size:13.5px;color:var(--ink-mute);">
+      J'autorise IKCP à traiter ces données pour personnaliser Marcel
+      (cf. <a href="/proposals/legal/politique-cookies.html">politique de confidentialité</a>).
+    </label>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="next-1">Continuer →</button>
+  </div>
+</section>
+
+<!-- ═══ ÉTAPE 2 — PLAN ═══ -->
+<section class="card" data-card="2">
+  <h1>Votre <em>formule</em>.</h1>
+  <p class="lede">
+    Pré-sélectionné selon le lien d'arrivée. Vous pouvez ajuster.
+  </p>
+
+  <label for="plan">Formule</label>
+  <select id="plan">
+    <option value="decouverte">Découverte — 1 800€ pour 3 mois (sans engagement)</option>
+    <option value="augmente">Augmenté — 6 800€/an (formule recommandée)</option>
+    <option value="bespoke">Bespoke — dès 15 000€/an (sur devis, > 20M€)</option>
+  </select>
+
+  <div class="recap" id="recap-plan">
+    <div class="row"><span class="lbl">Formule</span><span class="val" id="plan-name">Découverte</span></div>
+    <div class="row"><span class="lbl">Durée</span><span class="val" id="plan-duration">3 mois</span></div>
+    <div class="row"><span class="lbl">Engagement</span><span class="val" id="plan-engagement">Sans tacite reconduction</span></div>
+    <div class="row total"><span class="lbl">À payer aujourd'hui</span><span class="val" id="plan-price">1 800€</span></div>
+  </div>
+
+  <p style="font-size:12.5px;color:var(--ink-faint);margin-top:12px;">
+    14 jours de rétractation légale (art. L.221-18 Code conso). Paiement sécurisé Stripe France.
+  </p>
+
+  <div class="actions">
+    <button class="btn ghost" data-prev>← Retour</button>
+    <button class="btn" id="next-2">Continuer →</button>
+  </div>
+</section>
+
+<!-- ═══ ÉTAPE 3 — MANDAT ═══ -->
+<section class="card" data-card="3">
+  <h1>Lettre de <em>mission</em>.</h1>
+  <p class="lede">
+    Mandat IKCP — IKIGAÏ Conseil Patrimonial (ORIAS 23001568, CIF CNCEF
+    Patrimoine, COA). Signature électronique qualifiée eIDAS à l'étape suivante.
+  </p>
+
+  <div class="warn-box">
+    ⚠ <strong>Devoir de conseil</strong> : Les agents IA Marcel produisent des
+    analyses pédagogiques. Le devoir de conseil reste de la responsabilité
+    exclusive de Maxime Juveneton (ORIAS 23001568). Voir
+    <a href="/proposals/legal/cgv-abonnement.html" style="color:var(--warn);">CGV article 4</a>.
+  </div>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="accept_cgv">
+    <label for="accept_cgv" style="cursor:pointer;margin:0;letter-spacing:normal;text-transform:none;font-size:13.5px;">
+      J'accepte les <a href="/proposals/legal/cgv-abonnement.html" target="_blank">CGV abonnement IA</a>
+      (12 articles · droit rétractation 14j · RGPD).
+    </label>
+  </div>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="accept_mandat">
+    <label for="accept_mandat" style="cursor:pointer;margin:0;letter-spacing:normal;text-transform:none;font-size:13.5px;">
+      Je donne mandat à IKCP pour la prestation choisie et reconnais que
+      le devoir de conseil reste à la charge du CGP humain.
+    </label>
+  </div>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="accept_ai_act">
+    <label for="accept_ai_act" style="cursor:pointer;margin:0;letter-spacing:normal;text-transform:none;font-size:13.5px;">
+      Je suis informé que j'interagis avec un système IA classifié risque
+      limité au sens du Règlement EU 2024/1689 (AI Act art. 50).
+    </label>
+  </div>
+
+  <div class="actions">
+    <button class="btn ghost" data-prev>← Retour</button>
+    <button class="btn" id="next-3" disabled>Continuer →</button>
+  </div>
+</section>
+
+<!-- ═══ ÉTAPE 4 — PAIEMENT ═══ -->
+<section class="card" data-card="4">
+  <h1>Paiement <em>sécurisé</em>.</h1>
+  <p class="lede">
+    Vous serez redirigé vers Stripe Checkout (France). Cartes bancaires CB,
+    Visa, Mastercard, Amex acceptées. Authentification 3D Secure systématique.
+  </p>
+
+  <div class="recap">
+    <div class="row"><span class="lbl">Formule</span><span class="val" id="recap-plan-name">Découverte</span></div>
+    <div class="row"><span class="lbl">Email</span><span class="val" id="recap-email">—</span></div>
+    <div class="row total"><span class="lbl">Montant</span><span class="val" id="recap-total">1 800€</span></div>
+  </div>
+
+  <div class="warn-box ok" id="loginNeeded" style="display:none;">
+    🔐 <strong>Connexion requise.</strong> Vous allez recevoir un lien magic-link
+    par email pour confirmer votre identité avant le paiement.
+    <a href="#" id="sendMagic" style="color:var(--ok);">Envoyer le lien</a>
+  </div>
+
+  <div class="warn-box error" id="err" style="display:none;"></div>
+
+  <div class="actions">
+    <button class="btn ghost" data-prev>← Retour</button>
+    <button class="btn" id="pay-btn">Payer avec Stripe →</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+const CLIENT_BASE = window.IKCP_CLIENT_URL || 'https://ikcp-client.maxime-ead.workers.dev';
+const PLANS = {
+  decouverte: { name: 'Découverte', price: '1 800€', duration: '3 mois', engagement: 'Sans tacite reconduction' },
+  augmente:   { name: 'Augmenté', price: '6 800€', duration: '12 mois', engagement: 'Reconductible tacitement (loi Chatel)' },
+  bespoke:    { name: 'Bespoke', price: 'Dès 15 000€', duration: '12 mois', engagement: 'Selon devis' },
+};
+
+const data = { prenom: '', email: '', situation: '', patrimoine: '', plan: 'decouverte', rgpd_consent: false };
+
+// Préchargement plan depuis URL ?plan=...
+const urlParams = new URLSearchParams(window.location.search);
+const planFromUrl = urlParams.get('plan');
+if (planFromUrl && PLANS[planFromUrl]) {
+  data.plan = planFromUrl;
+  document.getElementById('plan').value = planFromUrl;
+}
+
+if (urlParams.get('cancelled')) {
+  showErr('Paiement annulé. Vous pouvez réessayer ci-dessous.');
+}
+
+function go(step) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[data-card="${step}"]`).classList.add('active');
+  document.querySelectorAll('.stepper .step').forEach((s, i) => {
+    s.classList.remove('active');
+    if (i + 1 < step) s.classList.add('done');
+    if (i + 1 === step) s.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', () => {
+  const current = parseInt(document.querySelector('.card.active').dataset.card, 10);
+  if (current > 1) go(current - 1);
+}));
+
+document.getElementById('next-1').addEventListener('click', () => {
+  data.prenom = document.getElementById('prenom').value.trim();
+  data.email = document.getElementById('email').value.trim();
+  data.situation = document.getElementById('situation').value;
+  data.patrimoine = document.getElementById('patrimoine_approx').value;
+  data.rgpd_consent = document.getElementById('rgpd_consent').checked;
+  if (!data.email || !data.email.includes('@')) return showErr('Email valide requis');
+  if (!data.rgpd_consent) return showErr('Consentement RGPD requis');
+  go(2);
+  updatePlanRecap();
+});
+
+document.getElementById('plan').addEventListener('change', e => {
+  data.plan = e.target.value;
+  updatePlanRecap();
+});
+
+function updatePlanRecap() {
+  const p = PLANS[data.plan];
+  document.getElementById('plan-name').textContent = p.name;
+  document.getElementById('plan-duration').textContent = p.duration;
+  document.getElementById('plan-engagement').textContent = p.engagement;
+  document.getElementById('plan-price').textContent = p.price;
+  document.getElementById('recap-plan-name').textContent = p.name;
+  document.getElementById('recap-email').textContent = data.email || '—';
+  document.getElementById('recap-total').textContent = p.price;
+}
+
+document.getElementById('next-2').addEventListener('click', () => go(3));
+
+['accept_cgv', 'accept_mandat', 'accept_ai_act'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => {
+    const all = ['accept_cgv', 'accept_mandat', 'accept_ai_act']
+      .every(i => document.getElementById(i).checked);
+    document.getElementById('next-3').disabled = !all;
+  });
+});
+
+document.getElementById('next-3').addEventListener('click', () => go(4));
+
+document.getElementById('pay-btn').addEventListener('click', async () => {
+  document.getElementById('pay-btn').disabled = true;
+  document.getElementById('err').style.display = 'none';
+
+  try {
+    const r = await fetch(`${CLIENT_BASE}/api/v1/stripe/checkout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ plan: data.plan }),
+    });
+    const result = await r.json();
+    if (r.status === 401) {
+      // Pas connecté → magic-link
+      document.getElementById('loginNeeded').style.display = 'block';
+      document.getElementById('pay-btn').disabled = false;
+      return;
+    }
+    if (!r.ok) {
+      showErr(result.error || 'Erreur Stripe');
+      document.getElementById('pay-btn').disabled = false;
+      return;
+    }
+    window.location.href = result.checkout_url;
+  } catch (e) {
+    showErr(e.message);
+    document.getElementById('pay-btn').disabled = false;
+  }
+});
+
+document.getElementById('sendMagic').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const r = await fetch(`${CLIENT_BASE}/auth/send`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: data.email }),
+  });
+  if (r.ok) {
+    e.target.textContent = '✓ Email envoyé — vérifiez votre boîte';
+    e.target.style.color = 'var(--ok)';
+  } else {
+    e.target.textContent = '✗ Erreur — réessayer';
+    e.target.style.color = 'var(--err)';
+  }
+});
+
+function showErr(msg) {
+  const el = document.getElementById('err');
+  el.textContent = `✗ ${msg}`;
+  el.style.display = 'block';
+}
+
+updatePlanRecap();
+</script>
+
+</body>
+</html>

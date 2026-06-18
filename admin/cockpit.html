@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IKCP — Cockpit administrateur</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0d0b">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c; --gold-dark: #8b6f3f;
+  --line: rgba(196, 162, 115, 0.14); --line-strong: rgba(196, 162, 115, 0.32);
+  --warn: #d4a85a; --ok: #7fae7d; --err: #b85a5a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif;
+             font-weight: 300; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+header.top { display: flex; justify-content: space-between; align-items: center;
+             padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint);
+             text-transform: uppercase; margin-top: 2px; }
+.user-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+            padding: 6px 12px; border: 1px solid var(--gold); color: var(--gold);
+            text-transform: uppercase; display: inline-flex; gap: 8px; }
+.user-tag a { color: var(--ink-mute); text-decoration: none; }
+.user-tag a:hover { color: var(--gold); }
+
+/* ─── KPIs ─── */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.kpi { background: var(--bg-2); border: 1px solid var(--line); padding: 22px 24px; }
+.kpi .label { font-size: 10px; letter-spacing: 0.22em; color: var(--ink-faint);
+              text-transform: uppercase; margin-bottom: 12px; }
+.kpi .value { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400;
+              color: var(--gold); font-size: 36px; line-height: 1; margin-bottom: 8px; }
+.kpi .delta { font-size: 12px; color: var(--ok); font-family: 'JetBrains Mono', monospace; }
+.kpi .delta.neg { color: var(--err); }
+.kpi .sub { font-size: 12px; color: var(--ink-mute); margin-top: 8px; }
+
+/* ─── Grid principal ─── */
+.grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px; }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } .kpis { grid-template-columns: repeat(2, 1fr); } }
+
+.card { background: var(--bg-2); border: 1px solid var(--line); padding: 24px; }
+.card h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 20px; margin-bottom: 4px; }
+.card h2 em { font-style: italic; color: var(--gold); }
+.card .sub { font-size: 11px; letter-spacing: 0.18em; color: var(--ink-faint);
+             text-transform: uppercase; margin-bottom: 18px; }
+
+/* ─── Table sessions ─── */
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table thead th { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line);
+                 font-weight: 500; color: var(--ink-faint); text-transform: uppercase;
+                 letter-spacing: 0.16em; font-size: 9px; }
+table tbody td { padding: 10px 6px; border-bottom: 1px solid var(--line);
+                 font-family: 'JetBrains Mono', monospace; }
+table tbody tr:hover { background: rgba(196,162,115,0.04); }
+.kind { color: var(--gold); }
+.status-running { color: var(--warn); }
+.status-idle { color: var(--ok); }
+.status-terminated { color: var(--err); }
+
+/* ─── Alertes ─── */
+.alert {
+  padding: 14px 16px; border-left: 3px solid; background: var(--bg-3);
+  margin-bottom: 10px; font-size: 13px; display: flex; gap: 12px; align-items: center;
+}
+.alert.warn { border-color: var(--warn); background: rgba(212,168,90,0.06); }
+.alert.error { border-color: var(--err); background: rgba(184,90,90,0.06); }
+.alert.info { border-color: var(--gold); background: rgba(196,162,115,0.04); }
+
+/* ─── Actions ─── */
+.actions-bar { margin-bottom: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { padding: 12px 22px; background: var(--gold); color: var(--bg);
+       border: 1px solid var(--gold); font-size: 11px; font-weight: 600;
+       letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+       text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; }
+.btn:hover { background: transparent; color: var(--gold); }
+.btn.ghost { background: transparent; color: var(--gold); }
+.btn.ghost:hover { background: var(--gold); color: var(--bg); }
+.btn.sm { padding: 6px 12px; font-size: 9px; letter-spacing: 0.15em; }
+
+/* ─── Login fallback ─── */
+.login-wall {
+  min-height: 80vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 24px; text-align: center;
+}
+.login-wall h1 { font-family: 'Playfair Display', serif; font-weight: 400;
+                 font-style: italic; color: var(--gold); font-size: 36px; }
+
+/* ─── Modal ─── */
+.modal-back {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: none; align-items: center; justify-content: center; z-index: 100;
+}
+.modal-back.show { display: flex; }
+.modal {
+  background: var(--bg-2); border: 1px solid var(--gold);
+  padding: 32px; width: 90%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+}
+.modal h3 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 22px;
+            margin-bottom: 8px; color: var(--gold); }
+.modal label { display: block; font-size: 11px; letter-spacing: 0.18em;
+               color: var(--ink-mute); text-transform: uppercase; margin: 14px 0 6px; }
+.modal input, .modal textarea, .modal select {
+  width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line);
+  color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+}
+.modal textarea { min-height: 120px; resize: vertical; }
+.modal .row { display: flex; gap: 12px; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- ─── Header ─── -->
+<header class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Cockpit administrateur</div>
+  </div>
+  <div class="user-tag" id="user-tag">— vérification…</div>
+</header>
+
+<!-- ─── Login wall (montré si non auth) ─── -->
+<div class="login-wall" id="login-wall" style="display:none;">
+  <h1>Cockpit IKCP — Accès admin</h1>
+  <p style="color:var(--ink-mute);max-width:480px;">
+    Connectez-vous avec votre compte GitHub. L'accès est restreint aux
+    administrateurs du cabinet.
+  </p>
+  <a class="btn" href="/auth/github">Se connecter avec GitHub</a>
+</div>
+
+<!-- ─── Cockpit (montré si auth OK) ─── -->
+<div id="cockpit" style="display:none;">
+
+  <!-- KPIs ligne 1 -->
+  <section class="kpis">
+    <div class="kpi">
+      <div class="label">MRR</div>
+      <div class="value" id="kpi-mrr">—</div>
+      <div class="sub" id="kpi-mrr-sub">/mois récurrent</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Familles actives</div>
+      <div class="value" id="kpi-families">—</div>
+      <div class="sub" id="kpi-families-sub">tier payant + récents</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Sessions cette semaine</div>
+      <div class="value" id="kpi-sessions">—</div>
+      <div class="sub" id="kpi-sessions-sub">agents async</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Coût API ce mois</div>
+      <div class="value" id="kpi-cost">—</div>
+      <div class="sub" id="kpi-cost-sub">budget 580 $</div>
+    </div>
+  </section>
+
+  <!-- Actions rapides -->
+  <div class="actions-bar">
+    <button class="btn ghost" id="btn-run-agent">▸ Lancer un agent pour un client</button>
+    <button class="btn ghost" id="btn-refresh">↻ Rafraîchir</button>
+    <a class="btn ghost" href="/proposals/dashboard-perfection.html" target="_blank">↗ Vue client</a>
+    <a class="btn ghost" href="/proposals/demo-agents-voix.html" target="_blank">↗ Démo publique</a>
+  </div>
+
+  <!-- Grid Sessions + Alertes -->
+  <div class="grid">
+    <!-- Sessions live -->
+    <div class="card">
+      <h2>Sessions <em>récentes</em></h2>
+      <div class="sub">Live · auto-refresh 30s</div>
+      <table>
+        <thead>
+          <tr><th>Quand</th><th>Agent</th><th>Client</th><th>Statut</th><th>Tokens</th></tr>
+        </thead>
+        <tbody id="sessions-body">
+          <tr><td colspan="5" style="color:var(--ink-mute);text-align:center;padding:20px;">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Alertes -->
+    <div class="card">
+      <h2>Alertes <em>opérationnelles</em></h2>
+      <div class="sub">Churn risk + erreurs</div>
+      <div id="alerts-list">
+        <p style="color:var(--ink-mute);font-size:13px;">Chargement…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Familles -->
+  <div class="card">
+    <h2>Toutes les <em>familles</em></h2>
+    <div class="sub">Tier · dernière activité · sessions</div>
+    <table>
+      <thead>
+        <tr><th>Email</th><th>Nom</th><th>Tier</th><th>Mémoire</th><th>Sessions</th><th>Dernière</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="users-body">
+        <tr><td colspan="7" style="color:var(--ink-mute);text-align:center;padding:20px;">Chargement…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</main>
+
+<!-- ═══ MODAL — lancer un agent pour un client ═══ -->
+<div class="modal-back" id="modal-run">
+  <div class="modal">
+    <h3>Lancer un agent pour un client</h3>
+    <p style="color:var(--ink-mute);font-size:13px;">
+      L'agent sera attaché à la memory store du client. Le résultat est
+      automatiquement envoyé à son adresse email.
+    </p>
+    <label>User ID</label>
+    <input type="text" id="run-user-id" placeholder="user_abc123">
+    <label>Agent</label>
+    <select id="run-kind">
+      <option value="patrimoine">patrimoine — analyse 360°</option>
+      <option value="transmission">transmission — donations/Dutreil</option>
+      <option value="remuneration">remuneration — dirigeant + épargne salariale</option>
+      <option value="strategie">strategie — feuille de route 5 ans</option>
+      <option value="fiscalite_impots">fiscalite_impots — OCR avis IR/IFI</option>
+      <option value="immobilier">immobilier — direct + papier</option>
+      <option value="defiscalisation">defiscalisation — PER/FCPI/Girardin</option>
+      <option value="reporting">reporting — DER trimestriel</option>
+      <option value="documents">documents — OCR générique</option>
+      <option value="suivi">suivi — planning trimestre</option>
+      <option value="fortune">fortune — HNW/UHNW</option>
+      <option value="gouvernance">gouvernance — charte familiale</option>
+      <option value="editorial">editorial — newsletter perso</option>
+    </select>
+    <label>Tâche à confier</label>
+    <textarea id="run-task" placeholder="Génère le DER Q3 pour cette famille…"></textarea>
+    <label>Rubric (optionnel — pour outcome graded)</label>
+    <textarea id="run-rubric" placeholder="Le livrable contient : (1) 3 visuels, (2) sources CGI citées, (3) disclaimer MIF II…"></textarea>
+    <div class="row">
+      <button class="btn" id="run-submit">▸ Lancer</button>
+      <button class="btn ghost" id="run-cancel">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COCKPIT_BASE = window.IKCP_ADMIN_URL || 'https://admin.ikcp.eu';
+
+async function check(path) {
+  const r = await fetch(`${COCKPIT_BASE}${path}`, { credentials: 'include' });
+  if (r.status === 401) { showLogin(); return null; }
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return await r.json();
+}
+
+function showLogin() {
+  document.getElementById('login-wall').style.display = 'flex';
+  document.getElementById('cockpit').style.display = 'none';
+  document.getElementById('user-tag').textContent = 'non connecté';
+}
+function showCockpit(login) {
+  document.getElementById('login-wall').style.display = 'none';
+  document.getElementById('cockpit').style.display = 'block';
+  document.getElementById('user-tag').innerHTML = `@${login} · <a href="/auth/logout">logout</a>`;
+}
+
+async function refresh() {
+  try {
+    const ov = await check('/api/cockpit/overview');
+    if (!ov) return;
+    document.getElementById('kpi-mrr').textContent = (ov.mrr_eur || 0).toLocaleString('fr-FR') + ' €';
+    document.getElementById('kpi-families').textContent = ov.families_active;
+    document.getElementById('kpi-sessions').textContent = ov.sessions_week;
+    document.getElementById('kpi-cost').textContent = '$' + (ov.cost_month_usd || 0);
+    document.getElementById('kpi-cost-sub').textContent = `${ov.cost_pct_used}% du budget`;
+    document.getElementById('kpi-families-sub').textContent =
+      (ov.tiers_breakdown || []).map(t => `${t.tier} ${t.n}`).join(' · ') || 'tier payant + récents';
+
+    const sessions = await check('/api/cockpit/sessions?limit=15');
+    if (sessions) renderSessions(sessions.sessions);
+
+    const users = await check('/api/cockpit/users?limit=20');
+    if (users) renderUsers(users.users);
+
+    const alerts = await check('/api/cockpit/alerts');
+    if (alerts) renderAlerts(alerts.alerts);
+  } catch (e) {
+    console.error('refresh fail', e);
+  }
+}
+
+function renderSessions(sessions) {
+  const body = document.getElementById('sessions-body');
+  if (!sessions.length) {
+    body.innerHTML = '<tr><td colspan="5" style="color:var(--ink-mute);">Aucune session récente</td></tr>';
+    return;
+  }
+  body.innerHTML = sessions.map(s => `
+    <tr>
+      <td>${timeAgo(s.created_at)}</td>
+      <td class="kind">${s.agent_kind}</td>
+      <td>${(s.user_id || '').slice(0, 8)}…</td>
+      <td class="status-${s.status}">${s.status}${s.outcome_result ? ' · ' + s.outcome_result : ''}</td>
+      <td>${(s.input_tokens || 0) + (s.output_tokens || 0)}</td>
+    </tr>`).join('');
+}
+
+function renderUsers(users) {
+  const body = document.getElementById('users-body');
+  if (!users.length) {
+    body.innerHTML = '<tr><td colspan="7" style="color:var(--ink-mute);">Aucune famille</td></tr>';
+    return;
+  }
+  body.innerHTML = users.map(u => `
+    <tr>
+      <td>${escapeHtml(u.email || '—')}</td>
+      <td>${escapeHtml(u.name || '—')}</td>
+      <td class="kind">${u.tier || 'freemium'}</td>
+      <td>${u.memory_store_id ? '✓' : '—'}</td>
+      <td>${u.total_sessions || 0}</td>
+      <td>${u.last_session_at ? timeAgo(u.last_session_at) : '—'}</td>
+      <td>
+        <button class="btn sm" onclick="openRunAgent('${u.id}')">▸ agent</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderAlerts(alerts) {
+  const wrap = document.getElementById('alerts-list');
+  if (!alerts.length) {
+    wrap.innerHTML = '<p style="color:var(--ok);font-size:13px;">✓ Aucune alerte — RAS</p>';
+    return;
+  }
+  wrap.innerHTML = alerts.map(a => `
+    <div class="alert ${a.level === 'error' ? 'error' : (a.level === 'warn' ? 'warn' : 'info')}">
+      <strong>${a.level.toUpperCase()}</strong>
+      <span>${escapeHtml(a.message)}</span>
+    </div>`).join('');
+}
+
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s/60)}min`;
+  if (s < 86400) return `${Math.floor(s/3600)}h`;
+  return `${Math.floor(s/86400)}j`;
+}
+function escapeHtml(s) { return String(s || '').replace(/[<>"'&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c])); }
+
+// ─── Modal ───
+const modalBack = document.getElementById('modal-run');
+function openRunAgent(userId) {
+  if (userId) document.getElementById('run-user-id').value = userId;
+  modalBack.classList.add('show');
+}
+document.getElementById('btn-run-agent').addEventListener('click', () => openRunAgent());
+document.getElementById('run-cancel').addEventListener('click', () => modalBack.classList.remove('show'));
+document.getElementById('btn-refresh').addEventListener('click', refresh);
+
+document.getElementById('run-submit').addEventListener('click', async () => {
+  const user_id = document.getElementById('run-user-id').value.trim();
+  const kind = document.getElementById('run-kind').value;
+  const task = document.getElementById('run-task').value.trim();
+  const rubric = document.getElementById('run-rubric').value.trim() || undefined;
+  if (!user_id || !task) { alert('user_id + tâche requis'); return; }
+
+  const r = await fetch(`${COCKPIT_BASE}/api/cockpit/run-agent`, {
+    method: 'POST', credentials: 'include',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ user_id, kind, task, rubric }),
+  });
+  const data = await r.json();
+  if (r.ok) {
+    alert(`✓ Session lancée : ${data.session_id}`);
+    modalBack.classList.remove('show');
+    refresh();
+  } else {
+    alert(`✗ Erreur : ${data.message || data.error}`);
+  }
+});
+
+// ─── Boot ───
+(async () => {
+  // Probe overview pour détecter auth
+  const r = await fetch(`${COCKPIT_BASE}/api/cockpit/overview`, { credentials: 'include' });
+  if (r.status === 401) {
+    showLogin();
+  } else {
+    showCockpit('Max51527');  // TODO: récupérer login depuis cookie payload
+    await refresh();
+    setInterval(refresh, 30_000);  // auto-refresh 30s
+  }
+})();
+</script>
+
+</body>
+</html>

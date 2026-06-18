@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IKCP — Démo Agents IA + Voix</title>
+<meta name="description" content="Lancez une démo en direct des agents IA de Marcel : rapport, analyse patrimoniale, transmission, gouvernance — avec narration vocale.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0d0b">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c; --gold-dark: #8b6f3f;
+  --line: rgba(196, 162, 115, 0.14);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --warn: #d4a85a; --ok: #7fae7d; --err: #b85a5a;
+}
+html, body {
+  background: var(--bg); color: var(--ink);
+  font-family: 'Inter', sans-serif; font-weight: 300;
+  line-height: 1.7; min-height: 100vh; -webkit-font-smoothing: antialiased;
+}
+main { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
+
+nav.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 24px; max-width: 1100px; margin: 0 auto;
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em;
+  color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.beta-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; padding: 6px 12px; border: 1px solid var(--gold);
+  color: var(--gold); display: inline-flex; align-items: center; gap: 6px;
+}
+.beta-tag::before { content: '●'; color: var(--gold); animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(32px, 4.5vw, 52px); line-height: 1.1; letter-spacing: -0.02em;
+  margin: 48px 0 24px; max-width: 880px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede { max-width: 720px; font-size: 16px; color: var(--ink-mute);
+  line-height: 1.7; margin-bottom: 48px; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+
+.demo-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--line);
+  border: 1px solid var(--line); margin-bottom: 56px;
+}
+.demo-card {
+  background: var(--bg); padding: 32px 28px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.demo-card h3 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: 22px; letter-spacing: -0.01em;
+}
+.demo-card h3 em { font-style: italic; color: var(--gold); }
+.demo-card .meta {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.16em; color: var(--ink-faint); text-transform: uppercase;
+}
+.demo-card .desc { font-size: 14px; color: var(--ink-mute); flex: 1; }
+.demo-card button {
+  padding: 14px 24px; background: var(--gold); color: var(--bg);
+  border: 1px solid var(--gold); font-weight: 600;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;
+}
+.demo-card button:hover { background: transparent; color: var(--gold); }
+.demo-card button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── Console live ─── */
+.console {
+  background: var(--bg-2); border: 1px solid var(--line);
+  padding: 28px; min-height: 320px; max-height: 600px; overflow-y: auto;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7;
+  white-space: pre-wrap; word-break: break-word; margin-bottom: 24px;
+  display: none;
+}
+.console.show { display: block; }
+.console .ev { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.console .ev:last-child { border-bottom: none; }
+.console .ev-type { color: var(--gold); font-weight: 500; }
+.console .ev-text { color: var(--ink); }
+.console .ev-tool { color: var(--ink-mute); font-style: italic; }
+.console .ev-status { color: var(--ok); }
+.console .ev-error { color: var(--err); }
+.console img.ev-img { max-width: 100%; margin-top: 12px; border: 1px solid var(--line); }
+
+/* ─── Voice bar ─── */
+.voice-bar {
+  background: var(--bg-2); border: 1px solid var(--line);
+  padding: 20px 24px; display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap; margin-bottom: 24px;
+}
+.voice-bar .label {
+  font-size: 11px; letter-spacing: 0.2em; color: var(--ink-mute); text-transform: uppercase;
+}
+
+.disclaimer {
+  font-size: 11.5px; color: var(--ink-faint); font-style: italic;
+  font-family: 'Playfair Display', serif; line-height: 1.7;
+  margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line);
+}
+
+@media (max-width: 768px) {
+  .demo-grid { grid-template-columns: 1fr; }
+  main { padding: 20px 16px 64px; }
+  .console { font-size: 12px; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Démo Family Office IA</div>
+  </div>
+  <div class="beta-tag">Live démo · sandbox</div>
+</nav>
+
+<main>
+  <h1>Testez nos agents IA <em>en direct</em>.<br>Avec la voix de Marcel.</h1>
+  <p class="lede">
+    Quatre démos prêtes à lancer sur des cas fictifs (anonymisés). Vous voyez
+    le livrable se construire <em>en temps réel</em> — texte, graphiques,
+    diagrammes — et Marcel vous résume vocalement le résultat. C'est ce que
+    reçoit chaque famille de la beta.
+  </p>
+
+  <!-- Voice bar globale -->
+  <div class="voice-bar">
+    <span class="label">Voix Marcel :</span>
+    <marcel-voice id="voice"
+                  tts-url="https://voice.ikcp.eu/tts"
+                  stt-url="https://voice.ikcp.eu/stt"></marcel-voice>
+    <span class="label" style="margin-left:auto;">Une démo par jour offerte · code beta requis pour usage complet</span>
+  </div>
+
+  <!-- 4 démos -->
+  <div class="demo-grid">
+    <div class="demo-card">
+      <div class="meta">— Agent 01</div>
+      <h3>DER trimestriel · <em>famille D.</em></h3>
+      <p class="desc">
+        Rapport patrimonial 4 pages avec 3 visuels (donut allocation,
+        timeline échéances, performance). Modèle <em>Fable 5</em> pour
+        la dimension narrative pédagogique.
+      </p>
+      <button data-kind="reporting">▶ Lancer la démo (≈ 90s)</button>
+    </div>
+
+    <div class="demo-card">
+      <div class="meta">— Agent 02</div>
+      <h3>Patrimoine 360° · <em>famille Durand</em></h3>
+      <p class="desc">
+        Analyse stratégique 7,5 M€ avec 5 visuels obligatoires
+        (donut + treemap + pyramide liquidité + heatmap fiscale +
+        schéma structure Mermaid). Modèle <em>Opus 4.8</em>.
+      </p>
+      <button data-kind="patrimoine">▶ Lancer la démo (≈ 120s)</button>
+    </div>
+
+    <div class="demo-card">
+      <div class="meta">— Agent 03 · HNW</div>
+      <h3>Stratégie fortune · <em>famille Lefèvre 35 M€</em></h3>
+      <p class="desc">
+        Comparaison 3 schémas de transmission (Dutreil familial / Holding
+        apport / Donation-cession) avec waterfall transmission et schémas
+        Mermaid. Modèle <em>Opus 4.8 effort max</em>.
+      </p>
+      <button data-kind="fortune">▶ Lancer la démo (≈ 180s)</button>
+    </div>
+
+    <div class="demo-card">
+      <div class="meta">— Agent 04 · Famille</div>
+      <h3>Charte familiale · <em>famille Martin</em></h3>
+      <p class="desc">
+        Charte familiale base + plan de formation NextGen 6 modules,
+        génogramme Mermaid 3 générations. Voix multi-générationnelle.
+        Modèle <em>Fable 5</em>.
+      </p>
+      <button data-kind="gouvernance">▶ Lancer la démo (≈ 120s)</button>
+    </div>
+  </div>
+
+  <!-- Console live -->
+  <div class="console" id="console"></div>
+
+  <p class="disclaimer">
+    Les démos utilisent des familles fictives et un patrimoine d'exemple.
+    Aucune donnée réelle n'est traitée. Les livrables produits sont
+    pédagogiques et n'engagent IKCP qu'à hauteur d'une démonstration
+    technique. Pour une analyse de votre situation réelle, l'accès beta
+    sur invitation est requis — <a href="mailto:maxime@ikcp.fr?subject=Beta IKCP — accès complet après démo" style="color:var(--gold);">demander un code à Maxime</a>.
+  </p>
+</main>
+
+<script type="module" src="/assets/marcel-voice.js"></script>
+<script>
+const AGENTS_BASE = window.IKCP_AGENTS_URL || 'https://agents.ikcp.eu';
+const consoleEl = document.getElementById('console');
+const voice = document.getElementById('voice');
+
+function append(html) {
+  const div = document.createElement('div');
+  div.className = 'ev';
+  div.innerHTML = html;
+  consoleEl.appendChild(div);
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[<>"'&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));
+}
+
+document.querySelectorAll('.demo-card button').forEach(btn => {
+  btn.addEventListener('click', () => launchDemo(btn));
+});
+
+async function launchDemo(btn) {
+  const kind = btn.dataset.kind;
+  document.querySelectorAll('.demo-card button').forEach(b => b.disabled = true);
+  consoleEl.classList.add('show');
+  consoleEl.innerHTML = '';
+  append(`<span class="ev-status">▸ Démarrage de la démo « ${kind} »…</span>`);
+
+  try {
+    const r = await fetch(`${AGENTS_BASE}/api/agents/demo`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ kind }),
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      append(`<span class="ev-error">✗ ${escapeHtml(data.message || data.error)}</span>`);
+      document.querySelectorAll('.demo-card button').forEach(b => b.disabled = false);
+      return;
+    }
+    const { session_id, stream_url, voice_url, estimated_duration_sec } = data;
+    append(`<span class="ev-status">▸ Session ouverte : ${session_id}</span>`);
+    append(`<span class="ev-tool">Durée estimée : ~${estimated_duration_sec}s. Vous voyez tout en direct.</span>`);
+
+    // EventSource sur le stream SSE
+    const es = new EventSource(`${AGENTS_BASE}${stream_url}`);
+    let outputBuffer = '';
+
+    es.onmessage = e => {
+      try {
+        const ev = JSON.parse(e.data);
+        renderEvent(ev);
+        if (ev.type === 'agent.message') {
+          for (const block of (ev.content || [])) {
+            if (block.type === 'text') outputBuffer += block.text;
+          }
+        }
+        // Idle terminal → on stoppe et on offre la lecture vocale
+        if (ev.type === 'session.status_idle' && ev.stop_reason?.type !== 'requires_action') {
+          es.close();
+          append(`<span class="ev-status">▸ Démo terminée. Cliquez pour entendre Marcel résumer.</span>`);
+          const btn = document.createElement('button');
+          btn.textContent = '🔊 Faire parler Marcel';
+          btn.style.cssText = 'margin-top:12px;padding:12px 24px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;font-size:11px;';
+          btn.onclick = () => voice.playFromUrl(`${AGENTS_BASE}${voice_url}`, { voice: 'default' });
+          consoleEl.appendChild(btn);
+          document.querySelectorAll('.demo-card button[data-kind]').forEach(b => b.disabled = false);
+        }
+        if (ev.type === 'session.status_terminated') {
+          es.close();
+          append(`<span class="ev-error">✗ Session interrompue</span>`);
+          document.querySelectorAll('.demo-card button[data-kind]').forEach(b => b.disabled = false);
+        }
+      } catch (err) { console.warn('parse:', err, e.data); }
+    };
+    es.onerror = () => {
+      append(`<span class="ev-error">✗ Connexion stream perdue (auto-reconnect dans 3s)</span>`);
+    };
+  } catch (e) {
+    append(`<span class="ev-error">✗ ${escapeHtml(e.message)}</span>`);
+    document.querySelectorAll('.demo-card button').forEach(b => b.disabled = false);
+  }
+}
+
+function renderEvent(ev) {
+  if (ev.type === 'agent.message') {
+    for (const block of (ev.content || [])) {
+      if (block.type === 'text') {
+        append(`<span class="ev-type">[Marcel]</span> <span class="ev-text">${escapeHtml(block.text)}</span>`);
+      }
+    }
+  } else if (ev.type === 'agent.tool_use') {
+    append(`<span class="ev-type">[tool]</span> <span class="ev-tool">${escapeHtml(ev.name || '?')}(${escapeHtml(JSON.stringify(ev.input || {}).slice(0, 100))}…)</span>`);
+  } else if (ev.type === 'agent.thinking') {
+    append(`<span class="ev-tool">[Marcel réfléchit…]</span>`);
+  } else if (ev.type === 'span.outcome_evaluation_end') {
+    append(`<span class="ev-status">[grader] ${escapeHtml(ev.result || '?')} — itération ${ev.iteration ?? '?'}</span>`);
+  } else if (ev.type === 'session.status_running') {
+    append(`<span class="ev-status">▸ Agent en exécution…</span>`);
+  }
+}
+</script>
+
+</body>
+</html>

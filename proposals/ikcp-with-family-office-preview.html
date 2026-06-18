@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aperçu IKCP.eu intégrant Family Office</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: #f9f6f0;
+  --cream-2: #f4ecdf;
+  --ink: #1f1a16;
+  --ink-mute: #6d5c4a;
+  --ink-faint: #9e9080;
+  --gold: #b8956e;
+  --gold-dark: #a07b54;
+  --line-light: #e5ded2;
+  /* Dark family office */
+  --bg-dark: #0c0f0d;
+  --gold-bright: #c4a273;
+  --ink-pale: #f4ece1;
+  --ink-pale-mute: #9a9388;
+  --ink-pale-faint: #5e5851;
+  --line-dark: rgba(196, 162, 115, 0.18);
+  --grid-dark: rgba(255, 255, 255, 0.025);
+}
+
+html, body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── PREVIEW BANNER (top utility) ─── */
+.preview-bar {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.preview-bar b { color: var(--gold-bright); font-weight: 500; }
+.preview-bar a {
+  color: var(--cream);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-bright);
+  padding-bottom: 1px;
+}
+
+/* ─── NAV avec onglet Family Office mis en avant ─── */
+nav.site {
+  background: rgba(249, 246, 240, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 32px;
+  z-index: 100;
+  border-bottom: 1px solid var(--line-light);
+}
+.brand-block { line-height: 1.1; }
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.brand .dot { color: var(--gold); }
+.brand-sub {
+  display: block;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+nav.site .menu {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+nav.site .menu a {
+  color: var(--ink-mute);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.25s;
+}
+nav.site .menu a:hover { color: var(--gold); }
+
+/* L'onglet phare : FAMILY OFFICE */
+nav.site .menu a.fo {
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--ink) 0%, #2a221c 100%);
+  color: var(--cream);
+  padding: 8px 16px;
+  border-radius: 2px;
+  position: relative;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-size: 12.5px;
+}
+nav.site .menu a.fo::before {
+  content: '★';
+  color: var(--gold-bright);
+  margin-right: 6px;
+  font-size: 11px;
+}
+nav.site .menu a.fo::after {
+  content: 'NEW';
+  position: absolute;
+  top: -7px;
+  right: -10px;
+  background: var(--gold);
+  color: var(--cream);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  padding: 2px 6px;
+  border-radius: 1px;
+  font-weight: 500;
+  animation: pulseBadge 2.4s ease-in-out infinite;
+}
+@keyframes pulseBadge {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.06); opacity: 0.85; }
+}
+
+nav.site .cta-echange {
+  padding: 9px 20px;
+  background: var(--gold);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+nav.site .cta-echange:hover { background: var(--gold-dark); color: var(--cream); }
+
+/* ─── HERO MOCK (style ikcp.eu actuel) ─── */
+section.hero {
+  padding: 80px 40px 60px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+.hero-kicker {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-kicker::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+}
+.numbers-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.numbers-bar .num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.numbers-bar .lbl {
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.numbers-bar .sep {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.5;
+}
+h1.hero-h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(40px, 5.4vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+h1.hero-h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+.hero-sub {
+  font-size: 17px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: 28px;
+}
+.segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.segment {
+  padding: 6px 14px;
+  background: white;
+  border: 1px solid var(--line-light);
+  border-radius: 18px;
+  font-size: 12.5px;
+  color: var(--ink-mute);
+}
+
+.cta-bilan {
+  display: inline-flex;
+  flex-direction: column;
+  background: var(--ink);
+  color: var(--cream);
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.cta-bilan-mini {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--gold-bright);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.cta-bilan-text { font-size: 15px; }
+
+/* Sky block right (Marcel preview mock) */
+.sky-block {
+  background: linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+  border-radius: 18px;
+  padding: 32px;
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.marcel-pill {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.marcel-pill::before {
+  content: '●';
+  color: #22c55e;
+  margin-right: 6px;
+}
+.balloon-illu {
+  width: 130px;
+  height: 160px;
+  position: relative;
+  margin: 8px 0 24px;
+}
+.balloon-illu svg { width: 100%; height: 100%; }
+.marcel-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  width: 100%;
+  border: 1px solid var(--line-light);
+}
+.marcel-card-kicker {
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.marcel-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.marcel-q-row {
+  padding: 10px 12px;
+  border-top: 1px solid var(--line-light);
+  font-size: 13px;
+  color: var(--ink-mute);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.marcel-q-row::after { content: '→'; margin-left: auto; color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════════ */
+/* BLOC FAMILY OFFICE — section sombre intégrée juste après hero */
+/* ═══════════════════════════════════════════════════════════ */
+.fo-section {
+  background: var(--bg-dark);
+  background-image:
+    linear-gradient(var(--grid-dark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-dark) 1px, transparent 1px);
+  background-size: 80px 80px;
+  color: var(--ink-pale);
+  padding: 100px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Marqueur "section premium" en haut/bas */
+.fo-section::before, .fo-section::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--gold-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 24px var(--gold-bright);
+}
+.fo-section::before { top: -4px; }
+.fo-section::after { bottom: -4px; }
+
+.fo-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.fo-kicker {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.fo-kicker::before {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: var(--gold-bright);
+}
+
+.fo-h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.fo-h2 em { font-style: italic; color: var(--gold-bright); }
+
+.fo-lede {
+  font-size: 16px;
+  color: var(--ink-pale-mute);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+.fo-lede em {
+  color: var(--ink-pale);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+.fo-stats {
+  display: flex;
+  gap: 40px;
+  margin: 32px 0 36px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+.fo-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--gold-bright);
+  line-height: 1;
+}
+.fo-stat-num em { font-style: italic; }
+.fo-stat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-pale-faint);
+  margin-top: 6px;
+}
+
+.fo-cta-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fo-cta-primary {
+  background: var(--gold-bright);
+  color: var(--bg-dark);
+  text-decoration: none;
+  padding: 16px 36px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold-bright);
+  border-radius: 1px;
+  transition: all 0.3s;
+}
+.fo-cta-primary:hover {
+  background: transparent;
+  color: var(--gold-bright);
+}
+.fo-cta-secondary {
+  color: var(--ink-pale-mute);
+  text-decoration: none;
+  font-size: 13px;
+  border-bottom: 1px solid var(--line-dark);
+  padding-bottom: 4px;
+  transition: all 0.3s;
+}
+.fo-cta-secondary:hover {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+}
+
+/* Diagram à droite : Marcel + 6 agents condensé */
+.fo-diagram {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.fo-diagram svg { width: 100%; height: 100%; }
+
+.fo-note {
+  text-align: center;
+  margin-top: 64px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-pale-faint);
+  letter-spacing: 0.04em;
+}
+
+/* ─── BANDEAU "Famille à patrimoine constitué" ─── */
+.fo-banner {
+  background: var(--cream-2);
+  padding: 28px 40px;
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--ink-mute);
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--line-light);
+}
+.fo-banner strong {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 500;
+}
+.fo-banner a {
+  color: var(--gold);
+  border-bottom: 1px solid var(--gold);
+  text-decoration: none;
+  padding-bottom: 1px;
+  font-style: normal;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+/* ─── PLACEHOLDER suite du site ─── */
+.placeholder {
+  padding: 80px 40px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-faint);
+  font-style: italic;
+  border-top: 1px dashed var(--line-light);
+  background: white;
+}
+.placeholder strong { color: var(--ink-mute); font-style: normal; font-weight: 500; }
+
+/* ─── Annotation badges (montrent ce qui change) ─── */
+.annot {
+  position: absolute;
+  background: var(--gold);
+  color: var(--cream);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 1px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  z-index: 50;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.annot::before {
+  content: '→';
+  margin-right: 6px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1000px) {
+  nav.site { padding: 14px 20px; }
+  nav.site .menu { gap: 12px; }
+  nav.site .menu a:not(.fo) { display: none; }
+  section.hero { grid-template-columns: 1fr; padding: 40px 20px; gap: 40px; }
+  .fo-section { padding: 60px 20px; }
+  .fo-inner { grid-template-columns: 1fr; gap: 50px; }
+  .fo-stats { gap: 24px; }
+  .fo-stat-num { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Bandeau preview top -->
+<div class="preview-bar">
+  <span><b>APERÇU</b> · ikcp.eu intégrant l'offre <b>Family Office</b></span>
+  <span>Différences en <b>or</b> · <a href="https://ikcp.eu/" target="_blank">site actuel ↗</a></span>
+</div>
+
+<!-- ═══ NAV avec nouvel onglet ═══ -->
+<nav class="site">
+  <div class="brand-block">
+    <div class="brand">IKCP<span class="dot">.</span></div>
+    <div class="brand-sub">Cabinet · Protection &amp; Transmission</div>
+  </div>
+  <div class="menu">
+    <a href="#diag">Diagnostic</a>
+    <a href="#cas">Cas concrets</a>
+    <a href="#sp">⭐ Sélection Privée</a>
+    <a href="#fo" class="fo" style="position:relative;">Family Office</a>
+    <a href="#cabinet">Le cabinet</a>
+    <a href="mailto:maxime@ikcp.fr" class="cta-echange">Échanger →</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO style ikcp.eu actuel ═══ -->
+<section class="hero">
+
+  <div>
+    <div class="hero-kicker">IKCP · Conseil patrimonial indépendant</div>
+
+    <div class="numbers-bar">
+      <div><span class="num">10</span> <span class="lbl">ans</span></div>
+      <span class="sep"></span>
+      <div><span class="num">100%</span> <span class="lbl">indépendant</span></div>
+    </div>
+
+    <h1 class="hero-h1">Protéger ce que vous êtes<br><em>en train de bâtir.</em></h1>
+
+    <p class="hero-sub">
+      Un accompagnement sur-mesure — juridique, fiscal et financier.
+      <strong style="color:var(--ink);">Protéger, valoriser, transmettre</strong> — là où les enjeux se croisent.
+    </p>
+
+    <div class="segments">
+      <div class="segment">👨‍👩‍👧 Parents &amp; jeunes parents</div>
+      <div class="segment">💼 Entrepreneurs &amp; TNS</div>
+      <div class="segment">🏛 Transmission</div>
+      <div class="segment">🏠 Investisseurs immobiliers</div>
+    </div>
+
+    <a href="#bilan" class="cta-bilan">
+      <span class="cta-bilan-mini">EN LIGNE · 5 ÉTAPES · 2 MINUTES</span>
+      <span class="cta-bilan-text">Faire mon bilan patrimonial &nbsp;→</span>
+    </a>
+  </div>
+
+  <!-- Sky block droite mock -->
+  <div class="sky-block">
+    <div class="marcel-pill">Marcel · En ligne</div>
+
+    <!-- montgolfière SVG simplifiée -->
+    <div class="balloon-illu">
+      <svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="b1" cx="50%" cy="40%">
+            <stop offset="0%" stop-color="#2c4a8a"/>
+            <stop offset="100%" stop-color="#234c9e"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="65" cy="55" rx="48" ry="56" fill="#fff"/>
+        <path d="M 17 55 A 48 56 0 0 1 113 55 L 65 55 Z" fill="#234c9e" transform="rotate(-90 65 55)"/>
+        <path d="M 17 55 A 48 56 0 0 0 113 55 L 65 55 Z" fill="#c8263c" transform="rotate(90 65 55)"/>
+        <ellipse cx="65" cy="55" rx="48" ry="56" fill="none" stroke="rgba(160,130,90,0.5)" stroke-width="1.5"/>
+        <line x1="35" y1="105" x2="50" y2="125" stroke="#3c322a" stroke-width="1.5"/>
+        <line x1="95" y1="105" x2="80" y2="125" stroke="#3c322a" stroke-width="1.5"/>
+        <rect x="50" y="125" width="30" height="20" rx="3" fill="#7a5438"/>
+        <ellipse cx="65" cy="115" rx="6" ry="3" fill="#d4af82"/>
+      </svg>
+    </div>
+
+    <div class="marcel-card">
+      <div class="marcel-card-kicker">⚡ Agent IA Patrimonial</div>
+      <div class="marcel-card-title">Posez votre question à Marcel</div>
+      <div class="marcel-q-row">🏛 Réduire les droits de succession</div>
+      <div class="marcel-q-row">💎 Donation au-delà de 100 000 €</div>
+      <div class="marcel-q-row">⚖ Testament ou donation au dernier vivant</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ BANDEAU TRANSITION ═══ -->
+<div class="fo-banner">
+  Pour les familles à patrimoine constitué, IKCP propose un accompagnement <strong>Family Office augmenté</strong>.
+  <a href="#fo">Découvrir →</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ═══ NOUVELLE SECTION FAMILY OFFICE ═══ -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="fo-section" id="fo" style="position:relative;">
+
+  <div class="fo-inner">
+
+    <!-- Texte gauche -->
+    <div>
+      <div class="fo-kicker">Nouveau · Family Office augmenté</div>
+
+      <h2 class="fo-h2">
+        Une porte d'entrée.<br>
+        <em>Six</em> agents IA.<br>
+        Neuf expertises.
+      </h2>
+
+      <p class="fo-lede">
+        Pour les familles dont le patrimoine ne <em>s'improvise</em> plus.<br>
+        Vous gardez le pilotage. Maxime arbitre. Marcel coordonne. Six agents spécialisés exécutent — fiscal, juridique, suivi, documents, reporting, triage.
+      </p>
+
+      <div class="fo-stats">
+        <div>
+          <div class="fo-stat-num">9</div>
+          <div class="fo-stat-lbl">Expertises</div>
+        </div>
+        <div>
+          <div class="fo-stat-num">32</div>
+          <div class="fo-stat-lbl">API connectées</div>
+        </div>
+        <div>
+          <div class="fo-stat-num">6</div>
+          <div class="fo-stat-lbl">Agents IA</div>
+        </div>
+        <div>
+          <div class="fo-stat-num"><em>1</em></div>
+          <div class="fo-stat-lbl">Chef d'orchestre</div>
+        </div>
+      </div>
+
+      <div class="fo-cta-row">
+        <a href="./family-office-v1.html" class="fo-cta-primary">Voir l'orchestration →</a>
+        <a href="./family-office-v2-expertises.html" class="fo-cta-secondary">Voir les 9 expertises</a>
+      </div>
+    </div>
+
+    <!-- Diagram droite : Marcel + 6 agents -->
+    <div class="fo-diagram" aria-hidden="true">
+      <svg viewBox="0 0 520 520">
+        <defs>
+          <radialGradient id="masterGlow2" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="rgba(196,162,115,0.5)"/>
+            <stop offset="100%" stop-color="rgba(196,162,115,0)"/>
+          </radialGradient>
+        </defs>
+
+        <circle cx="260" cy="260" r="240" stroke="rgba(196,162,115,0.08)" stroke-width="0.6" fill="none" stroke-dasharray="2 6"/>
+        <circle cx="260" cy="260" r="160" stroke="rgba(196,162,115,0.16)" stroke-width="0.6" fill="none"/>
+        <circle cx="260" cy="260" r="74" fill="url(#masterGlow2)"/>
+        <circle cx="260" cy="260" r="56" stroke="#c4a273" stroke-width="1.4" fill="rgba(28,34,24,0.7)"/>
+
+        <text x="260" y="252" text-anchor="middle" fill="#f4ece1" font-family="Playfair Display, serif" font-size="14">Maxime</text>
+        <text x="260" y="270" text-anchor="middle" fill="#c4a273" font-family="Playfair Display, serif" font-style="italic" font-size="13">+ Marcel</text>
+        <text x="260" y="285" text-anchor="middle" fill="#9a9388" font-family="JetBrains Mono, monospace" font-size="7" letter-spacing="2">CHEF D'ORCHESTRE</text>
+
+        <!-- 6 agents -->
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#f4ece1" text-anchor="middle">
+          <g transform="translate(260, 100)">
+            <circle r="32" fill="rgba(28,34,24,0.7)" stroke="rgba(196,162,115,0.45)" stroke-width="1"/>
+            <text dy="-3" font-size="14">📥</text>
+            <text dy="14" font-size="8" fill="#9a9388">TRIAGE</text>
+          </g>
+          <g transform="translate(398, 188)">
+            <circle r="32" fill="rgba(28,34,24,0.7)" stroke="rgba(196,162,115,0.45)" stroke-width="1"/>
+            <text dy="-3" font-size="14">🏛</text>
+            <text dy="14" font-size="8" fill="#9a9388">FISCAL</text>
+          </g>
+          <g transform="translate(398, 332)">
+            <circle r="32" fill="rgba(28,34,24,0.7)" stroke="rgba(196,162,115,0.45)" stroke-width="1"/>
+            <text dy="-3" font-size="14">⚖</text>
+            <text dy="14" font-size="8" fill="#9a9388">JURIDIQUE</text>
+          </g>
+          <g transform="translate(260, 420)">
+            <circle r="32" fill="rgba(28,34,24,0.7)" stroke="rgba(196,162,115,0.45)" stroke-width="1"/>
+            <text dy="-3" font-size="14">📊</text>
+            <text dy="14" font-size="8" fill="#9a9388">REPORTING</text>
+          </g>
+          <g transform="translate(122, 332)">
+            <circle r="32" fill="rgba(28,34,24,0.7)" stroke="rgba(196,162,115,0.45)" stroke-width="1"/>
+            <text dy="-3" font-size="14">🔄</text>
+            <text dy="14" font-size="8" fill="#9a9388">SUIVI</text>
+          </g>
+          <g transform="translate(122, 188)">
+            <circle r="32" fill="rgba(28,34,24,0.7)" stroke="rgba(196,162,115,0.45)" stroke-width="1"/>
+            <text dy="-3" font-size="14">📁</text>
+            <text dy="14" font-size="8" fill="#9a9388">DOCUMENTS</text>
+          </g>
+        </g>
+
+        <!-- Lignes radiales du master vers chaque agent -->
+        <g stroke="rgba(196,162,115,0.22)" stroke-width="0.7" stroke-dasharray="2 4">
+          <line x1="260" y1="208" x2="260" y2="132"/>
+          <line x1="304" y1="232" x2="370" y2="200"/>
+          <line x1="304" y1="288" x2="370" y2="320"/>
+          <line x1="260" y1="312" x2="260" y2="392"/>
+          <line x1="216" y1="288" x2="150" y2="320"/>
+          <line x1="216" y1="232" x2="150" y2="200"/>
+        </g>
+
+        <!-- Pulses dorés circulant -->
+        <g fill="#c4a273">
+          <circle r="3"><animateMotion dur="3.6s" repeatCount="indefinite" path="M 260 260 L 260 132 L 260 260"/></circle>
+          <circle r="3"><animateMotion dur="3.6s" begin="0.6s" repeatCount="indefinite" path="M 260 260 L 398 188 L 260 260"/></circle>
+          <circle r="3"><animateMotion dur="3.6s" begin="1.2s" repeatCount="indefinite" path="M 260 260 L 398 332 L 260 260"/></circle>
+          <circle r="3"><animateMotion dur="3.6s" begin="1.8s" repeatCount="indefinite" path="M 260 260 L 260 420 L 260 260"/></circle>
+          <circle r="3"><animateMotion dur="3.6s" begin="2.4s" repeatCount="indefinite" path="M 260 260 L 122 332 L 260 260"/></circle>
+          <circle r="3"><animateMotion dur="3.6s" begin="3.0s" repeatCount="indefinite" path="M 260 260 L 122 188 L 260 260"/></circle>
+        </g>
+      </svg>
+    </div>
+
+  </div>
+
+  <p class="fo-note">— Sur recommandation · Familles à patrimoine constitué (&gt; 2 M€) —</p>
+
+</section>
+
+<!-- ═══ Placeholder suite du site (existant intact) ═══ -->
+<div class="placeholder">
+  ↓ <strong>Sections existantes du site continuent ici</strong> : diagnostic patrimonial, avantages, preuves sociales,<br>
+  notre offre, cas pratiques, comment ça fonctionne, le cabinet, contact, footer 4 colonnes…
+</div>
+
+</body>
+</html>

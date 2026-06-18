@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Family Office Live · v4</title>
+<meta name="description" content="Family office augmenté : dix expertises, dix agents IA, une seule conversation. Sources publiques et privées citées, validation humaine du CGP.">
+<meta name="robots" content="noindex, nofollow">
+
+<!-- PWA — installable mobile + desktop -->
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP Family Office">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --bg-2: #0d100e;
+  --bg-elev: #11171300;
+  --ink: #f4ece1;
+  --ink-mute: #9a9388;
+  --ink-faint: #5e5851;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.16);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --line-faint: rgba(196, 162, 115, 0.06);
+  --ok: #7fae7d;
+  --warn: #d4a85a;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.88 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events: none; z-index: 0; opacity: 0.5; mix-blend-mode: overlay;
+}
+
+main { position: relative; z-index: 1; }
+
+/* ─── NAV ─── */
+nav.top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 22px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(10,13,11,0.92), rgba(10,13,11,0));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.brand-block { line-height: 1.1; }
+.brand { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500; letter-spacing: 0.08em; color: var(--ink); }
+.brand b { color: var(--gold); font-weight: 500; }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em; color: var(--ink-faint); text-transform: uppercase; margin-top: 4px; }
+nav .menu { display: flex; align-items: center; gap: 32px; }
+nav .menu a { color: var(--ink-mute); text-decoration: none; font-size: 12px; letter-spacing: 0.04em; transition: color 0.25s; }
+nav .menu a:hover { color: var(--gold); }
+nav .cta { padding: 11px 22px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; border-radius: 1px; transition: all 0.3s; }
+nav .cta:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── HERO ─── */
+section.hero {
+  min-height: 100vh;
+  padding: 120px 32px 60px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+}
+.kicker {
+  font-size: 10.5px; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 28px; display: flex; align-items: center; gap: 18px;
+  opacity: 0; animation: fadeIn 1s 0.2s forwards;
+}
+.kicker .rule { width: 36px; height: 1px; background: var(--gold); }
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(40px, 6vw, 84px); line-height: 1.05; letter-spacing: -0.022em;
+  max-width: 1000px; margin: 0 auto 24px;
+  opacity: 0; animation: fadeUp 1s 0.4s forwards;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede {
+  max-width: 620px; font-size: 16px; color: var(--ink-mute); margin: 0 auto 40px;
+  line-height: 1.7; font-weight: 300;
+  opacity: 0; animation: fadeUp 1s 0.6s forwards;
+}
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.hero-cta {
+  display: inline-flex; gap: 24px; align-items: center; flex-wrap: wrap; justify-content: center;
+  opacity: 0; animation: fadeUp 1s 0.8s forwards;
+}
+.btn-primary {
+  padding: 16px 36px; background: var(--gold); color: var(--bg); text-decoration: none;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  border-radius: 1px; border: 1px solid var(--gold); transition: all 0.3s;
+}
+.btn-primary:hover { background: transparent; color: var(--gold); }
+.btn-secondary {
+  color: var(--ink-mute); text-decoration: none; font-size: 12.5px; letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--line); padding-bottom: 5px; transition: all 0.3s;
+}
+.btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ─── MANIFESTO ─── */
+section.manifesto {
+  padding: 100px 32px 80px;
+  border-top: 1px solid var(--line);
+}
+.section-head {
+  max-width: 1180px; margin: 0 auto 60px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;
+}
+.section-head-kicker {
+  font-size: 10.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 14px;
+}
+.section-head h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 4vw, 48px); line-height: 1.1; letter-spacing: -0.018em;
+  max-width: 700px;
+}
+.section-head h2 em { font-style: italic; color: var(--gold); }
+.section-head-meta {
+  font-size: 11px; color: var(--ink-faint); letter-spacing: 0.18em; text-transform: uppercase;
+  text-align: right; line-height: 1.7;
+}
+.section-head-meta strong { color: var(--gold); font-weight: 500; }
+
+.promesses {
+  max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.promesse { padding: 36px 28px; border-right: 1px solid var(--line); }
+.promesse:last-child { border-right: none; }
+.promesse-num {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 14px; color: var(--gold); margin-bottom: 14px;
+}
+.promesse-title {
+  font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink); margin-bottom: 12px; line-height: 1.4;
+}
+.promesse-desc {
+  font-size: 13px; color: var(--ink-mute); line-height: 1.6; font-weight: 300;
+}
+.promesse-desc em {
+  font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); font-size: 13.5px;
+}
+
+/* ─── LIVE GRID ─── */
+section.live {
+  padding: 100px 32px 80px;
+}
+.live-wrap { max-width: 1240px; margin: 0 auto; }
+.themes {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.theme-card {
+  background: var(--bg);
+  padding: 32px 30px 28px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s ease;
+  min-height: 220px;
+  display: flex; flex-direction: column;
+}
+.theme-card:hover { background: rgba(196, 162, 115, 0.04); }
+.theme-card.open { background: rgba(196, 162, 115, 0.06); }
+.theme-numeral {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 18px; color: var(--gold); margin-bottom: 12px;
+}
+.theme-title {
+  font-family: 'Playfair Display', serif; font-weight: 500;
+  font-size: 22px; line-height: 1.2; color: var(--ink); margin-bottom: 12px; letter-spacing: -0.005em;
+}
+.theme-desc {
+  font-size: 13px; color: var(--ink-mute); line-height: 1.6; font-weight: 300;
+  margin-bottom: 18px; flex-grow: 1;
+}
+.theme-meta {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+}
+.api-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.06em;
+  padding: 4px 9px; border: 1px solid var(--line-strong);
+  color: var(--ink-mute); border-radius: 1px; text-transform: uppercase;
+}
+.theme-trigger {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+}
+.theme-trigger .arrow {
+  display: inline-block; transition: transform 0.3s;
+  font-family: 'Inter', sans-serif; font-size: 14px;
+}
+.theme-card.open .theme-trigger .arrow { transform: rotate(90deg); }
+
+/* ─── PANEL (Ask the expert) ─── */
+.theme-panel {
+  grid-column: 1 / -1;
+  background: var(--bg-2);
+  border-top: 1px solid var(--gold);
+  padding: 0 32px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.theme-panel.open {
+  max-height: 1400px;
+  padding: 38px 32px 42px;
+  border-bottom: 1px solid var(--gold);
+}
+.panel-head {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;
+  gap: 24px; flex-wrap: wrap;
+}
+.panel-head-l { max-width: 680px; }
+.panel-agent-line {
+  font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
+}
+.panel-title {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 22px; color: var(--ink); margin-bottom: 8px;
+}
+.panel-sub {
+  font-size: 13px; color: var(--ink-mute); line-height: 1.6;
+}
+.panel-close {
+  background: none; border: 1px solid var(--line); color: var(--ink-mute);
+  padding: 6px 14px; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s; border-radius: 1px;
+  font-family: 'Inter', sans-serif;
+}
+.panel-close:hover { color: var(--gold); border-color: var(--gold); }
+
+.panel-prompts {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px;
+}
+.prompt-chip {
+  background: rgba(196, 162, 115, 0.06); border: 1px solid var(--line-strong);
+  color: var(--ink); padding: 9px 16px;
+  font-size: 12px; cursor: pointer; transition: all 0.25s; border-radius: 1px;
+  font-family: 'Inter', sans-serif;
+}
+.prompt-chip:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+.panel-input-row {
+  display: flex; gap: 10px; margin-bottom: 22px;
+}
+.panel-input {
+  flex: 1; background: var(--bg); border: 1px solid var(--line);
+  color: var(--ink); padding: 14px 18px; font-size: 14px; border-radius: 1px;
+  font-family: 'Inter', sans-serif; outline: none; transition: border 0.25s;
+}
+.panel-input:focus { border-color: var(--gold); }
+.panel-input::placeholder { color: var(--ink-faint); font-style: italic; }
+.panel-send {
+  padding: 0 28px; background: var(--gold); color: var(--bg);
+  border: none; font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; cursor: pointer; border-radius: 1px;
+  font-family: 'Inter', sans-serif; transition: all 0.25s;
+}
+.panel-send:hover { background: var(--gold-bright); }
+.panel-send:disabled { opacity: 0.4; cursor: wait; }
+
+.panel-response {
+  background: var(--bg);
+  border-left: 2px solid var(--gold);
+  padding: 22px 26px;
+  margin-bottom: 18px;
+  min-height: 80px;
+  font-size: 14.5px; line-height: 1.7; color: var(--ink);
+  white-space: pre-wrap;
+  display: none;
+}
+.panel-response.visible { display: block; }
+.panel-response strong { color: var(--gold); font-weight: 500; }
+.panel-response em { font-style: italic; color: var(--ink-mute); }
+.panel-response a.src-link { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(196,162,115,0.4); padding-bottom: 1px; transition: all 0.2s; }
+.panel-response a.src-link:hover { background: rgba(196,162,115,0.08); border-bottom-style: solid; }
+
+.panel-loader {
+  display: none; align-items: center; gap: 12px;
+  color: var(--ink-mute); font-size: 13px; margin-bottom: 18px;
+  font-style: italic; font-family: 'Playfair Display', serif;
+}
+.panel-loader.visible { display: flex; }
+.panel-loader .pulse {
+  width: 8px; height: 8px; background: var(--gold); border-radius: 50%;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%      { opacity: 1; transform: scale(1.2); }
+}
+
+.panel-sources {
+  display: none; flex-wrap: wrap; gap: 8px; align-items: center;
+  font-size: 11px; color: var(--ink-faint); margin-bottom: 22px;
+}
+.panel-sources.visible { display: flex; }
+.panel-sources-label { letter-spacing: 0.18em; text-transform: uppercase; }
+.source-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.04em;
+  padding: 5px 10px; background: rgba(196, 162, 115, 0.08);
+  border: 1px solid var(--line-strong); color: var(--gold);
+  border-radius: 1px;
+}
+
+.panel-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 18px; border-top: 1px solid var(--line);
+  flex-wrap: wrap; gap: 16px;
+}
+.panel-footer-note {
+  font-size: 11.5px; color: var(--ink-faint); font-style: italic;
+  font-family: 'Playfair Display', serif; line-height: 1.5;
+  max-width: 540px;
+}
+.panel-cta-maxime {
+  display: inline-block; padding: 10px 22px; background: transparent;
+  color: var(--gold); border: 1px solid var(--gold); text-decoration: none;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  border-radius: 1px; transition: all 0.3s; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.panel-cta-maxime:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── ORCHESTRATION (réutilise v3) ─── */
+section.orchestration {
+  padding: 100px 32px 100px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.orch-text {
+  max-width: 720px; margin: 0 auto 40px;
+}
+.orch-text h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.018em;
+  margin-bottom: 18px;
+}
+.orch-text h2 em { font-style: italic; color: var(--gold); }
+.orch-text p {
+  font-size: 14.5px; color: var(--ink-mute); line-height: 1.7;
+}
+
+/* ─── CABINET ─── */
+section.cabinet {
+  padding: 100px 32px 80px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.cabinet-content {
+  max-width: 760px; margin: 0 auto;
+}
+.cabinet h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 4vw, 44px); line-height: 1.15;
+  margin-bottom: 18px;
+}
+.cabinet h2 em { font-style: italic; color: var(--gold); }
+.cabinet p { font-size: 14.5px; color: var(--ink-mute); line-height: 1.8; margin-bottom: 14px; }
+.cabinet-credentials {
+  margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--line);
+  font-size: 11.5px; color: var(--ink-faint); letter-spacing: 0.08em; line-height: 2;
+}
+
+/* ─── FINAL CTA ─── */
+section.final {
+  padding: 90px 32px 110px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.final h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 4vw, 48px); line-height: 1.15; margin-bottom: 22px;
+}
+.final h2 em { font-style: italic; color: var(--gold); }
+.final p {
+  font-size: 15px; color: var(--ink-mute); line-height: 1.7; max-width: 580px;
+  margin: 0 auto 36px;
+}
+.final-row {
+  display: inline-flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: center;
+}
+.final-note {
+  display: block; font-size: 11.5px; font-style: italic; font-family: 'Playfair Display', serif;
+  color: var(--ink-faint); margin-top: 28px;
+}
+
+/* ─── FOOTER ─── */
+footer.proto {
+  padding: 36px 32px 28px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+footer.proto p {
+  font-size: 10.5px; color: var(--ink-faint);
+  letter-spacing: 0.06em; line-height: 1.8;
+}
+footer.proto a {
+  color: var(--gold); text-decoration: none;
+  border-bottom: 1px solid transparent; transition: border 0.25s;
+}
+footer.proto a:hover { border-color: var(--gold); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .themes { grid-template-columns: repeat(2, 1fr); }
+  .promesses { grid-template-columns: repeat(2, 1fr); }
+  .promesse:nth-child(2) { border-right: none; }
+  .promesse:nth-child(1), .promesse:nth-child(2) { border-bottom: 1px solid var(--line); }
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-head-meta { text-align: left; }
+}
+@media (max-width: 720px) {
+  nav.top { padding: 14px 18px; }
+  nav .menu { display: none; }
+  section.hero { padding: 100px 18px 50px; }
+  section.manifesto, section.live, section.orchestration, section.cabinet, section.final { padding-left: 18px; padding-right: 18px; }
+  .themes { grid-template-columns: 1fr; }
+  .promesses { grid-template-columns: 1fr; }
+  .promesse { border-right: none; border-bottom: 1px solid var(--line); }
+  .promesse:last-child { border-bottom: none; }
+  .panel-input-row { flex-direction: column; }
+  .panel-send { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div class="brand-block">
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office Live</div>
+  </div>
+  <div class="menu">
+    <a href="#promesses">Méthode</a>
+    <a href="#live">Demander à Marcel</a>
+    <a href="#orchestration">Orchestration</a>
+    <a href="#cabinet">Le cabinet</a>
+  </div>
+  <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20IKCP%20%E2%80%94%20%C3%A9change" class="cta">Échanger</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="kicker">
+    <span class="rule"></span>
+    Family Office augmenté · v4
+    <span class="rule"></span>
+  </div>
+  <h1>Posez <em>une</em> question.<br>Dix experts répondent.</h1>
+  <p class="lede">
+    Marché de l'art, marchés financiers, immobilier, transmission, philanthropie — <em>une seule</em> conversation.
+    Marcel orchestre dix agents IA spécialisés. <em>Sources publiques et privées citées</em>. Validation Maxime systématique.
+  </p>
+  <div class="hero-cta">
+    <a href="#live" class="btn-primary">Tester maintenant</a>
+    <a href="#promesses" class="btn-secondary">Comment ça marche →</a>
+  </div>
+</section>
+
+<!-- ═══ MANIFESTO — 4 promesses ═══ -->
+<section class="manifesto" id="promesses">
+  <div class="section-head">
+    <div>
+      <div class="section-head-kicker">— Méthode</div>
+      <h2>Quatre promesses qui <em>nous distinguent</em>.</h2>
+    </div>
+    <div class="section-head-meta">
+      Différentiation<br><strong>Auditable · sourcée · arbitrée</strong>
+    </div>
+  </div>
+
+  <div class="promesses">
+    <div class="promesse">
+      <div class="promesse-num">i.</div>
+      <div class="promesse-title">Sources <em>visibles</em></div>
+      <div class="promesse-desc">Chaque chiffre cite l'article CGI, l'API, la base de données. <em>Pas d'hallucination, pas de boîte noire</em>.</div>
+    </div>
+    <div class="promesse">
+      <div class="promesse-num">ii.</div>
+      <div class="promesse-title">Orchestration <em>apparente</em></div>
+      <div class="promesse-desc">Vous voyez Marcel router. Vous voyez les agents s'activer. <em>Le théâtre de la coordination</em>.</div>
+    </div>
+    <div class="promesse">
+      <div class="promesse-num">iii.</div>
+      <div class="promesse-title">Multi-classe <em>coordonné</em></div>
+      <div class="promesse-desc">Art, marchés, immo, PE, philanthropie — <em>un seul échange</em>. Vos partenaires sont briefés.</div>
+    </div>
+    <div class="promesse">
+      <div class="promesse-num">iv.</div>
+      <div class="promesse-title">Validation <em>Maxime</em></div>
+      <div class="promesse-desc">Aucune recommandation ne part sans la signature de Maxime. <em>L'IA prépare. L'humain arbitre</em>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIVE — 10 thématiques interactives ═══ -->
+<section class="live" id="live">
+  <div class="live-wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-head-kicker">— Live demo</div>
+        <h2>Dix thématiques, dix agents. <em>Une</em> question suffit.</h2>
+      </div>
+      <div class="section-head-meta">
+        10 disciplines<br><strong>Cliquez · interrogez · sourcez</strong>
+      </div>
+    </div>
+
+    <div class="themes" id="themes">
+      <!-- cards injectées par JS pour cohérence + maintenance -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ORCHESTRATION ═══ -->
+<section class="orchestration" id="orchestration">
+  <div class="orch-text">
+    <h2>Marcel au <em>centre</em>.<br>Maxime au pilotage.</h2>
+    <p>
+      Une donnée saisie une fois, réutilisée partout. Chaque expertise alimente une couche commune.
+      Marcel — l'agent maître — orchestre les agents spécialisés, croise les sources, prépare la synthèse.
+      Vous restez au pilotage. <em>Les agents préparent la matière, Maxime arbitre, vos partenaires exécutent.</em>
+    </p>
+    <p style="margin-top:24px;">
+      <a href="./family-office-v3-hero-minimal.html" class="btn-secondary">Voir le diagramme d'orchestration →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ═══ CABINET ═══ -->
+<section class="cabinet" id="cabinet">
+  <div class="cabinet-content">
+    <h2>Un cabinet <em>indépendant</em>,<br>une technologie <em>maison</em>.</h2>
+    <p>
+      IKCP — IKIGAÏ Conseil Patrimonial — accompagne les familles à patrimoine constitué depuis 10 ans
+      sur la structuration, la transmission et la protection de leurs actifs.
+    </p>
+    <p>
+      Marcel et ses agents sont développés en interne, sur l'infrastructure souveraine Cloudflare EU.
+      Le code est nôtre, les données restent en Europe, l'arbitrage humain est inscrit dans l'architecture.
+    </p>
+    <div class="cabinet-credentials">
+      ORIAS 23001568 · CIF — CNCEF Patrimoine · COA — Courtier d'assurance<br>
+      RC Pro MMA — SIREN 947 972 436 · Données hébergées Cloudflare EU · ISO 27001
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final">
+  <h2>Une heure d'échange.<br><em>Aucun</em> engagement.</h2>
+  <p>
+    Familles à patrimoine constitué (&gt; 2 M€). Sur recommandation.
+    Premier échange en visio ou au cabinet — diagnostic patrimonial structuré offert.
+  </p>
+  <div class="final-row">
+    <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20IKCP%20%E2%80%94%20demande%20d%27%C3%A9change" class="btn-primary">Demander un rendez-vous</a>
+    <a href="#live" class="btn-secondary">Reposer une question →</a>
+  </div>
+  <span class="final-note">Réponse sous 48 h. Maxime Juveneton vous répond personnellement.</span>
+</section>
+
+<footer class="proto">
+  <p>
+    Prototype interactif v4 · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+    <a href="./family-office-v1.html">v1 orchestration</a> &nbsp;·&nbsp;
+    <a href="./family-office-v2-expertises.html">v2 expertises</a> &nbsp;·&nbsp;
+    <a href="./family-office-v3-hero-minimal.html">v3 minimaliste</a> &nbsp;·&nbsp;
+    <a href="../index.html">Site actuel</a>
+  </p>
+</footer>
+
+</main>
+
+<script src="./linkify-sources.js" defer></script>
+<script src="./family-office-agents.js" defer></script>
+</body>
+</html>

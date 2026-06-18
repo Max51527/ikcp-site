@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IKCP — Votre Family Office Digital · sur-mesure</title>
+<meta name="description" content="Création d'un Family Office Digital sur-mesure : site, application, agents IA, intégrations. Tarifs transparents, délai 4-12 semaines, code à vous.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IKCP">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --bg-2: #0d100e;
+  --ink: #f4ece1;
+  --ink-mute: #8c857a;
+  --ink-faint: #524d47;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.14);
+  --line-faint: rgba(196, 162, 115, 0.05);
+  --line-strong: rgba(196, 162, 115, 0.32);
+  --warn: #d4a85a;
+  --ok: #7fae7d;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+main { max-width: 1100px; margin: 0 auto; padding: 0 48px; position: relative; z-index: 1; }
+
+/* ─── NAV ─── */
+nav.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 36px 48px;
+  max-width: 1100px; margin: 0 auto;
+}
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); font-weight: 400; }
+nav .menu { display: flex; gap: 36px; align-items: center; }
+nav a {
+  color: var(--ink-mute); text-decoration: none; font-size: 11px;
+  letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.3s; font-weight: 400;
+}
+nav a:hover { color: var(--gold); }
+nav .cta-nav {
+  padding: 9px 18px; border: 1px solid var(--gold); color: var(--gold);
+  letter-spacing: 0.18em; text-transform: uppercase; font-size: 10.5px; transition: all 0.3s;
+}
+nav .cta-nav:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── HERO ─── */
+section.hero { padding: 80px 0 110px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 36px; font-weight: 400; }
+h1 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(36px, 5.4vw, 68px); line-height: 1.08; letter-spacing: -0.022em;
+  margin-bottom: 32px; max-width: 880px;
+}
+h1 em { font-style: italic; color: var(--gold); }
+.lede { max-width: 640px; font-size: 17px; color: var(--ink-mute); line-height: 1.75; font-weight: 300; }
+.lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.hero-pillars {
+  display: flex; gap: 36px; flex-wrap: wrap; margin-top: 56px;
+  padding-top: 36px; border-top: 1px solid var(--line);
+  font-size: 12px; color: var(--ink-mute); letter-spacing: 0.04em;
+}
+.hero-pillars > div { display: flex; flex-direction: column; }
+.hero-pillars strong { color: var(--gold); font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: 22px; margin-bottom: 4px; letter-spacing: 0; }
+
+/* ─── SECTION ─── */
+section.bloc { padding: 110px 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 56px; gap: 40px; flex-wrap: wrap; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.2em; }
+.section-titre {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.018em;
+  max-width: 680px; margin-top: 12px;
+}
+.section-titre em { font-style: italic; color: var(--gold); }
+.section-meta { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; max-width: 260px; }
+
+/* ─── LE CONSTAT ─── */
+.constat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.constat-card { background: var(--bg); padding: 36px 32px; }
+.constat-card h3 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 22px; margin-bottom: 14px; letter-spacing: -0.005em; }
+.constat-card.left h3 { color: var(--ink-mute); }
+.constat-card.right h3 { color: var(--gold); }
+.constat-card.left h3 em { font-style: italic; }
+.constat-list { list-style: none; padding: 0; margin: 0; }
+.constat-list li { padding: 12px 0 12px 22px; border-bottom: 1px solid var(--line-faint); position: relative; font-size: 13.5px; line-height: 1.6; color: var(--ink-mute); }
+.constat-list li:last-child { border-bottom: none; }
+.constat-list li::before { content: '·'; position: absolute; left: 0; color: var(--ink-faint); font-size: 18px; line-height: 1.2; }
+.constat-card.right .constat-list li { color: var(--ink); }
+.constat-card.right .constat-list li::before { content: '✓'; color: var(--gold); font-size: 12px; top: 14px; }
+
+/* ─── 3 FORMULES ─── */
+.formules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.formule {
+  background: var(--bg); padding: 40px 32px 36px;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.formule.featured {
+  background: linear-gradient(180deg, rgba(196,162,115,0.06) 0%, var(--bg-2) 100%);
+  border-top: 2px solid var(--gold); margin-top: -2px;
+}
+.formule.featured::before {
+  content: 'Le plus choisi'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--bg);
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 14px; font-weight: 600;
+}
+.formule-tier {
+  font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 14px; font-weight: 400;
+}
+.formule-name {
+  font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400;
+  margin-bottom: 14px; letter-spacing: -0.005em; line-height: 1.15;
+}
+.formule-name em { font-style: italic; color: var(--gold); }
+.formule-pricing {
+  padding: 18px 0 18px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  margin-bottom: 22px;
+}
+.formule-setup-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+.formule-setup { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--ink); margin-bottom: 14px; letter-spacing: -0.01em; font-weight: 400; }
+.formule-setup small { font-size: 12px; color: var(--ink-mute); margin-left: 6px; font-family: 'Inter', sans-serif; font-weight: 400; }
+.formule-recurring { font-size: 12.5px; color: var(--gold-bright); }
+.formule-recurring strong { font-weight: 500; }
+.formule-pitch { font-size: 13px; color: var(--ink-mute); margin-bottom: 22px; line-height: 1.6; min-height: 60px; }
+.formule-features { list-style: none; padding: 0; margin: 0 0 28px; flex: 1; }
+.formule-features li { font-size: 12.5px; color: var(--ink); padding: 7px 0 7px 18px; position: relative; line-height: 1.5; border-bottom: 1px solid var(--line-faint); }
+.formule-features li:last-child { border-bottom: none; }
+.formule-features li::before { content: '✓'; position: absolute; left: 0; color: var(--gold); font-weight: 600; }
+.formule-features li strong { color: var(--gold); font-weight: 500; }
+.formule-cta {
+  text-align: center; padding: 14px 24px;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
+  text-decoration: none; transition: all 0.3s;
+}
+.formule-cta.outline { border: 1px solid var(--line-strong); color: var(--ink); }
+.formule-cta.outline:hover { border-color: var(--gold); color: var(--gold); }
+.formule-cta.solid { background: var(--gold); color: var(--bg); border: 1px solid var(--gold); }
+.formule-cta.solid:hover { background: transparent; color: var(--gold); }
+
+/* ─── MODULES À LA CARTE ─── */
+.modules-list { border-top: 1px solid var(--line); }
+.module-row {
+  display: grid; grid-template-columns: 32px 1fr 240px 130px;
+  gap: 24px; align-items: baseline;
+  padding: 22px 0; border-bottom: 1px solid var(--line-faint);
+}
+.module-num { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 14px; }
+.module-content h4 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 17px; margin-bottom: 4px; letter-spacing: -0.005em; }
+.module-content p { font-size: 12.5px; color: var(--ink-mute); line-height: 1.6; }
+.module-tag { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase; line-height: 1.6; }
+.module-tag strong { color: var(--ink); font-weight: 500; }
+.module-price { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold-bright); text-align: right; letter-spacing: 0; }
+.module-price small { display: block; color: var(--ink-faint); font-size: 10.5px; margin-top: 2px; }
+
+/* ─── COMPARATIF ─── */
+.comparatif {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.comparatif table { width: 100%; border-collapse: collapse; }
+.comparatif th, .comparatif td {
+  padding: 18px 24px; text-align: left;
+  border-bottom: 1px solid var(--line-faint);
+  font-size: 13px;
+}
+.comparatif tr:last-child td { border-bottom: none; }
+.comparatif th {
+  font-family: 'Inter', sans-serif; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--gold); border-bottom: 1px solid var(--line);
+}
+.comparatif th.label-col, .comparatif td.label-col {
+  font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink-mute); font-size: 13.5px;
+  width: 220px;
+}
+.comparatif td.us { color: var(--gold-bright); font-weight: 500; }
+.comparatif td.them { color: var(--ink-mute); font-style: italic; }
+.comparatif tr:hover { background: rgba(196,162,115,0.02); }
+.comparatif-note {
+  padding: 18px 24px; border-top: 1px solid var(--line);
+  font-size: 11.5px; color: var(--ink-faint); font-style: italic; line-height: 1.6;
+  background: rgba(0,0,0,0.2);
+}
+
+/* ─── MÉTHODE ─── */
+.methode { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.phase { background: var(--bg); padding: 32px 24px; display: flex; flex-direction: column; }
+.phase-num { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 30px; line-height: 1; margin-bottom: 16px; }
+.phase-titre { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 10px; letter-spacing: -0.005em; }
+.phase-duree { font-size: 10.5px; color: var(--gold); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; }
+.phase-desc { font-size: 12px; color: var(--ink-mute); line-height: 1.6; flex: 1; }
+.phase-livrable { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-faint); font-size: 10.5px; color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; line-height: 1.55; }
+
+/* ─── EXEMPLE TCO 3 ANS ─── */
+.tco {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.tco-col { background: var(--bg); padding: 32px 28px; }
+.tco-col.us { background: linear-gradient(180deg, rgba(196,162,115,0.06) 0%, var(--bg-2) 100%); }
+.tco-label { font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 14px; }
+.tco-col.us .tco-label { color: var(--gold); }
+.tco-titre { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 22px; letter-spacing: -0.005em; }
+.tco-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line-faint); font-size: 13px; }
+.tco-line:last-child { border-bottom: none; }
+.tco-line span:first-child { color: var(--ink-mute); }
+.tco-line span:last-child { color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+.tco-total {
+  margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.tco-total-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); }
+.tco-total-value { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--gold); letter-spacing: -0.01em; font-weight: 400; }
+.tco-col.them .tco-total-value { color: var(--ink-mute); }
+.tco-delta { margin-top: 14px; font-size: 11.5px; color: var(--ok); font-style: italic; font-family: 'Playfair Display', serif; }
+
+/* ─── CTA final ─── */
+section.cta-final { padding: 110px 0 90px; text-align: center; }
+section.cta-final h2 {
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: clamp(28px, 3.6vw, 44px); line-height: 1.15;
+  margin-bottom: 24px; letter-spacing: -0.018em;
+}
+section.cta-final h2 em { font-style: italic; color: var(--gold); }
+section.cta-final p { font-size: 15px; color: var(--ink-mute); line-height: 1.75; max-width: 560px; margin: 0 auto 36px; font-weight: 300; }
+.cta-row { display: inline-flex; gap: 32px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.cta-primary {
+  padding: 16px 36px; background: var(--gold); color: var(--bg);
+  border: 1px solid var(--gold); text-decoration: none; font-weight: 600;
+  font-size: 11.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  transition: all 0.3s;
+}
+.cta-primary:hover { background: transparent; color: var(--gold); }
+.cta-secondary {
+  color: var(--ink-mute); text-decoration: none; font-size: 12.5px;
+  letter-spacing: 0.05em; padding-bottom: 4px; border-bottom: 1px solid transparent;
+  transition: all 0.3s;
+}
+.cta-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ─── FOOTER ─── */
+footer.proto {
+  padding: 48px 48px 36px; text-align: center;
+  border-top: 1px solid var(--line); max-width: 1100px; margin: 0 auto;
+}
+footer.proto p { font-size: 10.5px; color: var(--ink-faint); letter-spacing: 0.06em; line-height: 1.9; }
+footer.proto a { color: var(--gold); text-decoration: none; transition: opacity 0.25s; }
+footer.proto a:hover { opacity: 0.7; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  main { padding: 0 24px; }
+  nav.top { padding: 22px 24px; flex-wrap: wrap; gap: 14px; }
+  nav .menu { gap: 18px; }
+  .constat-grid { grid-template-columns: 1fr; }
+  .formules { grid-template-columns: 1fr; }
+  .formule.featured { margin-top: 0; }
+  .module-row { grid-template-columns: 1fr; gap: 8px; }
+  .module-tag, .module-price { text-align: left; }
+  .methode { grid-template-columns: 1fr; }
+  .tco { grid-template-columns: 1fr; }
+  .comparatif { overflow-x: auto; }
+  .comparatif table { min-width: 540px; }
+  .hero-pillars { gap: 22px; }
+  section.bloc { padding: 70px 0; }
+  section.hero { padding: 50px 0 70px; }
+  .section-meta { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand">IKCP<b>.</b></div>
+  <div class="menu">
+    <a href="#constat">Constat</a>
+    <a href="#formules">Formules</a>
+    <a href="#modules">Modules</a>
+    <a href="#comparatif">Comparatif</a>
+    <a href="#methode">Méthode</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Cr%C3%A9ation%20Family%20Office%20Digital%20%E2%80%94%20scoping" class="cta-nav">Scoping</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="eyebrow">— Création sur-mesure</div>
+  <h1>Votre <em>Family Office Digital</em>.<br>Construit pour vous, par nous.</h1>
+  <p class="lede">
+    Site, application mobile, espace client, agents IA, intégrations — l'écosystème complet d'un family office digital,
+    <em>configuré sur votre pratique</em>, déployé en quelques semaines, code à vous.
+  </p>
+  <div class="hero-pillars">
+    <div><strong>4 - 12 sem.</strong>Délai de mise en ligne</div>
+    <div><strong>28 - 120 k€</strong>Setup forfaitaire transparent</div>
+    <div><strong>EU</strong>Hébergement souverain Cloudflare</div>
+    <div><strong>100 %</strong>Code auditable et exportable</div>
+  </div>
+</section>
+
+<!-- ═══ LE CONSTAT ═══ -->
+<section class="bloc" id="constat">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 01</div>
+      <h2 class="section-titre">Pourquoi les solutions packagées ne <em>vous</em> conviennent pas.</h2>
+    </div>
+    <div class="section-meta">Constat sans citer<br>les éditeurs du marché</div>
+  </div>
+
+  <div class="constat-grid">
+    <div class="constat-card left">
+      <h3>Solutions <em>packagées</em> du marché</h3>
+      <ul class="constat-list">
+        <li>Setup 100 - 500 k€ · contrats opaques</li>
+        <li>Récurrent 50 - 200 k€/an + <em>per seat</em></li>
+        <li>Délai 6 - 18 mois · planning éditeur</li>
+        <li>Hébergement US ou propriétaire · juridiction floue</li>
+        <li>Customisation limitée à leurs templates</li>
+        <li>Code en boîte noire · pas d'export</li>
+        <li>Roadmap éditeur · vous attendez</li>
+        <li>Modèle IA imposé · prompts non auditables</li>
+      </ul>
+    </div>
+    <div class="constat-card right">
+      <h3>IKCP — <em>sur-mesure</em></h3>
+      <ul class="constat-list">
+        <li>Setup forfaitaire 28 - 120 k€ · scope contractuel</li>
+        <li>Récurrent 12 - 36 k€/an · sans frais cachés</li>
+        <li>Délai 4 - 12 semaines · livraisons hebdomadaires</li>
+        <li>Hébergement Cloudflare EU · souveraineté DORA</li>
+        <li>100 % sur-mesure : votre design, vos workflows, vos APIs</li>
+        <li>Code auditable, exportable, à vous au terme</li>
+        <li>Roadmap pilotée par vous · co-développement</li>
+        <li>Claude Sonnet 4 / Haiku 4 · prompts auditables</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3 FORMULES ═══ -->
+<section class="bloc" id="formules">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 02</div>
+      <h2 class="section-titre">Trois <em>formules</em>.<br>Choisissez votre point de départ.</h2>
+    </div>
+    <div class="section-meta">Setup forfaitaire<br>+ récurrent transparent</div>
+  </div>
+
+  <div class="formules">
+    <!-- ─── Essential ─── -->
+    <div class="formule">
+      <div class="formule-tier">— Essential</div>
+      <div class="formule-name">Family Office <em>Essential</em></div>
+      <div class="formule-pricing">
+        <div class="formule-setup-label">Setup forfaitaire</div>
+        <div class="formule-setup">28 000 €<small> HT</small></div>
+        <div class="formule-recurring">+ <strong>12 000 € / an</strong> · maintenance, hébergement, modèles IA</div>
+      </div>
+      <div class="formule-pitch">L'écosystème de base : site, page family office, Marcel orchestrateur, PWA installable. Pour démarrer vite et bien.</div>
+      <ul class="formule-features">
+        <li>Site vitrine + page Family Office dédiée</li>
+        <li>Marcel orchestrateur (10 expertises + 8 univers)</li>
+        <li>6 calculateurs déterministes (IR, IFI, succession, donation, PV, démembrement)</li>
+        <li>Web search natif + sources cliquables</li>
+        <li>PWA installable iOS + Android + desktop</li>
+        <li>Hébergement Cloudflare EU · SSL · CDN</li>
+        <li>Maintenance, MAJ modèles IA, support email</li>
+      </ul>
+      <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Digital%20Essential%20%E2%80%94%20scoping" class="formule-cta outline">Demander un scoping</a>
+    </div>
+
+    <!-- ─── Augmenté ─── -->
+    <div class="formule featured">
+      <div class="formule-tier">— Augmenté</div>
+      <div class="formule-name">Family Office <em>Augmenté</em></div>
+      <div class="formule-pricing">
+        <div class="formule-setup-label">Setup forfaitaire</div>
+        <div class="formule-setup">65 000 €<small> HT</small></div>
+        <div class="formule-recurring">+ <strong>24 000 € / an</strong> · maintenance, hébergement, support dédié</div>
+      </div>
+      <div class="formule-pitch">L'écosystème complet d'un family office digital : espace client, dashboard backtesté, dénicheur d'offres, sub-agents.</div>
+      <ul class="formule-features">
+        <li>Tout <strong>Essential</strong></li>
+        <li><strong>Espace client privé</strong> magic link · multi-utilisateurs</li>
+        <li><strong>Dashboard family office</strong> backtesté (patrimoine 360°, échéances, livrables)</li>
+        <li><strong>Sub-agents</strong> Documents OCR · Suivi cron · Reporting PDF</li>
+        <li><strong>Dénicheur d'offres scoré</strong> profil · alertes push</li>
+        <li><strong>3 intégrations API</strong> spécifiques (CRM, dépositaire, KYC)</li>
+        <li><strong>Backtest + value scorecard</strong> automatisée</li>
+        <li>Formation équipe (2 jours) + support dédié</li>
+      </ul>
+      <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Digital%20Augment%C3%A9%20%E2%80%94%20scoping" class="formule-cta solid">Demander un scoping</a>
+    </div>
+
+    <!-- ─── Bespoke ─── -->
+    <div class="formule">
+      <div class="formule-tier">— Bespoke</div>
+      <div class="formule-name">Family Office <em>Bespoke</em></div>
+      <div class="formule-pricing">
+        <div class="formule-setup-label">Setup forfaitaire</div>
+        <div class="formule-setup">à partir de 120 k€<small> HT</small></div>
+        <div class="formule-recurring">+ <strong>36 k€ / an et plus</strong> · scope ouvert · single tenant</div>
+      </div>
+      <div class="formule-pitch">Le sur-mesure intégral : branding, multi-juridictions, intégrations illimitées, gouvernance famille outillée.</div>
+      <ul class="formule-features">
+        <li>Tout <strong>Augmenté</strong></li>
+        <li><strong>Branding complet</strong> · charte design · identité visuelle</li>
+        <li><strong>Multi-juridictions</strong> + multilingue (FR/EN/DE/IT)</li>
+        <li><strong>Intégrations API illimitées</strong> (banque privée, dépositaire, plateformes PE)</li>
+        <li><strong>Family governance</strong> + programme NextGen sur-mesure</li>
+        <li><strong>Hébergement isolé</strong> single tenant · ISO 27001</li>
+        <li><strong>Co-développement</strong> features spécifiques · roadmap partagée</li>
+        <li>Support 24/7 · SLA contractualisé</li>
+      </ul>
+      <a href="mailto:maxime@ikcp.fr?subject=Family%20Office%20Digital%20Bespoke%20%E2%80%94%20%C3%A9change%20pr%C3%A9liminaire" class="formule-cta outline">Échanger avec Maxime</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MODULES À LA CARTE ═══ -->
+<section class="bloc" id="modules">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 03</div>
+      <h2 class="section-titre">Modules à la <em>carte</em>.<br>Compose ton écosystème.</h2>
+    </div>
+    <div class="section-meta">Activables en cours de contrat<br>setup forfait + récurrent</div>
+  </div>
+
+  <div class="modules-list">
+    <div class="module-row">
+      <div class="module-num">i.</div>
+      <div class="module-content">
+        <h4>Sub-agent métier sur-mesure</h4>
+        <p>Création d'un sub-agent Claude spécialisé (ex : art-agent Artprice, immo-agent DVF, voitures-agent Hagerty) avec ses tools propres et ses APIs câblées.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>2 - 3 semaines</div>
+      <div class="module-price">8 - 18 k€<small>setup unique</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">ii.</div>
+      <div class="module-content">
+        <h4>Intégration API spécifique</h4>
+        <p>Branchement d'une API tierce (CRM Notion / HubSpot, KYC Ubble, signature Yousign / Universign, dépositaire, plateforme PE).</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>1 semaine</div>
+      <div class="module-price">3 - 8 k€<small>par intégration</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">iii.</div>
+      <div class="module-content">
+        <h4>Dénicheur d'offres aggregé</h4>
+        <p>Worker cron qui scrute pipelines partenaires + APIs publiques (DVF, Pappers, BODACC, RSS Christie's), score chaque offre par profil, notifie via push.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>2 semaines</div>
+      <div class="module-price">14 k€<small>+ 3 k€ / an</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">iv.</div>
+      <div class="module-content">
+        <h4>Programme NextGen modulaire</h4>
+        <p>Sous-comptes enfants avec vue partielle, parcours pédagogique 4-6 modules (fiscalité, succession, gouvernance), conseil de famille trimestriel outillé.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>3 - 4 semaines</div>
+      <div class="module-price">22 k€<small>+ 4 k€ / an</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">v.</div>
+      <div class="module-content">
+        <h4>Coffre-fort R2 + horodatage eIDAS</h4>
+        <p>Stockage chiffré R2 (10 ans, NF Z42-013), horodatage qualifié Universign sur livrables, hash SHA-256 indexé D1, export 1 clic.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>1 - 2 semaines</div>
+      <div class="module-price">9 k€<small>+ 2 k€ / an</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">vi.</div>
+      <div class="module-content">
+        <h4>Application mobile native</h4>
+        <p>Au-delà de la PWA installable : app native iOS / Android avec push notifications, biométrie, mode hors-ligne complet, distribution App Store / Play.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>6 - 8 semaines</div>
+      <div class="module-price">35 k€<small>+ 6 k€ / an</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">vii.</div>
+      <div class="module-content">
+        <h4>Tableau de bord opérationnel CGP</h4>
+        <p>Vue interne : pipeline prospects, file de validation, conversations Marcel, productivité par dossier, alerts compliance MIF II.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>2 semaines</div>
+      <div class="module-price">12 k€<small>+ 2 k€ / an</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">viii.</div>
+      <div class="module-content">
+        <h4>Multilingue + multi-juridiction</h4>
+        <p>EN / DE / IT, contextes fiscaux par juridiction (CH, USA, UK), conventions internationales référencées dans Marcel.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>3 - 4 semaines</div>
+      <div class="module-price">18 k€<small>+ 3 k€ / an</small></div>
+    </div>
+    <div class="module-row">
+      <div class="module-num">ix.</div>
+      <div class="module-content">
+        <h4>Branding complet + identité visuelle</h4>
+        <p>Charte graphique, logo, typographie, illustrations sur-mesure, design system Figma à vous, déclinaisons site / app / livrables.</p>
+      </div>
+      <div class="module-tag"><strong>Délai</strong><br>3 semaines</div>
+      <div class="module-price">15 - 28 k€<small>setup unique</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMPARATIF ═══ -->
+<section class="bloc" id="comparatif">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 04</div>
+      <h2 class="section-titre">Le <em>comparatif</em>.<br>Sans citer les éditeurs.</h2>
+    </div>
+    <div class="section-meta">Solutions packagées<br>vs sur-mesure IKCP</div>
+  </div>
+
+  <div class="comparatif">
+    <table>
+      <thead>
+        <tr>
+          <th class="label-col">Critère</th>
+          <th>Plate-forme traditionnelle</th>
+          <th>IKCP sur-mesure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-col">Setup initial</td>
+          <td class="them">100 - 500 k€</td>
+          <td class="us">28 - 120 k€</td>
+        </tr>
+        <tr>
+          <td class="label-col">Coût récurrent annuel</td>
+          <td class="them">50 - 200 k€ + per seat</td>
+          <td class="us">12 - 36 k€ tout compris</td>
+        </tr>
+        <tr>
+          <td class="label-col">Délai mise en ligne</td>
+          <td class="them">6 - 18 mois</td>
+          <td class="us">4 - 12 semaines</td>
+        </tr>
+        <tr>
+          <td class="label-col">Customisation</td>
+          <td class="them">Limitée à leurs templates</td>
+          <td class="us">100 % sur votre design / workflows</td>
+        </tr>
+        <tr>
+          <td class="label-col">Hébergement données</td>
+          <td class="them">US ou propriétaire éditeur</td>
+          <td class="us">EU (Cloudflare) — DORA</td>
+        </tr>
+        <tr>
+          <td class="label-col">Code source</td>
+          <td class="them">Boîte noire · jamais transféré</td>
+          <td class="us">Auditable · exportable au terme</td>
+        </tr>
+        <tr>
+          <td class="label-col">Modèle IA</td>
+          <td class="them">Imposé · prompts non auditables</td>
+          <td class="us">Claude Sonnet 4 / Haiku 4 · prompts à vous</td>
+        </tr>
+        <tr>
+          <td class="label-col">Réversibilité</td>
+          <td class="them">Verrouillage propriétaire</td>
+          <td class="us">Export 1 clic · données vous appartiennent</td>
+        </tr>
+        <tr>
+          <td class="label-col">Roadmap</td>
+          <td class="them">Pilotée par l'éditeur</td>
+          <td class="us">Co-pilotée · livraisons hebdomadaires</td>
+        </tr>
+        <tr>
+          <td class="label-col">Support</td>
+          <td class="them">Tickets · SLA standard</td>
+          <td class="us">Direct Maxime · Slack / mail / visio</td>
+        </tr>
+        <tr>
+          <td class="label-col">Conformité réglementaire</td>
+          <td class="them">Variable selon éditeur</td>
+          <td class="us">MIF II · DORA · AI Act by-design</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="comparatif-note">
+      Les éditeurs spécialisés du marché ne sont pas nommés ici par respect commercial. Les fourchettes proviennent de devis publics et de retours de pairs.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TCO 3 ANS ═══ -->
+<section class="bloc">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 05</div>
+      <h2 class="section-titre">Coût total sur <em>3 ans</em>.<br>Le chiffre qui décide.</h2>
+    </div>
+    <div class="section-meta">Hypothèse : Family Office Augmenté<br>équivalent fonctionnel</div>
+  </div>
+
+  <div class="tco">
+    <div class="tco-col them">
+      <div class="tco-label">— Plate-forme traditionnelle</div>
+      <div class="tco-titre">Solution packagée</div>
+      <div class="tco-line"><span>Setup initial</span><span>250 000 €</span></div>
+      <div class="tco-line"><span>Récurrent an 1</span><span>110 000 €</span></div>
+      <div class="tco-line"><span>Récurrent an 2</span><span>110 000 €</span></div>
+      <div class="tco-line"><span>Récurrent an 3</span><span>115 000 €</span></div>
+      <div class="tco-line"><span>Customisations spécifiques</span><span>~ 80 000 €</span></div>
+      <div class="tco-line"><span>Délai avant mise en ligne</span><span>10 mois</span></div>
+      <div class="tco-total">
+        <div class="tco-total-label">Total 3 ans</div>
+        <div class="tco-total-value">~ 665 000 €</div>
+      </div>
+    </div>
+
+    <div class="tco-col us">
+      <div class="tco-label">— IKCP Family Office Augmenté</div>
+      <div class="tco-titre">Sur-mesure</div>
+      <div class="tco-line"><span>Setup forfaitaire</span><span>65 000 €</span></div>
+      <div class="tco-line"><span>Récurrent an 1</span><span>24 000 €</span></div>
+      <div class="tco-line"><span>Récurrent an 2</span><span>24 000 €</span></div>
+      <div class="tco-line"><span>Récurrent an 3</span><span>24 000 €</span></div>
+      <div class="tco-line"><span>2 modules à la carte (ex : NextGen + offres)</span><span>36 000 €</span></div>
+      <div class="tco-line"><span>Délai avant mise en ligne</span><span>8 semaines</span></div>
+      <div class="tco-total">
+        <div class="tco-total-label">Total 3 ans</div>
+        <div class="tco-total-value">173 000 €</div>
+      </div>
+      <div class="tco-delta">→ <strong style="color:var(--gold);">~ 492 k€ d'économies</strong> sur 3 ans · livré <strong style="color:var(--gold);">10× plus vite</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MÉTHODE ═══ -->
+<section class="bloc" id="methode">
+  <div class="section-head">
+    <div>
+      <div class="section-num">— 06</div>
+      <h2 class="section-titre">La <em>méthode</em>.<br>Cinq phases, livraisons hebdomadaires.</h2>
+    </div>
+    <div class="section-meta">De l'audit à la mise en ligne<br>4 - 12 semaines selon scope</div>
+  </div>
+
+  <div class="methode">
+    <div class="phase">
+      <div class="phase-num">i.</div>
+      <div class="phase-titre">Scoping</div>
+      <div class="phase-duree">Semaine 1</div>
+      <div class="phase-desc">Audit de votre pratique, vos clients, vos workflows. Identification des modules pertinents, choix des intégrations.</div>
+      <div class="phase-livrable">Livrable : note de cadrage chiffrée + roadmap</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">ii.</div>
+      <div class="phase-titre">Design</div>
+      <div class="phase-duree">Semaines 2 - 3</div>
+      <div class="phase-desc">Wireframes, charte graphique, structuration des contenus. Validation des écrans clés avec vous.</div>
+      <div class="phase-livrable">Livrable : Figma cliquable · 8-12 écrans</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">iii.</div>
+      <div class="phase-titre">Build</div>
+      <div class="phase-duree">Semaines 3 - 8</div>
+      <div class="phase-desc">Développement itératif, livraisons hebdomadaires sur environnement de preview. Configuration Marcel + agents.</div>
+      <div class="phase-livrable">Livrable : preview.votre-domaine.fr · MAJ chaque vendredi</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">iv.</div>
+      <div class="phase-titre">Tests</div>
+      <div class="phase-duree">Semaines 8 - 10</div>
+      <div class="phase-desc">Recette utilisateurs, tests d'acceptation, audit sécurité, charge, accessibilité. Corrections.</div>
+      <div class="phase-livrable">Livrable : rapport de recette signé</div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">v.</div>
+      <div class="phase-titre">Mise en ligne</div>
+      <div class="phase-duree">Semaine 10 - 12</div>
+      <div class="phase-desc">Déploiement production, formation équipe (2 jours), documentation utilisateurs, plan de support.</div>
+      <div class="phase-livrable">Livrable : production live + transfert de connaissances</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA final ═══ -->
+<section class="cta-final">
+  <h2>Une <em>heure</em> de cadrage.<br>Un devis ferme.</h2>
+  <p>
+    Donnez-nous une heure : nous comprenons votre pratique, identifions les modules pertinents, et vous repartez avec un chiffrage écrit. Sans engagement.
+  </p>
+  <div class="cta-row">
+    <a href="mailto:maxime@ikcp.fr?subject=Cr%C3%A9ation%20Family%20Office%20Digital%20%E2%80%94%20heure%20de%20scoping" class="cta-primary">Demander un scoping</a>
+    <a href="./conviction-overview.html" class="cta-secondary">Voir notre conviction →</a>
+    <a href="./dashboard-famille-office.html" class="cta-secondary">Voir un dashboard livré →</a>
+  </div>
+</section>
+
+</main>
+
+<footer class="proto">
+  <p>
+    Proposition tarifaire · IKCP — IKIGAÏ Conseil Patrimonial · Maxime Juveneton<br>
+    ORIAS 23001568 · CIF — CNCEF Patrimoine · COA<br>
+    Tarifs en € HT · révision annuelle · valable 90 jours<br>
+    <a href="./conviction-overview.html">Conviction</a> &nbsp;·&nbsp;
+    <a href="./family-office-v5-univers.html">Univers freemium</a> &nbsp;·&nbsp;
+    <a href="./dashboard-famille-office.html">Dashboard backtest</a> &nbsp;·&nbsp;
+    <a href="../index.html">Site actuel</a>
+  </p>
+</footer>
+
+</body>
+</html>

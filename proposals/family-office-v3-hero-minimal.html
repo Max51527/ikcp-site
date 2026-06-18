@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IKCP — Family Office · Proposition v3 minimaliste</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0d0b;
+  --bg-2: #0d100e;
+  --ink: #f4ece1;
+  --ink-mute: #9a9388;
+  --ink-faint: #5e5851;
+  --gold: #c4a273;
+  --gold-bright: #e3c08c;
+  --line: rgba(196, 162, 115, 0.16);
+  --line-faint: rgba(196, 162, 115, 0.06);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background pure : juste un grain léger, pas de grille */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.88 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+main { position: relative; z-index: 1; }
+
+/* ─── NAV ─── */
+nav.top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand-block { line-height: 1.1; }
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.brand b { color: var(--gold); font-weight: 500; }
+.brand-sub {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+nav .cta {
+  padding: 11px 24px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+nav .cta:hover { background: var(--gold); color: var(--bg); }
+
+/* ─── HERO PURE ─── */
+section.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 32px 60px;
+  text-align: center;
+  position: relative;
+}
+
+.kicker {
+  font-size: 10.5px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  opacity: 0;
+  animation: fadeIn 1.2s 0.2s forwards;
+}
+.kicker .rule {
+  width: 36px;
+  height: 1px;
+  background: var(--gold);
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 88px);
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  max-width: 980px;
+  margin: 0 auto 28px;
+  opacity: 0;
+  animation: fadeUp 1.1s 0.4s forwards;
+}
+h1 em {
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 400;
+}
+
+.lede {
+  max-width: 540px;
+  font-size: 16px;
+  color: var(--ink-mute);
+  margin: 0 auto 80px;
+  line-height: 1.7;
+  font-weight: 300;
+  letter-spacing: 0.005em;
+  opacity: 0;
+  animation: fadeUp 1.1s 0.6s forwards;
+}
+.lede em {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* ═══ DIAGRAM XL — pièce maîtresse de la page ═══ */
+.orch {
+  position: relative;
+  width: min(960px, 92vw);
+  height: min(960px, 92vw);
+  margin: 0 auto 70px;
+  opacity: 0;
+  animation: fadeIn 1.4s 0.9s forwards;
+}
+
+.orch svg.lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Centre : Maxime + Marcel */
+.center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #1c2218 0%, #0a0d0b 75%);
+  border: 1.5px solid var(--gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  box-shadow:
+    0 0 60px rgba(196, 162, 115, 0.18),
+    0 0 120px rgba(196, 162, 115, 0.08);
+}
+.center::before {
+  content: '';
+  position: absolute;
+  inset: -28px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  opacity: 0.35;
+  animation: ringPulse 5s ease-in-out infinite;
+}
+.center::after {
+  content: '';
+  position: absolute;
+  inset: -56px;
+  border-radius: 50%;
+  border: 1px solid var(--line-faint);
+  animation: ringPulse2 6s ease-in-out infinite;
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.35; }
+  50%      { transform: scale(1.04); opacity: 0.65; }
+}
+@keyframes ringPulse2 {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(0.96); opacity: 0.25; }
+}
+
+.center-mark {
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 18px;
+  font-family: 'Inter', sans-serif;
+}
+.center-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.center-amp {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 28px;
+  color: var(--gold);
+  margin-top: 4px;
+  font-weight: 400;
+}
+.center-role {
+  font-size: 10.5px;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: var(--ink-faint);
+  margin-top: 18px;
+  letter-spacing: 0.05em;
+}
+
+/* Agents satellites — plus grands */
+.agent {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 3;
+  transition: all 0.35s ease;
+}
+.agent:hover {
+  border-color: var(--gold);
+  background: rgba(196, 162, 115, 0.06);
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(196, 162, 115, 0.2);
+}
+.agent-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+  filter: grayscale(0.2) sepia(0.15);
+}
+.agent-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.agent-verb {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* Positions des 6 agents — cercle rayon ~38% */
+.agent-1 { top: 4%;     left: 50%; transform: translateX(-50%); }   /* Triage */
+.agent-2 { top: 24%;    right: 4%; }                                 /* Fiscal */
+.agent-3 { bottom: 24%; right: 4%; }                                 /* Juridique */
+.agent-4 { bottom: 4%;  left: 50%; transform: translateX(-50%); }    /* Reporting */
+.agent-5 { bottom: 24%; left: 4%; }                                  /* Suivi */
+.agent-6 { top: 24%;    left: 4%; }                                  /* Documents */
+
+.agent-1:hover, .agent-4:hover { transform: translateX(-50%) scale(1.05); }
+
+/* ─── 3 valeurs ─── */
+.values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 920px;
+  margin: 0 auto 60px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  animation: fadeUp 1.1s 1.4s forwards;
+}
+.value {
+  text-align: left;
+  padding: 28px 28px;
+  border-right: 1px solid var(--line);
+}
+.value:last-child { border-right: none; }
+.value-num {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.value-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.value-desc {
+  font-size: 13px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ─── CTA ─── */
+.cta-block {
+  text-align: center;
+  margin: 0 auto 40px;
+  opacity: 0;
+  animation: fadeUp 1.1s 1.6s forwards;
+}
+.cta-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cta-primary {
+  display: inline-block;
+  padding: 18px 42px;
+  background: var(--gold);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--gold);
+}
+.cta-primary:hover {
+  background: transparent;
+  color: var(--gold);
+}
+.cta-secondary {
+  color: var(--ink-mute);
+  text-decoration: none;
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 5px;
+  transition: all 0.3s ease;
+}
+.cta-secondary:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.cta-note {
+  font-size: 11.5px;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  color: var(--ink-faint);
+  margin-top: 28px;
+  letter-spacing: 0.02em;
+}
+
+/* ─── FOOTER ─── */
+footer.proto {
+  padding: 40px 32px 30px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  margin-top: 60px;
+}
+footer.proto p {
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  line-height: 1.8;
+}
+footer.proto a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border 0.25s;
+}
+footer.proto a:hover { border-color: var(--gold); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .orch { width: min(720px, 94vw); height: min(720px, 94vw); }
+  .center { width: 200px; height: 200px; }
+  .center-name { font-size: 28px; }
+  .center-amp { font-size: 22px; }
+  .agent { width: 110px; height: 110px; }
+  .agent-icon { font-size: 22px; }
+  .agent-label { font-size: 9px; letter-spacing: 0.15em; }
+  .agent-verb { font-size: 10px; }
+}
+@media (max-width: 760px) {
+  nav.top { padding: 18px 22px; }
+  nav .cta { padding: 8px 16px; font-size: 9.5px; letter-spacing: 0.15em; }
+  section.hero { padding: 80px 18px 40px; }
+  .orch { width: min(540px, 96vw); height: min(540px, 96vw); }
+  .center { width: 130px; height: 130px; }
+  .center-mark { font-size: 8px; letter-spacing: 0.18em; margin-bottom: 8px; }
+  .center-name { font-size: 18px; }
+  .center-amp { font-size: 14px; }
+  .center-role { font-size: 8px; margin-top: 8px; }
+  .agent { width: 76px; height: 76px; }
+  .agent-icon { font-size: 18px; }
+  .agent-label { font-size: 7.5px; letter-spacing: 0.1em; }
+  .agent-verb { display: none; }
+  .values { grid-template-columns: 1fr; }
+  .value { border-right: none; border-top: 1px solid var(--line); }
+  .value:first-child { border-top: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<nav class="top">
+  <div class="brand-block">
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP" class="cta">Échanger</a>
+</nav>
+
+<section class="hero">
+
+  <div class="kicker">
+    <span class="rule"></span>
+    Proposition · v3
+    <span class="rule"></span>
+  </div>
+
+  <h1>Vous restez <em>aux commandes</em>.<br>Marcel orchestre.</h1>
+
+  <p class="lede">
+    Six agents au service d'<em>une seule</em> conversation. Chacun expert. Aucun improvisé.
+  </p>
+
+  <!-- ═══ DIAGRAM XL — pièce maîtresse ═══ -->
+  <div class="orch" aria-label="Schéma d'orchestration : Maxime + Marcel au centre, six agents IA autour">
+
+    <svg class="lines" viewBox="0 0 960 960" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <!-- Cercles concentriques -->
+      <circle cx="480" cy="480" r="320" stroke="rgba(196,162,115,0.10)" stroke-width="1" fill="none" stroke-dasharray="2 8"/>
+      <circle cx="480" cy="480" r="240" stroke="rgba(196,162,115,0.06)" stroke-width="0.6" fill="none"/>
+
+      <!-- Lignes radiales centre → agents (en pointillé fluide) -->
+      <g stroke="rgba(196,162,115,0.28)" stroke-width="1" stroke-dasharray="3 5" fill="none">
+        <line x1="480" y1="480" x2="480" y2="115"/>
+        <line x1="480" y1="480" x2="836" y2="280"/>
+        <line x1="480" y1="480" x2="836" y2="680"/>
+        <line x1="480" y1="480" x2="480" y2="845"/>
+        <line x1="480" y1="480" x2="124" y2="680"/>
+        <line x1="480" y1="480" x2="124" y2="280"/>
+      </g>
+
+      <!-- Pulses dorés circulant -->
+      <g fill="#c4a273">
+        <circle r="4">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 480 480 L 480 115"/>
+        </circle>
+        <circle r="4">
+          <animateMotion dur="4s" begin="0.66s" repeatCount="indefinite" path="M 480 480 L 836 280"/>
+        </circle>
+        <circle r="4">
+          <animateMotion dur="4s" begin="1.32s" repeatCount="indefinite" path="M 480 480 L 836 680"/>
+        </circle>
+        <circle r="4">
+          <animateMotion dur="4s" begin="1.98s" repeatCount="indefinite" path="M 480 480 L 480 845"/>
+        </circle>
+        <circle r="4">
+          <animateMotion dur="4s" begin="2.64s" repeatCount="indefinite" path="M 480 480 L 124 680"/>
+        </circle>
+        <circle r="4">
+          <animateMotion dur="4s" begin="3.30s" repeatCount="indefinite" path="M 480 480 L 124 280"/>
+        </circle>
+      </g>
+    </svg>
+
+    <!-- Centre : Maxime + Marcel -->
+    <div class="center">
+      <div class="center-mark">★ Chef d'orchestre</div>
+      <div class="center-name">Maxime</div>
+      <div class="center-amp">+ Marcel</div>
+      <div class="center-role">Arbitre · décide</div>
+    </div>
+
+    <!-- 6 agents -->
+    <div class="agent agent-1">
+      <div class="agent-icon">📥</div>
+      <div class="agent-label">Triage</div>
+      <div class="agent-verb">qualifie</div>
+    </div>
+    <div class="agent agent-2">
+      <div class="agent-icon">🏛</div>
+      <div class="agent-label">Fiscal</div>
+      <div class="agent-verb">calcule</div>
+    </div>
+    <div class="agent agent-3">
+      <div class="agent-icon">⚖</div>
+      <div class="agent-label">Juridique</div>
+      <div class="agent-verb">analyse</div>
+    </div>
+    <div class="agent agent-4">
+      <div class="agent-icon">📊</div>
+      <div class="agent-label">Reporting</div>
+      <div class="agent-verb">synthétise</div>
+    </div>
+    <div class="agent agent-5">
+      <div class="agent-icon">🔄</div>
+      <div class="agent-label">Suivi</div>
+      <div class="agent-verb">orchestre</div>
+    </div>
+    <div class="agent agent-6">
+      <div class="agent-icon">📁</div>
+      <div class="agent-label">Documents</div>
+      <div class="agent-verb">indexe</div>
+    </div>
+
+  </div>
+
+  <!-- 3 valeurs -->
+  <div class="values">
+    <div class="value">
+      <div class="value-num">i.</div>
+      <div class="value-title">Une porte d'entrée</div>
+      <div class="value-desc">Vos sujets convergent. Plus de dispersion entre cinq interlocuteurs.</div>
+    </div>
+    <div class="value">
+      <div class="value-num">ii.</div>
+      <div class="value-title">Vos partenaires coordonnés</div>
+      <div class="value-desc">Notaire, avocat, expert-comptable, gérant — un écosystème resserré, briefé.</div>
+    </div>
+    <div class="value">
+      <div class="value-num">iii.</div>
+      <div class="value-title">Une vision claire, suivie</div>
+      <div class="value-desc">Tableaux de bord, rapports trimestriels, échéances anticipées.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <div class="cta-row">
+      <a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20Family%20Office%20IKCP" class="cta-primary">Demander une recommandation</a>
+      <a href="./family-office-v2-expertises.html" class="cta-secondary">Découvrir les expertises →</a>
+    </div>
+    <div class="cta-note">Sur recommandation · Familles à patrimoine constitué (&gt; 2 M€)</div>
+  </div>
+
+</section>
+
+<footer class="proto">
+  <p>
+    Prototype visuel · IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · CIF — CNCEF Patrimoine<br>
+    <a href="./family-office-v1.html">v1 orchestration</a> &nbsp;·&nbsp;
+    <a href="./family-office-v2-expertises.html">v2 expertises</a> &nbsp;·&nbsp;
+    <a href="../index.html">Site actuel</a>
+  </p>
+</footer>
+
+</main>
+</body>
+</html>

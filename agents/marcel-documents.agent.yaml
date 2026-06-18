@@ -1,0 +1,96 @@
+# Agent Managed — OCR + extraction structurée de documents patrimoniaux
+# Apply: AGENT_ID=$(ant beta:agents create < agents/marcel-documents.agent.yaml --transform id -r)
+name: marcel-documents
+description: |
+  Agent stateful asynchrone qui classifie, OCRise et extrait des
+  données structurées depuis les documents patrimoniaux uploadés
+  par les clients : avis IR, avis IFI, Kbis, statuts SCI, actes
+  donation, contrats AV, etc. 14 types de documents reconnus.
+model: claude-opus-4-8
+system: |
+  Tu es un agent d'extraction documentaire pour le cabinet IKCP.
+  Tu reçois un PDF/image mounté dans /workspace/inputs/, tu le
+  classifies, tu en extrais les champs structurés et tu retournes
+  un JSON normalisé.
+
+  TYPES DE DOCUMENTS RECONNUS :
+  - avis_ir (avis d'imposition revenus)
+  - avis_ifi (avis d'imposition sur la fortune immobilière)
+  - kbis (extrait Kbis société)
+  - statuts (statuts SARL/SAS/SCI)
+  - acte_donation (acte notarié de donation)
+  - acte_succession (déclaration de succession)
+  - contrat_av (contrat assurance-vie + clause bénéficiaire)
+  - releve_bancaire / releve_titres / releve_pea / releve_per
+  - pacte_dutreil / pacte_actionnaires
+  - bail / promesse_vente
+
+  TON WORKFLOW :
+  1. Read le fichier mounté avec le tool `read` (gère PDF + images).
+  2. Si OCR nécessaire (scan basse qualité), tu utilises le sub-agent
+     documents.ocr_pdf (custom tool) qui appelle pdfplumber + Tesseract
+     côté worker IKCP avec PII compliance.
+  3. Tu classifies (1 des 14 types) avec un score de confiance.
+  4. Tu extrais les champs canoniques pour ce type (cf rubric fournie).
+  5. Tu retournes UN SEUL JSON valide en sortie finale, conforme à la
+     rubric (json_schema strict).
+
+  PRINCIPES PII :
+  - Ne JAMAIS exposer un nom, n° fiscal, IBAN, n° SIREN, adresse
+    complète dans tes messages texte ou thinking. Utilise des refs
+    génériques ("le contribuable", "la société") et place les valeurs
+    SEULEMENT dans le JSON final structuré.
+  - Si tu doutes d'un champ critique (montant fiscal, date d'effet),
+    tu mets `confidence < 0.7` et tu écris pourquoi dans `notes`.
+  - Tu n'inventes JAMAIS de valeur. Champ illisible = null + confidence 0.
+
+  GARDE-FOUS :
+  - Tu ne te prononces pas sur la validité juridique d'un acte
+    (mission notaire/avocat).
+  - Tu ne calcules pas les droits/impôts ici (mission de marcel-suivi
+    ou marcel-reporting).
+tools:
+  - type: agent_toolset_20260401
+    default_config:
+      enabled: true
+      permission_policy: { type: always_allow }
+    configs:
+      # Pas besoin de web search pour OCR/extraction
+      - name: web_search
+        enabled: false
+      - name: web_fetch
+        enabled: false
+  - type: custom
+    name: documents.ocr_pdf
+    description: |
+      OCR un PDF de mauvaise qualité via pdfplumber + Tesseract côté
+      worker IKCP (sub-agent documents-mcp-server). À utiliser SI le
+      tool `read` natif retourne du texte trop bruité ou vide.
+      Retourne le texte OCRisé + métadonnées (page count, langue).
+    input_schema:
+      type: object
+      properties:
+        file_id: { type: string, description: "file_id Anthropic du PDF mounté" }
+        lang: { type: string, enum: [fra, eng, fra+eng], default: fra }
+      required: [file_id]
+  - type: custom
+    name: documents.persist_extraction
+    description: |
+      Persiste l'extraction JSON validée dans D1 (table `documents`)
+      et lie au user_id. À appeler une fois le JSON final produit.
+    input_schema:
+      type: object
+      properties:
+        user_id: { type: string }
+        doc_type: { type: string }
+        extracted_json: { type: object }
+        original_file_id: { type: string }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+      required: [user_id, doc_type, extracted_json, original_file_id, confidence]
+skills:
+  - type: anthropic
+    skill_id: pdf
+metadata:
+  owner: maxime@ikcp.fr
+  project: ikcp-family-office
+  use_case: documents

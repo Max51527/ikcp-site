@@ -1,0 +1,43 @@
+name: Validate Content (PR)
+
+# Vérifie que les JSON édités via Sveltia CMS sont bien parsables avant merge.
+# Bloque la PR si un JSON est corrompu (rare via UI Sveltia mais garde-fou).
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON files
+        run: |
+          set -e
+          fail=0
+          for f in $(find content -name '*.json' 2>/dev/null); do
+            if ! jq empty "$f" 2>/dev/null; then
+              echo "::error file=$f::JSON invalide"
+              fail=1
+            else
+              echo "✓ $f"
+            fi
+          done
+          if [ "$fail" = "1" ]; then exit 1; fi
+
+      - name: Validate Markdown frontmatter
+        run: |
+          set -e
+          fail=0
+          for f in $(find content -name '*.md' 2>/dev/null); do
+            if ! head -1 "$f" | grep -q '^---$'; then
+              echo "::error file=$f::Markdown sans frontmatter --- en tête"
+              fail=1
+            else
+              echo "✓ $f"
+            fi
+          done
+          if [ "$fail" = "1" ]; then exit 1; fi

@@ -1,0 +1,70 @@
+# Cloudflare Worker — ikcp-agents (orchestrateur Managed Agents)
+# © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568
+name = "ikcp-agents"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+
+# Région EU pour cohérence souveraineté (le worker reste EU, seul Anthropic
+# voit les payloads filtrés en sortie)
+[placement]
+mode = "smart"
+
+# Routes — sous-domaine dédié
+[[routes]]
+pattern = "agents.ikcp.eu/*"
+zone_name = "ikcp.eu"
+
+# D1 binding — partage la base avec ikcp-client (table agent_sessions ajoutée
+# via migrations/006_agent_sessions.sql)
+[[d1_databases]]
+binding = "DB"
+database_name = "ikcp-prod"
+database_id = "VOTRE_D1_DATABASE_ID"
+
+# R2 buckets — réutilise ceux d'ikcp-client
+[[r2_buckets]]
+binding = "DOCS"
+bucket_name = "ikcp-docs-private"
+
+[[r2_buckets]]
+binding = "TEMPLATES"
+bucket_name = "ikcp-templates"
+
+# KV — sessions tracking (TTL 24h, pour idempotency + dedup webhook)
+[[kv_namespaces]]
+binding = "AGENT_KV"
+id = "VOTRE_KV_ID"
+
+# Cron triggers
+# Vendredi 8h UTC = 10h Paris (été) : newsletter perso hebdo
+# Tous les jours 3h UTC = 5h Paris : backup quotidien des memory stores en R2
+[triggers]
+crons = ["0 8 * * 5", "0 3 * * *"]
+
+# Secrets à provisionner via wrangler secret put :
+#   ANTHROPICAPIKEY                  — clé API Anthropic Enterprise (DPA signé)
+#   ANTHROPIC_WEBHOOK_SIGNING_KEY    — whsec_… depuis Console Anthropic
+#   HMAC_SECRET                      — partagé avec les MCP sub-agents
+#   MARCEL_ENV_ID                    — env_… créé via ant beta:environments create
+#   MARCEL_REPORTING_AGENT_ID        — agent_… reporting (Fable 5)
+#   MARCEL_DOCUMENTS_AGENT_ID        — agent_… documents (Opus 4.8)
+#   MARCEL_SUIVI_AGENT_ID            — agent_… suivi (Opus 4.8)
+#   MARCEL_PATRIMOINE_AGENT_ID       — agent_… patrimoine 360° (Opus 4.8)
+#   MARCEL_FORTUNE_AGENT_ID          — agent_… HNW (Opus 4.8 effort max)
+#   MARCEL_GOUVERNANCE_AGENT_ID      — agent_… charte familiale (Fable 5)
+#   MARCEL_EDITORIAL_AGENT_ID        — agent_… newsletter/articles (Fable 5)
+#   MARCEL_TRANSMISSION_AGENT_ID     — agent_… transmission (Opus 4.8)
+#   MARCEL_REMUNERATION_AGENT_ID     — agent_… rémunération dirigeant (Opus 4.8)
+#   MARCEL_STRATEGIE_AGENT_ID        — agent_… stratégie patrimoniale (Opus 4.8 max)
+#   MARCEL_FISCALITE_IMPOTS_AGENT_ID — agent_… OCR avis IR/IFI (Opus 4.8)
+#   MARCEL_IMMOBILIER_AGENT_ID       — agent_… immobilier patrimonial (Opus 4.8)
+#   MARCEL_DEFISCALISATION_AGENT_ID  — agent_… défiscalisation (Opus 4.8)
+#   RESEND_API_KEY                   — pour newsletters + magic-link
+#   IKCP_CLIENT_BASE_URL             — https://client.ikcp.eu (pour redirect)
+#   IKCP_VOICE_URL                   — https://voice.ikcp.eu (TTS résumé démo)
+#   DEMO_BYPASS_TOKEN                — secret pour bypasser rate limit démo
+
+[observability]
+enabled = true

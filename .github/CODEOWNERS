@@ -1,0 +1,27 @@
+# CODEOWNERS — review automatique sur les PR
+# Doc : https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Par défaut : Maxime owner sur tout
+# Ajouter des co-owners par dossier au besoin (ex: junior partner sur le contenu)
+
+# Catch-all
+*                       @Max51527
+
+# Workers backend — sensibles, owner unique
+/workers/               @Max51527
+/migrations/            @Max51527
+
+# Agents Managed Anthropic — owner unique
+/agents/                @Max51527
+
+# Configuration CMS, CI/CD — owner unique
+/.github/               @Max51527
+/admin/                 @Max51527
+
+# Contenu éditorial — peut être co-owned (ex: @assistant ou junior)
+/content/               @Max51527
+/docs/                  @Max51527
+
+# Public site — copy/layout, peut être co-owned
+/*.html                 @Max51527
+/proposals/             @Max51527
