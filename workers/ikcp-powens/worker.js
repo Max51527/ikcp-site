@@ -50,6 +50,52 @@ function base(env) { return `https://${env.POWENS_DOMAIN}.biapi.pro/2.0`; }
 // Tant que les 3 réglages ne sont pas posés, le worker répond proprement (pas de plantage).
 function configured(env) { return !!(env.POWENS_DOMAIN && env.POWENS_CLIENT_ID && env.POWENS_CLIENT_SECRET); }
 
+// ── Routeur des événements Powens ────────────────────────────────────────────
+// Un cas par type (cf. console Powens). Les handlers sont des STUBS : branche ta
+// logique métier où c'est indiqué. Tout est déjà loggé en D1 avant d'arriver ici.
+function handlePowensEvent(type, evt, env) {
+  switch (type) {
+    // ── Utilisateurs ──
+    case 'USER_CREATED':  /* TODO: lier l'utilisateur Powens (evt.id_user) au membre IKCP */ break;
+    case 'USER_DELETED':  /* TODO: purger les jetons du membre (RGPD — droit à l'effacement) */ break;
+
+    // ── Comptes (un compte bancaire/AV/patrimonial a bougé) ──
+    case 'ACCOUNTS_FETCHED':
+    case 'ACCOUNT_SYNCED':
+    case 'ACCOUNT_FOUND':
+    case 'ACCOUNT_ENABLED':
+    case 'ACCOUNT_DISABLED':
+    case 'ACCOUNT_OWNERSHIPS_FOUND':
+    case 'ACCOUNT_CATEGORIZED':
+      /* TODO: rafraîchir le patrimoine agrégé du membre dans le cockpit (soldes, catégories) */ break;
+
+    // ── Connexions (la banque du membre) ──
+    case 'CONNECTION_SYNCED':
+      /* TODO: connexion synchronisée → marquer "comptes prêts" + notifier le cockpit */ break;
+    case 'CONNECTION_DELETED':
+      /* TODO: le membre a déconnecté sa banque → nettoyer ses données agrégées */ break;
+    case 'CONNECTION_CERTIFICATE_AVAILABLE':
+      /* TODO: certificat dispo (justificatif) */ break;
+
+    // ── Subscriptions (facturiers / abonnements) ──
+    case 'SUBSCRIPTION_FOUND':
+    case 'SUBSCRIPTION_SYNCED':
+      /* TODO: nouveau facturier détecté */ break;
+
+    // ── Paiement (si initiation de paiement activée) ──
+    case 'PAYMENT_STATE_UPDATED':
+      /* TODO: état d'un paiement mis à jour */ break;
+
+    // ── Divers ──
+    case 'TRANSACTIONS_CLUSTERED':
+    case 'TRANSACTION_ATTACHMENTS_FOUND':
+      /* TODO: transactions regroupées / pièces jointes trouvées */ break;
+
+    default:
+      console.log('[powens-webhook] type non géré:', type);
+  }
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -131,18 +177,30 @@ export default {
       return json({ connected: true, accounts: d.accounts || d }, 200, o);
     }
 
-    // ── /webhook : reçoit les événements Powens (connexion ajoutée, sync, nouvelles transactions) ──
-    // Powens attend un 200 en réponse. On accuse réception et on logge (D1 si dispo)
-    // pour réagir plus tard (ex. rafraîchir le cockpit du membre). Souverain : tout reste à Paris.
-    if (url.pathname === '/webhook' && req.method === 'POST') {
+    // ── /webhook[/TYPE] : reçoit les événements Powens (asynchrones, JSON) ──
+    // Powens POST ici quand un compte se synchronise, etc. On ACQUITTE en 200 RAPIDE
+    // (sinon Powens réessaie), on LOG en D1 Paris, et on DISPATCHE vers un handler par type.
+    if (url.pathname.startsWith('/webhook') && req.method === 'POST') {
+      // 1) Auth optionnelle : si POWENS_WEBHOOK_SECRET posé, on exige le bon token.
+      if (env.POWENS_WEBHOOK_SECRET) {
+        const tok = url.searchParams.get('token') || req.headers.get('X-Webhook-Token') || '';
+        if (tok !== env.POWENS_WEBHOOK_SECRET) return json({ error: 'unauthorized' }, 401, o);
+      }
+      // 2) Payload + type (depuis l'URL /webhook/TYPE, ou ?event=, ou le corps).
       let evt = {}; try { evt = await req.json(); } catch (_) {}
+      const fromPath = url.pathname.replace(/^\/webhook\/?/, '');
+      const type = String(fromPath || url.searchParams.get('event') || evt.type || evt.event || 'UNKNOWN').toUpperCase();
+      // 3) Journal D1 (best-effort).
       try {
         if (env.POWENS_DB) {
           await env.POWENS_DB.prepare('INSERT INTO powens_events (received_at, type, payload) VALUES (?,?,?)')
-            .bind(new Date().toISOString(), (evt && (evt.type || evt.event)) || 'unknown', JSON.stringify(evt).slice(0, 4000)).run();
+            .bind(new Date().toISOString(), type, JSON.stringify(evt).slice(0, 6000)).run();
         }
       } catch (_) {}
-      return json({ received: true }, 200, o);
+      // 4) Routage métier (stubs — branche ta logique dans handlePowensEvent).
+      try { handlePowensEvent(type, evt, env); } catch (_) {}
+      // 5) ACK rapide.
+      return json({ received: true, type }, 200, o);
     }
 
     return json({ error: 'not_found', path: url.pathname }, 404, o);
