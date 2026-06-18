@@ -109,6 +109,59 @@ function runMoteur(d) {
   return out.sort((a, b) => b.score - a.score);
 }
 
+// ── AUDIT 360° (blueprint §6.2 / §7) ─────────────────────────────────────────
+// Photo patrimoniale multi-dimensions à partir des données CONSOLIDÉES (Powens
+// pro+perso + saisie client). Règles déterministes → constats + alertes. Chaque
+// dimension DÉSIGNE l'agent Mistral qui l'approfondit (structure rapide & pas chère,
+// la profondeur LLM se déclenche à la demande). MIF II : information, pas de reco.
+function audit360(d) {
+  const b = bilan(d);
+  const f = buildFeatures(d);
+  const A = d.actifs || [];
+  const sum = (c) => A.filter(a => c.includes(a.categorie)).reduce((s, a) => s + (a.valorisation_cents || 0), 0);
+  const brut = b.actif_brut_cents || 1;
+  const immo = sum(['immobilier', 'scpi']);
+  const treso = sum(['tresorerie_pm']);
+  const societe = sum(['participation', 'tresorerie_pm']);
+  const finance = sum(['assurance_vie', 'pea', 'cto', 'per', 'compte', 'livret']);
+  const eur = (c) => (c / 100).toLocaleString('fr-FR', { maximumFractionDigits: 0 }) + ' €';
+  const pct = (x) => Math.round(x / brut * 100);
+  const roles = f['personnes.role'];
+  const isDir = roles instanceof Set && roles.has('dirigeant');
+
+  const dimensions = [
+    { cle: 'bilan', titre: 'Bilan patrimonial', agent: 'batisseur',
+      constat: `Net ${eur(b.actif_net_cents)} (brut ${eur(b.actif_brut_cents)}, passif ${eur(b.passif_cents)}).`,
+      alerte: b.passif_cents > brut * 0.6 ? 'Effet de levier élevé' : null },
+    { cle: 'structure', titre: 'Structure juridique', agent: 'codex',
+      constat: `${(d.societes || []).length} société(s)${f['societes.is_holding'] === 1 ? ', dont holding' : ''}.`,
+      alerte: (treso > 10000000 && f['societes.is_holding'] !== 1) ? 'Trésorerie élevée sans holding patrimoniale' : null },
+    { cle: 'fiscalite', titre: 'Fiscalité', agent: 'codex',
+      constat: `Immobilier ${eur(immo)}.`,
+      alerte: immo >= 130000000 ? 'Seuil IFI (1,3 M€) potentiellement dépassé' : null },
+    { cle: 'social', titre: 'Social du dirigeant', agent: 'camille',
+      constat: isDir ? 'Statut dirigeant détecté — prévoyance & retraite à cadrer.' : 'Statut social à préciser.',
+      alerte: null },
+    { cle: 'transmission', titre: 'Transmission', agent: 'hermes',
+      constat: `${f['foyer.nombre_enfants']} enfant(s).`,
+      alerte: f['beneficiaires.obsolete'] === 1 ? 'Clause(s) bénéficiaire(s) à actualiser'
+        : (f['foyer.nombre_enfants'] >= 1 && (immo + societe) > 50000000 ? 'Transmission à anticiper' : null) },
+    { cle: 'tresorerie', titre: "Trésorerie d'entreprise", agent: 'stratege',
+      constat: `Trésorerie société ${eur(treso)}.`,
+      alerte: treso > 10000000 ? 'Trésorerie dormante à faire travailler' : null },
+    { cle: 'allocation', titre: 'Allocation & risque', agent: 'stratege',
+      constat: `Société ${pct(societe)}% · Immo ${pct(immo)}% · Financier ${pct(finance)}%.`,
+      alerte: pct(societe) > 50 ? "Concentration forte sur la société d'exploitation" : null },
+    { cle: 'objectifs', titre: 'Objectifs de vie', agent: 'batisseur',
+      constat: (d.objectifs || []).length ? `${(d.objectifs || []).length} objectif(s) définis.` : 'Objectifs à définir.',
+      alerte: !(d.objectifs || []).length ? 'Aucun objectif renseigné — point de départ du conseil' : null },
+  ];
+  const alertes = dimensions.filter(x => x.alerte);
+  const opportunites = runMoteur(d);
+  const synthese = `Audit 360° : patrimoine net ${eur(b.actif_net_cents)} · ${alertes.length} point(s) de vigilance · ${opportunites.length} levier(s) détecté(s).`;
+  return { bilan: b, dimensions, nb_alertes: alertes.length, opportunites, synthese, disclaimer: DISCLAIMER };
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -127,6 +180,14 @@ export default {
     if (url.pathname === '/opportunites/preview' && req.method === 'POST') {
       let d = {}; try { d = await req.json(); } catch (_) {}
       return json({ opportunites: runMoteur(d), bilan: bilan(d), disclaimer: DISCLAIMER }, 200, o);
+    }
+
+    // ── POST /audit360 : audit patrimonial 360° (stateless, marche sans D1) ──
+    // Reçoit le patrimoine consolidé (Powens /wealth mappé + saisie client) ;
+    // renvoie la photo multi-dimensions + l'agent Mistral qui approfondit chaque axe.
+    if (url.pathname === '/audit360' && req.method === 'POST') {
+      let d = {}; try { d = await req.json(); } catch (_) {}
+      return json(audit360(d), 200, o);
     }
 
     if (!db) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-patrimoine-db (--location weur), exécute schema.sql, bind PATRIMOINE_DB.' }, 503, o);
