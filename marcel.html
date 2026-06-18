@@ -86,6 +86,14 @@
   .tm .ic{font-size:24px;display:block;margin-bottom:7px}
   .tm b{display:block;font-family:'Playfair Display',serif;color:var(--navy);font-size:15px;font-weight:600;margin-bottom:1px}
   .tm em{font-style:normal;font-size:11.5px;color:var(--ink-soft)}
+  .loader{display:flex;align-items:center;gap:7px;color:var(--ink-faint);padding:4px 0}
+  .loader .ld{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:bounce 1s infinite}
+  .loader .ld:nth-child(2){animation-delay:.15s}
+  .loader .ld:nth-child(3){animation-delay:.3s}
+  .loader em{font-family:'Playfair Display',serif;font-style:italic;margin-left:6px}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-7px);opacity:1}}
+  .speakbtn{margin-top:12px;padding:9px 16px;background:var(--navy);color:var(--cream);border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .speakbtn:hover{background:var(--gold-deep)}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -177,18 +185,25 @@
 
   // ── Marcel (souverain · Mistral 🇫🇷). Point d'entrée UNIQUE : c'est lui qui
   //    orchestre et mobilise ses spécialistes. Le visiteur ne parle qu'à Marcel. ──
+  window._spk={};
+  // Voix — Marcel parle comme un vrai conseiller (synthèse vocale du navigateur, FR)
+  function speak(t){ try{ if(!t) return; window.speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(String(t).slice(0,1500)); u.lang='fr-FR'; u.rate=1.03; var vs=window.speechSynthesis.getVoices()||[]; var fr=vs.filter(function(v){return /fr/i.test(v.lang)})[0]; if(fr)u.voice=fr; window.speechSynthesis.speak(u); }catch(e){} }
+  var SPK=['Codex (fiscalité)','Hermès (transmission)','Bâtisseur (360°)','Architecte (immobilier)','Stratège (marchés)','Curateur (collections)','Capital (private equity)','Mécène (philanthropie)'];
   async function marcelInto(elId, message){
     var el=document.getElementById(elId); if(!el) return;
-    el.innerHTML='<p class="think">Marcel réfléchit…</p>';
+    el.innerHTML='<div class="loader"><span class="ld"></span><span class="ld"></span><span class="ld"></span><em id="ld_'+elId+'">Marcel mobilise ses spécialistes…</em></div>';
+    var i=0, iv=setInterval(function(){ var m=document.getElementById('ld_'+elId); if(m) m.textContent='Marcel consulte '+SPK[i++%SPK.length]+'…'; }, 950);
     try{
       var r=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message,history:[]})});
-      var d=await r.json();
-      var h=md(d.reply||"Un instant — réessayez.");
+      var d=await r.json(); clearInterval(iv);
+      var reply=d.reply||"Un instant — réessayez.";
+      window._spk[elId]=String(reply).replace(/[*_#>`]/g,'').replace(/\s+/g,' ');
+      var h=md(reply)+'<div class="ans-actions"><button class="speakbtn" onclick="speak(window._spk[\''+elId+'\'])">🔊 Écouter Marcel</button></div>';
       if(Array.isArray(d.follow_ups)&&d.follow_ups.length){
         h+='<div class="chips">'+d.follow_ups.slice(0,3).map(function(f){return '<span class="chip" onclick="ask('+JSON.stringify(f).replace(/"/g,'&quot;')+')">'+esc(f)+'</span>';}).join('')+'</div>';
       }
       el.innerHTML=h+DISC;
-    }catch(e){ el.innerHTML='<p class="think">Service momentanément indisponible. Réessayez.</p>'; }
+    }catch(e){ clearInterval(iv); el.innerHTML='<p class="think">Service momentanément indisponible. Réessayez.</p>'; }
   }
   function revealContinue(){ var c=document.getElementById('continue'); if(c) c.style.display='block'; }
 
