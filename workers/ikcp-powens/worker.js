@@ -104,7 +104,7 @@ export default {
 
     // ── /health : un simple « es-tu là et configuré ? » (sans rien révéler) ──
     if (url.pathname === '/health') {
-      return json({ status: 'ok', service: 'ikcp-powens', configured: configured(env), domain: env.POWENS_DOMAIN ? 'set' : 'absent', region: 'EU/FR (à confirmer côté Powens)' }, 200, o);
+      return json({ status: 'ok', service: 'ikcp-powens', configured: configured(env), domain: env.POWENS_DOMAIN ? 'set' : 'absent', has_id: !!env.POWENS_CLIENT_ID, has_secret: !!env.POWENS_CLIENT_SECRET, db: env.POWENS_DB ? 'bound' : 'absent', region: 'EU/FR (à confirmer côté Powens)' }, 200, o);
     }
 
     // ── /webhook[/TYPE] : événements Powens — AVANT le garde-fou ───────────────
