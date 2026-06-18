@@ -100,6 +100,21 @@
   .oppo-vig{font-size:12px;color:var(--mute);line-height:1.5;margin-bottom:12px;flex:1}
   .oppo-cta{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
   .oppo-load,.oppo-empty{color:var(--mute);font-size:13.5px;padding:14px}
+
+  /* ─── Audit patrimonial 360° ─── */
+  .audit-synth{background:linear-gradient(150deg,var(--navy,#1B2A4A),#0E1729);color:#fff;border-radius:14px;padding:16px 20px;margin-bottom:16px;animation:slidedown .3s ease}
+  .audit-synth .s{font-family:'Fraunces',serif;font-size:17px;line-height:1.4}
+  .audit-synth .d{font-size:11px;color:rgba(255,255,255,.65);font-style:italic;margin-top:8px}
+  .audit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .audit-card{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;animation:slidedown .35s ease both}
+  .audit-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 14px 28px -18px rgba(27,42,74,.3)}
+  .audit-card.warn{border-left:3px solid var(--warn,#C9942B)}
+  .audit-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+  .audit-card h4{font-family:'Fraunces',serif;font-weight:500;font-size:16px;color:var(--ink)}
+  .audit-agent{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700;white-space:nowrap}
+  .audit-constat{font-size:13px;color:var(--mute);margin-bottom:8px}
+  .audit-alerte{font-size:12.5px;color:var(--warn,#C9942B);font-weight:600;line-height:1.4}
+  .audit-cta{margin-top:auto;padding-top:10px;font-size:12.5px;color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
@@ -220,6 +235,20 @@
       <button class="btn" id="detectBtn">✦ Détecter mes opportunités</button>
     </div>
     <div class="oppo-grid" id="oppoResults"></div>
+  </section>
+
+  <!-- ═══ Audit patrimonial 360° (le service différenciant) ═══ -->
+  <section id="auditSection" style="margin-top:34px">
+    <div class="pat-head"><h2>★ Audit patrimonial 360°</h2></div>
+    <div class="oppo-profil">
+      <div class="oppo-profil-h">8 dimensions analysées · chaque axe approfondi par un agent souverain dédié</div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <button class="btn" id="auditBtn">✦ Lancer mon audit 360°</button>
+        <span style="font-size:12px;color:var(--mute)">Basé sur vos biens + profil. Connectez Powens (Premium) pour l'enrichir automatiquement.</span>
+      </div>
+    </div>
+    <div id="auditSynth"></div>
+    <div class="audit-grid" id="auditResults"></div>
   </section>
 
   <p class="disc">Les valeurs saisies sont déclaratives et restent sur votre appareil pour cette phase bêta. Cette vue est une aide à la décision — elle ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton (CIF · ORIAS 23001568) reste votre interlocuteur.</p>
@@ -463,6 +492,30 @@ async function detectOppo(){
   }catch(e){ out.innerHTML = '<div class="oppo-empty">Service momentanément indisponible. Réessayez.</div>'; }
 }
 document.getElementById('detectBtn')?.addEventListener('click', detectOppo);
+
+// ─── Audit patrimonial 360° (8 dimensions + agent Mistral par axe) ───
+async function runAudit(){
+  const out = document.getElementById('auditResults');
+  const synth = document.getElementById('auditSynth');
+  synth.innerHTML = ''; out.innerHTML = '<div class="oppo-load">Audit souverain en cours — analyse des 8 dimensions…</div>';
+  try{
+    const r = await fetch(PAT_API + '/audit360', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(mapPayload()) });
+    const d = await r.json();
+    synth.innerHTML = '<div class="audit-synth"><div class="s">'+escapeHtml(d.synthese||'')+'</div><div class="d">'+escapeHtml(d.disclaimer||'')+'</div></div>';
+    out.innerHTML = (d.dimensions||[]).map(function(x,i){
+      return '<div class="audit-card '+(x.alerte?'warn':'')+'" data-titre="'+escapeHtml(x.titre)+'" style="animation-delay:'+(i*50)+'ms">'
+        + '<div class="audit-top"><h4>'+escapeHtml(x.titre)+'</h4><span class="audit-agent">'+escapeHtml(x.agent)+'</span></div>'
+        + '<div class="audit-constat">'+escapeHtml(x.constat||'')+'</div>'
+        + (x.alerte ? '<div class="audit-alerte">⚠️ '+escapeHtml(x.alerte)+'</div>' : '')
+        + '<div class="audit-cta">Approfondir avec Marcel →</div></div>';
+    }).join('');
+  }catch(e){ out.innerHTML = '<div class="oppo-empty">Service momentanément indisponible. Réessayez.</div>'; }
+}
+document.getElementById('auditResults').addEventListener('click', function(e){
+  const card = e.target.closest('.audit-card'); if(!card) return;
+  goMarcel('Dans le cadre de mon audit patrimonial 360°, approfondis l\'axe « '+card.dataset.titre+' » de ma situation de dirigeant : analyse, leviers chiffrés, points de vigilance, et termine par une question.');
+});
+document.getElementById('auditBtn')?.addEventListener('click', runAudit);
 
 load();
 render();
