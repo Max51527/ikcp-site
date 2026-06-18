@@ -107,6 +107,30 @@ export default {
       return json({ status: 'ok', service: 'ikcp-powens', configured: configured(env), domain: env.POWENS_DOMAIN ? 'set' : 'absent', region: 'EU/FR (à confirmer côté Powens)' }, 200, o);
     }
 
+    // ── /webhook[/TYPE] : événements Powens — AVANT le garde-fou ───────────────
+    // Doit répondre 200 même SANS clés : Powens peut tester l'URL au moment où tu
+    // l'enregistres. GET → message lisible (si tu ouvres l'URL au navigateur).
+    if (url.pathname.startsWith('/webhook')) {
+      if (req.method === 'GET') return json({ status: 'ok', service: 'ikcp-powens', endpoint: 'webhook', note: "Endpoint actif. Powens enverra ses événements ici en POST. (Cette adresse se colle dans le champ Callback URL de la console Powens, pas dans un terminal.)" }, 200, o);
+      if (req.method === 'POST') {
+        if (env.POWENS_WEBHOOK_SECRET) {
+          const tok = url.searchParams.get('token') || req.headers.get('X-Webhook-Token') || '';
+          if (tok !== env.POWENS_WEBHOOK_SECRET) return json({ error: 'unauthorized' }, 401, o);
+        }
+        let evt = {}; try { evt = await req.json(); } catch (_) {}
+        const fromPath = url.pathname.replace(/^\/webhook\/?/, '');
+        const type = String(fromPath || url.searchParams.get('event') || evt.type || evt.event || 'UNKNOWN').toUpperCase();
+        try {
+          if (env.POWENS_DB) {
+            await env.POWENS_DB.prepare('INSERT INTO powens_events (received_at, type, payload) VALUES (?,?,?)')
+              .bind(new Date().toISOString(), type, JSON.stringify(evt).slice(0, 6000)).run();
+          }
+        } catch (_) {}
+        try { handlePowensEvent(type, evt, env); } catch (_) {}
+        return json({ received: true, type }, 200, o);
+      }
+    }
+
     // Garde-fou : sans secrets, on n'appelle rien et on explique quoi faire.
     if (!configured(env)) {
       return json({ error: 'powens_not_configured', hint: 'Pose POWENS_DOMAIN (var) + POWENS_CLIENT_ID & POWENS_CLIENT_SECRET (secrets) sur le worker.' }, 503, o);
@@ -198,32 +222,6 @@ export default {
         investments: (inv && (inv.investments || inv)) || [],
         loans: (ln && (ln.loans || ln)) || [],
       }, 200, o);
-    }
-
-    // ── /webhook[/TYPE] : reçoit les événements Powens (asynchrones, JSON) ──
-    // Powens POST ici quand un compte se synchronise, etc. On ACQUITTE en 200 RAPIDE
-    // (sinon Powens réessaie), on LOG en D1 Paris, et on DISPATCHE vers un handler par type.
-    if (url.pathname.startsWith('/webhook') && req.method === 'POST') {
-      // 1) Auth optionnelle : si POWENS_WEBHOOK_SECRET posé, on exige le bon token.
-      if (env.POWENS_WEBHOOK_SECRET) {
-        const tok = url.searchParams.get('token') || req.headers.get('X-Webhook-Token') || '';
-        if (tok !== env.POWENS_WEBHOOK_SECRET) return json({ error: 'unauthorized' }, 401, o);
-      }
-      // 2) Payload + type (depuis l'URL /webhook/TYPE, ou ?event=, ou le corps).
-      let evt = {}; try { evt = await req.json(); } catch (_) {}
-      const fromPath = url.pathname.replace(/^\/webhook\/?/, '');
-      const type = String(fromPath || url.searchParams.get('event') || evt.type || evt.event || 'UNKNOWN').toUpperCase();
-      // 3) Journal D1 (best-effort).
-      try {
-        if (env.POWENS_DB) {
-          await env.POWENS_DB.prepare('INSERT INTO powens_events (received_at, type, payload) VALUES (?,?,?)')
-            .bind(new Date().toISOString(), type, JSON.stringify(evt).slice(0, 6000)).run();
-        }
-      } catch (_) {}
-      // 4) Routage métier (stubs — branche ta logique dans handlePowensEvent).
-      try { handlePowensEvent(type, evt, env); } catch (_) {}
-      // 5) ACK rapide.
-      return json({ received: true, type }, 200, o);
     }
 
     return json({ error: 'not_found', path: url.pathname }, 404, o);
