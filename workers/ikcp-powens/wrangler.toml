@@ -21,7 +21,7 @@ POWENS_WEBVIEW = "https://webview.powens.com"
 #   npx wrangler d1 create ikcp-powens-db --location weur
 #   npx wrangler d1 execute ikcp-powens-db --remote --file=schema.sql
 #   puis colle l'id renvoyé ci-dessous et décommente le bloc :
-# [[d1_databases]]
-# binding = "POWENS_DB"
-# database_name = "ikcp-powens-db"
-# database_id = "REMPLACE_PAR_L_ID"
+[[d1_databases]]
+binding = "POWENS_DB"
+database_name = "ikcp-powens-db"
+database_id = "cca1b8d6-a89c-41f3-8ce7-41dbb4ce754a"
