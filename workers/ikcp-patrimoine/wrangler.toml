@@ -1,0 +1,17 @@
+name = "ikcp-patrimoine"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+
+[observability]
+enabled = true
+
+# strategies.json est bundlé automatiquement (import dans worker.js).
+
+# ── Base D1 Paris (données patrimoniales clients) — à créer une seule fois ──
+#   npx wrangler d1 create ikcp-patrimoine-db --location weur
+#   npx wrangler d1 execute ikcp-patrimoine-db --remote --file=schema.sql
+#   puis colle l'id renvoyé ci-dessous et décommente le bloc :
+# [[d1_databases]]
+# binding = "PATRIMOINE_DB"
+# database_name = "ikcp-patrimoine-db"
+# database_id = "REMPLACE_PAR_L_ID"

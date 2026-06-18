@@ -16,6 +16,7 @@ on:
       - 'workers/ikcp-powens/**'
       - 'workers/ikcp-cms-auth/**'
       - 'workers/ikcp-feedback/**'
+      - 'workers/ikcp-patrimoine/**'
   workflow_dispatch:
     inputs:
       target:
@@ -37,6 +38,7 @@ on:
           - ikcp-powens
           - ikcp-cms-auth
           - ikcp-feedback
+          - ikcp-patrimoine
 
 jobs:
   deploy-ikcp-marcel:
@@ -266,3 +268,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-feedback
+
+  deploy-ikcp-patrimoine:
+    name: "Deploy ikcp-patrimoine (Base patrimoniale + moteur strategies)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-patrimoine') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-patrimoine (socle OS patrimonial)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-patrimoine
