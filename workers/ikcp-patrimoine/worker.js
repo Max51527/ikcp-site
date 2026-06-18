@@ -162,6 +162,42 @@ function audit360(d) {
   return { bilan: b, dimensions, nb_alertes: alertes.length, opportunites, synthese, disclaimer: DISCLAIMER };
 }
 
+// ── SANTÉ SOCIÉTÉ — moteur financier déterministe (souverain, 0 IA, 0 US) ────
+// Repris de l'artefact audit dirigeant : ratios + ALERTE LÉGALE capitaux propres
+// (L.223-42 SARL/EURL · L.225-248 SA/SAS). Aucune reco perso (MIF II).
+function companyFinance(e) {
+  e = e || {};
+  const n = (v) => (v === '' || v === null || v === undefined || isNaN(v) ? null : Number(v));
+  const ca = n(e.ca), ebe = n(e.ebe), rn = n(e.rn), cp = n(e.cp), dettes = n(e.dettes),
+        treso = n(e.treso), capital = n(e.capital), remu = n(e.remu), div = n(e.div);
+  const d = (a, b) => (a !== null && b && b !== 0 ? a / b : null);
+  const margeNette = d(rn, ca), tauxEBE = d(ebe, ca),
+        roe = (cp !== null && cp > 0) ? d(rn, cp) : null,
+        gearing = (cp !== null && cp > 0) ? d(dettes, cp) : null,
+        autonomie = (cp !== null && dettes !== null && (cp + dettes) !== 0) ? cp / (cp + dettes) : null,
+        tresoCA = d(treso, ca), poidsRemu = d(remu, ebe),
+        payout = (rn !== null && rn > 0) ? d(div, rn) : null;
+  let alertCapital = null;
+  if (cp !== null && cp < 0)
+    alertCapital = { level: 'alert', msg: 'Capitaux propres NÉGATIFS. Régularisation impérative (incorporation de compte courant, réduction/augmentation de capital, ou apport).' };
+  else if (cp !== null && capital !== null && capital > 0) {
+    if (cp < capital / 2) alertCapital = { level: 'alert', msg: "Capitaux propres < moitié du capital social → obligation de consulter les associés sur la dissolution (L.223-42 SARL/EURL, L.225-248 SA/SAS) dans les 4 mois, régularisation sous 2 exercices." };
+    else if (cp < capital) alertCapital = { level: 'warn', msg: 'Capitaux propres inférieurs au capital social — érosion à surveiller.' };
+  }
+  const p = (x) => (x === null || !isFinite(x)) ? '—' : (x * 100).toFixed(1).replace('.', ',') + ' %';
+  const ratios = [
+    { k: 'Marge nette', v: p(margeNette), ref: 'RN/CA' },
+    { k: 'Taux de marge EBE', v: p(tauxEBE), ref: 'EBE/CA' },
+    { k: 'Rentabilité capitaux propres', v: p(roe), ref: 'RN/CP' },
+    { k: 'Autonomie financière', v: p(autonomie), ref: 'CP/(CP+dettes)' },
+    { k: 'Gearing (levier)', v: gearing === null ? '—' : gearing.toFixed(2).replace('.', ','), ref: 'Dettes/CP' },
+    { k: 'Trésorerie / CA', v: p(tresoCA), ref: 'Tréso/CA' },
+    { k: 'Poids rémunération / EBE', v: p(poidsRemu), ref: 'Rému/EBE' },
+    { k: 'Taux de distribution', v: p(payout), ref: 'Div/RN' },
+  ];
+  return { ratios, alertCapital };
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -187,7 +223,15 @@ export default {
     // renvoie la photo multi-dimensions + l'agent Mistral qui approfondit chaque axe.
     if (url.pathname === '/audit360' && req.method === 'POST') {
       let d = {}; try { d = await req.json(); } catch (_) {}
-      return json(audit360(d), 200, o);
+      const res = audit360(d);
+      if (d.entreprise) res.finance = companyFinance(d.entreprise); // santé société si chiffres fournis
+      return json(res, 200, o);
+    }
+
+    // ── POST /finance : ratios société + ALERTE légale capitaux propres (souverain) ──
+    if (url.pathname === '/finance' && req.method === 'POST') {
+      let e = {}; try { e = await req.json(); } catch (_) {}
+      return json({ ...companyFinance(e), disclaimer: DISCLAIMER }, 200, o);
     }
 
     if (!db) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-patrimoine-db (--location weur), exécute schema.sql, bind PATRIMOINE_DB.' }, 503, o);
