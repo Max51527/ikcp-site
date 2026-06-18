@@ -49,7 +49,7 @@
   .hero{padding:60px 0 40px}
   .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:36px;align-items:center}
   @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-r{order:-1}}
-  .hero h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(40px,6.2vw,74px);line-height:1.03;letter-spacing:-.02em;color:var(--navy);margin:22px 0 20px}
+  .hero h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(32px,4.6vw,54px);line-height:1.12;letter-spacing:-.015em;color:var(--navy);margin:22px 0 18px;max-width:18ch}
   .hero h1 em{font-style:italic;color:var(--gold-deep)}
   .hero .lede{font-size:clamp(16px,1.6vw,18px);color:var(--mute);font-weight:300;max-width:42ch;margin-bottom:28px}
   .siren-form{display:flex;background:#fff;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;max-width:450px;transition:border-color .2s,box-shadow .2s}
@@ -168,8 +168,7 @@
 <header class="hero"><div class="wrap hero-grid">
   <div class="hero-l">
     <div class="eyebrow"><span class="pin"></span>Fintech patrimoniale · souveraine · France</div>
-    <h1 class="serif">Votre patrimoine,<br><em>vivant. En direct.</em></h1>
-    <p class="brandline">Marcel — l'IA patrimoniale <em>souveraine</em>, au service des dirigeant(e)s de demain.</p>
+    <h1 class="serif">Marcel — l'IA patrimoniale <em>souveraine</em>, au service des dirigeant(e)s.</h1>
     <p class="lede">Un chiffre — votre SIREN. Marcel cartographie, analyse, répond. En temps réel.</p>
     <form class="siren-form" onsubmit="goSiren();return false">
       <input id="siren" inputmode="numeric" maxlength="11" placeholder="SIREN — 9 chiffres" aria-label="Votre SIREN">
