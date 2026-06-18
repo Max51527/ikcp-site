@@ -93,8 +93,8 @@
   .block h2 em{font-style:italic;color:var(--gold-deep)}
   .block .sub{color:var(--mute);font-weight:300;max-width:48ch;margin-bottom:30px}
   .spec{border-top:1px solid var(--line)}
-  .spec .row{display:grid;grid-template-columns:24px 1.1fr 2fr;gap:18px;align-items:baseline;padding:15px 4px;border-bottom:1px solid var(--line-soft);transition:padding-left .2s,background .2s}
-  .spec .row:hover{padding-left:14px;background:var(--paper-2)}
+  .spec .row{display:grid;grid-template-columns:24px 1.1fr 2fr;gap:18px;align-items:baseline;padding:15px 4px;border-bottom:1px solid var(--line-soft);transition:background .2s}
+  .spec .row:hover{background:var(--paper-2)}
   .spec .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint)}
   .spec .nm{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy)}
   .spec .ro{font-size:13.5px;color:var(--mute)}
@@ -178,8 +178,9 @@
 <section class="block"><div class="wrap">
   <div class="eyebrow"><span class="ln"></span>02 — L'orchestration</div>
   <h2 class="serif">Un chef. <em>Douze spécialistes.</em></h2>
-  <p class="sub">Vous ne parlez qu'à Marcel. En coulisse, il mobilise l'expert du territoire concerné. Cliquez-en un.</p>
+  <p class="sub">Vous ne choisissez pas, vous ne cliquez pas douze fois. Vous saisissez <b>votre SIREN</b> — Marcel mobilise le bon spécialiste, automatiquement. <b>Un seul point d'entrée.</b></p>
   <div class="spec" id="spec"></div>
+  <div style="text-align:center;margin-top:30px"><a href="#siren" onclick="var s=document.getElementById('siren');s.scrollIntoView({behavior:'smooth',block:'center'});s.focus();return false" style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--gold-deep);border-bottom:1px solid var(--gold);padding-bottom:3px">↑ TOUT COMMENCE PAR VOTRE SIREN</a></div>
 </div></section>
 
 <!-- SOUVERAINETE -->
@@ -246,7 +247,7 @@
   // Orchestration — liste filets
   (function(){
     var S=[['Codex','Fiscalité','Quels sont mes principaux leviers fiscaux ?'],['Hermès','Transmission','Comment optimiser la transmission de mon patrimoine ?'],['Bâtisseur','Patrimoine 360°','Fais-moi une lecture 360° de mon patrimoine de dirigeant.'],['Architecte','Immobilier','Comment optimiser la détention de mon immobilier ?'],['Stratège','Marchés','Comment diversifier mon patrimoine financier ?'],['Curateur','Art & collections','Comment intégrer mes collections à mon patrimoine ?'],['Concierge','Voyage & art de vivre','Que propose le Family Office côté art de vivre ?'],['Capital','Private equity','Comment accéder au private equity ?'],['Mécène','Philanthropie','Comment structurer ma philanthropie ?'],['Pédagogue','NextGen','Comment préparer la nouvelle génération ?'],['Camille','Accompagnement','Comment se passe l\'accompagnement au quotidien ?'],['Olympe','Longévité','Comment lier patrimoine, santé et longévité ?']];
-    document.getElementById('spec').innerHTML=S.map(function(s,i){return '<div class="row" onclick="ask('+JSON.stringify(s[2]).replace(/"/g,'&quot;')+')"><span class="n">'+(i<9?'0':'')+(i+1)+'</span><span class="nm">'+s[0]+'</span><span class="ro">'+s[1]+'</span></div>'}).join('');
+    document.getElementById('spec').innerHTML=S.map(function(s,i){return '<div class="row"><span class="n">'+(i<9?'0':'')+(i+1)+'</span><span class="nm">'+s[0]+'</span><span class="ro">'+s[1]+'</span></div>'}).join('');
   })();
 </script>
 <script src="/protect.js?v=1" defer></script>
