@@ -1,6 +1,8 @@
 name = "ikcp-powens"
 main = "worker.js"
 compatibility_date = "2026-04-22"
+# CRUCIAL : empêche `wrangler deploy` (CI) d'effacer les secrets posés au dashboard.
+keep_vars = true
 
 [observability]
 enabled = true
@@ -9,13 +11,13 @@ enabled = true
 # Décommente et remplace par TON domain une fois le sandbox créé.
 [vars]
 POWENS_DOMAIN = "marcel-ia-sandbox"   # → https://marcel-ia-sandbox.biapi.pro/2.0
+POWENS_CLIENT_ID = "27040630"         # identifiant public OAuth (PAS un secret) → gravé ici = increvable
 POWENS_REDIRECT_URI = "https://ikcp-powens.maxime-ead.workers.dev/callback"
 POWENS_WEBVIEW = "https://webview.powens.com"
 
-# ── SECRETS (JAMAIS dans ce fichier) ──
-# Dashboard Cloudflare → Workers → ikcp-powens → Settings → Variables (type Secret) :
-#   POWENS_CLIENT_ID
-#   POWENS_CLIENT_SECRET
+# ── SECRET (JAMAIS dans ce fichier) — dashboard, type Secret ──
+# Dashboard Cloudflare → Workers → ikcp-powens → Settings → Variables :
+#   POWENS_CLIENT_SECRET   (avec keep_vars=true il SURVIT désormais aux deploys)
 
 # ── Base D1 Paris pour ranger les jetons (à créer une seule fois) ──
 #   npx wrangler d1 create ikcp-powens-db --location weur
