@@ -59,8 +59,8 @@
   /* NAV */
   nav{position:sticky;top:0;z-index:50;background:rgba(10,18,32,.6);backdrop-filter:blur(16px);border-bottom:1px solid var(--brd)}
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
-  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:21px;color:var(--ink);font-weight:600}
-  .brand img{height:46px;width:46px;border-radius:12px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+  .brand{display:inline-flex;align-items:center;background:#FAF8F4;border-radius:12px;padding:7px 14px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+  .brand img{height:30px;width:auto;display:block}
   .nav-links{display:flex;align-items:center;gap:26px}
   .nav-links a{font-size:14px;color:var(--mute);font-weight:500;transition:color .2s}
   .nav-links a:hover{color:var(--gold)}
@@ -80,6 +80,8 @@
   @keyframes float{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-18px) rotate(1.5deg)}}
   .stage .glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(226,200,150,.35),transparent 65%);animation:pulse 5s ease-in-out infinite;z-index:1}
   @keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.12);opacity:1}}
+  .logoplate{background:#FAF8F4;border-radius:24px;padding:30px 36px;box-shadow:0 30px 60px -22px rgba(0,0,0,.6);position:relative;z-index:2;animation:float 7s ease-in-out infinite}
+  .logoplate img{width:min(360px,74vw);display:block}
   /* live data card flottante */
   .livecard{position:absolute;right:-6px;bottom:6px;z-index:3;padding:16px 18px;border-radius:18px;min-width:188px;animation:floatcard 6s ease-in-out infinite}
   @keyframes floatcard{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
@@ -209,7 +211,7 @@
 
 <!-- Logo officiel : assets/logos/Marcel-IA_embleme-carre.svg -->
 <nav><div class="wrap nav-in">
-  <a href="/" class="brand" aria-label="Marcel IA — accueil"><img src="/assets/logos/Marcel-IA_embleme-carre.svg" alt="Marcel IA"></a>
+  <a href="/" class="brand" aria-label="Marcel IA — accueil"><img src="/assets/logos/Marcel-IA_signature.svg" alt="Marcel IA — Le Family Office des dirigeant(e)s"></a>
   <div class="nav-links">
     <a href="#audit">L'audit 2 min</a>
     <a href="#univers">12 univers</a>
@@ -232,7 +234,7 @@
   </div>
   <div class="stage">
     <div class="glow"></div>
-    <img class="balloon" src="/assets/logos/Marcel-IA_embleme-carre.svg" alt="Marcel IA — emblème montgolfière tricolore">
+    <div class="logoplate"><img src="/assets/logos/Marcel-IA_signature.svg" alt="Marcel IA — Le Family Office des dirigeant(e)s"></div>
 
     <div class="livecard glass">
       <div class="lab"><span class="live-dot"></span>Patrimoine consolidé</div>
