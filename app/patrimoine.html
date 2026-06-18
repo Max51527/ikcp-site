@@ -82,6 +82,24 @@
     h1::after{content:' — Synthèse · IKCP · ORIAS 23001568';font-size:13px;color:#6B655A;font-style:italic}
   }
   .btn-sm2{padding:9px 16px;font-size:13px}
+
+  /* ─── Stratégies détectées (moteur d'opportunités souverain) ─── */
+  .oppo-profil{background:var(--cream);border:1px solid var(--line-strong);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+  .oppo-profil-h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:12px}
+  .oppo-fields{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin-bottom:16px}
+  .oppo-chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}
+  .oppo-chk input{width:17px;height:17px;accent-color:var(--accent)}
+  .oppo-num{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+  .oppo-num input{width:120px;padding:8px 10px;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;color:var(--ink);font-family:'Inter';font-size:14px}
+  .oppo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+  .oppo-card{background:var(--cream);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;animation:slidedown .35s ease both}
+  .oppo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .oppo-fam{font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--mute)}
+  .oppo-score{font-size:11px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+  .oppo-card h4{font-family:'Fraunces',serif;font-weight:500;font-size:17px;color:var(--ink);margin-bottom:8px}
+  .oppo-vig{font-size:12px;color:var(--mute);line-height:1.5;margin-bottom:12px;flex:1}
+  .oppo-cta{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
+  .oppo-load,.oppo-empty{color:var(--mute);font-size:13.5px;padding:14px}
 </style>
 </head>
 <body>
@@ -186,6 +204,22 @@
     <p style="max-width:420px;margin:0 auto 16px">Ajoutez votre premier bien (résidence, locatif, société, placements, collection…). La répartition se dessine automatiquement.</p>
     <button class="btn" onclick="openForm()">+ Ajouter mon premier bien</button>
   </div>
+
+  <!-- ═══ Stratégies détectées (moteur d'opportunités souverain §9) ═══ -->
+  <section id="oppoSection" style="margin-top:32px">
+    <div class="pat-head"><h2>Stratégies à explorer</h2></div>
+    <div class="oppo-profil">
+      <div class="oppo-profil-h">Affinez la détection — 4 repères :</div>
+      <div class="oppo-fields">
+        <label class="oppo-chk"><input type="checkbox" id="pf-dirigeant"> Je suis dirigeant(e)</label>
+        <label class="oppo-chk"><input type="checkbox" id="pf-is"> Ma société est à l'IS</label>
+        <label class="oppo-num">Enfants <input type="number" id="pf-enfants" min="0" max="12" value="0"></label>
+        <label class="oppo-num">Trésorerie société (€) <input type="number" id="pf-treso" min="0" step="1000" placeholder="0"></label>
+      </div>
+      <button class="btn" id="detectBtn">✦ Détecter mes opportunités</button>
+    </div>
+    <div class="oppo-grid" id="oppoResults"></div>
+  </section>
 
   <p class="disc">Les valeurs saisies sont déclaratives et restent sur votre appareil pour cette phase bêta. Cette vue est une aide à la décision — elle ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton (CIF · ORIAS 23001568) reste votre interlocuteur.</p>
 </main>
@@ -383,6 +417,43 @@ window.analyzeAll = function(){
   const repart = Object.keys(byCat).map(k => `${(CATS[k]||{}).label||k} ${eur(byCat[k])}`).join(', ');
   goMarcel(`Voici mon patrimoine (valeur nette estimée ${eur(total)}) réparti ainsi : ${repart}. Quels sont mes 3 leviers prioritaires (fiscalité, transmission, diversification) ?`);
 };
+
+// ─── Moteur d'opportunités (worker ikcp-patrimoine, stateless) ───
+const PAT_API = 'https://ikcp-patrimoine.maxime-ead.workers.dev';
+function mapPayload(){
+  const personnes = [];
+  if(document.getElementById('pf-dirigeant').checked) personnes.push({ role:'dirigeant' });
+  const nbEnf = Math.max(0, parseInt(document.getElementById('pf-enfants').value,10) || 0);
+  for(let i=0;i<nbEnf;i++) personnes.push({ role:'enfant' });
+  const societes = document.getElementById('pf-is').checked ? [{ regime_fiscal:'IS', is_holding:0 }] : [];
+  const actifs = [];
+  const treso = Math.max(0, parseInt(document.getElementById('pf-treso').value,10) || 0);
+  if(treso>0) actifs.push({ categorie:'tresorerie_pm', valorisation_cents: treso*100 });
+  biens.forEach(b => {
+    const v = (+b.value||0)*100;
+    if(b.cat==='immobilier') actifs.push({ categorie:'immobilier', valorisation_cents:v });
+    else if(b.cat==='societe') actifs.push({ categorie:'participation', valorisation_cents:v });
+    else if(b.cat==='liquidites') actifs.push({ categorie:'compte', valorisation_cents:v });
+  });
+  return { personnes, societes, actifs, beneficiaires: [] };
+}
+async function detectOppo(){
+  const out = document.getElementById('oppoResults');
+  out.innerHTML = '<div class="oppo-load">Analyse souveraine en cours…</div>';
+  try{
+    const r = await fetch(PAT_API + '/opportunites/preview', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(mapPayload()) });
+    const d = await r.json();
+    const list = d.opportunites || [];
+    if(!list.length){ out.innerHTML = '<div class="oppo-empty">Aucune piste prioritaire avec ces éléments. Cochez votre profil, indiquez vos enfants/trésorerie, ou ajoutez vos biens — la détection s\'affine.</div>'; return; }
+    out.innerHTML = list.map((o,i) => `<div class="oppo-card" style="animation-delay:${i*70}ms">
+      <div class="oppo-top"><span class="oppo-fam">${escapeHtml(o.famille||'')}</span><span class="oppo-score">éligibilité ${Math.round((o.score||0)*100)}%</span></div>
+      <h4>${escapeHtml(o.nom)}</h4>
+      <p class="oppo-vig">${escapeHtml(o.vigilance||'')}</p>
+      <a class="oppo-cta" href="/app/marcel?q=${encodeURIComponent('Explique-moi la stratégie « '+o.nom+' » et dans quels cas elle est pertinente.')}">En parler à Marcel →</a>
+    </div>`).join('') + `<p class="disc" style="grid-column:1/-1">${escapeHtml(d.disclaimer||'')}</p>`;
+  }catch(e){ out.innerHTML = '<div class="oppo-empty">Service momentanément indisponible. Réessayez.</div>'; }
+}
+document.getElementById('detectBtn')?.addEventListener('click', detectOppo);
 
 load();
 render();

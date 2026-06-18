@@ -120,6 +120,15 @@ export default {
     if (url.pathname === '/health') {
       return json({ status: 'ok', service: 'ikcp-patrimoine', db: db ? 'bound' : 'absent', strategies: (STRATS.strategies || []).length, region: 'EU/FR' }, 200, o);
     }
+
+    // ── POST /opportunites/preview : moteur SANS persistance (marche sans D1) ──
+    // Le cockpit envoie les données du membre dans le corps ; on renvoie les pistes.
+    // Stateless = rien n'est stocké (RGPD : la donnée ne quitte pas l'appel).
+    if (url.pathname === '/opportunites/preview' && req.method === 'POST') {
+      let d = {}; try { d = await req.json(); } catch (_) {}
+      return json({ opportunites: runMoteur(d), bilan: bilan(d), disclaimer: DISCLAIMER }, 200, o);
+    }
+
     if (!db) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-patrimoine-db (--location weur), exécute schema.sql, bind PATRIMOINE_DB.' }, 503, o);
     if (!member) return json({ error: 'missing_user' }, 400, o);
 
