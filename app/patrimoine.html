@@ -128,6 +128,7 @@
   </section>
   <script>
   async function powensConnect(){
+    if((window.IKCP_TIER||'free')==='free'){ if(confirm("L'agrégation de vos comptes — la vue 360° pro + perso de votre patrimoine de dirigeant — fait partie de Premium. Découvrir Premium ?")) location.href='/app/profil.html'; return; }
     var b=document.getElementById('powensBtn'); if(!b) return; var t=b.textContent; b.disabled=true; b.textContent='Connexion…';
     var user='me';
     try{ if(window.Marcel&&Marcel.Auth&&Marcel.Auth.email){ user=Marcel.Auth.email; } else { var s=localStorage.getItem('ikcp_email')||localStorage.getItem('email'); if(s) user=s; } }catch(_){}
@@ -244,6 +245,7 @@ if(me){
   const tEl = document.getElementById('userTier'); tEl.textContent = tierLbl;
   if(me.tier && me.tier!=='free') tEl.classList.add('premium');
 }
+window.IKCP_TIER = (me && me.tier) || 'free';
 window.logout = function(){ try{ localStorage.removeItem('ikcp_token'); }catch(_){}; location.href='/app/index.html'; };
 
 const CATS = {
