@@ -1,0 +1,95 @@
+{
+  "_meta": {
+    "role": "Référentiel des stratégies patrimoniales (blueprint MARCEL §8/§10). Chaque fiche est lue par le moteur d'opportunités (§9) qui matche `score_eligibilite.regles` sur la base patrimoniale unifiée, puis par Marcel qui EXPLIQUE (jamais ne recommande sans validation humaine — MIF II art. L.541-1).",
+    "version": "v1",
+    "convention": "regles = conditions évaluées sur les données du foyer (champ, op, valeur). Toutes vraies => stratégie détectée, score pondéré."
+  },
+  "strategies": [
+    {
+      "id": "holding_patrimoniale",
+      "nom": "Holding patrimoniale",
+      "famille": "structuration",
+      "objectifs": ["organiser la détention", "capitaliser les dividendes (régime mère-fille)", "préparer transmission/cession", "séparer actifs d'exploitation et patrimoniaux"],
+      "cibles": ["dirigeant avec société d'exploitation à l'IS", "excédents de trésorerie récurrents", "projet de croissance externe ou de cession"],
+      "prerequis": ["société(s) opérationnelle(s) existante(s)", "flux de dividendes significatifs", "horizon moyen/long terme"],
+      "benefices": ["effet de levier de capitalisation", "remontée de dividendes faiblement fiscalisée (régime mère-fille, quote-part 5%)", "lisibilité du groupe", "outil de transmission (Dutreil en aval)"],
+      "risques": ["abus de droit si montage sans substance", "rigidité", "coût de structuration et de gestion", "animation à caractériser si Dutreil visé"],
+      "limites": ["pertinence faible si pas de dividendes à remonter", "non adapté aux très petits patrimoines"],
+      "impact_fiscal": "remontée dividendes quasi-exonérée (mère-fille), report d'imposition de la capitalisation ; vigilance apport-cession (150-0 B ter) si cession en aval",
+      "impact_civil": "neutre, sauf si associés multiples (pacte recommandé)",
+      "impact_social": "neutre",
+      "horizon": "moyen_long",
+      "complexite": "elevee",
+      "pieces": ["liasses fiscales", "statuts", "tableau de détention", "prévisionnel de trésorerie"],
+      "intervenants": ["expert-comptable", "avocat fiscaliste", "notaire si immobilier"],
+      "analyses_necessaires": ["analyse_structure_juridique", "analyse_fiscale", "analyse_tresorerie"],
+      "score_eligibilite": {
+        "donnees_minimum": ["societes", "actifs.categorie=tresorerie_pm|compte"],
+        "regles": [
+          {"champ": "societes.regime_fiscal", "op": "=", "valeur": "IS", "poids": 0.4},
+          {"champ": "actifs.tresorerie_pm.valorisation_cents", "op": ">", "valeur": 10000000, "poids": 0.4},
+          {"champ": "societes.is_holding", "op": "=", "valeur": 0, "poids": 0.2}
+        ]
+      },
+      "workflow": ["diagnostic", "simulation", "validation_expert", "mise_en_oeuvre"],
+      "vigilance_conformite": "Information/hypothèse. Aucune mise en œuvre sans expert-comptable + lettre de mission. Substance économique obligatoire (anti-abus de droit)."
+    },
+    {
+      "id": "arbitrage_remuneration_dividendes",
+      "nom": "Arbitrage rémunération / dividendes du dirigeant",
+      "famille": "remuneration_dirigeant",
+      "objectifs": ["optimiser le couple rémunération/dividendes", "lisser la pression sociale et fiscale", "construire des droits (retraite, prévoyance)"],
+      "cibles": ["dirigeant TNS (gérant majoritaire SARL)", "président de SAS (assimilé salarié)", "société à l'IS"],
+      "prerequis": ["résultat distribuable", "statut social connu (TNS vs assimilé salarié)"],
+      "benefices": ["réduction du coût global de prélèvement", "création de droits sociaux (selon arbitrage)", "pilotage de la trésorerie personnelle"],
+      "risques": ["sous-protection sociale si tout en dividendes", "cotisations TNS sur dividendes > 10% capital (SARL)", "instabilité réglementaire"],
+      "limites": ["dépend fortement du statut et du résultat", "à recalculer chaque année"],
+      "impact_fiscal": "dividendes au PFU 30% (ou barème) ; rémunération = charge déductible IS mais cotisations sociales ; optimum = simulation chiffrée",
+      "impact_civil": "neutre",
+      "impact_social": "fort : la part dividendes ne génère ni retraite ni prévoyance",
+      "horizon": "court",
+      "complexite": "moyenne",
+      "pieces": ["bulletins/rémunération", "statut social", "résultat prévisionnel", "couverture prévoyance actuelle"],
+      "intervenants": ["expert-comptable", "conseiller en protection sociale"],
+      "analyses_necessaires": ["analyse_sociale_dirigeant", "analyse_fiscale", "analyse_tresorerie"],
+      "score_eligibilite": {
+        "donnees_minimum": ["personnes.role=dirigeant", "societes.regime_fiscal=IS"],
+        "regles": [
+          {"champ": "personnes.role", "op": "=", "valeur": "dirigeant", "poids": 0.5},
+          {"champ": "societes.regime_fiscal", "op": "=", "valeur": "IS", "poids": 0.5}
+        ]
+      },
+      "workflow": ["diagnostic", "simulation", "validation_expert"],
+      "vigilance_conformite": "Outil de simulation : conclut par une question, jamais par une reco produit (MIF II). Le calcul reste une hypothèse à valider avec l'expert-comptable."
+    },
+    {
+      "id": "donation_demembrement",
+      "nom": "Donation avec démembrement",
+      "famille": "transmission",
+      "objectifs": ["anticiper la transmission", "réduire l'assiette taxable future", "conserver revenus (usufruit) ou contrôle"],
+      "cibles": ["dirigeant avec enfants", "patrimoine immobilier ou titres significatifs"],
+      "prerequis": ["valorisation fiable", "analyse civile et fiscale préalable", "situation familiale stable"],
+      "benefices": ["anticipation successorale", "transmission de la nue-propriété à valeur réduite (barème art. 669 CGI)", "organisation de la gouvernance"],
+      "risques": ["mauvaise rédaction de l'acte", "inadéquation familiale (famille recomposée)", "liquidité insuffisante pour les droits", "requalification si quasi-usufruit mal cadré"],
+      "limites": ["irréversibilité de la donation", "nécessite des actifs à transmettre"],
+      "impact_fiscal": "droits de donation calculés sur la nue-propriété (barème usufruit) ; abattements 100k€/enfant/15 ans ; purge possible des plus-values",
+      "impact_civil": "fort : réserve héréditaire, rapport, égalité entre enfants à arbitrer",
+      "impact_social": "neutre",
+      "horizon": "moyen_long",
+      "complexite": "elevee",
+      "pieces": ["état civil", "titres de propriété", "statuts", "clauses existantes", "valorisation"],
+      "intervenants": ["notaire", "avocat fiscaliste"],
+      "analyses_necessaires": ["analyse_bilan_patrimonial", "analyse_successorale", "analyse_revenus_futurs"],
+      "score_eligibilite": {
+        "donnees_minimum": ["situation_familiale", "nombre_enfants", "type_actifs", "valorisation"],
+        "regles": [
+          {"champ": "foyer.nombre_enfants", "op": ">=", "valeur": 1, "poids": 0.4},
+          {"champ": "actifs.immobilier|participation.valorisation_cents", "op": ">", "valeur": 30000000, "poids": 0.4},
+          {"champ": "beneficiaires.obsolete", "op": "=", "valeur": 1, "poids": 0.2}
+        ]
+      },
+      "workflow": ["diagnostic", "simulation", "validation_expert", "mise_en_oeuvre"],
+      "vigilance_conformite": "Information patrimoniale. Acte notarié obligatoire. Marcel expose le principe et les questions ; il ne rédige ni ne recommande un montage personnalisé sans notaire + validation humaine."
+    }
+  ]
+}
