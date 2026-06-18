@@ -411,11 +411,18 @@ function analyzeBien(b){
   const c = CATS[b.cat] || {};
   goMarcel(`Analyse ce bien de mon patrimoine : « ${b.label} » (${c.label}), valeur estimée ${eur(b.value)}. Quels leviers patrimoniaux, fiscaux ou de transmission dois-je considérer ?`);
 }
-window.analyzeAll = function(){
+window.analyzeAll = async function(){
   const total = biens.reduce((s,b)=>s+(+b.value||0),0);
   const byCat = {}; biens.forEach(b=>{ byCat[b.cat]=(byCat[b.cat]||0)+(+b.value||0); });
   const repart = Object.keys(byCat).map(k => `${(CATS[k]||{}).label||k} ${eur(byCat[k])}`).join(', ');
-  goMarcel(`Voici mon patrimoine (valeur nette estimée ${eur(total)}) réparti ainsi : ${repart}. Quels sont mes 3 leviers prioritaires (fiscalité, transmission, diversification) ?`);
+  // Conseil IA grounded : on fait tourner le moteur souverain pour que Marcel parle de TA situation
+  let oppoLine = '';
+  try {
+    const r = await fetch(PAT_API + '/opportunites/preview', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(mapPayload()) });
+    const d = await r.json();
+    if (d.opportunites && d.opportunites.length) oppoLine = ` Pistes pré-détectées par l'analyse souveraine : ${d.opportunites.map(o=>o.nom).join(', ')}.`;
+  } catch(_){}
+  goMarcel(`Voici mon patrimoine de dirigeant (valeur nette estimée ${eur(total)}) : ${repart}.${oppoLine} Analyse ma situation et donne-moi mes 3 leviers prioritaires (rémunération/dividendes, fiscalité, transmission), chiffrés, en terminant par une question.`);
 };
 
 // ─── Moteur d'opportunités (worker ikcp-patrimoine, stateless) ───
