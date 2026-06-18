@@ -81,7 +81,7 @@
   .team-sec h2{font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:var(--navy);margin:4px 0 6px}
   .team-sec .lead2{color:var(--ink-soft);font-weight:300;font-size:14px;max-width:48ch}
   .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:12px;margin-top:18px}
-  .tm{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;transition:transform .15s,box-shadow .15s,border-color .15s;animation:riseIn .6s ease both}
+  .tm{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;animation:riseIn .6s ease both}
   .tm:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(27,42,74,.09);border-color:var(--gold)}
   .tm .ic{font-size:24px;display:block;margin-bottom:7px}
   .tm b{display:block;font-family:'Playfair Display',serif;color:var(--navy);font-size:15px;font-weight:600;margin-bottom:1px}
@@ -117,51 +117,46 @@
 
 <main class="wrap">
 
-  <!-- ACTE 1 : SIREN -->
+  <!-- TOUT PART DU SIREN -->
   <section class="act">
-    <div class="act-tag"><span class="dot"></span>Acte 1 · cartographie en direct</div>
-    <h2>Votre SIREN. Votre société, en 30 secondes.</h2>
+    <div class="act-tag"><span class="dot"></span>Tout part de votre SIREN</div>
+    <h2>Votre SIREN. Et tout s'enchaîne.</h2>
     <div class="row">
-      <input id="siren" type="text" inputmode="numeric" maxlength="11" placeholder="9 chiffres — ex. 552 032 534">
-      <button id="sirenBtn" onclick="goSiren()">Cartographier</button>
+      <input id="siren" type="text" inputmode="numeric" maxlength="11" placeholder="9 chiffres — ex. 552 032 534" onkeydown="if(event.key==='Enter')goSiren()">
+      <button id="sirenBtn" onclick="goSiren()">Lancer →</button>
     </div>
     <div class="out" id="sirenOut" data-allow-copy></div>
   </section>
 
-  <!-- ACTE 2 : MARCEL -->
-  <section class="act">
-    <div class="act-tag"><span class="dot"></span>Acte 2 · l'IA répond, en direct</div>
-    <h2>Posez une vraie question. Marcel répond.</h2>
+  <!-- CONTINUER — apparaît après le SIREN ou un clic spécialiste -->
+  <section class="act" id="continue" style="display:none">
+    <div class="act-tag"><span class="dot"></span>Continuez avec Marcel</div>
+    <h2>Une autre question ? Marcel garde votre contexte.</h2>
     <div class="row">
       <input id="q" type="text" placeholder="Ex. Comment réduire mes droits de succession ?" onkeydown="if(event.key==='Enter')goAsk()">
       <button id="qBtn" onclick="goAsk()">Demander</button>
-    </div>
-    <div class="chips" id="chips">
-      <span class="chip" onclick="ask('Salaire ou dividendes : qu\'est-ce qui me laisse le plus net ?')">Salaire ou dividendes ?</span>
-      <span class="chip" onclick="ask('Combien puis-je donner à mes enfants sans droits ?')">Donner sans droits ?</span>
-      <span class="chip" onclick="ask('Comment fonctionne le pacte Dutreil ?')">Pacte Dutreil ?</span>
     </div>
     <div class="out" id="qOut" data-allow-copy></div>
   </section>
 
   <!-- L'ÉQUIPE QUE MARCEL ORCHESTRE -->
   <section class="team-sec act" style="display:block">
-    <div class="act-tag"><span class="dot"></span>Une équipe · un seul interlocuteur</div>
+    <div class="act-tag"><span class="dot"></span>Cliquez un territoire — Marcel mobilise l'expert</div>
     <h2>Marcel ne travaille pas seul.</h2>
-    <p class="lead2">Il orchestre une équipe de spécialistes — chacun expert d'un territoire de votre patrimoine. Vous, vous ne parlez qu'à lui.</p>
+    <p class="lead2">Il orchestre une équipe de spécialistes. <b>Cliquez-en un</b> : Marcel mobilise le bon expert, en direct (souverain 🇫🇷). Vous ne parlez qu'à lui.</p>
     <div class="team">
-      <div class="tm" style="animation-delay:.04s"><span class="ic">⚖️</span><b>Codex</b><em>Fiscalité</em></div>
-      <div class="tm" style="animation-delay:.08s"><span class="ic">🏛️</span><b>Hermès</b><em>Transmission</em></div>
-      <div class="tm" style="animation-delay:.12s"><span class="ic">🏗️</span><b>Bâtisseur</b><em>Patrimoine 360°</em></div>
-      <div class="tm" style="animation-delay:.16s"><span class="ic">🏠</span><b>Architecte</b><em>Immobilier</em></div>
-      <div class="tm" style="animation-delay:.20s"><span class="ic">📈</span><b>Stratège</b><em>Marchés</em></div>
-      <div class="tm" style="animation-delay:.24s"><span class="ic">🎨</span><b>Curateur</b><em>Art & collections</em></div>
-      <div class="tm" style="animation-delay:.28s"><span class="ic">✈️</span><b>Concierge</b><em>Voyage & art de vivre</em></div>
-      <div class="tm" style="animation-delay:.32s"><span class="ic">💼</span><b>Capital</b><em>Private equity</em></div>
-      <div class="tm" style="animation-delay:.36s"><span class="ic">🕊️</span><b>Mécène</b><em>Philanthropie</em></div>
-      <div class="tm" style="animation-delay:.40s"><span class="ic">📚</span><b>Pédagogue</b><em>NextGen</em></div>
-      <div class="tm" style="animation-delay:.44s"><span class="ic">🤝</span><b>Camille</b><em>Accompagnement</em></div>
-      <div class="tm" style="animation-delay:.48s"><span class="ic">🌿</span><b>Olympe</b><em>Bien-être &amp; longévité</em></div>
+      <div class="tm" style="animation-delay:.04s" onclick="ask('Quels sont mes principaux leviers fiscaux à étudier ?')"><span class="ic">⚖️</span><b>Codex</b><em>Fiscalité</em></div>
+      <div class="tm" style="animation-delay:.08s" onclick="ask('Comment optimiser la transmission de mon patrimoine ?')"><span class="ic">🏛️</span><b>Hermès</b><em>Transmission</em></div>
+      <div class="tm" style="animation-delay:.12s" onclick="ask('Fais-moi une lecture 360° de mon patrimoine de dirigeant.')"><span class="ic">🏗️</span><b>Bâtisseur</b><em>Patrimoine 360°</em></div>
+      <div class="tm" style="animation-delay:.16s" onclick="ask('Comment optimiser la détention de mon immobilier ?')"><span class="ic">🏠</span><b>Architecte</b><em>Immobilier</em></div>
+      <div class="tm" style="animation-delay:.20s" onclick="ask('Comment diversifier et structurer mon patrimoine financier ?')"><span class="ic">📈</span><b>Stratège</b><em>Marchés</em></div>
+      <div class="tm" style="animation-delay:.24s" onclick="ask('Comment intégrer mes collections (art, montres) à mon patrimoine ?')"><span class="ic">🎨</span><b>Curateur</b><em>Art &amp; collections</em></div>
+      <div class="tm" style="animation-delay:.28s" onclick="ask('Que propose le Family Office côté art de vivre et conciergerie ?')"><span class="ic">✈️</span><b>Concierge</b><em>Voyage &amp; art de vivre</em></div>
+      <div class="tm" style="animation-delay:.32s" onclick="ask('Comment accéder au private equity et aux actifs non cotés ?')"><span class="ic">💼</span><b>Capital</b><em>Private equity</em></div>
+      <div class="tm" style="animation-delay:.36s" onclick="ask('Comment structurer ma philanthropie efficacement ?')"><span class="ic">🕊️</span><b>Mécène</b><em>Philanthropie</em></div>
+      <div class="tm" style="animation-delay:.40s" onclick="ask('Comment préparer la nouvelle génération à gérer le patrimoine familial ?')"><span class="ic">📚</span><b>Pédagogue</b><em>NextGen</em></div>
+      <div class="tm" style="animation-delay:.44s" onclick="ask('Comment se passe l\'accompagnement au quotidien dans le Family Office ?')"><span class="ic">🤝</span><b>Camille</b><em>Accompagnement</em></div>
+      <div class="tm" style="animation-delay:.48s" onclick="ask('Comment lier patrimoine, santé et longévité ?')"><span class="ic">🌿</span><b>Olympe</b><em>Bien-être &amp; longévité</em></div>
     </div>
   </section>
 
@@ -177,8 +172,27 @@
 <script>
   function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
   function md(t){return '<p>'+esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';}
+  var DISC='<div class="disc">Information, pas un conseil personnalisé (art. L.541-1 CoMoFi). Un conseiller humain CIF (ORIAS 23001568) peut intervenir à votre demande.</div>';
+  window._coCtx='';
 
-  // ── ACTE 1 : Pappers en direct ──
+  // ── Marcel (souverain · Mistral 🇫🇷). Point d'entrée UNIQUE : c'est lui qui
+  //    orchestre et mobilise ses spécialistes. Le visiteur ne parle qu'à Marcel. ──
+  async function marcelInto(elId, message){
+    var el=document.getElementById(elId); if(!el) return;
+    el.innerHTML='<p class="think">Marcel réfléchit…</p>';
+    try{
+      var r=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message,history:[]})});
+      var d=await r.json();
+      var h=md(d.reply||"Un instant — réessayez.");
+      if(Array.isArray(d.follow_ups)&&d.follow_ups.length){
+        h+='<div class="chips">'+d.follow_ups.slice(0,3).map(function(f){return '<span class="chip" onclick="ask('+JSON.stringify(f).replace(/"/g,'&quot;')+')">'+esc(f)+'</span>';}).join('')+'</div>';
+      }
+      el.innerHTML=h+DISC;
+    }catch(e){ el.innerHTML='<p class="think">Service momentanément indisponible. Réessayez.</p>'; }
+  }
+  function revealContinue(){ var c=document.getElementById('continue'); if(c) c.style.display='block'; }
+
+  // ── TOUT PART DU SIREN : cartographie → analyse Marcel AUTOMATIQUE ──
   async function goSiren(){
     var v=(document.getElementById('siren').value||'').replace(/\D/g,'').slice(0,9);
     var out=document.getElementById('sirenOut'), b=document.getElementById('sirenBtn');
@@ -189,30 +203,26 @@
       if(!r.ok) throw 0;
       var d=await r.json();
       var cap=d.capital?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(d.capital):'n.c.';
+      window._coCtx='Ma société (source RNE) : '+(d.nom||'')+', '+(d.forme_juridique||'')+', capital '+cap+', activité '+(d.libelle_code_naf||d.code_naf||'')+', siège '+((d.siege&&d.siege.ville)||'')+'.';
       out.innerHTML='<div class="card-co"><div class="nm">'+esc(d.nom||'—')+'</div><div class="meta">'+
         '<b>Forme :</b> '+esc(d.forme_juridique||'—')+'<br><b>Capital :</b> '+cap+'<br><b>Activité :</b> '+esc(d.libelle_code_naf||d.code_naf||'—')+'<br><b>Siège :</b> '+esc((d.siege&&d.siege.ville)||'—')+'</div>'+
         '<div class="badge-souv">✓ Source officielle RNE · données en France</div></div>'+
-        '<div class="chips"><span class="chip" onclick="ask(\'Pour une '+esc(d.forme_juridique||'société')+', quels sont mes principaux leviers fiscaux et de transmission ?\')">→ Demander les leviers à Marcel</span></div>';
+        '<div id="sirenMarcel" class="out" data-allow-copy style="margin-top:14px"></div>';
+      // Enchaînement automatique : Marcel analyse la société, sans rien redemander
+      marcelInto('sirenMarcel', window._coCtx+' Donne-moi mes 3 principaux leviers — rémunération/dividendes, fiscalité, transmission — pour cette structure. Concret et chiffré.');
+      revealContinue();
     }catch(e){ out.innerHTML='<p class="think">Société introuvable. Essayez 552 032 534 (Danone).</p>'; }
     b.disabled=false;
   }
 
-  // ── ACTE 2 : Marcel en direct ──
-  function ask(q){ document.getElementById('q').value=q; goAsk(); document.getElementById('q').scrollIntoView({behavior:'smooth',block:'center'}); }
+  // ── Spécialiste cliqué = on interroge Marcel sur ce territoire (il mobilise l'expert).
+  //    Le contexte société (SIREN) est automatiquement transporté. ──
+  function ask(q){ revealContinue(); var inp=document.getElementById('q'); if(inp) inp.value=q; goAsk(); var c=document.getElementById('continue'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'}); }
   async function goAsk(){
     var q=(document.getElementById('q').value||'').trim();
-    var out=document.getElementById('qOut'), b=document.getElementById('qBtn');
-    if(q.length<4){ out.innerHTML='<p class="think">Posez une vraie question patrimoniale.</p>'; return; }
-    b.disabled=true; out.innerHTML='<p class="think">Marcel réfléchit…</p>';
-    try{
-      var r=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,history:[]})});
-      var d=await r.json();
-      out.innerHTML=md(d.reply||"Un instant — réessayez.");
-      if(Array.isArray(d.follow_ups)&&d.follow_ups.length){
-        out.innerHTML+='<div class="chips">'+d.follow_ups.slice(0,3).map(function(f){return '<span class="chip" onclick="ask('+JSON.stringify(f).replace(/"/g,'&quot;')+')">'+esc(f)+'</span>';}).join('')+'</div>';
-      }
-      out.innerHTML+='<div class="disc">Information, pas un conseil personnalisé (art. L.541-1 CoMoFi). Un conseiller humain CIF (ORIAS 23001568) peut intervenir à votre demande.</div>';
-    }catch(e){ out.innerHTML='<p class="think">Service momentanément indisponible. Réessayez.</p>'; }
+    if(q.length<4){ document.getElementById('qOut').innerHTML='<p class="think">Posez une vraie question patrimoniale.</p>'; return; }
+    var b=document.getElementById('qBtn'); b.disabled=true;
+    await marcelInto('qOut', (window._coCtx?window._coCtx+' ':'')+q);
     b.disabled=false;
   }
 </script>
