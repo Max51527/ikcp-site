@@ -114,8 +114,37 @@
   footer .orias a{color:var(--gold-deep);text-decoration:none}
   .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
   @keyframes sp{to{transform:rotate(360deg)}}
+  /* OCR import */
+  .ocr{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--cream2);border:1px dashed var(--gold);border-radius:14px;padding:16px 18px;margin-bottom:18px}
+  .ocr-ic{font-size:26px;line-height:1}
+  .ocr-txt{flex:1;min-width:180px}
+  .ocr-t{font-weight:600;color:var(--navy)}
+  .ocr-s{font-size:12.5px;color:var(--mute);margin-top:2px}
+  .ocr-btn{cursor:pointer;white-space:nowrap;font-weight:600;font-size:14px;padding:11px 18px;border:1px solid var(--navy);border-radius:10px;color:var(--navy);background:var(--white);transition:.2s}
+  .ocr-btn:hover{background:var(--navy);color:var(--white)}
+  .ocr-status{font-size:13px;margin:-6px 0 14px;min-height:0}
+  .ocr-status.work{color:var(--gold-deep)}.ocr-status.ok{color:var(--live)}.ocr-status.ko{color:var(--alert)}
+  /* Offre */
+  #sec-offre{padding:30px 24px 10px;max-width:920px}
+  .offer-head{text-align:center;margin-bottom:26px}
+  .offer-head h2{font-size:30px}
+  .offer-head .eyebrow{justify-content:center}
+  .offer-head p{color:var(--mute);max-width:560px;margin:10px auto 0}
+  .tiers{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .tier{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .tier.feat{border:1.6px solid var(--gold);box-shadow:0 10px 40px rgba(201,169,110,.18)}
+  .tier-tag{display:inline-block;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mute);background:var(--cream2);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+  .tier-tag.gold{color:var(--navy);background:var(--gold-bright);border-color:var(--gold)}
+  .tier-name{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);margin:14px 0 2px}
+  .tier-price{font-family:'Playfair Display',serif;font-size:34px;color:var(--navy);font-weight:700;margin-bottom:14px}
+  .tier-price span{font-family:'Outfit';font-size:14px;font-weight:500;color:var(--mute)}
+  .tier-feats{list-style:none;margin:0 0 20px;padding:0;flex:1}
+  .tier-feats li{position:relative;padding:7px 0 7px 24px;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line)}
+  .tier-feats li:before{content:"✓";position:absolute;left:0;color:var(--gold-deep);font-weight:700}
+  .tier.feat .tier-feats li:before{content:"★"}
+  .offer-note{text-align:center;font-size:13px;color:var(--mute);margin-top:18px}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto}}
-  @media(max-width:560px){.siren-row{flex-direction:column}.nav .cta{display:none}}
+  @media(max-width:560px){.siren-row{flex-direction:column}.nav .cta{display:none}.tiers{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -140,7 +169,7 @@
   <div class="siren-card">
     <label for="siren">Votre numéro SIREN (9 chiffres)</label>
     <div class="siren-row">
-      <input id="siren" inputmode="numeric" autocomplete="off" placeholder="ex. 947 972 436" maxlength="11">
+      <input id="siren" inputmode="numeric" autocomplete="off" placeholder="9 chiffres — ex. 552 032 534" maxlength="11">
       <button class="btn" id="go" onclick="lancerAudit()">Lancer l'audit</button>
     </div>
     <div class="hint">Source officielle RNE / Pappers. Aucune donnée n'est conservée sans votre accord.</div>
@@ -162,6 +191,16 @@
   <div class="panel">
     <h2>Santé financière de la société</h2>
     <div class="sub">Complétez avec vos chiffres (en euros). Calcul 100 % déterministe, souverain — y compris l'alerte légale sur les capitaux propres.</div>
+    <div class="ocr">
+      <div class="ocr-ic">📄</div>
+      <div class="ocr-txt">
+        <div class="ocr-t">Importez votre bilan ou compte de résultat</div>
+        <div class="ocr-s">Lecture par IA française souveraine (Mistral) — vos chiffres se remplissent tout seuls. Le document n'est pas conservé.</div>
+      </div>
+      <label class="ocr-btn" for="ocr-file">Choisir un fichier (PDF / photo)</label>
+      <input type="file" id="ocr-file" accept="application/pdf,image/*" hidden onchange="lireDocument(this)">
+    </div>
+    <div class="ocr-status" id="ocr-status"></div>
     <div class="grid-in">
       <div class="fld"><label>Chiffre d'affaires</label><input id="f-ca" inputmode="numeric"></div>
       <div class="fld"><label>EBE</label><input id="f-ebe" inputmode="numeric"></div>
@@ -200,6 +239,44 @@
     <div class="or">ou directement —</div>
     <a class="mail" href="mailto:maxime@ikcp.fr?subject=Demande%20Audit%20Dirigeant%20%E2%80%94%20IKCP">Échanger avec Maxime</a>
   </div>
+</section>
+
+<!-- OFFRE -->
+<section class="wrap" id="sec-offre">
+  <div class="offer-head">
+    <div class="eyebrow">Votre audit n'est qu'un aperçu</div>
+    <h2>Continuez avec <span style="font-style:italic;color:var(--gold-deep)">Marcel</span></h2>
+    <p>Créez votre compte pour dialoguer avec l'intelligence souveraine — ou passez en Premium pour tout consolider automatiquement.</p>
+  </div>
+  <div class="tiers">
+    <div class="tier">
+      <div class="tier-tag">Gratuit</div>
+      <div class="tier-name">Découverte</div>
+      <div class="tier-price">0 €<span></span></div>
+      <ul class="tier-feats">
+        <li>Marcel IA — accès découverte (quelques échanges / mois)</li>
+        <li>Audit dirigeant + score patrimonial</li>
+        <li>Saisie de vos chiffres + import OCR d'un document</li>
+        <li>Sur ordinateur (web)</li>
+        <li>Données en France · conforme MIF II</li>
+      </ul>
+      <a href="/app/" class="btn" style="display:block;text-align:center">Créer mon compte gratuit</a>
+    </div>
+    <div class="tier feat">
+      <div class="tier-tag gold">Premium · le plus complet</div>
+      <div class="tier-name">Family Officer augmenté</div>
+      <div class="tier-price">59 €<span>/mois</span></div>
+      <ul class="tier-feats">
+        <li><b>Powens</b> — agrégation bancaire automatique : tous vos comptes, en direct (agréé ACPR)</li>
+        <li><b>Toutes les IA souveraines Mistral</b> — Marcel illimité + 12 univers + spécialistes (fiscalité, transmission, 360°…)</li>
+        <li><b>Import OCR illimité</b> de vos bilans & relevés</li>
+        <li><b>Application mobile</b> installable — votre patrimoine en poche</li>
+        <li>Veille patrimoniale quotidienne · reporting · conciergerie</li>
+      </ul>
+      <a href="mailto:maxime@ikcp.fr?subject=Passer%20en%20Premium%20%E2%80%94%20IKCP" class="btn btn-gold" style="display:block;text-align:center">Passer en Premium</a>
+    </div>
+  </div>
+  <p class="offer-note">Accompagnement humain : consultation avec Maxime à la demande (150 €). Tout est souverain — <b>données et IA en France</b>, zéro dépendance américaine.</p>
 </section>
 </main>
 
@@ -318,6 +395,27 @@ function renderPistes(){
   p.push(['Détention de l\'immobilier & IFI','Les murs de l\'activité sont-ils détenus dans la structure optimale, et votre assiette IFE/IFI isole-t-elle bien l\'immobilier professionnel exonérable ?']);
 
   $('pistes-out').innerHTML=p.map(([t,q])=>`<div class="piste"><div class="pt">${t}</div><div class="pq">${q}</div></div>`).join('');
+}
+
+async function lireDocument(input){
+  const file=input.files&&input.files[0]; if(!file) return;
+  const st=$('ocr-status');
+  if(file.size>8*1024*1024){ st.className='ocr-status ko'; st.textContent='Fichier trop lourd (max 8 Mo).'; input.value=''; return; }
+  st.className='ocr-status work'; st.textContent='📄 Lecture souveraine en cours… (10–20 s)';
+  try{
+    const dataUrl=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(file);});
+    const r=await fetch(PATRIMOINE+'/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({file:dataUrl,mime:file.type,name:file.name})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.error) throw new Error(d.hint||d.error||'indisponible');
+    const map={ca:'f-ca',ebe:'f-ebe',rn:'f-rn',cp:'f-cp',capital:'f-capital',dettes:'f-dettes',treso:'f-treso',remu:'f-remu',div:'f-div'};
+    let n=0; Object.keys(map).forEach(k=>{ if(d[k]!=null&&!isNaN(d[k])){ $(map[k]).value=d[k]; n++; } });
+    on('sec-finance');
+    if(n===0){ st.className='ocr-status ko'; st.textContent='Aucun chiffre reconnu — saisissez-les ci-dessous.'; }
+    else{ st.className='ocr-status ok'; st.textContent='✓ '+n+' valeur(s) extraite(s) de votre document. Vérifiez puis analysez.'; if(n>=3) analyser(); }
+  }catch(e){
+    st.className='ocr-status ko';
+    st.textContent='Import OCR bientôt activé — saisissez vos chiffres ci-dessous pour l\'instant.';
+  }finally{ input.value=''; }
 }
 
 async function envoyerLead(){

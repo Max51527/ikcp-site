@@ -198,6 +198,43 @@ function companyFinance(e) {
   return { ratios, alertCapital };
 }
 
+// ── OCR souverain : bilan/CR → Mistral OCR → extraction chiffrée (FR/UE, ZÉRO US) ──
+// Le document n'est jamais stocké ; il transite vers Mistral (UE) le temps de la lecture.
+async function ocrFinance(b, env) {
+  const data = String(b.file || '');
+  if (!data || data.length < 30) throw new Error('fichier manquant');
+  const isImg = /^data:image\//.test(data) || /^image\//.test(b.mime || '');
+  const document = isImg ? { type: 'image_url', image_url: data } : { type: 'document_url', document_url: data };
+  // 1) OCR du document
+  const r1 = await fetch('https://api.mistral.ai/v1/ocr', {
+    method: 'POST', headers: { 'Authorization': 'Bearer ' + env.MISTRAL_API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'mistral-ocr-latest', document }),
+  });
+  if (!r1.ok) throw new Error('ocr ' + r1.status + ' ' + (await r1.text()).slice(0, 120));
+  const d1 = await r1.json();
+  const text = (d1.pages || []).map(p => p.markdown || '').join('\n').slice(0, 12000);
+  if (!text.trim()) throw new Error('document illisible');
+  // 2) Extraction des montants en JSON strict (Mistral small, souverain)
+  const sys = "Tu extrais des montants comptables EN EUROS depuis un bilan ou compte de résultat français. "
+    + "Réponds UNIQUEMENT par un objet JSON avec ces clés (entier en euros, sans espaces ni symbole ; null si absent) : "
+    + "ca (chiffre d'affaires), ebe (excédent brut d'exploitation), rn (résultat net), cp (capitaux propres), "
+    + "capital (capital social), dettes (dettes financières), treso (trésorerie/disponibilités), "
+    + "remu (rémunération du dirigeant), div (dividendes distribués).";
+  const r2 = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    method: 'POST', headers: { 'Authorization': 'Bearer ' + env.MISTRAL_API_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'mistral-small-latest', temperature: 0, response_format: { type: 'json_object' },
+      messages: [{ role: 'system', content: sys }, { role: 'user', content: text }] }),
+  });
+  if (!r2.ok) throw new Error('extract ' + r2.status);
+  const d2 = await r2.json();
+  let parsed = {}; try { parsed = JSON.parse(((d2.choices || [])[0] || {}).message.content || '{}'); } catch (_) {}
+  const out = { ocr: true };
+  ['ca', 'ebe', 'rn', 'cp', 'capital', 'dettes', 'treso', 'remu', 'div'].forEach(k => {
+    const v = parsed[k]; out[k] = (v === null || v === undefined || isNaN(v)) ? null : Math.round(Number(v));
+  });
+  return out;
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -232,6 +269,14 @@ export default {
     if (url.pathname === '/finance' && req.method === 'POST') {
       let e = {}; try { e = await req.json(); } catch (_) {}
       return json({ ...companyFinance(e), disclaimer: DISCLAIMER }, 200, o);
+    }
+
+    // ── POST /ocr : bilan/CR → Mistral OCR → extraction chiffres (souverain FR/UE). Gated. ──
+    if (url.pathname === '/ocr' && req.method === 'POST') {
+      if (!env.MISTRAL_API_KEY) return json({ error: 'ocr_unconfigured', hint: 'pose MISTRAL_API_KEY sur ikcp-patrimoine (wrangler secret put)' }, 503, o);
+      let b = {}; try { b = await req.json(); } catch (_) {}
+      try { return json(await ocrFinance(b, env), 200, o); }
+      catch (e) { return json({ error: 'ocr_failed', message: String(e.message || e).slice(0, 160) }, 502, o); }
     }
 
     if (!db) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-patrimoine-db (--location weur), exécute schema.sql, bind PATRIMOINE_DB.' }, 503, o);
