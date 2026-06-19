@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit éclair du dirigeant — IKCP · Marcel IA souveraine</title>
+<meta name="description" content="Audit patrimonial éclair du dirigeant : cartographie de votre société par SIREN, ratios financiers, alerte légale sur les capitaux propres. Intelligence souveraine française, données en France. ORIAS 23001568.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://ikcp.eu/audit-dirigeant">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A; --navy-deep:#0E1729; --cream:#FAF8F4; --cream2:#F4EFE7;
+    --gold:#C9A96E; --gold-bright:#E2C896; --gold-deep:#8B6F3F;
+    --ink:#2C2418; --mute:#6B5D52; --line:#E7DECE;
+    --live:#2F9E6E; --alert:#C0414C; --warn:#B8862F; --white:#fff;
+    --shadow:0 1px 2px rgba(27,42,74,.04),0 8px 28px rgba(27,42,74,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+  h1,h2,h3{font-family:'Playfair Display',Georgia,serif;color:var(--navy);font-weight:700;line-height:1.15}
+
+  /* header */
+  header{position:sticky;top:0;z-index:20;background:rgba(250,248,244,.88);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:var(--navy);text-decoration:none;letter-spacing:.5px}
+  .brand b{color:var(--gold-deep)}
+  .nav .cta{font-size:14px;font-weight:600;color:var(--navy);text-decoration:none;border:1px solid var(--navy);padding:8px 16px;border-radius:999px;transition:.2s}
+  .nav .cta:hover{background:var(--navy);color:var(--white)}
+
+  /* hero */
+  .hero{padding:76px 0 40px;text-align:center}
+  .eyebrow{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:18px}
+  .hero h1{font-size:clamp(34px,5.4vw,52px);letter-spacing:-.5px}
+  .hero h1 i{font-style:italic;color:var(--gold-deep)}
+  .hero p.lead{max-width:600px;margin:20px auto 0;color:var(--mute);font-size:18px}
+  .trust{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:center;margin-top:22px;font-size:13px;color:var(--mute)}
+  .trust span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--live);display:inline-block;flex:none}
+
+  /* siren box */
+  .siren-card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:30px;margin:38px auto 0;max-width:560px}
+  .siren-card label{display:block;font-weight:600;color:var(--navy);margin-bottom:10px;font-size:15px}
+  .siren-row{display:flex;gap:10px}
+  .siren-row input{flex:1;font-family:'Outfit';font-size:19px;letter-spacing:3px;padding:15px 18px;border:1px solid var(--line);border-radius:12px;background:var(--cream);color:var(--ink);outline:none;transition:.2s;min-width:0}
+  .siren-row input:focus{border-color:var(--gold);background:var(--white);box-shadow:0 0 0 4px rgba(201,169,110,.14)}
+  .btn{font-family:'Outfit';font-weight:600;font-size:16px;padding:15px 26px;border:none;border-radius:12px;background:var(--navy);color:var(--white);cursor:pointer;transition:.2s;white-space:nowrap}
+  .btn:hover{background:var(--navy-deep)}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .btn-gold{background:var(--gold);color:var(--navy)}
+  .btn-gold:hover{background:var(--gold-bright)}
+  .hint{font-size:13px;color:var(--mute);margin-top:12px}
+  .err{color:var(--alert);font-size:14px;margin-top:12px;font-weight:500;display:none}
+
+  /* sections */
+  section.block{display:none;padding:14px 0}
+  section.block.on{display:block;animation:rise .5s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:28px;margin-top:26px}
+  .panel h2{font-size:24px;margin-bottom:4px}
+  .panel .sub{color:var(--mute);font-size:14px;margin-bottom:20px}
+  .kvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px 24px}
+  .kv .k{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--gold-deep);font-weight:600;margin-bottom:3px}
+  .kv .v{font-size:17px;color:var(--navy);font-weight:500}
+  .co-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .co-head .name{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy)}
+  .badge{font-size:12px;font-weight:600;padding:3px 11px;border-radius:999px;background:var(--cream2);color:var(--gold-deep);border:1px solid var(--line)}
+
+  /* finance inputs */
+  .grid-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .fld label{display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:5px}
+  .fld input{width:100%;font-family:'Outfit';font-size:15px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--cream);outline:none}
+  .fld input:focus{border-color:var(--gold);background:var(--white)}
+  .ratios{width:100%;border-collapse:collapse;margin-top:6px}
+  .ratios td{padding:11px 8px;border-bottom:1px solid var(--line);font-size:15px}
+  .ratios td.k{color:var(--ink)}
+  .ratios td.ref{color:var(--mute);font-size:12px;font-family:monospace}
+  .ratios td.v{text-align:right;font-weight:700;color:var(--navy)}
+  .legal{margin-top:20px;border-radius:14px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+  .legal.alert{background:#FBEDEE;border:1px solid #E7B9bf}
+  .legal.warn{background:#FBF4E6;border:1px solid #E8D5A8}
+  .legal.ok{background:#EAF6EF;border:1px solid #BfE3CD}
+  .legal .ic{font-size:20px;line-height:1.3}
+  .legal .t{font-weight:700;color:var(--navy);margin-bottom:3px}
+  .legal .m{font-size:14px;color:var(--ink)}
+
+  /* pistes */
+  .piste{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px;padding:16px 18px;margin-top:14px;background:var(--white)}
+  .piste .pt{font-weight:600;color:var(--navy);margin-bottom:4px}
+  .piste .pq{font-size:14px;color:var(--mute);font-style:italic}
+  .piste .pq:before{content:"› "}
+
+  /* lead cta */
+  .lead{background:var(--navy);color:var(--white);border-radius:20px;padding:38px 32px;margin:34px 0;text-align:center}
+  .lead h2{color:var(--white);font-size:27px}
+  .lead p{color:rgba(255,255,255,.74);max-width:520px;margin:12px auto 22px;font-size:16px}
+  .lead-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:520px;margin:0 auto}
+  .lead-row input{flex:1;min-width:200px;font-family:'Outfit';font-size:15px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:11px;background:rgba(255,255,255,.06);color:var(--white);outline:none}
+  .lead-row input::placeholder{color:rgba(255,255,255,.5)}
+  .lead-row input:focus{border-color:var(--gold)}
+  .lead .or{margin:16px 0 4px;font-size:13px;color:rgba(255,255,255,.55)}
+  .lead .mail{color:var(--gold-bright);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(226,200,150,.4)}
+  .lead .ok-msg{color:var(--gold-bright);font-weight:600;margin-top:14px;display:none}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:34px 0 50px;margin-top:20px;text-align:center}
+  footer .legalese{max-width:680px;margin:0 auto 16px;font-size:12.5px;color:var(--mute);line-height:1.7}
+  footer .orias{font-size:13px;color:var(--navy);font-weight:500}
+  footer .orias a{color:var(--gold-deep);text-decoration:none}
+  .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto}}
+  @media(max-width:560px){.siren-row{flex-direction:column}.nav .cta{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a href="https://ikcp.eu" class="brand">IKCP<b>.</b></a>
+    <a class="cta" href="mailto:maxime@ikcp.fr?subject=Demande%20Audit%20Dirigeant%20%E2%80%94%20IKCP">Échanger avec Maxime</a>
+  </div>
+</header>
+
+<main>
+<section class="hero wrap">
+  <div class="eyebrow">Marcel — intelligence patrimoniale souveraine</div>
+  <h1>Audit <i>éclair</i> du dirigeant</h1>
+  <p class="lead">Saisissez votre SIREN. En quelques secondes, une lecture de votre société et de votre situation de dirigeant — chiffrée, sourcée, sans démarche commerciale.</p>
+  <div class="trust">
+    <span><i class="dot"></i> Données hébergées en France</span>
+    <span><i class="dot"></i> Moteur français souverain</span>
+    <span><i class="dot"></i> Information, jamais recommandation (MIF II)</span>
+  </div>
+
+  <div class="siren-card">
+    <label for="siren">Votre numéro SIREN (9 chiffres)</label>
+    <div class="siren-row">
+      <input id="siren" inputmode="numeric" autocomplete="off" placeholder="ex. 947 972 436" maxlength="11">
+      <button class="btn" id="go" onclick="lancerAudit()">Lancer l'audit</button>
+    </div>
+    <div class="hint">Source officielle RNE / Pappers. Aucune donnée n'est conservée sans votre accord.</div>
+    <div class="err" id="err"></div>
+  </div>
+</section>
+
+<!-- SOCIÉTÉ -->
+<section class="block wrap" id="sec-societe">
+  <div class="panel">
+    <div class="co-head"><span class="name" id="co-name">—</span><span class="badge" id="co-forme"></span></div>
+    <div class="sub" id="co-naf"></div>
+    <div class="kvs" id="co-kvs"></div>
+  </div>
+</section>
+
+<!-- FINANCE -->
+<section class="block wrap" id="sec-finance">
+  <div class="panel">
+    <h2>Santé financière de la société</h2>
+    <div class="sub">Complétez avec vos chiffres (en euros). Calcul 100 % déterministe, souverain — y compris l'alerte légale sur les capitaux propres.</div>
+    <div class="grid-in">
+      <div class="fld"><label>Chiffre d'affaires</label><input id="f-ca" inputmode="numeric"></div>
+      <div class="fld"><label>EBE</label><input id="f-ebe" inputmode="numeric"></div>
+      <div class="fld"><label>Résultat net</label><input id="f-rn" inputmode="numeric"></div>
+      <div class="fld"><label>Capitaux propres</label><input id="f-cp" inputmode="numeric"></div>
+      <div class="fld"><label>Capital social</label><input id="f-capital" inputmode="numeric"></div>
+      <div class="fld"><label>Dettes financières</label><input id="f-dettes" inputmode="numeric"></div>
+      <div class="fld"><label>Trésorerie</label><input id="f-treso" inputmode="numeric"></div>
+      <div class="fld"><label>Rémunération dirigeant</label><input id="f-remu" inputmode="numeric"></div>
+      <div class="fld"><label>Dividendes versés</label><input id="f-div" inputmode="numeric"></div>
+    </div>
+    <button class="btn btn-gold" style="margin-top:18px" onclick="analyser()">Analyser la santé financière</button>
+    <div id="fin-out"></div>
+  </div>
+</section>
+
+<!-- PISTES -->
+<section class="block wrap" id="sec-pistes">
+  <div class="panel">
+    <h2>Pistes de réflexion détectées</h2>
+    <div class="sub">Des angles à explorer — formulés en questions, jamais en recommandations. La réponse dépend de votre situation complète.</div>
+    <div id="pistes-out"></div>
+  </div>
+</section>
+
+<!-- LEAD -->
+<section class="block wrap" id="sec-lead">
+  <div class="lead">
+    <h2>Allez plus loin avec Marcel</h2>
+    <p>Recevez l'analyse approfondie de Marcel — l'intelligence souveraine qui mobilise 12 spécialistes (fiscalité, transmission, immobilier, social) — et un échange avec Maxime.</p>
+    <div class="lead-row">
+      <input id="lead-email" type="email" placeholder="votre@email.fr" autocomplete="email">
+      <button class="btn btn-gold" id="lead-btn" onclick="envoyerLead()">Recevoir l'analyse</button>
+    </div>
+    <div class="ok-msg" id="lead-ok">✓ Demande transmise. Maxime vous recontacte.</div>
+    <div class="or">ou directement —</div>
+    <a class="mail" href="mailto:maxime@ikcp.fr?subject=Demande%20Audit%20Dirigeant%20%E2%80%94%20IKCP">Échanger avec Maxime</a>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">
+  <p class="legalese">
+    Cet audit fournit une information générale à caractère pédagogique. Il ne constitue pas un conseil en investissement ni une recommandation personnalisée au sens de l'art. L.541-1 du Code monétaire et financier. Tout conseil patrimonial personnalisé suppose une lettre de mission préalable.
+    Données traitées en France (Cloudflare WEUR), moteur d'analyse français — aucune dépendance américaine. Vos chiffres saisis ne sont pas conservés.
+  </p>
+  <p class="orias">
+    <strong>IKCP — IKIGAÏ Conseil Patrimonial</strong> · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436<br>
+    Lyon · Annonay · Megève · <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a> · <a href="tel:0667537979">06 67 53 79 79</a>
+  </p>
+</footer>
+
+<script>
+const PAPPERS='https://ikcp-pappers.maxime-ead.workers.dev';
+const PATRIMOINE='https://ikcp-patrimoine.maxime-ead.workers.dev';
+const PROSPECT='https://ikcp-prospect.maxime-ead.workers.dev';
+let CO=null, FIN=null;
+
+const $=id=>document.getElementById(id);
+const num=v=>{const x=String(v==null?'':v).replace(/[^\d.-]/g,'');return x===''?null:Number(x);};
+const eur=v=>(v==null||isNaN(v))?'—':Number(v).toLocaleString('fr-FR')+' €';
+const EFF={'00':'0 salarié','01':'1–2','02':'3–5','03':'6–9','11':'10–19','12':'20–49','21':'50–99','22':'100–199','31':'200–249','32':'250–499','41':'500–999','42':'1 000–1 999','51':'2 000–4 999','52':'5 000–9 999','53':'10 000+'};
+const eff=v=>(v==null||v==='')?'n.c.':(EFF[String(v).trim()]?EFF[String(v).trim()]+' salariés':String(v));
+const on=id=>$(id).classList.add('on');
+
+function showErr(m){const e=$('err');e.textContent=m;e.style.display='block';}
+
+async function lancerAudit(){
+  const raw=$('siren').value.replace(/\D/g,'');
+  $('err').style.display='none';
+  if(raw.length!==9){showErr('Un SIREN comporte exactement 9 chiffres.');return;}
+  const btn=$('go');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Analyse…';
+  try{
+    const r=await fetch(PAPPERS+'/entreprise/'+raw+'/short');
+    if(!r.ok) throw new Error('Société introuvable — vérifiez le SIREN.');
+    CO=await r.json();
+    if(CO.error) throw new Error('Société introuvable — vérifiez le SIREN.');
+    renderCompany(CO); prefill(CO);
+    on('sec-societe');on('sec-finance');on('sec-pistes');on('sec-lead');
+    renderPistes();
+    $('sec-societe').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){showErr(e.message||'Erreur de chargement.');}
+  finally{btn.disabled=false;btn.textContent="Lancer l'audit";}
+}
+
+function renderCompany(c){
+  $('co-name').textContent=c.nom||'Société';
+  $('co-forme').textContent=c.forme_juridique||'';
+  const naf=[c.code_naf,c.libelle_code_naf].filter(Boolean).join(' · ');
+  $('co-naf').textContent=naf||'';
+  const sg=c.siege||{};
+  const adr=[sg.code_postal,sg.ville].filter(Boolean).join(' ');
+  const an=c.date_creation?(' ('+String(c.date_creation).slice(0,4)+')'):'';
+  const rows=[
+    ['SIREN', c.siren],
+    ['Capital social', c.capital!=null?eur(c.capital):'—'],
+    ['Siège', adr||'—'],
+    ['Effectif', eff(c.tranche_effectif)],
+    ['Chiffre d\'affaires', c.chiffre_affaires!=null?eur(c.chiffre_affaires):'n.c.'],
+    ['Résultat', c.resultat!=null?eur(c.resultat):'n.c.'],
+    ['Dirigeants', (c.nb_dirigeants!=null?c.nb_dirigeants:'—')],
+    ['Création'+an, c.date_creation||'—'],
+  ];
+  $('co-kvs').innerHTML=rows.map(([k,v])=>`<div class="kv"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+}
+
+function prefill(c){
+  if(c.chiffre_affaires!=null)$('f-ca').value=c.chiffre_affaires;
+  if(c.resultat!=null)$('f-rn').value=c.resultat;
+  if(c.capital!=null)$('f-capital').value=c.capital;
+}
+
+async function analyser(){
+  const e={ca:num($('f-ca').value),ebe:num($('f-ebe').value),rn:num($('f-rn').value),
+    cp:num($('f-cp').value),dettes:num($('f-dettes').value),treso:num($('f-treso').value),
+    capital:num($('f-capital').value),remu:num($('f-remu').value),div:num($('f-div').value)};
+  try{
+    const r=await fetch(PATRIMOINE+'/finance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(e)});
+    FIN=await r.json();
+    renderFinance(FIN); renderPistes();
+  }catch(err){$('fin-out').innerHTML='<p class="err" style="display:block">Service momentanément indisponible.</p>';}
+}
+
+function renderFinance(f){
+  let h='<table class="ratios"><tbody>';
+  (f.ratios||[]).forEach(r=>{h+=`<tr><td class="k">${r.k}</td><td class="ref">${r.ref}</td><td class="v">${r.v}</td></tr>`;});
+  h+='</tbody></table>';
+  if(f.alertCapital){
+    const lv=f.alertCapital.level==='alert'?'alert':'warn';
+    const ic=lv==='alert'?'⚠':'△';
+    h+=`<div class="legal ${lv}"><div class="ic">${ic}</div><div><div class="t">Capitaux propres — point de vigilance légal</div><div class="m">${f.alertCapital.msg}</div></div></div>`;
+  }else if(num($('f-cp').value)!=null){
+    h+=`<div class="legal ok"><div class="ic">✓</div><div><div class="t">Capitaux propres conformes</div><div class="m">Aucune obligation de régularisation détectée (art. L.223-42 / L.225-248).</div></div></div>`;
+  }
+  $('fin-out').innerHTML=h;
+}
+
+function renderPistes(){
+  const p=[];
+  // Alerte légale capitaux propres → piste prioritaire
+  if(FIN&&FIN.alertCapital){
+    p.push(['Capitaux propres : obligation à cadrer','Le redressement (incorporation de compte courant, réduction/augmentation de capital, apport) doit-il être arbitré avant la prochaine clôture ?']);
+  }
+  // Rémunération / dividendes — toujours pertinent dirigeant
+  p.push(['Arbitrage rémunération / dividendes','Votre statut social (assimilé salarié ou TNS) change le coût global : ce mix est-il recalculé chaque année, et le seuil des 10 % du capital surveillé pour le TNS ?']);
+  // Trésorerie société dormante
+  const treso=num($('f-treso').value);
+  if(treso!=null&&treso>100000){
+    p.push(['Trésorerie d\'entreprise','Cette trésorerie travaille-t-elle, et une holding patrimoniale aurait-elle du sens pour l\'orienter ?']);
+  }
+  // Transmission — Dutreil
+  p.push(['Transmission de l\'entreprise','Une transmission anticipée via un pacte Dutreil (abattement 75 %, art. 787 B) combinée à un démembrement a-t-elle déjà été chiffrée ?']);
+  // Immobilier pro / IFI
+  p.push(['Détention de l\'immobilier & IFI','Les murs de l\'activité sont-ils détenus dans la structure optimale, et votre assiette IFE/IFI isole-t-elle bien l\'immobilier professionnel exonérable ?']);
+
+  $('pistes-out').innerHTML=p.map(([t,q])=>`<div class="piste"><div class="pt">${t}</div><div class="pq">${q}</div></div>`).join('');
+}
+
+async function envoyerLead(){
+  const email=$('lead-email').value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){$('lead-email').focus();$('lead-email').style.borderColor='var(--gold)';return;}
+  const btn=$('lead-btn');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Envoi…';
+  const co=CO?(CO.nom+' (SIREN '+CO.siren+')'):'(SIREN non renseigné)';
+  const body='Demande d\'analyse approfondie Audit Dirigeant.\nSociété : '+co+'\nLe prospect souhaite l\'analyse complète de Marcel et un échange avec Maxime.';
+  try{
+    const r=await fetch(PROSPECT+'/',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'marcel_synthesis_request',visitor_email:email,subject:'Votre audit dirigeant — IKCP',body:body,page:'audit-dirigeant'})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.success){$('lead-ok').style.display='block';$('lead-email').value='';btn.textContent='Envoyé ✓';return;}
+    throw new Error();
+  }catch(e){
+    // repli souverain garanti : on bascule sur le mail direct
+    window.location.href='mailto:maxime@ikcp.fr?subject=Demande%20Audit%20Dirigeant%20%E2%80%94%20IKCP&body='+encodeURIComponent('Mon email : '+email+'\n'+co);
+    btn.disabled=false;btn.textContent='Recevoir l\'analyse';
+  }
+}
+
+$('siren').addEventListener('keydown',e=>{if(e.key==='Enter')lancerAudit();});
+</script>
+</body>
+</html>
