@@ -6,12 +6,10 @@ compatibility_date = "2026-04-22"
 enabled = true
 
 # strategies.json est bundlé automatiquement (import dans worker.js).
+# Note : MISTRAL_API_KEY (/ocr) à poser via `wrangler secret put` (survit au déploiement).
 
-# ── Base D1 Paris (données patrimoniales clients) — à créer une seule fois ──
-#   npx wrangler d1 create ikcp-patrimoine-db --location weur
-#   npx wrangler d1 execute ikcp-patrimoine-db --remote --file=schema.sql
-#   puis colle l'id renvoyé ci-dessous et décommente le bloc :
-# [[d1_databases]]
-# binding = "PATRIMOINE_DB"
-# database_name = "ikcp-patrimoine-db"
-# database_id = "REMPLACE_PAR_L_ID"
+# ── Base D1 Paris (données patrimoniales clients) — créée le 19 juin 2026 (WEUR) ──
+[[d1_databases]]
+binding = "PATRIMOINE_DB"
+database_name = "ikcp-patrimoine-db"
+database_id = "a028ea28-b641-4cae-9b0d-f8cf18cf41aa"
