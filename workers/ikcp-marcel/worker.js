@@ -689,6 +689,7 @@ FORMAT MARKDOWN :
 - Listes à puces pour étapes/dispositifs
 - > pour phrases à retenir absolument
 - ## pour sections quand la réponse est longue
+- SCHÉMA quand tu décris une STRUCTURE (holding, montage OBO, flux de transmission, démembrement, organigramme de détention) : illustre-la par UN diagramme Mermaid dans un bloc \`\`\`mermaid (syntaxe flowchart simple : "graph TD" ou "graph LR", nœuds A["Libellé"], liens A --> B, libellés de flèche A -->|"loyers"| B). Maximum 1 schéma, court (≤ 8 nœuds), TOUJOURS en complément du texte — jamais à la place. N'invente pas de chiffres dans le schéma.
 - Conclusion : **Piste de réflexion :** (jamais une recommandation directe)
 
 SUGGESTIONS DE SUIVI — OBLIGATOIRE À LA FIN DE CHAQUE RÉPONSE :

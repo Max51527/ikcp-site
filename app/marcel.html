@@ -343,7 +343,16 @@ function mdInline(s){
 }
 // Moteur markdown bloc par bloc : titres, tableaux GFM, listes, règles, paragraphes
 function md(src){
-  var lines = mdEsc(String(src)).replace(/\r/g,'').split('\n');
+  // Blocs ``` extraits AVANT l'échappement : mermaid → diagramme, sinon <pre>
+  var fences = [];
+  src = String(src).replace(/\r/g,'').replace(/```(\w*)\n?([\s\S]*?)```/g, function(_, lang, code){
+    var idx = fences.length, safe = mdEsc(code.replace(/\n$/,''));
+    fences.push((lang||'').toLowerCase()==='mermaid'
+      ? '<div class="mermaid">'+safe+'</div>'
+      : '<pre class="codeblk"><code>'+safe+'</code></pre>');
+    return '\n@@FENCE'+idx+'@@\n';
+  });
+  var lines = mdEsc(src).split('\n');
   var out = [], i = 0;
   function row(line){ return line.trim().replace(/^\||\|$/g,'').split('|').map(function(c){return mdInline(c.trim());}); }
   while(i < lines.length){
@@ -368,7 +377,37 @@ function md(src){
       para.push(p); i++; }
     out.push('<p>'+mdInline(para.join('<br>'))+'</p>');
   }
-  return out.join('');
+  var html = out.join('');
+  html = html.replace(/<p>\s*(@@FENCE\d+@@)\s*<\/p>/g, '$1').replace(/@@FENCE(\d+)@@/g, function(_, n){ return fences[+n] || ''; });
+  if (html.indexOf('class="mermaid"') !== -1) setTimeout(renderMermaid, 30);
+  return html;
+}
+
+// ─── Schémas Mermaid (souverain, auto-hébergé, lazy-loadé) ───
+var _mermaidP = null;
+function loadMermaid(){
+  if (_mermaidP) return _mermaidP;
+  var st = document.createElement('style');
+  st.textContent = '.mermaid{background:#fff;border:1px solid rgba(27,42,74,.1);border-radius:12px;padding:14px;margin:10px 0;overflow-x:auto;text-align:center}.mermaid svg{max-width:100%;height:auto}.codeblk{background:#0E1729;color:#E2C896;border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.5;margin:8px 0}';
+  document.head.appendChild(st);
+  _mermaidP = new Promise(function(res, rej){
+    var s = document.createElement('script'); s.src = '/app/js/vendor/mermaid.min.js';
+    s.onload = function(){ try{ window.mermaid.initialize({ startOnLoad:false, theme:'neutral', securityLevel:'strict', fontFamily:'Outfit, system-ui, sans-serif' }); }catch(_){} res(window.mermaid); };
+    s.onerror = rej; document.head.appendChild(s);
+  });
+  return _mermaidP;
+}
+function renderMermaid(){
+  var nodes = [].slice.call(document.querySelectorAll('.mermaid:not([data-mmd])'));
+  if (!nodes.length) return;
+  loadMermaid().then(function(m){
+    nodes.forEach(function(n){
+      n.setAttribute('data-mmd','1'); var code = n.textContent;
+      var id = 'mmd' + Math.random().toString(36).slice(2,9);
+      try { m.render(id, code).then(function(r){ n.innerHTML = r.svg; }).catch(function(){ n.innerHTML = '<pre class="codeblk"><code>'+mdEsc(code)+'</code></pre>'; }); }
+      catch(e){ n.innerHTML = '<pre class="codeblk"><code>'+mdEsc(code)+'</code></pre>'; }
+    });
+  }).catch(function(){});
 }
 
 // ─── Suggestions de démarrage personnalisées ───
