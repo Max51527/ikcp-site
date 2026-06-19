@@ -1147,6 +1147,21 @@ export default {
         } catch (_) { /* plafond non bloquant : en cas d'erreur, on laisse passer */ }
       }
 
+      // ── EXPERTISE PROPRE IKCP (RAG souverain · doc Notion EN COMPLÉMENT de Mistral) ──
+      // On récupère les fiches du cabinet pertinentes à la question et on les injecte.
+      // Best-effort : si ikcp-rag n'est pas (encore) configuré, on ignore → Marcel
+      // répond normalement. Quand l'index est vivant, Marcel cite TON expertise.
+      try {
+        if (message) {
+          const rg = await fetch('https://ikcp-rag.maxime-ead.workers.dev/search?k=4&q=' + encodeURIComponent(String(message).slice(0, 400)));
+          if (rg.ok) {
+            const rd = await rg.json();
+            const fiches = (rd.fiches || []).filter(f => f && f.text && f.score > 0.55).map(f => '— ' + String(f.text).trim()).join('\n\n');
+            if (fiches) systemPromptText += `\n\n# EXPERTISE PROPRE DU CABINET IKCP (à utiliser EN PRIORITÉ)\nCes fiches viennent de la doctrine d'IKCP. Ancre ta réponse dessus (dispositifs, articles, seuils), cite le mécanisme, reste pédagogique, et termine TOUJOURS par une question (MIF II).\n\n${fiches}`;
+          }
+        }
+      } catch (_) { /* RAG non bloquant */ }
+
       // Prompt caching : le system prompt est stable, on le marque pour cache
       // (cache TTL 5 min côté Anthropic, ~90% de réduction du coût input après)
       const systemParam = [{
