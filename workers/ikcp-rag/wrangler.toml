@@ -1,0 +1,26 @@
+name = "ikcp-rag"
+main = "worker.js"
+compatibility_date = "2026-04-22"
+# Les secrets posés au dashboard survivent au déploiement CI (cf. incident Powens).
+keep_vars = true
+
+[observability]
+enabled = true
+
+[vars]
+NOTION_DOC_ID = "6da4ff7ad97b45b5b7af51200303ac1c"   # page Notion « Documentation »
+
+# ── CRON : ré-indexation AUTO chaque lundi 6h UTC (« mettre à jour ») ──
+[triggers]
+crons = ["0 6 * * 1"]
+
+# ── Index Vectorize (créer une fois, puis décommenter) ──
+#   npx wrangler vectorize create ikcp-knowledge --dimensions=1024 --metric=cosine
+# [[vectorize]]
+# binding = "VEC"
+# index_name = "ikcp-knowledge"
+
+# ── SECRETS (jamais ici) — wrangler secret put OU dashboard ──
+#   MISTRAL_API_KEY   (embeddings souverains UE)
+#   NOTION_TOKEN      (intégration Notion, PARTAGÉE sur la page Documentation)
+#   RAG_ADMIN         (protège POST /ingest)

@@ -17,6 +17,7 @@ on:
       - 'workers/ikcp-cms-auth/**'
       - 'workers/ikcp-feedback/**'
       - 'workers/ikcp-patrimoine/**'
+      - 'workers/ikcp-rag/**'
   workflow_dispatch:
     inputs:
       target:
@@ -39,6 +40,7 @@ on:
           - ikcp-cms-auth
           - ikcp-feedback
           - ikcp-patrimoine
+          - ikcp-rag
 
 jobs:
   deploy-ikcp-marcel:
@@ -287,3 +289,22 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
           workingDirectory: workers/ikcp-patrimoine
+
+  deploy-ikcp-rag:
+    name: "Deploy ikcp-rag (base de connaissances IKCP)"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.target == 'all' || github.event.inputs.target == 'ikcp-rag') ||
+      github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Deploy ikcp-rag (RAG souverain Notion + Mistral + Vectorize)"
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: eaddc4cc77d99dd397a62e5d5a1b6864
+          workingDirectory: workers/ikcp-rag
