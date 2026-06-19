@@ -20,6 +20,7 @@
 name = "ikcp-chat"
 main = "worker.js"
 compatibility_date = "2026-04-22"
+keep_vars = true  # secrets dashboard preserves au deploy CI (incident Powens)
 
 # Logging KV — questions anonymisées (TTL 90j) pour analyser les sujets récurrents
 [[kv_namespaces]]

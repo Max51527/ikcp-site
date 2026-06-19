@@ -24,16 +24,16 @@
 name = "ikcp-feedback"
 main = "worker.js"
 compatibility_date = "2026-05-01"
+keep_vars = true  # secrets dashboard preserves au deploy CI (incident Powens)
 
 [placement]
 mode = "smart"
 
-# Activer après avoir exécuté : npx wrangler d1 create ikcp-feedback-db --location weur
-# Remplacer XXXXXXXX par l'ID renvoyé
-# [[d1_databases]]
-# binding = "FEEDBACK_DB"
-# database_name = "ikcp-feedback-db"
-# database_id = "REMPLACER_PAR_L_ID_D1"
+# Base D1 feedback bêta (Paris/WEUR) — branchée le 19 juin 2026
+[[d1_databases]]
+binding = "FEEDBACK_DB"
+database_name = "ikcp-feedback-db"
+database_id = "848113dd-2cb6-4d30-88ca-a43c7a1d2e4b"
 
 [observability]
 enabled = true
