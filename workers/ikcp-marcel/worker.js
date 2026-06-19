@@ -1156,7 +1156,7 @@ export default {
           const rg = await fetch('https://ikcp-rag.maxime-ead.workers.dev/search?k=4&q=' + encodeURIComponent(String(message).slice(0, 400)));
           if (rg.ok) {
             const rd = await rg.json();
-            const fiches = (rd.fiches || []).filter(f => f && f.text && f.score > 0.55).map(f => '— ' + String(f.text).trim()).join('\n\n');
+            const fiches = (rd.fiches || []).filter(f => f && f.text && f.score > 0.45).map(f => '— ' + String(f.text).trim()).join('\n\n');
             if (fiches) systemPromptText += `\n\n# EXPERTISE PROPRE DU CABINET IKCP (à utiliser EN PRIORITÉ)\nCes fiches viennent de la doctrine d'IKCP. Ancre ta réponse dessus (dispositifs, articles, seuils), cite le mécanisme, reste pédagogique, et termine TOUJOURS par une question (MIF II).\n\n${fiches}`;
           }
         }

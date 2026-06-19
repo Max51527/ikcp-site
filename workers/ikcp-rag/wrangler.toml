@@ -18,6 +18,11 @@ NOTION_DOC_ID = "6da4ff7ad97b45b5b7af51200303ac1c"   # page Notion « Documentat
 binding = "VEC"
 index_name = "ikcp-knowledge"
 
+# ── Workers AI : embeddings souverains bge-m3 (multilingue, 1024 dim, ZÉRO clé) ──
+# Voie par défaut si MISTRAL_API_KEY absente. Même stack Cloudflare que D1/Vectorize.
+[ai]
+binding = "AI"
+
 # ── SECRETS (jamais ici) — wrangler secret put OU dashboard ──
 #   MISTRAL_API_KEY   (embeddings souverains UE)
 #   NOTION_TOKEN      (intégration Notion, PARTAGÉE sur la page Documentation)
