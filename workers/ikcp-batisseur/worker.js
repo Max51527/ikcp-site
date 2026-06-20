@@ -223,6 +223,12 @@ export default {
       } catch (_) { /* fallback Anthropic */ }
     }
 
+    // ── SOUVERAINETÉ : en production (Mistral), AUCUNE bascule vers les US.
+    // Claude (Anthropic) n'est joignable qu'en dev via ALLOW_US_FALLBACK='true'.
+    if (env.LLM_PRIMARY === 'mistral' && env.ALLOW_US_FALLBACK !== 'true') {
+      return Response.json({ error: 'sovereign_unavailable', message: 'Service souverain momentanément indisponible. Merci de réessayer dans un instant.' }, { status: 503, headers: corsHeaders(origin) });
+    }
+
     try {
       const apiResponse = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
