@@ -239,10 +239,10 @@ select option{background:var(--navy-deep)}
       <section class="view" id="v-membres">
         <div class="card" style="margin-top:0">
           <h2>🧪 Définir un tier <span class="desc tools" style="margin:0"></span></h2>
-          <div class="desc">Pour vivre l'expérience client : connectez-vous (lien magique), passez votre email en Family Office ici, puis rafraîchissez l'espace membre.</div>
+          <div class="desc">Pour vivre l'expérience client : connectez-vous (lien magique), passez votre email en intelligence patrimoniale ici, puis rafraîchissez l'espace membre.</div>
           <div class="row">
             <div><label>Email du membre</label><input type="email" id="stEmail" placeholder="maxime@ikcp.fr"></div>
-            <div><label>Tier</label><select id="stTier"><option value="fo">Family Office (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
+            <div><label>Tier</label><select id="stTier"><option value="fo">intelligence patrimoniale (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
             <div style="flex:0 0 auto;display:flex;align-items:flex-end"><button class="btn" onclick="setTier()">Appliquer →</button></div>
           </div>
           <div id="stMsg"></div>
@@ -449,7 +449,7 @@ select option{background:var(--navy-deep)}
           <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/pages" target="_blank">☁️ Cloudflare Pages — le site (déploiements, domaine)</a>
           <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers/overview" target="_blank">⚙️ Cloudflare Workers — les agents IA / API (logs, secrets)</a>
           <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Application &amp; espaces</div>
-          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur Family Office (white-label) — packager un espace de marque</a>
+          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur intelligence patrimoniale (white-label) — packager un espace de marque</a>
           <a class="lnk" href="/app/patrimoine-pro" target="_blank">📊 Cockpit patrimoine (le SaaS premium)</a>
           <a class="lnk" href="/decouvrir" target="_blank">🎬 Vitrine /decouvrir (vidéo + invitation)</a>
           <a class="lnk" href="/app/dashboard" target="_blank">📲 Espace membre — installer la PWA (« écran d'accueil »)</a>
@@ -519,8 +519,8 @@ select option{background:var(--navy-deep)}
 
         <div class="card">
           <h2>🎨 Sur-mesure — « Claude design »</h2>
-          <div class="desc">Ajuster le sur-mesure d'un espace Family Office, sans coder. Trois leviers :</div>
-          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur Family Office (white-label) — packager un espace de marque pour un confrère CGP</a>
+          <div class="desc">Ajuster le sur-mesure d'un espace intelligence patrimoniale, sans coder. Trois leviers :</div>
+          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur intelligence patrimoniale (white-label) — packager un espace de marque pour un confrère CGP</a>
           <a class="lnk" href="/app/studio.html" target="_blank">🎨 Studio design — palettes, typographies, composants</a>
           <div class="alert ok" style="margin-top:10px"><span class="x">💬</span><div><b>Claude design (le plus puissant)</b> — ouvre la page à ajuster et dis « Claude, change X ici ». Modif → push GitHub → en ligne en ~30 s.</div></div>
           <div class="alert warn" style="margin-top:10px"><span class="x">🌌</span><div><b>Univers créés par le client</b> (chaque famille compose ses propres univers) = prochaine brique produit. Dis « go univers clients » et je câble l'éditeur côté membre + stockage D1.</div></div>
@@ -693,7 +693,7 @@ async function loadStats(){
     const k = (v,l,sub,ic) => `<div class="kpi"><span class="ic">${ic||''}</span><div class="v">${v}</div><div class="l">${l}</div>${sub?`<div class="s">${sub}</div>`:''}</div>`;
     el.innerHTML =
       k(s.members,'Membres',`${s.by_tier.free} free · ${s.by_tier.premium} prem · ${s.by_tier.fo} FO`,'👤')
-      + k(s.by_tier.fo,'Family Office','cercle restreint','✦')
+      + k(s.by_tier.fo,'intelligence patrimoniale','cercle restreint','✦')
       + k('+'+s.signups_7d,'Inscrits','7 derniers jours','↗')
       + k(s.marcel_messages_month||0,'Messages Marcel','ce mois','◆')
       + k(s.pending_applications,'Candidatures','en attente','✎')
@@ -758,7 +758,7 @@ async function loadHealth(){
 
 /* ─── AGENTS (vue technique) ─── */
 const AGENTS = [
-  {n:'Marcel',role:'Chef d\'orchestre',model:'sonnet',u:W('chat')+'/health',note:'Opus + persona Marcel en mode Family Office'},
+  {n:'Marcel',role:'Chef d\'orchestre',model:'sonnet',u:W('chat')+'/health',note:'Opus + persona Marcel en mode intelligence patrimoniale'},
   {n:'Codex',role:'Fiscalité',model:'opus',u:W('codex')+'/health'},
   {n:'Hermès',role:'Transmission',model:'opus',u:W('hermes')+'/health'},
   {n:'Bâtisseur',role:'Patrimoine 360°',model:'opus',u:W('batisseur')+'/health'},
@@ -880,7 +880,7 @@ async function loadTriage(){
     const r=await fetch(`${API}/api/v1/admin/triage`,{headers:hdr()}); const d=await r.json();
     if(!d.count){ el.innerHTML='<div class="empty">Aucune demande en attente.</div>'; return; }
     el.innerHTML='<div class="empty">✦ Marcel classe '+d.count+' demande(s)… (quelques secondes)</div>';
-    const prompt = "Tu es l'assistant de selection des 50 familles fondatrices d'un Family Office (beta sur invitation). Demandes recues :\n\n"+d.list+"\n\nClasse-les par priorite d'admission. Reponds UNIQUEMENT par une liste numerotee, une ligne par demande, format : « N. email — Priorite: haute/moyenne/basse · Tier conseille: Decouverte/Premium/Family Office · Argument: <phrase courte sur les signaux de l'objectif> ». Aucune introduction, aucun disclaimer.";
+    const prompt = "Tu es l'assistant de selection des 50 familles fondatrices d'une intelligence patrimoniale (beta sur invitation). Demandes recues :\n\n"+d.list+"\n\nClasse-les par priorite d'admission. Reponds UNIQUEMENT par une liste numerotee, une ligne par demande, format : « N. email — Priorite: haute/moyenne/basse · Tier conseille: Decouverte/Premium/intelligence patrimoniale · Argument: <phrase courte sur les signaux de l'objectif> ». Aucune introduction, aucun disclaimer.";
     const m=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:prompt,history:[]})});
     const md=await m.json(); let txt=(md.reply||md.message||'').replace(/\*?Cette information ne constitue[^]*$/i,'').replace(/^---+\s*$/gm,'').trim();
     el.innerHTML='<div style="white-space:pre-wrap;font-size:13px;line-height:1.8;color:var(--cream)">'+esc(txt||'(pas de réponse)')+'</div><div style="font-size:11px;color:var(--mute);margin-top:10px">'+d.count+' demande(s) classées par Marcel. Approuve ci-dessous → chaque admis reçoit sa clé d\'accès (« Générer une invitation »).</div>';
@@ -902,7 +902,7 @@ function renderApps(list){
       <div class="h"><span class="em">${esc(a.prenom||'')} · ${esc(a.email)}</span><span class="pill">${esc(a.code||'—')}</span></div>
       <div class="meta">${a.siren?`SIREN <b>${esc(a.siren)}</b> · `:''}Patrimoine déclaré <b>${esc(a.patrimoine_declare||'n/c')}</b> · Reçu le ${d}</div>
       <div class="acts">
-        <select id="tier-${esc(a.id)}"><option value="fo">Family Office (bêta)</option><option value="premium">Premium</option></select>
+        <select id="tier-${esc(a.id)}"><option value="fo">intelligence patrimoniale (bêta)</option><option value="premium">Premium</option></select>
         <button class="btn sm" onclick="decide('${esc(a.id)}','approve')">Approuver →</button>
         <button class="btn reject sm" onclick="decide('${esc(a.id)}','reject')">Refuser</button>
       </div>
@@ -1005,7 +1005,7 @@ async function forceAppUpdate(){
 }
 
 /* ─── PARTENAIRES ─── */
-const PART_CATS = ['Avocat fiscaliste','Avocat d\'affaires','Notaire','Expert-comptable','Assureur / courtier','Banquier privé','Gestionnaire de fortune','Family Office','Conseil immobilier','Marchand de biens','Art advisor','Conciergerie','Autre'];
+const PART_CATS = ['Avocat fiscaliste','Avocat d\'affaires','Notaire','Expert-comptable','Assureur / courtier','Banquier privé','Gestionnaire de fortune','intelligence patrimoniale','Conseil immobilier','Marchand de biens','Art advisor','Conciergerie','Autre'];
 let PARTNERS = [];
 async function loadPartners(){
   const el = document.getElementById('partners');

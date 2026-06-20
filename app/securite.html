@@ -344,7 +344,7 @@ try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; 
 
 if(me){
   document.getElementById('meEmail').textContent = me.email || '—';
-  const tierLbl = {free:'Découverte',premium:'Premium',fo:'Family Office','sur_mesure':'Sur-mesure IKCP'}[me.tier] || 'Découverte';
+  const tierLbl = {free:'Découverte',premium:'Premium',fo:'intelligence patrimoniale','sur_mesure':'Sur-mesure IKCP'}[me.tier] || 'Découverte';
   document.getElementById('meTier').textContent = tierLbl;
   document.getElementById('sessionDevice').textContent = (navigator.userAgent.match(/(Chrome|Firefox|Safari|Edge)/)?.[0] || 'Navigateur') + ' · IP masquée RGPD';
 }

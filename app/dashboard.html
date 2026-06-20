@@ -21,7 +21,7 @@
 <header class="app-header">
   <a href="/app/dashboard.html" class="app-brand">
     Marcel<em>.</em>
-    <span class="app-brand-sub">Family Office augmenté</span>
+    <span class="app-brand-sub">intelligence patrimoniale augmentée</span>
   </a>
   <div class="app-user">
     <span class="tier" id="userTier">Découverte</span>
@@ -34,7 +34,7 @@
 
 <main class="app-main">
   <div class="section-label">Bonjour <span id="userPrenom">Maxime</span></div>
-  <h1 class="app-h1">Votre Family Office, <em>en orbite.</em></h1>
+  <h1 class="app-h1">Votre intelligence patrimoniale, <em>en orbite.</em></h1>
   <p class="app-lead" id="userGreeting">Chargement de votre tableau de bord…</p>
   <div style="display:flex;flex-wrap:wrap;gap:18px;margin:2px 0 6px">
     <a href="/app/patrimoine-pro" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">📊 Mon cockpit patrimoine →</a>
@@ -91,7 +91,7 @@
   <article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
     <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Marcel</span></div>
     <h3 style="font-family:'Fraunces',serif;font-weight:500;font-size:18px">Vos 3 priorités, <em style="font-style:italic;color:var(--accent)">personnalisées</em></h3>
-    <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre Family Officer identifie vos leviers prioritaires — en direct.</p>
+    <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre conseiller patrimonial identifie vos leviers prioritaires — en direct.</p>
     <button class="btn btn-sm" onclick="goDiagnostic()">Voir mon diagnostic →</button>
   </article>
 
@@ -112,7 +112,7 @@
       el.innerHTML='<div style="display:flex;align-items:center;gap:16px"><div style="font-family:\'Fraunces\',serif;font-size:42px;font-weight:600;color:'+col+';line-height:1">'+s.score+'<span style="font-size:15px;color:var(--mute)">/100</span></div><div style="flex:1"><div style="font-family:\'Fraunces\',serif;font-size:16px;color:var(--ink)">'+verdict+'</div><div style="font-size:12px;color:var(--mute)">Vos 3 leviers prioritaires vous attendent dans le diagnostic.</div></div></div><a href="/app/score" class="btn btn-ghost btn-sm" style="margin-top:12px">Revoir / refaire mon score →</a>';
     } else {
       el.className=''; el.style.padding='0';
-      el.innerHTML='<p style="font-size:13.5px;color:var(--mute);margin:0 0 10px">Le point de départ de votre Family Office : évaluez vos 7 territoires en 2 minutes. Marcel s\'en sert pour cibler vos priorités.</p><a href="/app/score" class="btn btn-sm">Établir mon Score Patrimonial →</a>';
+      el.innerHTML='<p style="font-size:13.5px;color:var(--mute);margin:0 0 10px">Le point de départ de votre intelligence patrimoniale : évaluez vos 7 territoires en 2 minutes. Marcel s\'en sert pour cibler vos priorités.</p><a href="/app/score" class="btn btn-sm">Établir mon Score Patrimonial →</a>';
     }
   })();</script>
 
@@ -485,15 +485,15 @@ if(me){
 if(me){
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
-  let tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
-  if(me.trial && me.trial.active){ tierLbl = 'Family Office · essai ' + me.trial.days_left + ' j'; }
+  let tierLbl = { free:'Découverte', premium:'Premium', fo:'intelligence patrimoniale' }[me.tier] || 'Découverte';
+  if(me.trial && me.trial.active){ tierLbl = 'intelligence patrimoniale · essai ' + me.trial.days_left + ' j'; }
   const tierEl = document.getElementById('userTier');
   tierEl.textContent = tierLbl;
   if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
   if(me.trial && me.trial.active){
-    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai Family Office</b> — Marcel, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
+    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai intelligence patrimoniale</b> — Marcel, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
   } else {
     document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
   }
@@ -579,7 +579,7 @@ function renderActivation(profile, convsCount){
   if(done >= steps.length){ sec.style.display='none'; return; }
   sec.style.display='block';
   sec.innerHTML = `<article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25)">
-    <div class="card-head" style="margin-bottom:6px"><span class="card-cat" style="color:var(--accent)">Activez votre Family Office</span><span class="pill premium">${pct}%</span></div>
+    <div class="card-head" style="margin-bottom:6px"><span class="card-cat" style="color:var(--accent)">Activez votre intelligence patrimoniale</span><span class="pill premium">${pct}%</span></div>
     <h3 style="font-family:Fraunces,serif;font-weight:500;font-size:18px;margin-bottom:2px">Encore ${steps.length-done} étape${(steps.length-done)>1?'s':''} pour tout débloquer</h3>
     <div style="height:7px;background:var(--bg-3);border-radius:99px;overflow:hidden;margin:12px 0 16px"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:99px;transition:width .8s cubic-bezier(.2,.7,.2,1)"></div></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
@@ -719,7 +719,7 @@ import { Marcel } from '/app/js/api.js';
   if(!hasCtx) return; // pas assez de contexte → on n'affiche rien
   var today=new Date().toISOString().slice(0,10);
   try{ var c=JSON.parse(localStorage.getItem('ikcp_insight')||'null'); if(c&&c.date===today&&c.text){ render(c.text); return; } }catch(_){}
-  if(tier!=='premium' && tier!=='fo'){ render('Activez votre essai Family Office : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
+  if(tier!=='premium' && tier!=='fo'){ render('Activez votre essai intelligence patrimoniale : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
   card.style.display='block'; body.innerHTML='<span style="color:var(--mute);font-style:italic">Marcel analyse votre situation…</span>';
   var ctx=[];
   if(profile.prenom) ctx.push('Prénom: '+profile.prenom);

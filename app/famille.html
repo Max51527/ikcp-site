@@ -5,7 +5,7 @@
 <script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1B2A4A">
-<title>Famille & Gouvernance — IKCP Family Office</title>
+<title>Famille & Gouvernance — IKCP intelligence patrimoniale</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,9 +53,9 @@
 </header>
 
 <main class="fg">
-  <div class="section-label">Univers · le tiers humain du Family Office</div>
+  <div class="section-label">Univers · le tiers humain de l'intelligence patrimoniale</div>
   <h1>Famille &amp; <em>gouvernance.</em></h1>
-  <p class="lead">L'allocation se calcule — la famille se gouverne. Carte des membres, règles du jeu communes, protection de chacun : ce que les grands family offices structurent en premier.</p>
+  <p class="lead">L'allocation se calcule — la famille se gouverne. Carte des membres, règles du jeu communes, protection de chacun : ce que les grands intelligence patrimoniales structurent en premier.</p>
 
   <div class="gsc"><div><div class="n" id="gScore">—<small>/100</small></div></div>
     <div class="t" id="gVerdict">Votre score de gouvernance se construit à mesure que vous complétez les trois volets ci-dessous.</div></div>
@@ -140,7 +140,7 @@ document.addEventListener('change',e=>{const c=e.target.closest('input[data-bag]
 
 async function obs(){
   const s=score(), manq=[...GOV.filter(x=>!st.gov[x[0]]),...PRO.filter(x=>!st.pro[x[0]])].slice(0,3).map(x=>x[1]).join(' ; ');
-  try{const r=await Marcel.chat(`Tu es Marcel, Family Officer. Gouvernance familiale d'un dirigeant : score ${s}/100, ${st.membres.length} membres cartographiés, manques principaux : ${manq||'aucun'}. En 2 phrases max : UNE observation élégante sur la priorité humaine (pas de produit), puis UNE question ouverte. Vouvoiement.`);
+  try{const r=await Marcel.chat(`Tu es Marcel, conseiller patrimonial. Gouvernance familiale d'un dirigeant : score ${s}/100, ${st.membres.length} membres cartographiés, manques principaux : ${manq||'aucun'}. En 2 phrases max : UNE observation élégante sur la priorité humaine (pas de produit), puis UNE question ouverte. Vouvoiement.`);
     const t=(r.reply||'').trim();
     if(t){const o=document.getElementById('gObs');o.innerHTML='<b>✦ Marcel</b> — '+t;o.style.display='block';}
   }catch(_){}

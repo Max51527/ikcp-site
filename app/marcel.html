@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 
   <div class="chat-msgs" id="msgs">
     <div class="msg a">
-      <strong>Bonjour.</strong> Je suis <em>Marcel</em>, chef d'orchestre de votre Family Office.
+      <strong>Bonjour.</strong> Je suis <em>Marcel</em>, chef d'orchestre de votre intelligence patrimoniale.
       <br><br>
       Posez-moi une question — patrimoine, fiscalité, transmission, voyage, art, mécénat. Je mobilise le bon spécialiste parmi mes 12 univers.
       <div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
@@ -150,16 +150,16 @@ let userTier = 'free';
 let me;
 try { me = await Marcel.Auth.me(); userTier = me?.tier || 'free'; } catch(_){ location.href = '/app/index.html'; }
 
-// ── Branding CASSIUS pour le tier Family Office (un cran au-dessus) ──
+// ── Branding CASSIUS pour le tier intelligence patrimoniale (un cran au-dessus) ──
 if (userTier === 'fo') {
-  document.title = 'Marcel — Family Office';
+  document.title = 'Marcel — intelligence patrimoniale';
   var h1 = document.querySelector('.chat-head h1'); if (h1) h1.textContent = 'Marcel';
-  var tg = document.querySelector('.chat-head .tagline'); if (tg) tg.textContent = 'Votre Family Officer d\'élite · anticipe · orchestre · veille';
+  var tg = document.querySelector('.chat-head .tagline'); if (tg) tg.textContent = 'Votre conseiller patrimonial d\'élite · anticipe · orchestre · veille';
   var mini = document.querySelector('.chat-head .marcel-mini'); if (mini) mini.textContent = 'M';
   // Accueil vocal Marcel (effet majordome) — dégrade en silence si le navigateur bloque
-  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre Family Officer. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
+  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre conseiller patrimonial. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
   var hello = document.querySelector('.chat-msgs .msg.a');
-  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre Family Officer. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
+  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre conseiller patrimonial. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
 }
 
 // ── Suggestions de démarrage personnalisées (selon le profil de l'utilisateur) ──

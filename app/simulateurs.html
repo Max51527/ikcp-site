@@ -5,7 +5,7 @@
 <script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1B2A4A">
-<title>Simulateurs — IKCP Family Office</title>
+<title>Simulateurs — IKCP intelligence patrimoniale</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -190,7 +190,7 @@
   <!-- STRATÉGIE — réservé FO -->
   <section class="sim" id="s-strat">
     <h2>Ma vision patrimoniale d'ensemble</h2>
-    <span class="mille">Réservé aux membres Family Office</span>
+    <span class="mille">Réservé aux membres intelligence patrimoniale</span>
     <div id="strat-body"></div>
   </section>
 
@@ -323,10 +323,10 @@ window.calcEps=function(){
   const tier=(localStorage.getItem('ikcp_tier')||'free');
   const fo=(tier==='fo'||tier==='premium');
   document.getElementById('strat-body').innerHTML = fo
-   ? `<p style="font-size:13.5px;line-height:1.6">Votre stratégie globale croise les 7 simulateurs avec votre situation réelle (cartographie, patrimoine, objectif). C'est un travail d'orchestration — Marcel mode Family Office vous le restitue en direct.</p>
+   ? `<p style="font-size:13.5px;line-height:1.6">Votre stratégie globale croise les 7 simulateurs avec votre situation réelle (cartographie, patrimoine, objectif). C'est un travail d'orchestration — Marcel mode intelligence patrimoniale vous le restitue en direct.</p>
       <a class="go" style="display:inline-block;text-decoration:none;margin-top:10px" href="/app/marcel?topic=batisseur">✦ Lancer mon analyse stratégique →</a>
       <div class="mif" style="margin-top:14px">Étude formalisée et recommandations personnalisées : uniquement après lettre de mission (art. L.541-1 CoMoFi). <a class="cta-m" href="mailto:maxime@ikcp.fr?subject=Stratégie patrimoniale — lettre de mission">Demander à Maxime →</a></div>`
-   : `<div class="mif"><em>✦ Réservé aux membres Family Office</em>La stratégie globale (rémunération × holding × transmission × cession, séquencée sur 10 ans) est l'apanage de l'accompagnement Family Office — sur acceptation discrétionnaire.<br><a class="cta-m" href="/decouvrir">Découvrir le Family Office →</a></div>`;
+   : `<div class="mif"><em>✦ Réservé aux membres intelligence patrimoniale</em>La stratégie globale (rémunération × holding × transmission × cession, séquencée sur 10 ans) est l'apanage de l'accompagnement intelligence patrimoniale — sur acceptation discrétionnaire.<br><a class="cta-m" href="/decouvrir">Découvrir l'intelligence patrimoniale →</a></div>`;
 })();
 document.getElementById('tabs').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b)return;

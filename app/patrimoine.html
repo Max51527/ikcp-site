@@ -130,7 +130,7 @@
 <body>
 
 <header class="app-header">
-  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Family Office augmenté</span></a>
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">intelligence patrimoniale augmentée</span></a>
   <div class="app-user">
     <span class="tier" id="userTier">Découverte</span>
     <div class="avatar" id="userAvatar">M</div>
@@ -281,7 +281,7 @@ try { me = await Marcel.Auth.me(); } catch(_){ location.href = '/app/index.html'
 if(me){
   userEmail = me.email || 'invite';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
-  const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
+  const tierLbl = { free:'Découverte', premium:'Premium', fo:'intelligence patrimoniale' }[me.tier] || 'Découverte';
   const tEl = document.getElementById('userTier'); tEl.textContent = tierLbl;
   if(me.tier && me.tier!=='free') tEl.classList.add('premium');
 }

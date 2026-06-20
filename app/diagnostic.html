@@ -5,7 +5,7 @@
 <script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E1729">
-<title>Radiographie 360° — IKCP Family Office</title>
+<title>Radiographie 360° — IKCP intelligence patrimoniale</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,9 +51,9 @@
 </header>
 
 <main class="dx">
-  <div class="section-label">Family Office · analyse croisée</div>
+  <div class="section-label">intelligence patrimoniale · analyse croisée</div>
   <h1>Votre radiographie <em>patrimoniale 360°.</em></h1>
-  <p class="lead">Vos données réelles (société, patrimoine, profil) croisées avec tous les barèmes en un instant — ce qu'un family office met des semaines à compiler.</p>
+  <p class="lead">Vos données réelles (société, patrimoine, profil) croisées avec tous les barèmes en un instant — ce qu'un intelligence patrimoniale met des semaines à compiler.</p>
 
   <div id="dxEmpty" class="empty-dx" style="display:none">
     <p style="font-family:'Fraunces',serif;font-size:18px;margin:0 0 8px">Votre radiographie attend vos données.</p>
@@ -159,7 +159,7 @@ async function loadObs(net,expo,dutEco,treso,ifi){
   const ck='ikcp_dx_obs', today=new Date().toISOString().slice(0,10);
   try{const c=JSON.parse(localStorage.getItem(ck)||'null');if(c&&c.d===today){document.getElementById('obsB').textContent=c.t;document.getElementById('obs').style.display='block';return;}}catch(_){}
   try{
-    const r=await Marcel.chat(`Tu es Marcel, Family Officer. Radiographie d'un dirigeant : patrimoine net ${EUR(net)}, droits de succession latents ${expo.toFixed(0)} % du patrimoine, économie Dutreil potentielle ${EUR(dutEco)}, trésorerie ${EUR(treso)}, IFI ${EUR(ifi)}/an. En 2 phrases élégantes max : UNE lecture stratégique d'ensemble (pas de produit), puis UNE question ouverte. Vouvoiement.`);
+    const r=await Marcel.chat(`Tu es Marcel, conseiller patrimonial. Radiographie d'un dirigeant : patrimoine net ${EUR(net)}, droits de succession latents ${expo.toFixed(0)} % du patrimoine, économie Dutreil potentielle ${EUR(dutEco)}, trésorerie ${EUR(treso)}, IFI ${EUR(ifi)}/an. En 2 phrases élégantes max : UNE lecture stratégique d'ensemble (pas de produit), puis UNE question ouverte. Vouvoiement.`);
     const t=(r.reply||'').trim();
     if(t){document.getElementById('obsB').textContent=t;document.getElementById('obs').style.display='block';
       try{localStorage.setItem(ck,JSON.stringify({d:today,t}));}catch(_){}}

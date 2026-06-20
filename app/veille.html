@@ -165,7 +165,7 @@ let me = null;
 try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
 
 if(me){
-  const tierLbl = { free:'Découverte', premium:'Premium', fo:'Family Office' }[me.tier] || 'Découverte';
+  const tierLbl = { free:'Découverte', premium:'Premium', fo:'intelligence patrimoniale' }[me.tier] || 'Découverte';
   document.getElementById('veilTier').textContent = tierLbl;
   // Gating par tier (aligné sur ikcp-veille) :
   //  • free    → pas de recherche active (lecture des alertes uniquement)
@@ -178,7 +178,7 @@ if(me){
     document.getElementById('searchBtn').title = 'La recherche active est disponible à partir du tier Premium.';
   } else if(me.tier === 'premium'){
     document.getElementById('searchMode').innerHTML = '<option value="quick">Rapide</option>';
-    document.getElementById('searchMode').title = 'La recherche approfondie est réservée au tier Family Office.';
+    document.getElementById('searchMode').title = 'La recherche approfondie est réservée au tier intelligence patrimoniale.';
   }
 }
 

@@ -107,7 +107,7 @@ try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; 
 if(me){
   document.getElementById('profilNom').textContent = me.display_name || me.prenom || me.email;
   document.getElementById('profilEmail').textContent = me.email;
-  const lbl = {free:'Découverte',premium:'Premium Essentiel',fo:'Premium Family Office'}[me.tier] || 'Découverte';
+  const lbl = {free:'Découverte',premium:'Premium Essentiel',fo:'Premium intelligence patrimoniale'}[me.tier] || 'Découverte';
   const t = document.getElementById('profilTier');
   t.textContent = lbl;
   t.classList.add(me.tier === 'free' ? 'neutral' : 'live');
@@ -144,7 +144,7 @@ if(me){
     });
     actions.append(bP);
   } else { // fo
-    desc.innerHTML = 'Vous êtes en <b>Family Office</b> — accès complet aux 11 spécialistes. Pour toute question sur votre formule, contactez Maxime.';
+    desc.innerHTML = 'Vous êtes en <b>intelligence patrimoniale</b> — accès complet aux 11 spécialistes. Pour toute question sur votre formule, contactez Maxime.';
     const bC = btn('Contacter Maxime', () => location.href = 'mailto:maxime@ikcp.eu?subject=Mon%20abonnement%20Family%20Office', false);
     actions.append(bC);
   }

@@ -132,10 +132,10 @@ button:disabled{opacity:.5;cursor:wait}
   <!-- Mode test : définir le tier d'un membre -->
   <div class="card">
     <h2>🧪 Espace test — définir un tier</h2>
-    <div class="sub" style="margin:-8px 0 14px">Pour vivre l'expérience « comme un client » : connecte-toi (lien magique), puis passe ton email en Family Office ici, et rafraîchis l'espace membre.</div>
+    <div class="sub" style="margin:-8px 0 14px">Pour vivre l'expérience « comme un client » : connecte-toi (lien magique), puis passe ton email en intelligence patrimoniale ici, et rafraîchis l'espace membre.</div>
     <div class="row">
       <div><label>Email du membre</label><input type="email" id="stEmail" placeholder="maxime@ikcp.fr"></div>
-      <div><label>Tier</label><select id="stTier"><option value="fo">Family Office (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
+      <div><label>Tier</label><select id="stTier"><option value="fo">intelligence patrimoniale (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
     </div>
     <div style="margin-top:14px"><button onclick="setTier()">Appliquer le tier →</button></div>
     <div id="stMsg"></div>
@@ -239,7 +239,7 @@ async function loadStats(){
       + stat(eur(s.revenu_premium_estime), 'Revenu Premium', 'estimé/mois')
       + stat(eur(s.cout_ia_estime), 'Coût IA', 'estimé/mois')
       + stat(eur(s.marge_estimee), 'Marge', 'estimée/mois')
-      + stat(s.by_tier.fo, 'Family Office', 'sur devis');
+      + stat(s.by_tier.fo, 'intelligence patrimoniale', 'sur devis');
   }catch(_){ el.innerHTML='<div class="msg err" style="grid-column:1/-1">Stats indisponibles.</div>'; }
 }
 
@@ -327,7 +327,7 @@ function renderApps(list){
       </div>
       <div class="app-actions">
         <select id="tier-${esc(a.id)}">
-          <option value="fo">Family Office (bêta)</option>
+          <option value="fo">intelligence patrimoniale (bêta)</option>
           <option value="premium">Premium</option>
         </select>
         <button onclick="decide('${esc(a.id)}','approve')">Approuver →</button>

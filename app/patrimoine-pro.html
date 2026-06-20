@@ -5,7 +5,7 @@
 <script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'fo'))}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E1729">
-<title>Patrimoine — Cockpit IKCP Family Office</title>
+<title>Patrimoine — Cockpit IKCP intelligence patrimoniale</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -164,9 +164,9 @@
 <body>
 
 <header class="app-header">
-  <a href="/app/dashboard" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Family Office augmenté</span></a>
+  <a href="/app/dashboard" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">intelligence patrimoniale augmentée</span></a>
   <div class="app-user">
-    <span class="tier premium" id="userTier">Family Office</span>
+    <span class="tier premium" id="userTier">intelligence patrimoniale</span>
     <div class="avatar" id="userAvatar">M</div>
   </div>
 </header>
@@ -219,7 +219,7 @@
 
   <!-- ════ ALLOCATION ════ -->
   <h2 class="cp-h reveal-up" style="animation-delay:.06s">Allocation <em>par univers</em></h2>
-  <p class="cp-hs reveal-up" style="animation-delay:.06s">La répartition réelle de votre patrimoine — la vue qu'un Family Office vous doit.</p>
+  <p class="cp-hs reveal-up" style="animation-delay:.06s">La répartition réelle de votre patrimoine — la vue qu'une intelligence patrimoniale vous doit.</p>
   <div class="reveal-up" style="animation-delay:.1s">
     <div class="alloc-bar" id="allocBar"></div>
     <div class="legend" id="legend"></div>
@@ -567,7 +567,7 @@ async function loadInsight(){
   try{ const c=JSON.parse(localStorage.getItem(ck)||'null'); if(c&&c.d===today){ body.innerHTML=c.t; ins.style.display='block'; return; } }catch(_){}
   const repartition = CATS.filter(c=>d[c.key]>0).map(c=>`${c.label} ${Math.round(d[c.key]/assets*100)}%`).join(', ');
   const profil = (view!=='real' && PROFILES[view]) ? PROFILES[view].label : 'dirigeant';
-  const prompt = `Tu es Marcel, Family Officer haut de gamme. Profil : ${profil}. Allocation patrimoniale déclarée : patrimoine net ${EUR(netWorth(d))} €, répartition : ${repartition}. En 2 phrases maximum, fais UNE observation élégante et pertinente sur l'équilibre ou les angles morts, puis termine par UNE question ouverte. AUCUNE recommandation produit. Vouvoiement.`;
+  const prompt = `Tu es Marcel, conseiller patrimonial haut de gamme. Profil : ${profil}. Allocation patrimoniale déclarée : patrimoine net ${EUR(netWorth(d))} €, répartition : ${repartition}. En 2 phrases maximum, fais UNE observation élégante et pertinente sur l'équilibre ou les angles morts, puis termine par UNE question ouverte. AUCUNE recommandation produit. Vouvoiement.`;
   try{
     const r = await Marcel.chat(prompt);
     const txt = (r.reply||r.message||'').trim();
