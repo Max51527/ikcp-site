@@ -159,6 +159,8 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
 .composer{display:flex;gap:8px;margin-top:14px}
 .composer input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line-2);border-radius:99px;padding:13px 17px;color:var(--txt);font-family:var(--sans);font-size:14px;outline:none}
 .composer input:focus{border-color:var(--gold)}
+.fbarea{width:100%;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:12px 14px;color:var(--txt);font-family:var(--sans);font-size:13.5px;outline:none;resize:vertical;min-height:70px;transition:border-color .2s}
+.fbarea:focus{border-color:var(--gold)}.fbarea::placeholder{color:var(--faint)}
 .send{width:46px;height:46px;flex:none;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;font-size:18px;display:flex;align-items:center;justify-content:center}
 
 /* ── cockpit ── */
@@ -238,7 +240,7 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
     </svg>
     <div class="brand">
       <div class="row1"><b>Marcel</b><span class="ia">IA</span></div>
-      <span class="tag">Le Family Office des dirigeant(e)s</span>
+      <span class="tag">L'intelligence patrimoniale des dirigeant(e)s</span>
     </div>
     <div class="actions">
       <button class="tgl" id="tgl" onclick="toggleTheme()" aria-label="Changer de thème">◑</button>
@@ -252,7 +254,7 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
     <section class="screen on stg" id="s-accueil">
       <div class="kicker">Votre copilote</div>
       <h1 class="h1">Bonjour.<br>Tout part de <em>votre entreprise.</em></h1>
-      <p class="lede">Saisissez votre SIREN. Marcel cartographie votre société et repère, en quelques secondes, les leviers patrimoniaux qui vous concernent.</p>
+      <p class="lede">Saisissez votre SIREN. Marcel cartographie votre structure — <b>société ou activité libérale</b> — et repère en quelques secondes les leviers patrimoniaux qui vous concernent.</p>
 
       <div class="card siren-box">
         <div class="kicker" style="margin-top:0">Cartographie SIREN</div>
@@ -297,7 +299,7 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
     <section class="screen" id="s-marcel">
       <div class="kicker">Conversation</div>
       <div class="chat" id="chat">
-        <div class="msg m">Bonjour 👋 Je suis <b>Marcel</b>, votre copilote patrimonial — au service des dirigeant(e)s d'entreprise. Choisissez un sujet, ou cliquez un spécialiste depuis l'accueil : <b>tout se fait automatiquement.</b></div>
+        <div class="msg m">Bonjour 👋 Je suis <b>Marcel</b>, votre copilote patrimonial — au service des <b>dirigeant(e)s d'entreprise et des professions libérales</b>. Choisissez un sujet, ou cliquez un spécialiste depuis l'accueil : <b>tout se fait automatiquement.</b></div>
       </div>
       <div class="chips" id="chips">
         <div class="chip" onclick="ask('Rémunération ou dividendes : comment arbitrer ?')">Rémunération vs dividendes</div>
@@ -360,6 +362,14 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
           <div class="bdg"><div class="ck">✓</div><div><b>MIF II</b> <span>— information, jamais conseil non sollicité</span></div></div>
         </div>
       </div>
+      <div class="kicker">Votre voix compte</div>
+      <div class="card">
+        <div class="lede" style="margin-top:0;font-size:13px">Une idée, un manque, un bug ? Vos retours alimentent <b>directement</b> la feuille de route.</div>
+        <textarea class="fbarea" id="fb" placeholder="Votre suggestion d'amélioration…" style="margin-top:12px"></textarea>
+        <button class="btn full" onclick="sendFeedback()">Envoyer mon retour →</button>
+        <div class="confirmed" id="fb-ok">✓ Merci — votre retour est transmis à l'équipe.</div>
+      </div>
+
       <p class="philo">« Vous pilotez. Vous décidez.<br>Sans démarche non sollicitée. »</p>
       <p class="orias">IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>Information, non un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</p>
     </section>
@@ -377,6 +387,7 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
 <script>
 const API_PAPPERS='https://ikcp-pappers.maxime-ead.workers.dev';
 const API_MARCEL ='https://ikcp-chat.maxime-ead.workers.dev';
+const API_CLIENT ='https://ikcp-client.maxime-ead.workers.dev';
 const DISC='Information à titre pédagogique — ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi).';
 const $=id=>document.getElementById(id);
 let CO_NAME=''; let PENDING_DIR=null; let CIVILITY='';
@@ -499,6 +510,15 @@ async function ask(q){
   pushMarcel(body);
 }
 function askInput(){const v=($('askin').value||'').trim();if(!v)return;$('askin').value='';ask(v);}
+
+/* ── Retour utilisateur → /api/v1/feedback (type=idee) → email + Notion ── */
+async function sendFeedback(){
+  const v=($('fb').value||'').trim(); if(v.length<5){$('fb').focus();return;}
+  $('fb').value=''; const ok=$('fb-ok'); ok.style.color='var(--acc-good)'; ok.style.display='flex';
+  ok.textContent='✓ Merci — votre retour est transmis à l\'équipe.';
+  try{ await fetch(API_CLIENT+'/api/v1/feedback',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({besoin:v,type:'idee',source:'app-beta',page:'marcel-app',priorite:'moyenne'}),signal:AbortSignal.timeout(6000)}); }catch(_){}
+}
 
 /* ── cartographie SIREN (réel + fallback) ── */
 const MOCK_CO={nom:'IKIGAÏ CONSEIL PATRIMONIAL',forme_juridique:'SASU',capital:1000,date_creation:'2023',ville:'Annonay (07)',dirigeant:{nom:'Maxime Alexis Adrien Juveneton',prenom:'Maxime',sexe:'M',qualite:'Gérant'}};

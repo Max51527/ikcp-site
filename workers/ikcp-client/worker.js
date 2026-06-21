@@ -525,7 +525,8 @@ async function handlePappersLookup(request, session, env) {
   const res = await fetch(pappersUrl);
   if (!res.ok) {
     const err = await res.text();
-    return json({ error: 'pappers_failed', status: res.status, detail: err.slice(0, 200) }, 502);
+    console.error('[pappers lookup]', res.status, err.slice(0, 200));
+    return json({ error: 'pappers_failed', status: res.status }, 502);
   }
   const data = await res.json();
 
