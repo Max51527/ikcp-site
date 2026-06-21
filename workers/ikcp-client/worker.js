@@ -55,7 +55,7 @@ export default {
       if (method === 'OPTIONS') return cors(204);
 
       // ─── PUBLIC ROUTES ──────────────────────────────────
-      if (path === '/health') return json({ status: 'ok', service: 'ikcp-client', version: '2.0', bindings: bindingsStatus(env) });
+      if (path === '/health') return json({ status: 'ok', service: 'ikcp-client', version: '2.0' }); // M1 : cartographie des bindings retirée (ne pas exposer la conf à un anonyme)
       if (path === '/auth/send' && method === 'POST') return await handleAuthSend(request, env);
       if (path === '/auth/verify' && method === 'GET') return await handleAuthVerify(request, env);
       if (path === '/stripe/webhook' && method === 'POST') return await handleStripeWebhook(request, env);
@@ -123,7 +123,7 @@ export default {
       return json({ error: 'not_found' }, 404);
     } catch (err) {
       console.error('Worker error:', err.stack || err.message);
-      return json({ error: 'internal_error', message: err.message }, 500);
+      return json({ error: 'internal_error' }, 500); // H1 : err loggé serveur uniquement, zéro fuite au client
     }
   },
 };
@@ -568,7 +568,7 @@ async function handleStripeCheckout(request, session, env) {
     body: params.toString(),
   });
   const data = await res.json();
-  if (!res.ok) return json({ error: 'stripe_failed', detail: data }, 502);
+  if (!res.ok) { console.error('[stripe checkout]', res.status, JSON.stringify(data).slice(0, 300)); return json({ error: 'stripe_failed' }, 502); } // H2 : réponse amont loggée serveur, pas renvoyée
   return json({ checkout_url: data.url });
 }
 
@@ -718,14 +718,25 @@ async function sha256(text) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Comparaison en temps constant : ne court-circuite pas sur le 1er octet différent (anti oracle de timing).
+function timingSafeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+  let r = 0; for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return r === 0;
+}
 async function verifyStripeSignature(body, sigHeader, secret) {
-  const parts = Object.fromEntries(sigHeader.split(',').map(p => p.split('=')));
-  if (!parts.t || !parts.v1) return false;
-  const signed = `${parts.t}.${body}`;
+  if (!sigHeader) return false;
+  const parts = {};
+  for (const kv of sigHeader.split(',')) { const i = kv.indexOf('='); if (i > 0) { const k = kv.slice(0, i); if (!parts[k]) parts[k] = []; parts[k].push(kv.slice(i + 1)); } }
+  const t = parts.t && parts.t[0];
+  const v1s = parts.v1 || [];                                    // Stripe peut envoyer plusieurs v1
+  if (!t || !v1s.length) return false;
+  if (Math.abs(Date.now() - Number(t) * 1000) > 300000) return false; // C2 : tolérance 5 min → bloque le rejeu d'un webhook capté
+  const signed = `${t}.${body}`;
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signed));
   const hex = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-  return hex === parts.v1;
+  return v1s.some(v => timingSafeEqual(hex, v));                 // C2 : comparaison constante sur tous les v1
 }
 
 async function sendEmail(env, { to, subject, html }) {
@@ -1155,7 +1166,7 @@ async function handleAdmin(request, env, path, method) {
         'FROM users u ORDER BY u.created_at DESC LIMIT 200'
       ).bind(month).all();
       return json(rows.results || []);
-    } catch (e) { return json({ error: 'members_failed', detail: e.message }, 500); }
+    } catch (e) { console.error('[admin/members]', e.message); return json({ error: 'members_failed' }, 500); }
   }
   // Définir le tier d'un membre (test / gestion manuelle)
   if (path === '/api/v1/admin/set-tier' && method === 'POST') {
