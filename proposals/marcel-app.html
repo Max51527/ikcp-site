@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1729">
+<title>Marcel — copilote patrimonial du dirigeant · IKCP</title>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  MARCEL IA — prototype d'application mobile (à partager à Claude design)
+  Un seul fichier autonome. Charte IKCP. Rend partout (mock intégré),
+  câblé aux vraies APIs souveraines quand l'origine le permet (ikcp.eu).
+  Écrans : Accueil (SIREN) · Marcel (chat) · Cockpit (360°) · Profil.
+  © 2026 IKCP — Maxime Juveneton · ORIAS 23001568 · MIF II.
+  ════════════════════════════════════════════════════════════════════════
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B2A4A; --navy-deep:#0E1729; --navy-2:#16233C; --navy-3:#1E2F4D;
+  --cream:#FAF8F4; --cream-2:#F4EFE7;
+  --gold:#C9A96E; --gold-b:#E2C896; --gold-deep:#8B6F3F;
+  --red:#C0414C;
+  --blue-soft:#6E8BB0;
+  --txt:#FAF8F4; --mute:rgba(250,248,244,.58); --faint:rgba(250,248,244,.34);
+  --line:rgba(201,169,110,.16); --line-2:rgba(201,169,110,.28);
+  --r:14px; --r-sm:10px;
+  --serif:'Playfair Display',serif; --sans:'Outfit',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--sans);color:var(--txt);
+  background:#080d18;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:0;
+}
+/* présentation desktop : l'app flotte dans un cadre type téléphone */
+@media(min-width:520px){ body{padding:28px} }
+
+.app{
+  position:relative;width:100%;max-width:430px;height:100vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:
+    radial-gradient(120% 60% at 50% -10%,rgba(201,169,110,.10),transparent 55%),
+    radial-gradient(90% 50% at 90% 110%,rgba(110,139,176,.10),transparent 60%),
+    linear-gradient(180deg,#0E1729,#0B1322 60%,#0A1120);
+}
+@media(min-width:520px){
+  .app{height:min(900px,94vh);border-radius:34px;border:1px solid var(--line-2);
+    box-shadow:0 40px 120px -30px rgba(0,0,0,.8),0 0 0 9px #11192b,0 0 0 10px #1d2740;}
+}
+
+/* ── barre haute ─────────────────────────────────────────── */
+.bar{display:flex;align-items:center;gap:12px;padding:18px 20px 12px;flex:none}
+.mark{width:34px;height:34px;flex:none}
+.bar .who{line-height:1.05}
+.bar .who b{font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:.2px}
+.bar .who span{display:block;font-size:10.5px;color:var(--mute);letter-spacing:.04em;margin-top:1px}
+.tier{margin-left:auto;font-size:10.5px;font-weight:600;letter-spacing:.05em;
+  color:var(--gold-b);border:1px solid var(--line-2);border-radius:99px;padding:5px 11px;text-transform:uppercase}
+
+/* ── zone défilante ──────────────────────────────────────── */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 26px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.screen{display:none;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.screen.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.stg>*{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.stg>*:nth-child(2){animation-delay:.05s}
+.stg>*:nth-child(3){animation-delay:.10s}
+.stg>*:nth-child(4){animation-delay:.15s}
+.stg>*:nth-child(5){animation-delay:.20s}
+.stg>*:nth-child(6){animation-delay:.25s}
+
+/* labels & titres */
+.kicker{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;
+  display:flex;align-items:center;gap:10px;margin:22px 0 12px}
+.kicker::after{content:'';flex:1;height:1px;background:var(--line)}
+.h1{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1.12;letter-spacing:.2px;margin-top:6px}
+.h1 em{font-style:italic;color:var(--gold-b)}
+.lede{color:var(--mute);font-size:14px;line-height:1.6;margin-top:12px}
+
+/* cartes */
+.card{background:linear-gradient(180deg,var(--navy-2),var(--navy-deep));
+  border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.card+.card{margin-top:12px}
+
+/* ── ACCUEIL : saisie SIREN ──────────────────────────────── */
+.siren-box{margin-top:20px}
+.siren-field{display:flex;gap:8px;margin-top:14px}
+.siren-field input{flex:1;min-width:0;background:var(--navy-deep);border:1px solid var(--line-2);
+  border-radius:var(--r-sm);padding:14px 15px;color:var(--cream);font-family:var(--mono);font-size:16px;letter-spacing:.06em;outline:none;transition:border-color .2s}
+.siren-field input:focus{border-color:var(--gold)}
+.siren-field input::placeholder{color:var(--faint)}
+.btn{border:0;border-radius:var(--r-sm);cursor:pointer;font-family:var(--sans);font-weight:600;font-size:14.5px;
+  background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;padding:14px 18px;white-space:nowrap;transition:transform .15s,filter .2s}
+.btn:active{transform:scale(.97)}
+.btn.full{width:100%;margin-top:14px;padding:15px;justify-content:center}
+.btn.ghost{background:transparent;border:1px solid var(--line-2);color:var(--gold-b)}
+.hint{font-size:11.5px;color:var(--faint);margin-top:12px;line-height:1.5}
+
+/* résultat société */
+.co{margin-top:18px;display:none}
+.co.on{display:block}
+.co-head{display:flex;align-items:flex-start;gap:13px}
+.co-logo{width:46px;height:46px;flex:none;border-radius:12px;border:1px solid var(--line-2);
+  background:radial-gradient(circle at 36% 30%,#2b3c5e,#16233c 65%);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);color:var(--gold-b);font-size:18px}
+.co-name{font-family:var(--serif);font-weight:500;font-size:18px;line-height:1.2}
+.co-sub{font-size:12px;color:var(--mute);margin-top:3px}
+.co-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.fact{background:var(--navy-deep);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px}
+.fact .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.fact .v{font-family:var(--mono);font-size:15px;color:var(--cream);margin-top:4px;font-weight:500}
+.detect{margin-top:14px;display:flex;align-items:center;gap:11px;background:rgba(201,169,110,.07);
+  border:1px solid var(--line-2);border-radius:var(--r-sm);padding:13px 14px}
+.detect .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex:none;box-shadow:0 0 0 4px rgba(201,169,110,.15)}
+.detect b{color:var(--gold-b);font-weight:600}
+.detect span{font-size:12.5px;color:var(--mute);display:block}
+
+/* spécialistes */
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.spec{background:linear-gradient(180deg,var(--navy-2),var(--navy-deep));border:1px solid var(--line);
+  border-radius:var(--r);padding:14px;cursor:pointer;transition:border-color .2s,transform .15s}
+.spec:active{transform:scale(.98)}.spec:hover{border-color:var(--line-2)}
+.spec .ic{width:30px;height:30px;border-radius:8px;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);color:var(--gold-b);font-size:14px;background:rgba(201,169,110,.06)}
+.spec b{display:block;font-size:14px;margin-top:11px;font-weight:600}
+.spec span{display:block;font-size:11.5px;color:var(--mute);margin-top:3px;line-height:1.4}
+
+/* ── MARCEL : chat ───────────────────────────────────────── */
+.chat{display:flex;flex-direction:column;gap:13px;padding-bottom:6px}
+.msg{max-width:86%;padding:13px 15px;border-radius:16px;font-size:14px;line-height:1.55;animation:rise .4s both}
+.msg.m{align-self:flex-start;background:linear-gradient(180deg,var(--navy-2),var(--navy-deep));
+  border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.u{align-self:flex-end;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;border-bottom-right-radius:5px;font-weight:500}
+.msg.m b{color:var(--gold-b);font-weight:600}
+.msg .disc{margin-top:9px;padding-top:9px;border-top:1px solid var(--line);font-size:10.5px;color:var(--faint);font-style:italic;line-height:1.45}
+.typing{align-self:flex-start;display:flex;gap:5px;padding:15px 17px;background:var(--navy-2);border:1px solid var(--line);border-radius:16px;border-bottom-left-radius:5px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.3s infinite both}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{font-size:12.5px;color:var(--gold-b);border:1px solid var(--line-2);border-radius:99px;padding:8px 13px;cursor:pointer;background:rgba(201,169,110,.04);transition:background .2s}
+.chip:active{background:rgba(201,169,110,.14)}
+.composer{display:flex;gap:8px;margin-top:14px}
+.composer input{flex:1;min-width:0;background:var(--navy-deep);border:1px solid var(--line-2);border-radius:99px;padding:13px 17px;color:var(--cream);font-family:var(--sans);font-size:14px;outline:none}
+.composer input:focus{border-color:var(--gold)}
+.send{width:46px;height:46px;flex:none;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;font-size:18px;display:flex;align-items:center;justify-content:center}
+
+/* ── COCKPIT ─────────────────────────────────────────────── */
+.net{text-align:center;padding:8px 0 4px}
+.net .l{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.net .v{font-family:var(--serif);font-weight:500;font-size:38px;color:var(--gold-b);margin-top:6px;letter-spacing:.5px}
+.net .v small{font-size:20px;color:var(--mute);font-style:italic}
+.donut-wrap{display:flex;align-items:center;gap:18px;margin-top:6px}
+.donut{width:128px;height:128px;flex:none;border-radius:50%;position:relative;
+  background:conic-gradient(var(--gold) 0 52%,var(--blue-soft) 52% 80%,var(--gold-b) 80% 94%,rgba(250,248,244,.20) 94% 100%)}
+.donut::after{content:'';position:absolute;inset:17px;border-radius:50%;background:var(--navy-deep);border:1px solid var(--line)}
+.donut span{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1}
+.donut span b{font-family:var(--mono);font-size:17px;color:var(--cream)}
+.donut span em{font-size:9.5px;color:var(--faint);font-style:normal;letter-spacing:.1em;text-transform:uppercase}
+.legend{flex:1;display:flex;flex-direction:column;gap:9px}
+.leg{display:flex;align-items:center;gap:9px;font-size:12.5px}
+.leg i{width:9px;height:9px;border-radius:3px;flex:none}
+.leg b{margin-left:auto;font-family:var(--mono);color:var(--cream)}
+.ratios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.rt{background:var(--navy-deep);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 13px}
+.rt .l{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.rt .v{font-family:var(--mono);font-size:18px;color:var(--cream);margin-top:5px;font-weight:500}
+.rt .v.good{color:#7FCBA4}.rt .v.warn{color:var(--gold-b)}
+.alert{display:flex;gap:11px;background:rgba(192,65,76,.10);border:1px solid rgba(192,65,76,.35);border-radius:var(--r-sm);padding:13px 14px;margin-top:10px}
+.alert .b{width:3px;border-radius:2px;background:var(--red);flex:none}
+.alert p{font-size:12px;color:#F0B4B9;line-height:1.5}
+.alert p b{color:#fff}
+.lever{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.lever:last-child{border-bottom:0}
+.lever .n{width:26px;height:26px;flex:none;border-radius:8px;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--gold-b)}
+.lever .t{flex:1}
+.lever .t b{font-size:13.5px;font-weight:600;display:block}
+.lever .t span{font-size:11.5px;color:var(--mute)}
+.lock{font-size:11px;color:var(--gold-deep);border:1px solid var(--line);border-radius:99px;padding:4px 10px;white-space:nowrap}
+
+/* ── PROFIL ──────────────────────────────────────────────── */
+.tier-card{background:linear-gradient(135deg,var(--navy-3),var(--navy-deep));border:1px solid var(--line-2);border-radius:var(--r);padding:20px;position:relative;overflow:hidden}
+.tier-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.18),transparent 70%)}
+.tier-card .now{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.tier-card .plan{font-family:var(--serif);font-weight:500;font-size:24px;margin-top:4px}
+.tier-card .plan em{font-style:italic;color:var(--gold-b)}
+.tier-card .px{font-size:13px;color:var(--mute);margin-top:8px;line-height:1.5}
+.badges{display:flex;flex-direction:column;gap:1px;margin-top:4px}
+.bdg{display:flex;align-items:center;gap:11px;padding:13px 2px;border-bottom:1px solid var(--line);font-size:13px}
+.bdg:last-child{border-bottom:0}
+.bdg .ck{width:22px;height:22px;flex:none;border-radius:6px;background:rgba(127,203,164,.12);color:#7FCBA4;display:flex;align-items:center;justify-content:center;font-size:12px}
+.bdg span{color:var(--mute)}.bdg b{color:var(--cream);font-weight:500}
+.philo{text-align:center;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--gold-b);line-height:1.5;margin:22px 8px 8px}
+.orias{text-align:center;font-size:10.5px;color:var(--faint);margin-top:14px;line-height:1.6}
+
+/* ── nav basse ───────────────────────────────────────────── */
+.nav{flex:none;display:flex;background:rgba(11,19,34,.92);border-top:1px solid var(--line);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(12px)}
+.nav button{flex:1;background:none;border:0;cursor:pointer;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;transition:color .2s;font-family:var(--sans)}
+.nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
+.nav button span{font-size:10px;letter-spacing:.02em}
+.nav button.on{color:var(--gold-b)}
+.nav button.on span{font-weight:600}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── barre haute ── -->
+  <div class="bar">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M20 4C12 4 7 10 7 17c0 5 3 8 6 11h14c3-3 6-6 6-11C33 10 28 4 20 4Z" fill="#1B2A4A" stroke="#C9A96E" stroke-width="1"/>
+      <path d="M7.6 14h24.8" stroke="#FAF8F4" stroke-width="3.4" opacity=".9"/>
+      <path d="M9.6 22.5h20.8" stroke="#C0414C" stroke-width="3" opacity=".85"/>
+      <path d="M16 28l-1.5 4M24 28l1.5 4" stroke="#C9A96E" stroke-width="1"/>
+      <rect x="16.5" y="31.5" width="7" height="5" rx="1.4" fill="#C9A96E"/>
+    </svg>
+    <div class="who"><b>Marcel</b><span>Intelligence patrimoniale souveraine</span></div>
+    <div class="tier">Découverte</div>
+  </div>
+
+  <div class="scroll" id="scroll">
+
+    <!-- ════ ACCUEIL ════ -->
+    <section class="screen on stg" id="s-accueil">
+      <div class="kicker">Votre copilote</div>
+      <h1 class="h1">Bonjour.<br>Tout part de <em>votre entreprise.</em></h1>
+      <p class="lede">Saisissez votre SIREN. Marcel cartographie votre société et repère, en quelques secondes, les leviers patrimoniaux qui vous concernent.</p>
+
+      <div class="card siren-box">
+        <div class="kicker" style="margin-top:0">Cartographie SIREN</div>
+        <div class="siren-field">
+          <input id="siren" inputmode="numeric" maxlength="11" placeholder="947 972 436" value="947 972 436" aria-label="Votre SIREN">
+          <button class="btn" onclick="cartographier()">Analyser</button>
+        </div>
+        <p class="hint">Source publique RNE / Pappers · aucune donnée saisie n'est conservée à ce stade.</p>
+
+        <div class="co" id="co">
+          <div class="co-head">
+            <div class="co-logo" id="co-logo">IK</div>
+            <div><div class="co-name" id="co-name">—</div><div class="co-sub" id="co-sub">—</div></div>
+          </div>
+          <div class="co-grid">
+            <div class="fact"><div class="l">Forme</div><div class="v" id="co-forme">—</div></div>
+            <div class="fact"><div class="l">Capital</div><div class="v" id="co-capital">—</div></div>
+            <div class="fact"><div class="l">Création</div><div class="v" id="co-date">—</div></div>
+            <div class="fact"><div class="l">Siège</div><div class="v" id="co-ville">—</div></div>
+          </div>
+          <div class="detect">
+            <div class="dot"></div>
+            <div><b>3 leviers détectés</b><span>Rémunération · compte courant d'associé · trésorerie d'exploitation</span></div>
+          </div>
+          <button class="btn full" onclick="go('marcel')">En parler à Marcel →</button>
+        </div>
+      </div>
+
+      <div class="kicker">Vos spécialistes souverains</div>
+      <div class="spec-grid">
+        <div class="spec" onclick="ask('Optimiser ma fiscalité de dirigeant')"><div class="ic">Cx</div><b>Codex</b><span>Fiscalité du dirigeant</span></div>
+        <div class="spec" onclick="ask('Cartographier mon patrimoine à 360°')"><div class="ic">Bâ</div><b>Bâtisseur</b><span>Patrimoine 360° · holding</span></div>
+        <div class="spec" onclick="ask('Préparer la transmission de mon entreprise')"><div class="ic">He</div><b>Hermès</b><span>Transmission · Dutreil</span></div>
+        <div class="spec" onclick="ask('Structurer mon immobilier professionnel')"><div class="ic">Ar</div><b>Architecte</b><span>Immobilier · SCI</span></div>
+        <div class="spec" onclick="ask('Placer ma trésorerie d&#39;entreprise')"><div class="ic">St</div><b>Stratège</b><span>Marchés · placements</span></div>
+        <div class="spec" onclick="ask('Préparer la cession de ma société')"><div class="ic">Ca</div><b>Capital</b><span>Cession · private equity</span></div>
+      </div>
+    </section>
+
+    <!-- ════ MARCEL ════ -->
+    <section class="screen" id="s-marcel">
+      <div class="kicker">Conversation</div>
+      <div class="chat" id="chat">
+        <div class="msg m">Bonjour 👋 Je suis <b>Marcel</b>, votre copilote patrimonial. Je m'adresse aux dirigeant(e)s d'entreprise. Posez-moi une question, ou choisissez un sujet ci-dessous.</div>
+      </div>
+      <div class="chips" id="chips">
+        <div class="chip" onclick="ask('Rémunération ou dividendes : comment arbitrer ?')">Rémunération vs dividendes</div>
+        <div class="chip" onclick="ask('Que faire de la trésorerie de ma société ?')">Trésorerie d'entreprise</div>
+        <div class="chip" onclick="ask('Comment préparer la transmission de mon entreprise ?')">Transmission</div>
+        <div class="chip" onclick="ask('Comment réduire mon impôt sur les sociétés ?')">Réduire mon IS</div>
+      </div>
+      <div class="composer">
+        <input id="ask" placeholder="Écrivez à Marcel…" onkeydown="if(event.key==='Enter')askInput()" aria-label="Message">
+        <button class="send" onclick="askInput()" aria-label="Envoyer">↑</button>
+      </div>
+    </section>
+
+    <!-- ════ COCKPIT ════ -->
+    <section class="screen stg" id="s-cockpit">
+      <div class="kicker">Patrimoine 360°</div>
+      <div class="card">
+        <div class="net"><div class="l">Patrimoine net estimé</div><div class="v">2,4 <small>M€</small></div></div>
+        <div class="donut-wrap">
+          <div class="donut"><span><b>52 %</b><em>Société</em></span></div>
+          <div class="legend">
+            <div class="leg"><i style="background:var(--gold)"></i>Société &amp; titres<b>52 %</b></div>
+            <div class="leg"><i style="background:var(--blue-soft)"></i>Immobilier<b>28 %</b></div>
+            <div class="leg"><i style="background:var(--gold-b)"></i>Financier<b>14 %</b></div>
+            <div class="leg"><i style="background:rgba(250,248,244,.22)"></i>Autres<b>6 %</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kicker">Santé de votre société</div>
+      <div class="ratios">
+        <div class="rt"><div class="l">Marge nette</div><div class="v good">8,2 %</div></div>
+        <div class="rt"><div class="l">Taux d'EBE</div><div class="v good">21,4 %</div></div>
+        <div class="rt"><div class="l">Autonomie fin.</div><div class="v warn">38 %</div></div>
+        <div class="rt"><div class="l">Trésorerie / CA</div><div class="v">11 %</div></div>
+      </div>
+      <div class="alert"><div class="b"></div><p><b>Trésorerie excédentaire détectée.</b> 90 k€ dorment sur le compte courant — un placement de trésorerie d'entreprise mérite l'étude.</p></div>
+
+      <div class="kicker">Leviers détectés</div>
+      <div class="card">
+        <div class="lever"><div class="n">1</div><div class="t"><b>Compte courant d'associé</b><span>Rachat / incorporation au capital</span></div><div class="lock">🔒 Premium</div></div>
+        <div class="lever"><div class="n">2</div><div class="t"><b>Arbitrage rémunération / dividendes</b><span>Optimisation charges vs flat tax</span></div><div class="lock">🔒 Premium</div></div>
+        <div class="lever"><div class="n">3</div><div class="t"><b>Placement trésorerie</b><span>Contrat de capitalisation, compte à terme</span></div><div class="lock">🔒 Premium</div></div>
+      </div>
+    </section>
+
+    <!-- ════ PROFIL ════ -->
+    <section class="screen stg" id="s-profil">
+      <div class="kicker">Votre formule</div>
+      <div class="tier-card">
+        <div class="now">Formule actuelle</div>
+        <div class="plan">Découverte <em>· gratuit</em></div>
+        <div class="px">Cartographie 360°, santé société et détection des leviers. Le chiffrage et le copilote illimité passent en <b style="color:var(--gold-b)">Premium · 59 €/mois</b>.</div>
+        <button class="btn full" onclick="alert('Démo — l\'upgrade Premium ouvrira la page Tarifs.')">Passer en Premium →</button>
+      </div>
+
+      <div class="kicker">Souveraineté &amp; conformité</div>
+      <div class="card">
+        <div class="badges">
+          <div class="bdg"><div class="ck">✓</div><div><b>Moteur Mistral</b> <span>— hébergé en France</span></div></div>
+          <div class="bdg"><div class="ck">✓</div><div><b>Données en France</b> <span>— base souveraine, Paris</span></div></div>
+          <div class="bdg"><div class="ck">✓</div><div><b>Zéro dépendance US</b> <span>sur vos données patrimoniales</span></div></div>
+          <div class="bdg"><div class="ck">✓</div><div><b>MIF II</b> <span>— information, jamais conseil non sollicité</span></div></div>
+        </div>
+      </div>
+
+      <p class="philo">« Vous pilotez. Vous décidez.<br>Sans démarche non sollicitée. »</p>
+      <p class="orias">IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>Cette application délivre une information, non un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</p>
+    </section>
+
+  </div>
+
+  <!-- ── nav basse ── -->
+  <nav class="nav" id="nav">
+    <button class="on" data-s="accueil" onclick="go('accueil')"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span>Accueil</span></button>
+    <button data-s="marcel" onclick="go('marcel')"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-5A8 8 0 1 1 21 12Z"/></svg><span>Marcel</span></button>
+    <button data-s="cockpit" onclick="go('cockpit')"><svg viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0"/><path d="M12 13l4-3"/><circle cx="12" cy="13" r="1.4"/></svg><span>Cockpit</span></button>
+    <button data-s="profil" onclick="go('profil')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Profil</span></button>
+  </nav>
+</div>
+
+<script>
+/* ════ APIs souveraines réelles (câblées, fallback mock si origine ≠ ikcp.eu) ════ */
+const API_PAPPERS='https://ikcp-pappers.maxime-ead.workers.dev';
+const API_MARCEL ='https://ikcp-chat.maxime-ead.workers.dev';
+const DISC='Information délivrée à titre pédagogique — ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi).';
+const $=id=>document.getElementById(id);
+
+/* navigation entre écrans */
+function go(s){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
+  $('s-'+s).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.s===s));
+  $('scroll').scrollTop=0;
+}
+
+/* ── ACCUEIL : cartographie SIREN (réel + fallback) ── */
+const MOCK_CO={nom:'IKIGAÏ CONSEIL PATRIMONIAL',forme_juridique:'SASU',capital:1000,date_creation:'2023',ville:'Annonay (07)'};
+async function cartographier(){
+  const raw=($('siren').value||'').replace(/\D/g,'');
+  let co=MOCK_CO;
+  try{
+    const r=await fetch(`${API_PAPPERS}/entreprise/${raw}/short`,{signal:AbortSignal.timeout(4500)});
+    if(r.ok){const d=await r.json(); co={
+      nom:d.nom||MOCK_CO.nom, forme_juridique:d.forme_juridique||'—',
+      capital:d.capital, date_creation:(d.date_creation||'').slice(0,4)||'—',
+      ville:(d.siege?(d.siege.ville||'')+' ('+((d.siege.code_postal||'').slice(0,2))+')':'—')};}
+  }catch(_){/* origine ≠ ikcp.eu → on garde le mock, l'app reste vivante */}
+  $('co-name').textContent=co.nom;
+  $('co-logo').textContent=(co.nom||'?').replace(/[^A-Za-zÀ-ÿ ]/g,'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  $('co-sub').textContent=(co.forme_juridique||'')+' · SIREN '+(raw.replace(/(\d{3})(\d{3})(\d{3})/,'$1 $2 $3')||'—');
+  $('co-forme').textContent=co.forme_juridique||'—';
+  $('co-capital').textContent=co.capital?Number(co.capital).toLocaleString('fr-FR')+' €':'—';
+  $('co-date').textContent=co.date_creation||'—';
+  $('co-ville').textContent=co.ville||'—';
+  $('co').classList.add('on');
+}
+
+/* ── MARCEL : conversation (réel + fallback canné) ── */
+const CANNED={
+  default:"Bonne question — voyons cela ensemble.\n\nC'est exactement le type d'arbitrage où plusieurs paramètres entrent en jeu : votre situation, vos objectifs et votre horizon. Je peux poser le cadre, les ordres de grandeur et les points de vigilance — la décision, elle, vous appartient.",
+  remu:"C'est le premier arbitrage du dirigeant. En société à l'IS, deux leviers :\n\n• **Rémunération** — génère des droits sociaux (retraite, prévoyance), déductible de l'IS, mais supporte les cotisations.\n• **Dividendes** — flat tax 30 %, pas de cotisations, mais aucun droit social.\n\nLe point d'équilibre dépend de votre tranche marginale d'imposition, de votre besoin de trésorerie personnelle et de votre couverture sociale actuelle.",
+  treso:"Une trésorerie excédentaire qui dort, c'est un coût d'opportunité. Selon l'horizon et le besoin de disponibilité, plusieurs pistes existent côté société :\n\n• **Compte à terme** — capital garanti, liquidité programmée.\n• **Contrat de capitalisation** — fiscalité de capitalisation, horizon moyen/long.\n• **Titres / OPC** — potentiel supérieur, mais volatilité à assumer au bilan.",
+  transmission:"Anticiper la transmission, c'est souvent le levier le plus puissant. Le **pacte Dutreil** peut exonérer jusqu'à 75 % de la valeur des titres transmis, sous engagements de conservation. Couplé à une **donation-partage** et parfois une **holding**, il structure le passage de relais.",
+  is:"Réduire l'IS passe d'abord par les charges déductibles légitimes (rémunération, intérêts de compte courant, amortissements) puis par des dispositifs ciblés (crédit d'impôt, déficit reportable, intégration via holding)."
+};
+function reply(q){
+  const t=q.toLowerCase();
+  if(/rémun|dividend|salaire/.test(t))return CANNED.remu;
+  if(/trésor|placer|liquid/.test(t))return CANNED.treso;
+  if(/transmi|dutreil|succession|enfant/.test(t))return CANNED.transmission;
+  if(/\bis\b|impôt|société/.test(t))return CANNED.is;
+  return CANNED.default;
+}
+const FOLLOW={remu:"Aujourd'hui, quelle part vous versez-vous en dividendes vs rémunération ?",treso:"Sur quel horizon cette trésorerie pourrait-elle rester immobilisée ?",default:"Pour préciser : quel est votre objectif prioritaire à 3 ans ?"};
+function followFor(q){const t=q.toLowerCase();if(/rémun|dividend/.test(t))return FOLLOW.remu;if(/trésor|placer/.test(t))return FOLLOW.treso;return FOLLOW.default;}
+function fmt(s){return s.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');}
+
+function pushUser(q){const d=document.createElement('div');d.className='msg u';d.textContent=q;$('chat').appendChild(d);}
+function pushTyping(){const d=document.createElement('div');d.className='typing';d.id='typing';d.innerHTML='<i></i><i></i><i></i>';$('chat').appendChild(d);$('scroll').scrollTop=9e9;}
+function pushMarcel(html){const t=$('typing');if(t)t.remove();const d=document.createElement('div');d.className='msg m';d.innerHTML=html;$('chat').appendChild(d);$('scroll').scrollTop=9e9;}
+
+async function ask(q){
+  go('marcel');
+  $('chips').style.display='none';
+  pushUser(q); pushTyping();
+  let body=null;
+  try{
+    const r=await fetch(API_MARCEL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,history:[]}),signal:AbortSignal.timeout(12000)});
+    if(r.ok){const d=await r.json(); if(d.reply) body=fmt(d.reply);}
+  }catch(_){/* fallback canné */}
+  if(!body){
+    body=fmt(reply(q))+'<div class="disc">'+DISC+'</div>';
+    setTimeout(()=>pushMarcel(body+'<div style="margin-top:9px;color:var(--gold-b);font-size:13px">'+followFor(q)+'</div>'),900);
+    return;
+  }
+  pushMarcel(body);
+}
+function askInput(){const v=($('ask').value||'').trim();if(!v)return;$('ask').value='';ask(v);}
+</script>
+</body>
+</html>
