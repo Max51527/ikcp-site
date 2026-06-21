@@ -251,16 +251,21 @@ export default {
     // POST /beta {tool, action?, siren?, label?, data?, email?} : ouvert (analytics produit).
     if (url.pathname === '/beta' && req.method === 'POST') {
       if (!db) return json({ ok: false, error: 'no_db' }, 200, o);
-      let b = {}; try { b = await req.json(); } catch (_) {}
-      const tool = String(b.tool || '').slice(0, 24);
-      if (!tool) return json({ error: 'missing_tool' }, 400, o);
+      let b = {}; try { b = await req.json(); } catch (_) { return json({ error: 'bad_json' }, 400, o); }
+      // Validation stricte (zéro trust implicite) : allowlist des outils + format email.
+      const TOOLS = ['audit', 'marcel', 'cockpit', 'simulateur'];
+      const tool = String(b.tool || '').toLowerCase();
+      if (!TOOLS.includes(tool)) return json({ error: 'invalid_tool' }, 422, o);
+      const action = (String(b.action || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 32)) || null;
+      const email = String(b.email || '').slice(0, 160);
+      if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: 'invalid_email' }, 422, o);
       try {
         await db.prepare('INSERT INTO beta_events (tool, action, siren, label, data, email, ua) VALUES (?,?,?,?,?,?,?)')
-          .bind(tool, String(b.action || '').slice(0, 32) || null, String(b.siren || '').replace(/\D/g, '').slice(0, 14) || null,
+          .bind(tool, action, String(b.siren || '').replace(/\D/g, '').slice(0, 14) || null,
                 String(b.label || '').slice(0, 160) || null, b.data ? JSON.stringify(b.data).slice(0, 4000) : null,
-                String(b.email || '').slice(0, 160) || null, (req.headers.get('User-Agent') || '').slice(0, 160)).run();
+                email || null, (req.headers.get('User-Agent') || '').slice(0, 160)).run();
         return json({ ok: true }, 200, o);
-      } catch (e) { return json({ ok: false, error: 'insert', message: e.message }, 200, o); }
+      } catch (e) { console.error('[beta] insert', e.message); return json({ error: 'insert_failed' }, 500, o); }
     }
     // GET /beta/list?token=…&tool=… : lecture admin.
     // Auth SANS NOUVEAU SECRET : on délègue à l'admin existant (ikcp-client /api/v1/admin).
@@ -273,12 +278,14 @@ export default {
         try { const vr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/admin/applications?status=pending', { headers: { 'x-admin-secret': tok } }); authed = vr.ok; } catch (_) {}
       }
       if (!authed) return json({ error: 'unauthorized', hint: 'Entrez le secret admin (celui de /app/console).' }, 401, o);
-      const tool = url.searchParams.get('tool');
-      const ev = tool
-        ? await db.prepare('SELECT * FROM beta_events WHERE tool=? ORDER BY id DESC LIMIT 300').bind(tool).all()
-        : await db.prepare('SELECT * FROM beta_events ORDER BY id DESC LIMIT 300').all();
-      const st = await db.prepare("SELECT tool, COUNT(*) n, MAX(created_at) last FROM beta_events GROUP BY tool ORDER BY n DESC").all();
-      return json({ ok: true, stats: st.results, events: ev.results }, 200, o);
+      try {
+        const tool = (String(url.searchParams.get('tool') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 24)) || null;
+        const ev = tool
+          ? await db.prepare('SELECT * FROM beta_events WHERE tool=? ORDER BY id DESC LIMIT 300').bind(tool).all()
+          : await db.prepare('SELECT * FROM beta_events ORDER BY id DESC LIMIT 300').all();
+        const st = await db.prepare("SELECT tool, COUNT(*) n, MAX(created_at) last FROM beta_events GROUP BY tool ORDER BY n DESC").all();
+        return json({ ok: true, stats: st.results, events: ev.results }, 200, o);
+      } catch (e) { console.error('[beta/list]', e.message); return json({ error: 'server_error' }, 500, o); }
     }
 
     // ── POST /opportunites/preview : moteur SANS persistance (marche sans D1) ──
