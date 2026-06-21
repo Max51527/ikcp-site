@@ -62,15 +62,12 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
   box-shadow:0 40px 120px -30px rgba(0,0,0,.8),0 0 0 9px var(--frame),0 0 0 10px var(--frame2);}}
 
 /* ── barre haute : LOGO officiel + Marcel [IA] + tagline ── */
-.bar{display:flex;align-items:center;gap:11px;padding:16px 18px 11px;flex:none}
-.mark{width:34px;height:38px;flex:none}
-.brand{line-height:1}
-.brand .row1{display:flex;align-items:center;gap:8px}
-.brand .row1 b{font-family:var(--serif);font-weight:700;font-size:21px;letter-spacing:.3px;color:var(--txt)}
-.brand .ia{font-style:normal;font-family:var(--sans);font-weight:700;font-size:11px;letter-spacing:.05em;
-  background:var(--ia-grad);color:var(--ia-text);border-radius:7px;padding:3px 8px}
-.brand .tag{display:block;font-size:10.5px;color:var(--mute);letter-spacing:.02em;margin-top:4px}
-.actions{margin-left:auto;display:flex;align-items:center;gap:9px}
+.bar{display:flex;align-items:flex-start;gap:11px;padding:16px 18px 11px;flex:none}
+.brandwrap{flex:1;min-width:0}
+.sig{height:32px;width:auto;display:block}
+.sig .sig-name{fill:var(--txt)}                 /* « Marcel » adaptatif : crème sur dark, navy sur crème */
+.tag{display:block;font-size:10px;color:var(--mute);letter-spacing:.02em;margin-top:6px;line-height:1.35}
+.actions{display:flex;align-items:center;gap:9px;padding-top:3px}
 .tgl{width:32px;height:32px;border-radius:9px;border:1px solid var(--line-2);background:transparent;color:var(--gold-b);
   cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:transform .2s}
 .tgl:active{transform:scale(.92) rotate(20deg)}
@@ -224,23 +221,27 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
 
   <!-- ── barre haute : LOGO OFFICIEL IKCP ── -->
   <div class="bar">
-    <svg class="mark" viewBox="6 0 54 68" xmlns="http://www.w3.org/2000/svg" aria-label="Marcel IA">
-      <defs><clipPath id="bal"><path d="M33 5 C 48 5 56 17 56 30 C 56 39 51 46 42 51 L 24 51 C 15 46 10 39 10 30 C 10 17 18 5 33 5 Z"/></clipPath></defs>
-      <g clip-path="url(#bal)">
-        <rect x="10" y="3" width="15.3" height="50" fill="#1B2A4A"/>
-        <rect x="25.3" y="3" width="15.4" height="50" fill="#FAF8F4"/>
-        <rect x="40.7" y="3" width="15.3" height="50" fill="#C0414C"/>
-      </g>
-      <path d="M33 5 C 48 5 56 17 56 30 C 56 39 51 46 42 51 L 24 51 C 15 46 10 39 10 30 C 10 17 18 5 33 5 Z" fill="none" stroke="#1B2A4A" stroke-width="1" stroke-opacity=".4"/>
-      <line x1="25.3" y1="6" x2="25.3" y2="51" stroke="#1B2A4A" stroke-width=".6" stroke-opacity=".35"/>
-      <line x1="40.7" y1="6" x2="40.7" y2="51" stroke="#1B2A4A" stroke-width=".6" stroke-opacity=".35"/>
-      <line x1="28" y1="51" x2="30" y2="57" stroke="#C9A96E" stroke-width="1"/>
-      <line x1="38" y1="51" x2="36" y2="57" stroke="#C9A96E" stroke-width="1"/>
-      <path d="M28 57 L 38 57 L 36.4 64 L 29.6 64 Z" fill="#C9A96E"/>
-    </svg>
-    <div class="brand">
-      <div class="row1"><b>Marcel</b><span class="ia">IA</span></div>
-      <span class="tag">L'intelligence patrimoniale des dirigeant(e)s</span>
+    <div class="brandwrap">
+      <svg class="sig" viewBox="24 20 334 68" xmlns="http://www.w3.org/2000/svg" aria-label="Marcel IA — IKCP">
+        <defs><clipPath id="mEnvFr"><path d="M33 5 C 48 5 56 17 56 30 C 56 39 51 46 42 51 L 24 51 C 15 46 10 39 10 30 C 10 17 18 5 33 5 Z"/></clipPath></defs>
+        <g transform="translate(20,20)">
+          <g clip-path="url(#mEnvFr)">
+            <rect x="10" y="3" width="15.3" height="50" fill="#1B2A4A"/>
+            <rect x="25.3" y="3" width="15.4" height="50" fill="#FAF8F4"/>
+            <rect x="40.7" y="3" width="15.3" height="50" fill="#C0414C"/>
+          </g>
+          <path d="M33 5 C 48 5 56 17 56 30 C 56 39 51 46 42 51 L 24 51 C 15 46 10 39 10 30 C 10 17 18 5 33 5 Z" fill="none" stroke="#1B2A4A" stroke-width="1" stroke-opacity=".22"/>
+          <line x1="25.3" y1="6" x2="25.3" y2="51" stroke="#1B2A4A" stroke-width=".6" stroke-opacity=".18"/>
+          <line x1="40.7" y1="6" x2="40.7" y2="51" stroke="#1B2A4A" stroke-width=".6" stroke-opacity=".18"/>
+          <line x1="28" y1="51" x2="30" y2="57" stroke="#1B2A4A" stroke-width="1"/>
+          <line x1="38" y1="51" x2="36" y2="57" stroke="#1B2A4A" stroke-width="1"/>
+          <path d="M28 57 L 38 57 L 36.4 64 L 29.6 64 Z" fill="#C9A96E"/>
+        </g>
+        <text class="sig-name" x="108" y="66" font-family="'Playfair Display',Georgia,serif" font-size="46" font-weight="600" fill="#1B2A4A">Marcel</text>
+        <rect x="296" y="33" width="55" height="35" rx="9" fill="#C9A96E"/>
+        <text x="323.5" y="58" text-anchor="middle" font-family="'Outfit',system-ui,sans-serif" font-size="20" font-weight="700" fill="#1B2A4A">IA</text>
+      </svg>
+      <span class="tag">Intelligence patrimoniale pour dirigeant(e)s &amp; professions libérales</span>
     </div>
     <div class="actions">
       <button class="tgl" id="tgl" onclick="toggleTheme()" aria-label="Changer de thème">◑</button>
