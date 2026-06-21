@@ -459,6 +459,8 @@ async function pushToNotion(env, f) {
   if (f.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) props['Email'] = { email: f.email };
   if (cat) props['Catégorie'] = { multi_select: [{ name: cat }] };
   if (typeof f.score === 'number') props['NPS /10'] = { number: f.score };
+  // Améliorations demandées par les utilisateurs → colonne dédiée « Ce qui pourrait être mieux ».
+  if (f.type === 'idee') props['Ce qui pourrait être mieux'] = { rich_text: [{ text: { content: (f.besoin || '').slice(0, 1800) } }] };
   try {
     const r = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
