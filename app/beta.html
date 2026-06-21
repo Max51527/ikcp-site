@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E1729">
+<title>Bêta — retours testeurs · IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0E1729;--panel:#16233C;--panel2:#101B30;--cream:#FAF7F0;--gold:#C9A96E;--gold-b:#E2C896;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.16);--ok:#4ade80;--accent:#C9A96E}
+body{background:var(--bg);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding:clamp(18px,4vw,40px)}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 50% at 50% -8%,rgba(201,169,110,.08),transparent 60%),var(--bg)}
+.wrap{max-width:1080px;margin:0 auto}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.mark{width:42px;height:42px;border-radius:11px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--gold-b);font-size:17px}
+.top h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(21px,3.2vw,29px)}
+.top h1 em{font-style:italic;color:var(--gold-b)}
+.top a.back{margin-left:auto;color:var(--mute);text-decoration:none;font-size:13px;border:1px solid var(--line);padding:7px 13px;border-radius:9px}
+.top a.back:hover{border-color:var(--gold);color:var(--cream)}
+.sub{color:var(--mute);font-size:13px;margin-bottom:22px}
+.gate{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;max-width:460px;margin-top:10px}
+.gate label{display:block;font-size:13px;color:var(--mute);margin-bottom:8px}
+.gate input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;color:var(--cream);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none}
+.gate input:focus{border-color:var(--gold)}
+.gate button{margin-top:12px;width:100%;background:var(--gold);color:#1B2A4A;border:0;border-radius:9px;padding:12px;font-weight:600;cursor:pointer}
+.gate .hint{font-size:11.5px;color:var(--mute);margin-top:10px;line-height:1.5}
+.gate .err{color:#f87171;font-size:12.5px;margin-top:10px;display:none}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px 18px}
+.kpi .n{font-family:'Fraunces',serif;font-size:30px;font-weight:500;color:var(--gold-b);line-height:1}
+.kpi .l{font-size:12px;color:var(--mute);margin-top:5px}
+.grp{margin-bottom:24px}
+.grp h2{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.grp h2::after{content:'';flex:1;height:1px;background:var(--line)}
+.bar{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+.bar .nm{width:130px;font-size:13px;color:var(--cream);flex:none;text-transform:capitalize}
+.bar .track{flex:1;height:22px;background:var(--panel2);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;background:linear-gradient(90deg,var(--gold-b),var(--gold));border-radius:6px;min-width:2px}
+.bar .v{width:50px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold-b);flex:none}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--gold);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid rgba(201,169,110,.08);color:var(--cream);vertical-align:top}
+td .tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--gold-b);font-family:'JetBrains Mono',monospace}
+.mut{color:var(--mute)}
+.tbl-wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:6px 6px 2px}
+.empty{color:var(--mute);font-size:13px;padding:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="mark">IK</div>
+    <h1>Bêta — <em>retours testeurs</em></h1>
+    <a class="back" href="/app/console">← Console</a>
+  </div>
+  <div class="sub">Usage réel des outils en bêta · base souveraine D1 Paris · rafraîchi à chaque chargement.</div>
+
+  <div class="gate" id="gate">
+    <label>Token admin bêta (BETA_ADMIN)</label>
+    <input id="tok" type="password" placeholder="votre token BETA_ADMIN" autocomplete="off">
+    <button onclick="load()">Voir les retours</button>
+    <div class="err" id="err"></div>
+    <div class="hint">À poser une fois : <code style="color:var(--gold-b)">npx wrangler secret put BETA_ADMIN</code> dans <code style="color:var(--gold-b)">workers/ikcp-patrimoine</code>. Le token est mémorisé sur cet appareil uniquement.</div>
+  </div>
+
+  <div id="board" style="display:none">
+    <div class="kpis" id="kpis"></div>
+    <div class="grp"><h2>Par outil</h2><div id="bars"></div></div>
+    <div class="grp"><h2>Derniers événements</h2><div class="tbl-wrap"><table><thead><tr><th>Quand</th><th>Outil</th><th>Action</th><th>Société / sujet</th><th>SIREN</th><th>Email</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+  </div>
+</div>
+
+<script>
+const API='https://ikcp-patrimoine.maxime-ead.workers.dev/beta/list';
+const $=id=>document.getElementById(id);
+const TOOL={audit:'Audit Dirigeant',marcel:'Marcel',cockpit:'Cockpit',simulateur:'Simulateurs'};
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function when(s){try{return String(s).replace('T',' ').slice(0,16);}catch(_){return s;}}
+
+async function load(){
+  const tok=$('tok').value.trim()||localStorage.getItem('ikcp_beta_admin')||'';
+  if(!tok){$('err').textContent='Entrez votre token.';$('err').style.display='block';return;}
+  try{
+    const r=await fetch(API+'?token='+encodeURIComponent(tok));
+    if(r.status===401){$('err').textContent='Token invalide.';$('err').style.display='block';return;}
+    if(!r.ok)throw new Error('http '+r.status);
+    const d=await r.json();
+    localStorage.setItem('ikcp_beta_admin',tok);
+    render(d.events||[]);
+    $('gate').style.display='none';$('board').style.display='block';
+  }catch(e){$('err').textContent='Erreur de chargement ('+e.message+'). Le worker est-il déployé ?';$('err').style.display='block';}
+}
+
+function render(ev){
+  const audits=ev.filter(x=>x.tool==='audit'&&x.action==='run');
+  const sirens=new Set(audits.map(x=>x.siren).filter(Boolean));
+  const leads=ev.filter(x=>x.action==='lead');
+  const marcelQ=ev.filter(x=>x.tool==='marcel');
+  const tauxLead=audits.length?Math.round(leads.length/audits.length*100):0;
+  const kpis=[
+    ['Événements',ev.length],['Audits lancés',audits.length],['Sociétés testées',sirens.size],
+    ['Leads',leads.length],['Taux de lead',tauxLead+' %'],['Questions Marcel',marcelQ.length]
+  ];
+  $('kpis').innerHTML=kpis.map(k=>'<div class="kpi"><div class="n">'+k[1]+'</div><div class="l">'+k[0]+'</div></div>').join('');
+
+  const byTool={};ev.forEach(x=>{byTool[x.tool]=(byTool[x.tool]||0)+1;});
+  const max=Math.max(1,...Object.values(byTool));
+  $('bars').innerHTML=Object.keys(byTool).sort((a,b)=>byTool[b]-byTool[a]).map(t=>
+    '<div class="bar"><div class="nm">'+(TOOL[t]||esc(t))+'</div><div class="track"><div class="fill" style="width:'+(byTool[t]/max*100)+'%"></div></div><div class="v">'+byTool[t]+'</div></div>').join('')||'<div class="empty">Aucun événement encore. Lancez un audit pour voir apparaître les premiers retours.</div>';
+
+  $('rows').innerHTML=ev.slice(0,60).map(x=>'<tr><td class="mut">'+when(x.created_at)+'</td><td><span class="tag">'+(TOOL[x.tool]||esc(x.tool))+'</span></td><td>'+esc(x.action||'')+'</td><td>'+esc(x.label||'')+'</td><td class="mut">'+esc(x.siren||'')+'</td><td class="mut">'+esc(x.email||'')+'</td></tr>').join('')||'<tr><td colspan="6" class="empty">Aucun événement.</td></tr>';
+}
+
+// Auto-load si token déjà mémorisé
+if(localStorage.getItem('ikcp_beta_admin')){ $('tok').value=localStorage.getItem('ikcp_beta_admin'); load(); }
+</script>
+</body>
+</html>
