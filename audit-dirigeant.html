@@ -256,7 +256,7 @@
       <ul class="tier-feats">
         <li>Marcel IA — accès découverte (quelques échanges / mois)</li>
         <li>Audit dirigeant + score patrimonial</li>
-        <li>Saisie de vos chiffres + import OCR d'un document</li>
+        <li>Saisie de vos chiffres (import OCR en cours d'ouverture)</li>
         <li>Sur ordinateur (web)</li>
         <li>Données en France · conforme MIF II</li>
       </ul>
@@ -321,6 +321,7 @@ async function lancerAudit(){
     on('sec-societe');on('sec-finance');on('sec-pistes');on('sec-lead');
     renderPistes();
     betaTrack('run', {forme:(CO&&CO.forme_juridique)||'', ca:CO&&CO.chiffre_affaires});
+    try{ localStorage.setItem('ikcp_pending_siren', CO.siren||''); localStorage.setItem('ikcp_pending_company', CO.nom||''); }catch(_){}
     $('sec-societe').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){showErr(e.message||'Erreur de chargement.');}
   finally{btn.disabled=false;btn.textContent="Lancer l'audit";}
