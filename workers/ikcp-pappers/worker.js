@@ -119,7 +119,7 @@ async function searchCompanies(q, env, origin, allowed) {
 
   let pappersRes;
   try {
-    pappersRes = await fetch(`${PAPPERS_BASE}/recherche?${params}`);
+    pappersRes = await fetch(`${PAPPERS_BASE}/recherche?${params}`, { signal: AbortSignal.timeout(8000) }); // anti-figeage : abandonne à 8s si Pappers pend
   } catch (e) {
     return error(`Erreur réseau Pappers : ${e.message}`, 502, origin, allowed);
   }
@@ -129,7 +129,8 @@ async function searchCompanies(q, env, origin, allowed) {
     return error(`Pappers ${pappersRes.status} : ${txt.slice(0, 200)}`, pappersRes.status, origin, allowed);
   }
 
-  const data = await pappersRes.json();
+  let data;
+  try { data = await pappersRes.json(); } catch (_) { return error('Réponse Pappers illisible (non-JSON)', 502, origin, allowed); }
 
   const result = {
     query: q,
@@ -184,7 +185,7 @@ async function getEntreprise(siren, env, origin, allowed, short) {
 
   let pappersRes;
   try {
-    pappersRes = await fetch(`${PAPPERS_BASE}/entreprise?${params}`);
+    pappersRes = await fetch(`${PAPPERS_BASE}/entreprise?${params}`, { signal: AbortSignal.timeout(8000) }); // anti-figeage : abandonne à 8s si Pappers pend
   } catch (e) {
     return error(`Erreur réseau Pappers : ${e.message}`, 502, origin, allowed);
   }
@@ -197,7 +198,8 @@ async function getEntreprise(siren, env, origin, allowed, short) {
     return error(`Pappers ${pappersRes.status} : ${txt.slice(0, 200)}`, pappersRes.status, origin, allowed);
   }
 
-  const data = await pappersRes.json();
+  let data;
+  try { data = await pappersRes.json(); } catch (_) { return error('Réponse Pappers illisible (non-JSON)', 502, origin, allowed); }
 
   const full = {
     siren: data.siren,

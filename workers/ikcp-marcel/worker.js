@@ -867,6 +867,15 @@ function corsHeaders(request) {
   };
 }
 
+// RGPD : masque les données à caractère personnel avant journalisation KV.
+// Les logs servent à analyser les TOPICS, pas à conserver le patrimoine identifiable d'un dirigeant.
+// Préserve les petits nombres et les références réglementaires (ex. « L.541-1 »).
+function redactPII(s) {
+  return String(s || '')
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[email]')   // emails
+    .replace(/\d[\d.,\s]{2,}\d/g, '[nombre]');         // SIREN/SIRET, montants, n° de compte, téléphones (≥4 chiffres)
+}
+
 async function logQuestion(env, userMessage, responseText, ctx, webSearchUsed) {
   if (!env.MARCEL_LOGS) return;
   try {
@@ -874,8 +883,8 @@ async function logQuestion(env, userMessage, responseText, ctx, webSearchUsed) {
     const entry = {
       ts: new Date().toISOString(),
       season: ctx.season,
-      q: userMessage.slice(0, 500),
-      r_preview: (responseText || '').slice(0, 200),
+      q: redactPII(userMessage.slice(0, 500)),          // ← PII masquée
+      r_preview: redactPII((responseText || '').slice(0, 200)),
       web: webSearchUsed,
     };
     await env.MARCEL_LOGS.put(key, JSON.stringify(entry), {

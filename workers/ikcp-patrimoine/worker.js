@@ -167,14 +167,14 @@ function audit360(d) {
 // (L.223-42 SARL/EURL · L.225-248 SA/SAS). Aucune reco perso (MIF II).
 function companyFinance(e) {
   e = e || {};
-  const n = (v) => (v === '' || v === null || v === undefined || isNaN(v) ? null : Number(v));
+  const n = (v) => { if (v === null || v === undefined) return null; if (typeof v === 'string' && v.trim() === '') return null; const x = Number(v); return Number.isFinite(x) ? x : null; }; // null ≠ 0 : une saisie vide/blanche ne devient PAS 0 €
   const ca = n(e.ca), ebe = n(e.ebe), rn = n(e.rn), cp = n(e.cp), dettes = n(e.dettes),
         treso = n(e.treso), capital = n(e.capital), remu = n(e.remu), div = n(e.div);
   const d = (a, b) => (a !== null && b && b !== 0 ? a / b : null);
   const margeNette = d(rn, ca), tauxEBE = d(ebe, ca),
         roe = (cp !== null && cp > 0) ? d(rn, cp) : null,
         gearing = (cp !== null && cp > 0) ? d(dettes, cp) : null,
-        autonomie = (cp !== null && dettes !== null && (cp + dettes) !== 0) ? cp / (cp + dettes) : null,
+        autonomie = (cp !== null && cp > 0 && dettes !== null && (cp + dettes) > 0) ? cp / (cp + dettes) : null, // CP<0 → '—' (l'alerte capitaux propres négatifs prend le relais), jamais un ratio trompeur
         tresoCA = d(treso, ca), poidsRemu = d(remu, ebe),
         payout = (rn !== null && rn > 0) ? d(div, rn) : null;
   let alertCapital = null;
