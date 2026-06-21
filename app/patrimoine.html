@@ -315,7 +315,7 @@ let biens = [];
 let editingId = null;
 
 function load(){ try{ biens = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }catch(_){ biens = []; } }
-function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(biens)); }catch(_){} }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(biens)); }catch(_){} try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'cockpit',action:'save',data:{biens:(biens&&biens.length)||0}})}).catch(function(){}); }catch(_){} }
 function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
 function uid(){ return 'b' + (biens.reduce((m,b)=>Math.max(m, +String(b.id).slice(1)||0),0) + 1); }
 

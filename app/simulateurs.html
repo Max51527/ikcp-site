@@ -215,7 +215,7 @@ function dmtgLien(taxable,lien){
   if(lien==='conjoint')return prog(taxable,DMTG_EPOUX).total; // barème époux/PACS
   return prog(taxable,DMTG_LIGNE).total; // ligne directe
 }
-function show(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('on');}
+function show(id,html){const el=document.getElementById(id);el.innerHTML=html;el.classList.add('on'); try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'simulateur',action:'compute',label:String(id)})}).catch(function(){}); }catch(_){} }
 function mif(q,topic){return `<div class="mif"><em>✦ La question qui compte</em>${q}<br><a class="cta-m" href="/app/marcel?topic=${topic}">En parler avec Marcel →</a><div class="dis">Simulation indicative à partir des éléments saisis. Ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Étude personnalisée : lettre de mission préalable.</div></div>`;}
 
 window.calcIR=function(){
