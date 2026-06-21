@@ -228,6 +228,8 @@ async function getEntreprise(siren, env, origin, allowed, short) {
     economie_sociale_solidaire: data.economie_sociale_solidaire,
     representants: (data.representants || []).map(r => ({
       nom: r.nom_complet || `${r.prenom || ''} ${r.nom || ''}`.trim(),
+      prenom: r.prenom,
+      sexe: r.sexe,
       qualite: r.qualite,
       date_prise_de_poste: r.date_prise_de_poste,
       date_de_naissance: r.date_de_naissance,
@@ -269,6 +271,7 @@ async function getEntreprise(siren, env, origin, allowed, short) {
         resultat: full.resultat,
         nb_dirigeants: full.representants.length,
         nb_beneficiaires: full.beneficiaires_effectifs.length,
+        dirigeant: (() => { const p = full.representants.find(r => !r.personne_morale); return p ? { nom: p.nom, prenom: p.prenom, sexe: p.sexe, qualite: p.qualite } : null; })(),
         fetched_at: full.fetched_at,
       }
     : full;

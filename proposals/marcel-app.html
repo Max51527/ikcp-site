@@ -122,6 +122,13 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
 .detect .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex:none;box-shadow:0 0 0 4px rgba(201,169,110,.15)}
 .detect b{color:var(--emph);font-weight:600}
 .detect span{font-size:12.5px;color:var(--mute);display:block}
+.confirm{margin-top:14px;background:var(--surface);border:1px solid var(--gold);border-radius:var(--r-sm);padding:14px}
+.confirm .q{font-size:14px;line-height:1.5;color:var(--txt)}
+.confirm .q b{color:var(--emph)}
+.confirm .btns{display:flex;gap:8px;margin-top:12px}
+.btn.sm{padding:10px 14px;font-size:13px;flex:1}
+.btn.gho{background:transparent;border:1px solid var(--line-2);color:var(--emph)}
+.confirmed{margin-top:12px;font-size:12.5px;color:var(--acc-good);display:none;align-items:center;gap:7px}
 
 .spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .spec{background:linear-gradient(180deg,var(--card1),var(--card2));border:1px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;transition:border-color .2s,transform .15s}
@@ -266,6 +273,14 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
             <div class="fact"><div class="l">Création</div><div class="v" id="co-date">—</div></div>
             <div class="fact"><div class="l">Siège</div><div class="v" id="co-ville">—</div></div>
           </div>
+          <div class="confirm" id="confirm" style="display:none">
+            <div class="q" id="confirm-q">Bonjour <b>—</b>. C'est bien vous ?</div>
+            <div class="btns">
+              <button class="btn sm" onclick="confirmDir(true)">Oui, c'est moi</button>
+              <button class="btn sm gho" onclick="confirmDir(false)">Non</button>
+            </div>
+          </div>
+          <div class="confirmed" id="confirmed"></div>
           <div class="detect">
             <div class="dot"></div>
             <div><b>3 leviers détectés</b><span>Rémunération · compte courant d'associé · trésorerie</span></div>
@@ -364,7 +379,27 @@ const API_PAPPERS='https://ikcp-pappers.maxime-ead.workers.dev';
 const API_MARCEL ='https://ikcp-chat.maxime-ead.workers.dev';
 const DISC='Information à titre pédagogique — ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi).';
 const $=id=>document.getElementById(id);
-let CO_NAME='';
+let CO_NAME=''; let PENDING_DIR=null; let CIVILITY='';
+
+/* ── EXPÉRIENCE SUR-MESURE : Monsieur/Madame via Pappers + confirmation ── */
+const CIV={M:'Monsieur',F:'Madame'};
+function greetFrom(d){const c=CIV[((d&&d.sexe)||'').toUpperCase()]||'';const s=(((d&&d.nom)||'').trim().split(/\s+/).pop())||'';return (c?c+' ':'')+s;}
+function showConfirm(dir){
+  const c=$('confirm'); $('confirmed').style.display='none';
+  if(!dir||!dir.nom){c.style.display='none';PENDING_DIR=null;return;}
+  PENDING_DIR=dir;
+  $('confirm-q').innerHTML='Bonjour <b>'+greetFrom(dir)+'</b>'+(dir.qualite?' — '+dir.qualite.toLowerCase():'')+' de '+(CO_NAME||'votre société')+'. C\'est bien vous ?';
+  c.style.display='block';
+}
+function confirmDir(ok){
+  $('confirm').style.display='none'; const e=$('confirmed'); e.style.display='flex';
+  if(ok&&PENDING_DIR){
+    CIVILITY=greetFrom(PENDING_DIR);
+    e.style.color='var(--acc-good)'; e.innerHTML='✓ Ravi de vous accompagner, '+CIVILITY+'.';
+    const intro=document.querySelector('#chat .msg.m');
+    if(intro)intro.innerHTML='Bonjour <b>'+CIVILITY+'</b> 👋 Je suis Marcel, votre copilote patrimonial. Choisissez un sujet, ou cliquez un spécialiste depuis l\'accueil : <b>tout se fait automatiquement.</b>';
+  }else{ CIVILITY=''; e.style.color='var(--mute)'; e.innerHTML='Très bien — on reste discret pour l\'instant.'; }
+}
 
 /* ── THÈME : obscur ⇄ crème ── */
 function toggleTheme(){
@@ -466,14 +501,14 @@ async function ask(q){
 function askInput(){const v=($('askin').value||'').trim();if(!v)return;$('askin').value='';ask(v);}
 
 /* ── cartographie SIREN (réel + fallback) ── */
-const MOCK_CO={nom:'IKIGAÏ CONSEIL PATRIMONIAL',forme_juridique:'SASU',capital:1000,date_creation:'2023',ville:'Annonay (07)'};
+const MOCK_CO={nom:'IKIGAÏ CONSEIL PATRIMONIAL',forme_juridique:'SASU',capital:1000,date_creation:'2023',ville:'Annonay (07)',dirigeant:{nom:'Maxime Alexis Adrien Juveneton',prenom:'Maxime',sexe:'M',qualite:'Gérant'}};
 async function cartographier(){
   const raw=($('siren').value||'').replace(/\D/g,'');
   let co=MOCK_CO;
   try{
     const r=await fetch(`${API_PAPPERS}/entreprise/${raw}/short`,{signal:AbortSignal.timeout(4500)});
     if(r.ok){const d=await r.json(); co={nom:d.nom||MOCK_CO.nom,forme_juridique:d.forme_juridique||'—',capital:d.capital,
-      date_creation:(d.date_creation||'').slice(0,4)||'—',ville:(d.siege?(d.siege.ville||'')+' ('+((d.siege.code_postal||'').slice(0,2))+')':'—')};}
+      date_creation:(d.date_creation||'').slice(0,4)||'—',ville:(d.siege?(d.siege.ville||'')+' ('+((d.siege.code_postal||'').slice(0,2))+')':'—'),dirigeant:d.dirigeant};}
   }catch(_){}
   CO_NAME=co.nom;
   $('co-name').textContent=co.nom;
@@ -484,6 +519,7 @@ async function cartographier(){
   $('co-date').textContent=co.date_creation||'—';
   $('co-ville').textContent=co.ville||'—';
   $('co').classList.add('on');
+  showConfirm(co.dirigeant);              /* sur-mesure : Monsieur/Madame + confirmation */
 }
 </script>
 </body>
