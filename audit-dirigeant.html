@@ -94,6 +94,12 @@
   .piste .pt{font-weight:600;color:var(--navy);margin-bottom:4px}
   .piste .pq{font-size:14px;color:var(--mute);font-style:italic}
   .piste .pq:before{content:"› "}
+  .pcount{font-family:'Playfair Display',Georgia,serif;font-size:21px;color:var(--navy);margin:0 0 4px}
+  .pcount strong{color:var(--gold-deep)}
+  .psub2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold-deep);font-weight:700;margin:22px 0 6px}
+  .lockline{margin-top:9px;display:flex;align-items:center;gap:9px;background:var(--cream2);border:1px dashed var(--line);border-radius:9px;padding:7px 11px;width:fit-content}
+  .lockline .blur{filter:blur(4px);font-weight:700;color:var(--navy);letter-spacing:1px}
+  .lockline .unlock{color:var(--gold-deep);font-weight:600;font-size:12.5px}
 
   /* lead cta */
   .lead{background:var(--navy);color:var(--white);border-radius:20px;padding:38px 32px;margin:34px 0;text-align:center}
@@ -220,8 +226,8 @@
 <!-- PISTES -->
 <section class="block wrap" id="sec-pistes">
   <div class="panel">
-    <h2>Pistes de réflexion détectées</h2>
-    <div class="sub">Des angles à explorer — formulés en questions, jamais en recommandations. La réponse dépend de votre situation complète.</div>
+    <h2>Vos leviers &amp; pistes de réflexion</h2>
+    <div class="sub">Les leviers de votre société et les enveloppes/placements à explorer — formulés en questions, jamais en recommandations (art. L.541-1). Le chiffrage personnalisé est réservé au Premium. La réponse dépend de votre situation complète.</div>
     <div id="pistes-out"></div>
   </div>
 </section>
@@ -381,24 +387,33 @@ function renderFinance(f){
 }
 
 function renderPistes(){
-  const p=[];
-  // Alerte légale capitaux propres → piste prioritaire
-  if(FIN&&FIN.alertCapital){
-    p.push(['Capitaux propres : obligation à cadrer','Le redressement (incorporation de compte courant, réduction/augmentation de capital, apport) doit-il être arbitré avant la prochaine clôture ?']);
-  }
-  // Rémunération / dividendes — toujours pertinent dirigeant
-  p.push(['Arbitrage rémunération / dividendes','Votre statut social (assimilé salarié ou TNS) change le coût global : ce mix est-il recalculé chaque année, et le seuil des 10 % du capital surveillé pour le TNS ?']);
-  // Trésorerie société dormante
+  // ── Leviers structurels de la société (avec chiffrage Premium verrouillé) ──
+  const lev=[];
+  if(FIN&&FIN.alertCapital) lev.push({t:'Capitaux propres : obligation à cadrer',q:'Le redressement (incorporation de compte courant, réduction/augmentation de capital, apport) doit-il être arbitré avant la prochaine clôture ?'});
+  lev.push({t:'Compte courant d\'associé',q:'Le cash que vous avez prêté à votre société peut vous être remboursé sans fiscalité ni charges sociales — votre CCA mobilisable a-t-il été chiffré ?',lock:1});
+  lev.push({t:'Arbitrage rémunération / dividendes',q:'Votre statut social (assimilé salarié ou TNS) change le coût global : ce mix est-il recalculé chaque année, et le seuil des 10 % du capital surveillé ?',lock:1});
   const treso=num($('f-treso').value);
-  if(treso!=null&&treso>100000){
-    p.push(['Trésorerie d\'entreprise','Cette trésorerie travaille-t-elle, et une holding patrimoniale aurait-elle du sens pour l\'orienter ?']);
-  }
-  // Transmission — Dutreil
-  p.push(['Transmission de l\'entreprise','Une transmission anticipée via un pacte Dutreil (abattement 75 %, art. 787 B) combinée à un démembrement a-t-elle déjà été chiffrée ?']);
-  // Immobilier pro / IFI
-  p.push(['Détention de l\'immobilier & IFI','Les murs de l\'activité sont-ils détenus dans la structure optimale, et votre assiette IFE/IFI isole-t-elle bien l\'immobilier professionnel exonérable ?']);
+  if(treso!=null&&treso>100000) lev.push({t:'Trésorerie d\'entreprise',q:'Cette trésorerie travaille-t-elle, et une holding patrimoniale aurait-elle du sens pour l\'orienter ?'});
+  lev.push({t:'Transmission de l\'entreprise (Dutreil)',q:'Une transmission anticipée via un pacte Dutreil (abattement 75 %, art. 787 B) combinée à un démembrement a-t-elle déjà été chiffrée ?'});
+  lev.push({t:'Détention de l\'immobilier & IFI',q:'Les murs de l\'activité sont-ils détenus dans la structure optimale, et votre assiette IFI isole-t-elle l\'immobilier professionnel exonérable ?'});
 
-  $('pistes-out').innerHTML=p.map(([t,q])=>`<div class="piste"><div class="pt">${t}</div><div class="pq">${q}</div></div>`).join('');
+  // ── Enveloppes & placements — pistes de RÉFLEXION (information, jamais reco — art. L.541-1) ──
+  const plac=[
+    {t:'PER — épargne retraite déductible',q:'Le Plan d\'Épargne Retraite permet de déduire vos versements de votre revenu imposable (dans les plafonds). À votre niveau d\'imposition, a-t-il une place dans votre stratégie ?'},
+    {t:'Assurance-vie',q:'L\'enveloppe la plus souple pour capitaliser et transmettre (abattement art. 990 I) : votre allocation et vos clauses bénéficiaires sont-elles à jour ?'},
+    {t:'PEA / PEA-PME',q:'Au-delà de 5 ans, les gains du PEA sont exonérés d\'impôt (hors prélèvements sociaux) : une poche actions long terme a-t-elle sa place dans votre allocation ?'},
+    {t:'Immobilier de rendement / SCPI',q:'Diversifier hors de votre société via l\'immobilier (direct, SCPI, démembrement de parts) — est-ce un axe que vous avez exploré ?'},
+    {t:'Non coté / private equity',q:'Pour un dirigeant disposant de liquidités, le non coté (FCPR, FPCI) ouvre diversification et avantages fiscaux : pertinent pour votre horizon ?'},
+    {t:'Capitalisation via holding',q:'Remonter puis réinvestir votre trésorerie via une holding (régime mère-fille, ~95 % exonéré) plutôt qu\'en direct — l\'arbitrage a-t-il été posé ?'},
+    {t:'Apport-cession (cession à venir)',q:'En cas de cession, l\'apport préalable à une holding (art. 150-0 B ter) peut reporter l\'imposition de la plus-value sous condition de réinvestissement : est-ce anticipé ?'},
+  ];
+
+  const N=lev.length+plac.length, co=(CO&&CO.nom)?CO.nom:'votre société';
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const card=x=>'<div class="piste"><div class="pt">'+esc(x.t)+'</div><div class="pq">'+esc(x.q)+'</div>'+(x.lock?'<div class="lockline">🔒 <span class="blur">€ ●●●●●</span><span class="unlock">Chiffrage en Premium</span></div>':'')+'</div>';
+  $('pistes-out').innerHTML='<div class="pcount">'+N+' leviers &amp; pistes détectés sur <strong>'+esc(co)+'</strong></div>'
+    +'<div class="psub2">Leviers de votre société</div>'+lev.map(card).join('')
+    +'<div class="psub2">Pistes de réflexion — enveloppes &amp; placements</div>'+plac.map(card).join('');
 }
 
 async function lireDocument(input){
