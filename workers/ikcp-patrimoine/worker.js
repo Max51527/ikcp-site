@@ -262,10 +262,17 @@ export default {
         return json({ ok: true }, 200, o);
       } catch (e) { return json({ ok: false, error: 'insert', message: e.message }, 200, o); }
     }
-    // GET /beta/list?token=…&tool=… : lecture admin (protégée par BETA_ADMIN).
+    // GET /beta/list?token=…&tool=… : lecture admin.
+    // Auth SANS NOUVEAU SECRET : on délègue à l'admin existant (ikcp-client /api/v1/admin).
+    // Maxime utilise le MÊME secret que /app/console → rien à poser. (BETA_ADMIN reste accepté en option.)
     if (url.pathname === '/beta/list' && req.method === 'GET') {
       if (!db) return json({ error: 'no_db' }, 503, o);
-      if (!env.BETA_ADMIN || url.searchParams.get('token') !== env.BETA_ADMIN) return json({ error: 'unauthorized' }, 401, o);
+      const tok = url.searchParams.get('token') || req.headers.get('x-admin-secret') || '';
+      let authed = !!(env.BETA_ADMIN && tok && tok === env.BETA_ADMIN);
+      if (!authed && tok) {
+        try { const vr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/admin/applications?status=pending', { headers: { 'x-admin-secret': tok } }); authed = vr.ok; } catch (_) {}
+      }
+      if (!authed) return json({ error: 'unauthorized', hint: 'Entrez le secret admin (celui de /app/console).' }, 401, o);
       const tool = url.searchParams.get('tool');
       const ev = tool
         ? await db.prepare('SELECT * FROM beta_events WHERE tool=? ORDER BY id DESC LIMIT 300').bind(tool).all()
