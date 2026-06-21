@@ -152,7 +152,21 @@
     <button class="btn" id="powensBtn" onclick="powensConnect()">Connecter mes comptes →</button>
   </section>
   <script>
+  // ════════════════════════════════════════════════════════════════════════════
+  // FLAG POWENS — la SEULE ligne à changer pour passer d'une version à l'autre.
+  //   false = version SANS Powens (bêta déclaratif : teaser « en ouverture » + saisie manuelle)
+  //   true  = version AVEC Powens (agrégation bancaire active) — à activer quand Powens
+  //           PRODUCTION est prêt (KYC du domaine Powens + secrets posés). Plug-and-play.
+  // ════════════════════════════════════════════════════════════════════════════
+  var POWENS_ENABLED = false;
+  (function(){
+    var pc=document.getElementById('powens-connect'); if(!pc) return;
+    if(!POWENS_ENABLED){
+      pc.innerHTML=`<div style="flex:1;min-width:220px"><div style="font-weight:600;font-size:15px;color:var(--ink,#1f1a16);margin-bottom:3px">🏦 Agrégation bancaire automatique <span style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-left:5px;border:1px solid var(--line,#e7e0d4);border-radius:99px;padding:2px 8px">en cours d'ouverture</span></div><div style="font-size:13px;color:var(--mute,#6b675f);line-height:1.5">Bientôt : connectez vos comptes (banque, assurance-vie) en 1 minute — 🇫🇷 données en France. En attendant, ajoutez vos biens à la main ci-dessous.</div></div>`;
+    }
+  })();
   async function powensConnect(){
+    if(!POWENS_ENABLED){ alert("L'agrégation bancaire automatique est en cours d'ouverture. En attendant, ajoutez vos biens à la main — Marcel en tire déjà tous les leviers."); return; }
     if((window.IKCP_TIER||'free')==='free'){ if(confirm("L'agrégation de vos comptes — la vue 360° pro + perso de votre patrimoine de dirigeant — fait partie de Premium. Découvrir Premium ?")) location.href='/app/profil.html'; return; }
     var b=document.getElementById('powensBtn'); if(!b) return; var t=b.textContent; b.disabled=true; b.textContent='Connexion…';
     var user='me';
