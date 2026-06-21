@@ -60,9 +60,12 @@ async function loadMember(db, member) {
 
 // ── Bilan patrimonial simple (§7.1) : brut, passif, net ─────────────────────
 function bilan(d) {
-  const brut = (d.actifs || []).reduce((s, a) => s + (a.valorisation_cents || 0), 0);
+  const actifs = d.actifs || [];
+  const brut = actifs.reduce((s, a) => s + (a.valorisation_cents || 0), 0);
   const passif = (d.dettes || []).reduce((s, x) => s + (x.capital_restant_cents || 0), 0);
-  return { actif_brut_cents: brut, passif_cents: passif, actif_net_cents: brut - passif };
+  // null ≠ 0 : un actif réel mais non valorisé fausse le bilan ET masque les alertes (faux « RAS »).
+  const nonValorises = actifs.filter(a => a.valorisation_cents == null).length;
+  return { actif_brut_cents: brut, passif_cents: passif, actif_net_cents: brut - passif, actifs_non_valorises: nonValorises, actifs_total: actifs.length };
 }
 
 // ── MOTEUR D'OPPORTUNITÉS (§9) ───────────────────────────────────────────────
@@ -131,8 +134,11 @@ function audit360(d) {
 
   const dimensions = [
     { cle: 'bilan', titre: 'Bilan patrimonial', agent: 'batisseur',
-      constat: `Net ${eur(b.actif_net_cents)} (brut ${eur(b.actif_brut_cents)}, passif ${eur(b.passif_cents)}).`,
-      alerte: b.passif_cents > brut * 0.6 ? 'Effet de levier élevé' : null },
+      constat: `Net ${eur(b.actif_net_cents)} (brut ${eur(b.actif_brut_cents)}, passif ${eur(b.passif_cents)}).`
+        + (b.actifs_non_valorises > 0 ? ` ${b.actifs_non_valorises} actif(s) non chiffré(s) — bilan partiel.` : ''),
+      alerte: b.actifs_non_valorises > 0
+        ? `${b.actifs_non_valorises} actif(s) sans valorisation : bilan et ratios partiels (à compléter avant conclusion)`
+        : (b.passif_cents > brut * 0.6 ? 'Effet de levier élevé' : null) },
     { cle: 'structure', titre: 'Structure juridique', agent: 'codex',
       constat: `${(d.societes || []).length} société(s)${f['societes.is_holding'] === 1 ? ', dont holding' : ''}.`,
       alerte: (treso > 10000000 && f['societes.is_holding'] !== 1) ? 'Trésorerie élevée sans holding patrimoniale' : null },
@@ -259,11 +265,16 @@ export default {
       const action = (String(b.action || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 32)) || null;
       const email = String(b.email || '').slice(0, 160);
       if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: 'invalid_email' }, 422, o);
+      // Minimisation RGPD : on ne stocke PAS le User-Agent brut (empreinte), seulement le type d'appareil.
+      const ua = req.headers.get('User-Agent') || '';
+      const device = /mobi|android|iphone|ipad/i.test(ua) ? 'mobile' : 'desktop';
       try {
         await db.prepare('INSERT INTO beta_events (tool, action, siren, label, data, email, ua) VALUES (?,?,?,?,?,?,?)')
           .bind(tool, action, String(b.siren || '').replace(/\D/g, '').slice(0, 14) || null,
                 String(b.label || '').slice(0, 160) || null, b.data ? JSON.stringify(b.data).slice(0, 4000) : null,
-                email || null, (req.headers.get('User-Agent') || '').slice(0, 160)).run();
+                email || null, device).run();
+        // Purge RGPD : conservation 90 jours max (best-effort, sans CRON qui échoue sur ce compte).
+        try { await db.prepare("DELETE FROM beta_events WHERE created_at < datetime('now','-90 days')").run(); } catch (_) {}
         return json({ ok: true }, 200, o);
       } catch (e) { console.error('[beta] insert', e.message); return json({ error: 'insert_failed' }, 500, o); }
     }

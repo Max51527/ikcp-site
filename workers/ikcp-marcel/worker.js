@@ -857,19 +857,22 @@ ${Object.entries(seasons).map(([s, c]) => `<div class="bar"><div class="bar-labe
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
   // Autorise les origines listées + tout sous-domaine ikcp.eu + déploiements Pages
-  const isAllowed = ALLOWED_ORIGINS.includes(origin)
+  const firstParty = ALLOWED_ORIGINS.includes(origin)
     || origin.endsWith('.ikcp.eu')
-    || origin.endsWith('.ikcp-eu.pages.dev')
-    || origin.endsWith('.workers.dev');
+    || origin.endsWith('.ikcp-eu.pages.dev');
+  const isAllowed = firstParty || origin.endsWith('.workers.dev'); // workers.dev = appels serveur-à-serveur (sous-agents), jamais credentialed
   const allowed = isAllowed ? origin : ALLOWED_ORIGINS[0];
-  return {
+  const h = {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age': '86400',
     'Vary': 'Origin',
   };
+  // Cookie de session (credentials) UNIQUEMENT pour les origines first-party de confiance.
+  // Un *.workers.dev tiers ne doit jamais pouvoir relayer le cookie ikcp_session.
+  if (firstParty) h['Access-Control-Allow-Credentials'] = 'true';
+  return h;
 }
 
 // RGPD : masque les données à caractère personnel avant journalisation KV.
