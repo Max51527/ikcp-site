@@ -296,6 +296,7 @@ const PAPPERS='https://ikcp-pappers.maxime-ead.workers.dev';
 const PATRIMOINE='https://ikcp-patrimoine.maxime-ead.workers.dev';
 const PROSPECT='https://ikcp-prospect.maxime-ead.workers.dev';
 let CO=null, FIN=null;
+function betaTrack(action, extra){ try{ extra=extra||{}; fetch(PATRIMOINE+'/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'audit',action:action,siren:(CO&&CO.siren)||'',label:(CO&&CO.nom)||'',email:extra.email||'',data:extra})}).catch(function(){}); }catch(_){ } }
 
 const $=id=>document.getElementById(id);
 const num=v=>{const x=String(v==null?'':v).replace(/[^\d.-]/g,'');return x===''?null:Number(x);};
@@ -319,6 +320,7 @@ async function lancerAudit(){
     renderCompany(CO); prefill(CO);
     on('sec-societe');on('sec-finance');on('sec-pistes');on('sec-lead');
     renderPistes();
+    betaTrack('run', {forme:(CO&&CO.forme_juridique)||'', ca:CO&&CO.chiffre_affaires});
     $('sec-societe').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){showErr(e.message||'Erreur de chargement.');}
   finally{btn.disabled=false;btn.textContent="Lancer l'audit";}
@@ -359,6 +361,7 @@ async function analyser(){
     const r=await fetch(PATRIMOINE+'/finance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(e)});
     FIN=await r.json();
     renderFinance(FIN); renderPistes();
+    betaTrack('finance', {alert:(FIN.alertCapital||{}).level||'none'});
   }catch(err){$('fin-out').innerHTML='<p class="err" style="display:block">Service momentanément indisponible.</p>';}
 }
 
@@ -422,6 +425,7 @@ async function envoyerLead(){
   const email=$('lead-email').value.trim();
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){$('lead-email').focus();$('lead-email').style.borderColor='var(--gold)';return;}
   const btn=$('lead-btn');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Envoi…';
+  betaTrack('lead', {email:email});
   const co=CO?(CO.nom+' (SIREN '+CO.siren+')'):'(SIREN non renseigné)';
   const body='Demande d\'analyse approfondie Audit Dirigeant.\nSociété : '+co+'\nLe prospect souhaite l\'analyse complète de Marcel et un échange avec Maxime.';
   try{

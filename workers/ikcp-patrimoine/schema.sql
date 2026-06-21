@@ -186,3 +186,13 @@ CREATE TABLE IF NOT EXISTS evenements (
   date_event  TEXT,
   created_at  TEXT NOT NULL
 );
+
+-- ── Bêta test : capture d'usage produit (audit, marcel, cockpit, simulateurs) ──
+CREATE TABLE IF NOT EXISTS beta_events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tool TEXT NOT NULL, action TEXT, siren TEXT, label TEXT,
+  data TEXT, email TEXT, ua TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_beta_tool ON beta_events(tool);
+CREATE INDEX IF NOT EXISTS idx_beta_ts ON beta_events(created_at);

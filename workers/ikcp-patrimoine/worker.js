@@ -247,6 +247,33 @@ export default {
       return json({ status: 'ok', service: 'ikcp-patrimoine', db: db ? 'bound' : 'absent', strategies: (STRATS.strategies || []).length, region: 'EU/FR' }, 200, o);
     }
 
+    // ── BÊTA TEST — capture d'usage produit (table beta_events, D1 Paris). ──
+    // POST /beta {tool, action?, siren?, label?, data?, email?} : ouvert (analytics produit).
+    if (url.pathname === '/beta' && req.method === 'POST') {
+      if (!db) return json({ ok: false, error: 'no_db' }, 200, o);
+      let b = {}; try { b = await req.json(); } catch (_) {}
+      const tool = String(b.tool || '').slice(0, 24);
+      if (!tool) return json({ error: 'missing_tool' }, 400, o);
+      try {
+        await db.prepare('INSERT INTO beta_events (tool, action, siren, label, data, email, ua) VALUES (?,?,?,?,?,?,?)')
+          .bind(tool, String(b.action || '').slice(0, 32) || null, String(b.siren || '').replace(/\D/g, '').slice(0, 14) || null,
+                String(b.label || '').slice(0, 160) || null, b.data ? JSON.stringify(b.data).slice(0, 4000) : null,
+                String(b.email || '').slice(0, 160) || null, (req.headers.get('User-Agent') || '').slice(0, 160)).run();
+        return json({ ok: true }, 200, o);
+      } catch (e) { return json({ ok: false, error: 'insert', message: e.message }, 200, o); }
+    }
+    // GET /beta/list?token=…&tool=… : lecture admin (protégée par BETA_ADMIN).
+    if (url.pathname === '/beta/list' && req.method === 'GET') {
+      if (!db) return json({ error: 'no_db' }, 503, o);
+      if (!env.BETA_ADMIN || url.searchParams.get('token') !== env.BETA_ADMIN) return json({ error: 'unauthorized' }, 401, o);
+      const tool = url.searchParams.get('tool');
+      const ev = tool
+        ? await db.prepare('SELECT * FROM beta_events WHERE tool=? ORDER BY id DESC LIMIT 300').bind(tool).all()
+        : await db.prepare('SELECT * FROM beta_events ORDER BY id DESC LIMIT 300').all();
+      const st = await db.prepare("SELECT tool, COUNT(*) n, MAX(created_at) last FROM beta_events GROUP BY tool ORDER BY n DESC").all();
+      return json({ ok: true, stats: st.results, events: ev.results }, 200, o);
+    }
+
     // ── POST /opportunites/preview : moteur SANS persistance (marche sans D1) ──
     // Le cockpit envoie les données du membre dans le corps ; on renvoie les pistes.
     // Stateless = rien n'est stocké (RGPD : la donnée ne quitte pas l'appel).

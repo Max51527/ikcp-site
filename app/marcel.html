@@ -512,6 +512,8 @@ window.send = async function(e){
     clearInterval(ldTimer); ld.remove();
     const reply = r.reply || r.message || 'Marcel n\'a pas pu traiter votre demande.';
     history.push({role:'assistant',content:reply});
+    // ── Bêta test : capture de l'échange (D1 Paris, best-effort, souverain) ──
+    try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'marcel',action:'message',label:String(q).slice(0,140),data:{provider:r.provider||'',len:(reply||'').length,tier:userTier||'free'}})}).catch(function(){}); }catch(_){}
     if(userTier === 'premium' || userTier === 'fo') Marcel.Me.saveMemory(history.slice(-24)).catch(()=>{});
 
     // Quota free atteint (enforcé serveur) → on affiche la réponse + on bloque la saisie
