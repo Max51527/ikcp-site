@@ -212,11 +212,23 @@
       </div>
       <div>
         <label>Catégorie</label>
-        <select id="f-cat"></select>
+        <select id="f-cat" onchange="toggleDvf()"></select>
       </div>
       <div>
         <label>Valeur estimée (€)</label>
         <input type="number" id="f-value" placeholder="350000" min="0" step="1000">
+      </div>
+      <div class="full" id="dvfBox" style="display:none;background:rgba(201,169,110,.07);border:1px solid rgba(201,169,110,.2);border-radius:11px;padding:12px 13px">
+        <label style="display:flex;align-items:center;gap:7px">🏠 Estimer automatiquement <span style="font-size:11px;color:var(--mute);font-weight:400">— prix réels des transactions (DVF · data.gouv)</span></label>
+        <div style="display:grid;grid-template-columns:1.5fr .7fr 1fr;gap:8px;margin-top:8px">
+          <input type="text" id="dvf-commune" placeholder="Commune (ex. Annonay)">
+          <input type="number" id="dvf-surface" placeholder="m²" min="0">
+          <select id="dvf-type"><option value="maison">Maison</option><option value="appartement">Appartement</option><option value="terrain">Terrain</option></select>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap">
+          <button class="btn btn-sm2" type="button" onclick="estimerDVF()">Estimer</button>
+          <span id="dvf-out" style="font-size:12.5px;color:var(--mute)"></span>
+        </div>
       </div>
       <div class="full">
         <label>Photo (lien d'image, optionnel)</label>
@@ -438,6 +450,7 @@ window.openForm = function(bien){
   document.getElementById('f-value').value = bien ? bien.value : '';
   document.getElementById('f-photo').value = bien ? (bien.photo||'') : '';
   document.getElementById('formDelete').style.display = bien ? 'inline-flex' : 'none';
+  document.getElementById('dvf-out').textContent = ''; toggleDvf();
   const p = document.getElementById('formPanel'); p.classList.add('open');
   p.scrollIntoView({behavior:'smooth',block:'center'});
   document.getElementById('f-label').focus();
@@ -459,6 +472,28 @@ window.submitForm = function(){
 };
 window.deleteCurrent = function(){
   if(editingId && confirm('Supprimer ce bien ?')){ biens = biens.filter(x=>x.id!==editingId); save(); closeForm(); render(); }
+};
+
+// ─── Estimation immobilière auto (DVF · data.gouv, souverain) ───
+window.toggleDvf = function(){
+  var b = document.getElementById('dvfBox');
+  if(b) b.style.display = (document.getElementById('f-cat').value === 'immobilier') ? 'block' : 'none';
+};
+window.estimerDVF = async function(){
+  var commune = (document.getElementById('dvf-commune').value||'').trim();
+  var surface = parseInt(document.getElementById('dvf-surface').value,10) || 0;
+  var type = document.getElementById('dvf-type').value;
+  var out = document.getElementById('dvf-out');
+  out.style.color = 'var(--mute)';
+  if(!commune || surface < 5){ out.textContent = 'Indiquez une commune et une surface.'; return; }
+  out.textContent = 'Estimation en cours…';
+  try{
+    var r = await fetch('https://ikcp-pappers.maxime-ead.workers.dev/dvf?q='+encodeURIComponent(commune)+'&surface='+surface+'&type='+type, { signal: AbortSignal.timeout(20000) });
+    var d = await r.json(); var e = d.estimation;
+    if(!e){ out.textContent = d && d.no_data ? 'Pas de données DVF (Paris/Lyon/Marseille : précisez l\'arrondissement).' : 'Pas d\'estimation pour cette commune.'; return; }
+    document.getElementById('f-value').value = e.valeur_estimee;
+    out.innerHTML = '≈ <b style="color:var(--gold,#C9A96E)">'+e.valeur_estimee.toLocaleString('fr-FR')+' €</b> · '+e.prix_m2_median.toLocaleString('fr-FR')+' €/m² · '+e.ventes_comparables+' ventes réelles (DVF)';
+  }catch(_){ out.textContent = 'Estimation indisponible — réessayez.'; }
 };
 
 // ─── Analyse Marcel ───
