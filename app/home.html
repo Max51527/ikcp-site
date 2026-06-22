@@ -128,6 +128,11 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
 .confirmed{margin-top:12px;font-size:12.5px;color:var(--acc-good);display:none;align-items:center;gap:7px}
 
 .spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trust{display:flex;flex-direction:column;gap:1px;background:linear-gradient(180deg,var(--card1),var(--card2));border:1px solid var(--line);border-radius:var(--r);padding:6px 16px}
+.ti{padding:14px 0;border-bottom:1px solid var(--line)}
+.ti:last-child{border-bottom:0}
+.ti b{display:block;font-size:14px;color:var(--txt);font-weight:600}
+.ti span{display:block;font-size:12.5px;color:var(--mute);line-height:1.5;margin-top:3px}
 .spec{background:linear-gradient(180deg,var(--card1),var(--card2));border:1px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;transition:border-color .2s,transform .15s}
 .spec:active{transform:scale(.97)}.spec:hover{border-color:var(--gold)}
 .spec .ic{width:32px;height:32px;border-radius:9px;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;color:var(--emph);background:var(--surface)}
@@ -304,6 +309,13 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
       <div class="kicker">Vos spécialistes — Patrimoine 360° inclus, le reste en Premium</div>
       <div class="spec-grid" id="specs"></div>
       <div style="margin-top:12px;font-size:12px;color:var(--mute);line-height:1.6">🔒 Aussi en <b style="color:var(--emph)">Premium</b> : lecture de bilan automatique · veille personnalisée · Marcel à la voix.</div>
+
+      <div class="kicker">Pourquoi nous faire confiance</div>
+      <div class="trust">
+        <div class="ti"><b>🇫🇷 Souverain</b><span>Vos données restent en France. Marcel est une <b>IA française</b>. Zéro dépendance américaine.</span></div>
+        <div class="ti"><b>🤝 Une relation, pas un outil</b><span>Marcel se <b>souvient</b> de vous, <b>veille</b> pour vous, et s'adresse à vous par votre nom.</span></div>
+        <div class="ti"><b>🛡️ Cadre &amp; indépendance</b><span>Cabinet indépendant · ORIAS 23001568 · MIF II — l'information, jamais la démarche non sollicitée.</span></div>
+      </div>
     </section>
 
     <!-- ════ MARCEL ════ -->
