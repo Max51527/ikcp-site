@@ -227,7 +227,7 @@ const PFU_IR = 0.128, PS = 0.172, ABAT_DIRIGEANT_RETRAITE = 500000;
 
 const simulators = [
   {
-    id:'remuneration-sasu', category:'Dirigeant', title:'Rémunération SASU', desc:'Net après IR réel (barème 2026) à partir d’un budget de rémunération.',
+    id:'remuneration-sasu', free:true, category:'Dirigeant', title:'Rémunération SASU', desc:'Net après IR réel (barème 2026) à partir d’un budget de rémunération.',
     fields:[
       {key:'budget', label:'Budget annuel alloué (super-brut)', type:'number', value:120000},
       {key:'chargeRate', label:'Taux charges sociales (estim.)', type:'number', value:0.82, step:'0.01'},
@@ -281,7 +281,7 @@ const simulators = [
     }
   },
   {
-    id:'profession-liberale-net', category:'Libéral', title:'Revenu net profession libérale', desc:'Revenu disponible après cotisations et IR réel (barème 2026).',
+    id:'profession-liberale-net', free:true, category:'Libéral', title:'Revenu net profession libérale', desc:'Revenu disponible après cotisations et IR réel (barème 2026).',
     fields:[
       {key:'revenue', label:'Recettes annuelles', type:'number', value:140000},
       {key:'expenses', label:'Charges déductibles', type:'number', value:30000},
@@ -383,7 +383,7 @@ const simulators = [
     }
   },
   {
-    id:'tresorerie-excedentaire', category:'Trésorerie', title:'Trésorerie excédentaire', desc:'Mesure la poche mobilisable après sécurité opérationnelle.',
+    id:'tresorerie-excedentaire', free:true, category:'Trésorerie', title:'Trésorerie excédentaire', desc:'Mesure la poche mobilisable après sécurité opérationnelle.',
     fields:[
       {key:'cash', label:'Trésorerie disponible', type:'number', value:250000},
       {key:'monthlyFixed', label:'Charges fixes mensuelles', type:'number', value:28000},
@@ -510,7 +510,7 @@ const simulators = [
     }
   },
   {
-    id:'capacite-emprunt-pro', category:'Financement', title:'Capacité d’emprunt pro/perso', desc:'Projette un montant finançable à mensualité cible.',
+    id:'capacite-emprunt-pro', free:true, category:'Financement', title:'Capacité d’emprunt pro/perso', desc:'Projette un montant finançable à mensualité cible.',
     fields:[
       {key:'monthlyPayment', label:'Mensualité supportable', type:'number', value:2500},
       {key:'years', label:'Durée (années)', type:'number', value:15},
@@ -538,6 +538,17 @@ const simulators = [
 let activeId = simulators[0].id;
 let chart;
 
+/* ═══ Freemium : 4 calculs de base gratuits, stratégie patrimoniale = Premium ═══ */
+const API_CLIENT = 'https://ikcp-client.maxime-ead.workers.dev';
+let TIER = 'free';
+function token(){ try{ return localStorage.getItem('ikcp_token') || ''; }catch(_){ return ''; } }
+async function loadTier(){
+  const t = token(); if (!t) return;
+  try{ const r = await fetch(API_CLIENT+'/api/v1/me', { headers:{ 'Authorization':'Bearer '+t }, credentials:'include' });
+       if (r.ok){ const u = await r.json(); if (u && u.tier) TIER = u.tier; } }catch(_){}
+}
+function isUnlocked(sim){ return !!sim.free || TIER !== 'free'; }
+
 function renderSimList() {
   const list = document.getElementById('simList');
   list.innerHTML = '';
@@ -545,8 +556,9 @@ function renderSimList() {
     const btn = document.createElement('button');
     btn.className = 'sim-item' + (sim.id === activeId ? ' active' : '');
     btn.style.cssText = 'width:100%;text-align:left';
-    btn.innerHTML = `<div><strong>${sim.title}</strong><small>${sim.desc}</small></div><span class="tag">${sim.category}</span>`;
-    btn.onclick = () => { activeId = sim.id; renderSimList(); renderActive(); switchScreen('screen-calcul'); setNav('screen-calcul'); };
+    const locked = !isUnlocked(sim);
+    btn.innerHTML = `<div><strong>${sim.title}${locked?' 🔒':''}</strong><small>${sim.desc}</small></div><span class="tag">${locked?'Premium':sim.category}</span>`;
+    btn.onclick = () => { activeId = sim.id; renderSimList(); (isUnlocked(sim) ? renderActive() : renderTeaser(sim)); switchScreen('screen-calcul'); setNav('screen-calcul'); };
     list.appendChild(btn);
   });
 }
@@ -582,6 +594,19 @@ function renderActive() {
     secondary.innerHTML = out.secondary.map(t => `<div class="result-card"><div>${t}</div></div>`).join('');
     drawChart(out.chart.labels, out.chart.values);
   }
+}
+
+function renderTeaser(sim){
+  document.getElementById('simCategory').textContent = 'Premium';
+  document.getElementById('simTitle').textContent = sim.title + ' 🔒';
+  document.getElementById('simDesc').textContent = sim.desc;
+  document.getElementById('fields').innerHTML = '';
+  document.getElementById('primaryResults').innerHTML =
+    `<div class="result-card" style="grid-column:1/-1"><span class="hint">Réservé à l'offre Premium</span><strong style="font-size:1.05rem">Simulateur de stratégie patrimoniale</strong></div>`;
+  document.getElementById('secondaryResults').innerHTML =
+    `<div class="result-card"><div>Les calculs de base — rémunération, revenu libéral, trésorerie, capacité d'emprunt — sont <strong>gratuits</strong>. Les simulateurs de stratégie — arbitrage dividendes, retraite, cession, transmission, prévoyance, homme-clé… — sont inclus dans <strong>Premium</strong>.</div></div>`
+    + `<a href="/app/" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Débloquer avec Premium →</a>`;
+  if (chart){ chart.destroy(); chart = null; }
 }
 
 function drawChart(labels, data) {
@@ -621,6 +646,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 
 renderSimList();
 renderActive();
+loadTier().then(() => { renderSimList(); });   // re-render le catalogue si Premium (déverrouille)
 </script>
 <script src="/protect.js?v=1" defer></script>
 </body>
