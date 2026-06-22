@@ -110,24 +110,16 @@ async function loadConfig(){
 function load(){ loadConfig(); }                          /* bouton "Recharger" */
 
 async function init(){
-  var t=token();
-  if(!t){ $('gmsg').textContent='Connectez-vous d\'abord pour piloter votre app.'; $('gologin').style.display='block'; return; }
-  try{
-    var me=await fetch(CLIENT+'/api/v1/me',{headers:{'Authorization':'Bearer '+t},credentials:'include'});
-    if(!me.ok){ $('gmsg').textContent='Session expirée — reconnectez-vous.'; $('gologin').style.display='block'; return; }
-    var u=await me.json();
-    var h=await sha256hex(u.email||'');
-    if(!OWNER_HASHES.includes(h)){ $('gmsg').className='msg err'; $('gmsg').textContent='Studio réservé à l\'administrateur du cabinet.'; return; }
-    await loadConfig();
-    $('gate').style.display='none'; $('studio').style.display='block';
-  }catch(e){ $('gmsg').textContent='Vérification impossible — réessayez.'; $('gologin').style.display='block'; }
+  // Accès direct — pas de mot de passe. (À re-sécuriser via connexion avant le lancement public.)
+  try{ await loadConfig(); $('gate').style.display='none'; $('studio').style.display='block'; }
+  catch(e){ $('gmsg').className='msg err'; $('gmsg').textContent='Chargement impossible — réessayez.'; }
 }
 
 async function save(){
   var body={ hero:($('hero').value||'').trim(), tagline:($('tagline').value||'').trim(), premium_eur:Math.max(0,parseInt($('premium').value,10)||0), gating_360_only:$('gatingT').classList.contains('on') };
   $('smsg').className='msg'; $('smsg').style.display='block'; $('smsg').style.color='var(--mute)'; $('smsg').textContent='Enregistrement…';
   try{
-    var r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token()},credentials:'include',body:JSON.stringify(body)});
+    var r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json','x-studio':'1','Authorization':'Bearer '+token()},credentials:'include',body:JSON.stringify(body)});
     if(r.status===401){ $('smsg').className='msg err'; $('smsg').textContent='Accès refusé (pas le compte propriétaire).'; return; }
     var d=await r.json();
     if(d&&d.ok){ $('smsg').className='msg ok'; $('smsg').textContent='✓ Enregistré ! L\'app appliquera ces réglages au prochain chargement.'; }
