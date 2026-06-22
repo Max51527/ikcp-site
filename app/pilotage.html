@@ -95,7 +95,8 @@ a.back{color:var(--mute);text-decoration:none;font-size:13px;margin-left:auto;bo
 <script>
 const API='https://ikcp-patrimoine.maxime-ead.workers.dev/config';
 const CLIENT='https://ikcp-client.maxime-ead.workers.dev';
-const OWNER=['maxime@ikcp.fr','maxime@ikcp.eu'];
+const OWNER_HASHES=['c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3','cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030','d4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543'];
+async function sha256hex(s){ var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s).trim().toLowerCase())); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
 const $=id=>document.getElementById(id);
 /* capte le jeton d'un lien magique (#s=…) si on arrive directement ici */
 (function(){ try{ var m=(location.hash||'').match(/[#&]s=([^&]+)/); if(m){ localStorage.setItem('ikcp_token',decodeURIComponent(m[1])); history.replaceState(null,'',location.pathname); } }catch(_){} })();
@@ -115,7 +116,8 @@ async function init(){
     var me=await fetch(CLIENT+'/api/v1/me',{headers:{'Authorization':'Bearer '+t},credentials:'include'});
     if(!me.ok){ $('gmsg').textContent='Session expirée — reconnectez-vous.'; $('gologin').style.display='block'; return; }
     var u=await me.json();
-    if(!OWNER.includes(String(u.email||'').toLowerCase())){ $('gmsg').className='msg err'; $('gmsg').textContent='Studio réservé à l\'administrateur du cabinet.'; return; }
+    var h=await sha256hex(u.email||'');
+    if(!OWNER_HASHES.includes(h)){ $('gmsg').className='msg err'; $('gmsg').textContent='Studio réservé à l\'administrateur du cabinet.'; return; }
     await loadConfig();
     $('gate').style.display='none'; $('studio').style.display='block';
   }catch(e){ $('gmsg').textContent='Vérification impossible — réessayez.'; $('gologin').style.display='block'; }

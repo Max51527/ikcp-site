@@ -291,12 +291,27 @@ export default {
     // PUT /config : écriture réservée au PROPRIÉTAIRE — via sa connexion membre (zéro secret à retenir).
     if (url.pathname === '/config' && req.method === 'PUT') {
       if (!db) return json({ error: 'no_db' }, 503, o);
-      const OWNER = ['maxime@ikcp.fr', 'maxime@ikcp.eu'];
+      // Empreintes (SHA-256) des emails propriétaires — privé, jamais l'email en clair dans le repo public.
+      const OWNER_HASHES = [
+        'c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3', // pro .fr
+        'cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030', // pro .eu
+        'd4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543', // perso
+      ];
       let authed = false;
-      // 1) Connexion membre propriétaire : Bearer → ikcp-client /me → email autorisé.
+      // 1) Connexion membre propriétaire : Bearer → ikcp-client /me → empreinte email autorisée.
       const auth = req.headers.get('Authorization') || '';
       if (auth.startsWith('Bearer ')) {
-        try { const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } }); if (me.ok) { const u = await me.json(); if (u && u.email && OWNER.includes(String(u.email).toLowerCase())) authed = true; } } catch (_) {}
+        try {
+          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          if (me.ok) {
+            const u = await me.json();
+            if (u && u.email) {
+              const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(u.email).trim().toLowerCase()));
+              const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+              if (OWNER_HASHES.includes(hex)) authed = true;
+            }
+          }
+        } catch (_) {}
       }
       // 2) Fallback : secret admin (console), si un jour posé.
       if (!authed) {
