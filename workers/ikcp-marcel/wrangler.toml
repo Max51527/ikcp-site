@@ -33,8 +33,7 @@ enabled = true
 [vars]
 LLM_PRIMARY = "mistral"
 
-# CRON — auto-amélioration supervisée : chaque lundi 7h UTC, Marcel analyse son
-# usage réel et écrit une proposition d'amélioration (validée ensuite par Maxime
-# via /admin/learn). Rien ne s'applique au prompt sans validation humaine.
-[triggers]
-crons = ["0 7 * * 1"]
+# Auto-amélioration supervisée : déclenchée À LA DEMANDE via GET /admin/improve.
+# (CRON retiré : les [triggers] échouent sur ce compte Cloudflare — l'API /schedules
+#  renvoie une erreur, ce qui faisait échouer le déploiement CI. Marcel propose,
+#  Maxime valide via POST /admin/learn ; rien ne s'applique au prompt sans validation humaine.)
