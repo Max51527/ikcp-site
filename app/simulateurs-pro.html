@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Marcel — Simulateurs du dirigeant · IKCP</title>
+  <meta name="description" content="Suite mobile de simulateurs pour dirigeants d'entreprise et professions libérales. Intelligence patrimoniale souveraine IKCP." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2rem);
+      --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --color-bg: #FAF8F4; --color-surface: #FFFFFF; --color-surface-2: #FBF7EF; --color-surface-offset: #F4EFE7; --color-border: #DCD3C4; --color-divider:#E4DBCC;
+      --color-text:#221E18; --color-text-muted:#6B5D52; --color-text-faint:#A99B8B; --color-text-inverse:#FAF8F4;
+      --color-primary:#1B2A4A; --color-primary-hover:#0E1729; --color-success:#3B7D5E; --color-warning:#964219; --color-error:#A12C7B; --color-gold:#C9A96E;
+      --radius-sm:.5rem; --radius-md:.9rem; --radius-lg:1.2rem; --radius-xl:1.5rem; --radius-full:9999px;
+      --shadow-sm:0 2px 8px rgba(27,42,74,.06); --shadow-md:0 12px 32px rgba(27,42,74,.10);
+      --font-body:'Outfit', sans-serif; --font-display:'Playfair Display', serif;
+    }
+    [data-theme="dark"] {
+      --color-bg:#0E1729; --color-surface:#16233C; --color-surface-2:#1A2A47; --color-surface-offset:#1E2F4D; --color-border:#2C3E5E; --color-divider:#243450;
+      --color-text:#FAF8F4; --color-text-muted:#B1AEA8; --color-text-faint:#77746E; --color-text-inverse:#0E1729;
+      --color-primary:#E2C896; --color-primary-hover:#C9A96E; --color-success:#7FCBA4; --color-warning:#D08A60; --color-error:#DD86BD; --color-gold:#E2C896;
+      --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow-md:0 12px 32px rgba(0,0,0,.35);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0; min-height:100vh; background:var(--color-bg); color:var(--color-text);
+      font-family:var(--font-body); font-size:var(--text-base); line-height:1.5;
+    }
+    button,input,select { font:inherit; }
+    .app { max-width: 520px; margin:0 auto; padding-bottom: 6rem; }
+    .topbar {
+      position:sticky; top:0; z-index:50; backdrop-filter: blur(14px);
+      background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+      border-bottom:1px solid var(--color-divider); padding: max(env(safe-area-inset-top), .5rem) var(--space-4) var(--space-3);
+    }
+    .brand { display:flex; align-items:center; gap:var(--space-3); }
+    .logo {
+      width:42px; height:42px; border-radius:14px; display:grid; place-items:center; color:var(--color-text-inverse);
+      background:linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 65%, var(--color-gold)));
+      box-shadow:var(--shadow-sm);
+    }
+    .brand h1 { margin:0; font:600 var(--text-xl)/1.05 var(--font-display); }
+    .brand p { margin:.2rem 0 0; color:var(--color-text-muted); font-size:var(--text-sm); }
+    .actions { display:flex; gap:.5rem; margin-top:var(--space-3); }
+    .chip, .toggle {
+      border:1px solid var(--color-border); background:var(--color-surface); color:var(--color-text);
+      border-radius:var(--radius-full); padding:.65rem .9rem;
+    }
+    .hero { padding:var(--space-6) var(--space-4) var(--space-4); }
+    .hero-card, .card {
+      background:var(--color-surface); border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+      border-radius:var(--radius-xl); box-shadow:var(--shadow-sm);
+    }
+    .hero-card { padding:var(--space-5); display:grid; gap:var(--space-4); }
+    .eyebrow { color:var(--color-gold); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
+    h2,h3 { margin:0; }
+    .hero-card h2 { font:600 clamp(1.75rem, 4vw, 2.35rem)/1.1 var(--font-display); }
+    .hero-card h2 em { font-style:italic; color:var(--color-gold); }
+    .hero-card p { margin:0; color:var(--color-text-muted); }
+    .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
+    .kpi { padding:.9rem; border-radius:1rem; background:var(--color-surface-offset); border:1px solid var(--color-border); }
+    .kpi strong { display:block; font-size:var(--text-lg); }
+    .section { padding:var(--space-4); }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:1rem; margin-bottom:var(--space-4); }
+    .section-head p { margin:0; color:var(--color-text-muted); font-size:var(--text-sm); }
+    .grid { display:grid; gap:var(--space-4); }
+    .sim-list { display:grid; gap:.85rem; }
+    .sim-item {
+      display:flex; justify-content:space-between; gap:1rem; align-items:center; padding:1rem 1rem;
+      border:1px solid var(--color-border); border-radius:1rem; background:var(--color-surface-2); cursor:pointer;
+    }
+    .sim-item.active { border-color:var(--color-gold); background:color-mix(in srgb, var(--color-gold) 9%, var(--color-surface)); }
+    .sim-item small { display:block; color:var(--color-text-muted); margin-top:.2rem; }
+    .tag { font-size:var(--text-xs); color:var(--color-gold); font-weight:700; }
+    .sim-panel { padding:var(--space-5); display:grid; gap:var(--space-5); }
+    .field-grid { display:grid; gap:.9rem; }
+    .field label { display:block; margin-bottom:.35rem; font-size:var(--text-sm); color:var(--color-text-muted); }
+    .field input, .field select {
+      width:100%; border:1px solid var(--color-border); background:var(--color-bg); color:var(--color-text);
+      min-height:48px; border-radius:.95rem; padding:.85rem 1rem;
+    }
+    .two-col { display:grid; gap:.9rem; grid-template-columns:1fr 1fr; }
+    .results { display:grid; gap:.8rem; }
+    .result-card {
+      padding:1rem; border-radius:1rem; background:var(--color-surface-offset); border:1px solid var(--color-border);
+    }
+    .result-card strong { display:block; font-size:var(--text-lg); color:var(--color-primary); }
+    .result-grid { display:grid; gap:.8rem; grid-template-columns:1fr 1fr; }
+    .hint { color:var(--color-text-muted); font-size:var(--text-sm); }
+    .warning { color:var(--color-warning); }
+    .success { color:var(--color-success); }
+    .disclaimer { margin:var(--space-4); padding:1rem; border-radius:1rem; background:var(--color-surface-2); border:1px solid var(--color-border); font-size:var(--text-xs); color:var(--color-text-muted); line-height:1.6; }
+    .footer-nav {
+      position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:min(520px,100%);
+      background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(14px);
+      border-top:1px solid var(--color-divider); padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom));
+      display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem;
+    }
+    .footer-nav button { min-height:48px; border-radius:1rem; color:var(--color-text-muted); background:transparent; border:0; }
+    .footer-nav button.active { background:var(--color-surface); color:var(--color-primary); border:1px solid var(--color-border); }
+    canvas { width:100% !important; max-height:220px !important; }
+    @media (max-width: 420px){ .two-col, .result-grid, .kpis { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3C8 3 5 6.2 5 10.1C5 14.7 11.2 20.2 12 21C12.8 20.2 19 14.7 19 10.1C19 6.2 16 3 12 3Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Marcel · Simulateurs</h1>
+          <p>Dirigeant(e)s &amp; professions libérales · 🇫🇷</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="chip" id="refreshLabel">Base FR · 2026</button>
+        <button class="toggle" id="themeToggle" aria-label="Basculer le thème">◐</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-card">
+        <div>
+          <div class="eyebrow">Suite de calculs</div>
+          <h2>Les simulateurs essentiels du dirigeant, dans <em>votre poche.</em></h2>
+        </div>
+        <p>Rémunération, dividendes, trésorerie, retraite, prévoyance, protection et transmission — une ergonomie pensée pour smartphone, des estimations en temps réel.</p>
+        <div class="kpis">
+          <div class="kpi"><span class="hint">Simulateurs</span><strong>12</strong></div>
+          <div class="kpi"><span class="hint">Profils</span><strong>SASU · EURL · BNC</strong></div>
+          <div class="kpi"><span class="hint">Usage</span><strong>100% mobile</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="screen-simulateurs">
+      <div class="section-head">
+        <div>
+          <h3>Catalogue</h3>
+          <p>Sélectionnez un calculateur pour afficher instantanément les résultats.</p>
+        </div>
+      </div>
+      <div class="sim-list" id="simList"></div>
+    </section>
+
+    <section class="section" id="screen-calcul" hidden>
+      <div class="card sim-panel">
+        <div>
+          <div class="eyebrow" id="simCategory">Simulation</div>
+          <h3 id="simTitle">Rémunération du dirigeant</h3>
+          <p class="hint" id="simDesc">Compare la rémunération nette, les cotisations et le disponible.</p>
+        </div>
+        <div class="field-grid" id="fields"></div>
+        <div class="result-grid" id="primaryResults"></div>
+        <div class="results" id="secondaryResults"></div>
+        <div class="card" style="padding:1rem; background:var(--color-surface-2)">
+          <canvas id="simChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      ⚠️ <strong>Estimations indicatives</strong>, à hypothèses simplifiées, base France 2026. Elles ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Pour chiffrer votre situation réelle, échangez avec Maxime. — <strong>IKCP</strong> · ORIAS 23001568.
+    </div>
+  </div>
+
+  <nav class="footer-nav" aria-label="Navigation mobile">
+    <button class="active" data-screen="screen-simulateurs">Catalogue</button>
+    <button data-screen="screen-calcul">Calcul</button>
+  </nav>
+
+<script>
+const euro = v => new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR', maximumFractionDigits:0 }).format(Number.isFinite(v)?v:0);
+const pct = v => `${(v*100).toFixed(1)} %`;
+const round = v => Math.round((v + Number.EPSILON) * 100) / 100;
+
+const simulators = [
+  {
+    id:'remuneration-sasu', category:'Dirigeant', title:'Rémunération SASU', desc:'Net à partir d’un budget de rémunération et estimation du coût social.',
+    fields:[
+      {key:'budget', label:'Budget annuel alloué', type:'number', value:120000},
+      {key:'chargeRate', label:'Taux charges globales', type:'number', value:0.82, step:'0.01'},
+      {key:'taxRate', label:'Taux IR estimé', type:'number', value:0.11, step:'0.01'}
+    ],
+    calc:v => {
+      const netBeforeTax = v.budget / (1 + v.chargeRate);
+      const charges = v.budget - netBeforeTax;
+      const ir = netBeforeTax * v.taxRate;
+      return {
+        primary:[
+          ['Net avant IR', euro(netBeforeTax)],
+          ['Charges estimées', euro(charges)],
+          ['Net après IR', euro(netBeforeTax - ir)],
+          ['Taux net/budget', pct(netBeforeTax / v.budget)]
+        ],
+        secondary:[
+          `Cadrage rapide de la rémunération nette à partir d’un budget superbrut (président de SAS/SASU).`,
+          `Hypothèse simplifiée : les paramètres sociaux exacts dépendent de la situation réelle.`
+        ],
+        chart:{ labels:['Net avant IR','Charges','IR estimé'], values:[netBeforeTax, charges, ir] }
+      }
+    }
+  },
+  {
+    id:'dividendes-vs-salaire', category:'Arbitrage', title:'Dividendes vs salaire', desc:'Compare le disponible net entre rémunération et distribution.',
+    fields:[
+      {key:'profit', label:'Résultat distribuable', type:'number', value:80000},
+      {key:'salaryShare', label:'Part en salaire', type:'number', value:0.5, step:'0.05'},
+      {key:'salaryCostRate', label:'Taux de coût salaire', type:'number', value:0.82, step:'0.01'},
+      {key:'flatTax', label:'Flat tax dividendes', type:'number', value:0.30, step:'0.01'}
+    ],
+    calc:v => {
+      const salaryBudget = v.profit * v.salaryShare;
+      const dividendGross = v.profit - salaryBudget;
+      const salaryNet = salaryBudget / (1 + v.salaryCostRate);
+      const dividendsNet = dividendGross * (1 - v.flatTax);
+      return {
+        primary:[
+          ['Salaire net', euro(salaryNet)],
+          ['Dividendes nets', euro(dividendsNet)],
+          ['Disponible total', euro(salaryNet + dividendsNet)],
+          ['Poids dividendes', pct(dividendsNet / Math.max(salaryNet + dividendsNet,1))]
+        ],
+        secondary:[
+          `Arbitrage entre rémunération et distribution de dividendes (impôt + cotisations applicables).`,
+          `Rappel : les dividendes n’ouvrent pas les mêmes droits retraite et maladie que la rémunération.`
+        ],
+        chart:{ labels:['Salaire net','Dividendes nets'], values:[salaryNet, dividendsNet] }
+      }
+    }
+  },
+  {
+    id:'profession-liberale-net', category:'Libéral', title:'Revenu net profession libérale', desc:'Projette le revenu disponible après charges et IR.',
+    fields:[
+      {key:'revenue', label:'Recettes annuelles', type:'number', value:140000},
+      {key:'expenses', label:'Charges déductibles', type:'number', value:30000},
+      {key:'socialRate', label:'Taux cotisations', type:'number', value:0.35, step:'0.01'},
+      {key:'taxRate', label:'Taux IR estimé', type:'number', value:0.20, step:'0.01'}
+    ],
+    calc:v => {
+      const taxable = Math.max(v.revenue - v.expenses, 0);
+      const social = taxable * v.socialRate;
+      const preTax = taxable - social;
+      const tax = preTax * v.taxRate;
+      return {
+        primary:[
+          ['Résultat avant cotisations', euro(taxable)],
+          ['Cotisations sociales', euro(social)],
+          ['Net avant IR', euro(preTax)],
+          ['Net après IR', euro(preTax - tax)]
+        ],
+        secondary:[
+          `Cadrage du revenu net d’une profession libérale (BNC) avant simulation réglementaire détaillée.`
+        ],
+        chart:{ labels:['Charges déductibles','Cotisations','Net après IR'], values:[v.expenses, social, preTax - tax] }
+      }
+    }
+  },
+  {
+    id:'prevoyance-tns', category:'Protection', title:'Prévoyance TNS / libéraux', desc:'Mesure le manque de revenu couvert en cas d’arrêt.',
+    fields:[
+      {key:'monthlyNet', label:'Revenu net mensuel', type:'number', value:6500},
+      {key:'legalIJ', label:'Indemnités journalières légales / mois', type:'number', value:2200},
+      {key:'fixedCosts', label:'Charges fixes mensuelles', type:'number', value:1800},
+      {key:'privateCover', label:'Couverture privée / mois', type:'number', value:1000}
+    ],
+    calc:v => {
+      const totalCover = v.legalIJ + v.privateCover;
+      const gap = Math.max(v.monthlyNet + v.fixedCosts - totalCover, 0);
+      return {
+        primary:[
+          ['Couverture totale', euro(totalCover)],
+          ['Manque mensuel', euro(gap)],
+          ['Taux de couverture', pct(totalCover / Math.max(v.monthlyNet + v.fixedCosts,1))],
+          ['Charges fixes à financer', euro(v.fixedCosts)]
+        ],
+        secondary:[
+          `Le besoin de prévoyance devient critique dès que les charges fixes professionnelles s’ajoutent au revenu privé à remplacer.`
+        ],
+        chart:{ labels:['Couverture','Manque'], values:[totalCover, gap] }
+      }
+    }
+  },
+  {
+    id:'retraite-capital', category:'Retraite', title:'Capital retraite cible', desc:'Calcule le capital à constituer selon une rente cible.',
+    fields:[
+      {key:'monthlyNeed', label:'Besoin mensuel à la retraite', type:'number', value:4000},
+      {key:'publicPension', label:'Retraite estimée existante / mois', type:'number', value:1800},
+      {key:'years', label:'Durée de retraite (années)', type:'number', value:25},
+      {key:'returnRate', label:'Rendement annuel net', type:'number', value:0.03, step:'0.005'}
+    ],
+    calc:v => {
+      const annualGap = Math.max((v.monthlyNeed - v.publicPension) * 12, 0);
+      const r = v.returnRate;
+      const n = v.years;
+      const capital = r === 0 ? annualGap * n : annualGap * ((1 - Math.pow(1 + r, -n)) / r);
+      return {
+        primary:[
+          ['Besoin annuel complémentaire', euro(annualGap)],
+          ['Capital cible', euro(capital)],
+          ['Retraite couverte par régimes', pct(v.publicPension / Math.max(v.monthlyNeed,1))],
+          ['Durée modélisée', `${v.years} ans`]
+        ],
+        secondary:[
+          `Transforme un déficit mensuel de revenu en capital cible à constituer.`
+        ],
+        chart:{ labels:['Retraite existante','Complément cible'], values:[v.publicPension*12, annualGap] }
+      }
+    }
+  },
+  {
+    id:'versement-per', category:'Retraite', title:'Effort d’épargne retraite', desc:'Projette le versement mensuel nécessaire pour un capital cible.',
+    fields:[
+      {key:'targetCapital', label:'Capital cible', type:'number', value:450000},
+      {key:'years', label:'Années avant retraite', type:'number', value:18},
+      {key:'returnRate', label:'Rendement annuel net', type:'number', value:0.04, step:'0.005'}
+    ],
+    calc:v => {
+      const m = v.returnRate / 12;
+      const n = v.years * 12;
+      const monthly = m === 0 ? v.targetCapital / n : v.targetCapital * m / (Math.pow(1+m, n)-1);
+      return {
+        primary:[
+          ['Versement mensuel', euro(monthly)],
+          ['Versement annuel', euro(monthly*12)],
+          ['Horizon', `${v.years} ans`],
+          ['Capital final visé', euro(v.targetCapital)]
+        ],
+        secondary:[`Traduit un objectif de capital en effort d’épargne régulier (PER, assurance-vie…).`],
+        chart:{ labels:['Versement annuel','Capital cible/10'], values:[monthly*12, v.targetCapital/10] }
+      }
+    }
+  },
+  {
+    id:'tresorerie-excedentaire', category:'Trésorerie', title:'Trésorerie excédentaire', desc:'Mesure la poche mobilisable après sécurité opérationnelle.',
+    fields:[
+      {key:'cash', label:'Trésorerie disponible', type:'number', value:250000},
+      {key:'monthlyFixed', label:'Charges fixes mensuelles', type:'number', value:28000},
+      {key:'safetyMonths', label:'Mois de sécurité', type:'number', value:6},
+      {key:'taxBuffer', label:'Coussin fiscal', type:'number', value:25000}
+    ],
+    calc:v => {
+      const reserve = v.monthlyFixed * v.safetyMonths + v.taxBuffer;
+      const excess = Math.max(v.cash - reserve, 0);
+      return {
+        primary:[
+          ['Réserve minimale', euro(reserve)],
+          ['Trésorerie excédentaire', euro(excess)],
+          ['Part mobilisable', pct(excess / Math.max(v.cash,1))],
+          ['Cash total', euro(v.cash)]
+        ],
+        secondary:[`Pour arbitrer entre poche de sécurité, placement de trésorerie et versements au dirigeant.`],
+        chart:{ labels:['Réserve','Excédent'], values:[reserve, excess] }
+      }
+    }
+  },
+  {
+    id:'besoin-diversification', category:'Patrimoine', title:'Risque de concentration', desc:'Mesure la dépendance du patrimoine à l’entreprise.',
+    fields:[
+      {key:'businessValue', label:'Valeur de l’entreprise', type:'number', value:900000},
+      {key:'financialAssets', label:'Actifs financiers perso', type:'number', value:160000},
+      {key:'realEstate', label:'Immobilier perso net', type:'number', value:280000},
+      {key:'cash', label:'Cash perso', type:'number', value:40000}
+    ],
+    calc:v => {
+      const total = v.businessValue + v.financialAssets + v.realEstate + v.cash;
+      const concentration = v.businessValue / Math.max(total,1);
+      const diversificationGap = Math.max((0.5*total) - (v.financialAssets + v.realEstate + v.cash), 0);
+      return {
+        primary:[
+          ['Patrimoine total', euro(total)],
+          ['Poids entreprise', pct(concentration)],
+          ['Patrimoine hors entreprise', euro(total - v.businessValue)],
+          ['Diversification à construire', euro(diversificationGap)]
+        ],
+        secondary:[`Un dirigeant trop concentré sur sa société doit piloter ce ratio avant retraite, transmission ou cession.`],
+        chart:{ labels:['Entreprise','Hors entreprise'], values:[v.businessValue, total-v.businessValue] }
+      }
+    }
+  },
+  {
+    id:'cession-nette', category:'Cession', title:'Produit de cession net', desc:'Projette le net perçu après fiscalité simplifiée.',
+    fields:[
+      {key:'salePrice', label:'Prix de cession', type:'number', value:1500000},
+      {key:'taxBasis', label:'Valeur fiscale', type:'number', value:200000},
+      {key:'taxRate', label:'Taux global simplifié', type:'number', value:0.30, step:'0.01'},
+      {key:'fees', label:'Frais de deal', type:'number', value:45000}
+    ],
+    calc:v => {
+      const taxableGain = Math.max(v.salePrice - v.taxBasis - v.fees, 0);
+      const tax = taxableGain * v.taxRate;
+      const net = v.salePrice - v.fees - tax;
+      return {
+        primary:[
+          ['Plus-value taxable', euro(taxableGain)],
+          ['Fiscalité estimée', euro(tax)],
+          ['Net après frais et fiscalité', euro(net)],
+          ['Taux de friction', pct((v.fees + tax)/Math.max(v.salePrice,1))]
+        ],
+        secondary:[`Cadrage simplifié d’un avant-projet de cession avant modélisation fine (apport-cession, donation avant cession, Dutreil).`],
+        chart:{ labels:['Net','Fiscalité','Frais'], values:[net, tax, v.fees] }
+      }
+    }
+  },
+  {
+    id:'transmission-donation', category:'Transmission', title:'Donation & abattements', desc:'Projette l’assiette taxable restante après abattements.',
+    fields:[
+      {key:'transferred', label:'Valeur transmise', type:'number', value:600000},
+      {key:'children', label:'Nombre d’enfants', type:'number', value:2},
+      {key:'abatementPerChild', label:'Abattement par enfant', type:'number', value:100000}
+    ],
+    calc:v => {
+      const abatements = v.children * v.abatementPerChild;
+      const taxable = Math.max(v.transferred - abatements, 0);
+      return {
+        primary:[
+          ['Valeur transmise', euro(v.transferred)],
+          ['Abattements cumulés', euro(abatements)],
+          ['Assiette taxable', euro(taxable)],
+          ['Taxable / transmis', pct(taxable / Math.max(v.transferred,1))]
+        ],
+        secondary:[`Premier cadrage avant modélisation détaillée (donations, démembrements, pactes Dutreil).`],
+        chart:{ labels:['Abattements','Taxable'], values:[abatements, taxable] }
+      }
+    }
+  },
+  {
+    id:'homme-cle', category:'Protection', title:'Capital homme-clé', desc:'Estime un capital de protection pour l’entreprise.',
+    fields:[
+      {key:'grossMargin', label:'Marge brute annuelle dépendante', type:'number', value:350000},
+      {key:'monthsImpact', label:'Durée d’impact (mois)', type:'number', value:12},
+      {key:'replacementCost', label:'Coût de remplacement', type:'number', value:60000}
+    ],
+    calc:v => {
+      const impact = v.grossMargin * (v.monthsImpact/12);
+      const capital = impact + v.replacementCost;
+      return {
+        primary:[
+          ['Perte d’exploitation estimée', euro(impact)],
+          ['Coût de remplacement', euro(v.replacementCost)],
+          ['Capital homme-clé cible', euro(capital)],
+          ['Durée couverte', `${v.monthsImpact} mois`]
+        ],
+        secondary:[`Pour cadrer une garantie homme-clé quand la dépendance au dirigeant met en risque la continuité d’exploitation.`],
+        chart:{ labels:['Perte d’exploitation','Remplacement'], values:[impact, v.replacementCost] }
+      }
+    }
+  },
+  {
+    id:'capacite-emprunt-pro', category:'Financement', title:'Capacité d’emprunt pro/perso', desc:'Projette un montant finançable à mensualité cible.',
+    fields:[
+      {key:'monthlyPayment', label:'Mensualité supportable', type:'number', value:2500},
+      {key:'years', label:'Durée (années)', type:'number', value:15},
+      {key:'rate', label:'Taux annuel', type:'number', value:0.035, step:'0.001'}
+    ],
+    calc:v => {
+      const m = v.rate/12;
+      const n = v.years*12;
+      const principal = m === 0 ? v.monthlyPayment*n : v.monthlyPayment * (1 - Math.pow(1+m,-n)) / m;
+      const total = v.monthlyPayment*n;
+      return {
+        primary:[
+          ['Capital finançable', euro(principal)],
+          ['Coût total remboursé', euro(total)],
+          ['Intérêts estimés', euro(total-principal)],
+          ['Durée', `${v.years} ans`]
+        ],
+        secondary:[`Pour arbitrer acquisition personnelle, SCI ou investissement professionnel à mensualité cible.`],
+        chart:{ labels:['Capital','Intérêts'], values:[principal, total-principal] }
+      }
+    }
+  }
+];
+
+let activeId = simulators[0].id;
+let chart;
+
+function renderSimList() {
+  const list = document.getElementById('simList');
+  list.innerHTML = '';
+  simulators.forEach(sim => {
+    const btn = document.createElement('button');
+    btn.className = 'sim-item' + (sim.id === activeId ? ' active' : '');
+    btn.style.cssText = 'width:100%;text-align:left';
+    btn.innerHTML = `<div><strong>${sim.title}</strong><small>${sim.desc}</small></div><span class="tag">${sim.category}</span>`;
+    btn.onclick = () => { activeId = sim.id; renderSimList(); renderActive(); switchScreen('screen-calcul'); setNav('screen-calcul'); };
+    list.appendChild(btn);
+  });
+}
+
+function getActive() { return simulators.find(s => s.id === activeId); }
+
+function renderActive() {
+  const sim = getActive();
+  document.getElementById('simCategory').textContent = sim.category;
+  document.getElementById('simTitle').textContent = sim.title;
+  document.getElementById('simDesc').textContent = sim.desc;
+  const fields = document.getElementById('fields');
+  fields.innerHTML = '';
+
+  sim.fields.forEach(f => {
+    const wrap = document.createElement('div');
+    wrap.className = 'field';
+    wrap.innerHTML = `<label for="${f.key}">${f.label}</label><input id="${f.key}" type="${f.type}" step="${f.step || '1'}" value="${f.value}">`;
+    fields.appendChild(wrap);
+  });
+
+  fields.querySelectorAll('input,select').forEach(el => {
+    el.addEventListener('input', () => compute());
+  });
+  compute();
+
+  function compute() {
+    const vals = Object.fromEntries(sim.fields.map(f => [f.key, parseFloat(document.getElementById(f.key).value || 0)]));
+    const out = sim.calc(vals);
+    const primary = document.getElementById('primaryResults');
+    primary.innerHTML = out.primary.map(([k,v]) => `<div class="result-card"><span class="hint">${k}</span><strong>${v}</strong></div>`).join('');
+    const secondary = document.getElementById('secondaryResults');
+    secondary.innerHTML = out.secondary.map(t => `<div class="result-card"><div>${t}</div></div>`).join('');
+    drawChart(out.chart.labels, out.chart.values);
+  }
+}
+
+function drawChart(labels, data) {
+  const ctx = document.getElementById('simChart');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ data, borderRadius:10, backgroundColor:['#1B2A4A','#C9A96E','#3B7D5E','#8B6F3F'] }] },
+    options:{
+      plugins:{ legend:{display:false}},
+      responsive:true,
+      maintainAspectRatio:false,
+      scales:{ y:{ ticks:{ callback:(v)=> new Intl.NumberFormat('fr-FR',{notation:'compact'}).format(v)}, grid:{ color:'rgba(128,128,128,.15)'}}, x:{ grid:{display:false}} }
+    }
+  });
+}
+
+function switchScreen(id) {
+  ['screen-simulateurs','screen-calcul'].forEach(screen => {
+    document.getElementById(screen).hidden = screen !== id;
+  });
+}
+function setNav(id) {
+  document.querySelectorAll('.footer-nav button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.screen === id);
+  });
+}
+
+document.querySelectorAll('.footer-nav button').forEach(btn => {
+  btn.addEventListener('click', () => { switchScreen(btn.dataset.screen); setNav(btn.dataset.screen); });
+});
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const root = document.documentElement;
+  root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+renderSimList();
+renderActive();
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
