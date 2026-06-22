@@ -296,14 +296,19 @@ async function getEntreprise(siren, env, origin, allowed, short) {
 function estimImmo(result, surface, type) {
   const s = parseFloat(surface) || 0;
   if (s < 5) return result;
-  const t = type === 'maison' ? 'maison' : (type === 'appartement' ? 'appartement' : null);
-  let block = t ? result[t] : null;
-  if (!block || !block.median_m2) block = (result.appartement && result.appartement.median_m2) ? result.appartement : result.maison;
+  let block, label;
+  if (type === 'terrain') { block = result.terrain; label = 'terrain'; }
+  else {
+    const t = type === 'maison' ? 'maison' : (type === 'appartement' ? 'appartement' : null);
+    block = t ? result[t] : null;
+    if (!block || !block.median_m2) block = (result.appartement && result.appartement.median_m2) ? result.appartement : result.maison;
+    label = (block === result.maison) ? 'maison' : 'appartement';
+  }
   const m2 = block && block.median_m2;
   if (!m2) return result;
   const val = Math.round(m2 * s);
   return Object.assign({}, result, { estimation: {
-    type: (block === result.maison) ? 'maison' : 'appartement',
+    type: label,
     surface: s, prix_m2_median: m2,
     valeur_estimee: val,
     fourchette_basse: Math.round(val * 0.88),
@@ -353,33 +358,37 @@ async function getDVF(q, env, origin, allowed, surface, type) {
   const lines = csv.split('\n');
   const head = lines[0].split(',');
   const ix = {};
-  ['date_mutation', 'nature_mutation', 'valeur_fonciere', 'type_local', 'surface_reelle_bati', 'adresse_nom_voie', 'id_mutation'].forEach(k => ix[k] = head.indexOf(k));
+  ['date_mutation', 'nature_mutation', 'valeur_fonciere', 'type_local', 'surface_reelle_bati', 'surface_terrain', 'adresse_nom_voie', 'id_mutation'].forEach(k => ix[k] = head.indexOf(k));
+  const BATI = new Set(['Maison', 'Appartement']);
   const muts = {};
   for (let i = 1; i < lines.length; i++) {
     if (i > 40000) break;
     const c = lines[i].split(',');
     if (c.length < head.length) continue;
     if (c[ix.nature_mutation] !== 'Vente') continue;
-    const tl = c[ix.type_local];
-    if (tl !== 'Maison' && tl !== 'Appartement') continue;
     const id = c[ix.id_mutation];
-    (muts[id] = muts[id] || []).push({
-      date: c[ix.date_mutation], type: tl,
-      valeur: parseFloat(c[ix.valeur_fonciere]) || 0,
-      surface: parseFloat(c[ix.surface_reelle_bati]) || 0,
-      voie: (c[ix.adresse_nom_voie] || '').trim(),
-    });
+    const m = (muts[id] = muts[id] || { rows: [], hasBati: false, valeur: 0, sterrain: 0, voie: '', date: '' });
+    m.valeur = parseFloat(c[ix.valeur_fonciere]) || m.valeur;   // identique sur chaque ligne d'une mutation
+    m.date = c[ix.date_mutation] || m.date;
+    if (!m.voie) m.voie = (c[ix.adresse_nom_voie] || '').trim();
+    m.sterrain += parseFloat(c[ix.surface_terrain]) || 0;
+    const tl = c[ix.type_local];
+    if (BATI.has(tl)) { m.hasBati = true; m.rows.push({ type: tl, surface: parseFloat(c[ix.surface_reelle_bati]) || 0 }); }
   }
-  const maison = [], appart = [], recent = [];
+  const maison = [], appart = [], terrain = [], recent = [];
   Object.keys(muts).forEach(id => {
-    const rows = muts[id];
-    if (rows.length !== 1) return;
-    const r = rows[0];
-    if (r.surface < 9 || r.valeur < 1000) return;
-    const pm2 = Math.round(r.valeur / r.surface);
-    if (pm2 < 200 || pm2 > 30000) return;
-    (r.type === 'Maison' ? maison : appart).push(pm2);
-    recent.push({ date: r.date, type: r.type, valeur: Math.round(r.valeur), surface: Math.round(r.surface), prix_m2: pm2, voie: r.voie });
+    const m = muts[id];
+    if (m.rows.length === 1) {                                   // bâti : vente "propre" d'un seul logement
+      const r = m.rows[0];
+      if (r.surface < 9 || m.valeur < 1000) return;
+      const pm2 = Math.round(m.valeur / r.surface);
+      if (pm2 < 200 || pm2 > 30000) return;
+      (r.type === 'Maison' ? maison : appart).push(pm2);
+      recent.push({ date: m.date, type: r.type, valeur: Math.round(m.valeur), surface: Math.round(r.surface), prix_m2: pm2, voie: m.voie });
+    } else if (!m.hasBati && m.sterrain >= 100 && m.valeur >= 1000) {  // terrain nu (aucun bâti dans la mutation)
+      const pm2 = Math.round(m.valeur / m.sterrain);
+      if (pm2 >= 3 && pm2 <= 2000) terrain.push(pm2);            // de l'agricole (qq €) au constructible (qq centaines €/m²)
+    }
   });
   const median = (a) => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2); };
   recent.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -388,6 +397,7 @@ async function getDVF(q, env, origin, allowed, surface, type) {
     commune: nom, code: citycode, cp, year,
     maison: { median_m2: median(maison), count: maison.length },
     appartement: { median_m2: median(appart), count: appart.length },
+    terrain: { median_m2: median(terrain), count: terrain.length },
     total_ventes: maison.length + appart.length,
     recent: recent.slice(0, 6),
     source: 'DVF · data.gouv.fr',
