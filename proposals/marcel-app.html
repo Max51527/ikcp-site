@@ -434,22 +434,22 @@ function go(s){
 
 /* ── SPÉCIALISTES : 1 clic = analyse automatique ── */
 const SPECS=[
-  {k:'codex',ic:'Cx',name:'Codex',role:'Fiscalité du dirigeant',
+  {k:'codex',ic:'Fi',name:'Fiscalité',role:'Optimiser vos impôts',
    a:co=>`Première lecture fiscale${co}. Trois zones prioritaires pour un dirigeant à l'IS :\n\n• **Arbitrage rémunération / dividendes** — impact charges sociales vs flat tax 30 %.\n• **Compte courant d'associé** — les intérêts sont déductibles, dans une limite réglementaire.\n• **Pilotage du résultat** — amortissements, déficits reportables, dispositifs ciblés.`,
    f:'Quel est votre taux marginal d\'imposition aujourd\'hui ?'},
-  {k:'batisseur',ic:'Bâ',name:'Bâtisseur',role:'Patrimoine 360° · holding',
+  {k:'batisseur',ic:'36',name:'Patrimoine 360°',role:'Votre vue d\'ensemble',
    a:co=>`Vue d'ensemble${co}. Le réflexe du dirigeant : ne pas regarder la société isolément mais l'**ensemble** — titres, immobilier pro et perso, financier, trésorerie.\n\nUne **holding** rationalise souvent la détention, la remontée de dividendes (régime mère-fille) et le réinvestissement.`,
    f:'Détenez-vous déjà vos titres via une holding ?'},
-  {k:'hermes',ic:'He',name:'Hermès',role:'Transmission · Dutreil',
+  {k:'hermes',ic:'Tr',name:'Transmission',role:'Préparer la succession',
    a:co=>`Transmettre${co} sans la fragiliser. Le **pacte Dutreil** peut exonérer jusqu'à **75 %** de la valeur des titres transmis, sous engagements de conservation.\n\nCouplé à une donation-partage et parfois un démembrement, il organise le passage de relais. Anticiper = le levier le plus puissant.`,
    f:'À quel horizon envisagez-vous le passage de relais ?'},
-  {k:'architecte',ic:'Ar',name:'Architecte',role:'Immobilier · SCI',
+  {k:'architecte',ic:'Im',name:'Immobilier',role:'Structurer vos biens',
    a:co=>`Votre immobilier professionnel. Détenir les murs **en direct, en SCI à l'IR ou à l'IS** change tout : fiscalité des loyers, plus-value, transmission.\n\nSortir l'immobilier de la société d'exploitation protège souvent le patrimoine en cas de coup dur.`,
    f:'Vos locaux sont-ils dans la société d\'exploitation ou détenus à part ?'},
-  {k:'stratege',ic:'St',name:'Stratège',role:'Marchés · placements',
+  {k:'stratege',ic:'Pl',name:'Placements',role:'Faire travailler votre trésorerie',
    a:co=>`Votre trésorerie d'entreprise. Selon l'horizon et le besoin de disponibilité :\n\n• **Compte à terme** — sécurité, liquidité programmée.\n• **Contrat de capitalisation** — horizon moyen/long.\n• **Titres / OPC** — potentiel supérieur, volatilité au bilan.`,
    f:'Sur quel horizon cette trésorerie pourrait-elle rester immobilisée ?'},
-  {k:'capital',ic:'Ca',name:'Capital',role:'Cession · private equity',
+  {k:'capital',ic:'Cs',name:'Cession',role:'Préparer la vente',
    a:co=>`Préparer la cession${co}. Les leviers se jouent **en amont** :\n\n• **Apport-cession** — report d'imposition (art. 150-0 B ter) via holding.\n• **Calendrier & structuration** — pour optimiser le net après impôt.\n• **Réinvestissement** — donner une suite au capital cédé.`,
    f:'Avez-vous déjà un horizon de cession en tête ?'},
 ];
@@ -479,7 +479,7 @@ async function specialist(key){
   let body=null;
   try{
     const r=await fetch(API_MARCEL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:`En tant que spécialiste « ${s.role} », analyse les leviers prioritaires pour ${CO_NAME||'mon entreprise'} (dirigeant). Termine par une question.`,history:[]}),
+      body:JSON.stringify({message:`En tant que spécialiste « ${s.name} », analyse les leviers prioritaires pour ${CO_NAME||'mon entreprise'} (dirigeant). Termine par une question.`,history:[]}),
       signal:AbortSignal.timeout(6000)});
     if(r.ok){const d=await r.json(); if(d.reply) body='<div class="head"><i>'+s.ic+'</i>'+s.name+'</div>'+fmt(d.reply);}
   }catch(_){}
