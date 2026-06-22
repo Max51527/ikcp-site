@@ -278,6 +278,31 @@ export default {
         return json({ ok: true }, 200, o);
       } catch (e) { console.error('[beta] insert', e.message); return json({ error: 'insert_failed' }, 500, o); }
     }
+
+    // ── STUDIO — configuration no-code de l'app (table app_config, D1 Paris). ──
+    // Réglages que Maxime modifie sans coder ; le front les lit pour s'afficher.
+    const CONFIG_DEF = { hero: 'Tout part de votre entreprise.', tagline: 'Intelligence patrimoniale pour dirigeant(e)s & professions libérales', premium_eur: 59, gating_360_only: true };
+    // GET /config : lecture PUBLIQUE (le front a besoin de la config sans secret).
+    if (url.pathname === '/config' && req.method === 'GET') {
+      if (!db) return json(CONFIG_DEF, 200, o);
+      try { const row = await db.prepare("SELECT data FROM app_config WHERE id='main'").first(); return json(row && row.data ? JSON.parse(row.data) : CONFIG_DEF, 200, o); }
+      catch (_) { return json(CONFIG_DEF, 200, o); }
+    }
+    // PUT /config : écriture ADMIN (même secret que /app/console — délégation ikcp-client, zéro nouveau secret).
+    if (url.pathname === '/config' && req.method === 'PUT') {
+      if (!db) return json({ error: 'no_db' }, 503, o);
+      const tok = req.headers.get('x-admin-secret') || url.searchParams.get('token') || '';
+      let authed = !!(env.BETA_ADMIN && tok && tok === env.BETA_ADMIN);
+      if (!authed && tok) { try { const vr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/admin/applications?status=pending', { headers: { 'x-admin-secret': tok } }); authed = vr.ok; } catch (_) {} }
+      if (!authed) return json({ error: 'unauthorized', hint: 'Secret admin requis (celui de /app/console).' }, 401, o);
+      let b = {}; try { b = await req.json(); } catch (_) { return json({ error: 'bad_json' }, 400, o); }
+      try {
+        await db.prepare("CREATE TABLE IF NOT EXISTS app_config (id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)").run();
+        await db.prepare("INSERT INTO app_config (id, data, updated_at) VALUES ('main', ?, datetime('now')) ON CONFLICT(id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at").bind(JSON.stringify(b).slice(0, 8000)).run();
+        return json({ ok: true }, 200, o);
+      } catch (e) { console.error('[config] save', e.message); return json({ error: 'save_failed' }, 500, o); }
+    }
+
     // GET /beta/list?token=…&tool=… : lecture admin.
     // Auth SANS NOUVEAU SECRET : on délègue à l'admin existant (ikcp-client /api/v1/admin).
     // Maxime utilise le MÊME secret que /app/console → rien à poser. (BETA_ADMIN reste accepté en option.)

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio — Piloter Marcel · IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#3B7D5E;--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:linear-gradient(180deg,#FAF8F4,#F1E9DA);min-height:100vh;padding:clamp(18px,4vw,42px)}
+.wrap{max-width:680px;margin:0 auto}
+.top{display:flex;align-items:center;gap:13px;margin-bottom:8px}
+.mk{width:38px;height:38px;border-radius:11px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:#E2C896;font-size:16px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,3.4vw,30px);color:var(--navy)}
+h1 em{font-style:italic;color:var(--gold-d)}
+.sub{color:var(--mute);font-size:13.5px;margin-bottom:22px}
+.gate,.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;box-shadow:0 10px 30px -22px rgba(27,42,74,.4)}
+.gate{max-width:430px}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin:0 0 6px}
+.hint{font-size:11.5px;color:var(--mute);font-weight:400;margin-bottom:8px}
+input[type=text],input[type=number],textarea{width:100%;background:#FBF8F2;border:1px solid var(--line);border-radius:10px;padding:11px 13px;color:var(--ink);font-family:'Outfit',sans-serif;font-size:14.5px;outline:none}
+input:focus,textarea:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:60px}
+.field{margin-bottom:20px}
+.btn{border:0;border-radius:10px;cursor:pointer;font-weight:600;font-size:14.5px;background:linear-gradient(135deg,#E2C896,var(--gold));color:#20180c;padding:12px 18px}
+.btn.full{width:100%}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--navy)}
+.toggle{display:flex;align-items:center;gap:11px;background:#FBF8F2;border:1px solid var(--line);border-radius:10px;padding:13px 14px;cursor:pointer}
+.toggle .sw{width:42px;height:24px;border-radius:99px;background:#cfc4b2;position:relative;flex:none;transition:background .2s}
+.toggle .sw::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle.on .sw{background:var(--green)}.toggle.on .sw::after{left:21px}
+.toggle .t{font-size:13.5px}.toggle .t b{color:var(--navy)}
+.actions{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.msg{font-size:13px;margin-top:14px;display:none}
+.msg.ok{color:var(--green);display:block}.msg.err{color:var(--red);display:block}
+.sec{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700;margin:8px 0 14px;display:flex;align-items:center;gap:10px}
+.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+.foot{text-align:center;font-size:11px;color:var(--mute);margin-top:20px}
+a.back{color:var(--mute);text-decoration:none;font-size:13px;margin-left:auto;border:1px solid var(--line);border-radius:9px;padding:7px 12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="mk">IK</div>
+    <div><h1>Studio — <em>piloter Marcel</em></h1></div>
+    <a class="back" href="/app/console">← Console</a>
+  </div>
+  <div class="sub">Modifiez les réglages de l'app sans coder. Vos changements s'appliquent en direct (base souveraine, Paris).</div>
+
+  <!-- Accès -->
+  <div class="gate" id="gate">
+    <div class="field" style="margin-bottom:12px">
+      <label>Secret admin <span class="hint" style="display:inline">(le même que /app/console)</span></label>
+      <input type="password" id="tok" placeholder="votre secret admin" autocomplete="off">
+    </div>
+    <button class="btn full" onclick="load()">Ouvrir le Studio</button>
+    <div class="msg" id="gmsg"></div>
+  </div>
+
+  <!-- Studio -->
+  <div id="studio" style="display:none">
+    <div class="card">
+      <div class="sec">Accroche &amp; positionnement</div>
+      <div class="field">
+        <label>Accroche du hero <span class="hint" style="display:inline">— le grand titre d'accueil</span></label>
+        <input type="text" id="hero" maxlength="80" placeholder="Tout part de votre entreprise.">
+      </div>
+      <div class="field">
+        <label>Tagline <span class="hint" style="display:inline">— sous le logo Marcel</span></label>
+        <input type="text" id="tagline" maxlength="90" placeholder="Intelligence patrimoniale pour…">
+      </div>
+
+      <div class="sec">Offre</div>
+      <div class="field">
+        <label>Prix Premium (€/mois)</label>
+        <input type="number" id="premium" min="0" step="1" placeholder="59">
+      </div>
+      <div class="field">
+        <div class="toggle" id="gatingT" onclick="this.classList.toggle('on')">
+          <div class="sw"></div>
+          <div class="t"><b>Verrou freemium</b> — en Découverte, seul Patrimoine 360° est inclus (le reste 🔒 Premium).</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" onclick="save()">💾 Enregistrer</button>
+        <button class="btn ghost" onclick="load()">Recharger</button>
+      </div>
+      <div class="msg" id="smsg"></div>
+    </div>
+    <div class="foot">Les réglages sont stockés en base à Paris 🇫🇷 et lus par l'app à chaque chargement.</div>
+  </div>
+</div>
+
+<script>
+const API='https://ikcp-patrimoine.maxime-ead.workers.dev/config';
+const $=id=>document.getElementById(id);
+function tok(){ return ($('tok').value||'').trim() || (function(){try{return localStorage.getItem('ikcp_admin_secret')||'';}catch(_){return '';}})(); }
+
+async function load(){
+  var t=tok();
+  if(!t){ $('gmsg').className='msg err'; $('gmsg').textContent='Entrez votre secret admin.'; return; }
+  try{
+    var r=await fetch(API);                 // lecture publique
+    var c=await r.json();
+    $('hero').value=c.hero||''; $('tagline').value=c.tagline||''; $('premium').value=(c.premium_eur!=null?c.premium_eur:59);
+    $('gatingT').classList.toggle('on', c.gating_360_only!==false);
+    try{ localStorage.setItem('ikcp_admin_secret', t); }catch(_){}
+    $('gate').style.display='none'; $('studio').style.display='block';
+    $('smsg').className='msg';
+  }catch(e){ $('gmsg').className='msg err'; $('gmsg').textContent='Chargement impossible.'; }
+}
+
+async function save(){
+  var body={
+    hero: ($('hero').value||'').trim(),
+    tagline: ($('tagline').value||'').trim(),
+    premium_eur: Math.max(0, parseInt($('premium').value,10)||0),
+    gating_360_only: $('gatingT').classList.contains('on')
+  };
+  $('smsg').className='msg'; $('smsg').textContent='Enregistrement…'; $('smsg').style.display='block'; $('smsg').style.color='var(--mute)';
+  try{
+    var r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json','x-admin-secret':tok()},body:JSON.stringify(body)});
+    if(r.status===401){ $('smsg').className='msg err'; $('smsg').textContent='Secret admin refusé.'; return; }
+    var d=await r.json();
+    if(d&&d.ok){ $('smsg').className='msg ok'; $('smsg').textContent='✓ Enregistré ! L\'app appliquera ces réglages au prochain chargement.'; }
+    else { $('smsg').className='msg err'; $('smsg').textContent='Échec de l\'enregistrement.'; }
+  }catch(e){ $('smsg').className='msg err'; $('smsg').textContent='Réseau indisponible — réessayez.'; }
+}
+
+// Auto-ouverture si secret admin déjà mémorisé
+(function(){ try{ if(localStorage.getItem('ikcp_admin_secret')){ $('tok').value=localStorage.getItem('ikcp_admin_secret'); load(); } }catch(_){} })();
+</script>
+</body>
+</html>
