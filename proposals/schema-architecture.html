@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel IA — Architecture souveraine · IKCP</title>
+<!-- Schéma global vérifié le 21/06/2026 : Front → Marcel (Mistral) → Spécialistes (Mistral) → Données (Paris). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--ink:#221E18;--mute:#6B5D52;--red:#C0414C;--line:rgba(139,111,63,.22);--green:#3B7D5E;--blue:#4A6585}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:linear-gradient(180deg,#FAF8F4,#F1E9DA);min-height:100vh;padding:clamp(18px,4vw,46px)}
+.wrap{max-width:920px;margin:0 auto}
+.head{text-align:center;margin-bottom:30px}
+.head .mk{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,4vw,38px);color:var(--navy);letter-spacing:.5px}
+.head .mk em{font-style:italic;color:var(--gold-d)}
+.head .sub{font-size:13px;color:var(--mute);letter-spacing:.16em;text-transform:uppercase;margin-top:6px}
+.head .fr{display:inline-block;margin-top:12px;font-size:11.5px;color:var(--gold-d);border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-weight:600}
+.layer{margin:0 auto 0;max-width:840px}
+.lab{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-d);font-weight:700;text-align:center;margin:6px 0 12px;display:flex;align-items:center;gap:12px}
+.lab::before,.lab::after{content:'';flex:1;height:1px;background:var(--line)}
+.flow{display:flex;justify-content:center}
+.arrow{width:2px;height:26px;background:linear-gradient(var(--gold),transparent);margin:2px auto;position:relative}
+.arrow::after{content:'▼';position:absolute;bottom:-4px;left:-5px;color:var(--gold);font-size:11px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 8px 24px -16px rgba(27,42,74,.4)}
+.hero-box{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--cream);text-align:center;border:0;max-width:520px;margin:0 auto}
+.hero-box b{font-family:'Playfair Display',serif;font-weight:600;font-size:22px;display:block}
+.hero-box .ds{font-size:12.5px;color:rgba(250,248,244,.7);margin-top:5px}
+.hero-box .pill{display:inline-block;margin-top:9px;font-size:10.5px;font-family:'JetBrains Mono',monospace;color:#E2C896;border:1px solid rgba(201,169,110,.4);border-radius:6px;padding:3px 9px}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cell{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px 14px;text-align:center}
+.cell .t{font-weight:600;font-size:13.5px;color:var(--navy)}
+.cell .d{font-size:11px;color:var(--mute);margin-top:4px;line-height:1.4}
+.cell .tag{display:inline-block;margin-top:8px;font-size:9.5px;font-weight:700;letter-spacing:.04em;border-radius:5px;padding:2px 7px}
+.tag.fr{background:rgba(59,125,94,.12);color:var(--green)}
+.tag.us{background:rgba(192,65,76,.10);color:var(--red)}
+.tag.loc{background:rgba(201,169,110,.16);color:var(--gold-d)}
+.spec-box{max-width:760px;margin:0 auto}
+.spec-box .top{font-weight:600;font-size:13.5px;color:var(--navy);text-align:center;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{font-size:12px;background:var(--cream2);border:1px solid var(--line);border-radius:9px;padding:8px 12px;color:var(--ink)}
+.chip b{color:var(--navy)}.chip i{font-style:normal;color:var(--green);font-size:10px;font-weight:700}
+.chip.soft{opacity:.62}.chip.soft i{color:var(--gold-d)}
+.data-box{max-width:760px;margin:0 auto;background:linear-gradient(135deg,#fff,#FBF5EA)}
+.data-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.d3{border:1px solid var(--line);border-radius:11px;padding:12px 13px;background:var(--cream)}
+.d3 .h{font-weight:600;font-size:12.5px;color:var(--navy)}
+.d3 .l{font-size:10.5px;color:var(--mute);margin-top:5px;line-height:1.5}
+.foot{margin-top:30px;text-align:center;font-size:11px;color:var(--mute);line-height:1.7}
+.foot b{color:var(--gold-d)}
+.legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:14px;font-size:11px;color:var(--mute)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+@media(max-width:680px){.row{grid-template-columns:1fr 1fr}.data-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="mk">Marcel <em>IA</em> — architecture <em>souveraine</em></div>
+    <div class="sub">Intelligence patrimoniale · dirigeant(e)s &amp; professions libérales</div>
+    <div class="fr">🇫🇷 100 % France / UE · vérifié le 21 juin 2026</div>
+  </div>
+
+  <!-- FRONT -->
+  <div class="layer">
+    <div class="lab">1 · Front</div>
+    <div class="box hero-box" style="background:#fff;color:var(--ink);border:1px solid var(--line)">
+      <b style="color:var(--navy)">App ikcp.eu/app &nbsp;·&nbsp; Site public</b>
+      <div class="ds" style="color:var(--mute)">PWA installable (Android/iOS) · pages Cloudflare</div>
+    </div>
+  </div>
+  <div class="arrow"></div>
+  <div style="text-align:center;font-size:11px;color:var(--mute);margin:-4px 0 8px">POST {message} — point d'entrée unique</div>
+
+  <!-- MARCEL -->
+  <div class="layer">
+    <div class="lab">2 · Orchestration</div>
+    <div class="box hero-box">
+      <b>🎼 MARCEL</b>
+      <div class="ds">worker <code style="font-family:'JetBrains Mono',monospace">ikcp-chat</code> · raisonne &amp; décide via function-calling</div>
+      <span class="pill">Mistral Large · LLM_PRIMARY=mistral ✓</span>
+    </div>
+  </div>
+  <div class="arrow"></div>
+
+  <!-- 4 directions -->
+  <div class="layer">
+    <div class="lab">3 · Marcel mobilise</div>
+    <div class="row">
+      <div class="cell"><div class="t">Outils fiscaux</div><div class="d">IR · IFI · Dutreil · succession (calcul local)</div><span class="tag loc">intégré</span></div>
+      <div class="cell"><div class="t">Spécialistes</div><div class="d">workers experts (délégation)</div><span class="tag fr">Mistral 🇫🇷</span></div>
+      <div class="cell"><div class="t">RAG doctrine</div><div class="d">Vectorize — fiches IKCP citées</div><span class="tag fr">souverain 🇫🇷</span></div>
+      <div class="cell"><div class="t">Veille</div><div class="d">marché uniquement, jamais ton patrimoine</div><span class="tag us">Perplexity 🇺🇸</span></div>
+    </div>
+  </div>
+  <div class="arrow"></div>
+
+  <!-- SPÉCIALISTES -->
+  <div class="layer">
+    <div class="lab">Les spécialistes (tous Mistral souverain ✓)</div>
+    <div class="box spec-box">
+      <div class="top">Workers experts que Marcel appelle en worker-à-worker</div>
+      <div class="chips">
+        <div class="chip"><b>Codex</b> · fiscalité <i>● live</i></div>
+        <div class="chip"><b>Hermès</b> · transmission <i>● live</i></div>
+        <div class="chip"><b>Bâtisseur</b> · 360° / holding <i>● live</i></div>
+        <div class="chip"><b>Stratège</b> · marchés <i>● live</i></div>
+        <div class="chip"><b>Capital</b> · cession / PE <i>● live</i></div>
+        <div class="chip"><b>Camille</b> · social dirigeant <i>● live</i></div>
+        <div class="chip soft"><b>Architecte</b> · immobilier <i>○ géré par Marcel</i></div>
+      </div>
+    </div>
+  </div>
+  <div class="arrow"></div>
+
+  <!-- DONNÉES -->
+  <div class="layer">
+    <div class="lab">4 · Données — 🇫🇷 Cloudflare Paris (WEUR)</div>
+    <div class="box data-box">
+      <div class="data-grid">
+        <div class="d3"><div class="h">D1 (SQLite)</div><div class="l">Membres &amp; auth · patrimoine · Témoin MIF II · feedback. <b>La vraie data client.</b></div></div>
+        <div class="d3"><div class="h">KV (clé-valeur)</div><div class="l">Cache Pappers · logs Marcel (PII masquée, 90 j) · rate-limit.</div></div>
+        <div class="d3"><div class="h">Vectorize</div><div class="l">La doctrine IKCP vectorisée — le savoir que Marcel cite.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--green)"></i> souverain FR/UE</span>
+    <span><i class="dot" style="background:var(--red)"></i> US (marché only)</span>
+    <span><i class="dot" style="background:var(--gold)"></i> intégré / local</span>
+  </div>
+
+  <div class="foot">
+    <b>3 garde-fous souverains</b> : LLM_PRIMARY=mistral sur tous les agents · fallback US <b>coupé</b> sur les sous-agents (503) · données client <b>en D1 Paris, jamais sur GitHub</b>.<br>
+    Veille = Perplexity (US) ne voit que des questions de marché, jamais ton patrimoine identifiable.<br>
+    © 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · MIF II
+  </div>
+
+</div>
+</body>
+</html>
