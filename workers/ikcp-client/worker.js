@@ -35,9 +35,9 @@ const TIER_LIMITS = {
   // Freemium « outil 100% complet » : tous les univers VISIBLES pour tous,
   // usage rationné par tier. Free = avant-goût (largeur Sonnet) ; profondeur
   // (Opus + veille Perplexity) réservée aux payants (gérée côté Marcel).
-  free:    { pappers: 1,        marcel_msgs: 5,        marcel_memory_days: 0 },
-  premium: { pappers: 10,       marcel_msgs: Infinity, marcel_memory_days: 90 },
-  fo:      { pappers: Infinity, marcel_msgs: Infinity, marcel_memory_days: Infinity },
+  free:    { pappers: 1,        marcel_msgs: 5,        marcel_memory_days: 0,        powens: false },
+  premium: { pappers: 10,       marcel_msgs: Infinity, marcel_memory_days: 90,       powens: true },
+  fo:      { pappers: Infinity, marcel_msgs: Infinity, marcel_memory_days: Infinity, powens: true },
 };
 
 const COOKIE_NAME = 'ikcp_session';
