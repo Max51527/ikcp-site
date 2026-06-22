@@ -61,7 +61,9 @@ export default {
     if (path === '/dvf') {
       const q = url.searchParams.get('q');
       if (!q || q.length < 2) return error('Paramètre `q` requis (commune ou code postal)', 400, origin, allowed);
-      return await getDVF(q, env, origin, allowed);
+      const surface = url.searchParams.get('surface');   // optionnel → estimation d'un bien précis (× surface)
+      const type = url.searchParams.get('type');         // 'maison' | 'appartement'
+      return await getDVF(q, env, origin, allowed, surface, type);
     }
 
     // Vérifie la clé API
@@ -290,7 +292,28 @@ async function getEntreprise(siren, env, origin, allowed, short) {
 // ──────────────────────────────────────────────────────────────
 // DVF — prix immobiliers réels (data.gouv · geo-dvf · sans clé)
 // ──────────────────────────────────────────────────────────────
-async function getDVF(q, env, origin, allowed) {
+// Estimation d'un bien : prix médian au m² (DVF) × surface, avec fourchette. Indicatif — pas une expertise.
+function estimImmo(result, surface, type) {
+  const s = parseFloat(surface) || 0;
+  if (s < 5) return result;
+  const t = type === 'maison' ? 'maison' : (type === 'appartement' ? 'appartement' : null);
+  let block = t ? result[t] : null;
+  if (!block || !block.median_m2) block = (result.appartement && result.appartement.median_m2) ? result.appartement : result.maison;
+  const m2 = block && block.median_m2;
+  if (!m2) return result;
+  const val = Math.round(m2 * s);
+  return Object.assign({}, result, { estimation: {
+    type: (block === result.maison) ? 'maison' : 'appartement',
+    surface: s, prix_m2_median: m2,
+    valeur_estimee: val,
+    fourchette_basse: Math.round(val * 0.88),
+    fourchette_haute: Math.round(val * 1.12),
+    ventes_comparables: block.count,
+    disclaimer: 'Estimation indicative fondée sur les transactions réelles (DVF · data.gouv.fr) — ne constitue pas une expertise immobilière.',
+  } });
+}
+
+async function getDVF(q, env, origin, allowed, surface, type) {
   // 1. Commune -> code INSEE via Base Adresse Nationale (gratuit, sans clé)
   let citycode, nom, cp;
   try {
@@ -308,7 +331,7 @@ async function getDVF(q, env, origin, allowed) {
   const cacheKey = 'dvf:' + citycode;
   if (env.PAPPERS_CACHE) {
     const cached = await env.PAPPERS_CACHE.get(cacheKey);
-    if (cached) return new Response(cached, { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'HIT' } });
+    if (cached) return new Response(JSON.stringify(estimImmo(JSON.parse(cached), surface, type)), { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'HIT' } });
   }
 
   let dep;
@@ -371,7 +394,7 @@ async function getDVF(q, env, origin, allowed) {
   };
   const body = JSON.stringify(result);
   if (env.PAPPERS_CACHE) await env.PAPPERS_CACHE.put(cacheKey, body, { expirationTtl: 60 * 60 * 24 * 30 });
-  return new Response(body, { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'MISS' } });
+  return new Response(JSON.stringify(estimImmo(result, surface, type)), { status: 200, headers: { ...corsHeaders(origin, allowed), 'Content-Type': 'application/json', 'X-IKCP-Cache': 'MISS' } });
 }
 
 // ──────────────────────────────────────────────────────────────
