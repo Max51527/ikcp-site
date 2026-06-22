@@ -126,7 +126,7 @@
         </div>
       </div>
       <div class="actions">
-        <button class="chip" id="refreshLabel">Base FR · 2026</button>
+        <button class="chip" id="refreshLabel">Barèmes vérifiés · 2026</button>
         <button class="toggle" id="themeToggle" aria-label="Basculer le thème">◐</button>
       </div>
     </header>
@@ -173,7 +173,7 @@
     </section>
 
     <div class="disclaimer">
-      ⚠️ <strong>Estimations indicatives</strong>, à hypothèses simplifiées, base France 2026. Elles ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Pour chiffrer votre situation réelle, échangez avec Maxime. — <strong>IKCP</strong> · ORIAS 23001568.
+      ⚠️ <strong>Barèmes fiscaux officiels 2026 vérifiés</strong> — IR (loi de finances 2026, art. 4), droits de donation en ligne directe, PFU 30 % (12,8 % + 17,2 %), abattement dirigeant retraite 500 000 € (art. 150-0 D ter). Les <strong>cotisations sociales</strong> restent des estimations ajustables (calcul Urssaf exact selon votre situation). Ces calculs ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Pour chiffrer votre situation réelle, échangez avec Maxime. — <strong>IKCP</strong> · ORIAS 23001568.
     </div>
   </div>
 
@@ -187,30 +187,68 @@ const euro = v => new Intl.NumberFormat('fr-FR', { style:'currency', currency:'E
 const pct = v => `${(v*100).toFixed(1)} %`;
 const round = v => Math.round((v + Number.EPSILON) * 100) / 100;
 
+/* ═══ BARÈMES OFFICIELS 2026 — vérifiés aux sources gouvernementales ═══
+   IR : loi de finances 2026 (loi n°2026-103 du 19/02/2026, art.4), revenus 2025.
+   Donation ligne directe + abattement 100 000 € : service-public.gouv.fr / impots.gouv.fr.
+   PFU 30 % = 12,8 % IR + 17,2 % prélèvements sociaux. Abattement dirigeant retraite 500 000 € : art. 150-0 D ter CGI. */
+const BAREME_IR_2026 = [
+  { seuil:11600,    taux:0    },
+  { seuil:29579,    taux:0.11 },
+  { seuil:84577,    taux:0.30 },
+  { seuil:181917,   taux:0.41 },
+  { seuil:Infinity, taux:0.45 }
+];
+function impotIR(revenuImposable, parts){
+  const p = Math.max(parts||1, 1);
+  const q = Math.max(revenuImposable, 0) / p;   // quotient familial
+  let impot = 0, prev = 0;
+  for (const t of BAREME_IR_2026){
+    if (q > prev){ impot += (Math.min(q, t.seuil) - prev) * t.taux; prev = t.seuil; } else break;
+  }
+  return impot * p;
+}
+const BAREME_DON_2026 = [
+  { seuil:8072,     taux:0.05 },
+  { seuil:12109,    taux:0.10 },
+  { seuil:15932,    taux:0.15 },
+  { seuil:552324,   taux:0.20 },
+  { seuil:902838,   taux:0.30 },
+  { seuil:1805677,  taux:0.40 },
+  { seuil:Infinity, taux:0.45 }
+];
+function droitsDonation(taxable){
+  let droits = 0, prev = 0;
+  for (const t of BAREME_DON_2026){
+    if (taxable > prev){ droits += (Math.min(taxable, t.seuil) - prev) * t.taux; prev = t.seuil; } else break;
+  }
+  return droits;
+}
+const PFU_IR = 0.128, PS = 0.172, ABAT_DIRIGEANT_RETRAITE = 500000;
+
 const simulators = [
   {
-    id:'remuneration-sasu', category:'Dirigeant', title:'Rémunération SASU', desc:'Net à partir d’un budget de rémunération et estimation du coût social.',
+    id:'remuneration-sasu', category:'Dirigeant', title:'Rémunération SASU', desc:'Net après IR réel (barème 2026) à partir d’un budget de rémunération.',
     fields:[
-      {key:'budget', label:'Budget annuel alloué', type:'number', value:120000},
-      {key:'chargeRate', label:'Taux charges globales', type:'number', value:0.82, step:'0.01'},
-      {key:'taxRate', label:'Taux IR estimé', type:'number', value:0.11, step:'0.01'}
+      {key:'budget', label:'Budget annuel alloué (super-brut)', type:'number', value:120000},
+      {key:'chargeRate', label:'Taux charges sociales (estim.)', type:'number', value:0.82, step:'0.01'},
+      {key:'parts', label:'Parts fiscales (quotient familial)', type:'number', value:1, step:'0.5'}
     ],
     calc:v => {
       const netBeforeTax = v.budget / (1 + v.chargeRate);
       const charges = v.budget - netBeforeTax;
-      const ir = netBeforeTax * v.taxRate;
+      const ir = impotIR(netBeforeTax, v.parts);
       return {
         primary:[
           ['Net avant IR', euro(netBeforeTax)],
-          ['Charges estimées', euro(charges)],
-          ['Net après IR', euro(netBeforeTax - ir)],
-          ['Taux net/budget', pct(netBeforeTax / v.budget)]
+          ['Charges sociales (estim.)', euro(charges)],
+          ['IR 2026 (barème réel)', euro(ir)],
+          ['Net après IR', euro(netBeforeTax - ir)]
         ],
         secondary:[
-          `Cadrage rapide de la rémunération nette à partir d’un budget superbrut (président de SAS/SASU).`,
-          `Hypothèse simplifiée : les paramètres sociaux exacts dépendent de la situation réelle.`
+          `IR au barème progressif officiel 2026 (revenus 2025) appliqué au quotient familial. Abattement 10 % frais pro non modélisé (résultat prudent).`,
+          `Charges sociales = estimation ajustable (président de SAS/SASU, assimilé salarié) ; le calcul Urssaf exact dépend de nombreux paramètres.`
         ],
-        chart:{ labels:['Net avant IR','Charges','IR estimé'], values:[netBeforeTax, charges, ir] }
+        chart:{ labels:['Net après IR','Charges','IR 2026'], values:[netBeforeTax-ir, charges, ir] }
       }
     }
   },
@@ -243,29 +281,29 @@ const simulators = [
     }
   },
   {
-    id:'profession-liberale-net', category:'Libéral', title:'Revenu net profession libérale', desc:'Projette le revenu disponible après charges et IR.',
+    id:'profession-liberale-net', category:'Libéral', title:'Revenu net profession libérale', desc:'Revenu disponible après cotisations et IR réel (barème 2026).',
     fields:[
       {key:'revenue', label:'Recettes annuelles', type:'number', value:140000},
       {key:'expenses', label:'Charges déductibles', type:'number', value:30000},
-      {key:'socialRate', label:'Taux cotisations', type:'number', value:0.35, step:'0.01'},
-      {key:'taxRate', label:'Taux IR estimé', type:'number', value:0.20, step:'0.01'}
+      {key:'socialRate', label:'Taux cotisations TNS (estim.)', type:'number', value:0.35, step:'0.01'},
+      {key:'parts', label:'Parts fiscales (quotient familial)', type:'number', value:1, step:'0.5'}
     ],
     calc:v => {
       const taxable = Math.max(v.revenue - v.expenses, 0);
       const social = taxable * v.socialRate;
       const preTax = taxable - social;
-      const tax = preTax * v.taxRate;
+      const tax = impotIR(preTax, v.parts);
       return {
         primary:[
           ['Résultat avant cotisations', euro(taxable)],
-          ['Cotisations sociales', euro(social)],
-          ['Net avant IR', euro(preTax)],
+          ['Cotisations sociales (estim.)', euro(social)],
+          ['IR 2026 (barème réel)', euro(tax)],
           ['Net après IR', euro(preTax - tax)]
         ],
         secondary:[
-          `Cadrage du revenu net d’une profession libérale (BNC) avant simulation réglementaire détaillée.`
+          `IR au barème progressif officiel 2026 (revenus 2025) avec quotient familial. Cotisations TNS = estimation ajustable (le calcul Urssaf/caisse exact dépend du régime).`
         ],
-        chart:{ labels:['Charges déductibles','Cotisations','Net après IR'], values:[v.expenses, social, preTax - tax] }
+        chart:{ labels:['Cotisations','IR 2026','Net après IR'], values:[social, tax, preTax - tax] }
       }
     }
   },
@@ -392,48 +430,60 @@ const simulators = [
     }
   },
   {
-    id:'cession-nette', category:'Cession', title:'Produit de cession net', desc:'Projette le net perçu après fiscalité simplifiée.',
+    id:'cession-nette', category:'Cession', title:'Produit de cession net', desc:'Net après PFU 30 % réel + abattement dirigeant retraite (art. 150-0 D ter).',
     fields:[
       {key:'salePrice', label:'Prix de cession', type:'number', value:1500000},
-      {key:'taxBasis', label:'Valeur fiscale', type:'number', value:200000},
-      {key:'taxRate', label:'Taux global simplifié', type:'number', value:0.30, step:'0.01'},
-      {key:'fees', label:'Frais de deal', type:'number', value:45000}
+      {key:'taxBasis', label:'Prix d’acquisition (valeur fiscale)', type:'number', value:200000},
+      {key:'fees', label:'Frais de cession', type:'number', value:45000},
+      {key:'abattement', label:'Abattement dirigeant retraite (0 ou 500000)', type:'number', value:0, step:'500000'}
     ],
     calc:v => {
-      const taxableGain = Math.max(v.salePrice - v.taxBasis - v.fees, 0);
-      const tax = taxableGain * v.taxRate;
+      const gain = Math.max(v.salePrice - v.taxBasis - v.fees, 0);
+      const abat = Math.min(Math.max(v.abattement,0), ABAT_DIRIGEANT_RETRAITE);
+      const ir = Math.max(gain - abat, 0) * PFU_IR;   // 12,8 % — l'abattement ne joue que sur l'IR
+      const ps = gain * PS;                            // 17,2 % — sur la plus-value entière
+      const tax = ir + ps;
       const net = v.salePrice - v.fees - tax;
       return {
         primary:[
-          ['Plus-value taxable', euro(taxableGain)],
-          ['Fiscalité estimée', euro(tax)],
-          ['Net après frais et fiscalité', euro(net)],
-          ['Taux de friction', pct((v.fees + tax)/Math.max(v.salePrice,1))]
+          ['Plus-value taxable', euro(gain)],
+          ['IR 12,8 % (après abatt.)', euro(ir)],
+          ['Prélèvements sociaux 17,2 %', euro(ps)],
+          ['Net après frais et fiscalité', euro(net)]
         ],
-        secondary:[`Cadrage simplifié d’un avant-projet de cession avant modélisation fine (apport-cession, donation avant cession, Dutreil).`],
-        chart:{ labels:['Net','Fiscalité','Frais'], values:[net, tax, v.fees] }
+        secondary:[
+          `PFU réel 2026 : 12,8 % d'IR + 17,2 % de prélèvements sociaux = 30 %. L'abattement fixe de 500 000 € (dirigeant de PME partant à la retraite, art. 150-0 D ter, en vigueur jusqu'au 31/12/2031) réduit la seule base IR, pas les prélèvements sociaux.`,
+          `Hors contribution exceptionnelle sur les hauts revenus et hors option barème — cadrage avant modélisation fine (apport-cession, donation avant cession, Dutreil).`
+        ],
+        chart:{ labels:['Net','IR 12,8%','PS 17,2%','Frais'], values:[net, ir, ps, v.fees] }
       }
     }
   },
   {
-    id:'transmission-donation', category:'Transmission', title:'Donation & abattements', desc:'Projette l’assiette taxable restante après abattements.',
+    id:'transmission-donation', category:'Transmission', title:'Donation & droits réels', desc:'Droits de donation en ligne directe au barème officiel 2026.',
     fields:[
-      {key:'transferred', label:'Valeur transmise', type:'number', value:600000},
+      {key:'transferred', label:'Valeur donnée (total, 1 parent)', type:'number', value:600000},
       {key:'children', label:'Nombre d’enfants', type:'number', value:2},
-      {key:'abatementPerChild', label:'Abattement par enfant', type:'number', value:100000}
+      {key:'abatementPerChild', label:'Abattement / enfant (100 000 € / 15 ans)', type:'number', value:100000}
     ],
     calc:v => {
-      const abatements = v.children * v.abatementPerChild;
-      const taxable = Math.max(v.transferred - abatements, 0);
+      const nb = Math.max(v.children, 1);
+      const partParEnfant = v.transferred / nb;
+      const taxablePerChild = Math.max(partParEnfant - v.abatementPerChild, 0);
+      const droitsTotal = droitsDonation(taxablePerChild) * nb;
+      const abatements = nb * v.abatementPerChild;
       return {
         primary:[
-          ['Valeur transmise', euro(v.transferred)],
           ['Abattements cumulés', euro(abatements)],
-          ['Assiette taxable', euro(taxable)],
-          ['Taxable / transmis', pct(taxable / Math.max(v.transferred,1))]
+          ['Assiette taxable totale', euro(taxablePerChild * nb)],
+          ['Droits de donation 2026', euro(droitsTotal)],
+          ['Net reçu par les enfants', euro(v.transferred - droitsTotal)]
         ],
-        secondary:[`Premier cadrage avant modélisation détaillée (donations, démembrements, pactes Dutreil).`],
-        chart:{ labels:['Abattements','Taxable'], values:[abatements, taxable] }
+        secondary:[
+          `Barème progressif officiel des droits en ligne directe 2026 (5 % à 45 %), appliqué part par part après l'abattement de 100 000 € par enfant et par parent, renouvelable tous les 15 ans.`,
+          `Hypothèse : donation par un seul parent, en pleine propriété, sans donation antérieure de moins de 15 ans. Le démembrement (nue-propriété) et le pacte Dutreil réduisent fortement ces droits.`
+        ],
+        chart:{ labels:['Net reçu','Droits 2026'], values:[v.transferred - droitsTotal, droitsTotal] }
       }
     }
   },
