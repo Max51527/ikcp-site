@@ -540,14 +540,17 @@ let chart;
 
 /* ═══ Freemium : 4 calculs de base gratuits, stratégie patrimoniale = Premium ═══ */
 const API_CLIENT = 'https://ikcp-client.maxime-ead.workers.dev';
-let TIER = 'free';
+const API_CONFIG = 'https://ikcp-patrimoine.maxime-ead.workers.dev/config';
+let TIER = 'free', GATING_OFF = false, PREMIUM_EUR = 59;
 function token(){ try{ return localStorage.getItem('ikcp_token') || ''; }catch(_){ return ''; } }
 async function loadTier(){
-  const t = token(); if (!t) return;
-  try{ const r = await fetch(API_CLIENT+'/api/v1/me', { headers:{ 'Authorization':'Bearer '+t }, credentials:'include' });
-       if (r.ok){ const u = await r.json(); if (u && u.tier) TIER = u.tier; } }catch(_){}
+  const t = token();
+  if (t){ try{ const r = await fetch(API_CLIENT+'/api/v1/me', { headers:{ 'Authorization':'Bearer '+t }, credentials:'include' });
+               if (r.ok){ const u = await r.json(); if (u && u.tier) TIER = u.tier; } }catch(_){} }
+  /* Pièce 3 : le Studio pilote le verrou et le prix */
+  try{ const rc = await fetch(API_CONFIG); if (rc.ok){ const c = await rc.json(); if (c){ if (c.gating_360_only === false) GATING_OFF = true; if (c.premium_eur != null) PREMIUM_EUR = c.premium_eur; } } }catch(_){}
 }
-function isUnlocked(sim){ return !!sim.free || TIER !== 'free'; }
+function isUnlocked(sim){ return GATING_OFF || !!sim.free || TIER !== 'free'; }
 
 function renderSimList() {
   const list = document.getElementById('simList');
@@ -605,7 +608,7 @@ function renderTeaser(sim){
     `<div class="result-card" style="grid-column:1/-1"><span class="hint">Réservé à l'offre Premium</span><strong style="font-size:1.05rem">Simulateur de stratégie patrimoniale</strong></div>`;
   document.getElementById('secondaryResults').innerHTML =
     `<div class="result-card"><div>Les calculs de base — rémunération, revenu libéral, trésorerie, capacité d'emprunt — sont <strong>gratuits</strong>. Les simulateurs de stratégie — arbitrage dividendes, retraite, cession, transmission, prévoyance, homme-clé… — sont inclus dans <strong>Premium</strong>.</div></div>`
-    + `<a href="/app/" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Débloquer avec Premium →</a>`;
+    + `<a href="/app/" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Débloquer avec Premium (${PREMIUM_EUR} €/mois) →</a>`;
   if (chart){ chart.destroy(); chart = null; }
 }
 

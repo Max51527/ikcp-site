@@ -374,7 +374,7 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
       <div class="tier-card">
         <div class="now">Formule actuelle</div>
         <div class="plan">Découverte <em>· gratuit</em></div>
-        <div class="px">Cartographie 360°, santé société et détection des leviers en accès libre. Le <b>chiffrage</b>, le <b>Pappers approfondi</b>, l'<b>agrégation bancaire (Powens)</b> et le <b>copilote illimité</b> passent en <b>Premium · 59 €/mois</b>.</div>
+        <div class="px">Cartographie 360°, santé société et détection des leviers en accès libre. Le <b>chiffrage</b>, le <b>Pappers approfondi</b>, l'<b>agrégation bancaire (Powens)</b> et le <b>copilote illimité</b> passent en <b>Premium · <span data-px>59</span> €/mois</b>.</div>
         <button class="btn full" onclick="alert('Démo — ouvrira la page Tarifs.')">Passer en Premium →</button>
       </div>
       <div class="kicker">Souveraineté &amp; conformité</div>
@@ -430,6 +430,17 @@ function applyTier(){
 fetch(API_CLIENT+'/api/v1/me',{headers:{'Authorization':'Bearer '+TOKEN},credentials:'include'})
   .then(function(r){return r.ok?r.json():null;})
   .then(function(d){ if(d&&d.tier){ TIER=d.tier; try{localStorage.setItem('ikcp_tier',d.tier);}catch(_){}; } applyTier(); })
+  .catch(function(){});
+
+/* ── PIÈCE 3 : l'app lit les réglages du Studio (accroche / tagline / prix) et les applique en direct ── */
+fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/config')
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(c){
+    if(!c) return;
+    if(c.tagline){ var t=document.querySelector('.tag'); if(t) t.textContent=c.tagline; }
+    if(c.hero){ var h=document.querySelector('.h1'); if(h){ h.innerHTML=''; h.append('Bonjour.'); h.append(document.createElement('br')); var em=document.createElement('em'); em.textContent=c.hero; h.append(em); } }
+    if(c.premium_eur!=null){ document.querySelectorAll('[data-px]').forEach(function(el){ el.textContent=c.premium_eur; }); }
+  })
   .catch(function(){});
 
 /* ── EXPÉRIENCE SUR-MESURE : Monsieur/Madame via Pappers + confirmation ── */
