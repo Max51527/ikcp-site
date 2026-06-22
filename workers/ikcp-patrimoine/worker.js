@@ -288,13 +288,23 @@ export default {
       try { const row = await db.prepare("SELECT data FROM app_config WHERE id='main'").first(); return json(row && row.data ? JSON.parse(row.data) : CONFIG_DEF, 200, o); }
       catch (_) { return json(CONFIG_DEF, 200, o); }
     }
-    // PUT /config : écriture ADMIN (même secret que /app/console — délégation ikcp-client, zéro nouveau secret).
+    // PUT /config : écriture réservée au PROPRIÉTAIRE — via sa connexion membre (zéro secret à retenir).
     if (url.pathname === '/config' && req.method === 'PUT') {
       if (!db) return json({ error: 'no_db' }, 503, o);
-      const tok = req.headers.get('x-admin-secret') || url.searchParams.get('token') || '';
-      let authed = !!(env.BETA_ADMIN && tok && tok === env.BETA_ADMIN);
-      if (!authed && tok) { try { const vr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/admin/applications?status=pending', { headers: { 'x-admin-secret': tok } }); authed = vr.ok; } catch (_) {} }
-      if (!authed) return json({ error: 'unauthorized', hint: 'Secret admin requis (celui de /app/console).' }, 401, o);
+      const OWNER = ['maxime@ikcp.fr', 'maxime@ikcp.eu'];
+      let authed = false;
+      // 1) Connexion membre propriétaire : Bearer → ikcp-client /me → email autorisé.
+      const auth = req.headers.get('Authorization') || '';
+      if (auth.startsWith('Bearer ')) {
+        try { const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } }); if (me.ok) { const u = await me.json(); if (u && u.email && OWNER.includes(String(u.email).toLowerCase())) authed = true; } } catch (_) {}
+      }
+      // 2) Fallback : secret admin (console), si un jour posé.
+      if (!authed) {
+        const tok = req.headers.get('x-admin-secret') || url.searchParams.get('token') || '';
+        if (env.BETA_ADMIN && tok && tok === env.BETA_ADMIN) authed = true;
+        else if (tok) { try { const vr = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/admin/applications?status=pending', { headers: { 'x-admin-secret': tok } }); authed = vr.ok; } catch (_) {} }
+      }
+      if (!authed) return json({ error: 'unauthorized', hint: 'Connectez-vous avec votre email propriétaire.' }, 401, o);
       let b = {}; try { b = await req.json(); } catch (_) { return json({ error: 'bad_json' }, 400, o); }
       try {
         await db.prepare("CREATE TABLE IF NOT EXISTS app_config (id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)").run();
