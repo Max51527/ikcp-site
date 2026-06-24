@@ -352,6 +352,39 @@ export default {
       } catch (e) { console.error('[beta/list]', e.message); return json({ error: 'server_error' }, 500, o); }
     }
 
+    // ── GET /metrics : console live (usage réel) — réservé au PROPRIÉTAIRE via sa connexion (zéro secret) ──
+    if (url.pathname === '/metrics' && req.method === 'GET') {
+      if (!db) return json({ error: 'no_db' }, 503, o);
+      const OWNER_HASHES = [
+        'c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3',
+        'cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030',
+        'd4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543',
+      ];
+      let authed = false;
+      const auth = req.headers.get('Authorization') || '';
+      if (auth.startsWith('Bearer ')) {
+        try {
+          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          if (me.ok) {
+            const u = await me.json();
+            if (u && u.email) {
+              const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(u.email).trim().toLowerCase()));
+              const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+              if (OWNER_HASHES.includes(hex)) authed = true;
+            }
+          }
+        } catch (_) {}
+      }
+      if (!authed) return json({ error: 'unauthorized', hint: 'Connectez-vous avec votre email propriétaire.' }, 401, o);
+      try {
+        const tools = (await db.prepare("SELECT tool, COUNT(*) n, MAX(created_at) last FROM beta_events GROUP BY tool ORDER BY n DESC").all()).results || [];
+        const recent = (await db.prepare("SELECT tool, action, label, created_at FROM beta_events ORDER BY id DESC LIMIT 25").all()).results || [];
+        const tot = await db.prepare("SELECT COUNT(*) n, COUNT(DISTINCT email) u FROM beta_events").first();
+        const today = await db.prepare("SELECT COUNT(*) n FROM beta_events WHERE created_at > datetime('now','-1 day')").first();
+        return json({ ok: true, tools, recent, total_events: (tot && tot.n) || 0, active_users: (tot && tot.u) || 0, today: (today && today.n) || 0, ts: new Date().toISOString() }, 200, o);
+      } catch (e) { console.error('[metrics]', e.message); return json({ error: 'server_error' }, 500, o); }
+    }
+
     // ── POST /opportunites/preview : moteur SANS persistance (marche sans D1) ──
     // Le cockpit envoie les données du membre dans le corps ; on renvoie les pistes.
     // Stateless = rien n'est stocké (RGPD : la donnée ne quitte pas l'appel).

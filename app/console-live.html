@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Console live — IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0E1729;--navy2:#16233f;--panel:#16223c;--panel2:#1c2c4d;--line:rgba(201,169,110,.18);--gold:#C9A96E;--gold-b:#E2C896;--cream:#FAF8F4;--mute:#8aa0c4;--green:#4ADE80;--blue:#5BA8E8;--red:#E8746A}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:radial-gradient(120% 80% at 50% -10%,#16233f,#0E1729 60%);color:var(--cream);min-height:100vh;padding:clamp(14px,3vw,28px)}
+.wrap{max-width:1100px;margin:0 auto}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.mk{width:36px;height:36px;border-radius:10px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold-b);font-size:15px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(20px,3vw,27px)}
+h1 em{font-style:italic;color:var(--gold-b)}
+.live{display:flex;align-items:center;gap:7px;margin-left:auto;font-size:12px;color:var(--mute);font-family:'JetBrains Mono',monospace}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.55)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.sub{color:var(--mute);font-size:13px;margin-bottom:20px}
+/* gate */
+#gate{max-width:430px;margin:8vh auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px;text-align:center}
+#gate h2{font-family:'Playfair Display',serif;font-weight:600;color:var(--gold-b);margin-bottom:8px}
+#gate p{color:var(--mute);font-size:14px;margin-bottom:18px}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:10px;font-size:14px}
+/* stat cards */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}
+@media(max-width:680px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{background:linear-gradient(160deg,var(--panel),var(--navy2));border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+.card .ic{font-size:18px;margin-bottom:8px;display:block}
+.card .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;line-height:1;color:#fff;transition:color .3s}
+.card .v.flash{color:var(--gold-b)}
+.card .l{font-size:11.5px;color:var(--mute);margin-top:6px;letter-spacing:.02em}
+.card.pappers{border-color:rgba(91,168,232,.3)}.card.mistral{border-color:rgba(201,169,110,.35)}
+/* flux diagram */
+.flux{background:linear-gradient(160deg,#101c33,#0c1526);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:18px}
+.flux svg{width:100%;height:auto;display:block}
+.nlabel{font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;fill:var(--cream)}
+.nsub{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--gold-b)}
+.grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.box h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.feed{list-style:none;max-height:300px;overflow:auto}
+.feed li{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;animation:slidein .4s ease}
+@keyframes slidein{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+.feed .t{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mute);flex:none;width:48px}
+.feed .tg{flex:none;font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;background:rgba(91,168,232,.15);color:var(--blue);text-transform:uppercase;letter-spacing:.04em}
+.feed .x{color:var(--cream);opacity:.9}
+.sec{list-style:none}
+.sec li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13.5px}
+.sec .s{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;box-shadow:0 0 8px rgba(74,222,128,.6)}
+.sec b{color:#fff;font-weight:600}.sec span{color:var(--mute)}
+.bd{margin-top:12px}.bd .row{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px}
+.bd .bar{flex:1;height:7px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden}
+.bd .fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-b));transition:width .6s}
+.bd .nm{width:110px;color:var(--cream);text-transform:capitalize}.bd .n{font-family:'JetBrains Mono',monospace;color:var(--gold-b);width:38px;text-align:right}
+.foot{margin-top:18px;text-align:center;font-size:11px;color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Gate -->
+  <div id="gate" style="display:none">
+    <h2>Console réservée</h2>
+    <p id="gmsg">Connectez-vous à l'app avec votre compte propriétaire, puis revenez sur cette page.</p>
+    <a class="btn" href="/app/">Ouvrir l'app →</a>
+  </div>
+
+  <!-- Console -->
+  <div id="console" style="display:none">
+    <div class="top">
+      <div class="mk">IK</div>
+      <div><h1>Console <em>live</em></h1></div>
+      <div class="live"><span class="dot"></span><span id="clock">—</span></div>
+    </div>
+    <div class="sub">Utilisation en direct de l'application — flux souverains, données protégées à Paris 🇫🇷</div>
+
+    <div class="cards">
+      <div class="card pappers"><span class="ic">🏢</span><div class="v" id="v-pappers">0</div><div class="l">Appels Pappers (SIREN)</div></div>
+      <div class="card mistral"><span class="ic">🧠</span><div class="v" id="v-mistral">0</div><div class="l">Appels Mistral · Marcel</div></div>
+      <div class="card"><span class="ic">👤</span><div class="v" id="v-users">0</div><div class="l">Utilisateurs actifs</div></div>
+      <div class="card"><span class="ic">⚡</span><div class="v" id="v-today">0</div><div class="l">Événements (24 h)</div></div>
+    </div>
+
+    <!-- Flux animé -->
+    <div class="flux">
+      <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gp" x1="0" x2="1"><stop offset="0" stop-color="#5BA8E8"/><stop offset="1" stop-color="#C9A96E"/></linearGradient>
+          <radialGradient id="core"><stop offset="0" stop-color="#36456a"/><stop offset="1" stop-color="#1B2A4A"/></radialGradient>
+        </defs>
+        <!-- paths -->
+        <path id="p1" d="M150,70 C300,70 360,120 400,120" fill="none" stroke="rgba(91,168,232,.35)" stroke-width="1.5"/>
+        <path id="p2" d="M150,170 C300,170 360,120 400,120" fill="none" stroke="rgba(201,169,110,.4)" stroke-width="1.5"/>
+        <path id="p3" d="M400,120 C460,120 520,70 650,70" fill="none" stroke="rgba(74,222,128,.3)" stroke-width="1.5"/>
+        <path id="p4" d="M400,120 C460,120 520,170 650,170" fill="none" stroke="rgba(74,222,128,.3)" stroke-width="1.5"/>
+        <!-- nodes -->
+        <g id="n-pappers"><rect x="40" y="46" width="120" height="48" rx="11" fill="#101c33" stroke="rgba(91,168,232,.4)"/><text x="100" y="68" text-anchor="middle" class="nlabel">Pappers</text><text x="100" y="84" text-anchor="middle" class="nsub" id="s-pappers">0</text></g>
+        <g id="n-mistral"><rect x="40" y="146" width="120" height="48" rx="11" fill="#101c33" stroke="rgba(201,169,110,.45)"/><text x="100" y="168" text-anchor="middle" class="nlabel">Mistral · Marcel</text><text x="100" y="184" text-anchor="middle" class="nsub" id="s-mistral">0</text></g>
+        <circle cx="400" cy="120" r="44" fill="url(#core)" stroke="var(--gold)" stroke-width="1.5"/>
+        <text x="400" y="116" text-anchor="middle" class="nlabel" style="font-size:13px">App IKCP</text>
+        <text x="400" y="132" text-anchor="middle" class="nsub">souverain</text>
+        <g><rect x="650" y="46" width="120" height="48" rx="11" fill="#101c33" stroke="rgba(74,222,128,.35)"/><text x="710" y="68" text-anchor="middle" class="nlabel">Clients</text><text x="710" y="84" text-anchor="middle" class="nsub" id="s-users">0</text></g>
+        <g><rect x="650" y="146" width="120" height="48" rx="11" fill="#101c33" stroke="rgba(74,222,128,.35)"/><text x="710" y="168" text-anchor="middle" class="nlabel">Données · Paris</text><text x="710" y="184" text-anchor="middle" class="nsub">🔒 chiffré</text></g>
+        <!-- animated dots -->
+        <circle r="4" fill="#5BA8E8"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+        <circle r="4" fill="#5BA8E8" opacity=".6"><animateMotion dur="2.2s" begin="1.1s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+        <circle r="4" fill="#C9A96E"><animateMotion dur="1.9s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+        <circle r="4" fill="#C9A96E" opacity=".6"><animateMotion dur="1.9s" begin="0.9s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+        <circle r="3.5" fill="#4ADE80"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+        <circle r="3.5" fill="#4ADE80"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite"><mpath href="#p4"/></animateMotion></circle>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box">
+        <h3>🟢 Activité en direct</h3>
+        <ul class="feed" id="feed"><li><span class="x" style="color:var(--mute)">En attente d'événements…</span></li></ul>
+        <div class="bd" id="breakdown"></div>
+      </div>
+      <div class="box">
+        <h3>🛡️ Tout est protégé</h3>
+        <ul class="sec">
+          <li><span class="s"></span><div><b>Souverain</b> <span>· Mistral + Cloudflare UE, zéro US sur la donnée client</span></div></li>
+          <li><span class="s"></span><div><b>Données à Paris</b> <span>· base D1 chiffrée (data center CDG)</span></div></li>
+          <li><span class="s"></span><div><b>Sauvegarde quotidienne</b> <span>· OneDrive + restauration 30 jours</span></div></li>
+          <li><span class="s"></span><div><b>Secrets chiffrés</b> <span>· jamais dans le code, jamais exposés</span></div></li>
+          <li><span class="s"></span><div><b>Conforme RGPD</b> <span>· hébergement France, données jamais revendues</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot">Console interne IKCP — lecture seule · rafraîchissement automatique toutes les 5 s.</div>
+  </div>
+</div>
+
+<script>
+const API='https://ikcp-patrimoine.maxime-ead.workers.dev/metrics';
+const $=id=>document.getElementById(id);
+(function(){ try{ var m=(location.hash||'').match(/[#&]s=([^&]+)/); if(m){ localStorage.setItem('ikcp_token',decodeURIComponent(m[1])); history.replaceState(null,'',location.pathname); } }catch(_){} })();
+function token(){ try{ return localStorage.getItem('ikcp_token')||''; }catch(_){ return ''; } }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function kw(t){ t=(t||'').toLowerCase(); return t; }
+function sum(tools,keys){ return tools.filter(x=>keys.some(k=>kw(x.tool).includes(k))).reduce((a,b)=>a+(b.n||0),0); }
+function flash(el,val){ if(el.textContent!==String(val)){ el.textContent=val; el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),600);} }
+
+let seen=new Set();
+async function load(){
+  let r;
+  try{ r=await fetch(API,{headers:{'Authorization':'Bearer '+token()}}); }
+  catch(_){ return; }
+  if(r.status===401||r.status===403){ $('gate').style.display='block'; $('console').style.display='none'; return; }
+  if(!r.ok) return;
+  const d=await r.json();
+  $('gate').style.display='none'; $('console').style.display='block';
+  const tools=d.tools||[];
+  const pappers=sum(tools,['pappers','siren','societe','entreprise']);
+  const mistral=sum(tools,['marcel','chat','mistral','ia','codex','hermes','batisseur']);
+  flash($('v-pappers'),pappers); flash($('v-mistral'),mistral);
+  flash($('v-users'),d.active_users||0); flash($('v-today'),d.today||0);
+  $('s-pappers').textContent=pappers; $('s-mistral').textContent=mistral; $('s-users').textContent=d.active_users||0;
+  // breakdown par outil
+  const max=Math.max(1,...tools.map(t=>t.n||0));
+  $('breakdown').innerHTML = tools.slice(0,8).map(t=>
+    `<div class="row"><div class="nm">${esc(t.tool||'—')}</div><div class="bar"><div class="fill" style="width:${Math.round((t.n||0)/max*100)}%"></div></div><div class="n">${t.n||0}</div></div>`
+  ).join('')||'<div class="row"><span style="color:var(--mute)">Aucun usage encore enregistré.</span></div>';
+  // feed
+  const ev=(d.recent||[]);
+  const fresh=ev.filter(e=>{ const id=(e.created_at||'')+'|'+(e.tool||'')+'|'+(e.label||''); if(seen.has(id))return false; seen.add(id); return true; });
+  if(fresh.length){
+    const html=ev.slice(0,18).map(e=>{ const t=(e.created_at||'').slice(11,16)||'··:··';
+      return `<li><span class="t">${t}</span><span class="tg">${esc((e.tool||'?').slice(0,8))}</span><span class="x">${esc(e.action||'')}${e.label?' · '+esc(String(e.label).slice(0,40)):''}</span></li>`; }).join('');
+    $('feed').innerHTML=html||'<li><span class="x" style="color:var(--mute)">Aucun événement.</span></li>';
+  }
+  $('clock').textContent=new Date().toLocaleTimeString('fr-FR');
+}
+if(!token()){ $('gate').style.display='block'; } else { load(); }
+setInterval(()=>{ if(token()) load(); }, 5000);
+</script>
+</body>
+</html>
