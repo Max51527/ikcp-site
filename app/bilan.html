@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bilan &amp; Audit patrimonial — IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.22);--green:#3B7D5E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:#EDE6D8;padding:clamp(10px,3vw,30px)}
+.bar{max-width:780px;margin:0 auto 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;padding:12px 20px;background:linear-gradient(135deg,#E2C896,var(--gold));color:#20180c}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy);font-weight:600}
+.hint{font-size:12.5px;color:var(--mute)}
+/* feuille A4 */
+.sheet{max-width:780px;margin:0 auto;background:#fff;border-radius:6px;box-shadow:0 20px 50px -30px rgba(27,42,74,.5);padding:clamp(24px,5vw,52px);min-height:1000px}
+.cover{border-bottom:2px solid var(--gold);padding-bottom:20px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;gap:14px}
+.cover .mk{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);font-weight:600}
+.cover .mk em{color:var(--gold-d);font-style:italic}
+.cover .meta{text-align:right;font-size:12px;color:var(--mute)}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(24px,4vw,32px);color:var(--navy);margin-bottom:4px}
+.lede{color:var(--mute);font-size:14px;margin-bottom:30px}
+h2{font-family:'Playfair Display',serif;font-weight:600;font-size:19px;color:var(--navy);margin:28px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+.kpi{background:var(--cream2);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+.kpi .l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+.kpi .v{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-top:4px}
+table{width:100%;border-collapse:collapse;margin:6px 0;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+.barline{height:8px;border-radius:5px;background:var(--cream2);overflow:hidden;margin-top:5px}
+.barline>i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),#E2C896)}
+.piste{background:var(--cream2);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 11px 11px 0;padding:13px 16px;margin:10px 0}
+.piste .t{font-weight:700;color:var(--navy);font-size:15px}
+.piste .d{font-size:13px;color:var(--mute);margin-top:3px}
+.disc{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:10.5px;color:var(--mute);line-height:1.55}
+.cta{margin-top:22px;text-align:center;background:var(--navy);color:var(--cream);border-radius:12px;padding:18px}
+.cta a{color:#E2C896;font-weight:700;text-decoration:none}
+.empty{text-align:center;color:var(--mute);padding:40px 10px}
+.empty a{color:var(--gold-d);font-weight:600}
+@media(max-width:560px){.kpis{grid-template-columns:1fr}.cover{flex-direction:column;align-items:flex-start}.cover .meta{text-align:left}.kpi .v{font-size:19px}}
+@media print{
+  body{background:#fff;padding:0}
+  .bar{display:none}
+  .sheet{box-shadow:none;max-width:none;border-radius:0;padding:14mm 14mm 18mm;min-height:auto}
+  h2{break-after:avoid}.piste,.kpi,table{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <button class="btn" onclick="window.print()">📄 Télécharger en PDF</button>
+  <a class="btn ghost" href="/app/patrimoine.html" style="text-decoration:none">← Mon cockpit</a>
+  <span class="hint">Astuce : dans la boîte d'impression, choisissez « Enregistrer en PDF ».</span>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="cover">
+    <div class="mk">IKCP — <em>Intelligence patrimoniale</em></div>
+    <div class="meta" id="meta">—</div>
+  </div>
+  <h1>Bilan &amp; Audit patrimonial</h1>
+  <div class="lede">Synthèse de votre patrimoine et pistes de réflexion détectées par l'analyse souveraine IKCP.</div>
+  <div id="body"><div class="empty">Chargement…</div></div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+var PAT='https://ikcp-patrimoine.maxime-ead.workers.dev';
+var CATS={immobilier:{l:'Immobilier',c:'#1B2A4A'},societe:{l:'Sociétés / professionnel',c:'#8B6F3F'},non_cote:{l:'Investissement non coté',c:'#3F7A3F'},liquidites:{l:'Liquidités',c:'#6B655A'},collection:{l:'Collections & passions',c:'#B8801F'}};
+var RDV='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial';
+var DISC="Document établi à titre pédagogique à partir des éléments que vous avez renseignés. Il ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni une recommandation d'investissement. Tout investissement comporte un risque de perte en capital. Toute mise en œuvre nécessite une étude personnalisée formalisée par une lettre de mission. — IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568.";
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function eur(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);}
+
+/* lit les biens du cockpit — robuste : on scanne la clé ikcp_patrimoine_* quel que soit l'email */
+function readBiens(){
+  try{
+    for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
+      if(k && k.indexOf('ikcp_patrimoine_')===0){ var v=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(v)&&v.length) return v; } }
+  }catch(_){}
+  return [];
+}
+function payloadFromBiens(biens){
+  var actifs=[],hasSoc=false;
+  biens.forEach(function(b){ var v=(+b.value||0)*100;
+    if(b.cat==='immobilier') actifs.push({categorie:'immobilier',valorisation_cents:v});
+    else if(b.cat==='societe'){ actifs.push({categorie:'participation',valorisation_cents:v}); hasSoc=true; }
+    else if(b.cat==='non_cote') actifs.push({categorie:'participation',valorisation_cents:v});
+    else if(b.cat==='liquidites') actifs.push({categorie:'compte',valorisation_cents:v});
+    else actifs.push({categorie:'autre',valorisation_cents:v});
+  });
+  return { personnes:[{role:'dirigeant'}], societes: hasSoc?[{regime_fiscal:'IS',is_holding:0}]:[], actifs:actifs, beneficiaires:[] };
+}
+
+function render(biens, data){
+  var brut=biens.reduce(function(a,b){return a+(+b.value||0);},0);
+  var byCat={};
+  biens.forEach(function(b){ byCat[b.cat]=(byCat[b.cat]||0)+(+b.value||0); });
+  var bilan=(data&&data.bilan)||{};
+  var net = bilan.actif_net_cents!=null ? bilan.actif_net_cents/100 : brut;
+  var passif = bilan.passif_cents!=null ? bilan.passif_cents/100 : 0;
+  var oppo=(data&&data.opportunites)||[];
+
+  var rows=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];}).map(function(cat){
+    var meta=CATS[cat]||{l:cat,c:'#6B655A'}; var val=byCat[cat]; var pct=brut?Math.round(val/brut*100):0;
+    return '<tr><td><b style="color:'+meta.c+'">●</b> '+esc(meta.l)+'</td><td class="r">'+eur(val)+'</td><td class="r">'+pct+' %<div class="barline"><i style="width:'+pct+'%"></i></div></td></tr>';
+  }).join('');
+
+  var pistes = oppo.length ? oppo.slice(0,6).map(function(o){
+    return '<div class="piste"><div class="t">'+esc(o.nom||o.strategie_key||'Piste')+'</div>'+(o.declencheur?'<div class="d">'+esc(o.declencheur)+'</div>':'')+'</div>';
+  }).join('') : '<div class="hint">Aucune piste prioritaire détectée pour l\'instant — complétez votre cockpit pour affiner l\'analyse.</div>';
+
+  document.getElementById('body').innerHTML =
+    '<div class="kpis">'+
+      '<div class="kpi"><div class="l">Actif brut</div><div class="v">'+eur(brut)+'</div></div>'+
+      '<div class="kpi"><div class="l">Passif</div><div class="v">'+eur(passif)+'</div></div>'+
+      '<div class="kpi"><div class="l">Actif net</div><div class="v">'+eur(net)+'</div></div>'+
+    '</div>'+
+    '<h2>Répartition de votre patrimoine</h2>'+
+    '<table><thead><tr><th>Poste</th><th class="r">Valeur</th><th class="r">Part</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<h2>Pistes de réflexion détectées</h2>'+pistes+
+    '<div class="cta">Ces pistes méritent une étude adaptée à VOTRE situation.<br><a href="'+RDV+'" target="_blank" rel="noopener">Échanger avec Maxime →</a></div>'+
+    '<div class="disc">'+esc(DISC)+'</div>';
+}
+
+(function(){
+  var biens=readBiens();
+  try{ document.getElementById('meta').textContent='Édité le '+new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}); }catch(_){}
+  if(!biens.length){
+    document.getElementById('body').innerHTML='<div class="empty">Aucune donnée patrimoniale trouvée.<br><br>Commencez par renseigner votre patrimoine dans <a href="/app/patrimoine.html">votre cockpit</a>, puis revenez ici pour générer votre bilan PDF.</div>';
+    return;
+  }
+  render(biens,null); // rendu immédiat (brut + répartition) même si l'API tarde
+  fetch(PAT+'/opportunites/preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payloadFromBiens(biens))})
+    .then(function(r){return r.ok?r.json():null;}).then(function(d){ if(d) render(biens,d); }).catch(function(){});
+})();
+</script>
+</body>
+</html>
