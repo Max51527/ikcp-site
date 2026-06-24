@@ -193,7 +193,9 @@ export default {
     if (url.pathname === '/accounts') {
       const memberId = url.searchParams.get('user') || 'anon';
       if (!env.POWENS_DB) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-powens-db et bind POWENS_DB.' }, 500, o);
-      const row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first();
+      let row = null;
+      try { row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first(); }
+      catch (_) { return json({ connected: false, accounts: [], note: 'base non initialisée' }, 200, o); }
       if (!row) return json({ connected: false, accounts: [] }, 200, o);
       const r = await fetch(base(env) + '/users/me/accounts', { headers: { 'Authorization': 'Bearer ' + row.access_token } });
       if (!r.ok) return json({ error: 'powens_accounts', status: r.status }, 502, o);
@@ -207,7 +209,9 @@ export default {
     if (url.pathname === '/wealth') {
       const memberId = url.searchParams.get('user') || 'anon';
       if (!env.POWENS_DB) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-powens-db et bind POWENS_DB.' }, 500, o);
-      const row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first();
+      let row = null;
+      try { row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first(); }
+      catch (_) { return json({ connected: false, accounts: [], investments: [], loans: [], note: 'base non initialisée' }, 200, o); }
       if (!row) return json({ connected: false, accounts: [], investments: [], loans: [] }, 200, o);
       const H = { 'Authorization': 'Bearer ' + row.access_token };
       // Appels parallèles ; chaque brique est best-effort (un endpoint absent ne casse pas la vue).
