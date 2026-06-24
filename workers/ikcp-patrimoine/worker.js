@@ -298,9 +298,7 @@ export default {
         'd4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543', // perso
       ];
       let authed = false;
-      // Accès Studio DIRECT (sans mot de passe) — config NON sensible (textes & prix), URL noindex.
-      // ⚠️ À re-sécuriser via la connexion propriétaire AVANT le lancement public.
-      if (req.headers.get('x-studio')) authed = true;
+      // Studio SÉCURISÉ : écriture réservée au PROPRIÉTAIRE via sa connexion membre (zéro secret partagé).
       // 1) Connexion membre propriétaire : Bearer → ikcp-client /me → empreinte email autorisée.
       const auth = req.headers.get('Authorization') || '';
       if (auth.startsWith('Bearer ')) {
