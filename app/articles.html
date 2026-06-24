@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guides patrimoniaux — IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#3B7D5E;--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:linear-gradient(180deg,#FAF8F4,#F1E9DA);min-height:100vh;padding:clamp(14px,3.5vw,40px)}
+.wrap{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.mk{width:36px;height:36px;border-radius:10px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold-b);font-size:15px}
+.kick{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(23px,4vw,33px);color:var(--navy);line-height:1.1}
+h1 em{font-style:italic;color:var(--gold-d)}
+.sub{color:var(--mute);font-size:14px;margin:6px 0 24px}
+a.back{margin-left:auto;color:var(--mute);text-decoration:none;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer}
+.list{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:600px){.list{grid-template-columns:1fr}}
+.tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left;font-family:inherit}
+.tile:hover{transform:translateY(-2px);box-shadow:0 16px 34px -24px rgba(27,42,74,.5)}
+.tile .tag{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+.tile .t{font-family:'Playfair Display',serif;font-weight:600;font-size:17px;color:var(--navy);margin:5px 0 4px}
+.tile .d{font-size:13px;color:var(--mute);line-height:1.45}
+.tile .more{font-size:12.5px;color:var(--gold-d);font-weight:600;margin-top:9px}
+/* article */
+.art{background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(22px,4.5vw,42px);box-shadow:0 20px 50px -34px rgba(27,42,74,.5)}
+.art h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,4vw,30px);color:var(--navy);line-height:1.12}
+.art .lede{font-size:15.5px;color:var(--mute);margin:10px 0 22px;line-height:1.6;font-style:italic}
+.art h3{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;color:var(--navy);margin:24px 0 8px}
+.art p{font-size:14.5px;line-height:1.7;margin-bottom:12px}
+.aa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:560px){.aa{grid-template-columns:1fr}}
+.aa .c{border-radius:12px;padding:13px 15px}
+.aa .av{background:#FBEEEF;border:1px solid rgba(192,65,76,.25)}
+.aa .ap{background:#EAF3EE;border:1px solid rgba(59,125,94,.3)}
+.aa .lab{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+.aa .av .lab{color:#B0414C}.aa .ap .lab{color:#2E7D5B}
+.aa p{font-size:13.5px;margin:0;line-height:1.55}
+.faq{margin-top:8px}
+.faq .q{font-weight:600;color:var(--navy);font-size:14.5px;margin-top:14px}
+.faq .r{font-size:14px;color:var(--ink);line-height:1.6}
+.cta{margin-top:26px;background:var(--navy);color:var(--cream);border-radius:13px;padding:20px;text-align:center}
+.cta a{color:var(--gold-b);font-weight:700;text-decoration:none}
+.disc{margin-top:18px;font-size:11px;color:var(--mute);line-height:1.55;border-top:1px solid var(--line);padding-top:12px}
+.foot{text-align:center;font-size:11px;color:var(--mute);margin-top:26px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="mk">IK</div>
+    <div><div class="kick">Bibliothèque</div></div>
+    <a class="back" id="backLink" href="/app/home">← L'app</a>
+  </div>
+  <h1 id="pageTitle">Guides <em>patrimoniaux</em></h1>
+  <div class="sub" id="pageSub">Des repères clairs pour décider — rédigés par IKCP, pour comprendre, pas pour vendre.</div>
+
+  <div id="list" class="list"></div>
+  <div id="reader" class="hidden"></div>
+
+  <div class="foot">IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · Contenus éditoriaux originaux.</div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+var RDV='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial';
+var DISC="Article à caractère pédagogique — ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni une recommandation. Les dispositifs cités obéissent à des conditions précises et évoluent ; tout investissement comporte un risque de perte en capital. Toute mise en œuvre nécessite une étude personnalisée (lettre de mission). — IKCP · ORIAS 23001568.";
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+var ARTICLES=[
+{ tag:'Transmission', t:`Transmettre son entreprise : le pacte Dutreil`,
+  d:`Diviser par 3 la base taxable de votre société transmise — sous conditions.`,
+  lede:`Le pacte Dutreil est l'outil le plus puissant pour transmettre une entreprise familiale à moindre coût. Bien utilisé, il exonère 75 % de la valeur des titres transmis.`,
+  sections:[
+    {h:`Le principe`, p:`En contrepartie d'engagements de conservation des titres, la valeur transmise (donation ou succession) bénéficie d'un abattement de 75 % avant calcul des droits. Vous n'êtes taxé que sur 25 % de la valeur.`},
+    {h:`Les conditions clés`, p:`Un engagement collectif de conservation de 2 ans (souvent déjà en cours), prolongé d'un engagement individuel de 4 ans, et l'exercice d'une fonction de direction. La société doit avoir une activité opérationnelle (une holding animatrice peut être éligible).`}
+  ],
+  aa:{av:`Société de 2 000 000 € transmise à 2 enfants : droits calculés sur la pleine valeur, souvent plusieurs centaines de milliers d'euros.`,
+      ap:`Avec Dutreil : base réduite à 25 % (500 000 €), puis abattement de 100 000 € par enfant ; et si la donation est faite en pleine propriété avant vos 70 ans, une réduction de droits de 50 % s'ajoute.`},
+  faq:[
+    {q:`Une holding peut-elle bénéficier du Dutreil ?`, r:`Oui, si elle est animatrice (elle dirige réellement ses filiales). Une simple holding passive n'est pas éligible.`},
+    {q:`Que se passe-t-il si je revends pendant l'engagement ?`, r:`La rupture des engagements de conservation entraîne la remise en cause de l'avantage. D'où l'importance de l'anticipation.`}
+  ]},
+
+{ tag:'Cession', t:`L'apport-cession : vendre en différant l'impôt`,
+  d:`Réinvestir le produit de votre cession plutôt que de tout fiscaliser d'un coup.`,
+  lede:`Vous allez céder votre société ? L'apport-cession (article 150-0 B ter du CGI) permet de mettre la plus-value en report et de réinvestir un capital quasi intact.`,
+  sections:[
+    {h:`Le mécanisme`, p:`Avant la vente, vous apportez vos titres à une holding que vous contrôlez. La plus-value d'apport est placée en report d'imposition. La holding vend ensuite les titres : tant que les conditions sont respectées, l'impôt reste différé.`},
+    {h:`La condition à ne pas rater`, p:`Si la holding cède les titres dans les 3 ans suivant l'apport, elle doit réinvestir au moins 60 % du produit dans une activité économique éligible sous 2 ans. À défaut, le report tombe et l'impôt devient exigible.`}
+  ],
+  aa:{av:`Cession directe de 3 000 000 € (plus-value 2 500 000 €) : impôt immédiat au PFU 30 %, soit environ 750 000 € qui sortent du capital.`,
+      ap:`Apport-cession : la plus-value est en report, l'impôt différé, et la quasi-totalité du capital reste investie via la holding (réinvestissement de 60 % requis).`},
+  faq:[
+    {q:`Puis-je me verser des revenus de la holding ?`, r:`Oui, mais cela suit ses propres règles fiscales. La holding sert d'abord à réinvestir, pas à consommer le prix.`},
+    {q:`Et si je ne réinvestis pas ?`, r:`Le report d'imposition tombe : la plus-value redevient taxable. Le montage n'a de sens qu'avec un vrai projet de réinvestissement.`}
+  ]},
+
+{ tag:'Protection', t:`Le régime matrimonial du dirigeant`,
+  d:`Protéger son conjoint tout en isolant le risque de l'entreprise.`,
+  lede:`Pour un dirigeant, le régime matrimonial n'est pas un détail : il décide de l'exposition du patrimoine du couple au risque professionnel et de la protection réelle du conjoint.`,
+  sections:[
+    {h:`Communauté ou séparation ?`, p:`En communauté légale (régime par défaut), les dettes professionnelles peuvent atteindre le patrimoine commun. En séparation de biens, chacun conserve son patrimoine : l'entreprise et ses risques sont isolés.`},
+    {h:`Protéger sans léser`, p:`La séparation protège, mais peut désavantager le conjoint qui s'est consacré au foyer. Des correctifs existent : avantages matrimoniaux, société d'acquêts, assurance-vie au bénéfice du conjoint.`}
+  ],
+  aa:{av:`Dirigeant en communauté : en cas de difficulté de l'entreprise, le patrimoine commun (résidence, épargne) peut être engagé.`,
+      ap:`Régime adapté (séparation + correctifs) : le risque pro est cantonné, et le conjoint est protégé par des dispositifs choisis.`},
+  faq:[
+    {q:`Peut-on changer de régime ?`, r:`Oui, par acte notarié (souvent après 2 ans de mariage ; homologation par le juge dans certains cas). Cela a un coût mais peut être décisif.`},
+    {q:`Mon conjoint a-t-il des droits sur l'entreprise ?`, r:`Cela dépend du régime et de la date d'acquisition des titres. À vérifier précisément.`}
+  ]},
+
+{ tag:'Retraite', t:`Préparer sa retraite quand on est dirigeant`,
+  d:`Ne pas compter uniquement sur la revente de l'entreprise.`,
+  lede:`Les dirigeants — surtout les indépendants (TNS) — ont souvent une retraite obligatoire modeste au regard de leurs revenus. Le complément se construit en amont.`,
+  sections:[
+    {h:`Le piège classique`, p:`Beaucoup de dirigeants considèrent leur entreprise comme leur retraite. Mais sa valeur n'est pas garantie et dépend d'une vente réussie. Diversifier est une sécurité.`},
+    {h:`Les leviers`, p:`Le PER permet de déduire vos versements de votre revenu imposable (intéressant si vous êtes fortement imposé). L'assurance-vie offre souplesse et transmission. L'immobilier génère des revenus futurs. La capitalisation au sein de la société est un autre canal.`}
+  ],
+  aa:{av:`Dirigeant à 41 % de tranche, sans préparation : revenus fortement imposés aujourd'hui, retraite obligatoire insuffisante demain.`,
+      ap:`10 000 € versés sur un PER : jusqu'à environ 4 100 € d'impôt en moins cette année (selon plafonds), et un capital qui se constitue pour la retraite.`},
+  faq:[
+    {q:`PER ou assurance-vie ?`, r:`Le PER déduit à l'entrée mais bloque jusqu'à la retraite ; l'assurance-vie reste disponible. Souvent, on combine les deux.`},
+    {q:`Combien épargner ?`, r:`Cela dépend de l'écart entre vos revenus actuels et votre future pension. C'est précisément ce qu'un bilan chiffre.`}
+  ]},
+
+{ tag:'Famille', t:`Patrimoine en famille recomposée`,
+  d:`Protéger son conjoint sans déshériter ses enfants.`,
+  lede:`Les familles recomposées concentrent les sujets sensibles de la transmission : protéger le nouveau conjoint, traiter équitablement les enfants de plusieurs unions, éviter les conflits.`,
+  sections:[
+    {h:`Le risque par défaut`, p:`Sans organisation, le conjoint survivant et les enfants de lits différents peuvent se retrouver en concurrence. Les enfants non communs n'héritent pas automatiquement du beau-parent.`},
+    {h:`Les outils`, p:`Donation entre époux, clause bénéficiaire d'assurance-vie sur mesure, démembrement de propriété, libéralités graduelles ou résiduelles : un éventail permet de protéger le conjoint tout en respectant la réserve des enfants.`}
+  ],
+  aa:{av:`Conjoint + deux enfants d'une première union + un enfant commun, sans planification : tensions et fiscalité subies au décès.`,
+      ap:`Un plan combinant donation entre époux et clause bénéficiaire : le conjoint est protégé, chaque enfant reçoit sa part, la fiscalité est anticipée.`},
+  faq:[
+    {q:`L'assurance-vie échappe-t-elle à la succession ?`, r:`Civilement, elle est hors succession (sauf primes manifestement exagérées), ce qui en fait un outil clé pour le conjoint.`},
+    {q:`Puis-je avantager mon conjoint ?`, r:`Oui, dans la limite de la réserve héréditaire des enfants. La quotité disponible se calcule selon votre situation.`}
+  ]}
+];
+
+var $=function(id){return document.getElementById(id);};
+function showList(){
+  $('reader').classList.add('hidden'); $('list').classList.remove('hidden');
+  $('pageTitle').innerHTML='Guides <em>patrimoniaux</em>'; $('pageSub').textContent='Des repères clairs pour décider — rédigés par IKCP, pour comprendre, pas pour vendre.';
+  $('backLink').setAttribute('href','/app/home'); $('backLink').textContent='← L’app'; $('backLink').onclick=null;
+  $('list').innerHTML=ARTICLES.map(function(a,i){
+    return '<button class="tile" onclick="openArt('+i+')"><div class="tag">'+esc(a.tag)+'</div><div class="t">'+esc(a.t)+'</div><div class="d">'+esc(a.d)+'</div><div class="more">Lire le guide →</div></button>';
+  }).join('');
+}
+window.openArt=function(i){
+  var a=ARTICLES[i]; if(!a) return;
+  $('list').classList.add('hidden'); var r=$('reader'); r.classList.remove('hidden');
+  $('pageTitle').innerHTML='Guides <em>patrimoniaux</em>'; $('pageSub').textContent='';
+  var bl=$('backLink'); bl.removeAttribute('href'); bl.textContent='← Tous les guides'; bl.onclick=function(e){ e.preventDefault(); showList(); try{window.scrollTo({top:0,behavior:'smooth'});}catch(_){}};
+  var secs=a.sections.map(function(s){return '<h3>'+esc(s.h)+'</h3><p>'+esc(s.p)+'</p>';}).join('');
+  var aa=a.aa?('<div class="aa"><div class="c av"><div class="lab">Avant</div><p>'+esc(a.aa.av)+'</p></div><div class="c ap"><div class="lab">Après</div><p>'+esc(a.aa.ap)+'</p></div></div>'):'';
+  var faq=a.faq&&a.faq.length?('<h3>Questions fréquentes</h3><div class="faq">'+a.faq.map(function(f){return '<div class="q">'+esc(f.q)+'</div><div class="r">'+esc(f.r)+'</div>';}).join('')+'</div>'):'';
+  r.innerHTML='<div class="art"><div class="kick" style="color:var(--gold-d)">'+esc(a.tag)+'</div><h2>'+esc(a.t)+'</h2><div class="lede">'+esc(a.lede)+'</div>'+secs+aa+faq+
+    '<div class="cta">Envie d’appliquer ça à VOTRE situation ?<br><a href="'+RDV+'" target="_blank" rel="noopener">Échanger avec Maxime →</a></div>'+
+    '<div class="disc">'+esc(DISC)+'</div></div>';
+  try{window.scrollTo({top:0,behavior:'smooth'});}catch(_){}
+};
+showList();
+</script>
+</body>
+</html>
