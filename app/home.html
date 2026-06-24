@@ -268,8 +268,9 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
     <!-- ════ ACCUEIL ════ -->
     <section class="screen on stg" id="s-accueil">
       <div class="kicker">Pour dirigeant(e)s &amp; professions libérales</div>
-      <h1 class="h1">Bonjour.<br>Tout part de <em>votre entreprise.</em></h1>
+      <h1 class="h1"><span id="greet">Bonjour.</span><br><em id="heroline">Tout part de votre entreprise.</em></h1>
       <p class="lede">Saisissez votre SIREN. Marcel cartographie votre structure — <b>société ou activité libérale</b> — et repère en quelques secondes les leviers patrimoniaux qui vous concernent.</p>
+      <div style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--gold-b);background:rgba(201,169,110,.1);border:1px solid var(--line-2);border-radius:99px;padding:4px 11px;margin-bottom:10px">🇫🇷 Moteur Mistral — hébergé en France</div>
 
       <div class="card siren-box">
         <div class="kicker" style="margin-top:0">Cartographie SIREN</div>
@@ -352,13 +353,6 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
           </div>
         </div>
       </div>
-      <div class="kicker">Santé de votre société</div>
-      <div class="ratios">
-        <div class="rt"><div class="l">Marge nette</div><div class="v good">8,2 %</div></div>
-        <div class="rt"><div class="l">Taux d'EBE</div><div class="v good">21,4 %</div></div>
-        <div class="rt"><div class="l">Autonomie fin.</div><div class="v warn">38 %</div></div>
-        <div class="rt"><div class="l">Trésorerie / CA</div><div class="v">11 %</div></div>
-      </div>
       <div class="alert"><div class="b"></div><p><b>Trésorerie excédentaire détectée.</b> 90 k€ dorment sur le compte courant — un placement de trésorerie mérite l'étude.</p></div>
       <div class="kicker">Leviers détectés</div>
       <div class="card">
@@ -430,7 +424,7 @@ function applyTier(){
 /* rafraîchit l'abonnement depuis le serveur (best-effort) puis ré-applique le gating */
 fetch(API_CLIENT+'/api/v1/me',{headers:{'Authorization':'Bearer '+TOKEN},credentials:'include'})
   .then(function(r){return r.ok?r.json():null;})
-  .then(function(d){ if(d&&d.tier){ TIER=d.tier; try{localStorage.setItem('ikcp_tier',d.tier);}catch(_){}; } applyTier(); })
+  .then(function(d){ if(d&&d.tier){ TIER=d.tier; try{localStorage.setItem('ikcp_tier',d.tier);}catch(_){}; } try{ var _p=d&&(d.prenom||d.display_name); if(_p){ var _g=document.getElementById('greet'); if(_g) _g.textContent='Bonjour '+String(_p).trim().split(/\s+/)[0]+'.'; } }catch(_){} applyTier(); })
   .catch(function(){});
 
 /* ── PIÈCE 3 : l'app lit les réglages du Studio (accroche / tagline / prix) et les applique en direct ── */
@@ -439,7 +433,7 @@ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/config')
   .then(function(c){
     if(!c) return;
     if(c.tagline){ var t=document.querySelector('.tag'); if(t) t.textContent=c.tagline; }
-    if(c.hero){ var h=document.querySelector('.h1'); if(h){ h.innerHTML=''; h.append('Bonjour.'); h.append(document.createElement('br')); var em=document.createElement('em'); em.textContent=c.hero; h.append(em); } }
+    if(c.hero){ var hl=document.getElementById('heroline'); if(hl) hl.textContent=c.hero; }
     if(c.premium_eur!=null){ document.querySelectorAll('[data-px]').forEach(function(el){ el.textContent=c.premium_eur; }); }
   })
   .catch(function(){});
