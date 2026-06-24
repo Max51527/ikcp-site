@@ -281,7 +281,7 @@ export default {
 
     // ── STUDIO — configuration no-code de l'app (table app_config, D1 Paris). ──
     // Réglages que Maxime modifie sans coder ; le front les lit pour s'afficher.
-    const CONFIG_DEF = { hero: 'Tout part de votre entreprise.', tagline: 'Intelligence patrimoniale pour dirigeant(e)s & professions libérales', premium_eur: 59, gating_360_only: true };
+    const CONFIG_DEF = { hero: 'Tout part de votre entreprise.', tagline: 'Intelligence patrimoniale pour dirigeant(e)s & professions libérales', premium_eur: 59, gating_360_only: true, annonce: '', annonce_on: false };
     // GET /config : lecture PUBLIQUE (le front a besoin de la config sans secret).
     if (url.pathname === '/config' && req.method === 'GET') {
       if (!db) return json(CONFIG_DEF, 200, o);

@@ -267,6 +267,7 @@ body{font-family:var(--sans);color:var(--txt);background:#070b14;display:flex;al
 
     <!-- ════ ACCUEIL ════ -->
     <section class="screen on stg" id="s-accueil">
+      <div id="annonceBar" style="display:none;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;font-weight:600;font-size:13px;text-align:center;padding:9px 14px;border-radius:10px;margin-bottom:14px"></div>
       <div class="kicker">Pour dirigeant(e)s &amp; professions libérales</div>
       <h1 class="h1"><span id="greet">Bonjour.</span><br><em id="heroline">Tout part de votre entreprise.</em></h1>
       <p class="lede">Saisissez votre SIREN. Marcel cartographie votre structure — <b>société ou activité libérale</b> — et repère en quelques secondes les leviers patrimoniaux qui vous concernent.</p>
@@ -435,6 +436,7 @@ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/config')
     if(c.tagline){ var t=document.querySelector('.tag'); if(t) t.textContent=c.tagline; }
     if(c.hero){ var hl=document.getElementById('heroline'); if(hl) hl.textContent=c.hero; }
     if(c.premium_eur!=null){ document.querySelectorAll('[data-px]').forEach(function(el){ el.textContent=c.premium_eur; }); }
+    if(c.annonce_on && c.annonce){ var ab=document.getElementById('annonceBar'); if(ab){ ab.textContent='📣 '+c.annonce; ab.style.display='block'; } }
   })
   .catch(function(){});
 

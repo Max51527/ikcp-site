@@ -82,6 +82,18 @@ a.back{color:var(--mute);text-decoration:none;font-size:13px;margin-left:auto;bo
         </div>
       </div>
 
+      <div class="sec">Communication</div>
+      <div class="field">
+        <label>Bandeau d'annonce <span class="hint" style="display:inline">— message en haut de l'accueil app</span></label>
+        <input type="text" id="annonce" maxlength="120" placeholder="Ex. Bêta ouverte — 50 places fondatrices">
+      </div>
+      <div class="field">
+        <div class="toggle" id="annonceT" onclick="this.classList.toggle('on')">
+          <div class="sw"></div>
+          <div class="t"><b>Afficher le bandeau</b> — visible par tous sur l'accueil de l'app.</div>
+        </div>
+      </div>
+
       <div class="actions">
         <button class="btn" onclick="save()">💾 Enregistrer</button>
         <button class="btn ghost" onclick="load()">Recharger</button>
@@ -106,6 +118,7 @@ async function loadConfig(){
   var r=await fetch(API); var c=await r.json();          /* lecture publique */
   $('hero').value=c.hero||''; $('tagline').value=c.tagline||''; $('premium').value=(c.premium_eur!=null?c.premium_eur:59);
   $('gatingT').classList.toggle('on', c.gating_360_only!==false);
+  $('annonce').value=c.annonce||''; $('annonceT').classList.toggle('on', c.annonce_on===true);
 }
 function load(){ loadConfig(); }                          /* bouton "Recharger" */
 
@@ -116,7 +129,7 @@ async function init(){
 }
 
 async function save(){
-  var body={ hero:($('hero').value||'').trim(), tagline:($('tagline').value||'').trim(), premium_eur:Math.max(0,parseInt($('premium').value,10)||0), gating_360_only:$('gatingT').classList.contains('on') };
+  var body={ hero:($('hero').value||'').trim(), tagline:($('tagline').value||'').trim(), premium_eur:Math.max(0,parseInt($('premium').value,10)||0), gating_360_only:$('gatingT').classList.contains('on'), annonce:($('annonce').value||'').trim(), annonce_on:$('annonceT').classList.contains('on') };
   $('smsg').className='msg'; $('smsg').style.display='block'; $('smsg').style.color='var(--mute)'; $('smsg').textContent='Enregistrement…';
   try{
     var r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json','x-studio':'1','Authorization':'Bearer '+token()},credentials:'include',body:JSON.stringify(body)});
