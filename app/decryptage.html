@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Décryptage du mois — IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#3B7D5E;--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:linear-gradient(180deg,#FAF8F4,#F1E9DA);min-height:100vh;padding:clamp(14px,3.5vw,40px)}
+.wrap{max-width:780px;margin:0 auto}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.mk{width:36px;height:36px;border-radius:10px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold-b);font-size:15px}
+.kick{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(23px,4vw,34px);color:var(--navy);line-height:1.1}
+h1 em{font-style:italic;color:var(--gold-d)}
+.sub{color:var(--mute);font-size:14px;margin:6px 0 24px}
+a.back{margin-left:auto;color:var(--mute);text-decoration:none;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 12px}
+.feature{background:linear-gradient(160deg,var(--navy),var(--navy2));color:var(--cream);border-radius:18px;padding:clamp(20px,4vw,34px);position:relative;overflow:hidden;box-shadow:0 24px 50px -30px rgba(27,42,74,.7)}
+.feature::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.22),transparent 70%)}
+.feature .badge{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-b);border:1px solid rgba(201,169,110,.4);border-radius:99px;padding:4px 12px;margin-bottom:14px}
+.feature h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,3.6vw,30px);margin-bottom:4px}
+.feature .tease{color:rgba(250,248,244,.7);font-size:15px;font-style:italic;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.blk{background:rgba(255,255,255,.05);border:1px solid rgba(201,169,110,.18);border-radius:12px;padding:14px 16px}
+.blk .h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-b);font-weight:700;margin-bottom:6px}
+.blk p{font-size:13.5px;line-height:1.55;color:rgba(250,248,244,.9)}
+.aa{display:flex;gap:10px;margin-bottom:18px}
+.aa .c{flex:1;border-radius:12px;padding:14px 16px}
+.aa .av{background:rgba(192,65,76,.12);border:1px solid rgba(192,65,76,.3)}
+.aa .ap{background:rgba(59,125,94,.14);border:1px solid rgba(59,125,94,.35)}
+.aa .lab{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+.aa .av .lab{color:#E89A93}.aa .ap .lab{color:#7FD0A8}
+.aa p{font-size:13px;line-height:1.5;color:rgba(250,248,244,.92)}
+.pieges{list-style:none;margin-bottom:18px}
+.pieges li{display:flex;gap:9px;font-size:13.5px;color:rgba(250,248,244,.88);padding:5px 0;line-height:1.45}
+.pieges li::before{content:'⚠';color:var(--gold-b);flex:none}
+.q{background:rgba(201,169,110,.12);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 18px;font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold-b);margin-bottom:20px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:11px;font-size:14.5px}
+.disc{font-size:11px;color:rgba(250,248,244,.5);line-height:1.5;margin-top:16px;border-top:1px solid rgba(201,169,110,.15);padding-top:12px}
+.lib-h{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy);margin:32px 0 14px}
+.lib{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.lib{grid-template-columns:1fr}}
+.tile{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px 18px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left;font-family:inherit}
+.tile:hover{transform:translateY(-2px);box-shadow:0 14px 30px -22px rgba(27,42,74,.5)}
+.tile .t{font-family:'Playfair Display',serif;font-weight:600;font-size:16px;color:var(--navy)}
+.tile .d{font-size:12.5px;color:var(--mute);margin-top:3px}
+.tile.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.foot{text-align:center;font-size:11px;color:var(--mute);margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="mk">IK</div>
+    <div><div class="kick">Rendez-vous mensuel</div></div>
+    <a class="back" href="/app/home">← L'app</a>
+  </div>
+  <h1>Le <em>Décryptage</em> du mois</h1>
+  <p class="sub">Chaque mois, une classe d'actifs décryptée — pour comprendre, pas pour vendre. Vous décidez ; nous éclairons.</p>
+
+  <div class="feature" id="feature"><!-- rendu JS --></div>
+
+  <div class="lib-h">Tous les décryptages</div>
+  <div class="lib" id="lib"></div>
+
+  <div class="foot">IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · Contenu éditorial indépendant, sans rémunération de tiers.</div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+const RDV='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial';
+const DISC="Information à caractère pédagogique — ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Tout investissement comporte un risque de perte en capital ; les performances passées ne préjugent pas des performances futures. Pour une stratégie adaptée à votre situation : lettre de mission.";
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const THEMES=[
+  { t:'Le compte courant d’associé', d:'L’argent que vous avez prêté à votre société',
+    pour:'Dirigeant qui a injecté de la trésorerie perso dans sa société et l’a oubliée au bilan.',
+    pas:'Société sans trésorerie disponible pour rembourser (ça fragiliserait l’exploitation).',
+    av:'80 000 € de compte courant qui dorment, non rémunérés, invisibles dans votre stratégie.',
+    ap:'remboursement sans fiscalité (ce n’est pas un revenu), rémunération possible, ou intégration à votre plan global.',
+    pieges:['Le remboursement dépend de la trésorerie réelle de la société','Une convention écrite et un taux de marché sont nécessaires si rémunération','À coordonner avec la transmission de la société'],
+    q:'Savez-vous précisément combien votre société vous doit aujourd’hui — et ce que vous pourriez en faire ?' },
+
+  { t:'Les SCPI de rendement', d:'L’immobilier locatif, sans la gestion',
+    pour:'Vous cherchez des revenus complémentaires réguliers sans gérer de locataires ni de travaux.',
+    pas:'Vous aurez besoin du capital à court terme (l’immobilier est peu liquide).',
+    av:'100 000 € sur un compte rémunéré proche de 0 %, grignotés par l’inflation.',
+    ap:'la même somme exposée à un rendement immobilier visé de l’ordre de 4 à 5 % brut/an (non garanti, capital non garanti).',
+    pieges:['Frais d’entrée souvent élevés → horizon long (8 ans+)','Revenus fonciers imposés à votre tranche + prélèvements sociaux','Liquidité limitée : la revente peut prendre du temps'],
+    q:'Votre trésorerie dort-elle pendant que l’inflation en réduit la valeur chaque année ?' },
+
+  { t:'Le private equity', d:'Investir dans l’économie réelle non cotée',
+    pour:'Dirigeant qui comprend le risque entrepreneurial et veut diversifier hors des marchés cotés.',
+    pas:'Vous voulez pouvoir récupérer votre argent rapidement.',
+    av:'une épargne 100 % exposée aux marchés cotés, volatile et corrélée.',
+    ap:'une poche investie dans des PME/ETI non cotées, décorrélée, avec un potentiel de rendement supérieur — en contrepartie d’un blocage de 8 à 10 ans.',
+    pieges:['Illiquidité longue : capital bloqué plusieurs années','Risque de perte en capital réel, sélection clé','Certains dispositifs ouvrent un avantage fiscal sous conditions'],
+    q:'Quelle part de votre patrimoine pouvez-vous immobiliser longtemps en échange d’un potentiel supérieur ?' },
+
+  { t:'La nue-propriété', d:'Acheter un bien avec une forte décote',
+    pour:'Vous n’avez pas besoin de revenus immédiats et voulez préparer l’avenir avec une décote.',
+    pas:'Vous cherchez un rendement locatif tout de suite.',
+    av:'acheter un bien en pleine propriété, donc 100 % du prix et une fiscalité (IFI, revenus) immédiate.',
+    ap:'acheter la seule nue-propriété avec une décote (souvent 30-40 %) : hors assiette IFI, sans fiscalité sur des loyers que vous ne percevez pas — puis récupérer la pleine propriété au terme, sans frais.',
+    pieges:['Aucun revenu pendant la durée du démembrement','Récupération de la pleine propriété au terme seulement','Qualité de l’usufruitier et de l’emplacement déterminantes'],
+    q:'Préparer un capital futur avec une décote immédiate : est-ce cohérent avec votre horizon ?' },
+
+  { t:'Le PER', d:'Préparer la retraite en baissant l’impôt aujourd’hui',
+    pour:'Dirigeant fortement imposé qui veut se constituer un complément retraite.',
+    pas:'Vous aurez besoin de l’épargne avant la retraite (sauf cas de déblocage prévus).',
+    av:'10 000 € versés sur un placement classique, sans effet sur votre impôt.',
+    ap:'10 000 € versés sur un PER : déductibles de votre revenu imposable, soit jusqu’à ~4 100 € d’impôt en moins si vous êtes à 41 % (selon plafonds).',
+    pieges:['Épargne bloquée jusqu’à la retraite (hors cas de déblocage)','La sortie est imposable : l’avantage se "reporte" dans le temps','À calibrer selon votre tranche actuelle vs future'],
+    q:'À quelle tranche d’imposition êtes-vous aujourd’hui — et quel sera votre besoin à la retraite ?' },
+
+  { t:'L’assurance-vie', d:'L’enveloppe couteau-suisse du patrimoine',
+    pour:'Tout le monde, ou presque : épargne souple, transmission, gestion dans le temps.',
+    pas:'Vous cherchez un rendement garanti élevé (le fonds euros reste prudent).',
+    av:'des liquidités sur un livret plafonné, sans cadre de transmission optimisé.',
+    ap:'un contrat qui combine disponibilité, diversification (euros + unités de compte) et un cadre de transmission avantageux (abattements spécifiques hors succession).',
+    pieges:['Les unités de compte comportent un risque de perte en capital','Frais variables selon les contrats → comparer','La clause bénéficiaire se rédige avec soin'],
+    q:'Votre clause bénéficiaire reflète-t-elle vraiment vos volontés actuelles ?' },
+];
+
+function render(i){
+  const x=THEMES[i];
+  document.getElementById('feature').innerHTML =
+    '<span class="badge">À la une ce mois-ci</span>'+
+    '<h2>'+esc(x.t)+'</h2><div class="tease">'+esc(x.d)+'</div>'+
+    '<div class="grid">'+
+      '<div class="blk"><div class="h">Pour qui</div><p>'+esc(x.pour)+'</p></div>'+
+      '<div class="blk"><div class="h">Pas pour qui</div><p>'+esc(x.pas)+'</p></div>'+
+    '</div>'+
+    '<div class="aa">'+
+      '<div class="c av"><div class="lab">Avant</div><p>'+esc(x.av)+'</p></div>'+
+      '<div class="c ap"><div class="lab">Après</div><p>'+esc(x.ap)+'</p></div>'+
+    '</div>'+
+    '<ul class="pieges">'+x.pieges.map(p=>'<li>'+esc(p)+'</li>').join('')+'</ul>'+
+    '<div class="q">'+esc(x.q)+'</div>'+
+    '<div class="cta"><a class="btn" href="'+RDV+'" target="_blank" rel="noopener">Échanger avec Maxime →</a>'+
+      '<span style="font-size:12.5px;color:rgba(250,248,244,.6)">Pour savoir si c’est adapté à <b style="color:var(--gold-b)">votre</b> situation.</span></div>'+
+    '<div class="disc">'+esc(DISC)+'</div>';
+  document.querySelectorAll('.tile').forEach((t,k)=>t.classList.toggle('on',k===i));
+  try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(_){}
+}
+document.getElementById('lib').innerHTML = THEMES.map((x,i)=>
+  '<button class="tile" onclick="render('+i+')"><div class="t">'+esc(x.t)+'</div><div class="d">'+esc(x.d)+'</div></button>').join('');
+// thème du mois = rotation par mois courant
+render((new Date().getMonth()) % THEMES.length);
+</script>
+</body>
+</html>
