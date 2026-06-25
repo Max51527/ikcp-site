@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel · Tour de contrôle</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#1E9E63;--green-bg:rgba(30,158,99,.1);--red:#C0414C;--red-bg:rgba(192,65,76,.1);--amber:#B8860B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 14px}
+.brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.brand .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.brand .ia{font-size:10px;font-weight:700;background:var(--gold);color:#20180c;padding:2px 6px;border-radius:5px}
+.back{font-size:13px;color:var(--mute);text-decoration:none}
+.lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(24px,5vw,32px);color:var(--navy);margin:6px 0 14px}
+/* bandeau statut */
+.banner{border-radius:16px;padding:20px 22px;display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.banner.ok{background:var(--green-bg);border:1px solid rgba(30,158,99,.3)}
+.banner.ko{background:var(--red-bg);border:1px solid rgba(192,65,76,.3)}
+.banner .dot{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:22px}
+.banner.ok .dot{background:var(--green);color:#fff}.banner.ko .dot{background:var(--red);color:#fff}
+.banner .bt{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.banner .bs{font-size:13px;color:var(--mute)}
+.pulse{position:relative}.pulse::after{content:'';position:absolute;inset:0;border-radius:50%;animation:pl 2s ease-out infinite}
+.banner.ok .pulse::after{box-shadow:0 0 0 0 rgba(30,158,99,.5)}
+@keyframes pl{to{box-shadow:0 0 0 14px rgba(30,158,99,0)}}
+h2{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-d);font-weight:700;margin:22px 0 10px}
+.sys{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .s{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.s.up{background:var(--green)}.s.down{background:var(--red)}
+.row .n{flex:1;font-weight:500;color:var(--navy);font-size:15px}
+.row .ms{font-size:12.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+.row .st{font-size:11px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+.st.up{background:var(--green-bg);color:var(--green)}.st.down{background:var(--red-bg);color:var(--red)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px}
+.kpi .k{font-size:12px;color:var(--mute)}
+.kpi .v{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:600;margin-top:2px}
+.kpi .sub{font-size:11px;color:var(--mute);margin-top:1px}
+.info{background:var(--cream2);border:1px solid var(--line);border-radius:13px;padding:14px 16px;font-size:13px;color:var(--mute);margin-top:16px;line-height:1.6}
+.info b{color:var(--navy)}
+.bar{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.refresh{font-size:12px;color:var(--mute)}
+.btn{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:9px;padding:7px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.gate{display:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;text-align:center;color:var(--mute)}
+.gate a{color:var(--gold-d);font-weight:600}
+#busy{text-align:center;padding:30px;color:var(--mute)}
+.spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 12px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/app/gestion.html"><span class="nm">Marcel</span><span class="ia">IA</span></a>
+    <a class="back" href="/app/gestion.html">← Gestion</a>
+  </header>
+  <div class="lbl">Tour de contrôle · propriétaire</div>
+  <h1>État de l'application en direct</h1>
+  <div class="bar"><span class="refresh" id="upd">Connexion…</span><button class="btn" onclick="load()">↻ Rafraîchir</button></div>
+
+  <div id="busy"><div class="spin"></div>Vérification des systèmes…</div>
+  <div class="gate" id="gate">🔒 Réservé au compte propriétaire. <a href="/app/">Se connecter</a> avec votre email autorisé, puis revenez ici.</div>
+  <div id="body" style="display:none">
+    <div class="banner" id="banner"></div>
+    <h2>Systèmes</h2>
+    <div class="sys" id="sys"></div>
+    <h2>Données clients</h2>
+    <div class="grid" id="kpis"></div>
+    <div class="info" id="foot"></div>
+  </div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+var API='https://ikcp-patrimoine.maxime-ead.workers.dev/control';
+var busy=document.getElementById('busy'),gate=document.getElementById('gate'),body=document.getElementById('body');
+function tok(){try{return localStorage.getItem('ikcp_token')||'';}catch(_){return '';}}
+function ago(s){ if(!s)return '—'; try{var d=new Date(s.replace(' ','T')+'Z'),m=Math.round((Date.now()-d.getTime())/60000); if(m<1)return 'à l\'instant'; if(m<60)return 'il y a '+m+' min'; var h=Math.round(m/60); if(h<24)return 'il y a '+h+' h'; return 'il y a '+Math.round(h/24)+' j';}catch(_){return s;} }
+async function load(){
+  var t=tok();
+  if(!t){ busy.style.display='none'; body.style.display='none'; gate.style.display='block'; return; }
+  try{
+    var r=await fetch(API,{headers:{'Authorization':'Bearer '+t}});
+    if(r.status===401){ busy.style.display='none'; body.style.display='none'; gate.style.display='block'; return; }
+    var d=await r.json();
+    if(!r.ok||!d.ok) throw new Error('échec');
+    render(d); busy.style.display='none'; gate.style.display='none'; body.style.display='block';
+  }catch(e){ busy.style.display='none'; document.getElementById('upd').textContent='Erreur de connexion — réessayez.'; }
+}
+function render(d){
+  var allOk=d.sante&&d.sante.tous_ok;
+  var b=document.getElementById('banner');
+  b.className='banner '+(allOk?'ok':'ko');
+  b.innerHTML='<div class="dot '+(allOk?'pulse':'')+'">'+(allOk?'✓':'!')+'</div>'+
+    '<div><div class="bt">'+(allOk?'Tous systèmes opérationnels':((d.sante.up)+' / '+(d.sante.total)+' systèmes actifs'))+'</div>'+
+    '<div class="bs">'+(allOk?'L\'application est pleinement fonctionnelle et prête pour vos testeurs.':'Un ou plusieurs services nécessitent votre attention (voir ci-dessous).')+'</div></div>';
+  var sys=document.getElementById('sys');
+  sys.innerHTML=(d.systems||[]).map(function(s){
+    return '<div class="row"><span class="s '+(s.ok?'up':'down')+'"></span><span class="n">'+s.name+'</span>'+
+      (s.ms?'<span class="ms">'+s.ms+' ms</span>':'')+
+      '<span class="st '+(s.ok?'up':'down')+'">'+(s.ok?'En ligne':'Hors ligne')+'</span></div>';
+  }).join('');
+  var dt=d.data||{};
+  document.getElementById('kpis').innerHTML=
+    kpi('Coffres clients',dt.coffres,'patrimoines enregistrés')+
+    kpi('Utilisateurs actifs',dt.actifs,'ont utilisé l\'app')+
+    kpi('Actions totales',dt.evenements,'depuis le lancement')+
+    kpi('Aujourd\'hui',dt.aujourdhui,'actions (24 h)');
+  document.getElementById('foot').innerHTML=
+    '🗄️ <b>Base de données</b> : '+(d.config&&d.config.d1?'connectée (Paris 🇫🇷)':'⚠️ injoignable')+' · dernière activité '+ago(dt.dernier)+'.<br>'+
+    '🧠 <b>Moteur IA souverain</b> : '+(d.config&&d.config.mistral?'configuré ✅':'⚠️ clé manquante')+'.<br>'+
+    '💾 <b>Sauvegarde</b> : export quotidien OneDrive (7h30) + restauration Cloudflare 30 jours.<br>'+
+    '🔒 <b>Souverain</b> : données à Paris, zéro service US sur la donnée client.';
+  document.getElementById('upd').textContent='Mis à jour '+(new Date().toLocaleTimeString('fr-FR').slice(0,5))+' · auto toutes les 30 s';
+}
+function kpi(k,v,sub){ return '<div class="kpi"><div class="k">'+k+'</div><div class="v">'+(v==null?'—':v)+'</div><div class="sub">'+sub+'</div></div>'; }
+load(); setInterval(load,30000);
+</script>
+</body>
+</html>

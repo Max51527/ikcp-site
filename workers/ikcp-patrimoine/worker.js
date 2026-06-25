@@ -443,6 +443,58 @@ export default {
       } catch (e) { console.error('[agent improve]', e.message); return json({ error: 'server_error' }, 500, o); }
     }
 
+    // ── GET /control : tour de contrôle — santé systèmes (ping server-side, zéro CORS) + data client. PROPRIÉTAIRE. ──
+    if (url.pathname === '/control' && req.method === 'GET') {
+      const OWNER_HASHES = [
+        'c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3',
+        'cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030',
+        'd4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543',
+      ];
+      let authed = false;
+      const auth = req.headers.get('Authorization') || '';
+      if (auth.startsWith('Bearer ')) {
+        try {
+          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          if (me.ok) { const u = await me.json(); if (u && u.email) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(u.email).trim().toLowerCase()));
+            const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+            if (OWNER_HASHES.includes(hex)) authed = true;
+          } }
+        } catch (_) {}
+      }
+      if (!authed) return json({ error: 'unauthorized', hint: 'Connectez-vous avec votre email propriétaire.' }, 401, o);
+      const SYS = [
+        ['Marcel (conversation)', 'https://ikcp-chat.maxime-ead.workers.dev/health'],
+        ['Cartographie société', 'https://ikcp-pappers.maxime-ead.workers.dev/health'],
+        ['Comptes & connexion', 'https://ikcp-client.maxime-ead.workers.dev/health'],
+        ['Voix souveraine', 'https://ikcp-voice.maxime-ead.workers.dev/health'],
+        ['Expert fiscal (Codex)', 'https://ikcp-codex.maxime-ead.workers.dev/health'],
+        ['Transmission (Hermès)', 'https://ikcp-hermes.maxime-ead.workers.dev/health'],
+        ['Journal MIF II (Témoin)', 'https://ikcp-temoin.maxime-ead.workers.dev/health'],
+      ];
+      async function ping(name, u) {
+        const t0 = Date.now();
+        try {
+          const c = new AbortController(); const id = setTimeout(() => c.abort(), 6000);
+          const r = await fetch(u, { signal: c.signal }); clearTimeout(id);
+          return { name, ok: r.ok, status: r.status, ms: Date.now() - t0 };
+        } catch (e) { return { name, ok: false, status: 0, ms: Date.now() - t0 }; }
+      }
+      const systems = await Promise.all(SYS.map(s => ping(s[0], s[1])));
+      systems.unshift({ name: 'Patrimoine & coffre données', ok: true, status: 200, ms: 0 });
+      let data = { coffres: 0, evenements: 0, actifs: 0, aujourdhui: 0, dernier: null, d1: false };
+      try { const c = await db.prepare("SELECT COUNT(*) n FROM app_state").first(); data.coffres = (c && c.n) || 0; data.d1 = true; } catch (_) {}
+      try {
+        const tot = await db.prepare("SELECT COUNT(*) n, COUNT(DISTINCT email) u, MAX(created_at) last FROM beta_events").first();
+        if (tot) { data.evenements = tot.n || 0; data.actifs = tot.u || 0; data.dernier = tot.last || null; }
+        const today = await db.prepare("SELECT COUNT(*) n FROM beta_events WHERE created_at > datetime('now','-1 day')").first();
+        data.aujourdhui = (today && today.n) || 0;
+      } catch (_) {}
+      const up = systems.filter(s => s.ok).length;
+      return json({ ok: true, sante: { up, total: systems.length, tous_ok: up === systems.length }, systems, data,
+        config: { mistral: !!env.MISTRAL_API_KEY, d1: data.d1 }, ts: new Date().toISOString() }, 200, o);
+    }
+
     // ── POST /opportunites/preview : moteur SANS persistance (marche sans D1) ──
     // Le cockpit envoie les données du membre dans le corps ; on renvoie les pistes.
     // Stateless = rien n'est stocké (RGPD : la donnée ne quitte pas l'appel).
