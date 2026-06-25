@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IKCP — le cabinet humain derrière l'intelligence patrimoniale</title>
+<meta name="description" content="IKCP — IKIGAÏ Conseil Patrimonial : cabinet indépendant de conseil en gestion de patrimoine (ORIAS 23001568). L'humain et le conseil sur-mesure derrière Marcel. Lyon · Annonay · Megève.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#3B7D5E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 clamp(16px,4vw,28px)}
+header{position:sticky;top:0;z-index:30;background:rgba(250,248,244,.9);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{font-family:'Playfair Display',serif;font-weight:600;font-size:22px;color:var(--navy);text-decoration:none}
+.brand b{color:var(--gold-d)}
+.hd nav{display:flex;gap:18px;align-items:center}
+.hd nav a{font-size:14px;font-weight:600;color:var(--navy);text-decoration:none}
+.hd .cta{background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;padding:9px 16px;border-radius:10px}
+@media(max-width:640px){.hd nav a.txt{display:none}}
+.hero{text-align:center;padding:clamp(44px,8vw,82px) 0 clamp(28px,5vw,44px)}
+.kick{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700;margin-bottom:14px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(28px,5.5vw,46px);color:var(--navy);line-height:1.08;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lede{max-width:640px;margin:18px auto 0;font-size:clamp(15px,2.2vw,18px);color:var(--mute)}
+.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;padding:13px 24px;font-size:15px;cursor:pointer;border:0}
+.btn.gold{background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c}
+.btn.navy{background:var(--navy);color:var(--cream)}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+section.blk{padding:clamp(38px,7vw,64px) 0;border-top:1px solid var(--line)}
+.h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,3.6vw,30px);color:var(--navy)}
+.h2.c{text-align:center}
+.h2 em{font-style:italic;color:var(--gold-d)}
+.sst{color:var(--mute);font-size:14.5px;max-width:620px;margin:8px auto 0}
+.sst.c{text-align:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+@media(max-width:720px){.grid3{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px}
+.card .e{font-size:24px}.card h3{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;color:var(--navy);margin:10px 0 5px}.card p{font-size:13.5px;color:var(--mute);line-height:1.55}
+/* démo SIREN */
+.demo{background:linear-gradient(160deg,var(--navy),var(--navy2));color:var(--cream);border-radius:20px;padding:clamp(24px,5vw,44px);margin-top:8px}
+.demo .h2{color:var(--cream)}.demo .sst{color:rgba(250,248,244,.7)}
+.siren{display:flex;gap:10px;max-width:460px;margin:22px auto 0;flex-wrap:wrap;justify-content:center}
+.siren input{flex:1;min-width:200px;background:rgba(255,255,255,.07);border:1px solid rgba(201,169,110,.35);border-radius:11px;padding:13px 15px;color:#fff;font:inherit;font-size:15px;outline:none}
+.siren input::placeholder{color:rgba(250,248,244,.45)}
+.siren button{background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;font-weight:700;border:0;border-radius:11px;padding:13px 22px;cursor:pointer}
+.res{max-width:520px;margin:20px auto 0;background:rgba(255,255,255,.05);border:1px solid rgba(201,169,110,.2);border-radius:14px;padding:20px;display:none;text-align:left}
+.res.show{display:block}
+.res .nm{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold-b);font-weight:600}
+.res .row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px}
+.res .row span{color:rgba(250,248,244,.6)}.res .row b{color:#fff;font-weight:600;text-align:right}
+.res .cta{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.demo .hint{font-size:11.5px;color:rgba(250,248,244,.5);text-align:center;margin-top:12px}
+.offre-list{list-style:none;margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.offre-list{grid-template-columns:1fr}}
+.offre-list li{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:14px 16px}
+.offre-list .t{font-weight:700;color:var(--navy)}.offre-list .d{font-size:13px;color:var(--mute);margin-top:2px}
+.final{text-align:center;background:var(--cream2);border:1px solid var(--line);border-radius:20px;padding:clamp(28px,5vw,48px);margin:clamp(28px,5vw,48px) 0}
+.final h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,3.6vw,28px);color:var(--navy)}
+.final p{color:var(--mute);margin:8px 0 20px}
+.final .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12px;color:var(--mute);line-height:1.7}
+.disc{max-width:760px;margin:0 auto 12px;font-size:11px;color:var(--mute)}
+</style>
+</head>
+<body>
+<header><div class="wrap hd">
+  <a class="brand" href="/">IKCP<b>.</b></a>
+  <nav>
+    <a class="txt" href="/family-office">Marcel IA</a>
+    <a class="txt" href="/tarifs">Tarifs</a>
+    <a href="mailto:maxime@ikcp.fr">Contact</a>
+    <a class="cta" href="https://calendly.com/ikcp-maxime">Échanger</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kick">IKCP · IKIGAÏ Conseil Patrimonial</div>
+    <h1>Derrière l'intelligence, <em>un cabinet humain</em>.</h1>
+    <p class="lede">Marcel est l'outil. IKCP est le cabinet : un conseiller en gestion de patrimoine <b>indépendant</b>, qui transforme une analyse en <b>stratégie sur-mesure</b>, formalisée et engageante.</p>
+  </section>
+
+  <section class="blk">
+    <div class="h2 c">Un cabinet <em>indépendant</em></div>
+    <p class="sst c">Pas un réseau, pas une banque : un conseil aligné sur vos seuls intérêts.</p>
+    <div class="grid3">
+      <div class="card"><div class="e">🛡️</div><h3>Indépendant</h3><p>Aucun lien capitalistique avec un assureur ou une banque. Le conseil sert vos objectifs, pas des quotas de vente.</p></div>
+      <div class="card"><div class="e">📜</div><h3>Cadré</h3><p>Conseil en investissement (statut CIF). Toute recommandation personnalisée passe par une lettre de mission — c'est votre garantie (art. L.541-1).</p></div>
+      <div class="card"><div class="e">🤝</div><h3>Humain</h3><p>L'IA éclaire, l'humain décide avec vous. Un interlocuteur qui connaît votre réalité de dirigeant ou d'indépendant.</p></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="demo">
+      <div class="h2 c">Votre société, <em>en un instant</em></div>
+      <p class="sst c">Saisissez votre SIREN — la cartographie officielle s'affiche en direct. C'est le point de départ de toute analyse IKCP.</p>
+      <div class="siren">
+        <input id="siren" type="text" inputmode="numeric" maxlength="11" placeholder="SIREN (9 chiffres)" aria-label="SIREN">
+        <button onclick="lookup()">Cartographier</button>
+      </div>
+      <div class="res" id="res"></div>
+      <div class="hint" id="hint">Exemple : 552032534 (Danone). Données : registre officiel, hébergement France.</div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="h2 c">Le conseil <em>sur-mesure</em></div>
+    <p class="sst c">Quand vous voulez aller au-delà de l'outil : un accompagnement formalisé, à votre situation.</p>
+    <ul class="offre-list">
+      <li><div class="t">Bilan patrimonial approfondi</div><div class="d">Diagnostic complet société + privé, sur lettre de mission.</div></li>
+      <li><div class="t">Consultation dédiée — 150 €</div><div class="d">Une question patrimoniale traitée par un humain, sur demande.</div></li>
+      <li><div class="t">Stratégie de placements (CIF)</div><div class="d">Allocation et sélection via DER + lettre de mission + rapport d'adéquation.</div></li>
+      <li><div class="t">Transmission &amp; cession</div><div class="d">Dutreil, apport-cession, donation — préparées et chiffrées.</div></li>
+    </ul>
+  </section>
+
+  <div class="final">
+    <h2>Parlons de votre situation.</h2>
+    <p>Commencez gratuitement avec Marcel, ou échangez directement avec le cabinet.</p>
+    <div class="btns">
+      <a class="btn gold" href="/creer-mon-compte">Essayer Marcel (gratuit)</a>
+      <a class="btn navy" href="https://calendly.com/ikcp-maxime">Échanger avec le cabinet</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="disc">IKCP délivre du conseil en gestion de patrimoine. Toute recommandation personnalisée est formalisée par une lettre de mission (art. L.541-1 du Code monétaire et financier).</div>
+    <div><b>IKCP — IKIGAÏ Conseil Patrimonial</b> · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436</div>
+    <div>Lyon · Annonay · Megève · maxime@ikcp.fr · 06 67 53 79 79</div>
+  </div>
+</footer>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+var PAP='https://ikcp-pappers.maxime-ead.workers.dev';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function eur(c){ var n=(+c||0); return n? new Intl.NumberFormat('fr-FR').format(n)+' €' : '—'; }
+window.lookup = async function(){
+  var raw=(document.getElementById('siren').value||'').replace(/\s/g,'');
+  var res=document.getElementById('res'), hint=document.getElementById('hint');
+  if(!/^\d{9}$/.test(raw)){ hint.textContent='Entrez un SIREN valide (9 chiffres).'; return; }
+  res.className='res show'; res.innerHTML='<div class="nm">Cartographie en cours…</div>';
+  try{
+    var r=await fetch(PAP+'/entreprise/'+raw+'/short');
+    if(!r.ok){ res.innerHTML='<div class="nm">Société introuvable</div><div class="row"><span>Vérifiez le SIREN</span><b>'+esc(raw)+'</b></div>'; return; }
+    var d=await r.json();
+    var dir=d.dirigeant?((d.dirigeant.prenom||'')+' '+(d.dirigeant.nom||'')).trim():'';
+    res.innerHTML='<div class="nm">'+esc(d.nom||'Société')+'</div>'+
+      '<div class="row"><span>Forme juridique</span><b>'+esc(d.forme_juridique||'—')+'</b></div>'+
+      '<div class="row"><span>Capital</span><b>'+eur(d.capital)+'</b></div>'+
+      (d.siege?'<div class="row"><span>Siège</span><b>'+esc((d.siege.ville||'')+' '+(d.siege.code_postal||''))+'</b></div>':'')+
+      (dir?'<div class="row"><span>Dirigeant</span><b>'+esc(dir)+'</b></div>':'')+
+      '<div class="cta"><a class="btn gold" href="/creer-mon-compte">Analyser avec Marcel →</a><a class="btn ghost" href="https://calendly.com/ikcp-maxime">En parler</a></div>';
+  }catch(e){ res.innerHTML='<div class="nm">Service indisponible</div><div class="row"><span>Réessayez dans un instant</span><b></b></div>'; }
+};
+document.getElementById('siren').addEventListener('keydown',function(e){ if(e.key==='Enter') lookup(); });
+</script>
+</body>
+</html>
