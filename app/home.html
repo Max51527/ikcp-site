@@ -527,9 +527,14 @@ const API_VOICE='https://ikcp-voice.maxime-ead.workers.dev';
 function speak(el){
   try{
     var c=el.cloneNode(true); var b=c.querySelector('.speak'); if(b)b.remove();
-    var t=(c.innerText||c.textContent||'').trim(); if(!t)return;
-    speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(t); u.lang='fr-FR'; u.rate=1.03; speechSynthesis.speak(u);
+    var t=(c.innerText||c.textContent||'').trim(); if(!t)return; t=t.slice(0,1500);
+    try{ if(window.__ttsAudio){ window.__ttsAudio.pause(); } }catch(_){}
+    try{ speechSynthesis.cancel(); }catch(_){}
+    /* Voix souveraine (Cloudflare, FR) — repli sur la voix navigateur si indisponible */
+    fetch(API_VOICE+'/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})})
+      .then(function(r){ if(!r.ok) throw new Error('tts'); return r.blob(); })
+      .then(function(blob){ var a=new Audio(URL.createObjectURL(blob)); window.__ttsAudio=a; a.play(); })
+      .catch(function(){ try{ var u=new SpeechSynthesisUtterance(t); u.lang='fr-FR'; u.rate=1.03; speechSynthesis.speak(u); }catch(_){} });
   }catch(_){}
 }
 let MEDIA=null, CHUNKS=[];

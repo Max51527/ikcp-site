@@ -202,51 +202,41 @@ export default {
 
       const voiceId = voice || env.VOXCPM_VOICE || 'default';
 
-      if (!env.VOXCPM_API_URL) {
-        return json({
-          error: 'tts_provider_not_configured',
-          hint: 'Déployer VoxCPM2 via Modal.com (voir workers/ikcp-voice/deploy-voxcpm-modal.py), puis set VOXCPM_API_URL',
-          fallback_use_webspeech: true,
-        }, 503, origin);
-      }
-
-      // Cache KV par hash(text + voiceId)
-      const cacheKey = `tts:voxcpm:${voiceId}:${(await sha256Hex(text)).slice(0, 32)}`;
+      const ttl = parseInt(env.CACHE_TTL_HOURS, 10) * 3600 || 604800;
+      // Cache KV par hash(texte)
+      const cacheKey = `tts:sov:${(await sha256Hex(text)).slice(0, 32)}`;
       try {
         const cached = await env.VOICE_CACHE.get(cacheKey, 'arrayBuffer');
-        if (cached) {
-          return new Response(cached, {
-            status: 200,
-            headers: {
-              'Content-Type': 'audio/wav',
-              'X-Cache': 'HIT',
-              'X-Provider': 'voxcpm2',
-              'Cache-Control': 'private, max-age=604800',
-              ...corsHeaders(origin),
-            },
-          });
-        }
-      } catch (_) { /* cache miss continue */ }
+        if (cached) return new Response(cached, { status: 200, headers: { 'Content-Type': 'audio/wav', 'X-Cache': 'HIT', 'X-Provider': 'cf-melotts', 'Cache-Control': 'private, max-age=604800', ...corsHeaders(origin) } });
+      } catch (_) { /* cache miss → continue */ }
 
-      try {
-        const audioStream = await speakVoxCPM(env, text, voiceId);
-        const audioBuf = await new Response(audioStream).arrayBuffer();
-        const ttl = parseInt(env.CACHE_TTL_HOURS, 10) * 3600 || 604800;
-        try { await env.VOICE_CACHE.put(cacheKey, audioBuf, { expirationTtl: ttl }); } catch (_) {}
-
-        return new Response(audioBuf, {
-          status: 200,
-          headers: {
-            'Content-Type': 'audio/wav',
-            'X-Cache': 'MISS',
-            'X-Provider': 'voxcpm2',
-            'Cache-Control': 'private, max-age=604800',
-            ...corsHeaders(origin),
-          },
-        });
-      } catch (err) {
-        return json({ error: 'tts_failed', detail: err.message, fallback_use_webspeech: true }, 502, origin);
+      // Option premium (si un jour configurée) : VoxCPM via Modal — sinon on reste souverain Cloudflare
+      if (env.VOXCPM_API_URL) {
+        try {
+          const audioStream = await speakVoxCPM(env, text, voiceId);
+          const audioBuf = await new Response(audioStream).arrayBuffer();
+          try { await env.VOICE_CACHE.put(cacheKey, audioBuf, { expirationTtl: ttl }); } catch (_) {}
+          return new Response(audioBuf, { status: 200, headers: { 'Content-Type': 'audio/wav', 'X-Cache': 'MISS', 'X-Provider': 'voxcpm2', 'Cache-Control': 'private, max-age=604800', ...corsHeaders(origin) } });
+        } catch (_) { /* on bascule sur le souverain Cloudflare */ }
       }
+
+      // Souverain par défaut : Cloudflare Workers AI (MeloTTS, français, sur Cloudflare — zéro US, aucun secret)
+      if (env.AI) {
+        try {
+          let out;
+          for (const L of ['fr', 'FR', 'fr-FR']) { try { out = await env.AI.run('@cf/myshell-ai/melotts', { prompt: text, lang: L }); break; } catch (_) {} }
+          if (!out) out = await env.AI.run('@cf/myshell-ai/melotts', { prompt: text });
+          let b64 = out && out.audio ? String(out.audio) : '';
+          if (b64.indexOf('base64,') >= 0) b64 = b64.split('base64,')[1]; // tolère un préfixe data:
+          if (b64) {
+            const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+            try { await env.VOICE_CACHE.put(cacheKey, bin.buffer, { expirationTtl: ttl }); } catch (_) {}
+            return new Response(bin, { status: 200, headers: { 'Content-Type': 'audio/wav', 'X-Cache': 'MISS', 'X-Provider': 'cf-melotts', 'Cache-Control': 'private, max-age=604800', ...corsHeaders(origin) } });
+          }
+        } catch (err) { return json({ error: 'tts_failed', detail: String(err.message || err).slice(0, 160), fallback_use_webspeech: true }, 502, origin); }
+      }
+
+      return json({ error: 'tts_unavailable', fallback_use_webspeech: true }, 503, origin);
     }
 
     // ─── GET /voices ──────────────────────────────
