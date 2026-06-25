@@ -247,7 +247,7 @@ export default {
     const o = req.headers.get('Origin') || '';
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors(o) });
     const db = env.PATRIMOINE_DB;
-    const member = url.searchParams.get('user') || '';
+    let member = '';  // résolu via le JETON validé juste avant les routes membre (anti-IDOR) — jamais via l'URL
 
     if (url.pathname === '/health') {
       return json({ status: 'ok', service: 'ikcp-patrimoine', db: db ? 'bound' : 'absent', strategies: (STRATS.strategies || []).length, region: 'EU/FR' }, 200, o);
@@ -415,8 +415,18 @@ export default {
       catch (e) { return json({ error: 'ocr_failed', message: String(e.message || e).slice(0, 160) }, 502, o); }
     }
 
+    // ── Identité membre = JETON validé (zéro confiance dans l'URL → anti-IDOR) ──
+    {
+      const _auth = req.headers.get('Authorization') || '';
+      if (_auth.startsWith('Bearer ')) {
+        try {
+          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': _auth } });
+          if (me.ok) { const u = await me.json(); member = String((u && (u.id || u.email)) || ''); }
+        } catch (_) {}
+      }
+    }
     if (!db) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-patrimoine-db (--location weur), exécute schema.sql, bind PATRIMOINE_DB.' }, 503, o);
-    if (!member) return json({ error: 'missing_user' }, 400, o);
+    if (!member) return json({ error: 'auth_required', hint: 'Connectez-vous — un jeton membre valide est requis.' }, 401, o);
 
     // ── GET /patrimoine : la photo patrimoniale + bilan ──
     if (url.pathname === '/patrimoine' && req.method === 'GET') {
