@@ -455,6 +455,11 @@ export default {
         return json({ ok: true }, 200, o);
       } catch (e) { console.error('[state post]', e.message); return json({ error: 'save_failed' }, 500, o); }
     }
+    // ── DELETE /state : droit à l'effacement RGPD (art. 17) — supprime les données patrimoniales du membre ──
+    if (url.pathname === '/state' && req.method === 'DELETE') {
+      try { await db.prepare("DELETE FROM app_state WHERE member_id=?").bind(member).run(); return json({ ok: true, deleted: true }, 200, o); }
+      catch (e) { console.error('[state delete]', e.message); return json({ error: 'delete_failed' }, 500, o); }
+    }
 
     // ── POST /patrimoine : upsert des entités envoyées ──
     if (url.pathname === '/patrimoine' && req.method === 'POST') {

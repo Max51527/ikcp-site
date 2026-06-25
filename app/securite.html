@@ -411,6 +411,8 @@ try {
 window.exportData = async function(){
   try {
     const data = await Marcel.Me.exportRgpd();
+    // + données patrimoniales du membre (coffre /state, sécurisé par le jeton)
+    try { var _t=localStorage.getItem('ikcp_token')||''; if(_t){ var _r=await fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/state',{headers:{'Authorization':'Bearer '+_t}}); if(_r.ok){ data.patrimoine = (await _r.json()).data; } } } catch(_){}
     const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `marcel-export-rgpd-${new Date().toISOString().slice(0,10)}.json`; a.click();
@@ -422,6 +424,8 @@ window.exportData = async function(){
 window.deleteAccount = async function(){
   const ok = confirm('SUPPRIMER VOTRE COMPTE\n\nToutes vos données seront effacées définitivement :\n• Profil, conversations, collections, carnet\n• Documents R2, alertes, watches\n• Audit Témoin (hash SHA-256 archivé 10 ans obligation MIF II)\n\nAction IRRÉVERSIBLE. Continuer ?');
   if(!ok) return;
+  // efface aussi les données patrimoniales (coffre /state)
+  try { var _t=localStorage.getItem('ikcp_token')||''; if(_t){ await fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/state',{method:'DELETE',headers:{'Authorization':'Bearer '+_t}}).catch(function(){}); } } catch(_){}
   await Marcel.Me.deleteAccount();
   location.href = '/';
 }
