@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel · Photo de votre avis d'imposition</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 18px}
+.brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.brand .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.brand .ia{font-size:10px;font-weight:700;background:var(--gold);color:#20180c;padding:2px 6px;border-radius:5px}
+.back{font-size:13px;color:var(--mute);text-decoration:none}
+.lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,6vw,38px);color:var(--navy);line-height:1.08;margin:8px 0 10px}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lead{color:var(--mute);font-size:15px;margin-bottom:22px}
+.drop{border:2px dashed var(--line);border-radius:18px;background:#fff;padding:34px 20px;text-align:center;transition:border-color .2s,background .2s}
+.drop.hot{border-color:var(--gold);background:var(--cream2)}
+.drop .ic{font-size:40px}
+.drop h2{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy);margin:10px 0 4px}
+.drop p{color:var(--mute);font-size:13.5px}
+.btn{display:inline-block;border:0;cursor:pointer;text-decoration:none;font-weight:700;border-radius:12px;padding:13px 24px;font-size:15px;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;margin-top:16px}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--navy)}
+.note{font-size:12px;color:var(--mute);margin-top:16px;text-align:center;line-height:1.5}
+.note b{color:var(--navy)}
+#busy{display:none;text-align:center;padding:30px}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 14px;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+#res{display:none}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:18px}
+.card h3{font-family:'Playfair Display',serif;font-weight:600;font-size:19px;color:var(--navy);margin-bottom:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.kpi{background:var(--cream2);border-radius:12px;padding:14px}
+.kpi .k{font-size:12px;color:var(--mute)}
+.kpi .v{font-family:'Playfair Display',serif;font-size:24px;color:var(--navy);font-weight:600;margin-top:2px}
+.tmi{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--cream);border-radius:16px;padding:20px;margin-top:14px}
+.tmi .k{font-size:12px;color:var(--gold-b);letter-spacing:.1em;text-transform:uppercase}
+.tmi .v{font-family:'Playfair Display',serif;font-size:40px;font-weight:600;line-height:1}
+.tmi .d{font-size:13px;color:rgba(250,248,244,.75);margin-top:6px}
+.piste{border-left:3px solid var(--gold);padding:10px 0 10px 14px;margin-top:14px}
+.piste .t{font-weight:600;color:var(--navy)}
+.piste .x{font-size:14px;color:var(--mute);margin-top:3px}
+.disc{font-size:11.5px;color:var(--mute);line-height:1.55;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.err{display:none;background:#fff;border:1px solid var(--red);border-radius:14px;padding:18px;margin-top:16px;color:var(--red);font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/app/dashboard.html"><span class="nm">Marcel</span><span class="ia">IA</span></a>
+    <a class="back" href="/app/dashboard.html">← Retour</a>
+  </header>
+
+  <div class="lbl">Lecture instantanée · IA française souveraine</div>
+  <h1>Votre avis d'imposition, <em>lu en 10 secondes</em>.</h1>
+  <p class="lead">Prenez votre avis en photo (ou importez le PDF). Marcel en extrait vos chiffres clés et vous donne vos premières pistes de réflexion. Aucun champ à remplir.</p>
+
+  <div class="drop" id="drop">
+    <div class="ic">📸</div>
+    <h2>Photographier / importer</h2>
+    <p>Avis d'impôt sur le revenu · photo nette, bien cadrée</p>
+    <input id="file" type="file" accept="image/*" capture="environment" style="display:none">
+    <div><button class="btn" onclick="document.getElementById('file').click()">Choisir une photo</button></div>
+  </div>
+  <div class="note"><b>🔒 Confidentiel :</b> votre document n'est <b>jamais stocké</b>. Il transite chiffré vers l'IA souveraine (France) le temps de la lecture, puis disparaît.</div>
+
+  <div id="busy"><div class="spin"></div><div style="color:var(--mute)">Lecture de votre avis en cours…</div></div>
+  <div class="err" id="err"></div>
+  <div id="res"></div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+var OCR='https://ikcp-patrimoine.maxime-ead.workers.dev/ocr';
+var drop=document.getElementById('drop'),file=document.getElementById('file'),busy=document.getElementById('busy'),res=document.getElementById('res'),err=document.getElementById('err');
+function eur(n){return (n==null||isNaN(n))?'—':new Intl.NumberFormat('fr-FR').format(Math.round(n))+' €';}
+// Barème IR 2026 (LF 2026) — quotient familial
+function tmiDe(q){ if(q<=11600)return 0; if(q<=29579)return 11; if(q<=84577)return 30; if(q<=181917)return 41; return 45; }
+function pistesPour(tmi){
+  if(tmi>=41) return [
+    {t:'PER — déduction à votre tranche',x:'À '+tmi+'%, 10 000 € versés sur un PER réduisent votre impôt d\'environ '+eur(10000*tmi/100)+'. L\'enveloppe se débloque à la retraite ou pour la résidence principale.'},
+    {t:'Déficit foncier / démembrement',x:'Un investissement locatif avec travaux ou l\'acquisition de la nue-propriété peuvent gommer une partie de vos revenus fonciers et de votre base taxable.'}];
+  if(tmi==30) return [
+    {t:'PER — levier prioritaire',x:'À 30%, 10 000 € versés sur un PER réduisent votre impôt d\'environ '+eur(3000)+'. À comparer avec votre besoin d\'épargne disponible.'},
+    {t:'Arbitrage rémunération / dividendes',x:'Si vous êtes dirigeant, l\'équilibre salaire / dividendes influence directement votre tranche. Un calcul personnalisé peut révéler une marge.'}];
+  if(tmi==11) return [
+    {t:'PER : utile mais pas prioritaire',x:'À 11%, la déduction est modérée. D\'autres leviers (assurance-vie, épargne disponible) méritent d\'être pesés avant.'},
+    {t:'Optimiser l\'enveloppe assurance-vie',x:'À votre tranche, capitaliser sans frottement fiscal et préparer la transmission est souvent plus pertinent que de défiscaliser.'}];
+  return [
+    {t:'Vous n\'êtes pas (ou peu) imposable',x:'La défiscalisation n\'est pas votre priorité. Concentrez-vous sur la constitution et la structuration de votre patrimoine.'},
+    {t:'Préparer l\'avenir',x:'Assurance-vie, épargne de précaution, et si vous êtes dirigeant : structurer votre rémunération pour les années où vos revenus augmenteront.'}];
+}
+file.onchange=function(){ var f=file.files&&file.files[0]; if(!f)return; read(f); };
+['dragover','dragenter'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.add('hot');});});
+['dragleave','drop'].forEach(function(e){drop.addEventListener(e,function(ev){ev.preventDefault();drop.classList.remove('hot');});});
+drop.addEventListener('drop',function(ev){ var f=ev.dataTransfer.files&&ev.dataTransfer.files[0]; if(f)read(f); });
+function read(f){
+  err.style.display='none'; res.style.display='none';
+  if(f.size>8*1024*1024){ err.textContent='Image trop lourde (max 8 Mo). Reprenez une photo de meilleure qualité mais plus légère.'; err.style.display='block'; return; }
+  var fr=new FileReader();
+  fr.onload=function(){ send(fr.result,f.type); };
+  fr.onerror=function(){ err.textContent='Lecture du fichier impossible.'; err.style.display='block'; };
+  fr.readAsDataURL(f);
+}
+async function send(dataUrl,mime){
+  busy.style.display='block';
+  try{
+    var r=await fetch(OCR,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({file:dataUrl,mime:mime,type:'avis'})});
+    var d=await r.json();
+    busy.style.display='none';
+    if(!r.ok||!d.ocr){ throw new Error(d.message||'lecture échouée'); }
+    render(d);
+  }catch(e){ busy.style.display='none'; err.innerHTML='Lecture impossible : '+(e.message||'document illisible')+'.<br>Vérifiez que la photo est nette et bien cadrée, puis réessayez.'; err.style.display='block'; }
+}
+function render(d){
+  var ri=d.revenu_imposable, parts=d.parts||1, q=(ri&&parts)?ri/parts:null, tmi=q!=null?tmiDe(q):null;
+  var html='<div class="card"><h3>📄 Ce que Marcel a lu</h3><div class="grid">'+
+    '<div class="kpi"><div class="k">Revenu fiscal de référence</div><div class="v">'+eur(d.rfr)+'</div></div>'+
+    '<div class="kpi"><div class="k">Revenu net imposable</div><div class="v">'+eur(d.revenu_imposable)+'</div></div>'+
+    '<div class="kpi"><div class="k">Impôt sur le revenu</div><div class="v">'+eur(d.ir)+'</div></div>'+
+    '<div class="kpi"><div class="k">Nombre de parts</div><div class="v">'+(d.parts!=null?d.parts:'—')+'</div></div></div>';
+  if(tmi!=null){
+    html+='<div class="tmi"><div class="k">Votre tranche marginale (TMI) estimée</div><div class="v">'+tmi+'%</div>'+
+      '<div class="d">Quotient familial ≈ '+eur(q)+' / part. C\'est le taux qui s\'applique à votre prochain euro de revenu — et donc le levier de toute optimisation.</div></div>';
+    var ps=pistesPour(tmi);
+    html+='<div style="margin-top:16px"><div class="lbl">Vos premières pistes de réflexion</div>';
+    ps.forEach(function(p){ html+='<div class="piste"><div class="t">'+p.t+'</div><div class="x">'+p.x+'</div></div>'; });
+    html+='</div>';
+  } else {
+    html+='<div class="note" style="margin-top:14px">Marcel n\'a pas pu déduire votre tranche (revenu imposable ou parts illisibles). Reprenez la photo bien cadrée, ou posez directement la question à Marcel.</div>';
+  }
+  html+='<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="/app/">En parler avec Marcel →</a><a class="btn ghost" href="#" onclick="location.reload();return false">Importer un autre avis</a></div>';
+  html+='<div class="disc">Ces pistes sont des informations générales à caractère pédagogique et ne constituent pas un conseil en investissement ni une recommandation personnalisée au sens de l\'art. L.541-1 du Code monétaire et financier. Les montants sont des estimations issues d\'une lecture automatique : vérifiez-les. Quel objectif souhaitez-vous prioriser cette année ?</div></div>';
+  res.innerHTML=html; res.style.display='block';
+  res.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

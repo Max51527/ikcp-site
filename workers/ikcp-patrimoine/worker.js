@@ -220,12 +220,17 @@ async function ocrFinance(b, env) {
   const d1 = await r1.json();
   const text = (d1.pages || []).map(p => p.markdown || '').join('\n').slice(0, 12000);
   if (!text.trim()) throw new Error('document illisible');
-  // 2) Extraction des montants en JSON strict (Mistral small, souverain)
-  const sys = "Tu extrais des montants comptables EN EUROS depuis un bilan ou compte de résultat français. "
-    + "Réponds UNIQUEMENT par un objet JSON avec ces clés (entier en euros, sans espaces ni symbole ; null si absent) : "
-    + "ca (chiffre d'affaires), ebe (excédent brut d'exploitation), rn (résultat net), cp (capitaux propres), "
-    + "capital (capital social), dettes (dettes financières), treso (trésorerie/disponibilités), "
-    + "remu (rémunération du dirigeant), div (dividendes distribués).";
+  // 2) Extraction en JSON strict (Mistral small, souverain) — selon le type de document
+  const isAvis = b.type === 'avis';
+  const sys = isAvis
+    ? "Tu extrais des montants depuis un AVIS D'IMPÔT SUR LE REVENU français. Réponds UNIQUEMENT par un objet JSON (nombre, ou null si absent) : "
+      + "rfr (revenu fiscal de référence en euros), revenu_imposable (revenu net imposable en euros), ir (montant de l'impôt sur le revenu net en euros), "
+      + "parts (nombre de parts fiscales, ex 2 ou 2.5), nb_personnes (nombre de personnes du foyer)."
+    : "Tu extrais des montants comptables EN EUROS depuis un bilan ou compte de résultat français. "
+      + "Réponds UNIQUEMENT par un objet JSON avec ces clés (entier en euros, sans espaces ni symbole ; null si absent) : "
+      + "ca (chiffre d'affaires), ebe (excédent brut d'exploitation), rn (résultat net), cp (capitaux propres), "
+      + "capital (capital social), dettes (dettes financières), treso (trésorerie/disponibilités), "
+      + "remu (rémunération du dirigeant), div (dividendes distribués).";
   const r2 = await fetch('https://api.mistral.ai/v1/chat/completions', {
     method: 'POST', headers: { 'Authorization': 'Bearer ' + env.MISTRAL_API_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: 'mistral-small-latest', temperature: 0, response_format: { type: 'json_object' },
@@ -234,9 +239,10 @@ async function ocrFinance(b, env) {
   if (!r2.ok) throw new Error('extract ' + r2.status);
   const d2 = await r2.json();
   let parsed = {}; try { parsed = JSON.parse(((d2.choices || [])[0] || {}).message.content || '{}'); } catch (_) {}
-  const out = { ocr: true };
-  ['ca', 'ebe', 'rn', 'cp', 'capital', 'dettes', 'treso', 'remu', 'div'].forEach(k => {
-    const v = parsed[k]; out[k] = (v === null || v === undefined || isNaN(v)) ? null : Math.round(Number(v));
+  const keys = isAvis ? ['rfr', 'revenu_imposable', 'ir', 'parts', 'nb_personnes'] : ['ca', 'ebe', 'rn', 'cp', 'capital', 'dettes', 'treso', 'remu', 'div'];
+  const out = { ocr: true, type: isAvis ? 'avis' : 'bilan' };
+  keys.forEach(k => {
+    const v = parsed[k]; out[k] = (v === null || v === undefined || isNaN(v)) ? null : (k === 'parts' ? Number(v) : Math.round(Number(v)));
   });
   return out;
 }
