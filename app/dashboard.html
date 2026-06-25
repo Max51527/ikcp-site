@@ -26,8 +26,23 @@
   <div class="app-user">
     <span class="tier" id="userTier">Découverte</span>
     <div class="avatar" id="userAvatar">M</div>
-    <a href="/app/console" class="logout" id="adminLnk" style="text-decoration:none;display:none" title="Tour de contrôle (admin)">⚙ Console</a>
-    <script>try{ if(localStorage.getItem('ikcp_admin_secret')) document.getElementById('adminLnk').style.display=''; }catch(_){}</script>
+    <a href="/app/gestion" class="logout" id="adminLnk" style="text-decoration:none;display:none" title="Tour de contrôle (propriétaire)">⚙ Console</a>
+    <script>(function(){
+      // Raccourci Console révélé UNIQUEMENT pour la connexion propriétaire (email -> SHA-256 -> liste owner). Sinon invisible.
+      function show(){var el=document.getElementById('adminLnk');if(el)el.style.display='';}
+      try{ if(localStorage.getItem('ikcp_admin_secret')) show(); }catch(_){}
+      var OWN=['c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3','cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030','d4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543'];
+      try{ var t=localStorage.getItem('ikcp_token')||''; if(!t) return;
+        fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me',{headers:{'Authorization':'Bearer '+t}})
+          .then(function(r){return r.ok?r.json():null;})
+          .then(function(u){ if(!u||!u.email) return;
+            return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(u.email).trim().toLowerCase())).then(function(b){
+              var h=[].map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0');}).join('');
+              if(OWN.indexOf(h)>=0) show();
+            });
+          }).catch(function(){});
+      }catch(_){}
+    })();</script>
     <button class="logout" onclick="logout()">Déconnexion</button>
   </div>
 </header>
