@@ -389,6 +389,60 @@ export default {
       } catch (e) { console.error('[metrics]', e.message); return json({ error: 'server_error' }, 500, o); }
     }
 
+    // ── POST /agent/improve : agent d'amélioration continue de Marcel — réservé au PROPRIÉTAIRE ──
+    if (url.pathname === '/agent/improve' && req.method === 'POST') {
+      const OWNER_HASHES = [
+        'c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3',
+        'cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030',
+        'd4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543',
+      ];
+      let authed = false;
+      const auth = req.headers.get('Authorization') || '';
+      if (auth.startsWith('Bearer ')) {
+        try {
+          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          if (me.ok) { const u = await me.json(); if (u && u.email) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(u.email).trim().toLowerCase()));
+            const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+            if (OWNER_HASHES.includes(hex)) authed = true;
+          } }
+        } catch (_) {}
+      }
+      if (!authed) return json({ error: 'unauthorized', hint: 'Connectez-vous avec votre email propriétaire.' }, 401, o);
+      if (!env.MISTRAL_API_KEY) return json({ error: 'unconfigured', hint: 'pose MISTRAL_API_KEY' }, 503, o);
+      let body = {}; try { body = await req.json(); } catch (_) {}
+      let usage = { tools: [], recent: [], total: 0, users: 0 };
+      try {
+        usage.tools = (await db.prepare("SELECT tool, COUNT(*) n, MAX(created_at) last FROM beta_events GROUP BY tool ORDER BY n DESC").all()).results || [];
+        usage.recent = (await db.prepare("SELECT tool, action, label, created_at FROM beta_events ORDER BY id DESC LIMIT 40").all()).results || [];
+        const tot = await db.prepare("SELECT COUNT(*) n, COUNT(DISTINCT email) u FROM beta_events").first();
+        usage.total = (tot && tot.n) || 0; usage.users = (tot && tot.u) || 0;
+      } catch (_) {}
+      const sys = "Tu es l'agent d'amélioration continue de MARCEL, l'application patrimoniale à IA souveraine d'IKCP "
+        + "(cible : dirigeant(e)s d'entreprise et professions libérales en France ; offre = app + pédagogie + conseil via lettre de mission ; "
+        + "conformité MIF II : jamais de recommandation produit, toujours une question). "
+        + "On te fournit l'USAGE RÉEL de l'app et, éventuellement, des retours utilisateurs et des observations du fondateur. "
+        + "Mission : proposer des améliorations CONCRÈTES, actionnables et priorisées (produit, contenu, conformité, conversion, technique). "
+        + "Pas de généralités : chaque suggestion doit être spécifique à Marcel et exploitable rapidement. "
+        + "Réponds UNIQUEMENT en JSON : {\"synthese\":\"2-3 phrases\",\"suggestions\":[{\"titre\":\"...\",\"constat\":\"...\",\"action\":\"...\",\"categorie\":\"produit|contenu|conformite|conversion|technique\",\"impact\":\"fort|moyen|faible\",\"effort\":\"faible|moyen|eleve\",\"priorite\":1}]} "
+        + "avec 5 à 8 suggestions triées par priorité (1 = la plus prioritaire).";
+      const ctx = "USAGE RÉEL (table beta_events) :\n" + JSON.stringify(usage).slice(0, 6000)
+        + "\n\nRETOURS UTILISATEURS (optionnel) :\n" + String(body.feedback || '(aucun fourni)').slice(0, 4000)
+        + "\n\nOBSERVATIONS DU FONDATEUR (optionnel) :\n" + String(body.note || '(aucune)').slice(0, 2000);
+      try {
+        const r = await fetch('https://api.mistral.ai/v1/chat/completions', {
+          method: 'POST', headers: { 'Authorization': 'Bearer ' + env.MISTRAL_API_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: 'mistral-large-latest', temperature: 0.4, response_format: { type: 'json_object' },
+            messages: [{ role: 'system', content: sys }, { role: 'user', content: ctx }] }),
+        });
+        if (!r.ok) return json({ error: 'llm_failed', status: r.status }, 502, o);
+        const d = await r.json();
+        let parsed = {}; try { parsed = JSON.parse(((d.choices || [])[0] || {}).message.content || '{}'); } catch (_) {}
+        return json({ ok: true, synthese: parsed.synthese || '', suggestions: Array.isArray(parsed.suggestions) ? parsed.suggestions : [],
+          usage_summary: { total: usage.total, users: usage.users, tools: usage.tools.length }, ts: new Date().toISOString() }, 200, o);
+      } catch (e) { console.error('[agent improve]', e.message); return json({ error: 'server_error' }, 500, o); }
+    }
+
     // ── POST /opportunites/preview : moteur SANS persistance (marche sans D1) ──
     // Le cockpit envoie les données du membre dans le corps ; on renvoie les pistes.
     // Stateless = rien n'est stocké (RGPD : la donnée ne quitte pas l'appel).

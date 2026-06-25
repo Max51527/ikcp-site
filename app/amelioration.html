@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel · Agent d'amélioration</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#2E7D5B;--amber:#B8860B;--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 16px}
+.brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.brand .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.brand .ia{font-size:10px;font-weight:700;background:var(--gold);color:#20180c;padding:2px 6px;border-radius:5px}
+.back{font-size:13px;color:var(--mute);text-decoration:none}
+.lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(24px,5vw,34px);color:var(--navy);line-height:1.1;margin:8px 0 8px}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lead{color:var(--mute);font-size:14.5px;margin-bottom:18px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin:12px 0 5px}
+textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px;font:inherit;font-size:14px;resize:vertical;background:var(--cream)}
+.btn{display:inline-block;border:0;cursor:pointer;font-weight:700;border-radius:12px;padding:13px 26px;font-size:15px;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;margin-top:14px}
+.btn[disabled]{opacity:.5;cursor:default}
+#busy{display:none;text-align:center;padding:28px}
+.spin{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 12px;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+#out{display:none;margin-top:18px}
+.synth{background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--cream);border-radius:14px;padding:18px;font-size:15px}
+.synth .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-b)}
+.sug{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px;border-left:4px solid var(--gold)}
+.sug .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sug .p{font-family:'Playfair Display',serif;font-weight:600;font-size:15px;color:var(--gold-d)}
+.sug .t{font-weight:600;color:var(--navy);font-size:16px}
+.sug .c{font-size:14px;color:var(--mute);margin-top:6px}
+.sug .a{font-size:14px;color:var(--ink);margin-top:8px;padding:9px 12px;background:var(--cream2);border-radius:9px}
+.sug .a b{color:var(--navy)}
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+.b-cat{background:var(--cream2);color:var(--gold-d)}
+.b-fort{background:rgba(46,125,91,.14);color:var(--green)}.b-moyen{background:rgba(184,134,11,.14);color:var(--amber)}.b-faible{background:var(--cream2);color:var(--mute)}
+.eff{font-size:12px;color:var(--mute)}
+.err{display:none;background:#fff;border:1px solid var(--red);border-radius:12px;padding:16px;margin-top:14px;color:var(--red);font-size:14px}
+.meta{font-size:12px;color:var(--mute);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/app/gestion.html"><span class="nm">Marcel</span><span class="ia">IA</span></a>
+    <a class="back" href="/app/gestion.html">← Gestion</a>
+  </header>
+  <div class="lbl">Outil propriétaire · IA souveraine</div>
+  <h1>Agent d'<em>amélioration</em> de Marcel</h1>
+  <p class="lead">L'IA analyse l'usage réel de l'application (et vos retours) puis propose des améliorations concrètes, priorisées par impact et effort. Réservé à votre connexion propriétaire.</p>
+
+  <div class="panel">
+    <label for="fb">Retours utilisateurs récents <span style="font-weight:400;color:var(--mute)">(optionnel — collez ce que vous avez)</span></label>
+    <textarea id="fb" rows="3" placeholder="Ex : « le simulateur de donation est top mais je ne trouve pas comment enregistrer »…"></textarea>
+    <label for="nt">Vos observations <span style="font-weight:400;color:var(--mute)">(optionnel)</span></label>
+    <textarea id="nt" rows="2" placeholder="Ex : je veux préparer le lancement bêta LinkedIn, focus conversion…"></textarea>
+    <button class="btn" id="go" onclick="run()">⚡ Lancer l'analyse</button>
+  </div>
+
+  <div id="busy"><div class="spin"></div><div style="color:var(--mute)">L'agent analyse l'usage et formule ses recommandations…</div></div>
+  <div class="err" id="err"></div>
+  <div id="out"></div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script>
+var API='https://ikcp-patrimoine.maxime-ead.workers.dev/agent/improve';
+var go=document.getElementById('go'),busy=document.getElementById('busy'),out=document.getElementById('out'),err=document.getElementById('err');
+function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+async function run(){
+  err.style.display='none'; out.style.display='none';
+  var t=localStorage.getItem('ikcp_token')||'';
+  if(!t){ err.textContent='Connectez-vous d\'abord avec votre email propriétaire.'; err.style.display='block'; return; }
+  go.disabled=true; busy.style.display='block';
+  try{
+    var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+t},
+      body:JSON.stringify({feedback:document.getElementById('fb').value,note:document.getElementById('nt').value})});
+    var d=await r.json(); busy.style.display='none'; go.disabled=false;
+    if(r.status===401){ err.textContent='Réservé au propriétaire. Connectez-vous avec votre email autorisé.'; err.style.display='block'; return; }
+    if(r.status===503){ err.textContent='Moteur IA non configuré (clé Mistral manquante sur le worker).'; err.style.display='block'; return; }
+    if(!r.ok||!d.ok){ throw new Error(d.error||'échec'); }
+    render(d);
+  }catch(e){ busy.style.display='none'; go.disabled=false; err.textContent='Analyse impossible : '+(e.message||'erreur')+'.'; err.style.display='block'; }
+}
+function impactClass(v){ v=(v||'').toLowerCase(); return v==='fort'?'b-fort':v==='moyen'?'b-moyen':'b-faible'; }
+function render(d){
+  var h='<div class="synth"><div class="k">Synthèse</div><div style="margin-top:5px">'+esc(d.synthese||'—')+'</div></div>';
+  var sug=(d.suggestions||[]).slice().sort(function(a,b){return (a.priorite||9)-(b.priorite||9);});
+  sug.forEach(function(s){
+    h+='<div class="sug"><div class="top">'+
+      '<span class="p">#'+(s.priorite||'?')+'</span>'+
+      '<span class="t">'+esc(s.titre)+'</span></div>'+
+      '<div class="top" style="margin-top:7px">'+
+        '<span class="badge b-cat">'+esc(s.categorie||'—')+'</span>'+
+        '<span class="badge '+impactClass(s.impact)+'">impact '+esc(s.impact||'?')+'</span>'+
+        '<span class="eff">effort : '+esc(s.effort||'?')+'</span></div>'+
+      (s.constat?'<div class="c">'+esc(s.constat)+'</div>':'')+
+      (s.action?'<div class="a"><b>Action :</b> '+esc(s.action)+'</div>':'')+
+    '</div>';
+  });
+  h+='<div class="meta">Basé sur '+((d.usage_summary&&d.usage_summary.total)||0)+' événements d\'usage · '+((d.usage_summary&&d.usage_summary.users)||0)+' utilisateur(s) · IA française souveraine · '+esc((d.ts||'').slice(0,16).replace('T',' '))+'</div>';
+  out.innerHTML=h; out.style.display='block'; out.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
