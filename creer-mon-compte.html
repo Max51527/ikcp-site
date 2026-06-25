@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Créer mon compte — Marcel, l'intelligence patrimoniale souveraine · IKCP</title>
+<meta name="description" content="Marcel, votre copilote patrimonial souverain (IA française, hébergée en France). Commencez gratuitement, passez au pilotage continu quand vous êtes prêt. Pour dirigeant(e)s et professions libérales.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--green:#3B7D5E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:0 clamp(16px,4vw,28px)}
+/* header */
+header{position:sticky;top:0;z-index:30;background:rgba(250,248,244,.88);backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;height:62px}
+.brand{font-family:'Playfair Display',serif;font-weight:600;font-size:22px;color:var(--navy);text-decoration:none}
+.brand b{color:var(--gold-d)}
+.hd nav{display:flex;gap:18px;align-items:center}
+.hd nav a{font-size:14px;font-weight:600;color:var(--navy);text-decoration:none}
+.hd .cta{background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;padding:9px 16px;border-radius:10px}
+@media(max-width:620px){.hd nav a.txt{display:none}}
+/* hero */
+.hero{text-align:center;padding:clamp(40px,8vw,80px) 0 clamp(28px,5vw,48px)}
+.sig{display:inline-flex;align-items:center;gap:10px;margin-bottom:18px}
+.sig .name{font-family:'Playfair Display',serif;font-weight:600;font-size:34px;color:var(--navy)}
+.sig .ia{font-size:13px;font-weight:700;letter-spacing:.04em;background:var(--gold);color:#20180c;padding:4px 9px;border-radius:8px}
+.kick{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700;margin-bottom:14px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(28px,5.5vw,46px);color:var(--navy);line-height:1.08;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lede{max-width:640px;margin:18px auto 0;font-size:clamp(15px,2.2vw,18px);color:var(--mute)}
+.audience{max-width:680px;margin:14px auto 0;font-size:13.5px;color:var(--mute)}
+.heroCta{margin-top:26px;display:inline-flex;flex-direction:column;align-items:center;gap:7px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;padding:14px 28px;font-size:15.5px}
+.btn.gold{background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c;box-shadow:0 14px 30px -16px rgba(201,169,110,.6)}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.fine{font-size:12.5px;color:var(--mute)}
+/* offres */
+.offres{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0 8px}
+@media(max-width:760px){.offres{grid-template-columns:1fr}}
+.offre{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column}
+.offre.pro{background:linear-gradient(165deg,var(--navy),var(--navy2));color:var(--cream);border-color:transparent;position:relative;overflow:hidden}
+.offre.pro::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.22),transparent 70%)}
+.offre .nom{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold-d)}
+.offre.pro .nom{color:var(--gold-b)}
+.offre .px{font-family:'Playfair Display',serif;font-weight:600;font-size:40px;color:var(--navy);margin:6px 0 0;line-height:1}
+.offre.pro .px{color:#fff}
+.offre .px small{font-size:14px;color:var(--mute);font-weight:400;font-family:'Outfit',sans-serif}
+.offre.pro .px small{color:rgba(250,248,244,.6)}
+.offre .acc{font-size:14px;color:var(--mute);margin:10px 0 16px}
+.offre.pro .acc{color:rgba(250,248,244,.75)}
+.offre ul{list-style:none;margin:0 0 18px;flex:1}
+.offre li{position:relative;padding:6px 0 6px 26px;font-size:14px;border-bottom:1px solid var(--line)}
+.offre.pro li{border-color:rgba(201,169,110,.18)}
+.offre li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+.offre li.soon::before{content:'○';color:var(--gold-d)}
+.offre li .tag{font-size:10.5px;font-weight:700;color:var(--gold-d);text-transform:uppercase;letter-spacing:.04em}
+.offre .b{margin-top:auto}
+.offre .note{font-size:11.5px;color:var(--mute);margin-top:9px;text-align:center}
+.offre.pro .note{color:rgba(250,248,244,.55)}
+.mifii{background:var(--cream2);border:1px solid var(--line);border-radius:12px;padding:13px 16px;font-size:12.5px;color:var(--mute);margin:14px 0 0;line-height:1.55}
+/* sections */
+section.blk{padding:clamp(40px,7vw,68px) 0;border-top:1px solid var(--line)}
+.h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,3.6vw,30px);color:var(--navy);text-align:center}
+.h2 em{font-style:italic;color:var(--gold-d)}
+.sst{text-align:center;color:var(--mute);font-size:14.5px;max-width:600px;margin:8px auto 0}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+@media(max-width:760px){.grid4{grid-template-columns:1fr 1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.card .e{font-size:24px}.card .t{font-weight:700;color:var(--navy);margin:8px 0 3px;font-size:15px}.card .d{font-size:12.5px;color:var(--mute);line-height:1.5}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+@media(max-width:680px){.steps{grid-template-columns:1fr}}
+.step{text-align:center}.step .n{width:40px;height:40px;border-radius:50%;background:var(--navy);color:var(--gold-b);font-family:'Playfair Display',serif;font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.step .t{font-weight:700;color:var(--navy)}.step .d{font-size:13px;color:var(--mute);margin-top:3px}
+.souv{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:26px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:9px 16px;font-size:13.5px;font-weight:600;color:var(--navy)}
+.faq{max-width:720px;margin:26px auto 0}
+details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;color:var(--navy);padding:13px 0;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';float:right;color:var(--gold-d);font-size:20px;line-height:1}
+details[open] summary::after{content:'–'}
+details p{font-size:14px;color:var(--mute);padding:0 0 14px;line-height:1.6}
+.final{text-align:center;background:linear-gradient(165deg,var(--navy),var(--navy2));color:var(--cream);border-radius:20px;padding:clamp(30px,5vw,52px);margin:clamp(30px,5vw,52px) 0}
+.final h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,3.6vw,30px)}
+.final p{color:rgba(250,248,244,.75);margin:8px 0 22px}
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:12px;color:var(--mute);line-height:1.7}
+.disc{max-width:760px;margin:0 auto 14px;font-size:11px;color:var(--mute);line-height:1.55}
+</style>
+</head>
+<body>
+<header><div class="wrap hd">
+  <a class="brand" href="/">IKCP<b>.</b></a>
+  <nav>
+    <a class="txt" href="/family-office">Marcel IA</a>
+    <a class="txt" href="/tarifs">Tarifs</a>
+    <a href="/app/">Connexion</a>
+    <a class="cta" href="/app/">Créer mon compte</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="sig"><span class="name">Marcel</span><span class="ia">IA</span></div>
+    <div class="kick">Intelligence patrimoniale souveraine · en abonnement</div>
+    <h1>Marcel, votre <em>copilote patrimonial</em>.</h1>
+    <p class="lede">Commencez gratuitement. Passez au pilotage continu quand vous êtes prêt. Une intelligence française qui part de votre société pour éclairer vos décisions.</p>
+    <p class="audience">Pour les dirigeant(e)s d'entreprise et les professions libérales entrepreneuriales — médecin, avocat, expert-comptable, architecte, consultant… (SEL / BNC).</p>
+    <div class="heroCta">
+      <a class="btn gold" href="/app/">Créer mon compte gratuit →</a>
+      <span class="fine">Sans carte bancaire · 2 minutes</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="offres">
+      <div class="offre">
+        <div class="nom">Découverte</div>
+        <div class="px">0 €<small> / pour toujours</small></div>
+        <div class="acc">Voir clair sur votre société et vos leviers, sans engagement.</div>
+        <ul>
+          <li>Audit éclair de votre société (SIREN, registre officiel)</li>
+          <li>Santé financière chiffrée + alerte légale capitaux propres</li>
+          <li>Vue 360° : société + patrimoine déclaré</li>
+          <li>Marcel, l'IA patrimoniale — accès limité (quota mensuel)</li>
+          <li>Simulateurs (IR, IFI, succession, donation…)</li>
+          <li>Accès web · données en France</li>
+        </ul>
+        <div class="b"><a class="btn ghost" href="/app/" style="width:100%;text-align:center">Créer mon compte gratuit</a><div class="note">Sans carte bancaire · 2 minutes</div></div>
+      </div>
+      <div class="offre pro">
+        <div class="nom">Le pilotage · Premium</div>
+        <div class="px">59 €<small> / mois</small></div>
+        <div class="acc">Le copilote continu du dirigeant : vos leviers chiffrés, vos spécialistes, votre app.</div>
+        <ul>
+          <li>Tout Découverte, sans limite</li>
+          <li>Marcel illimité + spécialistes IA (fiscal, transmission, patrimoine 360°)</li>
+          <li>Chiffrage personnalisé de vos leviers (compte courant d'associé, rému/dividendes, transmission)</li>
+          <li>Cartographie société approfondie (Pappers complet)</li>
+          <li>Veille patrimoniale personnalisée</li>
+          <li>Application mobile (PWA installable) + historique synchronisé</li>
+          <li class="soon">Agrégation bancaire DSP2 (Powens, agréé ACPR) <span class="tag">en ouverture</span></li>
+          <li class="soon">Import de bilan par OCR souverain <span class="tag">en ouverture</span></li>
+        </ul>
+        <div class="b"><a class="btn gold" href="https://calendly.com/ikcp-maxime" style="width:100%;text-align:center">Activer Premium avec Maxime</a><div class="note">Paiement en ligne en cours d'ouverture · consultation humaine dédiée : 150 €</div></div>
+      </div>
+    </div>
+    <div class="mifii">Les conseils personnalisés relèvent d'une lettre de mission. Marcel délivre de l'information patrimoniale et conclut par une question — jamais une recommandation produit (art. L.541-1 du Code monétaire et financier).</div>
+  </section>
+
+  <section class="blk">
+    <div class="h2">Pensé pour qui <em>entreprend</em>.</div>
+    <p class="sst">Dirigeant ou indépendant libéral : votre société et votre patrimoine sont liés. Marcel parle ce langage.</p>
+    <div class="grid4">
+      <div class="card"><div class="e">🏢</div><div class="t">Dirigeant(e) de société</div><div class="d">SAS, SARL, holding — à l'IS, avec trésorerie et arbitrages.</div></div>
+      <div class="card"><div class="e">⚕️</div><div class="t">Professions de santé</div><div class="d">Médecin, chirurgien-dentiste, vétérinaire, pharmacien (SEL).</div></div>
+      <div class="card"><div class="e">⚖️</div><div class="t">Droit & chiffre</div><div class="d">Avocat, expert-comptable, notaire — structuration et protection.</div></div>
+      <div class="card"><div class="e">📐</div><div class="t">Conseil & création</div><div class="d">Architecte, consultant, ingénieur indépendant (BNC / SEL).</div></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="h2">De l'inscription au <em>pilotage</em></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div class="t">Compte gratuit</div><div class="d">Email, et c'est parti. Pas de carte. Votre espace est prêt en 2 minutes.</div></div>
+      <div class="step"><div class="n">2</div><div class="t">Votre audit</div><div class="d">SIREN → société + santé financière + leviers détectés, en direct.</div></div>
+      <div class="step"><div class="n">3</div><div class="t">Premium quand utile</div><div class="d">Le jour où vous voulez chiffrer vos leviers et piloter en continu.</div></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="h2">Souverain. Français. <em>Confidentiel.</em></div>
+    <p class="sst">Le moteur d'intelligence est français (Mistral), l'hébergement européen (Cloudflare, Paris). Vos données patrimoniales ne dépendent d'aucun service américain.</p>
+    <div class="souv">
+      <span class="chip">🇫🇷 Données en France</span>
+      <span class="chip">🧠 IA française souveraine</span>
+      <span class="chip">⚖️ Information, jamais recommandation (MIF II)</span>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="h2">Questions <em>fréquentes</em></div>
+    <div class="faq">
+      <details><summary>Marcel donne-t-il des conseils personnalisés ?</summary><p>Non. Marcel délivre une information patrimoniale à caractère pédagogique et conclut par une question — jamais une recommandation produit. Un conseil personnalisé suppose une lettre de mission préalable (art. L.541-1 du Code monétaire et financier).</p></details>
+      <details><summary>Le compte gratuit est-il vraiment gratuit ?</summary><p>Oui, sans carte bancaire et pour toujours : audit de votre société, santé financière, vue 360°, simulateurs et Marcel en accès limité (quota mensuel).</p></details>
+      <details><summary>Où sont mes données ?</summary><p>En France : hébergement Cloudflare (Paris), moteur d'IA Mistral souverain, aucune dépendance à un service américain. Vos données sont sauvegardées et vous restent restituables.</p></details>
+      <details><summary>Que comprend exactement le Premium ?</summary><p>Marcel illimité + les spécialistes IA (fiscal, transmission, patrimoine 360°), le chiffrage personnalisé de vos leviers, la cartographie société approfondie (Pappers complet), la veille personnalisée et l'application mobile. L'agrégation bancaire (Powens) et l'import de bilan par OCR sont en ouverture.</p></details>
+      <details><summary>Puis-je résilier quand je veux ?</summary><p>Oui. Le Premium est un abonnement mensuel, sans engagement : vous résiliez quand vous le souhaitez.</p></details>
+      <details><summary>Et si je veux parler à un humain ?</summary><p>Une consultation humaine dédiée est disponible (150 €). Un accompagnement patrimonial complet se formalise par une lettre de mission avec Maxime.</p></details>
+    </div>
+  </section>
+
+  <div class="final">
+    <h2>Commencez par voir clair.</h2>
+    <p>Créez votre compte gratuit et lancez l'audit de votre société en deux minutes.</p>
+    <a class="btn gold" href="/app/">Créer mon compte gratuit →</a>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="disc">Marcel délivre une information générale à caractère pédagogique. Elle ne constitue pas un conseil en investissement ni une recommandation personnalisée au sens de l'art. L.541-1 du Code monétaire et financier. Tout conseil patrimonial personnalisé suppose une lettre de mission préalable.</div>
+    <div><b>IKCP — IKIGAÏ Conseil Patrimonial</b> · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436</div>
+    <div>Lyon · Annonay · Megève · maxime@ikcp.fr · 06 67 53 79 79</div>
+  </div>
+</footer>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
