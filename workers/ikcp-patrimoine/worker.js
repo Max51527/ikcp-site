@@ -447,7 +447,11 @@ export default {
       let b = {}; try { b = await req.json(); } catch (_) { return json({ error: 'bad_json' }, 400, o); }
       try {
         await db.prepare("CREATE TABLE IF NOT EXISTS app_state (member_id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)").run();
-        await db.prepare("INSERT INTO app_state (member_id, data, updated_at) VALUES (?,?,datetime('now')) ON CONFLICT(member_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at").bind(member, JSON.stringify(b).slice(0, 200000)).run();
+        // Fusion : on ne remplace que les clés envoyées (cockpit {biens} + simulateurs {simulations} coexistent).
+        const ex = await db.prepare("SELECT data FROM app_state WHERE member_id=?").bind(member).first();
+        let cur = {}; try { cur = ex && ex.data ? JSON.parse(ex.data) : {}; } catch (_) {}
+        const merged = Object.assign(cur, (b && typeof b === 'object') ? b : {});
+        await db.prepare("INSERT INTO app_state (member_id, data, updated_at) VALUES (?,?,datetime('now')) ON CONFLICT(member_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at").bind(member, JSON.stringify(merged).slice(0, 200000)).run();
         return json({ ok: true }, 200, o);
       } catch (e) { console.error('[state post]', e.message); return json({ error: 'save_failed' }, 500, o); }
     }

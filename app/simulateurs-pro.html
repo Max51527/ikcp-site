@@ -166,6 +166,7 @@
         <div class="field-grid" id="fields"></div>
         <div class="result-grid" id="primaryResults"></div>
         <div class="results" id="secondaryResults"></div>
+        <div style="margin:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button onclick="saveSim()" style="border:1px solid var(--color-border,rgba(139,111,63,.3));background:var(--color-surface-2);color:inherit;font:inherit;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer">💾 Enregistrer dans mon compte</button><span id="saveSimMsg" style="font-size:12.5px;color:var(--color-text-soft,#6B5D52)"></span></div>
         <div class="card" style="padding:1rem; background:var(--color-surface-2)">
           <canvas id="simChart"></canvas>
         </div>
@@ -595,6 +596,7 @@ function renderActive() {
     primary.innerHTML = out.primary.map(([k,v]) => `<div class="result-card"><span class="hint">${k}</span><strong>${v}</strong></div>`).join('');
     const secondary = document.getElementById('secondaryResults');
     secondary.innerHTML = out.secondary.map(t => `<div class="result-card"><div>${t}</div></div>`).join('');
+    window.__lastRun = { id: sim.id, title: sim.title, inputs: vals, primary: out.primary, date: new Date().toISOString() };
     drawChart(out.chart.labels, out.chart.values);
   }
 }
@@ -611,6 +613,22 @@ function renderTeaser(sim){
     + `<a href="/app/" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Débloquer avec Premium (${PREMIUM_EUR} €/mois) →</a>`;
   if (chart){ chart.destroy(); chart = null; }
 }
+
+const API_STATE = 'https://ikcp-patrimoine.maxime-ead.workers.dev/state';
+window.saveSim = async function(){
+  var msg = document.getElementById('saveSimMsg');
+  var t = token(); if(!t){ if(msg) msg.textContent='Connectez-vous pour enregistrer.'; return; }
+  var run = window.__lastRun; if(!run){ if(msg) msg.textContent='Lancez une simulation d\'abord.'; return; }
+  if(msg) msg.textContent='Enregistrement…';
+  try{
+    var g = await fetch(API_STATE, { headers:{ 'Authorization':'Bearer '+t } });
+    var cur = (g.ok ? ((await g.json()).data || {}) : {});
+    var sims = Array.isArray(cur.simulations) ? cur.simulations : [];
+    sims.unshift(run); sims = sims.slice(0,50);
+    var p = await fetch(API_STATE, { method:'POST', headers:{ 'Content-Type':'application/json','Authorization':'Bearer '+t }, body: JSON.stringify({ simulations: sims }) });
+    if(msg) msg.textContent = p.ok ? '✓ Enregistré dans votre compte.' : 'Échec — réessayez.';
+  }catch(e){ if(msg) msg.textContent='Réseau indisponible.'; }
+};
 
 function drawChart(labels, data) {
   const ctx = document.getElementById('simChart');
