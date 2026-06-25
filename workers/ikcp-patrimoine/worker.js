@@ -434,6 +434,24 @@ export default {
       return json({ member, bilan: bilan(d), ...d }, 200, o);
     }
 
+    // ── /state : coffre de l'espace de travail du membre (biens cockpit, historique simulations…) ──
+    // Membre = JETON validé (résolu ci-dessus, anti-IDOR). Stocke/restitue un blob JSON par compte.
+    if (url.pathname === '/state' && req.method === 'GET') {
+      try {
+        await db.prepare("CREATE TABLE IF NOT EXISTS app_state (member_id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)").run();
+        const row = await db.prepare("SELECT data, updated_at FROM app_state WHERE member_id=?").bind(member).first();
+        return json({ ok: true, data: row && row.data ? JSON.parse(row.data) : {}, updated_at: (row && row.updated_at) || null }, 200, o);
+      } catch (e) { console.error('[state get]', e.message); return json({ ok: true, data: {} }, 200, o); }
+    }
+    if (url.pathname === '/state' && req.method === 'POST') {
+      let b = {}; try { b = await req.json(); } catch (_) { return json({ error: 'bad_json' }, 400, o); }
+      try {
+        await db.prepare("CREATE TABLE IF NOT EXISTS app_state (member_id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)").run();
+        await db.prepare("INSERT INTO app_state (member_id, data, updated_at) VALUES (?,?,datetime('now')) ON CONFLICT(member_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at").bind(member, JSON.stringify(b).slice(0, 200000)).run();
+        return json({ ok: true }, 200, o);
+      } catch (e) { console.error('[state post]', e.message); return json({ error: 'save_failed' }, 500, o); }
+    }
+
     // ── POST /patrimoine : upsert des entités envoyées ──
     if (url.pathname === '/patrimoine' && req.method === 'POST') {
       let body = {}; try { body = await req.json(); } catch (_) {}

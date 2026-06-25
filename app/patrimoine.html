@@ -330,7 +330,9 @@ let biens = [];
 let editingId = null;
 
 function load(){ try{ biens = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }catch(_){ biens = []; } }
-function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(biens)); }catch(_){} try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'cockpit',action:'save',data:{biens:(biens&&biens.length)||0}})}).catch(function(){}); }catch(_){} }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(biens)); }catch(_){} try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'cockpit',action:'save',data:{biens:(biens&&biens.length)||0}})}).catch(function(){}); }catch(_){}
+  /* Synchro compte : sauvegarde sur le serveur (sécurisé par le jeton, anti-IDOR). Best-effort. */
+  try{ var _t=localStorage.getItem('ikcp_token')||''; if(_t) fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/state',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_t},body:JSON.stringify({biens:biens})}).catch(function(){}); }catch(_){} }
 function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
 function uid(){ return 'b' + (biens.reduce((m,b)=>Math.max(m, +String(b.id).slice(1)||0),0) + 1); }
 
@@ -618,6 +620,13 @@ document.getElementById('auditBtn')?.addEventListener('click', runAudit);
 
 load();
 render();
+/* Synchro compte : si connecté, restaure le travail enregistré côté serveur (multi-appareils). */
+(function(){ try{ var _t=localStorage.getItem('ikcp_token')||''; if(!_t) return;
+  fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/state',{headers:{'Authorization':'Bearer '+_t}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){ if(d&&d.data&&Array.isArray(d.data.biens)&&d.data.biens.length){ biens=d.data.biens; try{localStorage.setItem(STORE_KEY,JSON.stringify(biens));}catch(_){}; render(); } })
+    .catch(function(){});
+}catch(_){} })();
 </script>
 </body>
 </html>
