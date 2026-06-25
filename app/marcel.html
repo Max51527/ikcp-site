@@ -525,7 +525,7 @@ window.send = async function(e){
     a.id = msgId;
     window.__rate = window.__rate || {}; window.__rate[msgId] = { q: q, reply: reply };
     const escaped = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
-    const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}', \`${reply.replace(/`/g,'').replace(/\\/g,'\\\\').replace(/"/g,'\\"')}\`)">🔊 Écouter la réponse</button>` : '';
+    const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}',(window.__rate['${msgId}']||{}).reply)">🔊 Écouter la réponse</button>` : '';
     const disc = '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
     a.innerHTML = '<span class="tw"></span>';
     msgs.appendChild(a);

@@ -269,8 +269,10 @@ window.doSearch = async function(e){
 
     // Afficher résultat
     resultDiv.style.display = 'block';
+    const esc=(x)=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const safeUrl=(u)=>{u=String(u||'');return /^https?:\/\//i.test(u)?u:'#';};
     const sourcesHtml = (r.sources || []).slice(0,5).map((s,i) =>
-      `<a href="${s.url || s}" target="_blank" rel="noopener">[${i+1}] ${(s.title || s).slice(0,60)}…</a>`
+      `<a href="${esc(safeUrl(s.url || s))}" target="_blank" rel="noopener">[${i+1}] ${esc(String(s.title || s).slice(0,60))}…</a>`
     ).join(' · ');
 
     resultDiv.innerHTML = `
@@ -309,7 +311,9 @@ window.doSearch = async function(e){
 };
 
 function markdownToHtml(s){
-  return (s||'')
+  // SÉCURITÉ : on échappe d'abord < > & du contenu (sortie IA / web tiers non fiable)
+  // pour neutraliser toute injection HTML/XSS, AVANT d'ajouter notre propre mise en forme.
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     // ── Nettoyage veille : rendre lisible pour un non-spécialiste ──
     .replace(/\[\d+\](?:\s*\[\d+\])*/g,'')                                   // renvois [1][3]
     .replace(/^\s*(je ne vois pas|je n['’]ai pas trouvé|en revanche,? les résultats)[^\n]*\n?/gim,'') // préambule "sources"

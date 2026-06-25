@@ -417,9 +417,11 @@ function renderBiens(){
   const grid = document.getElementById('biensGrid');
   grid.innerHTML = biens.map(b => {
     const c = CATS[b.cat] || CATS.immobilier;
-    const photo = b.photo
-      ? `<div class="bien-photo" style="background-image:url('${String(b.photo).replace(/'/g,'')}')"><span class="bien-cat">${c.label}</span></div>`
-      : `<div class="bien-photo" style="background:linear-gradient(150deg,${c.color}22,${c.color}0a)"><span class="ph-em">${c.em}</span><span class="bien-cat">${c.label}</span></div>`;
+    // SÉCURITÉ : la photo n'est acceptée que si c'est une URL https/data:image, et on retire tout caractère pouvant casser le contexte CSS url('...').
+    const safePhoto = /^(https:\/\/|data:image\/)/i.test(String(b.photo||'')) ? String(b.photo).replace(/['")<>\\]/g,'') : '';
+    const photo = safePhoto
+      ? `<div class="bien-photo" style="background-image:url('${safePhoto}')"><span class="bien-cat">${escapeHtml(c.label)}</span></div>`
+      : `<div class="bien-photo" style="background:linear-gradient(150deg,${c.color}22,${c.color}0a)"><span class="ph-em">${c.em}</span><span class="bien-cat">${escapeHtml(c.label)}</span></div>`;
     return `<div class="bien" data-id="${b.id}">
       ${photo}
       <div class="bien-body">
