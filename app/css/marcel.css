@@ -67,7 +67,8 @@ html,body{
   padding:14px 22px;display:flex;justify-content:space-between;align-items:center;
   border-bottom:1px solid var(--line);
 }
-.app-brand{font-family:'Fraunces',serif;font-size:20px;font-weight:500;letter-spacing:-0.005em;color:var(--ink);text-decoration:none}
+.app-brand{font-family:'Fraunces',serif;font-size:20px;font-weight:500;letter-spacing:-0.005em;color:var(--ink);text-decoration:none;position:relative;display:inline-block;padding-left:44px;line-height:1.15}
+.app-brand::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:36px;height:36px;background:url('/assets/logos/Marcel-IA_embleme-carre.svg') center/contain no-repeat}
 .app-brand em{font-style:italic;color:var(--accent)}
 .app-brand-sub{display:block;font-size:9px;letter-spacing:0.22em;color:var(--mute);text-transform:uppercase;font-weight:500;margin-top:1px}
 .app-user{display:flex;align-items:center;gap:14px;font-size:13px}

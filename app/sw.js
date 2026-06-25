@@ -25,6 +25,11 @@ const PRECACHE_URLS = [
   '/app/js/appnav.js',
   '/app/manifest.json',
   '/app/icons/marcel.svg',
+  '/assets/logos/Marcel-IA_embleme-carre.svg',
+  '/app/gestion.html',
+  '/app/controle.html',
+  '/app/avis.html',
+  '/app/amelioration.html',
 ];
 
 // ───────────── INSTALLATION ─────────────
