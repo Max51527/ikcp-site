@@ -147,6 +147,8 @@ export default {
 
     // ─── POST /stt ────────────────────────────────
     if (url.pathname === '/stt' && request.method === 'POST') {
+      // Anti-abus : plafond 120/h par IP (KV).
+      { const ip = request.headers.get('CF-Connecting-IP') || ''; if (ip && env.VOICE_CACHE) { const k = 'rls:'+ip+':'+Math.floor(Date.now()/3600000); let n=0; try{ n=parseInt(await env.VOICE_CACHE.get(k))||0; }catch(_){} if(n>=120) return json({ error:'rate_limited' },429,origin); try{ await env.VOICE_CACHE.put(k,String(n+1),{expirationTtl:3700}); }catch(_){} } }
       const contentType = request.headers.get('Content-Type') || '';
       let audioBlob;
       try {
@@ -193,6 +195,8 @@ export default {
 
     // ─── POST /tts ────────────────────────────────
     if (url.pathname === '/tts' && request.method === 'POST') {
+      // Anti-abus : plafond 120/h par IP (KV) — évite le vidage de Workers AI par curl en boucle.
+      { const ip = request.headers.get('CF-Connecting-IP') || ''; if (ip && env.VOICE_CACHE) { const k = 'rl:'+ip+':'+Math.floor(Date.now()/3600000); let n=0; try{ n=parseInt(await env.VOICE_CACHE.get(k))||0; }catch(_){} if(n>=120) return json({ error:'rate_limited' },429,origin); try{ await env.VOICE_CACHE.put(k,String(n+1),{expirationTtl:3700}); }catch(_){} } }
       let body;
       try { body = await request.json(); } catch (_) { return json({ error: 'invalid_json' }, 400, origin); }
       let { text, voice } = body || {};

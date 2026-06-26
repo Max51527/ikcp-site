@@ -207,6 +207,8 @@ export default {
 
     // ─── /search ─────────────────────────────────────────────
     if (url.pathname === '/search' && request.method === 'POST') {
+      // Anti-abus : plafond 60/h par IP (KV) — protège Perplexity contre le vidage par curl.
+      { const _ip = request.headers.get('CF-Connecting-IP') || ''; if (_ip && env.VEILLE_CACHE) { const _k='rlip:'+_ip+':'+Math.floor(Date.now()/3600000); let _n=0; try{ _n=parseInt(await env.VEILLE_CACHE.get(_k))||0; }catch(_){} if(_n>=60) return json({ error:'rate_limited' },429,origin); try{ await env.VEILLE_CACHE.put(_k,String(_n+1),{expirationTtl:3700}); }catch(_){} } }
       if (!env.PERPLEXITY_API_KEY) {
         return json({ error: 'api_key_missing' }, 500, origin);
       }
