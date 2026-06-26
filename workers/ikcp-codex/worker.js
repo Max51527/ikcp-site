@@ -270,6 +270,11 @@ export default {
       );
     }
 
+    // S2S : si INTERNAL_TOKEN est posé, exiger le jeton interne (appel Marcel). Fail-open tant qu'absent.
+    if (env.INTERNAL_TOKEN && request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
+      return Response.json({ error: 'unauthorized' }, { status: 401, headers: corsHeaders(origin) });
+    }
+
     if (!env.ANTHROPICAPIKEY) {
       return Response.json(
         { error: 'ANTHROPICAPIKEY non configurée — `wrangler secret put ANTHROPICAPIKEY`' },

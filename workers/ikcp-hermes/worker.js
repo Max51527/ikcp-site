@@ -173,6 +173,9 @@ export default {
         status: 405, headers: corsHeaders(origin)
       });
     }
+    if (env.INTERNAL_TOKEN && request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
+      return Response.json({ error: 'unauthorized' }, { status: 401, headers: corsHeaders(origin) });
+    }
     if (!env.ANTHROPICAPIKEY) {
       return Response.json({ error: 'api_key_missing' }, {
         status: 500, headers: corsHeaders(origin)

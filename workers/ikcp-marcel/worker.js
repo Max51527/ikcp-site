@@ -163,7 +163,7 @@ async function callMistralFallback(env, systemText, messages) {
   } catch (_) { return null; }
 }
 
-async function delegateToSpecialist(agentId, question, context, isPaidMember = false) {
+async function delegateToSpecialist(agentId, question, context, isPaidMember = false, internalToken = '') {
   const spec = SPECIALISTS_REGISTRY[agentId];
   if (!spec) return { error: `Specialiste inconnu : ${agentId}. Disponibles : ${SPECIALISTS_IDS_LIVE.join(', ')}` };
   // Guard — bloquer délégation vers workers pas encore déployés
@@ -183,7 +183,7 @@ async function delegateToSpecialist(agentId, question, context, isPaidMember = f
       : { question, context };
     const r = await fetch(spec.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: internalToken ? { 'Content-Type': 'application/json', 'X-Internal-Token': internalToken } : { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
     if (!r.ok) {
@@ -1266,13 +1266,13 @@ export default {
             for (const tc of calls) {
               let args = {}; try { args = JSON.parse(tc.function.arguments || '{}'); } catch (_) {}
               const nm = tc.function.name; let result;
-              if (nm === 'delegate_to_specialist') result = await delegateToSpecialist(args.agent, args.question, args.context, isPaidMember);
+              if (nm === 'delegate_to_specialist') result = await delegateToSpecialist(args.agent, args.question, args.context, isPaidMember, env.INTERNAL_TOKEN);
               else if (nm === 'get_user_profile') result = await collectorFetch(env, `/profile?user_id=${encodeURIComponent(args.user_id || 'max')}`);
               else if (nm === 'get_user_watches') result = await collectorFetch(env, `/watches?user_id=${encodeURIComponent(args.user_id || 'max')}${args.market ? `&market=${encodeURIComponent(args.market)}` : ''}`);
               else if (nm === 'get_user_alerts') result = await collectorFetch(env, `/alerts?user_id=${encodeURIComponent(args.user_id || 'max')}${args.unread ? '&unread=1' : ''}`);
               else if (nm === 'add_user_watch') result = await collectorFetch(env, '/watches', 'POST', { user_id: args.user_id || 'max', market: args.market, category: args.category, query: args.query, target_price: args.target_price });
               else if (nm === 'consult_veille') {
-                try { const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: args.query, mode: args.mode || 'quick', user_id: memberId || 'anon', tier: memberTier || 'free' }) }); result = vr.ok ? await vr.json() : { error: 'veille_unavailable' }; }
+                try { const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', { method: 'POST', headers: env.INTERNAL_TOKEN ? { 'Content-Type': 'application/json', 'X-Internal-Token': env.INTERNAL_TOKEN } : { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: args.query, mode: args.mode || 'quick', user_id: memberId || 'anon', tier: memberTier || 'free' }) }); result = vr.ok ? await vr.json() : { error: 'veille_unavailable' }; }
                 catch (e) { result = { error: 'veille_network' }; }
               } else result = executeTool(nm, args);
               mMsgs.push({ role: 'tool', tool_call_id: tc.id, name: nm, content: JSON.stringify(result) });
@@ -1377,7 +1377,7 @@ export default {
           let result;
           const i = tu.input || {};
           if (tu.name === 'delegate_to_specialist') {
-            result = await delegateToSpecialist(i.agent, i.question, i.context, isPaidMember);
+            result = await delegateToSpecialist(i.agent, i.question, i.context, isPaidMember, env.INTERNAL_TOKEN);
           } else if (tu.name === 'get_user_profile') {
             result = await collectorFetch(env, `/profile?user_id=${encodeURIComponent(i.user_id || 'max')}`);
           } else if (tu.name === 'get_user_watches') {
@@ -1399,7 +1399,7 @@ export default {
             try {
               const vr = await fetch('https://ikcp-veille.maxime-ead.workers.dev/search', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: env.INTERNAL_TOKEN ? { 'Content-Type': 'application/json', 'X-Internal-Token': env.INTERNAL_TOKEN } : { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   query: i.query,
                   mode: i.mode || 'quick',

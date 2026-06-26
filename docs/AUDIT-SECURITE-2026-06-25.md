@@ -30,7 +30,7 @@ cd workers/ikcp-chat && npx wrangler secret put MISTRAL_API_KEY   # idem pour ch
 
 | # | Faille | Fichier | Sévérité | État |
 |---|---|---|---|---|
-| C1 | Sous-agents (codex/hermes/batisseur/lifestyle) `POST /` **sans auth** → vidage crédit IA | `ikcp-*/worker.js` | 🔴 | ⏳ batch token interne |
+| C1 | Sous-agents `POST /` **sans auth** → vidage crédit IA | `ikcp-*/worker.js` | 🔴 | ✅ codex/hermes/batisseur verrouillés (INTERNAL_TOKEN, fail-open → activer le secret) · ⏳ lifestyle (appelé aussi par collections.html → jeton membre) |
 | C2 | `ikcp-voice` `/tts` `/stt` sans auth → abus Workers AI | `ikcp-voice` | 🔴 | ⏳ |
 | C3 | `ikcp-veille` `/search` lit `tier`/`user_id` du **body** → contournement gating payant + IDOR quota | `ikcp-veille` | 🔴 | ⏳ |
 | C4 | `ikcp-temoin` `/log` + `/retrieve/:hash` sans auth → pollution/fuite audit MIF II | `ikcp-temoin` | 🔴 | ⏳ |
