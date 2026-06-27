@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel · Tous les produits patrimoniaux</title>
+<meta name="description" content="Le catalogue des produits patrimoniaux du marché français — épargne, immobilier, retraite, défiscalisation, transmission, tontine. Pour comprendre, pas pour vendre.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 14px}
+.brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.brand .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.brand .ia{font-size:10px;font-weight:700;background:var(--gold);color:#20180c;padding:2px 6px;border-radius:5px}
+.back{font-size:13px;color:var(--mute);text-decoration:none}
+.lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(27px,6vw,40px);color:var(--navy);line-height:1.08;margin:8px 0 8px}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lead{color:var(--mute);font-size:15.5px;max-width:680px;margin-bottom:8px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+.toc a{font-size:13px;font-weight:600;text-decoration:none;color:var(--navy);background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 13px}
+.toc a:hover{border-color:var(--gold);background:var(--cream2)}
+section{margin-top:30px}
+h2{font-family:'Playfair Display',serif;font-weight:600;font-size:23px;color:var(--navy);display:flex;align-items:center;gap:9px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h2 .e{font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px;margin-top:14px}
+.p{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+.p h3{font-size:15.5px;color:var(--navy);font-weight:600}
+.p .d{font-size:13.5px;color:var(--ink);margin-top:5px}
+.p .meta{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.5}
+.p .meta b{color:var(--gold-d)}
+.star{border:2px solid var(--gold);background:linear-gradient(160deg,#fff,var(--cream2))}
+.star h3::after{content:' ★';color:var(--gold)}
+.note{font-size:12px;color:var(--mute);background:var(--cream2);border-radius:10px;padding:7px 10px;margin-top:9px}
+.cta{display:flex;gap:11px;flex-wrap:wrap;margin:30px 0 10px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;padding:13px 24px;font-size:15px;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--navy)}
+.disc{font-size:11.5px;color:var(--mute);line-height:1.6;margin:24px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/app/dashboard.html"><span class="nm">Marcel</span><span class="ia">IA</span></a>
+    <a class="back" href="/app/dashboard.html">← Tableau de bord</a>
+  </header>
+
+  <div class="lbl">Catalogue · pédagogie souveraine</div>
+  <h1>Tous les produits <em>patrimoniaux</em> du marché</h1>
+  <p class="lead">Le panorama des solutions existantes — pour <b>comprendre</b>, comparer, et savoir quoi demander. Marcel vous explique chacune sans rien vous vendre. <i>Information, pas recommandation.</i></p>
+
+  <div class="toc">
+    <a href="#epargne">Épargne & financier</a>
+    <a href="#retraite">Retraite</a>
+    <a href="#immo">Immobilier</a>
+    <a href="#defisc">Défiscalisation</a>
+    <a href="#transmission">Transmission & protection</a>
+    <a href="#atypiques">Diversification & actifs réels</a>
+  </div>
+
+  <!-- ÉPARGNE & FINANCIER -->
+  <section id="epargne">
+    <h2><span class="e">💶</span> Épargne & financier</h2>
+    <div class="grid">
+      <div class="p"><h3>Assurance-vie</h3><div class="d">Le couteau suisse : épargne souple (fonds € garanti + unités de compte), disponible, fiscalité douce après 8 ans.</div><div class="meta"><b>Pour qui :</b> tout le monde · <b>Atout :</b> abattement 4 600/9 200 €/an après 8 ans + transmission hors succession (152 500 €/bénéficiaire av. 70 ans).</div></div>
+      <div class="p"><h3>Contrat de capitalisation</h3><div class="d">Cousin de l'assurance-vie, mais transmissible de son vivant (donation) et conservant l'antériorité fiscale.</div><div class="meta"><b>Pour qui :</b> transmission anticipée, sociétés à l'IS · <b>Atout :</b> se donne / se démembre.</div></div>
+      <div class="p"><h3>PEA / PEA-PME</h3><div class="d">Enveloppe actions européennes : exonération d'IR sur les gains après 5 ans (hors prélèvements sociaux).</div><div class="meta"><b>Plafond :</b> 150 000 € (PEA) + 225 000 € (PEA-PME) · <b>Atout :</b> capitalisation sans frottement.</div></div>
+      <div class="p"><h3>Compte-titres (CTO)</h3><div class="d">Sans plafond ni restriction géographique. Fiscalité au PFU 30 % (ou barème).</div><div class="meta"><b>Pour qui :</b> au-delà des plafonds PEA, titres hors zone euro, produits structurés.</div></div>
+      <div class="p"><h3>Épargne réglementée</h3><div class="d">Livret A, LDDS, LEP : liquidité totale, sans risque, défiscalisés — mais plafonnés et peu rémunérateurs.</div><div class="meta"><b>Rôle :</b> épargne de précaution, pas de capitalisation long terme.</div></div>
+      <div class="p"><h3>Compte à terme</h3><div class="d">Capital bloqué sur une durée choisie contre un taux garanti connu d'avance.</div><div class="meta"><b>Pour qui :</b> trésorerie (perso ou société) à placer sans risque sur un horizon défini.</div></div>
+      <div class="p"><h3>Produits structurés</h3><div class="d">Produit sur-mesure liant le rendement à un indice, avec une protection partielle du capital.</div><div class="meta"><b>Atout / risque :</b> rendement conditionnel · complexité + risque de perte à surveiller.</div></div>
+      <div class="p"><h3>Fonds obligataires / obligations</h3><div class="d">Prêter à un État ou une entreprise contre un coupon. Daté (échéance) ou ouvert.</div><div class="meta"><b>Rôle :</b> rendement plus stable que les actions, diversification.</div></div>
+    </div>
+  </section>
+
+  <!-- RETRAITE -->
+  <section id="retraite">
+    <h2><span class="e">🏖️</span> Retraite</h2>
+    <div class="grid">
+      <div class="p"><h3>PER individuel</h3><div class="d">Versements <b>déductibles</b> du revenu imposable ; capital débloqué à la retraite (ou achat résidence principale).</div><div class="meta"><b>Atout dirigeant :</b> à TMI 41 %, 10 000 € versés = ~4 100 € d'impôt en moins · <b>Attention :</b> blocage jusqu'à la retraite.</div></div>
+      <div class="p"><h3>PER d'entreprise (PERECO / PERO)</h3><div class="d">Le PER version entreprise, alimenté par l'épargne salariale et l'abondement employeur.</div><div class="meta"><b>Pour qui :</b> dirigeant assimilé-salarié + équipe · <b>Atout :</b> abondement déductible, social allégé.</div></div>
+      <div class="p"><h3>Madelin (historique) / art. 83</h3><div class="d">Anciens contrats retraite TNS / salariés, fermés à la souscription mais transférables vers un PER.</div><div class="meta"><b>À faire :</b> souvent, arbitrer vers un PER plus souple.</div></div>
+      <div class="p"><h3>Épargne salariale (PEE, intéressement, participation)</h3><div class="d">Primes placées avec abondement, exonérées d'IR si bloquées 5 ans.</div><div class="meta"><b>Atout dirigeant :</b> levier de rémunération à charges réduites (TPE éligibles).</div></div>
+    </div>
+  </section>
+
+  <!-- IMMOBILIER -->
+  <section id="immo">
+    <h2><span class="e">🏛️</span> Immobilier</h2>
+    <div class="grid">
+      <div class="p"><h3>Locatif nu</h3><div class="d">Revenus fonciers (barème IR + PS). Possibilité de <b>déficit foncier</b> via travaux (jusqu'à 10 700 €/an sur le revenu global).</div><div class="meta"><b>Pour qui :</b> constitution patrimoniale + effet de levier crédit.</div></div>
+      <div class="p"><h3>LMNP / LMP (meublé)</h3><div class="d">Location meublée : amortissement du bien → revenus souvent peu ou pas fiscalisés (régime réel).</div><div class="meta"><b>Atout :</b> rendement net optimisé · <b>LMP :</b> seuils 23 000 € + 50 % des revenus.</div></div>
+      <div class="p"><h3>SCPI</h3><div class="d">« Pierre-papier » : parts d'un parc immobilier géré, revenus réguliers, ticket accessible.</div><div class="meta"><b>Variantes :</b> rendement, fiscales, européennes · <b>Atout :</b> mutualisation, zéro gestion.</div></div>
+      <div class="p"><h3>OPCI</h3><div class="d">Immobilier + poche financière, plus liquide que la SCPI.</div><div class="meta"><b>Pour qui :</b> diversification immobilière souple, souvent en assurance-vie.</div></div>
+      <div class="p"><h3>SCI (IR ou IS)</h3><div class="d">Société pour détenir / transmettre l'immobilier à plusieurs, piloter la fiscalité (IR ou IS).</div><div class="meta"><b>Atout :</b> transmission par parts + démembrement facilité.</div></div>
+      <div class="p"><h3>Démembrement / nue-propriété</h3><div class="d">Acheter la nue-propriété décotée (–30 à –40 %) ; pleine propriété reconstituée sans fiscalité au terme.</div><div class="meta"><b>Atout :</b> hors IFI pendant le démembrement, prépare la transmission.</div></div>
+      <div class="p"><h3>Pinel / Denormandie / Loc'Avantages</h3><div class="d">Réduction d'impôt contre un engagement de location plafonnée (neuf ou ancien rénové).</div><div class="meta"><b>Attention :</b> Pinel s'éteint fin 2024 ; bien vérifier le dispositif en vigueur.</div></div>
+      <div class="p"><h3>Malraux / Monuments historiques</h3><div class="d">Forte réduction (Malraux) ou déduction (MH) contre restauration de patrimoine bâti.</div><div class="meta"><b>Pour qui :</b> TMI élevée cherchant un actif tangible + défiscalisation.</div></div>
+      <div class="p"><h3>Résidences services (EHPAD, étudiant)</h3><div class="d">LMNP géré par bail commercial : loyers « garantis » par l'exploitant.</div><div class="meta"><b>Attention :</b> qualité de l'exploitant = clé du risque.</div></div>
+      <div class="p"><h3>Crowdfunding immobilier</h3><div class="d">Prêter à un promoteur sur 12-36 mois contre un rendement élevé (8-12 %).</div><div class="meta"><b>Risque :</b> perte en capital si le programme échoue · à diversifier.</div></div>
+    </div>
+  </section>
+
+  <!-- DÉFISCALISATION / ÉCONOMIE RÉELLE -->
+  <section id="defisc">
+    <h2><span class="e">🎯</span> Défiscalisation & économie réelle</h2>
+    <div class="grid">
+      <div class="p"><h3>FCPI / FIP</h3><div class="d">Investir dans des PME innovantes (FCPI) ou régionales (FIP) → réduction d'IR ~18-25 %.</div><div class="meta"><b>Contrepartie :</b> blocage ~6-10 ans + risque de perte.</div></div>
+      <div class="p"><h3>FPCI / Private Equity</h3><div class="d">Capital-investissement dans des sociétés non cotées, sur 7-10 ans.</div><div class="meta"><b>Pour qui :</b> patrimoine établi cherchant performance + diversification · ticket élevé.</div></div>
+      <div class="p"><h3>Girardin industriel / social</h3><div class="d">« One-shot » : réduction d'IR supérieure à la mise, en finançant l'Outre-mer (à fonds perdu).</div><div class="meta"><b>Atout :</b> efface une grosse cotisation d'IR · <b>Attention :</b> qualité du monteur = essentielle.</div></div>
+      <div class="p"><h3>Groupements forestiers (GFF) / viticoles (GFV)</h3><div class="d">Détenir forêts ou vignes en société : actif réel, réduction d'IR/IFI + atout transmission (Dutreil forestier).</div><div class="meta"><b>Atout :</b> décorrélation + abattement 75 % en transmission (sous conditions).</div></div>
+      <div class="p"><h3>Cheptel / GFA (terres agricoles)</h3><div class="d">Investir dans le foncier agricole loué à un exploitant.</div><div class="meta"><b>Atout :</b> actif tangible, exonération IFI partielle, transmission facilitée.</div></div>
+    </div>
+  </section>
+
+  <!-- TRANSMISSION & PROTECTION (avec TONTINE) -->
+  <section id="transmission">
+    <h2><span class="e">🌳</span> Transmission & protection</h2>
+    <div class="grid">
+      <div class="p star"><h3>Tontine — financière</h3><div class="d">Une <b>association d'épargnants</b> place ensemble sur une durée fixe (10-25 ans). Au terme, le capital + les gains sont <b>répartis entre les survivants</b> (les parts des décédés profitent aux vivants).</div><div class="meta"><b>Atout :</b> performance potentielle élevée, capital <b>hors succession</b> pendant la phase, insaisissable · <b>Attention :</b> aucune liquidité avant le terme + aléa de survie. <b>Ex. :</b> Le Conservateur.</div></div>
+      <div class="p star"><h3>Tontine — clause d'accroissement (immobilier)</h3><div class="d">Plusieurs acheteurs acquièrent un bien avec <b>clause de tontine</b> : au décès de l'un, le survivant est réputé <b>seul propriétaire depuis l'origine</b> — le bien échappe à la succession.</div><div class="meta"><b>Pour qui :</b> protéger un concubin / partenaire · <b>Attention :</b> droits de mutation dus, clause irrévocable, aléa requis.</div></div>
+      <div class="p"><h3>Donation / donation-partage</h3><div class="d">Transmettre de son vivant avec abattements renouvelables tous les 15 ans (100 000 €/parent/enfant).</div><div class="meta"><b>Atout :</b> fige la valeur, apaise la succession future.</div></div>
+      <div class="p"><h3>Pacte Dutreil</h3><div class="d">Transmettre une entreprise familiale avec <b>abattement de 75 %</b> sur la valeur taxable (engagement de conservation).</div><div class="meta"><b>Pour qui :</b> dirigeant transmettant sa société · levier de transmission majeur.</div></div>
+      <div class="p"><h3>Holding (société)</h3><div class="d">Société chapeau pour piloter rémunération, remontée de dividendes (régime mère-fille), réinvestir et transmettre.</div><div class="meta"><b>Atout :</b> apport-cession (150-0 B ter), Dutreil, effet de levier.</div></div>
+      <div class="p"><h3>Assurance-vie (clause bénéficiaire)</h3><div class="d">L'outil de transmission par excellence : 152 500 €/bénéficiaire exonérés (versements avant 70 ans).</div><div class="meta"><b>Atout :</b> hors succession, bénéficiaire libre, clause sur-mesure.</div></div>
+      <div class="p"><h3>Mandat de protection future</h3><div class="d">Désigner à l'avance qui gérera vos affaires en cas d'incapacité.</div><div class="meta"><b>Rôle :</b> protection, pas placement — mais pilier d'une stratégie complète.</div></div>
+    </div>
+  </section>
+
+  <!-- DIVERSIFICATION / ACTIFS RÉELS -->
+  <section id="atypiques">
+    <h2><span class="e">💎</span> Diversification & actifs réels</h2>
+    <div class="grid">
+      <div class="p"><h3>Or & métaux précieux</h3><div class="d">Valeur refuge tangible (lingots, pièces). Fiscalité spécifique (taxe forfaitaire ou plus-value).</div><div class="meta"><b>Rôle :</b> protection contre l'inflation / les crises.</div></div>
+      <div class="p"><h3>Art, vin, horlogerie, collections</h3><div class="d">Actifs passion à potentiel patrimonial. Hors IFI, fiscalité plus-value avantageuse.</div><div class="meta"><b>Pour qui :</b> diversification plaisir + transmission · expertise requise.</div></div>
+      <div class="p"><h3>Cryptoactifs</h3><div class="d">Actifs numériques très volatils. Plus-values au PFU 30 % (au-delà de 305 €/an de cessions).</div><div class="meta"><b>Attention :</b> risque élevé, à dimensionner avec prudence.</div></div>
+      <div class="p"><h3>Crowdlending</h3><div class="d">Prêter à des PME via plateforme contre un intérêt (5-10 %).</div><div class="meta"><b>Risque :</b> défaut de l'emprunteur · à diversifier fortement.</div></div>
+      <div class="p"><h3>Forêts & terres</h3><div class="d">Actif réel décorrélé (voir GFF/GFA) : rendement modeste mais stabilité + atouts fiscaux.</div><div class="meta"><b>Rôle :</b> fond de portefeuille patrimonial long terme.</div></div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <a class="btn" href="/app/marcel?q=Explique-moi%20quel%20produit%20patrimonial%20est%20pertinent%20pour%20ma%20situation%20de%20dirigeant.">En parler avec Marcel →</a>
+    <a class="btn ghost" href="/app/simulateurs-pro">Chiffrer avec les simulateurs →</a>
+  </div>
+
+  <div class="disc">
+    Ce catalogue est une <b>information générale à but pédagogique</b>. Il ne constitue ni un conseil en investissement, ni une recommandation personnalisée au sens de l'art. <b>L.541-1 du Code monétaire et financier</b>. Chaque produit comporte des risques (dont, selon les cas, la perte en capital et l'absence de liquidité) et une fiscalité susceptible d'évoluer ; les éléments cités sont indicatifs et doivent être vérifiés au regard de votre situation. Un conseil personnalisé suppose une étude et une lettre de mission. IKCP — ORIAS 23001568.
+  </div>
+</div>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
