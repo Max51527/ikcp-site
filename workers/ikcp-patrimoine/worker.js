@@ -524,7 +524,7 @@ export default {
       if (!env.MISTRAL_API_KEY) return json({ error: 'ocr_unconfigured', hint: 'pose MISTRAL_API_KEY sur ikcp-patrimoine (wrangler secret put)' }, 503, o);
       let b = {}; try { b = await req.json(); } catch (_) {}
       try { return json(await ocrFinance(b, env), 200, o); }
-      catch (e) { return json({ error: 'ocr_failed', message: String(e.message || e).slice(0, 160) }, 502, o); }
+      catch (e) { const _m = String(e.message || e); const _input = /manquant|invalide|trop|format|illisible/i.test(_m); return json({ error: 'ocr_failed', message: _m.slice(0, 160) }, _input ? 400 : 502, o); }
     }
 
     // ── Identité membre = JETON validé (zéro confiance dans l'URL → anti-IDOR) ──
