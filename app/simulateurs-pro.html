@@ -607,10 +607,10 @@ function renderTeaser(sim){
   document.getElementById('simDesc').textContent = sim.desc;
   document.getElementById('fields').innerHTML = '';
   document.getElementById('primaryResults').innerHTML =
-    `<div class="result-card" style="grid-column:1/-1"><span class="hint">Réservé à l'offre Premium</span><strong style="font-size:1.05rem">Simulateur de stratégie patrimoniale</strong></div>`;
+    `<div class="result-card" style="grid-column:1/-1"><span class="hint">Aperçu — résultat réservé au Premium</span><strong style="font-size:1.8rem;filter:blur(7px);user-select:none">●●● €</strong><div style="font-size:12px;color:#6B5D52;margin-top:4px">Le calcul fonctionne déjà — débloquez le chiffre exact et le détail.</div></div>`;
   document.getElementById('secondaryResults').innerHTML =
     `<div class="result-card"><div>Les calculs de base — rémunération, revenu libéral, trésorerie, capacité d'emprunt — sont <strong>gratuits</strong>. Les simulateurs de stratégie — arbitrage dividendes, retraite, cession, transmission, prévoyance, homme-clé… — sont inclus dans <strong>Premium</strong>.</div></div>`
-    + `<a href="/app/" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Débloquer avec Premium (${PREMIUM_EUR} €/mois) →</a>`;
+    + `<a href="/app/beta-invite.html" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Rejoindre la bêta — 6 mois Premium offerts →</a>`;
   if (chart){ chart.destroy(); chart = null; }
 }
 
