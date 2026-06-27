@@ -55,7 +55,7 @@ h1 em{font-style:italic;color:var(--gold-d)}
 
   <div class="lbl">Stratégies · <span class="pill">💎 Premium</span></div>
   <h1>Les <em>schémas</em> de stratégie patrimoniale</h1>
-  <p class="lead">Les montages des dirigeants, expliqués visuellement : qui fait quoi, dans quel ordre, et le levier chiffré. <i>Information pédagogique, pas une recommandation.</i></p>
+  <p class="lead">Les montages des dirigeants, expliqués visuellement : qui fait quoi, dans quel ordre, et le levier chiffré. Et si un schéma reste flou, <b>Marcel vous l'explique sur-mesure</b> — à votre niveau, pour votre situation. <i>Information pédagogique, pas une recommandation.</i></p>
 
   <!-- ── GATE Découverte ── -->
   <div id="gate">
@@ -182,6 +182,19 @@ h1 em{font-style:italic;color:var(--gold-d)}
     .then(function(r){return r.ok?r.json():null;})
     .then(function(u){ if(u&&u.tier){ setTier(u.tier==='free'?'free':'premium'); } else setTier('free'); })
     .catch(function(){});
+})();
+</script>
+<script>
+// Marcel « sur-mesure » : sur chaque schéma, un bouton qui ouvre Marcel avec un prompt
+// d'explication adaptée au niveau ET à la situation du dirigeant (compréhension personnalisée).
+(function(){
+  document.querySelectorAll('#content .strat').forEach(function(s){
+    var h=s.querySelector('h3'); var t=h?h.textContent.trim():'cette stratégie';
+    var q=encodeURIComponent('Explique-moi simplement la stratégie « '+t+' », comme à un dirigeant qui découvre : à quoi ça sert, comment ça marche concrètement, pour qui c\'est pertinent et les pièges à éviter. Adapte ton niveau de détail à ma compréhension, puis pose-moi des questions sur ma situation pour évaluer si elle me concerne.');
+    var a=document.createElement('a'); a.href='/app/marcel?q='+q; a.className='btn ghost';
+    a.style.cssText='margin-top:14px;display:inline-flex;font-size:13.5px'; a.textContent='💬 Marcel me l\'explique sur-mesure';
+    s.appendChild(a);
+  });
 })();
 </script>
 </body>
