@@ -65,10 +65,10 @@
     <a href="/app/famille" style="display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-weight:600;font-size:14px;text-decoration:none">🌳 Transmission &amp; famille →</a>
   </div>
 
-  <!-- ── Vos spécialistes IA souverains (Mistral) — intégration de l'équipe IA ── -->
+  <!-- ── Vos spécialistes IA souverains — intégration de l'équipe IA ── -->
   <section id="specialistes" style="margin:20px 0 6px">
     <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:21px;margin:0 0 3px">Vos <em style="font-style:italic;color:var(--accent)">spécialistes IA souverains</em></h2>
-    <p style="color:var(--mute);font-size:13.5px;margin-bottom:14px">Marcel orchestre une équipe d'experts IA — <strong>moteur français Mistral</strong>, données en France. Posez votre sujet, le bon spécialiste vous répond.</p>
+    <p style="color:var(--mute);font-size:13.5px;margin-bottom:14px">Marcel orchestre une équipe d'experts IA — <strong>moteur d'IA français souverain</strong>, données en France. Posez votre sujet, le bon spécialiste vous répond.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:11px">
       <a class="card" href="/app/marcel?q=Comment%20optimiser%20la%20fiscalit%C3%A9%20de%20ma%20soci%C3%A9t%C3%A9%20(IS%2C%20arbitrage%20r%C3%A9mun%C3%A9ration%2Fdividendes)%20%3F" style="padding:15px;text-decoration:none;display:block">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">⚖️</span><span style="font-family:'Fraunces',serif;font-size:16px;color:var(--ink)">Codex</span></div>
@@ -564,7 +564,7 @@ if(me){
   if(me.trial && me.trial.active){
     document.getElementById('userGreeting').innerHTML = `${salut}. Vous profitez de votre <b>essai Premium</b> — Marcel illimité, tous les simulateurs et vos outils sont à vous pendant ${me.trial.days_left} jours.`;
   } else {
-    document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
+    document.getElementById('userGreeting').textContent = `${salut}. Voici votre tableau de bord — par où souhaitez-vous commencer ?`;
   }
   // Résumé « Mon patrimoine » (module patrimoine, stockage local)
   try {
