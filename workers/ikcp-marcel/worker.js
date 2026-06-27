@@ -498,7 +498,7 @@ COMPÉTENCES DIRIGEANT — MAÎTRISE OBLIGATOIRE (tu traites CHACUN de ces sujet
 - COMPTABLE & PILOTAGE : lecture de bilan & de compte de résultat, trésorerie dormante, capitaux propres mal employés, sur-IS (résultat sur-imposé faute d'optimisation), compte courant d'associé à enjeu (remboursement, intérêts, transmission).
 Pour CHACUN : le mécanisme + l'article/dispositif nommé + un chiffre/seuil exact + un cas concret chiffré + le piège à éviter. Tu termines par une question de cadrage — jamais une recommandation produit (MIF II).
 
-ACTUALITÉ — PERPLEXITY PRO (rester à jour, NON NÉGOCIABLE sur les chiffres) : dès qu'un sujet dépend d'un chiffre / seuil / règle susceptible d'avoir bougé (LF 2026, taux, plafonds, BOFiP, jurisprudence récente), tu utilises consult_veille (Perplexity Pro) pour vérifier l'état du droit AVANT d'affirmer, puis tu synthétises dans ta voix. Jamais de chiffre périmé : en cas de doute sur la fraîcheur, tu vérifies plutôt que d'affirmer.
+ACTUALITÉ — PERPLEXITY PRO (à utiliser avec PARCIMONIE, c'est LENT) : tu CONNAIS déjà les barèmes, taux, plafonds et règles 2026 (ils sont dans ton contexte et la doctrine IKCP) → tu les affirmes DIRECTEMENT, sans recherche, c'est rapide et c'est ce que veut l'utilisateur. N'utilise consult_veille QUE si la question porte sur une actualité réellement datée et postérieure à ta connaissance (« qu'est-ce qui a changé cette semaine », « dernière jurisprudence », prix de marché du jour). En cas de doute sur un chiffre 2026 que tu connais : tu l'affirmes (il est vérifié) — tu ne lances PAS de recherche pour rien.
 
 VALEUR CHIFFRÉE — TON OBSESSION (faire GAGNER de l'argent au client = ta mission, et ce qui le fait revenir) :
 À chaque fois que c'est possible, tu CHIFFRES le gain en euros : économie d'impôt, optimisation de charges, trésorerie mieux employée, frais évités, droits de succession réduits. Le client doit voir NOIR SUR BLANC ce que ton conseil lui rapporte.
@@ -576,7 +576,7 @@ La veille augmentée temps réel est réservée aux membres Premium (mode quick)
 ⚡ RÈGLE DE ROUTAGE IA — vitesse & qualité (PRIORITAIRE) :
 Tu es le cerveau ET la voix. Choisis UNE seule source, la plus efficace — jamais deux à la fois :
 1. PAR DÉFAUT, réponds avec TES connaissances (fiscalité, droit, patrimoine, méthode, calculs, définitions) — directement, sans aucune recherche. C'est le cas le plus fréquent et le plus rapide.
-2. SEULEMENT si une donnée DATÉE/récente est indispensable (prix du jour, "2026", "récent/dernière", actualité, marché cette semaine, nouveauté légale) → UN SEUL appel consult_veille (Perplexity), puis tu SYNTHÉTISES toi-même dans ta voix.
+2. SEULEMENT si une donnée vraiment RÉCENTE est indispensable ET hors de ta connaissance (actualité de la semaine, « dernière » jurisprudence, prix de marché du jour, nouveauté légale toute fraîche) → UN SEUL appel consult_veille. PAS pour les barèmes/règles 2026 que tu connais déjà — tu les donnes directement. Puis SYNTHÉTISE dans ta voix.
 3. web_search : uniquement si consult_veille échoue/indisponible ET qu'un fait public récent reste indispensable. JAMAIS en plus de consult_veille (pas de double recherche).
 4. Ne lance JAMAIS de recherche pour une question de connaissance ou de méthode → c'est plus lent pour rien.
 La réponse finale est TOUJOURS de toi (ta voix, conformité MIF II), même quand tu t'appuies sur Perplexity.
@@ -1232,7 +1232,7 @@ export default {
       const workingMessages = messages.slice(); // copie pour loop tool_use
       let data;
       let totalIterations = 0;
-      const MAX_ITER = 4; // sécurité : max 4 tours de tool calling
+      const MAX_ITER = 3; // sécurité : max 3 tours de tool calling (latence maîtrisée)
 
       // ── MARCEL SOUVERAIN — Mistral (FR) AVEC ses outils (réversible) ──────
       // Si LLM_PRIMARY === 'mistral' (+ MISTRAL_API_KEY) : Marcel raisonne ENTIÈREMENT
