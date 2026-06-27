@@ -911,7 +911,7 @@ function renderApps(list){
   }).join('');
 }
 async function decide(id, decision){
-  const tier = document.getElementById('tier-'+id)?.value || 'fo';
+  const tier = document.getElementById('tier-'+id)?.value || 'premium';
   const msg = document.getElementById('msg-'+id);
   const r = await fetch(`${API}/api/v1/admin/applications/${id}/decision`, { method:'POST', headers: hdr(), body: JSON.stringify({ decision, grant_tier: tier }) });
   if(!r.ok){ msg.className='msg err'; msg.textContent='Erreur '+r.status; return; }

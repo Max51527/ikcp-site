@@ -162,7 +162,7 @@ export const Marcel = {
   },
 
   // 6. Veille augmentée (Premium)
-  async veille(query, mode = 'quick', userId, tier = 'fo') {
+  async veille(query, mode = 'quick', userId, tier = 'free') {
     return jsonFetch(`${ENDPOINTS.veille}/search`, {
       method: 'POST',
       body: JSON.stringify({ query, mode, user_id: userId, tier }),

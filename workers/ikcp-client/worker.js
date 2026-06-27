@@ -337,7 +337,7 @@ function effectiveTier(storedTier, createdAt) {
   if (storedTier && storedTier !== 'free') return storedTier; // membre payant : inchangé
   const c = typeof createdAt === 'number' ? createdAt : Date.parse(createdAt || 0);
   if (!c) return 'free';
-  return (Date.now() - c) < TRIAL_DAYS * 86400000 ? 'fo' : 'free'; // essai = expérience Family Office COMPLÈTE (Cassius + conciergerie + tous les agents)
+  return (Date.now() - c) < TRIAL_DAYS * 86400000 ? 'premium' : 'free'; // essai = 14 jours de PREMIUM offerts (offre = Découverte + Premium, 100% IA self-service ; 'fo' = tier hérité, non attribué)
 }
 function trialInfo(storedTier, createdAt) {
   if (storedTier && storedTier !== 'free') return { active: false, member: true };
