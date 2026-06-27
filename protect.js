@@ -41,6 +41,7 @@
 
   // ── 1. Interception du copier (Ctrl+C / clic droit Copier) ──
   document.addEventListener('copy', function (e) {
+    if (IN_APP()) return; // Espace membre = workspace du client : copie 100% libre (ses réponses, ses données).
     try {
       var sel = (window.getSelection && window.getSelection().toString()) || '';
       if (!sel) return;
@@ -52,7 +53,7 @@
         if (_el && _el.closest && _el.closest('[data-allow-copy]')) return;
       } catch (_) {}
       var payload;
-      if (sel.length > 240) {
+      if (sel.length > 600) {
         // Grosse sélection = tentative de pillage → on remplace par un leurre + attribution
         payload =
           '⚠ CONTENU PROTÉGÉ ⚠\n' +
@@ -86,6 +87,7 @@
   // Désactivable par data-allow-context sur <body> (ex. pages de test).
   if (!document.body || !document.body.hasAttribute('data-allow-context')) {
     document.addEventListener('contextmenu', function (e) {
+      if (IN_APP()) return; // Espace membre : clic droit libre.
       // sur les champs de saisie on laisse le menu (UX)
       var tag = (e.target && e.target.tagName) || '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
@@ -99,6 +101,7 @@
   // U (source), P (imprimer). La capture écran OS n'est pas interceptable JS
   // → c'est le filigrane nominatif (module 4) qui la couvre.
   document.addEventListener('keydown', function (e) {
+    if (IN_APP()) return; // Espace membre : raccourcis clavier libres (S/U/P).
     try {
       var t = e.target, tag = (t && t.tagName) || '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
