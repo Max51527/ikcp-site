@@ -113,6 +113,48 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
     </div>
   </section>
 
+  <!-- ════ DÉMO MARCEL — essayer avant de s'inscrire (drive conversion + téléchargement) ════ -->
+  <section style="padding-top:4px">
+    <div style="max-width:760px;margin:0 auto;background:#fff;border:1px solid rgba(139,111,63,.2);border-radius:18px;padding:24px;box-shadow:0 16px 44px rgba(27,42,74,.07)">
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8B6F3F;font-weight:700">Essayez maintenant · gratuit · sans inscription</div>
+      <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(21px,4vw,28px);color:#1B2A4A;margin:7px 0 4px">Posez une question à <em style="font-style:italic;color:#8B6F3F">Marcel</em></h2>
+      <p style="color:#6B5D52;font-size:14.5px;margin-bottom:13px">L'IA patrimoniale française pour dirigeant(e)s &amp; professions libérales. Réponse immédiate.</p>
+      <div id="dmChips" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px"></div>
+      <div id="dmOut" style="display:none;background:#FAF8F4;border:1px solid rgba(139,111,63,.18);border-radius:12px;padding:15px;font-size:14.5px;line-height:1.62;color:#221E18;margin-bottom:13px;max-height:360px;overflow:auto"></div>
+      <form id="dmForm" style="display:flex;gap:8px">
+        <input id="dmQ" type="text" autocomplete="off" placeholder="Ex : comment réduire l'IS de ma société ?" style="flex:1;min-width:0;border:1px solid rgba(139,111,63,.3);border-radius:11px;padding:12px 14px;font:inherit;font-size:15px;color:#221E18">
+        <button type="submit" id="dmBtn" style="border:0;cursor:pointer;font-weight:700;border-radius:11px;padding:12px 18px;font-size:15px;background:linear-gradient(135deg,#E2C896,#C9A96E);color:#20180c">Demander →</button>
+      </form>
+      <div style="font-size:11px;color:#6B5D52;margin-top:10px;line-height:1.5">Information générale, pas un conseil personnalisé (art. L.541-1 CoMoFi) · IA française souveraine, hébergée en France.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;align-items:center;border-top:1px solid rgba(139,111,63,.15);padding-top:16px">
+        <a class="btn gold" href="/app/" style="text-decoration:none">Créer mon compte gratuit →</a>
+        <!-- LIEN ANDROID : quand l'app sera publiée sur Google Play, remplacer ce <span> par <a href="https://play.google.com/store/apps/details?id=eu.ikcp.app"> -->
+        <span id="dmAndroid" title="Disponible prochainement sur Google Play" style="display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(139,111,63,.3);border-radius:11px;padding:11px 16px;color:#6B5D52;font-weight:600;font-size:14px">📱 Bientôt sur Android</span>
+      </div>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var API='https://ikcp-chat.maxime-ead.workers.dev/';
+    var out=document.getElementById('dmOut'),form=document.getElementById('dmForm'),q=document.getElementById('dmQ'),btn=document.getElementById('dmBtn'),chips=document.getElementById('dmChips');
+    if(!form) return;
+    var SUG=["Comment réduire l'IS de ma société ?","Rémunération ou dividendes : quel équilibre ?","Comment préparer la cession de mon entreprise ?"];
+    SUG.forEach(function(s){ var b=document.createElement('button'); b.type='button'; b.textContent=s; b.style.cssText='border:1px solid rgba(139,111,63,.3);background:#F4EFE7;border-radius:20px;padding:6px 12px;font:inherit;font-size:12.5px;color:#1B2A4A;cursor:pointer'; b.onclick=function(){ q.value=s; form.requestSubmit(); }; chips.appendChild(b); });
+    function esc(s){return String(s||'').replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+    form.addEventListener('submit', async function(e){
+      e.preventDefault(); var m=(q.value||'').trim(); if(!m) return;
+      out.style.display='block'; out.textContent='Marcel réfléchit… (quelques secondes)'; btn.disabled=true; btn.textContent='…';
+      try{
+        var r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:m,history:[]})});
+        var d=await r.json();
+        var t=esc(d.reply||'Marcel est momentanément indisponible — réessayez.').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+        out.innerHTML=t;
+      }catch(_){ out.textContent='Marcel est momentanément indisponible — réessayez dans un instant.'; }
+      btn.disabled=false; btn.textContent='Demander →';
+    });
+  })();
+  </script>
+
   <section>
     <div class="offres">
       <div class="offre">
