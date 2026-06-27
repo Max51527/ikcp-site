@@ -554,15 +554,15 @@ if(me){
 if(me){
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
-  let tierLbl = { free:'Découverte', premium:'Premium', fo:'intelligence patrimoniale' }[me.tier] || 'Découverte';
-  if(me.trial && me.trial.active){ tierLbl = 'intelligence patrimoniale · essai ' + me.trial.days_left + ' j'; }
+  let tierLbl = { free:'Découverte', premium:'Premium', fo:'Premium' }[me.tier] || 'Découverte';
+  if(me.trial && me.trial.active){ tierLbl = 'Premium · essai ' + me.trial.days_left + ' j'; }
   const tierEl = document.getElementById('userTier');
   tierEl.textContent = tierLbl;
   if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
   const hour = new Date().getHours();
   const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
   if(me.trial && me.trial.active){
-    document.getElementById('userGreeting').innerHTML = `${salut}. Bienvenue dans votre <b>essai intelligence patrimoniale</b> — Marcel, vos 12 univers et la conciergerie sont à vous pendant ${me.trial.days_left} jours.`;
+    document.getElementById('userGreeting').innerHTML = `${salut}. Vous profitez de votre <b>essai Premium</b> — Marcel illimité, tous les simulateurs et vos outils sont à vous pendant ${me.trial.days_left} jours.`;
   } else {
     document.getElementById('userGreeting').textContent = `${salut}. Marcel a parcouru votre veille cette nuit. Voici votre tableau de bord.`;
   }
@@ -782,15 +782,15 @@ import { Marcel } from '/app/js/api.js';
   var hasCtx=!!(profile.profession||profile.situation||(profile.spheres&&profile.spheres.length)||sd||(score&&typeof score.score==='number'));
   function render(text, teaser){
     card.style.display='block';
-    if(teaser) document.getElementById('miPill').textContent='essai requis';
+    if(teaser) document.getElementById('miPill').textContent='Premium';
     body.innerHTML = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n+/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
-      + (teaser ? '<a href="/app/beta-invite" class="btn btn-sm" style="margin-top:12px;display:inline-block">Activer mon essai →</a>'
+      + (teaser ? '<a href="/app/profil" class="btn btn-sm" style="margin-top:12px;display:inline-block">💎 Passer en Premium →</a>'
                 : '<a href="/app/marcel?q='+encodeURIComponent('Approfondis ton observation sur ma situation patrimoniale.')+'" class="btn btn-ghost btn-sm" style="margin-top:12px;display:inline-block">Approfondir avec Marcel →</a>');
   }
   if(!hasCtx) return; // pas assez de contexte → on n'affiche rien
   var today=new Date().toISOString().slice(0,10);
   try{ var c=JSON.parse(localStorage.getItem('ikcp_insight')||'null'); if(c&&c.date===today&&c.text){ render(c.text); return; } }catch(_){}
-  if(tier!=='premium' && tier!=='fo'){ render('Activez votre essai intelligence patrimoniale : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
+  if(tier!=='premium' && tier!=='fo'){ render('Passez en Premium : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
   card.style.display='block'; body.innerHTML='<span style="color:var(--mute);font-style:italic">Marcel analyse votre situation…</span>';
   var ctx=[];
   if(profile.prenom) ctx.push('Prénom: '+profile.prenom);
