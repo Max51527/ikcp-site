@@ -52,6 +52,78 @@
   <h1 class="app-h1">Votre copilote patrimonial, <em>au quotidien.</em></h1>
   <p class="app-lead" id="userGreeting">Chargement de votre tableau de bord…</p>
 
+  <!-- ════ MON PATRIMOINE — synthèse Finary-like (données réelles du cockpit) + Marcel ════ -->
+  <section id="patSynth" style="margin:8px 0 18px"></section>
+  <script>
+  (function(){
+    var host = document.getElementById('patSynth'); if(!host) return;
+    var CATS = {
+      immobilier:{l:'Immobilier',c:'#C24722',e:'🏠'},
+      financier:{l:'Placements financiers',c:'#C9A96E',e:'📈'},
+      societe:{l:'Sociétés / professionnel',c:'#1B2A4A',e:'🏢'},
+      non_cote:{l:'Investissement non coté',c:'#3F7A3F',e:'🪴'},
+      liquidites:{l:'Liquidités',c:'#6B655A',e:'💧'},
+      collection:{l:'Collections & passions',c:'#B8801F',e:'🎨'}
+    };
+    function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+    function readBiens(){
+      var biens=[];
+      try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
+        if(k && k.indexOf('ikcp_patrimoine_')===0){ var arr=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(arr)&&arr.length) biens=arr; } } }catch(_){}
+      return biens;
+    }
+    function company(){ try{ return localStorage.getItem('ikcp_pending_company')||''; }catch(_){ return ''; } }
+    function piste(byCat,total){
+      var immo=byCat.immobilier||0;
+      if(immo>1300000) return {t:'Position IFI à surveiller',d:'Votre immobilier déclaré ('+eur(immo)+') dépasse le seuil IFI de 1,3 M€.',q:'Mon immobilier dépasse le seuil IFI : quels leviers pour optimiser ma position ?'};
+      if(total>0 && ((byCat.liquidites||0)+(byCat.financier||0))>total*0.4) return {t:'Des capitaux peu optimisés ?',d:'Une part importante est en liquidités et placements — un arbitrage peut améliorer votre rendement net.',q:'Une grande partie de mon patrimoine est en liquidités et placements. Comment mieux l\'optimiser ?'};
+      if(total>0 && (byCat.societe||0)>total*0.5) return {t:'Patrimoine concentré sur la société',d:'Plus de la moitié de votre patrimoine est professionnel — diversifier et préparer la transmission devient clé.',q:'Mon patrimoine est très concentré sur ma société. Comment diversifier et préparer la transmission ?'};
+      return {t:'Faites parler vos chiffres',d:'Marcel analyse cette répartition et révèle vos leviers prioritaires.',q:'Analyse la répartition de mon patrimoine et donne-moi mes 3 leviers prioritaires, chiffrés.'};
+    }
+    function render(biens){
+      if(!biens || !biens.length){
+        host.innerHTML='<article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(201,169,110,.32)">'
+          +'<div class="card-head"><span class="card-cat" style="color:var(--accent)">Mon patrimoine</span><span class="pill neutral">à construire</span></div>'
+          +'<h3 style="font-family:\'Fraunces\',serif;font-weight:500;font-size:19px;margin:2px 0 4px">Votre patrimoine, en un coup d\'œil</h3>'
+          +'<p style="font-size:13.5px;color:var(--mute);margin-bottom:12px">Renseignez vos premiers éléments — Marcel calcule votre répartition et révèle vos leviers. 1 minute.</p>'
+          +'<div style="display:flex;flex-wrap:wrap;gap:8px">'
+          +'<a class="btn btn-sm" href="/app/patrimoine-pro">➕ Ajouter mes biens</a>'
+          +'<a class="btn btn-ghost btn-sm" href="/app/avis">📸 Scanner mon avis</a>'
+          +'<a class="btn btn-ghost btn-sm" href="/app/marcel?q='+encodeURIComponent('Cartographie ma société à partir de mon SIREN puis donne-moi mes leviers prioritaires de dirigeant.')+'">🔍 Partir de mon SIREN</a>'
+          +'</div></article>';
+        return;
+      }
+      var total=biens.reduce(function(s,b){return s+(+b.value||0);},0);
+      var byCat={}; biens.forEach(function(b){ byCat[b.cat]=(byCat[b.cat]||0)+(+b.value||0); });
+      var rows=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];}).map(function(k){
+        var c=CATS[k]||{l:k,c:'#999',e:'•'}; var v=byCat[k]; var pct=total?Math.round(v/total*100):0;
+        return '<div style="margin:9px 0">'
+          +'<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span style="color:var(--ink)">'+c.e+' '+esc(c.l)+'</span><span style="color:var(--mute)"><b style="color:var(--ink)">'+eur(v)+'</b> · '+pct+'%</span></div>'
+          +'<div style="height:8px;background:var(--line);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+c.c+';border-radius:5px;transition:width .6s"></div></div></div>';
+      }).join('');
+      var p=piste(byCat,total); var co=company();
+      host.innerHTML='<article class="card">'
+        +'<div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill live">synchronisé</span></div>'
+        +'<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 0 2px"><div style="font-family:\'Fraunces\',serif;font-size:34px;font-weight:600;color:var(--ink);line-height:1">'+eur(total)+'</div><div style="font-size:12.5px;color:var(--mute)">patrimoine net estimé'+(co?' · '+esc(co):'')+'</div></div>'
+        +'<div style="margin:12px 0 2px">'+rows+'</div>'
+        +'<div style="background:var(--accent-soft);border:1px solid rgba(201,169,110,.28);border-radius:12px;padding:12px 14px;margin-top:12px">'
+          +'<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:2px">✦ '+esc(p.t)+'</div>'
+          +'<div style="font-size:13px;color:var(--ink);line-height:1.5">'+esc(p.d)+'</div>'
+          +'<a class="btn btn-sm" style="margin-top:10px" href="/app/marcel?q='+encodeURIComponent(p.q)+'">Demander à Marcel →</a></div>'
+        +'<a href="/app/patrimoine-pro" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--accent);font-weight:600;text-decoration:none">Voir mon cockpit complet →</a>'
+        +'</article>';
+    }
+    render(readBiens());
+    // Rafraîchit depuis le serveur (cross-device) si connecté — best-effort, ne casse jamais l'affichage local
+    try{ var t=localStorage.getItem('ikcp_token')||'';
+      if(t) fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/state',{headers:{'Authorization':'Bearer '+t}})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(d){ if(d && Array.isArray(d.biens) && d.biens.length) render(d.biens); }).catch(function(){});
+    }catch(_){}
+  })();
+  </script>
+
   <!-- ── Pont site → app : reprise de l'audit public (société chargée via localStorage) ── -->
   <div id="repriseAudit"></div>
 
