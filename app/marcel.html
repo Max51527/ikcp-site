@@ -159,7 +159,7 @@ if (userTier === 'fo') {
   // Accueil vocal Marcel (effet majordome) — dégrade en silence si le navigateur bloque
   try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre conseiller patrimonial. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
   var hello = document.querySelector('.chat-msgs .msg.a');
-  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre conseiller patrimonial. Je veille sur l\'ensemble de votre univers — patrimoine, fiscalité, transmission, art de vivre, conciergerie. Que puis-je orchestrer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
+  if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre conseiller patrimonial. Je veille sur votre patrimoine de dirigeant — fiscalité, rémunération, trésorerie, transmission, cession. Que puis-je éclairer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
 }
 
 // ── Suggestions de démarrage personnalisées (selon le profil de l'utilisateur) ──
