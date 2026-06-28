@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEL : rémunération (BNC), dividendes ou holding (SPFPL) ? · Marcel IA</title>
+<meta name="description" content="Profession libérale en SEL : depuis 2025 la rémunération est en BNC. Simulez l'arbitrage rémunération / dividendes / remontée en SPFPL — net en poche, capital qui travaille, retraite. Estimation pédagogique 2026.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F;--bad:#B23A2E;--blue:#3a6ea5}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:14px 0}.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:20px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:44px 0 14px}
+.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:13px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(25px,4.4vw,40px);line-height:1.12;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:640px;margin:14px auto 0;font-size:15px}
+.reform{max-width:640px;margin:14px auto 0;background:rgba(58,110,165,.08);border:1px solid rgba(58,110,165,.25);border-radius:11px;padding:11px 15px;font-size:12.5px;color:var(--navy)}
+.controls{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;max-width:720px;margin:24px auto 0}
+.ctrl{margin-bottom:18px}.ctrl:last-child{margin-bottom:0}
+.ctrl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-mute);margin-bottom:7px;font-weight:500}
+.ctrl label b{color:var(--navy);font-family:'JetBrains Mono',monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--gold-deep);height:5px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:64px;padding:10px 8px;border:1.5px solid var(--line);background:var(--cream);border-radius:9px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:var(--ink);font-weight:600}
+.seg button.on{background:var(--gold);border-color:var(--gold);color:var(--navy-deep)}
+.vs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:980px;margin:22px auto 0}
+@media(max-width:760px){.vs{grid-template-columns:1fr}}
+.card{border-radius:16px;padding:20px;border:1px solid var(--line);background:#fff;position:relative}
+.card.win{border-color:var(--gold);box-shadow:0 16px 40px -22px rgba(201,169,110,.6)}
+.card .badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy-deep);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:4px 12px;border-radius:99px;white-space:nowrap;display:none}
+.card.win .badge{display:block}
+.card h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);text-align:center;margin-bottom:3px}
+.card .tagline{text-align:center;font-size:11px;color:var(--ink-mute);margin-bottom:13px;min-height:28px}
+.card .net{text-align:center;margin-bottom:13px}
+.card .net .v{font-family:'Playfair Display',serif;font-style:italic;font-size:30px;color:var(--gold-deep);line-height:1}
+.card .net .l{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);font-weight:600;margin-top:3px}
+.brk{font-size:12px;color:var(--ink-mute);border-top:1px dashed var(--line);padding-top:9px}
+.brk .r{display:flex;justify-content:space-between;margin:4px 0;gap:8px}
+.brk .r b{color:var(--navy);font-family:'JetBrains Mono',monospace;text-align:right}
+.prot{margin-top:9px;font-size:11px;padding:7px 10px;border-radius:8px;line-height:1.4}
+.prot.hi{background:rgba(45,122,79,.12);color:var(--ok)}.prot.lo{background:rgba(178,58,46,.1);color:var(--bad)}.prot.mid{background:rgba(58,110,165,.1);color:var(--blue)}
+.verdict{max-width:720px;margin:22px auto 0;background:var(--navy-deep);color:var(--cream);border-radius:16px;padding:22px;text-align:center}
+.verdict .v{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:var(--gold-bright)}
+.verdict .s{font-size:13px;color:rgba(250,250,248,.72);margin-top:8px;line-height:1.55}
+.cta-final{text-align:center;margin:24px 0 8px}
+.cta-final a{display:inline-flex;gap:8px;background:var(--gold);color:var(--navy-deep);padding:14px 26px;border-radius:100px;font-weight:700;font-size:15px}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:760px;margin:18px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:12px;margin-top:34px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap"><div class="logo">Marcel <span>IA</span></div><a class="back" href="/app/dashboard.html">← Mon espace</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Profession libérale en SEL · arbitrage 2026</div>
+  <h1>Rémunération, dividendes <em>ou</em> holding ?</h1>
+  <p>Depuis 2025, votre rémunération technique en SEL est imposée en <b>BNC</b>. Trois façons de sortir votre bénéfice — trois résultats très différents. Réglez vos curseurs.</p>
+  <div class="reform">⚖️ <b>Réforme 2025</b> (Conseil d'État, 8 avril 2025) : la rémunération de l'activité libérale en SEL n'est plus un « traitement et salaire » mais un <b>BNC</b>. L'arbitrage rémunération / dividendes / remontée en SPFPL est à refaire — c'est tout l'enjeu ci-dessous.</div>
+</section>
+
+<div class="controls">
+  <div class="ctrl"><label>Bénéfice de la SEL <span style="font-weight:400">(avant votre rémunération &amp; IS)</span> <b id="vBen">200 000 €</b></label><input type="range" id="ben" min="50000" max="600000" step="10000" value="200000"></div>
+  <div class="ctrl"><label>Capital social + apports <span style="font-weight:400">(règle des 10 % sur dividendes TNS)</span> <b id="vCap">20 000 €</b></label><input type="range" id="cap" min="1000" max="300000" step="1000" value="20000"></div>
+  <div class="ctrl">
+    <label>Votre tranche marginale d'IR</label>
+    <div class="seg" id="tmiSeg"><button data-t="0.11">11 %</button><button data-t="0.30" class="on">30 %</button><button data-t="0.41">41 %</button><button data-t="0.45">45 %</button></div>
+  </div>
+</div>
+
+<div class="vs">
+  <div class="card" id="cA"><div class="badge">Optimal</div><h3>💼 Tout en rémunération</h3><div class="tagline">Imposée en BNC · cotisations TNS</div>
+    <div class="net"><div class="v" id="netA">—</div><div class="l">Net en poche</div></div>
+    <div class="brk" id="brkA"></div>
+    <div class="prot hi">✓ Construit votre retraite &amp; prévoyance (cotisations TNS)</div>
+  </div>
+  <div class="card" id="cB"><div class="badge">Optimal</div><h3>📈 Tout en dividendes</h3><div class="tagline">IS, puis PFU 30 % (+ cotis. &gt; 10 % capital)</div>
+    <div class="net"><div class="v" id="netB">—</div><div class="l">Net en poche</div></div>
+    <div class="brk" id="brkB"></div>
+    <div class="prot lo">⚠ Très peu / pas de droits retraite constitués</div>
+  </div>
+  <div class="card" id="cC"><div class="badge">Optimal</div><h3>🏛️ Remontée en SPFPL</h3><div class="tagline">Holding · régime mère-fille · pour réinvestir</div>
+    <div class="net"><div class="v" id="netC">—</div><div class="l">Capital qui travaille</div></div>
+    <div class="brk" id="brkC"></div>
+    <div class="prot mid">↗ Capital quasi-intact dans la holding · IR différé · pour construire, pas consommer</div>
+  </div>
+</div>
+
+<div class="verdict"><div class="v" id="verdictV">—</div><div class="s" id="verdictS"></div></div>
+
+<div class="cta-final wrap"><a id="ctaMarcel" href="#">Affiner mon arbitrage SEL avec Marcel →</a></div>
+<div class="disc">Estimation pédagogique 2026 — IS 15 % jusqu'à 42 500 € puis 25 % · PFU 30 % (12,8 % IR + 17,2 % PS) · cotisations TNS ~45 % · dividendes du gérant majoritaire &gt; 10 % du capital soumis à cotisations TNS · remontée SPFPL en régime mère-fille (quote-part de frais 5 %). Hypothèses simplifiées (hors abattements, CSG déductible, comptes courants, cas particuliers). <b>Ne constitue pas un conseil personnalisé</b> au sens de l'art. L.541-1 du Code monétaire et financier, ni une recommandation. Tout arbitrage est à valider avec votre <b>expert-comptable</b>, votre avocat fiscaliste et Maxime Juveneton (CIF · ORIAS 23001568).</div>
+
+<footer class="ft">© 2026 IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436</footer>
+
+<script>
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
+function isImpot(b){ return b<=42500 ? b*0.15 : 42500*0.15 + (b-42500)*0.25; } // IS 2026
+var tmi=0.30;
+
+function compute(){
+  var B=+document.getElementById('ben').value, C=+document.getElementById('cap').value;
+  document.getElementById('vBen').textContent=eur(B);
+  document.getElementById('vCap').textContent=eur(C);
+
+  // ── A · TOUT EN RÉMUNÉRATION (BNC) — déductible, donc ~pas d'IS ──
+  // Enveloppe B = rémunération nette de cotisations × ~1,45 (coût TNS)
+  var remuAvIR = B/1.45, cotisA = B - remuAvIR, irA = remuAvIR*tmi, netA = remuAvIR - irA;
+  document.getElementById('brkA').innerHTML =
+    '<div class="r"><span>Cotisations TNS</span><b>'+eur(cotisA)+'</b></div>'+
+    '<div class="r"><span>Impôt sur le revenu (BNC)</span><b>'+eur(irA)+'</b></div>'+
+    '<div class="r"><span>Prélèvements</span><b>'+Math.round((cotisA+irA)/B*100)+' %</b></div>';
+
+  // ── B · TOUT EN DIVIDENDES (gérant majoritaire TNS) ──
+  var isB=isImpot(B), distB=B-isB;
+  var seuil=C*0.10, partChargee=Math.max(0,distB-seuil), cotisB=partChargee*0.45;
+  var assietteB=distB-cotisB, pfuB=assietteB*0.30, netB=assietteB-pfuB;
+  document.getElementById('brkB').innerHTML =
+    '<div class="r"><span>Impôt sociétés (IS)</span><b>'+eur(isB)+'</b></div>'+
+    (cotisB>0?'<div class="r"><span>Cotis. TNS (&gt; 10 % capital)</span><b>'+eur(cotisB)+'</b></div>':'')+
+    '<div class="r"><span>Flat tax (PFU 30 %)</span><b>'+eur(pfuB)+'</b></div>'+
+    '<div class="r"><span>Prélèvements</span><b>'+Math.round((B-netB)/B*100)+' %</b></div>';
+
+  // ── C · REMONTÉE EN SPFPL (mère-fille) — pour réinvestir via la holding ──
+  var isC=isImpot(B), distC=B-isC;
+  var qpft=distC*0.05*0.25;            // quote-part de frais 5 % taxée à l'IS holding (~25%)
+  var capHolding=distC-qpft;            // capital disponible pour réinvestir, IR perso différé
+  document.getElementById('brkC').innerHTML =
+    '<div class="r"><span>Impôt sociétés (SEL)</span><b>'+eur(isC)+'</b></div>'+
+    '<div class="r"><span>Quote-part frais (5 %)</span><b>'+eur(qpft)+'</b></div>'+
+    '<div class="r"><span>IR / PFU personnel</span><b>différé</b></div>'+
+    '<div class="r"><span>Capital qui travaille</span><b>'+Math.round(capHolding/B*100)+' %</b></div>';
+
+  document.getElementById('netA').textContent=eur(netA);
+  document.getElementById('netB').textContent=eur(netB);
+  document.getElementById('netC').textContent=eur(capHolding);
+
+  // « gagnant » : net en poche (A vs B) — C est hors-concours (capital, pas poche)
+  var salWin=netA>=netB;
+  document.getElementById('cA').classList.toggle('win',salWin);
+  document.getElementById('cB').classList.toggle('win',!salWin);
+  document.getElementById('cC').classList.remove('win');
+
+  var ecart=Math.abs(netA-netB), surplusC=capHolding-Math.max(netA,netB);
+  document.getElementById('verdictV').textContent='SPFPL : '+eur(surplusC)+' de capital en plus qui travaille pour vous.';
+  document.getElementById('verdictS').textContent='Entre rémunération et dividendes, l\'écart de net est de '+eur(ecart)+'. Mais la remontée en holding garde '+eur(surplusC)+' de plus à investir (IR différé) — au prix de zéro retraite et d\'un capital « bloqué » dans la holding. L\'optimum réel est presque toujours un MIX : une rémunération plancher pour la retraite + une remontée en SPFPL pour construire. Lequel sert VOTRE objectif — consommer ou bâtir ?';
+
+  // CTA Marcel contextualisé (souverain, finit par une question)
+  var q='Je suis en SEL (bénéfice '+eur(B)+', capital '+eur(C)+', TMI '+Math.round(tmi*100)+'%). Compare pour moi rémunération BNC, dividendes et remontée en SPFPL, et aide-moi à trouver le bon mix selon mon objectif. Termine par une question.';
+  document.getElementById('ctaMarcel').href='/app/marcel?q='+encodeURIComponent(q);
+}
+document.querySelectorAll('#tmiSeg button').forEach(function(b){b.onclick=function(){tmi=+b.dataset.t;document.querySelectorAll('#tmiSeg button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');compute();};});
+['ben','cap'].forEach(function(id){document.getElementById(id).addEventListener('input',compute);});
+compute();
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
