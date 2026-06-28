@@ -102,6 +102,29 @@
   .arrow{display:flex;align-items:center;color:var(--gold);font-size:18px;font-weight:700}
   @media(max-width:640px){.flow{flex-direction:column;align-items:center}.step{max-width:none;width:100%}.arrow{transform:rotate(90deg)}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  /* ── Schéma cascade « Votre SIREN. Et tout s'enchaîne. » ── */
+  .cascade{display:flex;flex-direction:column;margin:6px 0 2px}
+  .casc{display:flex;align-items:center;gap:15px;padding:15px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;animation:riseIn .6s ease both;box-shadow:0 6px 18px rgba(27,42,74,.05)}
+  .casc .ic{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:linear-gradient(135deg,#1B2A4A,#0E1729);color:#E2C896}
+  .casc .tx b{display:block;font-family:'Playfair Display',serif;font-size:16px;color:var(--navy);line-height:1.15}
+  .casc .tx span{font-size:12.5px;color:var(--ink-soft)}
+  .casc .step-n{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold-deep);font-weight:600;opacity:.55}
+  .casc-link{height:16px;width:2px;background:linear-gradient(#B8956E,rgba(184,149,110,.15));margin:0 0 0 40px}
+  .casc.final{background:linear-gradient(135deg,#1B2A4A,#0E1729);border:none}
+  .casc.final .ic{background:rgba(226,200,150,.18)}
+  .casc.final .tx b{color:#fff}.casc.final .tx span{color:rgba(250,248,244,.72)}
+  /* Aperçu des pistes de réflexion */
+  .pistes-demo{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:16px}
+  @media(max-width:760px){.pistes-demo{grid-template-columns:1fr}}
+  .pcard{background:#fff;border:1px solid var(--line);border-top:3px solid #B8956E;border-radius:14px;padding:17px;animation:riseIn .6s ease both}
+  .pcard .pn{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--gold-deep);font-weight:600;letter-spacing:.04em}
+  .pcard h4{font-family:'Playfair Display',serif;font-weight:600;font-size:15.5px;color:var(--navy);margin:5px 0 9px;line-height:1.2}
+  .pcard .ba{display:flex;gap:8px;margin:8px 0 4px}
+  .pcard .ba div{flex:1;background:var(--cream-2);border-radius:8px;padding:7px;text-align:center}
+  .pcard .ba .lbl{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin-bottom:2px}
+  .pcard .av{color:#C0414C;font-weight:700;font-size:13px}
+  .pcard .ap{color:#2e9e6b;font-weight:700;font-size:13px}
+  .pcard .qq{font-style:italic;color:var(--gold-deep);font-size:12.5px;margin-top:8px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -132,26 +155,40 @@
 
 <main class="wrap">
 
-  <!-- SCHÉMA DE FLUX -->
-  <div class="flow">
-    <div class="step" style="animation-delay:.04s"><div class="num">1</div><b>Votre SIREN</b><span>9 chiffres</span></div>
-    <div class="arrow">→</div>
-    <div class="step" style="animation-delay:.12s"><div class="num">2</div><b>Cartographie</b><span>RNE officiel · 30 s</span></div>
-    <div class="arrow">→</div>
-    <div class="step" style="animation-delay:.20s"><div class="num">3</div><b>Marcel analyse</b><span>+ 12 spécialistes</span></div>
-    <div class="arrow">→</div>
-    <div class="step" style="animation-delay:.28s"><div class="num">4</div><b>Décision éclairée</b><span>chiffrée · souveraine</span></div>
-  </div>
-
-  <!-- TOUT PART DU SIREN -->
+  <!-- SCHÉMA : LA STRUCTURE — TOUT PART DU SIREN -->
   <section class="act">
-    <div class="act-tag"><span class="dot"></span>Tout part de votre SIREN</div>
+    <div class="act-tag"><span class="dot"></span>La structure</div>
     <h2>Votre SIREN. Et tout s'enchaîne.</h2>
-    <div class="row">
+    <p style="color:var(--ink-soft);font-size:14.5px;max-width:56ch;margin-bottom:18px">Un seul point de départ — le numéro de votre société. Marcel déroule toute la chaîne, en direct et souverain. Vous ne saisissez rien d'autre.</p>
+    <div class="cascade">
+      <div class="casc" style="animation-delay:.04s"><div class="ic">🔢</div><div class="tx"><b>Votre SIREN</b><span>9 chiffres — rien d'autre à saisir</span></div><div class="step-n">01</div></div>
+      <div class="casc-link"></div>
+      <div class="casc" style="animation-delay:.12s"><div class="ic">🏢</div><div class="tx"><b>Cartographie de votre société</b><span>Registre officiel (RNE) — forme, capital, dirigeant · 30 s</span></div><div class="step-n">02</div></div>
+      <div class="casc-link"></div>
+      <div class="casc" style="animation-delay:.20s"><div class="ic">🧠</div><div class="tx"><b>Marcel analyse</b><span>IA française souveraine + spécialistes (fiscal · transmission · 360°)</span></div><div class="step-n">03</div></div>
+      <div class="casc-link"></div>
+      <div class="casc" style="animation-delay:.28s"><div class="ic">✦</div><div class="tx"><b>Pistes de réflexion chiffrées</b><span>Des angles que vous n'auriez pas explorés — avant/après, sourcés</span></div><div class="step-n">04</div></div>
+      <div class="casc-link"></div>
+      <div class="casc final" style="animation-delay:.36s"><div class="ic">🎯</div><div class="tx"><b>Votre décision, éclairée</b><span>Vous pilotez. Information, jamais une recommandation imposée.</span></div><div class="step-n">05</div></div>
+    </div>
+    <div class="row" style="margin-top:22px">
       <input id="siren" type="text" inputmode="numeric" maxlength="11" placeholder="9 chiffres — ex. 552 032 534" onkeydown="if(event.key==='Enter')goSiren()">
       <button id="sirenBtn" onclick="goSiren()">Lancer →</button>
     </div>
     <div class="out" id="sirenOut" data-allow-copy></div>
+  </section>
+
+  <!-- SCHÉMA : LES PISTES DE RÉFLEXION (aperçu) -->
+  <section class="act">
+    <div class="act-tag"><span class="dot"></span>Ce que Marcel vous révèle</div>
+    <h2>Des pistes, pas du blabla.</h2>
+    <p style="color:var(--ink-soft);font-size:14.5px;max-width:58ch;margin-bottom:4px">Chaque piste : un angle, un <b>avant/après chiffré</b>, et une question pour décider. <span style="opacity:.7">(Exemples — Marcel personnalise à votre société réelle.)</span></p>
+    <div class="pistes-demo">
+      <div class="pcard" style="animation-delay:.06s"><div class="pn">PISTE 01</div><h4>Votre trésorerie d'entreprise dort</h4><div class="ba"><div><span class="lbl">Avant</span><span class="av">0 €/an</span></div><div><span class="lbl">Après</span><span class="ap">+6 k€/an</span></div></div><div class="qq">Combien « dort » sur votre compte pro aujourd'hui ?</div></div>
+      <div class="pcard" style="animation-delay:.14s"><div class="pn">PISTE 02</div><h4>Holding : 3 impôts à optimiser</h4><div class="ba"><div><span class="lbl">Avant</span><span class="av">sur-imposé</span></div><div><span class="lbl">Après</span><span class="ap">−10 à 50 k€</span></div></div><div class="qq">Votre holding est-elle vraiment optimisée ?</div></div>
+      <div class="pcard" style="animation-delay:.22s"><div class="pn">PISTE 03</div><h4>Transmission anticipée (Dutreil)</h4><div class="ba"><div><span class="lbl">Avant</span><span class="av">droits pleins</span></div><div><span class="lbl">Après</span><span class="ap">−75 % d'assiette</span></div></div><div class="qq">Avez-vous chiffré le coût d'attendre ?</div></div>
+    </div>
+    <div class="trust" style="margin-top:16px">⚖️ Information patrimoniale, jamais un conseil personnalisé (art. L.541-1 CoMoFi).</div>
   </section>
 
   <!-- CONTINUER — apparaît après le SIREN ou un clic spécialiste -->
