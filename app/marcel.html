@@ -508,43 +508,61 @@ window.send = async function(e){
   }, 1100);
 
   try{
-    const r = await Marcel.chat(q, history.slice(-20));
-    clearInterval(ldTimer); ld.remove();
-    const reply = r.reply || r.message || 'Marcel n\'a pas pu traiter votre demande.';
-    history.push({role:'assistant',content:reply});
-    // ── Bêta test : capture de l'échange (D1 Paris, best-effort, souverain) ──
-    try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'marcel',action:'message',label:String(q).slice(0,140),data:{provider:r.provider||'',len:(reply||'').length,tier:userTier||'free'}})}).catch(function(){}); }catch(_){}
-    if(userTier === 'premium' || userTier === 'fo') Marcel.Me.saveMemory(history.slice(-24)).catch(()=>{});
-
-    // Quota free atteint (enforcé serveur) → on affiche la réponse + on bloque la saisie
-    if(r.quota_reached){ showUpgradeGate(); }
-
+    // Bulle réponse créée tôt : les tokens du flux s'y inscrivent en direct.
     const a = document.createElement('div');
     a.className = 'msg a';
     const msgId = 'msg-' + Date.now();
     a.id = msgId;
-    window.__rate = window.__rate || {}; window.__rate[msgId] = { q: q, reply: reply };
-    const escaped = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
-    const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}',(window.__rate['${msgId}']||{}).reply)">🔊 Écouter la réponse</button>` : '';
-    const disc = '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
     a.innerHTML = '<span class="tw"></span>';
-    msgs.appendChild(a);
-    // ── Effet « écriture en direct » : la réponse se révèle progressivement ──
-    const tw = a.querySelector('.tw');
-    const words = reply.split(/(\s+)/);
-    const perTick = Math.max(1, Math.ceil(words.length / 90)); // ~1,8 s quelle que soit la longueur
-    let wi = 0;
-    (function typeStep(){
-      if(wi < words.length){
-        for(let k=0; k<perTick && wi<words.length; k++) tw.textContent += words[wi++];
+    let started = false;
+    const startBubble = () => { if(started) return; started = true; clearInterval(ldTimer); if(ld.parentNode) ld.remove(); msgs.appendChild(a); };
+
+    // Rendu final commun (streaming ET repli) : markdown + voix + disclaimer + note + mémoire.
+    const finalize = (reply, provider) => {
+      window.__rate = window.__rate || {}; window.__rate[msgId] = { q: q, reply: reply };
+      history.push({role:'assistant',content:reply});
+      // Bêta test : capture de l'échange (D1 Paris, best-effort, souverain)
+      try{ fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/beta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool:'marcel',action:'message',label:String(q).slice(0,140),data:{provider:provider||'',len:(reply||'').length,tier:userTier||'free'}})}).catch(function(){}); }catch(_){}
+      if(userTier === 'premium' || userTier === 'fo') Marcel.Me.saveMemory(history.slice(-24)).catch(()=>{});
+      const readBtn = voiceSupport.tts ? `<button class="read-btn" id="rd-${msgId}" onclick="readMessage('rd-${msgId}',(window.__rate['${msgId}']||{}).reply)">🔊 Écouter la réponse</button>` : '';
+      const disc = '<div class="disclaimer">Cette analyse ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 CoMoFi.</div>';
+      a.innerHTML = md(reply) + readBtn + disc + ratingHtml(msgId);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      if(voiceSupport.tts && Voice.getPreferences().autoRead){ setTimeout(() => readMessage('rd-' + msgId, reply), 200); }
+    };
+
+    // ── 1) STREAMING : affichage des tokens en direct (vitesse perçue) ──
+    let streamed = null;
+    try {
+      streamed = await Marcel.chatStream(q, history.slice(-20), (tok, accTxt) => {
+        startBubble();
+        const tw = a.querySelector('.tw'); if(tw) tw.textContent = accTxt;
         window.scrollTo({ top: document.body.scrollHeight });
-        setTimeout(typeStep, 20);
-      } else {
-        a.innerHTML = md(reply) + readBtn + disc + ratingHtml(msgId);
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        if(voiceSupport.tts && Voice.getPreferences().autoRead){ setTimeout(() => readMessage('rd-' + msgId, reply), 200); }
-      }
-    })();
+      });
+    } catch(_) { streamed = { __fallback:true }; }
+
+    if (streamed && !streamed.__fallback && (streamed.reply||'').trim()) {
+      startBubble();
+      finalize(streamed.reply, streamed.provider);
+    } else {
+      // ── 2) Repli JSON : chemin agentique complet (outils, veille, quota serveur) ──
+      const r = await Marcel.chat(q, history.slice(-20));
+      const reply = r.reply || r.message || 'Marcel n\'a pas pu traiter votre demande.';
+      if(r.quota_reached){ showUpgradeGate(); }
+      startBubble();
+      const tw = a.querySelector('.tw'); if(tw) tw.textContent = '';
+      const words = reply.split(/(\s+)/);
+      const perTick = Math.max(1, Math.ceil(words.length / 90)); // ~1,8 s quelle que soit la longueur
+      let wi = 0;
+      await new Promise((res) => { (function typeStep(){
+        if(wi < words.length){
+          for(let k=0; k<perTick && wi<words.length && tw; k++) tw.textContent += words[wi++];
+          window.scrollTo({ top: document.body.scrollHeight });
+          setTimeout(typeStep, 20);
+        } else { res(); }
+      })(); });
+      finalize(reply, r.provider);
+    }
   }catch(err){
     clearInterval(ldTimer); ld.remove();
     const a = document.createElement('div');

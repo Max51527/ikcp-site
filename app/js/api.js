@@ -122,6 +122,60 @@ export const Marcel = {
     });
   },
 
+  // 1bis. Chat en STREAMING (SSE) — affichage des tokens en direct (vitesse perçue ~2×).
+  // onToken(token, accumulated) est appelé à chaque morceau reçu.
+  // Retourne { reply, follow_ups, provider, streamed:true } en succès,
+  // ou { __fallback:true } si la question requiert un outil (veille/spécialiste)
+  // ou si le flux n'est pas disponible → l'appelant rebascule sur chat().
+  async chatStream(message, history = [], onToken) {
+    const tok = getToken();
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 70000);
+    try {
+      const r = await fetch(ENDPOINTS.chat + '?stream=1', {
+        method: 'POST',
+        credentials: 'include',
+        signal: ctrl.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/event-stream',
+          ...(tok ? { 'Authorization': 'Bearer ' + tok } : {}),
+        },
+        body: JSON.stringify({ message, history }),
+      });
+      // Pas un flux (quota atteint, erreur, ?stream ignoré…) → repli propre.
+      if (!r.ok || !r.body || !((r.headers.get('content-type') || '').includes('event-stream'))) {
+        return { __fallback: true };
+      }
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '', acc = '', meta = null, fellBack = false;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let nl;
+        while ((nl = buf.indexOf('\n')) >= 0) {
+          const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+          if (!line.startsWith('data:')) continue;
+          let j; try { j = JSON.parse(line.slice(5).trim()); } catch (_) { continue; }
+          if (j.fallback) { fellBack = true; break; }
+          if (typeof j.token === 'string') { acc += j.token; if (onToken) { try { onToken(j.token, acc); } catch (_) {} } }
+          if (j.done) { meta = j; }
+        }
+        if (fellBack) break;
+      }
+      if (fellBack) return { __fallback: true };
+      const reply = (meta && meta.reply) || acc;
+      if (!reply.trim()) return { __fallback: true };
+      return { reply, follow_ups: (meta && meta.follow_ups) || [], provider: (meta && meta.provider) || 'mistral-souverain', streamed: true };
+    } catch (e) {
+      return { __fallback: true };
+    } finally {
+      clearTimeout(tid);
+    }
+  },
+
   // 2. Cartographie SIREN (Pappers)
   async cartographie(siren) {
     const s = String(siren).replace(/\s+/g, '');

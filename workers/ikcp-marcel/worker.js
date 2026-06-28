@@ -1240,6 +1240,77 @@ export default {
       // veille, collector). Données déjà souveraines (Cloudflare WEUR / D1 Paris).
       // En cas d'échec Mistral → bascule transparente sur Anthropic. Réversible :
       // retirer la variable LLM_PRIMARY. Aucune autre modification.
+
+      // ── STREAMING (additif, opt-in via ?stream=1) ───────────────────────
+      // Diffuse la réponse Mistral token par token (SSE) → vitesse perçue ~2×.
+      // SI la question déclenche un outil (veille/spécialiste), on émet
+      // {fallback:true} et le client rebascule sur le chemin JSON complet
+      // (boucle agentique ci-dessous, intacte). Tout est gated sur ?stream=1 :
+      // un éventuel bug ici n'affecte JAMAIS le chemin normal. Souverain (Mistral UE).
+      const _wantStream = (() => { try { return new URL(request.url).searchParams.get('stream') === '1'; } catch (_) { return false; } })();
+      if (_wantStream && env.LLM_PRIMARY === 'mistral' && env.MISTRAL_API_KEY) {
+        const MIF2_SOUV = "*Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Vous interagissez avec un assistant IA — Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande.*";
+        const mTools = dynamicTools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.input_schema } }));
+        const mMsgs = [{ role: 'system', content: systemPromptText }];
+        for (const m of workingMessages) {
+          const c = typeof m.content === 'string' ? m.content : (Array.isArray(m.content) ? m.content.map(x => x.text || '').join(' ') : '');
+          mMsgs.push({ role: m.role, content: c });
+        }
+        const enc = new TextEncoder();
+        const sseStream = new ReadableStream({
+          async start(controller) {
+            let closed = false;
+            const send = (o) => { try { controller.enqueue(enc.encode('data: ' + JSON.stringify(o) + '\n\n')); } catch (_) {} };
+            const finish = () => { if (!closed) { closed = true; try { controller.close(); } catch (_) {} } };
+            try {
+              const mr = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${env.MISTRAL_API_KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: env.MISTRAL_MODEL || 'mistral-large-latest', max_tokens: 2048, temperature: 0.3, messages: mMsgs, tools: mTools, tool_choice: 'auto', stream: true }),
+              });
+              if (!mr.ok || !mr.body) { send({ fallback: true }); return finish(); }
+              const reader = mr.body.getReader();
+              const dec = new TextDecoder();
+              let buf = '', full = '', sentLen = 0, markerStarted = false, sawTool = false, sawContent = false;
+              outer: while (true) {
+                const { done: rd, value } = await reader.read();
+                if (rd) break;
+                buf += dec.decode(value, { stream: true });
+                let nl;
+                while ((nl = buf.indexOf('\n')) >= 0) {
+                  const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+                  if (!line.startsWith('data:')) continue;
+                  const data = line.slice(5).trim();
+                  if (data === '[DONE]') break outer;
+                  let j; try { j = JSON.parse(data); } catch (_) { continue; }
+                  const delta = j.choices && j.choices[0] && j.choices[0].delta;
+                  if (!delta) continue;
+                  if (delta.tool_calls && !sawContent) { sawTool = true; break outer; }
+                  if (typeof delta.content === 'string' && delta.content) {
+                    sawContent = true; full += delta.content;
+                    if (!markerStarted) {
+                      const ci = full.indexOf('<!--');
+                      const end = ci >= 0 ? (markerStarted = true, ci) : Math.max(sentLen, full.length - 4);
+                      if (end > sentLen) { send({ token: full.slice(sentLen, end) }); sentLen = end; }
+                    }
+                  }
+                }
+              }
+              if ((sawTool && !sawContent) || !full.trim()) { send({ fallback: true }); return finish(); }
+              let reply = full, follow = [];
+              const fm = reply.match(/<!--\s*follow_ups\s*:\s*(\[[\s\S]*?\])\s*-->/i);
+              if (fm) { try { const p = JSON.parse(fm[1]); if (Array.isArray(p)) follow = p.filter(q => typeof q === 'string' && q.length > 0 && q.length < 120).slice(0, 3); } catch (_) {} reply = reply.replace(fm[0], '').trim(); }
+              if (!follow.length) follow = ['Faire un mini-bilan patrimonial', 'Quels leviers pour réduire mes impôts ?', 'Comment anticiper ma transmission ?'];
+              if (!/L\.?\s*541[-\s]?1/i.test(reply)) reply = reply.trimEnd() + "\n\n---\n\n" + MIF2_SOUV;
+              try { await logQuestion(env, message, reply, ctx, false); } catch (_) {}
+              send({ done: true, reply: reply, follow_ups: follow, provider: 'mistral-souverain', season: ctx.season });
+              return finish();
+            } catch (e) { send({ fallback: true }); return finish(); }
+          }
+        });
+        return new Response(sseStream, { status: 200, headers: { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache, no-transform', 'X-Accel-Buffering': 'no', ...corsHeaders(request) } });
+      }
+
       if (env.LLM_PRIMARY === 'mistral' && env.MISTRAL_API_KEY) {
         try {
           const MIF2_SOUV = "*Cette information ne constitue pas un conseil en investissement personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. Vous interagissez avec un assistant IA — Maxime Juveneton, conseiller humain CIF (ORIAS 23001568), peut intervenir à votre demande.*";
