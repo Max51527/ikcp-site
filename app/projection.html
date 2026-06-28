@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projection patrimoniale & date d'indépendance · Marcel IA</title>
+<meta name="description" content="Projetez votre patrimoine dans le temps et estimez votre date d'indépendance financière. Aperçu gratuit, trajectoire détaillée & analyse de Marcel en Premium.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F;--bad:#B23A2E}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:14px 0}.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:20px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:42px 0 12px}
+.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:12px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(25px,4.4vw,40px);line-height:1.12;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:600px;margin:13px auto 0;font-size:15px}
+.controls{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;max-width:720px;margin:22px auto 0}
+.grid2c{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:560px){.grid2c{grid-template-columns:1fr}}
+.ctrl{margin-bottom:14px}
+.ctrl label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-mute);margin-bottom:6px;font-weight:500}
+.ctrl label b{color:var(--navy);font-family:'JetBrains Mono',monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--gold-deep);height:5px}
+/* APERÇU GRATUIT */
+.free{max-width:720px;margin:20px auto 0;background:linear-gradient(160deg,var(--navy),var(--navy-deep));color:var(--cream);border-radius:18px;padding:26px;text-align:center}
+.free .tag{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-bright);font-weight:700}
+.free .big{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(30px,6vw,46px);color:#fff;line-height:1;margin:8px 0 4px}
+.free .ind{font-size:14px;color:rgba(250,250,248,.8)}.free .ind b{color:var(--gold-bright)}
+/* BLOC PREMIUM */
+.premium{max-width:720px;margin:18px auto 0;position:relative;border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}
+.premium .phead{display:flex;align-items:center;gap:8px;padding:15px 20px;border-bottom:1px solid var(--line);font-weight:600;color:var(--navy)}
+.premium .phead .pill{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--gold);color:var(--navy-deep);padding:3px 9px;border-radius:99px}
+.premium .pbody{padding:20px}
+.chart{display:flex;align-items:flex-end;gap:8px;height:160px;margin:6px 0 4px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:flex-end}
+.chart .col .bar{width:100%;max-width:42px;background:linear-gradient(var(--gold),var(--gold-deep));border-radius:5px 5px 0 0;min-height:4px}
+.chart .col .yr{font-size:10px;color:var(--ink-mute)}
+.chart .col .vv{font-size:9.5px;color:var(--navy);font-family:'JetBrains Mono',monospace}
+.scen{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.scen div{background:var(--cream-2);border-radius:10px;padding:10px;text-align:center;font-size:12px}
+.scen .v{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:600}
+.scen .l{font-size:10px;color:var(--ink-mute)}
+.lever{font-size:13px;color:var(--ink);background:var(--cream-2);border-radius:10px;padding:12px 14px;margin-top:14px}
+.lever b{color:var(--navy)}
+.cta-m{display:inline-flex;gap:8px;background:var(--gold);color:var(--navy-deep);padding:12px 22px;border-radius:100px;font-weight:700;font-size:14px;margin-top:14px}
+/* LOCK (free) */
+.lock{position:absolute;inset:0;backdrop-filter:blur(6px);background:rgba(250,250,248,.62);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+.lock .ic{font-size:30px}
+.lock h3{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy);margin:8px 0 4px}
+.lock p{font-size:13px;color:var(--ink-mute);max-width:42ch;margin-bottom:14px}
+.lock a{background:var(--navy);color:var(--cream);padding:12px 24px;border-radius:100px;font-weight:700;font-size:14px}
+.lock .free-note{font-size:11px;color:var(--ink-mute);margin-top:10px}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:760px;margin:18px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:12px;margin-top:34px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap"><div class="logo">Marcel <span>IA</span></div><a class="back" href="/app/dashboard.html">← Mon espace</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Projection patrimoniale</div>
+  <h1>Votre patrimoine demain — <em>et votre date d'indépendance.</em></h1>
+  <p>Où sera votre patrimoine dans 10, 20 ans ? À partir de quel âge vos revenus passifs couvrent-ils votre train de vie ? Réglez, projetez.</p>
+</section>
+
+<div class="controls">
+  <div class="grid2c">
+    <div class="ctrl"><label>Patrimoine actuel <b id="vP0">200 000 €</b></label><input type="range" id="p0" min="0" max="3000000" step="10000" value="200000"></div>
+    <div class="ctrl"><label>Épargne / investie par an <b id="vS">30 000 €</b></label><input type="range" id="s" min="0" max="200000" step="2000" value="30000"></div>
+    <div class="ctrl"><label>Rendement annuel visé <b id="vR">4 %</b></label><input type="range" id="r" min="0" max="9" step="0.5" value="4"></div>
+    <div class="ctrl"><label>Votre âge <b id="vAge">45 ans</b></label><input type="range" id="age" min="25" max="65" step="1" value="45"></div>
+  </div>
+  <div class="ctrl"><label>Revenu annuel souhaité une fois indépendant <b id="vI">60 000 €</b></label><input type="range" id="inc" min="20000" max="200000" step="5000" value="60000"></div>
+</div>
+
+<!-- APERÇU GRATUIT : le « wow » accessible à tous -->
+<div class="free">
+  <div class="tag">Aperçu — offert</div>
+  <div class="big" id="patRetraite">—</div>
+  <div class="ind">patrimoine projeté à 64 ans · indépendance financière estimée à <b id="ageIndep">—</b></div>
+</div>
+
+<!-- DÉTAIL PREMIUM : trajectoire, scénarios, leviers, Marcel -->
+<div class="premium">
+  <div class="phead">📈 Votre trajectoire détaillée <span class="pill">Premium</span></div>
+  <div class="pbody" id="pbody">
+    <div class="chart" id="chart"></div>
+    <div class="scen" id="scen"></div>
+    <div class="lever" id="lever"></div>
+    <a class="cta-m" id="ctaMarcel" href="#">Analyser ma trajectoire avec Marcel →</a>
+  </div>
+  <div class="lock" id="lock" style="display:none">
+    <div class="ic">🔒</div>
+    <h3>Le détail est Premium</h3>
+    <p>L'aperçu ci-dessus est offert. Passez en Premium pour la <b>trajectoire année par année</b>, les <b>scénarios</b> (prudent / visé / optimiste), les <b>leviers pour avancer votre indépendance</b> et l'<b>analyse de Marcel</b>.</p>
+    <a href="/creer-mon-compte">Passer en Premium →</a>
+    <div class="free-note">L'aperçu reste gratuit, à vie.</div>
+  </div>
+</div>
+
+<div class="disc">Estimation pédagogique — projection à intérêts composés (rendement constant, hypothèse simplifiée hors inflation, fiscalité et aléas de marché). « Indépendance » = patrimoine dont 3,5 % couvrent le revenu souhaité. <b>Ne constitue pas un conseil personnalisé</b> (art. L.541-1 CoMoFi) ni une recommandation. À valider avec Maxime Juveneton (CIF · ORIAS 23001568).</div>
+
+<footer class="ft">© 2026 IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436</footer>
+
+<script>
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
+var TIER='free'; try{ TIER=localStorage.getItem('ikcp_tier')||'free'; }catch(_){}
+var isPremium = (TIER==='premium'||TIER==='fo');
+
+// Auto-remplit le patrimoine actuel depuis le cockpit s'il existe
+(function(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
+  if(k&&k.indexOf('ikcp_patrimoine_')===0){ var a=JSON.parse(localStorage.getItem(k)||'[]');
+    if(Array.isArray(a)&&a.length){ var t=a.reduce(function(s,b){return s+(+b.value||0);},0); if(t>0){ document.getElementById('p0').value=Math.min(3000000,t);} } } } }catch(_){}
+})();
+
+function project(P0,S,r,age,targetAge){ var pts=[{age:age,val:P0}],v=P0; for(var a=age+1;a<=targetAge;a++){ v=v*(1+r)+S; pts.push({age:a,val:v}); } return pts; }
+function indepAge(P0,S,r,age,income){ var v=P0; for(var a=age;a<=95;a++){ if(v*0.035>=income) return a; v=v*(1+r)+S; } return null; }
+
+function compute(){
+  var P0=+document.getElementById('p0').value,S=+document.getElementById('s').value,r=(+document.getElementById('r').value)/100,age=+document.getElementById('age').value,inc=+document.getElementById('inc').value;
+  document.getElementById('vP0').textContent=eur(P0);
+  document.getElementById('vS').textContent=eur(S);
+  document.getElementById('vR').textContent=(r*100)+' %';
+  document.getElementById('vAge').textContent=age+' ans';
+  document.getElementById('vI').textContent=eur(inc);
+
+  var to64=project(P0,S,r,age,Math.max(age+1,64));
+  var patR=to64[to64.length-1].val;
+  var ia=indepAge(P0,S,r,age,inc);
+  document.getElementById('patRetraite').textContent=eur(patR);
+  document.getElementById('ageIndep').textContent=ia?ia+' ans':'au-delà de 95 ans';
+
+  // ── Détail Premium ──
+  var end=ia?Math.min(ia+1,90):90; var pts=project(P0,S,r,age,Math.max(age+5,end));
+  var marks=pts.filter(function(p,i){return (p.age-age)%5===0 || i===pts.length-1;}).slice(0,8);
+  var max=Math.max.apply(null,marks.map(function(m){return m.val;}))||1;
+  document.getElementById('chart').innerHTML=marks.map(function(m){var h=Math.max(4,Math.round(m.val/max*150));return '<div class="col"><div class="vv">'+(m.val>=1e6?(m.val/1e6).toFixed(1)+'M':Math.round(m.val/1000)+'k')+'</div><div class="bar" style="height:'+h+'px"></div><div class="yr">'+m.age+' ans</div></div>';}).join('');
+
+  var prud=project(P0,S,Math.max(0,r-0.01),age,64); var opti=project(P0,S,r+0.01,age,64);
+  document.getElementById('scen').innerHTML=
+    '<div><div class="v">'+eur(prud[prud.length-1].val)+'</div><div class="l">Prudent ('+((r-0.01)*100).toFixed(1)+'%)</div></div>'+
+    '<div><div class="v">'+eur(patR)+'</div><div class="l">Visé ('+(r*100)+'%)</div></div>'+
+    '<div><div class="v">'+eur(opti[opti.length-1].val)+'</div><div class="l">Optimiste ('+((r+0.01)*100).toFixed(1)+'%)</div></div>';
+
+  var iaPlus=indepAge(P0,S+12000,r,age,inc);
+  var gain=(ia&&iaPlus)?(ia-iaPlus):0;
+  document.getElementById('lever').innerHTML='<b>Levier :</b> +1 000 €/mois d\'épargne investie '+(gain>0?('avancerait votre indépendance d\'environ <b>'+gain+' an'+(gain>1?'s':'')+'</b>.'):'rapprocherait votre objectif.')+' Marcel identifie d\'où sortir ces 1 000 € (trésorerie société, arbitrage rémunération, frais).';
+
+  var q='Mon patrimoine est de '+eur(P0)+', j\'investis '+eur(S)+'/an à '+(r*100)+'%, j\'ai '+age+' ans et je vise '+eur(inc)+'/an. Analyse ma trajectoire vers l\'indépendance et donne-moi les leviers pour l\'avancer. Termine par une question.';
+  document.getElementById('ctaMarcel').href='/app/marcel?q='+encodeURIComponent(q);
+}
+['p0','s','r','age','inc'].forEach(function(id){document.getElementById(id).addEventListener('input',compute);});
+// Gate Premium : l'aperçu est offert, le détail est verrouillé pour le tier Free
+if(!isPremium){ document.getElementById('lock').style.display='flex'; document.getElementById('pbody').setAttribute('aria-hidden','true'); }
+compute();
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
