@@ -218,22 +218,17 @@
 
   <!-- L'ÉQUIPE QUE MARCEL ORCHESTRE -->
   <section class="team-sec act" style="display:block">
-    <div class="act-tag"><span class="dot"></span>Cliquez un territoire — Marcel mobilise l'expert</div>
+    <div class="act-tag"><span class="dot"></span>Cliquez un sujet — Marcel mobilise l'expert</div>
     <h2>Marcel ne travaille pas seul.</h2>
-    <p class="lead2">Il orchestre une équipe de spécialistes. <b>Cliquez-en un</b> : Marcel mobilise le bon expert, en direct (souverain 🇫🇷). Vous ne parlez qu'à lui.</p>
+    <p class="lead2">Une équipe de spécialistes du patrimoine du dirigeant. <b>Cliquez-en un</b> : Marcel mobilise le bon expert, en direct (souverain 🇫🇷). Vous ne parlez qu'à lui.</p>
     <div class="team">
-      <div class="tm" style="animation-delay:.04s" onclick="ask('Quels sont mes principaux leviers fiscaux à étudier ?')"><span class="ic">⚖️</span><b>Codex</b><em>Fiscalité</em></div>
-      <div class="tm" style="animation-delay:.08s" onclick="ask('Comment optimiser la transmission de mon patrimoine ?')"><span class="ic">🏛️</span><b>Hermès</b><em>Transmission</em></div>
+      <div class="tm" style="animation-delay:.04s" onclick="ask('Quels sont mes principaux leviers fiscaux de dirigeant à étudier ?')"><span class="ic">⚖️</span><b>Codex</b><em>Fiscalité</em></div>
+      <div class="tm" style="animation-delay:.08s" onclick="ask('Comment optimiser la transmission de mon entreprise et de mon patrimoine ?')"><span class="ic">🏛️</span><b>Hermès</b><em>Transmission</em></div>
       <div class="tm" style="animation-delay:.12s" onclick="ask('Fais-moi une lecture 360° de mon patrimoine de dirigeant.')"><span class="ic">🏗️</span><b>Bâtisseur</b><em>Patrimoine 360°</em></div>
-      <div class="tm" style="animation-delay:.16s" onclick="ask('Comment optimiser la détention de mon immobilier ?')"><span class="ic">🏠</span><b>Architecte</b><em>Immobilier</em></div>
-      <div class="tm" style="animation-delay:.20s" onclick="ask('Comment diversifier et structurer mon patrimoine financier ?')"><span class="ic">📈</span><b>Stratège</b><em>Marchés</em></div>
-      <div class="tm" style="animation-delay:.24s" onclick="ask('Comment intégrer mes collections (art, montres) à mon patrimoine ?')"><span class="ic">🎨</span><b>Curateur</b><em>Art &amp; collections</em></div>
-      <div class="tm" style="animation-delay:.28s" onclick="ask('Que propose l'intelligence patrimoniale côté art de vivre et conciergerie ?')"><span class="ic">✈️</span><b>Concierge</b><em>Voyage &amp; art de vivre</em></div>
-      <div class="tm" style="animation-delay:.32s" onclick="ask('Comment accéder au private equity et aux actifs non cotés ?')"><span class="ic">💼</span><b>Capital</b><em>Private equity</em></div>
-      <div class="tm" style="animation-delay:.36s" onclick="ask('Comment structurer ma philanthropie efficacement ?')"><span class="ic">🕊️</span><b>Mécène</b><em>Philanthropie</em></div>
-      <div class="tm" style="animation-delay:.40s" onclick="ask('Comment préparer la nouvelle génération à gérer le patrimoine familial ?')"><span class="ic">📚</span><b>Pédagogue</b><em>NextGen</em></div>
-      <div class="tm" style="animation-delay:.44s" onclick="ask('Comment se passe l\'accompagnement au quotidien dans l'intelligence patrimoniale ?')"><span class="ic">🤝</span><b>Camille</b><em>Accompagnement</em></div>
-      <div class="tm" style="animation-delay:.48s" onclick="ask('Comment lier patrimoine, santé et longévité ?')"><span class="ic">🌿</span><b>Olympe</b><em>Bien-être &amp; longévité</em></div>
+      <div class="tm" style="animation-delay:.16s" onclick="ask('Quelle est la meilleure détention pour mon immobilier (direct, SCI, société) ?')"><span class="ic">🏠</span><b>Architecte</b><em>Immobilier</em></div>
+      <div class="tm" style="animation-delay:.20s" onclick="ask('Que faire de la trésorerie excédentaire de ma société et comment diversifier ?')"><span class="ic">📈</span><b>Stratège</b><em>Trésorerie &amp; marchés</em></div>
+      <div class="tm" style="animation-delay:.24s" onclick="ask('Comment préparer la cession de mon entreprise (holding, 150-0 B ter, OBO) ?')"><span class="ic">💼</span><b>Capital</b><em>Cession &amp; non coté</em></div>
+      <div class="tm" style="animation-delay:.28s" onclick="ask('Quel est mon niveau de retraite de dirigeant/TNS et comment combler le manque (PER) ?')"><span class="ic">🛟</span><b>Gardien</b><em>Retraite &amp; prévoyance</em></div>
     </div>
   </section>
 
@@ -257,7 +252,7 @@
   window._spk={};
   // Voix — Marcel parle comme un vrai conseiller (synthèse vocale du navigateur, FR)
   function speak(t){ try{ if(!t) return; window.speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(String(t).slice(0,1500)); u.lang='fr-FR'; u.rate=1.03; var vs=window.speechSynthesis.getVoices()||[]; var fr=vs.filter(function(v){return /fr/i.test(v.lang)})[0]; if(fr)u.voice=fr; window.speechSynthesis.speak(u); }catch(e){} }
-  var SPK=['Codex (fiscalité)','Hermès (transmission)','Bâtisseur (360°)','Architecte (immobilier)','Stratège (marchés)','Curateur (collections)','Capital (private equity)','Mécène (philanthropie)'];
+  var SPK=['Codex (fiscalité)','Hermès (transmission)','Bâtisseur (360°)','Architecte (immobilier)','Stratège (trésorerie & marchés)','Capital (cession & non coté)','Gardien (retraite & prévoyance)'];
   async function marcelInto(elId, message){
     var el=document.getElementById(elId); if(!el) return;
     el.innerHTML='<div class="loader"><span class="ld"></span><span class="ld"></span><span class="ld"></span><em id="ld_'+elId+'">Marcel mobilise ses spécialistes…</em></div>';
