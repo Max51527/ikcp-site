@@ -13,6 +13,11 @@
 /*.js
   Cache-Control: no-cache
 
+# Librairies vendor auto-hébergées (Tailwind/Alpine/marked) : cache long (statiques).
+# Placé APRÈS /*.js pour que cette règle plus spécifique l'emporte.
+/assets/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # Service worker : jamais mis en cache (doit toujours être frais)
 /sw.js
   Cache-Control: no-cache
