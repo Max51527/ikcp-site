@@ -1023,6 +1023,21 @@ export default {
       });
     }
 
+    // Anti-abus par IP (KV) : protège du martèlement du chat/stream (coût Mistral).
+    // Anonyme = plafond bas ; porteur de jeton (membre) = plafond large. Le quota
+    // par membre (free 5/mois) reste la vraie limite d'usage ; ceci ne vise que l'abus robotisé.
+    {
+      const ip = request.headers.get('CF-Connecting-IP') || '';
+      if (ip && env.MARCEL_LOGS) {
+        const hasToken = !!(request.headers.get('Authorization') || (request.headers.get('Cookie') || '').indexOf('ikcp') >= 0);
+        const cap = hasToken ? 120 : 20;
+        const k = 'rlq:' + ip + ':' + Math.floor(Date.now() / 3600000);
+        let n = 0; try { n = parseInt(await env.MARCEL_LOGS.get(k)) || 0; } catch (_) {}
+        if (n >= cap) return new Response(JSON.stringify({ reply: "Beaucoup de requêtes en peu de temps. Réessayez dans quelques minutes.", error: 'rate_limited' }), { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+        try { await env.MARCEL_LOGS.put(k, String(n + 1), { expirationTtl: 3700 }); } catch (_) {}
+      }
+    }
+
     try {
       const { message, history, document_pdf } = await request.json();
 

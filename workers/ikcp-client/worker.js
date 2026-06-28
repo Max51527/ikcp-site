@@ -702,7 +702,11 @@ let _reqOrigin = '';
 
 function corsHeaders(origin = '') {
   const o = origin || _reqOrigin;
-  const ok = ALLOWED_ORIGINS.includes(o) || (o && (o.endsWith('.ikcp.eu') || o.endsWith('.workers.dev') || o.endsWith('.pages.dev')));
+  // CREDENTIALED (cookies + Authorization) : PAS de wildcard *.workers.dev/*.pages.dev
+  // (sous-domaines tiers enregistrables par n'importe qui → CSRF / vol de session).
+  // Les origines légitimes (ikcp.eu, www, ikcp-eu.pages.dev, worker chat, localhost)
+  // sont déjà dans ALLOWED_ORIGINS ; on autorise en plus les sous-domaines *.ikcp.eu (nôtres).
+  const ok = ALLOWED_ORIGINS.includes(o) || (o && o.endsWith('.ikcp.eu'));
   return {
     'Access-Control-Allow-Origin': ok ? (o || 'https://ikcp.eu') : 'https://ikcp.eu',
     'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
