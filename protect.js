@@ -41,7 +41,7 @@
 
   // ── 1. Interception du copier (Ctrl+C / clic droit Copier) ──
   document.addEventListener('copy', function (e) {
-    if (IN_APP()) return; // Espace membre = workspace du client : copie 100% libre (ses réponses, ses données).
+    return; // Copie LIBRE partout — interception « contenu protégé » retirée (gêne user/admin). Traçabilité = filigrane + mentions légales.
     try {
       var sel = (window.getSelection && window.getSelection().toString()) || '';
       if (!sel) return;
@@ -76,6 +76,7 @@
 
   // ── 2. Couper (Ctrl+X) traité comme copier ──
   document.addEventListener('cut', function (e) {
+    return; // Couper libre partout.
     try {
       var sel = (window.getSelection && window.getSelection().toString()) || '';
       if (!sel) return;
@@ -87,7 +88,7 @@
   // Désactivable par data-allow-context sur <body> (ex. pages de test).
   if (!document.body || !document.body.hasAttribute('data-allow-context')) {
     document.addEventListener('contextmenu', function (e) {
-      if (IN_APP()) return; // Espace membre : clic droit libre.
+      return; // Clic droit libre partout.
       // sur les champs de saisie on laisse le menu (UX)
       var tag = (e.target && e.target.tagName) || '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
@@ -101,7 +102,7 @@
   // U (source), P (imprimer). La capture écran OS n'est pas interceptable JS
   // → c'est le filigrane nominatif (module 4) qui la couvre.
   document.addEventListener('keydown', function (e) {
-    if (IN_APP()) return; // Espace membre : raccourcis clavier libres (S/U/P).
+    return; // Raccourcis clavier libres partout.
     try {
       var t = e.target, tag = (t && t.tagName) || '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
