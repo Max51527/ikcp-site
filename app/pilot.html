@@ -9,15 +9,15 @@
 <title>Pilotage — IKCP intelligence patrimoniale</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0B1426;--panel:#101D33;--cream:#FAF7F0;--gold:#C9A96E;--gold-b:#E2C896;--navy:#1B2A4A;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.18);--ok:#4ade80}
-body{background:var(--bg);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding:clamp(20px,4vw,42px)}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding:clamp(20px,4vw,42px)}
 body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 60% 45% at 80% -8%,rgba(201,169,110,.08),transparent 60%),var(--bg)}
 .top{display:flex;align-items:center;gap:14px;max-width:1080px;margin:0 auto 4px}
-.mark{width:42px;height:42px;border-radius:11px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;color:var(--gold-b);font-size:17px}
-.top h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,3.4vw,30px)}
+.mark{width:42px;height:42px;border-radius:11px;background:radial-gradient(circle at 38% 30%,#36456a,#1B2A4A 62%,#0B1426);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold-b);font-size:17px}
+.top h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(22px,3.4vw,30px)}
 .top h1 em{font-style:italic;color:var(--gold-b)}
 .sys{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute);border:1px solid var(--line);padding:7px 13px;border-radius:99px}
 .sys .d{width:8px;height:8px;border-radius:50%;background:var(--mute)}
@@ -31,7 +31,7 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-grad
 .tile{display:flex;flex-direction:column;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px;text-decoration:none;color:var(--cream);transition:transform .16s,border-color .16s}
 .tile:hover{transform:translateY(-3px);border-color:var(--gold)}
 .tile .ic{font-size:22px;margin-bottom:4px}
-.tile .t{font-family:'Fraunces',serif;font-weight:500;font-size:16px}
+.tile .t{font-family:'Playfair Display',serif;font-weight:500;font-size:16px}
 .tile .d{font-size:12px;color:var(--mute);line-height:1.4}
 .tile .b{margin-top:7px;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;align-self:flex-start;padding:3px 8px;border-radius:99px}
 .b.login{background:rgba(201,169,110,.16);color:var(--gold-b)}

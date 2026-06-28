@@ -10,17 +10,17 @@
 <title>Cockpit de test — IKCP</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/app/css/marcel.css">
 <style>
 .wrap{max-width:860px;margin:0 auto;padding:26px 20px 90px}
-h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(24px,4vw,32px)}
+h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(24px,4vw,32px)}
 h1 em{font-style:italic;color:var(--accent)}
 .lead{color:var(--mute);font-size:14px;margin:4px 0 22px}
 /* Barre d'avancement */
 .prog-card{background:linear-gradient(150deg,var(--accent-soft),transparent);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
 .prog-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
-.prog-pct{font-family:'Fraunces',serif;font-style:italic;font-size:34px;color:var(--accent);line-height:1}
+.prog-pct{font-family:'Playfair Display',serif;font-style:italic;font-size:34px;color:var(--accent);line-height:1}
 .prog-lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:600}
 .prog-bar{height:12px;background:var(--bg-3);border-radius:99px;overflow:hidden}
 .prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
@@ -29,12 +29,12 @@ h1 em{font-style:italic;color:var(--accent)}
 .phases{display:flex;gap:8px;margin:16px 0 22px;flex-wrap:wrap}
 .phase{flex:1;min-width:150px;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .phase .n{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep,#8B6F3F);font-weight:700}
-.phase h4{font-family:'Fraunces',serif;font-weight:500;font-size:15px;margin:3px 0}
+.phase h4{font-family:'Playfair Display',serif;font-weight:500;font-size:15px;margin:3px 0}
 .phase p{font-size:11.5px;color:var(--mute)}
 /* Checklist */
 .step{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start;transition:opacity .2s}
 .step.done{opacity:.62}
-.step .num{font-family:'Fraunces',serif;font-style:italic;color:var(--accent);font-size:17px;min-width:24px}
+.step .num{font-family:'Playfair Display',serif;font-style:italic;color:var(--accent);font-size:17px;min-width:24px}
 .step .body{flex:1}
 .step .t{font-weight:600;font-size:14px}
 .step .exp{font-size:12.5px;color:var(--mute);margin-top:2px}
@@ -43,8 +43,8 @@ h1 em{font-style:italic;color:var(--accent)}
 .sbtn.on-ok{background:#2D7A4F;border-color:#2D7A4F}
 .sbtn.on-warn{background:var(--warn);border-color:var(--warn)}
 .sbtn.on-bad{background:var(--bad);border-color:var(--bad)}
-.step input.note{flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:12.5px;font-family:'Inter';color:var(--ink);outline:none}
-.section-h{font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:26px 0 10px}
+.step input.note{flex:1;min-width:140px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:12.5px;font-family:'Outfit';color:var(--ink);outline:none}
+.section-h{font-family:'Playfair Display',serif;font-weight:500;font-size:19px;margin:26px 0 10px}
 .tools{display:flex;gap:10px;margin:10px 0 0;flex-wrap:wrap}
 .btn-sm2{padding:9px 15px;font-size:13px;border-radius:9px;border:none;cursor:pointer;font-weight:600}
 .btn-go{background:var(--accent);color:#fff}.btn-ghost2{background:transparent;border:1px solid var(--line);color:var(--mute)}

@@ -7,24 +7,24 @@
 <title>Configurateur intelligence patrimoniale — IKCP (white-label)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Cormorant+Garamond:wght@600&family=Playfair+Display:ital,wght@0,500;1,500&family=EB+Garamond:wght@500&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:wght@600&family=Playfair+Display:ital,wght@0,500;1,500&family=EB+Garamond:wght@500&family=Outfit:wght@300;400;500;600;700&family=Outfit:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{--bg:#F4F1EA;--card:#fff;--ink:#1B2A4A;--mute:#6E7689;--accent:#A8884D;--line:rgba(27,42,74,.12);--nd:#0E1729}
-  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh}
+  body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;font-size:15px;min-height:100vh}
   .top{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:#fff;position:sticky;top:0;z-index:10}
-  .top h1{font-family:'Fraunces',serif;font-weight:500;font-size:19px}
+  .top h1{font-family:'Playfair Display',serif;font-weight:500;font-size:19px}
   .top .badge{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;border:1px solid var(--line);padding:4px 10px;border-radius:99px}
   .top a{margin-left:auto;font-size:13px;color:var(--mute);text-decoration:none}
   .wrap{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 53px)}
   @media(max-width:880px){.wrap{grid-template-columns:1fr}}
   .panel{padding:22px;border-right:1px solid var(--line);background:#fff;overflow:auto}
   .grp{margin-bottom:24px}
-  .grp h2{font-family:'Fraunces',serif;font-weight:500;font-size:15px;margin-bottom:3px}
+  .grp h2{font-family:'Playfair Display',serif;font-weight:500;font-size:15px;margin-bottom:3px}
   .grp .sub{font-size:11.5px;color:var(--mute);margin-bottom:13px;line-height:1.5}
   .ctrl{margin-bottom:13px}
   .ctrl label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:6px}
-  .ctrl input[type=text],.ctrl select{width:100%;padding:10px 12px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;font-family:'Inter';font-size:14px;color:var(--ink);outline:none}
+  .ctrl input[type=text],.ctrl select{width:100%;padding:10px 12px;background:var(--bg);border:1.5px solid var(--line);border-radius:9px;font-family:'Outfit';font-size:14px;color:var(--ink);outline:none}
   .ctrl input:focus,.ctrl select:focus{border-color:var(--accent)}
   .colorrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
   .colorrow input[type=color]{width:40px;height:34px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer;padding:2px}
@@ -48,15 +48,15 @@
   .scr{background:linear-gradient(170deg,#16233f,#0c1426);border-radius:28px;padding:18px 16px 14px;min-height:480px;color:#FAFAF8;position:relative;overflow:hidden}
   .scr .brand{display:flex;align-items:center;gap:9px;margin-bottom:14px}
   .scr .logo{width:34px;height:34px;border-radius:9px;background:var(--pvAccent,#A8884D);color:#0E1729;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
-  .scr .bn{font-family:var(--pvTitle,'Fraunces'),serif;font-size:16px;line-height:1.1}
-  .scr .bn small{display:block;font-family:'Inter';font-size:8.5px;letter-spacing:.1em;color:rgba(250,250,248,.55);text-transform:uppercase;margin-top:1px}
+  .scr .bn{font-family:var(--pvTitle,'Playfair Display'),serif;font-size:16px;line-height:1.1}
+  .scr .bn small{display:block;font-family:'Outfit';font-size:8.5px;letter-spacing:.1em;color:rgba(250,250,248,.55);text-transform:uppercase;margin-top:1px}
   .scr .k{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--pvAccent,#A8884D);font-weight:700;margin-top:4px}
-  .scr .net{font-family:var(--pvTitle,'Fraunces'),serif;font-size:30px;margin:4px 0 2px}
-  .scr .tag{font-family:'Inter';font-size:11px;color:rgba(250,250,248,.6);font-style:italic;margin-bottom:12px}
+  .scr .net{font-family:var(--pvTitle,'Playfair Display'),serif;font-size:30px;margin:4px 0 2px}
+  .scr .tag{font-family:'Outfit';font-size:11px;color:rgba(250,250,248,.6);font-style:italic;margin-bottom:12px}
   .scr .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
   .scr .uni{background:rgba(255,255,255,.05);border:1px solid var(--pvLine,rgba(226,200,150,.18));border-radius:10px;padding:9px 10px;font-size:10.5px;font-weight:600}
   .scr .uni .e{font-size:14px;display:block;margin-bottom:2px}
-  .scr .cta{display:block;text-align:center;margin-top:12px;background:var(--pvAccent,#A8884D);color:#0E1729;border-radius:99px;padding:10px;font-weight:700;font-size:12px;font-family:var(--pvBody,'Inter')}
+  .scr .cta{display:block;text-align:center;margin-top:12px;background:var(--pvAccent,#A8884D);color:#0E1729;border-radius:99px;padding:10px;font-weight:700;font-size:12px;font-family:var(--pvBody,'Outfit')}
   .scr .dock{display:flex;justify-content:space-around;margin-top:13px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;opacity:.8}
   .json{width:100%;max-width:620px;background:var(--nd);color:#9BE3B6;border-radius:12px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow:auto}
 </style>
@@ -147,7 +147,7 @@ const SERVICES = [
   {k:'simulateurs',n:'9 simulateurs'},{k:'radiographie',n:'Radiographie 360°'},{k:'vocal',n:'Mode vocal'}
 ];
 let cfg = load() || {
-  brand:{nom:'IKIGAÏ Conseil Patrimonial',base:'intelligence patrimoniale augmentée',logo:'IK',accent:'#A8884D',title:'Fraunces',body:'Inter'},
+  brand:{nom:'IKIGAÏ Conseil Patrimonial',base:'intelligence patrimoniale augmentée',logo:'IK',accent:'#A8884D',title:'Playfair Display',body:'Outfit'},
   onglets:Object.fromEntries(UNIVERS.map(u=>[u.k,['cockpit','marcel','immobilier','simulateurs','radiographie','famille','veille'].includes(u.k)])),
   services:Object.fromEntries(SERVICES.map(s=>[s.k,true])),
   contact:{cta:'Échanger avec votre conseiller',lien:'mailto:contact@cabinet.fr'}

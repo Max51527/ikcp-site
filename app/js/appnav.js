@@ -99,7 +99,7 @@
       + '.ikcp-fbm{position:fixed;inset:0;z-index:200;background:rgba(14,23,41,.55);display:none;align-items:flex-end;justify-content:center}.ikcp-fbm.open{display:flex}'
       + '.ikcp-fbm .box{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom))}'
       + '@media(min-width:560px){.ikcp-fbm{align-items:center}.ikcp-fbm .box{border-radius:20px}}'
-      + '.ikcp-fbm h3{font-family:Fraunces,"Playfair Display",serif;font-weight:500;font-size:19px;margin:0 0 4px;color:#1B2A4A}'
+      + '.ikcp-fbm h3{font-family:"Playfair Display",serif;font-weight:500;font-size:19px;margin:0 0 4px;color:#1B2A4A}'
       + '.ikcp-fbm p{font-size:12.5px;color:#6E7689;margin:0 0 12px;line-height:1.5}'
       + '.ikcp-fbm textarea{width:100%;min-height:92px;box-sizing:border-box;border:1.5px solid rgba(27,42,74,.15);border-radius:10px;padding:11px;font:inherit;font-size:14px;resize:vertical}'
       + '.ikcp-fbm .fbtypes{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 11px}'
@@ -153,7 +153,7 @@
     var css = document.createElement('style');
     css.textContent = '.ikcp-nps{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(12px);z-index:160;max-width:min(94vw,440px);background:#fff;border:1px solid rgba(27,42,74,.12);border-radius:16px;box-shadow:0 16px 44px -12px rgba(14,23,41,.4);padding:16px 18px;opacity:0;transition:.3s}'
       + '.ikcp-nps.on{opacity:1;transform:translateX(-50%) translateY(0)}'
-      + '.ikcp-nps h4{font-family:Fraunces,"Playfair Display",serif;font-weight:500;font-size:15px;margin:0 0 3px;color:#1B2A4A}'
+      + '.ikcp-nps h4{font-family:"Playfair Display",serif;font-weight:500;font-size:15px;margin:0 0 3px;color:#1B2A4A}'
       + '.ikcp-nps p{font-size:11.5px;color:#6E7689;margin:0 0 10px}'
       + '.ikcp-nps .sc{display:flex;flex-wrap:wrap;gap:5px}'
       + '.ikcp-nps .sc button{flex:1;min-width:26px;border:1px solid rgba(27,42,74,.14);background:#fff;border-radius:7px;padding:7px 0;font:600 12px Outfit,system-ui,sans-serif;cursor:pointer;color:#1B2A4A}'

@@ -7,23 +7,23 @@
 <meta name="robots" content="noindex, nofollow">
 <title>IKCP — Admin · Familles fondatrices</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAF7F0;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--mute:rgba(250,247,240,.55);--line:rgba(201,169,110,.18);--ok:#2D7A4F;--bad:#b34a4a}
-body{background:var(--navy-deep);color:var(--cream);font-family:'Inter',sans-serif;font-size:15px;line-height:1.5;padding:clamp(24px,5vw,56px) clamp(18px,4vw,40px);max-width:920px;margin:0 auto}
-h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,4vw,38px);margin-bottom:6px}
+body{background:var(--navy-deep);color:var(--cream);font-family:'Outfit',sans-serif;font-size:15px;line-height:1.5;padding:clamp(24px,5vw,56px) clamp(18px,4vw,40px);max-width:920px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(26px,4vw,38px);margin-bottom:6px}
 h1 em{font-style:italic;color:var(--gold-bright)}
 .sub{color:var(--mute);font-size:13.5px;margin-bottom:30px}
 .card{background:rgba(250,247,240,.04);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:22px}
-.card h2{font-family:'Fraunces',serif;font-weight:500;font-size:18px;margin-bottom:14px}
+.card h2{font-family:'Playfair Display',serif;font-weight:500;font-size:18px;margin-bottom:14px}
 label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 6px}
-input,select{width:100%;padding:12px 14px;background:rgba(250,247,240,.07);border:1.5px solid rgba(201,169,110,.22);border-radius:9px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;outline:none}
+input,select{width:100%;padding:12px 14px;background:rgba(250,247,240,.07);border:1.5px solid rgba(201,169,110,.22);border-radius:9px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:14px;outline:none}
 input:focus,select:focus{border-color:var(--gold)}
 select option{background:var(--navy-deep)}
 .row{display:flex;gap:10px;flex-wrap:wrap}
 .row>*{flex:1;min-width:120px}
-button{padding:12px 20px;background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;font-family:'Inter',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+button{padding:12px 20px;background:var(--gold);color:var(--navy-deep);border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
 button:hover{background:var(--gold-bright)}
 button.ghost{background:transparent;color:var(--gold-bright);border:1px solid rgba(201,169,110,.4)}
 button.reject{background:transparent;color:#F0A0A0;border:1px solid rgba(200,60,60,.4)}
@@ -228,7 +228,7 @@ async function loadStats(){
     const r = await fetch(`${API}/api/v1/admin/stats`, { headers: hdr() });
     const s = await r.json();
     const stat = (val,lbl,sub) => `<div style="background:rgba(201,169,110,.07);border:1px solid var(--line);border-radius:10px;padding:14px 16px">
-      <div style="font-family:'Fraunces',serif;font-style:italic;font-size:26px;color:var(--gold-bright);line-height:1">${val}</div>
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:26px;color:var(--gold-bright);line-height:1">${val}</div>
       <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:6px">${lbl}</div>
       ${sub?`<div style="font-size:11px;color:var(--mute);margin-top:3px">${sub}</div>`:''}</div>`;
     el.innerHTML =
