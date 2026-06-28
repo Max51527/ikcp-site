@@ -74,6 +74,10 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 .starters .st-lead{width:100%;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:2px}
 .starters .st-chip{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;line-height:1.3;transition:all .18s}
 .starters .st-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.reveal-angles{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-bottom:14px;padding:15px 18px;border:none;border-radius:15px;cursor:pointer;background:linear-gradient(135deg,var(--accent,#b8956e),#8B6F3F);color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:15.5px;text-align:left;box-shadow:0 10px 28px rgba(184,149,110,.28);transition:transform .15s,box-shadow .15s}
+.reveal-angles:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(184,149,110,.38)}
+.reveal-angles:disabled{opacity:.6;cursor:wait;transform:none}
+.reveal-angles .ra-sub{font-weight:400;font-size:11.5px;opacity:.92;letter-spacing:.01em}
 .msg .tw::after{content:'▋';color:var(--accent);margin-left:1px;animation:twblink 1s steps(2) infinite}
 @keyframes twblink{50%{opacity:0}}
 .msg.orch{background:transparent;border:none;padding:0}
@@ -417,6 +421,25 @@ function sendQuick(text){
   const f = document.querySelector('.chat-input form');
   if(f && f.requestSubmit) f.requestSubmit(); else send(new Event('submit'));
 }
+
+// ── « Révèle mes angles » : Marcel prend l'initiative ──────────────────────
+// Le dirigeant part de zéro → on demande à Marcel de PROPOSER spontanément
+// 3 à 5 pistes de réflexion (format exclusif : angle → avant/après chiffré →
+// question), personnalisées au SIREN si on l'a. MIF II : pistes = information,
+// jamais reco ; Marcel ajoute le disclaimer L.541-1 (déjà câblé). Souverain (Mistral UE).
+function revealAngles(){
+  let siren = '';
+  try { const p = me && me.profile_json ? JSON.parse(me.profile_json) : null; siren = (p && p.siren_data && p.siren_data.siren) || ''; } catch(_){}
+  try { if(!siren) siren = localStorage.getItem('ikcp_siren') || ''; } catch(_){}
+  const prompt = "[Briefing proactif — prends l'initiative] Je suis dirigeant(e) et je pars de zéro en gestion de patrimoine. "
+    + (siren ? ("Ma société : SIREN " + siren + ". Analyse-la d'abord, puis ") : "")
+    + "propose-moi spontanément 3 à 5 PISTES DE RÉFLEXION patrimoniales que je n'aurais jamais pensé à explorer moi-même. "
+    + "Pour CHAQUE piste : un titre d'angle clair, pourquoi ça me concerne en 1 phrase, un mini AVANT/APRÈS chiffré (ordre de grandeur), et termine par UNE question ouverte. "
+    + (siren ? "" : "Si tu as besoin de mon SIREN pour personnaliser, donne d'abord des pistes pertinentes pour un dirigeant, puis invite-moi à le saisir. ")
+    + "Va droit au but, pédagogique, je découvre tout.";
+  sendQuick(prompt);
+}
+window.revealAngles = revealAngles;
 function renderStarters(profile, tier){
   const wrap = document.getElementById('starters'); if(!wrap) return;
   const p = profile || {};
@@ -442,8 +465,10 @@ function renderStarters(profile, tier){
   (p.spheres || []).forEach(s => { if(SPH[s] && !chips.includes(SPH[s]) && chips.length < 5) chips.push(SPH[s]); });
   ['Faites-moi un bilan patrimonial 360°.', 'Quelles priorités patrimoniales pour un dirigeant comme moi ?', 'Comment réduire mes droits de succession ?'].forEach(q => { if(chips.length < 3 && !chips.includes(q)) chips.push(q); });
   const top = chips.slice(0, 5);
-  wrap.innerHTML = '<div class="st-lead">Pour démarrer, une suggestion ?</div>' +
+  wrap.innerHTML = '<button type="button" class="reveal-angles" id="revealBtn">✦ Révèle mes angles patrimoniaux<span class="ra-sub">Marcel prend l\'initiative : 3 à 5 pistes que vous n\'auriez pas explorées</span></button>'
+    + '<div class="st-lead">Ou posez votre question</div>' +
     top.map(q => `<button type="button" class="st-chip">${q.replace(/</g,'&lt;')}</button>`).join('');
+  const rb = document.getElementById('revealBtn'); if(rb) rb.addEventListener('click', revealAngles);
   wrap.querySelectorAll('.st-chip').forEach(b => b.addEventListener('click', () => sendQuick(b.textContent)));
 }
 
