@@ -100,7 +100,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
     <div class="msg a">
       <strong>Bonjour.</strong> Je suis <em>Marcel</em>, chef d'orchestre de votre intelligence patrimoniale.
       <br><br>
-      Posez-moi une question — patrimoine, fiscalité, transmission, voyage, art, mécénat. Je mobilise le bon spécialiste parmi mes 12 univers.
+      Posez-moi une question — fiscalité, rémunération, transmission, immobilier, trésorerie, cession, retraite. Je mobilise le bon spécialiste du patrimoine du dirigeant.
       <div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier.</div>
     </div>
     <div id="starters" class="starters"></div>
@@ -510,16 +510,12 @@ function renderStarters(profile, tier){
   if(patCount === 0) chips.push('Aidez-moi à évaluer ma position IFI 2026.');
   const SPH = {
     transmission: 'Comment préparer ma transmission (donation, Pacte Dutreil) ?',
-    fiscalite:    'Quels leviers pour optimiser ma fiscalité cette année ?',
+    fiscalite:    'Quels leviers pour optimiser ma fiscalité de dirigeant cette année ?',
+    remuneration: 'Quel arbitrage rémunération / dividendes / holding pour ma société ?',
     immobilier:   'Détention directe ou SCI pour mon immobilier : que choisir ?',
-    marches:      'Comment diversifier mon allocation, y compris en non coté ?',
-    voyage:       'Organisez-moi une expérience de voyage d’exception.',
-    art:          'Comment évaluer et assurer ma collection ?',
-    vehicules:    'Quelle est la cote de mon véhicule de collection ?',
-    horlogerie:   'Comment suivre la valeur de mes montres ?',
-    vins:         'Conseillez-moi pour ma cave et les vins d’investissement.',
-    bienetre:     'Médecine privée et longévité : par où commencer ?',
-    philanthropie:'Comment structurer un projet de mécénat ?',
+    marches:      'Que faire de ma trésorerie excédentaire et comment diversifier ?',
+    cession:      'Comment préparer la cession de mon entreprise (holding, 150-0 B ter) ?',
+    retraite:     'Quel est mon niveau de retraite (TNS) et comment combler le manque (PER) ?',
     patrimoine:   'Faites-moi un bilan patrimonial 360°.',
   };
   (p.spheres || []).forEach(s => { if(SPH[s] && !chips.includes(SPH[s]) && chips.length < 5) chips.push(SPH[s]); });
