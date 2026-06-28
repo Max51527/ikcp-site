@@ -819,8 +819,8 @@ var welcomeHTML=''
 
 + '<div class="ikcp-maxime-cta">'
 +   '<div class="ikcp-maxime-label">Pour votre situation personnelle</div>'
-+   '<a href="mailto:maxime@ikcp.fr?subject=Demande%20d%27%C3%A9change%20%E2%80%94%20IKCP&body=Bonjour%20Maxime%2C%0D%0A%0D%0AContexte%20de%20ma%20demande%20%3A%20%0D%0A%0D%0A" target="_blank" class="ikcp-maxime-btn">📅 Échanger avec Maxime</a>'
-+   '<div class="ikcp-maxime-note">Un entretien confidentiel · par téléphone ou en visio</div>'
++   '<a href="/creer-mon-compte" class="ikcp-maxime-btn">Créer mon compte (gratuit)</a>'
++   '<div class="ikcp-maxime-note">Besoin d\'un échange humain ? <a href="mailto:maxime@ikcp.fr" style="color:inherit;text-decoration:underline">consultation dédiée</a> sur demande.</div>'
 + '</div>';
 
 // Adapte le message d'accueil si la page a un sujet détecté
