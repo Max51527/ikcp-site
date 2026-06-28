@@ -108,8 +108,9 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 </div>
 
 <div class="voice-bar" id="voiceBar">
-  <label class="auto-read"><input type="checkbox" id="autoRead"> Marcel lit ses réponses à voix haute</label>
-  <button class="stop" onclick="stopReading()" id="stopReadBtn" style="display:none">⏹ Stop lecture</button>
+  <label class="auto-read"><input type="checkbox" id="autoRead"> 🔊 Lecture vocale <span style="opacity:.6">(sinon muet)</span></label>
+  <select id="voicePick" title="Choisir la voix" style="display:none;font:inherit;font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid rgba(27,42,74,.2);background:#fff;color:#1B2A4A;max-width:210px"></select>
+  <button class="stop" onclick="stopReading()" id="stopReadBtn" style="display:none">⏹ Stop</button>
 </div>
 
 <nav class="app-tabs">
@@ -161,7 +162,7 @@ if (userTier === 'fo') {
   var tg = document.querySelector('.chat-head .tagline'); if (tg) tg.textContent = 'Votre conseiller patrimonial d\'élite · anticipe · orchestre · veille';
   var mini = document.querySelector('.chat-head .marcel-mini'); if (mini) mini.textContent = 'M';
   // Accueil vocal Marcel (effet majordome) — dégrade en silence si le navigateur bloque
-  try { if (Voice.isSupported().tts) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre conseiller patrimonial. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
+  try { if (Voice.isSupported().tts && Voice.getPreferences().autoRead) { setTimeout(() => Voice.smartSpeak('Bonjour. Je suis Marcel, votre conseiller patrimonial. Que puis-je orchestrer pour vous aujourd\'hui ?', { tier: userTier }), 700); } } catch (_) {}
   var hello = document.querySelector('.chat-msgs .msg.a');
   if (hello) hello.innerHTML = '<strong>Bonjour.</strong> Je suis <em>Marcel</em>, votre conseiller patrimonial. Je veille sur votre patrimoine de dirigeant — fiscalité, rémunération, trésorerie, transmission, cession. Que puis-je éclairer pour vous aujourd\'hui ?<div class="disclaimer">Cette interface ne constitue pas un conseil personnalisé au sens de l\'art. L.541-1 du Code monétaire et financier.</div>';
 }
@@ -206,23 +207,27 @@ const voiceBar = document.getElementById('voiceBar');
 const autoReadInput = document.getElementById('autoRead');
 const stopReadBtn = document.getElementById('stopReadBtn');
 
-if(!voiceSupport.stt){
-  micBtn.style.display = 'none';
-} else {
+if(!voiceSupport.stt){ micBtn.style.display = 'none'; }
+// Barre voix visible dès que la synthèse est supportée. MUET PAR DÉFAUT :
+// Marcel ne parle JAMAIS sans que vous cochiez « Lecture vocale ».
+if(voiceSupport.tts){
   voiceBar.classList.add('show');
   autoReadInput.checked = !!prefs.autoRead;
+  // Sélecteur de voix : choisissez la meilleure voix de votre appareil.
+  // Sur Android : voix Google FR neuronale (excellente). Desktop : selon l'OS.
+  // 100% local (aucune donnée ne quitte l'appareil → souverain / RGPD).
+  var fillVoices = function(){
+    var sel = document.getElementById('voicePick'); if(!sel) return;
+    var list = Voice.listFrenchVoices(); if(!list.length) return;
+    var cur = Voice.getPreferences().voiceName || '';
+    sel.innerHTML = '<option value="">Voix automatique</option>' + list.map(function(v){ var n=v.name.replace(/[<>"]/g,''); return '<option value="'+n+'"'+(v.name===cur?' selected':'')+'>'+n+'</option>'; }).join('');
+    sel.style.display = 'inline-block';
+  };
+  fillVoices();
+  if('speechSynthesis' in window){ try{ window.speechSynthesis.onvoiceschanged = fillVoices; }catch(_){} }
+  document.getElementById('voicePick')?.addEventListener('change', function(e){ Voice.setVoice(e.target.value || null); if(e.target.value){ Voice.speak('Voici un aperçu de cette voix, pour votre patrimoine.', { voiceName: e.target.value }); } });
 }
 autoReadInput?.addEventListener('change', e => Voice.setAutoRead(e.target.checked));
-
-// ── CASSIUS 100% voix (FO) : expérience vocale activée par défaut ──
-// Lecture vocale auto + barre voix visible. Voix navigateur = 100% LOCALE
-// (aucune donnée ne quitte l'appareil → RGPD parfait). La voix premium
-// (qualité studio) s'active si configurée côté serveur, sinon fallback local.
-if (userTier === 'fo' && voiceSupport.tts) {
-  try { Voice.setAutoRead(true); } catch(_){}
-  if (autoReadInput) { autoReadInput.checked = true; autoReadInput.closest('.auto-read').lastChild.textContent = ' Marcel vous répond à voix haute'; }
-  if (voiceBar) voiceBar.classList.add('show');
-}
 
 window.toggleMic = async function(){
   const input = document.getElementById('q');

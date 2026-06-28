@@ -321,7 +321,7 @@ const Voice = {
     if (prefs.premiumMode && (tier === 'premium' || tier === 'fo')) {
       return await this.speakPremium(text, { voiceId });
     }
-    this.speak(text, { rate: prefs.rate || 1.0 });
+    this.speak(text, { rate: prefs.rate || 1.0, voiceName: prefs.voiceName });
     return 'webspeech';
   },
 
