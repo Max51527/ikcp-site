@@ -110,6 +110,7 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
 <div class="voice-bar" id="voiceBar">
   <label class="auto-read"><input type="checkbox" id="autoRead"> 🔊 Lecture vocale <span style="opacity:.6">(sinon muet)</span></label>
   <select id="voicePick" title="Choisir la voix" style="display:none;font:inherit;font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid rgba(27,42,74,.2);background:#fff;color:#1B2A4A;max-width:210px"></select>
+  <button type="button" id="convoBtn" onclick="toggleConvo()" style="background:linear-gradient(135deg,#1B2A4A,#0E1729);color:#E2C896;border:none;border-radius:999px;padding:7px 15px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer">🎙️ Mode conversation</button>
   <button class="stop" onclick="stopReading()" id="stopReadBtn" style="display:none">⏹ Stop</button>
 </div>
 
@@ -285,6 +286,60 @@ window.toggleMic = async function(){
     onEnd: () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; input.placeholder = 'Posez votre question à Marcel…'; },
   });
 }
+
+// ── MODE CONVERSATION mains-libres (le « jamais vu ») ─────────────────────
+// Boucle : vous parlez → Marcel transcrit → répond → LIT à voix haute →
+// rouvre le micro tout seul. Comme un appel téléphonique avec votre conseiller.
+// 100% local pour la voix (Web Speech, souverain). Stop = re-clic ou bouton.
+window.convoMode = false;
+function setConvoUI(on){
+  var b = document.getElementById('convoBtn');
+  if(b){ b.textContent = on ? '⏹ Arrêter' : '🎙️ Mode conversation'; b.style.background = on ? 'linear-gradient(135deg,#C0414C,#8B2733)' : 'linear-gradient(135deg,#1B2A4A,#0E1729)'; }
+}
+function startConvoListen(){
+  if(!window.convoMode) return;
+  if(Voice.isListening()) return;
+  var input = document.getElementById('q');
+  if(!input || input.disabled) return;
+  micBtn.classList.add('listening'); micBtn.textContent = '⏹';
+  input.placeholder = '🎙️ Parlez à Marcel…';
+  Voice.startListening({
+    onInterim: function(t){ input.value = t; },
+    onFinal: function(t){
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+      input.value = t;
+      setTimeout(function(){ document.querySelector('.chat-input form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true})); }, 150);
+    },
+    onError: function(e){
+      micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+      if(e && e.error === 'not-allowed'){ alert('Autorisez le micro pour le mode conversation.'); window.convoMode = false; setConvoUI(false); }
+    },
+    onEnd: function(){ micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; }
+  });
+}
+function convoTick(){
+  if(!window.convoMode) return;
+  var input = document.getElementById('q');
+  var busy = Voice.isSpeaking() || Voice._audioPlayer || Voice.isListening() || (input && input.disabled);
+  if(!busy) startConvoListen();
+  setTimeout(convoTick, 500);
+}
+window.toggleConvo = function(){
+  if(!voiceSupport.stt || !voiceSupport.tts){ alert('Le mode conversation nécessite Chrome, Edge ou Safari — idéal sur mobile.'); return; }
+  window.convoMode = !window.convoMode;
+  setConvoUI(window.convoMode);
+  if(window.convoMode){
+    Voice.setAutoRead(true);
+    if(autoReadInput) autoReadInput.checked = true;
+    convoTick();
+    startConvoListen();
+  } else {
+    Voice.stopListening();
+    Voice.stopSpeakingAll();
+    micBtn.classList.remove('listening'); micBtn.textContent = '🎤';
+    var input = document.getElementById('q'); if(input) input.placeholder = 'Posez votre question à Marcel…';
+  }
+};
 
 window.stopReading = function(){
   Voice.stopSpeaking();
