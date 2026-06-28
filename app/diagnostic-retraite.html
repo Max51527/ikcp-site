@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!-- © 2026 IKCP · Maxime Juveneton · ORIAS 23001568 -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le trou de retraite du dirigeant / profession libérale · Marcel IA</title>
+<meta name="description" content="TNS, professions libérales (CARMF, CIPAV, CNBF) : estimez le trou entre votre revenu et votre future pension, et combien le PER peut combler (plafond 88 911 €). Estimation pédagogique 2026.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1B2A4A;--navy-deep:#0E1729;--cream:#FAFAF8;--cream-2:#F4EFE7;--gold:#C9A96E;--gold-bright:#E2C896;--gold-deep:#8B6F3F;--ink:#1C1612;--ink-mute:#6B5D52;--line:rgba(27,42,74,.12);--ok:#2D7A4F;--bad:#B23A2E;--blue:#3a6ea5}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+a{color:var(--gold-deep);text-decoration:none}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+.hd{background:var(--navy-deep);padding:14px 0}.hd .wrap{display:flex;justify-content:space-between;align-items:center}
+.hd .logo{font-family:'Playfair Display',serif;font-size:20px;color:#fff}.hd .logo span{color:var(--gold)}
+.hd a.back{color:var(--gold);font-size:13px;border:1px solid rgba(201,169,110,.3);padding:6px 13px;border-radius:6px}
+.hero{text-align:center;padding:44px 0 14px}
+.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:13px}
+.hero h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(25px,4.4vw,40px);line-height:1.12;color:var(--navy)}
+.hero h1 em{font-style:italic;color:var(--gold-deep)}
+.hero p{color:var(--ink-mute);max-width:640px;margin:14px auto 0;font-size:15px}
+.controls{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;max-width:720px;margin:24px auto 0}
+.ctrl{margin-bottom:18px}.ctrl:last-child{margin-bottom:0}
+.ctrl label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-mute);margin-bottom:7px;font-weight:500}
+.ctrl label b{color:var(--navy);font-family:'JetBrains Mono',monospace}
+.ctrl input[type=range]{width:100%;accent-color:var(--gold-deep);height:5px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:84px;padding:10px 8px;border:1.5px solid var(--line);background:var(--cream);border-radius:9px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12.5px;color:var(--ink);font-weight:600;line-height:1.3}
+.seg button.on{background:var(--gold);border-color:var(--gold);color:var(--navy-deep)}
+.seg button small{display:block;font-weight:400;font-size:10px;opacity:.8;margin-top:1px}
+.result{max-width:720px;margin:22px auto 0}
+.gap-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center}
+.gap-card .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);font-weight:600}
+.gap-card .big{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(34px,7vw,52px);color:var(--bad);line-height:1;margin:6px 0}
+.gap-card .sub{font-size:13.5px;color:var(--ink-mute)}
+.bar{display:flex;height:34px;border-radius:9px;overflow:hidden;margin:18px 0 6px;border:1px solid var(--line)}
+.bar .pension{background:var(--ok);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600}
+.bar .trou{background:repeating-linear-gradient(45deg,#e9ded0,#e9ded0 7px,#f4ede1 7px,#f4ede1 14px);flex:1;display:flex;align-items:center;justify-content:center;color:var(--bad);font-size:11px;font-weight:600}
+.legend{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-mute)}
+.per{background:var(--navy-deep);color:var(--cream);border-radius:16px;padding:22px;margin-top:16px}
+.per h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold-bright);text-align:center;margin-bottom:6px}
+.per .row{display:flex;justify-content:space-between;font-size:13.5px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1);gap:10px}
+.per .row:last-child{border-bottom:none}
+.per .row b{font-family:'JetBrains Mono',monospace;color:#fff;text-align:right}
+.per .hi{color:var(--gold-bright)}
+.verdict{max-width:720px;margin:16px auto 0;background:var(--cream-2);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center}
+.verdict .v{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--navy)}
+.verdict .s{font-size:13px;color:var(--ink-mute);margin-top:8px;line-height:1.55}
+.cta-final{text-align:center;margin:22px 0 8px}
+.cta-final a{display:inline-flex;gap:8px;background:var(--gold);color:var(--navy-deep);padding:14px 26px;border-radius:100px;font-weight:700;font-size:15px}
+.disc{font-size:11.5px;color:var(--ink-mute);font-style:italic;text-align:center;max-width:760px;margin:18px auto 0;line-height:1.6}
+.ft{background:var(--navy);color:rgba(255,255,255,.6);text-align:center;padding:22px;font-size:12px;margin-top:34px}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap"><div class="logo">Marcel <span>IA</span></div><a class="back" href="/app/dashboard.html">← Mon espace</a></div></header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Retraite du dirigeant &amp; profession libérale</div>
+  <h1>Votre future pension : <em>le trou que personne ne chiffre.</em></h1>
+  <p>TNS, médecin, avocat, libéral : vos caisses (CARMF, CIPAV, CNBF) versent des pensions structurellement faibles face à vos revenus. Mesurez l'écart — et ce que le PER peut combler.</p>
+</section>
+
+<div class="controls">
+  <div class="ctrl">
+    <label>Votre caisse / régime</label>
+    <div class="seg" id="caisseSeg">
+      <button data-c="carmf" data-r="0.32" class="on">CARMF<small>Médecins</small></button>
+      <button data-c="cipav" data-r="0.26">CIPAV<small>Libéraux divers</small></button>
+      <button data-c="cnbf" data-r="0.38">CNBF<small>Avocats</small></button>
+      <button data-c="ssi" data-r="0.42">SSI / général<small>Artisans, commerçants</small></button>
+    </div>
+  </div>
+  <div class="ctrl"><label>Votre revenu annuel <span style="font-weight:400">(net professionnel)</span> <b id="vRev">120 000 €</b></label><input type="range" id="rev" min="40000" max="400000" step="5000" value="120000"></div>
+  <div class="ctrl"><label>Votre âge aujourd'hui <b id="vAge">45 ans</b></label><input type="range" id="age" min="30" max="62" step="1" value="45"></div>
+  <div class="ctrl">
+    <label>Votre tranche marginale d'IR</label>
+    <div class="seg" id="tmiSeg"><button data-t="0.11">11 %</button><button data-t="0.30" class="on">30 %</button><button data-t="0.41">41 %</button><button data-t="0.45">45 %</button></div>
+  </div>
+</div>
+
+<div class="result">
+  <div class="gap-card">
+    <div class="lbl">À la retraite, il vous manquerait chaque année</div>
+    <div class="big" id="trou">—</div>
+    <div class="sub" id="trouSub">pour maintenir votre niveau de vie</div>
+    <div class="bar"><div class="pension" id="barPension"></div><div class="trou" id="barTrou">le trou</div></div>
+    <div class="legend"><span id="legPension">Pension estimée</span><span>Objectif : 70 % du revenu</span></div>
+  </div>
+  <div class="per">
+    <h3>🛟 Le PER, votre levier — l'État en finance une partie</h3>
+    <div class="row"><span>Versement annuel envisageable (jusqu'au plafond)</span><b id="perV">—</b></div>
+    <div class="row"><span>Économie d'impôt immédiate (× votre TMI)</span><b class="hi" id="perEco">—</b></div>
+    <div class="row"><span>Effort net réel (après économie d'impôt)</span><b id="perNet">—</b></div>
+    <div class="row"><span>Capital constitué d'ici votre retraite (hors rendement)</span><b id="perCap">—</b></div>
+  </div>
+</div>
+
+<div class="verdict"><div class="v" id="verdictV">—</div><div class="s" id="verdictS"></div></div>
+
+<div class="cta-final wrap"><a id="ctaMarcel" href="#">Construire ma stratégie retraite avec Marcel →</a></div>
+<div class="disc">Estimation pédagogique 2026 — le <b>taux de remplacement</b> (pension / dernier revenu) est une moyenne indicative par caisse ; il <b>baisse fortement pour les hauts revenus</b> (pensions plafonnées en points). Objectif de maintien fixé à 70 % du revenu. Plafond PER indépendant 2026 ≈ 88 911 €. Capital affiché hors rendement et hors revalorisation. <b>Ne constitue pas un conseil personnalisé</b> (art. L.541-1 CoMoFi) ni une recommandation. À confirmer avec votre caisse, votre expert-comptable et Maxime Juveneton (CIF · ORIAS 23001568).</div>
+
+<footer class="ft">© 2026 IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · SIREN 947 972 436</footer>
+
+<script>
+function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,Math.round(n))); }
+var caisse='carmf', txRempl=0.32, tmi=0.30;
+var PLAFOND_PER=88911;
+
+function compute(){
+  var R=+document.getElementById('rev').value, age=+document.getElementById('age').value;
+  document.getElementById('vRev').textContent=eur(R);
+  document.getElementById('vAge').textContent=age+' ans';
+
+  // Taux de remplacement dégressif pour les hauts revenus (pensions plafonnées en points)
+  var tx=txRempl;
+  if(R>80000) tx = txRempl * (1 - Math.min(0.4, (R-80000)/600000)); // décote progressive, plafonnée à -40%
+  var pension = R*tx;
+  var objectif = R*0.70;
+  var trou = Math.max(0, objectif - pension);
+
+  document.getElementById('trou').textContent=eur(trou);
+  document.getElementById('trouSub').textContent='soit '+Math.round((trou/Math.max(1,objectif))*100)+' % de votre objectif de niveau de vie — taux de remplacement estimé '+Math.round(tx*100)+' %';
+  var pctPension=Math.round(pension/objectif*100);
+  document.getElementById('barPension').style.width=Math.max(8,Math.min(92,pctPension))+'%';
+  document.getElementById('barPension').textContent=pctPension+'%';
+  document.getElementById('legPension').textContent='Pension estimée ~'+eur(pension)+'/an';
+
+  // PER : versement jusqu'au plafond (on borne au plus petit entre 10% du revenu élargi et le plafond, puis on plafonne aussi à ce qui couvre ~le trou capitalisé)
+  var versement=Math.min(PLAFOND_PER, Math.round(R*0.10/1000)*1000);
+  if(versement<1000) versement=Math.min(PLAFOND_PER, 4000);
+  var eco=versement*tmi;
+  var effort=versement-eco;
+  var annees=Math.max(0, 64-age);
+  var capital=versement*annees;
+  document.getElementById('perV').textContent=eur(versement)+' / an';
+  document.getElementById('perEco').textContent='– '+eur(eco)+' / an';
+  document.getElementById('perNet').textContent=eur(effort)+' / an';
+  document.getElementById('perCap').textContent='≈ '+eur(capital);
+
+  var vEl=document.getElementById('verdictV'), sEl=document.getElementById('verdictS');
+  vEl.textContent='L\'État finance '+Math.round(tmi*100)+' % de votre effort retraite.';
+  sEl.textContent='Sur '+annees+' ans, votre PER pourrait constituer '+eur(capital)+' (hors rendement) pour un effort net de '+eur(effort)+'/an — pendant que vous réduisez votre impôt aujourd\'hui. Reste LA question : à partir de quand ce trou devient-il difficile à combler ?';
+
+  var q='Je dépends de la '+caisse.toUpperCase()+', '+eur(R)+' de revenu, '+age+' ans, TMI '+Math.round(tmi*100)+'%. Mon trou de retraite estimé est de '+eur(trou)+'/an. Aide-moi à bâtir une stratégie (PER, capitalisation, société) pour le combler. Termine par une question.';
+  document.getElementById('ctaMarcel').href='/app/marcel?q='+encodeURIComponent(q);
+}
+document.querySelectorAll('#caisseSeg button').forEach(function(b){b.onclick=function(){caisse=b.dataset.c;txRempl=+b.dataset.r;document.querySelectorAll('#caisseSeg button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');compute();};});
+document.querySelectorAll('#tmiSeg button').forEach(function(b){b.onclick=function(){tmi=+b.dataset.t;document.querySelectorAll('#tmiSeg button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');compute();};});
+['rev','age'].forEach(function(id){document.getElementById(id).addEventListener('input',compute);});
+compute();
+</script>
+<script src="/protect.js?v=1" defer></script>
+</body>
+</html>
