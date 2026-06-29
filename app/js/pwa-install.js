@@ -25,7 +25,7 @@
     b.style.cssText =
       'position:fixed;left:12px;right:12px;bottom:74px;z-index:9000;max-width:520px;margin:0 auto;' +
       'background:#1B2A4A;color:#FAF7F0;border:1px solid rgba(201,169,110,.4);border-radius:14px;' +
-      'padding:14px 16px;display:flex;align-items:center;gap:12px;font-family:Inter,sans-serif;font-size:13.5px;' +
+      'padding:14px 16px;display:flex;align-items:center;gap:12px;font-family:Outfit,system-ui,sans-serif;font-size:13.5px;' +
       'box-shadow:0 16px 40px -16px rgba(0,0,0,.5)';
     b.innerHTML =
       '<span style="font-size:24px">📲</span><div style="flex:1;line-height:1.4">' + html + '</div>' +
