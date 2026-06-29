@@ -71,8 +71,8 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
     <div class="mk">MARCEL <em>IA</em></div>
     <div class="meta" id="meta">—</div>
   </div>
-  <h1>Audit patrimonial 360°</h1>
-  <div class="lede">Votre situation passée au crible sur les trois dimensions — <b>financière</b>, <b>juridique</b>, <b>fiscale</b> — à partir de vos données réelles. Vos leviers prioritaires, en clair.</div>
+  <h1 id="auditH1">Audit patrimonial 360°</h1>
+  <div class="lede" id="auditLede">Votre situation passée au crible sur les trois dimensions — <b>financière</b>, <b>juridique</b>, <b>fiscale</b> — à partir de vos données réelles. Vos leviers prioritaires, en clair.</div>
   <div id="body"><div class="empty">Chargement…</div></div>
 </div>
 
@@ -113,6 +113,13 @@ function render(biens, soc, data){
   var net = bilan.actif_net_cents!=null ? bilan.actif_net_cents/100 : brut;
   var passif = bilan.passif_cents!=null ? bilan.passif_cents/100 : 0;
   var oppo=(data&&data.opportunites)||[];
+  var PREMIUM = /^(premium|fo)$/.test((function(){try{return localStorage.getItem('ikcp_tier')||'free';}catch(_){return 'free';}})());
+  try{
+    document.getElementById('auditH1').textContent = PREMIUM ? 'Audit patrimonial 360°' : 'Bilan patrimonial';
+    document.getElementById('auditLede').innerHTML = PREMIUM
+      ? 'Votre situation passée au crible sur les trois dimensions — <b>financière</b>, <b>juridique</b>, <b>fiscale</b> — à partir de vos données réelles. Vos leviers prioritaires, en clair.'
+      : 'Votre patrimoine en un coup d\'œil : actif net et répartition. L\'<b>audit 360°</b> — analyse juridique, fiscale et pistes de réflexion chiffrées — fait partie de <b>Premium</b>.';
+  }catch(_){}
   var immo=byCat.immobilier||0, socVal=byCat.societe||0, liq=byCat.liquidites||0;
 
   // ===== KPIs =====
@@ -135,43 +142,49 @@ function render(biens, soc, data){
   if(liq>0 && brut && liq/brut>0.25) html+=piste('fin','Des liquidités qui dorment','Vos liquidités représentent '+Math.round(liq/brut*100)+' % du patrimoine ('+eur(liq)+'). Au-delà d\'une réserve de précaution, un placement adapté préserve leur valeur face à l\'inflation.');
   html+='</div>';
 
-  // ===== 2 · JURIDIQUE =====
-  html+='<div class="dim jur"><span class="dimtag">2 · Juridique</span><h2>Structure, protection & transmission</h2>';
-  if(soc && soc.nom){
-    html+=piste('jur','Votre structure : '+esc(soc.nom),(soc.forme?esc(soc.forme):'Société')+'. Le choix de structure conditionne votre fiscalité, votre protection et la transmission de l\'entreprise.');
-  }
-  if(soc || socVal>0){
-    var assietteDut = socVal>0?socVal:(soc&&soc.ca?soc.ca:0);
-    html+=piste('jur','Pacte Dutreil — transmission des titres',
-      'La transmission de vos titres de société peut bénéficier d\'une exonération de <b>75 % de l\'assiette taxable</b> (art. 787 B CGI), sous engagement de conservation.'+(assietteDut>0?' Sur une base de '+eur(assietteDut)+', l\'assiette taxée tomberait à '+eur(assietteDut*0.25)+'.':''));
-    html+=piste('jur','Holding (SPFPL / société mère)','Loger vos titres dans une holding permet de remonter la trésorerie en quasi-franchise (régime mère-fille), de réinvestir avant impôt personnel et de préparer la transmission.');
-  }
-  html+=piste('jur','Régime matrimonial & mandat de protection future','Deux audits souvent oubliés : votre régime matrimonial protège-t-il votre conjoint et l\'entreprise ? Un mandat de protection future sécurise la continuité en cas d\'incapacité.');
-  html+='</div>';
+  if (PREMIUM) {
+    // ===== 2 · JURIDIQUE =====
+    html+='<div class="dim jur"><span class="dimtag">2 · Juridique</span><h2>Structure, protection & transmission</h2>';
+    if(soc && soc.nom){
+      html+=piste('jur','Votre structure : '+esc(soc.nom),(soc.forme?esc(soc.forme):'Société')+'. Le choix de structure conditionne votre fiscalité, votre protection et la transmission de l\'entreprise.');
+    }
+    if(soc || socVal>0){
+      var assietteDut = socVal>0?socVal:(soc&&soc.ca?soc.ca:0);
+      html+=piste('jur','Pacte Dutreil — transmission des titres',
+        'La transmission de vos titres de société peut bénéficier d\'une exonération de <b>75 % de l\'assiette taxable</b> (art. 787 B CGI), sous engagement de conservation.'+(assietteDut>0?' Sur une base de '+eur(assietteDut)+', l\'assiette taxée tomberait à '+eur(assietteDut*0.25)+'.':''));
+      html+=piste('jur','Holding (SPFPL / société mère)','Loger vos titres dans une holding permet de remonter la trésorerie en quasi-franchise (régime mère-fille), de réinvestir avant impôt personnel et de préparer la transmission.');
+    }
+    html+=piste('jur','Régime matrimonial & mandat de protection future','Deux audits souvent oubliés : votre régime matrimonial protège-t-il votre conjoint et l\'entreprise ? Un mandat de protection future sécurise la continuité en cas d\'incapacité.');
+    html+='</div>';
 
-  // ===== 3 · FISCAL =====
-  html+='<div class="dim fis"><span class="dimtag">3 · Fiscal</span><h2>Pression fiscale & optimisation</h2>';
-  if(soc && soc.resultat!=null && soc.resultat>0){
-    var is=isImpot(soc.resultat), tx=Math.round(is/soc.resultat*100);
-    html+=piste('fis','Impôt sur les sociétés','Sur un résultat de '+eur(soc.resultat)+', l\'IS 2026 ressort à environ '+eur(is)+' (taux effectif ~'+tx+' %, 15 % jusqu\'à 42 500 € puis 25 %).');
-  }
-  if(soc){
-    html+=piste('fis','Arbitrage rémunération / dividendes / holding','La façon de sortir le bénéfice change fortement votre net. L\'écart se chiffre souvent en dizaines de milliers d\'euros par an.',
-      '<div class="ba"><span>→ Simulez-le dans <b>Outils</b></span></div>');
-  }
-  html+=piste('fis','Plan d\'Épargne Retraite (PER)','Vous pouvez déduire jusqu\'à <b>'+eur(PER_PLAFOND)+'</b> de votre revenu imposable 2026 (plafonds des 3 dernières années reportables) — un des rares leviers à effet immédiat.');
-  if(immo>=IFI_SEUIL){
-    html+='<div class="alert">⚠ IFI : votre immobilier ('+eur(immo)+') dépasse le seuil de '+eur(IFI_SEUIL)+'. Vous êtes assujetti — leviers : démembrement, dette déductible, dons.</div>';
-  }
-  html+='</div>';
+    // ===== 3 · FISCAL =====
+    html+='<div class="dim fis"><span class="dimtag">3 · Fiscal</span><h2>Pression fiscale & optimisation</h2>';
+    if(soc && soc.resultat!=null && soc.resultat>0){
+      var is=isImpot(soc.resultat), tx=Math.round(is/soc.resultat*100);
+      html+=piste('fis','Impôt sur les sociétés','Sur un résultat de '+eur(soc.resultat)+', l\'IS 2026 ressort à environ '+eur(is)+' (taux effectif ~'+tx+' %, 15 % jusqu\'à 42 500 € puis 25 %).');
+    }
+    if(soc){
+      html+=piste('fis','Arbitrage rémunération / dividendes / holding','La façon de sortir le bénéfice change fortement votre net. L\'écart se chiffre souvent en dizaines de milliers d\'euros par an.',
+        '<div class="ba"><span>→ Simulez-le dans <b>Outils</b></span></div>');
+    }
+    html+=piste('fis','Plan d\'Épargne Retraite (PER)','Vous pouvez déduire jusqu\'à <b>'+eur(PER_PLAFOND)+'</b> de votre revenu imposable 2026 (plafonds des 3 dernières années reportables) — un des rares leviers à effet immédiat.');
+    if(immo>=IFI_SEUIL){
+      html+='<div class="alert">⚠ IFI : votre immobilier ('+eur(immo)+') dépasse le seuil de '+eur(IFI_SEUIL)+'. Vous êtes assujetti — leviers : démembrement, dette déductible, dons.</div>';
+    }
+    html+='</div>';
 
-  // ===== Pistes moteur souverain =====
-  if(oppo.length){
-    html+='<div class="dim"><span class="dimtag" style="background:rgba(139,111,63,.14);color:var(--gold-d)">Synthèse</span><h2>Pistes prioritaires détectées</h2>'+
-      oppo.slice(0,6).map(function(o){ return piste('','· '+esc(o.nom||o.strategie_key||'Piste'),o.declencheur?esc(o.declencheur):''); }).join('')+'</div>';
+    // ===== Pistes moteur souverain =====
+    if(oppo.length){
+      html+='<div class="dim"><span class="dimtag" style="background:rgba(139,111,63,.14);color:var(--gold-d)">Synthèse</span><h2>Pistes prioritaires détectées</h2>'+
+        oppo.slice(0,6).map(function(o){ return piste('','· '+esc(o.nom||o.strategie_key||'Piste'),o.declencheur?esc(o.declencheur):''); }).join('')+'</div>';
+    }
+    html+='<div class="cta">Ces leviers méritent une étude adaptée à VOTRE situation. Quel objectif voulez-vous servir en priorité ?<br><a href="/app/marcel?q='+encodeURIComponent('À partir de mon audit 360°, quels sont mes 3 leviers prioritaires et par lequel commencer ?')+'">Continuer avec Marcel →</a></div>';
+  } else {
+    // ===== FREE — bilan seul, audit 360° gated =====
+    html+='<div class="dim"><span class="dimtag" style="color:var(--gold-d)">Audit 360° · Premium</span><h2>Vos leviers juridiques &amp; fiscaux</h2>'+
+      '<div class="piste" style="border-left-color:var(--gold)"><div class="t">🔒 L\'analyse complète est réservée à Premium</div><div class="d">Vous avez votre <b>bilan</b> ci-dessus. L\'<b>audit 360°</b> ajoute le volet <b>juridique</b> (structure, Pacte Dutreil −75 % d\'assiette, holding, protection du conjoint) et <b>fiscal</b> (IS, arbitrage rémunération / dividendes, PER, IFI), avec vos <b>pistes de réflexion chiffrées</b> — et Marcel en illimité.</div></div></div>'+
+      '<div class="cta">Débloquez votre audit patrimonial 360° complet + Marcel illimité.<br><a href="/app/profil.html">Passer en Premium →</a></div>';
   }
-
-  html+='<div class="cta">Ces leviers méritent une étude adaptée à VOTRE situation. Quel objectif voulez-vous servir en priorité ?<br><a href="/app/marcel?q='+encodeURIComponent('À partir de mon audit 360°, quels sont mes 3 leviers prioritaires et par lequel commencer ?')+'">Continuer avec Marcel →</a></div>';
   html+='<div class="disc">'+esc(DISC)+'</div>';
   document.getElementById('body').innerHTML=html;
 }
