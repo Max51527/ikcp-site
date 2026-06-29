@@ -125,6 +125,18 @@
   .pcard .av{color:#C0414C;font-weight:700;font-size:13px}
   .pcard .ap{color:#2e9e6b;font-weight:700;font-size:13px}
   .pcard .qq{font-style:italic;color:var(--gold-deep);font-size:12.5px;margin-top:8px;line-height:1.4}
+  /* Schéma société (cartographie SIREN) */
+  .co-schema{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 24px rgba(27,42,74,.06);animation:riseIn .5s ease both}
+  .co-head{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
+  .co-nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy);line-height:1.15}
+  .co-fj{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.co-grid{grid-template-columns:1fr}}
+  .co-cell{background:var(--cream-2);border-radius:11px;padding:10px 13px}
+  .co-cell.acc{background:linear-gradient(135deg,rgba(184,149,110,.15),rgba(184,149,110,.04));border:1px solid rgba(184,149,110,.32)}
+  .co-cell .cl{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .co-cell .cv{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:600;margin-top:3px;line-height:1.2}
+  .co-cell.acc .cv{color:var(--gold-deep)}
 </style>
 </head>
 <body>
@@ -276,18 +288,34 @@
     var v=(document.getElementById('siren').value||'').replace(/\D/g,'').slice(0,9);
     var out=document.getElementById('sirenOut'), b=document.getElementById('sirenBtn');
     if(v.length<9){ out.innerHTML='<p class="think">Saisissez 9 chiffres.</p>'; return; }
-    b.disabled=true; out.innerHTML='<p class="think">Marcel interroge le Registre National des Entreprises…</p>';
+    b.disabled=true; out.innerHTML='<p class="think">Marcel cartographie votre société (RNE / INPI)…</p>';
     try{
-      var r=await fetch('https://ikcp-pappers.maxime-ead.workers.dev/entreprise/'+v+'/short',{headers:{'Accept':'application/json'}});
+      // 1) Identité (worker Pappers, souverain) + 2) Finances (API gouv RNE/INPI, CÔTÉ NAVIGATEUR → IP user, pas de 429)
+      var rr = await Promise.all([
+        fetch('https://ikcp-pappers.maxime-ead.workers.dev/entreprise/'+v+'/short',{headers:{'Accept':'application/json'}}),
+        fetch('https://recherche-entreprises.api.gouv.fr/search?q='+v+'&per_page=1',{headers:{'Accept':'application/json'}}).catch(function(){return null;})
+      ]);
+      var r=rr[0], gr=rr[1];
       if(!r.ok) throw 0;
       var d=await r.json();
-      var cap=d.capital?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(d.capital):'n.c.';
-      window._coCtx='Ma société (source RNE) : '+(d.nom||'')+', '+(d.forme_juridique||'')+', capital '+cap+', activité '+(d.libelle_code_naf||d.code_naf||'')+', siège '+((d.siege&&d.siege.ville)||'')+'.';
-      out.innerHTML='<div class="card-co"><div class="nm">'+esc(d.nom||'—')+'</div><div class="meta">'+
-        '<b>Forme :</b> '+esc(d.forme_juridique||'—')+'<br><b>Capital :</b> '+cap+'<br><b>Activité :</b> '+esc(d.libelle_code_naf||d.code_naf||'—')+'<br><b>Siège :</b> '+esc((d.siege&&d.siege.ville)||'—')+'</div>'+
-        '<div class="badge-souv">✓ Source officielle RNE · données en France</div></div>'+
+      var ca=null, rnet=null, fyear=null;
+      try{ if(gr&&gr.ok){ var gd=await gr.json(); var fin=gd.results&&gd.results[0]&&gd.results[0].finances; if(fin){ var ys=Object.keys(fin).filter(function(y){return fin[y];}).sort(); var ly=ys[ys.length-1]; if(ly){ ca=fin[ly].ca; rnet=fin[ly].resultat_net; fyear=ly; } } } }catch(_){}
+      var fmt=function(n){ return (n!=null)?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0,notation:(Math.abs(n)>=1e6?'compact':'standard')}).format(n):null; };
+      var cap=(d.capital!=null)?fmt(d.capital):'n.c.';
+      var dir=d.dirigeant?((d.dirigeant.prenom||'')+' '+(d.dirigeant.nom||'')).trim():'';
+      window._coCtx='Ma société (source RNE/INPI) : '+(d.nom||'')+', '+(d.forme_juridique||'')+', capital '+cap+', activité '+(d.libelle_code_naf||d.code_naf||'')+', siège '+((d.siege&&d.siege.ville)||'')+(ca!=null?(', chiffre d\'affaires '+fmt(ca)+(fyear?(' ('+fyear+')'):'')):'')+(rnet!=null?(', résultat net '+fmt(rnet)):'')+'.';
+      var cell=function(lbl,val,acc){ return '<div class="co-cell'+(acc?' acc':'')+'"><div class="cl">'+lbl+'</div><div class="cv">'+esc(val)+'</div></div>'; };
+      var finCells=(ca!=null||rnet!=null)
+        ? cell('Chiffre d\'affaires'+(fyear?(' '+fyear):''), (ca!=null?fmt(ca):'n.c.'), true)+cell('Résultat net', (rnet!=null?fmt(rnet):'n.c.'), true)
+        : '<div class="co-cell" style="grid-column:1/-1"><div class="cl">Finances</div><div class="cv" style="font-size:13px;font-weight:400;color:var(--ink-faint)">Comptes non publiés (option de confidentialité) — à saisir dans votre cockpit.</div></div>';
+      out.innerHTML=
+        '<div class="co-schema">'+
+          '<div class="co-head"><div class="co-nm">'+esc(d.nom||'—')+'</div><div class="co-fj">'+esc(d.forme_juridique||'')+'</div></div>'+
+          '<div class="co-grid">'+cell('Capital',cap)+cell('Activité',d.libelle_code_naf||d.code_naf||'—')+cell('Siège',(d.siege&&d.siege.ville)||'—')+cell('Dirigeant',dir||'—')+finCells+'</div>'+
+          '<div class="badge-souv">✓ Identité RNE (souverain) · finances : comptes déposés RNE/INPI · données en France</div>'+
+        '</div>'+
         '<div id="sirenMarcel" class="out" data-allow-copy style="margin-top:14px"></div>';
-      // Enchaînement automatique : Marcel analyse la société, sans rien redemander
+      // Enchaînement automatique : Marcel analyse la société (avec ses VRAIS chiffres), sans rien redemander
       marcelInto('sirenMarcel', window._coCtx+' Donne-moi mes 3 principaux leviers — rémunération/dividendes, fiscalité, transmission — pour cette structure. Concret et chiffré.');
       revealContinue();
     }catch(e){ out.innerHTML='<p class="think">Société introuvable. Essayez 552 032 534 (Danone).</p>'; }
