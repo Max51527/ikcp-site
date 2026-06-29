@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Better Call Marcel — votre copilote patrimoine IA</title>
+<meta name="description" content="Vous êtes dirigeant ou profession libérale ? Vous voulez rester maître à bord de votre patrimoine, mais avec un copilote intelligent ? Better Call Marcel — l'IA family office d'IKCP.">
+<meta name="theme-color" content="#0a0d0b">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<meta property="og:title" content="Better Call Marcel">
+<meta property="og:description" content="Dirigeant ou profession libérale ? Maître à bord de votre patrimoine, avec un copilote IA. Beta IKCP Family Office.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ikcp.eu/proposals/better-call-marcel.html">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0d0b; --bg-2: #0d100e; --bg-3: #131815;
+  --ink: #f4ece1; --ink-mute: #8c857a; --ink-faint: #524d47;
+  --gold: #c4a273; --gold-bright: #e3c08c; --gold-dark: #8b6f3f;
+  --saul-yellow: #ffd84d;
+  --line: rgba(196,162,115,0.14);
+  --ok: #7fae7d; --warn: #d4a85a; --err: #b85a5a;
+}
+html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif;
+             font-weight: 300; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased;
+             overflow-x: hidden; }
+
+nav.top { display: flex; justify-content: space-between; align-items: center;
+          padding: 22px 32px; max-width: 1200px; margin: 0 auto; }
+.brand { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.16em; }
+.brand b { color: var(--gold); }
+.brand-sub { display: block; font-size: 9px; letter-spacing: 0.32em;
+             color: var(--ink-faint); text-transform: uppercase; margin-top: 2px; }
+.beta-pill { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+             padding: 7px 14px; border: 1px solid var(--gold); color: var(--gold);
+             text-transform: uppercase; }
+
+/* HERO */
+.hero { max-width: 1100px; margin: 0 auto; padding: 80px 32px 100px;
+        text-align: center; position: relative; }
+.hero .phone-glow {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px; max-width: 90vw;
+  background: radial-gradient(circle, rgba(196,162,115,0.10) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero .kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 36px;
+  display: inline-flex; align-items: center; gap: 12px;
+}
+.hero .kicker::before, .hero .kicker::after {
+  content: ''; display: inline-block; width: 32px; height: 1px; background: var(--gold);
+}
+.hero h1 { font-family: 'Playfair Display', serif; font-weight: 400;
+           font-size: clamp(48px, 8vw, 96px); line-height: 0.98;
+           letter-spacing: -0.03em; margin-bottom: 28px; }
+.hero h1 .better, .hero h1 .call { color: var(--ink); font-style: italic; }
+.hero h1 .marcel {
+  font-style: italic;
+  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, var(--gold-dark) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero .sub-claim { font-family: 'Playfair Display', serif; font-style: italic;
+                   font-size: clamp(18px, 2.2vw, 24px); color: var(--ink-mute);
+                   max-width: 720px; margin: 0 auto 48px; line-height: 1.5; }
+.hero .ring-anim { display: inline-block; font-size: 42px; line-height: 1;
+                   animation: ring 2.5s ease-in-out infinite;
+                   transform-origin: top center; margin-bottom: 20px; }
+@keyframes ring {
+  0%, 30%, 100% { transform: rotate(0); }
+  5%, 15%, 25% { transform: rotate(-12deg); }
+  10%, 20% { transform: rotate(12deg); }
+}
+
+.cta-row { display: inline-flex; gap: 18px; flex-wrap: wrap; justify-content: center;
+           margin-top: 12px; }
+.btn { padding: 18px 36px; font-size: 12px; font-weight: 600;
+       letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer;
+       text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+       font-family: 'Inter', sans-serif; transition: all 0.25s; }
+.btn.primary { background: var(--gold); color: var(--bg); border: 1px solid var(--gold); }
+.btn.primary:hover { background: transparent; color: var(--gold); transform: translateY(-2px);
+                     box-shadow: 0 8px 24px rgba(196,162,115,0.2); }
+.btn.ghost { background: transparent; color: var(--ink-mute); border: 1px solid var(--line); }
+.btn.ghost:hover { color: var(--gold); border-color: var(--gold); }
+
+/* QUALIFICATION */
+.qualif { max-width: 980px; margin: 0 auto; padding: 80px 32px 60px;
+          border-top: 1px solid var(--line); }
+.qualif h2 { font-family: 'Playfair Display', serif; font-weight: 400;
+             font-size: clamp(28px, 4vw, 42px); line-height: 1.15;
+             margin-bottom: 40px; text-align: center; }
+.qualif h2 em { font-style: italic; color: var(--gold); }
+.qualif-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+               background: var(--line); border: 1px solid var(--line); }
+@media (max-width: 700px) { .qualif-grid { grid-template-columns: 1fr; } }
+.qualif-card { background: var(--bg); padding: 32px 28px; }
+.qualif-card .icon { font-size: 28px; margin-bottom: 14px; }
+.qualif-card h3 { font-family: 'Playfair Display', serif; font-style: italic;
+                  font-size: 22px; color: var(--gold); margin-bottom: 10px; font-weight: 400; }
+.qualif-card p { color: var(--ink-mute); font-size: 14.5px; }
+
+/* COPILOTE */
+.copilote { max-width: 980px; margin: 0 auto; padding: 80px 32px; text-align: center; }
+.copilote h2 { font-family: 'Playfair Display', serif; font-weight: 400;
+               font-size: clamp(32px, 5vw, 56px); line-height: 1.1; margin-bottom: 32px; }
+.copilote h2 em { font-style: italic; color: var(--gold); }
+.copilote .lede { max-width: 720px; margin: 0 auto 56px; color: var(--ink-mute);
+                  font-size: 17px; line-height: 1.7; }
+.copilote .lede em { font-family: 'Playfair Display', serif; font-style: italic; color: var(--ink); }
+.cockpit-img { max-width: 800px; margin: 0 auto 48px; padding: 36px;
+               background: var(--bg-2); border: 1px solid var(--line);
+               text-align: left; font-family: 'JetBrains Mono', monospace;
+               font-size: 13px; line-height: 1.7; color: var(--ink-mute);
+               white-space: pre; overflow-x: auto; }
+.cockpit-img .role { color: var(--gold); font-weight: 600; }
+.cockpit-img .you { color: var(--ok); }
+.cockpit-img .copilot { color: var(--gold-bright); }
+
+/* CAS */
+.cases { max-width: 1100px; margin: 0 auto; padding: 80px 32px;
+         border-top: 1px solid var(--line); }
+.cases h2 { font-family: 'Playfair Display', serif; font-weight: 400;
+            font-size: clamp(28px, 4vw, 42px); margin-bottom: 12px; text-align: center; }
+.cases h2 em { font-style: italic; color: var(--gold); }
+.cases .sub-lede { text-align: center; color: var(--ink-mute); font-size: 14.5px; margin-bottom: 48px; }
+.cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 900px) { .cases-grid { grid-template-columns: 1fr; } }
+.case-card { background: var(--bg-2); border: 1px solid var(--line); padding: 32px 26px;
+             position: relative; transition: all 0.25s; }
+.case-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+.case-card .num { font-family: 'JetBrains Mono', monospace; font-size: 10px;
+                  letter-spacing: 0.2em; color: var(--ink-faint); margin-bottom: 14px; }
+.case-card .quote { font-family: 'Playfair Display', serif; font-style: italic;
+                    font-size: 18px; line-height: 1.5; color: var(--ink); margin-bottom: 18px; }
+.case-card .meta { font-size: 12.5px; color: var(--ink-mute);
+                   border-top: 1px solid var(--line); padding-top: 14px; }
+.case-card .meta strong { color: var(--gold); font-weight: 500; }
+
+/* COMMENT */
+.how { max-width: 980px; margin: 0 auto; padding: 80px 32px; border-top: 1px solid var(--line); }
+.how h2 { font-family: 'Playfair Display', serif; font-weight: 400;
+          font-size: clamp(28px, 4vw, 42px); text-align: center; margin-bottom: 56px; }
+.how h2 em { font-style: italic; color: var(--gold); }
+.how-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+@media (max-width: 800px) { .how-steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .how-steps { grid-template-columns: 1fr; } }
+.step { padding: 24px 20px; background: var(--bg-2); border: 1px solid var(--line);
+        border-top: 3px solid var(--gold); text-align: center; }
+.step .num { font-family: 'Playfair Display', serif; font-style: italic;
+             font-size: 36px; color: var(--gold); line-height: 1; margin-bottom: 14px; }
+.step h4 { font-size: 14.5px; color: var(--ink); margin-bottom: 8px; font-weight: 500; }
+.step p { font-size: 12.5px; color: var(--ink-mute); line-height: 1.55; }
+
+/* CTA FINAL */
+.cta-final { max-width: 880px; margin: 0 auto; padding: 100px 32px 80px;
+             text-align: center; border-top: 1px solid var(--line); }
+.cta-final .phone-ring { font-size: 56px; display: inline-block; margin-bottom: 24px;
+                         animation: ring 2.5s ease-in-out infinite; }
+.cta-final h2 { font-family: 'Playfair Display', serif; font-weight: 400;
+                font-size: clamp(40px, 6vw, 72px); line-height: 1; margin-bottom: 24px;
+                letter-spacing: -0.02em; }
+.cta-final h2 em { font-style: italic;
+                   background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, var(--gold-dark) 100%);
+                   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.cta-final p { font-family: 'Playfair Display', serif; font-style: italic;
+               font-size: 18px; color: var(--ink-mute); max-width: 580px; margin: 0 auto 40px; }
+.scarcity { display: inline-flex; gap: 10px; align-items: center; margin-top: 24px;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: var(--saul-yellow); letter-spacing: 0.16em; text-transform: uppercase; }
+.scarcity::before { content: '●'; animation: ring 2s ease-in-out infinite; }
+
+footer { padding: 48px 32px; text-align: center;
+         font-size: 11.5px; color: var(--ink-faint); line-height: 1.9;
+         border-top: 1px solid var(--line); }
+footer a { color: var(--gold); text-decoration: none; border-bottom: 1px solid transparent; }
+footer a:hover { border-color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div>
+    <div class="brand">IKCP<b>.</b></div>
+    <div class="brand-sub">Family Office augmenté</div>
+  </div>
+  <div class="beta-pill">Beta privée · été 2026</div>
+</nav>
+
+<section class="hero">
+  <div class="phone-glow"></div>
+  <div class="hero-content">
+    <div class="kicker">Patrimoine + IA souveraine</div>
+    <div class="ring-anim">📞</div>
+    <h1><span class="better">Better</span> <span class="call">Call</span> <span class="marcel">Marcel.</span></h1>
+    <p class="sub-claim">
+      Dirigeant ? Profession libérale ? Pour votre patrimoine,
+      vous voulez rester <em>maître à bord</em> — mais avec un copilote.
+    </p>
+    <div class="cta-row">
+      <a href="/proposals/beta-activation.html" class="btn primary">📞 Better Call Marcel →</a>
+      <a href="#comment" class="btn ghost">Voir comment ça marche</a>
+    </div>
+  </div>
+</section>
+
+<section class="qualif">
+  <h2>Vous êtes <em>celui qu'on appelle</em>.<br>Maintenant, qui appelez-<em>vous</em> ?</h2>
+  <div class="qualif-grid">
+    <div class="qualif-card">
+      <div class="icon">🏢</div>
+      <h3>Dirigeant d'entreprise familiale</h3>
+      <p>Cession, donation, pacte Dutreil, holding apport, rémunération salaire/dividendes, transmission NextGen — vous avez 6 sujets ouverts en même temps. Aucun CGP n'a la bande passante pour tous les couvrir bien. Marcel si.</p>
+    </div>
+    <div class="qualif-card">
+      <div class="icon">⚖</div>
+      <h3>Profession libérale</h3>
+      <p>Médecin, avocat, expert-comptable, notaire — vous gagnez bien, vous payez beaucoup, vous protégez peu, vous transmettez mal. Pas par incompétence : par manque de temps. Marcel travaille 24/7 sur votre situation.</p>
+    </div>
+  </div>
+</section>
+
+<section class="copilote">
+  <h2>Maître à bord. <em>Marcel en copilote.</em></h2>
+  <p class="lede">
+    Vous décidez. Marcel <em>vous prépare</em> les options. Il lit votre avis IR,
+    calcule vos droits de donation, compare 4 scénarios de transmission,
+    rédige vos mémos de RDV notaire. Il ne vend rien. Il ne remplace pas
+    votre CGP. <em>Il l'augmente.</em>
+  </p>
+  <div class="cockpit-img"><span class="role">CONTROL TOWER · IKCP Family Office</span>
+
+<span class="you">VOUS</span>                        <span class="copilot">MARCEL (copilote)</span>
+─────────────                    ─────────────────
+• Vision long terme              • Calcule, simule, rédige
+• Choix de vie                   • Veille fiscale H24
+• Décisions familiales           • OCR + extraction docs
+• Relation partenaires           • Mémoire de votre dossier
+
+         ↓                                ↓
+         └──── MAXIME (CGP humain) ────────┘
+            valide chaque arbitrage clé</div>
+  <a href="/proposals/dashboard-perfection.html" class="btn ghost">Voir l'espace membre →</a>
+</section>
+
+<section class="cases">
+  <h2>Quand on a <em>appelé Marcel</em>.</h2>
+  <p class="sub-lede">3 cas vrais, noms changés, chiffres pas.</p>
+  <div class="cases-grid">
+    <div class="case-card">
+      <div class="num">— Cas n° 01</div>
+      <p class="quote">« Mon avis IR 2025 reçu 14h. Photo dans Marcel à 14h05. Mémo de 3 pages avec 5 optimisations chiffrées à 14h08. RDV CGP validé pour appliquer à 16h. »</p>
+      <p class="meta"><strong>Dirigeant SARL informatique</strong> · 32 ans · cohort beta</p>
+    </div>
+    <div class="case-card">
+      <div class="num">— Cas n° 02</div>
+      <p class="quote">« Comparé 4 schémas de transmission de la holding sur 25 M€. Marcel a sorti un waterfall fiscal en 90 secondes. Le notaire l'a validé tel quel. »</p>
+      <p class="meta"><strong>Dirigeant industrie</strong> · 58 ans · cohort beta</p>
+    </div>
+    <div class="case-card">
+      <div class="num">— Cas n° 03</div>
+      <p class="quote">« Vendredi matin, newsletter perso de Marcel : 3 sujets adaptés à ma situation, sources CGI citées, en 4 minutes de lecture. Pas du markéting, du jus. »</p>
+      <p class="meta"><strong>Avocate fiscaliste</strong> · 41 ans · cohort beta</p>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="comment">
+  <h2>Comment ça <em>marche</em>.</h2>
+  <div class="how-steps">
+    <div class="step"><div class="num">1</div><h4>Code d'invitation</h4><p>Maxime vous envoie un code beta. Vous l'activez en 30 sec sur ikcp.eu.</p></div>
+    <div class="step"><div class="num">2</div><h4>NDA digital</h4><p>Confidentialité mutuelle signée en 3 clics. Pas de papier.</p></div>
+    <div class="step"><div class="num">3</div><h4>Espace membre</h4><p>Marcel chat, dépôt de documents, voix, 5 agents experts à disposition.</p></div>
+    <div class="step"><div class="num">4</div><h4>Feedback mensuel</h4><p>Vous testez, vous remontez ce qui marche/manque. Maxime adapte.</p></div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="phone-ring">📞</div>
+  <h2>Better Call <em>Marcel.</em></h2>
+  <p>25 familles fondatrices · été 2026 · gratuit en échange de votre retour.</p>
+  <div class="cta-row">
+    <a href="/proposals/beta-activation.html" class="btn primary">J'ai un code beta →</a>
+    <a href="mailto:maxime@ikcp.fr?subject=Beta%20IKCP%20Family%20Office%20%E2%80%94%20demande%20d%27invitation" class="btn ghost">Demander une invitation</a>
+  </div>
+  <div class="scarcity">Il reste &lt; 25 places pour la cohort 1</div>
+</section>
+
+<footer>
+  IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568<br>
+  CIF — CNCEF Patrimoine · COA<br>
+  <em>Marcel est un système d'IA classifié risque limité (AI Act EU 2024/1689 art. 50).
+  Le devoir de conseil reste à la charge du CGP humain.</em><br>
+  <a href="/proposals/legal/cgv-abonnement.html">CGV</a> ·
+  <a href="/proposals/legal/beta-nda.html">NDA bêta</a> ·
+  <a href="/proposals/legal/mentions-legales.html">Mentions légales</a> ·
+  <a href="/proposals/legal/politique-cookies.html">Cookies</a>
+</footer>
+
+</body>
+</html>
