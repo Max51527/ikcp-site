@@ -111,7 +111,7 @@ a{color:var(--gold-deep);text-decoration:none}
   <div id="levList"></div>
 </div>
 
-<div class="cta-final wrap"><a href="/family-office.html?q=Comment%20organiser%20la%20transmission%20de%20mon%20patrimoine%20%C3%A0%20mes%20enfants%20et%20petits-enfants%20en%20limitant%20les%20droits%20%3F">Construire ma stratégie avec Marcel & Hermès →</a></div>
+<div class="cta-final wrap"><a href="/marcel?q=Comment%20organiser%20la%20transmission%20de%20mon%20patrimoine%20%C3%A0%20mes%20enfants%20et%20petits-enfants%20en%20limitant%20les%20droits%20%3F">Construire ma stratégie avec Marcel & Hermès →</a></div>
 <div class="disc wrap">Simulation pédagogique fondée sur les barèmes 2026 (art. 777, 779, 790, 990 I, 669 CGI), hypothèses simplifiées (ligne directe, espérance ~90 ans pour les cycles de donation, hors cas particuliers). Ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 CoMoFi ni un acte notarié. Pour une stratégie adaptée : Maxime Juveneton (CIF · ORIAS 23001568) + votre notaire.</div>
 
 <footer class="ft">© 2026 IKCP · ORIAS 23001568 · SIREN 947 972 436 · Créé par IKCP.EU — Ardèche · Combloux · Megève
@@ -177,7 +177,7 @@ function compute(){
     {ic:'🔑',h:'Démembrement de propriété',p:'Donner la nue-propriété ne taxe qu\'une fraction ('+Math.round(npVal*100)+'% à votre âge, art. 669) ; l\'usufruit vous reste.',q:'Le démembrement (donation de nue-propriété) est-il pertinent dans ma situation ?'}
   ];
   if(pe>0) L.push({ic:'🧒',h:'Saut de génération',p:'Transmettre directement aux petits-enfants ('+eur(31865)+' d\'abattement chacun) allège la chaîne de droits.',q:'Faut-il transmettre une partie à mes petits-enfants (saut de génération) ?'});
-  levList.innerHTML=L.map(function(l){return '<div class="lev"><span class="ic">'+l.ic+'</span><div class="bd"><h4>'+l.h+'</h4><p>'+l.p+'</p></div><a class="go" href="/family-office.html?q='+encodeURIComponent(l.q)+'">Explorer →</a></div>';}).join('');
+  levList.innerHTML=L.map(function(l){return '<div class="lev"><span class="ic">'+l.ic+'</span><div class="bd"><h4>'+l.h+'</h4><p>'+l.p+'</p></div><a class="go" href="/marcel?q='+encodeURIComponent(l.q)+'">Explorer →</a></div>';}).join('');
 }
 var pat_=document.getElementById('pat'),age_=document.getElementById('age'),enf_=document.getElementById('enf'),pe_=document.getElementById('pe'),av_=document.getElementById('av');
 var vPat=document.getElementById('vPat'),vAge=document.getElementById('vAge'),vEnf=document.getElementById('vEnf'),vPe=document.getElementById('vPe'),vAv=document.getElementById('vAv');
