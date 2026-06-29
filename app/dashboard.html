@@ -797,9 +797,10 @@ Promise.allSettled([
     document.getElementById('cartoNom').textContent = d.nom || 'Société';
     var fin = '';
     if(d.chiffre_affaires!=null || d.resultat!=null){
-      fin = '<div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--line)">'
-          + (d.chiffre_affaires!=null ? '<span style="color:var(--mute)">CA'+(d.finances_annee?(' '+d.finances_annee):'')+'</span> <b>'+Marcel.Utils.formatEUR(d.chiffre_affaires)+'</b>' : '')
-          + (d.resultat!=null ? ' · <span style="color:var(--mute)">résultat</span> '+Marcel.Utils.formatEUR(d.resultat) : '')
+      var tile=function(lbl,val){ return '<div><div style="font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:#8B6F3F;font-weight:600">'+lbl+'</div><div style="font-family:&quot;Playfair Display&quot;,serif;font-size:16px;font-weight:600;color:#8B6F3F;line-height:1.1;margin-top:2px">'+val+'</div></div>'; };
+      fin = '<div style="display:flex;gap:18px;margin-top:10px;padding:10px 13px;background:linear-gradient(120deg,rgba(184,149,110,.14),rgba(184,149,110,.03));border:1px solid rgba(184,149,110,.3);border-radius:11px">'
+          + (d.chiffre_affaires!=null ? tile('CA'+(d.finances_annee?(' '+d.finances_annee):''), Marcel.Utils.formatEUR(d.chiffre_affaires)) : '')
+          + (d.resultat!=null ? tile('Résultat', Marcel.Utils.formatEUR(d.resultat)) : '')
           + '</div>';
     }
     document.getElementById('carto-body').innerHTML =

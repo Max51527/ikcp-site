@@ -125,18 +125,24 @@
   .pcard .av{color:#C0414C;font-weight:700;font-size:13px}
   .pcard .ap{color:#2e9e6b;font-weight:700;font-size:13px}
   .pcard .qq{font-style:italic;color:var(--gold-deep);font-size:12.5px;margin-top:8px;line-height:1.4}
-  /* Schéma société (cartographie SIREN) */
-  .co-schema{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 24px rgba(27,42,74,.06);animation:riseIn .5s ease both}
-  .co-head{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
-  .co-nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy);line-height:1.15}
-  .co-fj{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
-  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(max-width:520px){.co-grid{grid-template-columns:1fr}}
+  /* Schéma société (cartographie SIREN) — finances en exergue */
+  .co-schema{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;box-shadow:0 14px 38px rgba(27,42,74,.08);animation:riseIn .5s ease both}
+  .co-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:17px}
+  .co-nm{font-family:'Playfair Display',serif;font-weight:600;font-size:24px;color:var(--navy);line-height:1.08;letter-spacing:-.01em}
+  .co-fj{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+  .co-souv{flex-shrink:0;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-deep);border:1px solid rgba(184,149,110,.42);border-radius:999px;padding:5px 11px;font-weight:600;white-space:nowrap}
+  .co-fin{display:flex;align-items:stretch;background:linear-gradient(120deg,rgba(184,149,110,.14),rgba(184,149,110,.03));border:1px solid rgba(184,149,110,.32);border-radius:14px;padding:15px 20px;margin-bottom:15px}
+  .co-fin-item{flex:1;min-width:0}
+  .co-fin-sep{width:1px;background:rgba(184,149,110,.32);margin:2px 20px}
+  .co-fin .cl{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;opacity:.9}
+  .co-fin .cv-big{font-family:'Playfair Display',serif;font-size:27px;font-weight:600;color:var(--gold-deep);line-height:1.05;margin-top:5px}
+  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  @media(max-width:520px){.co-grid{grid-template-columns:1fr}.co-fin .cv-big{font-size:22px}}
   .co-cell{background:var(--cream-2);border-radius:11px;padding:10px 13px}
-  .co-cell.acc{background:linear-gradient(135deg,rgba(184,149,110,.15),rgba(184,149,110,.04));border:1px solid rgba(184,149,110,.32)}
-  .co-cell .cl{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
-  .co-cell .cv{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:600;margin-top:3px;line-height:1.2}
-  .co-cell.acc .cv{color:var(--gold-deep)}
+  .co-cell .cl{font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .co-cell .cv{font-size:14.5px;color:var(--navy);font-weight:500;margin-top:3px;line-height:1.25}
+  .co-note{font-size:12.5px;color:var(--ink-faint);background:var(--cream-2);border-radius:11px;padding:10px 13px;margin-top:9px}
+  .co-foot{font-size:10.5px;color:var(--ink-faint);margin-top:15px;text-align:center;letter-spacing:.01em}
 </style>
 </head>
 <body>
@@ -315,15 +321,18 @@
       var dir    = (d&&d.dirigeant)?((d.dirigeant.prenom||'')+' '+(d.dirigeant.nom||'')).trim()
                  : (gv&&gv.dirigeants&&gv.dirigeants[0]?(gv.dirigeants[0].nom_complet||((gv.dirigeants[0].prenoms||'')+' '+(gv.dirigeants[0].nom||'')).trim()):'');
       window._coCtx='Ma société (source RNE/INPI) : '+nom+', '+forme+', capital '+cap+', activité '+naf+', siège '+ville+(ca!=null?(', chiffre d\'affaires '+fmt(ca)+(fyear?(' ('+fyear+')'):'')):'')+(rnet!=null?(', résultat net '+fmt(rnet)):'')+'.';
-      var cell=function(lbl,val,acc){ return '<div class="co-cell'+(acc?' acc':'')+'"><div class="cl">'+lbl+'</div><div class="cv">'+esc(val)+'</div></div>'; };
-      var finCells=(ca!=null||rnet!=null)
-        ? cell('Chiffre d\'affaires'+(fyear?(' '+fyear):''), (ca!=null?fmt(ca):'n.c.'), true)+cell('Résultat net', (rnet!=null?fmt(rnet):'n.c.'), true)
-        : '<div class="co-cell" style="grid-column:1/-1"><div class="cl">Finances</div><div class="cv" style="font-size:13px;font-weight:400;color:var(--ink-faint)">Comptes non publiés (option de confidentialité) — à saisir dans votre cockpit.</div></div>';
+      var cell=function(lbl,val){ return '<div class="co-cell"><div class="cl">'+lbl+'</div><div class="cv">'+esc(val)+'</div></div>'; };
+      var finBlock=(ca!=null||rnet!=null)
+        ? '<div class="co-fin"><div class="co-fin-item"><div class="cl">Chiffre d\'affaires'+(fyear?(' '+fyear):'')+'</div><div class="cv-big">'+(ca!=null?fmt(ca):'n.c.')+'</div></div><div class="co-fin-sep"></div><div class="co-fin-item"><div class="cl">Résultat net</div><div class="cv-big">'+(rnet!=null?fmt(rnet):'n.c.')+'</div></div></div>'
+        : '';
+      var note=(ca==null&&rnet==null) ? '<div class="co-note">Comptes non publiés (option de confidentialité) — à saisir dans votre cockpit.</div>' : '';
       out.innerHTML=
         '<div class="co-schema">'+
-          '<div class="co-head"><div class="co-nm">'+esc(nom)+'</div><div class="co-fj">'+esc(forme)+'</div></div>'+
-          '<div class="co-grid">'+cell('Capital',cap)+cell('Activité',naf)+cell('Siège',ville)+cell('Dirigeant',dir||'—')+finCells+'</div>'+
-          '<div class="badge-souv">✓ Identité RNE (souverain) · finances : comptes déposés RNE/INPI · données en France</div>'+
+          '<div class="co-head"><div><div class="co-nm">'+esc(nom)+'</div><div class="co-fj">'+esc(forme)+'</div></div><div class="co-souv">RNE · INPI</div></div>'+
+          finBlock+
+          '<div class="co-grid">'+cell('Capital',cap)+cell('Activité',naf)+cell('Siège',ville)+cell('Dirigeant',dir||'—')+'</div>'+
+          note+
+          '<div class="co-foot">✓ Identité RNE souverain · finances : comptes déposés RNE/INPI · données en France</div>'+
         '</div>'+
         '<div id="sirenMarcel" class="out" data-allow-copy style="margin-top:14px"></div>';
       // Enchaînement automatique : Marcel analyse la société (avec ses VRAIS chiffres), sans rien redemander
