@@ -284,34 +284,45 @@
   function revealContinue(){ var c=document.getElementById('continue'); if(c) c.style.display='block'; }
 
   // ── TOUT PART DU SIREN : cartographie → analyse Marcel AUTOMATIQUE ──
+  // Catégorie juridique INSEE (code) → libellé court, pour le fallback gouv quand Pappers est indispo.
+  function formeFromCode(c){ c=String(c||''); var p=c.slice(0,2); var m={'10':'Entrepreneur individuel','54':'SARL','55':'Société anonyme (SA)','56':'Société par actions','57':'SAS','62':'GIE','65':'Société civile','69':'Personne morale de droit privé'}; return m[p]||(c?('Société (code '+c+')'):''); }
   async function goSiren(){
     var v=(document.getElementById('siren').value||'').replace(/\D/g,'').slice(0,9);
     var out=document.getElementById('sirenOut'), b=document.getElementById('sirenBtn');
     if(v.length<9){ out.innerHTML='<p class="think">Saisissez 9 chiffres.</p>'; return; }
     b.disabled=true; out.innerHTML='<p class="think">Marcel cartographie votre société (RNE / INPI)…</p>';
     try{
-      // 1) Identité (worker Pappers, souverain) + 2) Finances (API gouv RNE/INPI, CÔTÉ NAVIGATEUR → IP user, pas de 429)
+      // Deux sources souveraines en parallèle, chacune tolérante à l'échec :
+      //  1) worker Pappers = identité riche (capital, libellé NAF, dirigeant)
+      //  2) API gouv recherche-entreprises (RNE/INPI), CÔTÉ NAVIGATEUR (IP user → pas de 429) = FINANCES + repli identité
       var rr = await Promise.all([
-        fetch('https://ikcp-pappers.maxime-ead.workers.dev/entreprise/'+v+'/short',{headers:{'Accept':'application/json'}}),
-        fetch('https://recherche-entreprises.api.gouv.fr/search?q='+v+'&per_page=1',{headers:{'Accept':'application/json'}}).catch(function(){return null;})
+        fetch('https://ikcp-pappers.maxime-ead.workers.dev/entreprise/'+v+'/short',{headers:{'Accept':'application/json'}}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+        fetch('https://recherche-entreprises.api.gouv.fr/search?q='+v+'&per_page=1',{headers:{'Accept':'application/json'}}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
       ]);
-      var r=rr[0], gr=rr[1];
-      if(!r.ok) throw 0;
-      var d=await r.json();
-      var ca=null, rnet=null, fyear=null;
-      try{ if(gr&&gr.ok){ var gd=await gr.json(); var fin=gd.results&&gd.results[0]&&gd.results[0].finances; if(fin){ var ys=Object.keys(fin).filter(function(y){return fin[y];}).sort(); var ly=ys[ys.length-1]; if(ly){ ca=fin[ly].ca; rnet=fin[ly].resultat_net; fyear=ly; } } } }catch(_){}
+      var d=rr[0];                                              // Pappers (peut être null)
+      var gv=(rr[1]&&rr[1].results&&rr[1].results[0])||null;    // gouv  (peut être null)
+      if(!d && !gv) throw 0;
       var fmt=function(n){ return (n!=null)?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0,notation:(Math.abs(n)>=1e6?'compact':'standard')}).format(n):null; };
-      var cap=(d.capital!=null)?fmt(d.capital):'n.c.';
-      var dir=d.dirigeant?((d.dirigeant.prenom||'')+' '+(d.dirigeant.nom||'')).trim():'';
-      window._coCtx='Ma société (source RNE/INPI) : '+(d.nom||'')+', '+(d.forme_juridique||'')+', capital '+cap+', activité '+(d.libelle_code_naf||d.code_naf||'')+', siège '+((d.siege&&d.siege.ville)||'')+(ca!=null?(', chiffre d\'affaires '+fmt(ca)+(fyear?(' ('+fyear+')'):'')):'')+(rnet!=null?(', résultat net '+fmt(rnet)):'')+'.';
+      // Finances (gouv, comptes déposés)
+      var ca=null, rnet=null, fyear=null;
+      if(gv&&gv.finances){ var ys=Object.keys(gv.finances).filter(function(y){return gv.finances[y];}).sort(); var ly=ys[ys.length-1]; if(ly){ ca=gv.finances[ly].ca; rnet=gv.finances[ly].resultat_net; fyear=ly; } }
+      // Identité : Pappers prioritaire (plus riche), gouv en repli
+      var nom    = (d&&d.nom) || (gv&&gv.nom_complet) || '—';
+      var forme  = (d&&d.forme_juridique) || (gv?formeFromCode(gv.nature_juridique):'') || '';
+      var cap    = (d&&d.capital!=null)?fmt(d.capital):'n.c.';
+      var naf    = (d&&(d.libelle_code_naf||d.code_naf)) || (gv&&gv.activite_principale) || '—';
+      var ville  = (d&&d.siege&&d.siege.ville) || (gv&&gv.siege&&gv.siege.libelle_commune) || '—';
+      var dir    = (d&&d.dirigeant)?((d.dirigeant.prenom||'')+' '+(d.dirigeant.nom||'')).trim()
+                 : (gv&&gv.dirigeants&&gv.dirigeants[0]?(gv.dirigeants[0].nom_complet||((gv.dirigeants[0].prenoms||'')+' '+(gv.dirigeants[0].nom||'')).trim()):'');
+      window._coCtx='Ma société (source RNE/INPI) : '+nom+', '+forme+', capital '+cap+', activité '+naf+', siège '+ville+(ca!=null?(', chiffre d\'affaires '+fmt(ca)+(fyear?(' ('+fyear+')'):'')):'')+(rnet!=null?(', résultat net '+fmt(rnet)):'')+'.';
       var cell=function(lbl,val,acc){ return '<div class="co-cell'+(acc?' acc':'')+'"><div class="cl">'+lbl+'</div><div class="cv">'+esc(val)+'</div></div>'; };
       var finCells=(ca!=null||rnet!=null)
         ? cell('Chiffre d\'affaires'+(fyear?(' '+fyear):''), (ca!=null?fmt(ca):'n.c.'), true)+cell('Résultat net', (rnet!=null?fmt(rnet):'n.c.'), true)
         : '<div class="co-cell" style="grid-column:1/-1"><div class="cl">Finances</div><div class="cv" style="font-size:13px;font-weight:400;color:var(--ink-faint)">Comptes non publiés (option de confidentialité) — à saisir dans votre cockpit.</div></div>';
       out.innerHTML=
         '<div class="co-schema">'+
-          '<div class="co-head"><div class="co-nm">'+esc(d.nom||'—')+'</div><div class="co-fj">'+esc(d.forme_juridique||'')+'</div></div>'+
-          '<div class="co-grid">'+cell('Capital',cap)+cell('Activité',d.libelle_code_naf||d.code_naf||'—')+cell('Siège',(d.siege&&d.siege.ville)||'—')+cell('Dirigeant',dir||'—')+finCells+'</div>'+
+          '<div class="co-head"><div class="co-nm">'+esc(nom)+'</div><div class="co-fj">'+esc(forme)+'</div></div>'+
+          '<div class="co-grid">'+cell('Capital',cap)+cell('Activité',naf)+cell('Siège',ville)+cell('Dirigeant',dir||'—')+finCells+'</div>'+
           '<div class="badge-souv">✓ Identité RNE (souverain) · finances : comptes déposés RNE/INPI · données en France</div>'+
         '</div>'+
         '<div id="sirenMarcel" class="out" data-allow-copy style="margin-top:14px"></div>';
