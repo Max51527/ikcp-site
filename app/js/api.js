@@ -110,6 +110,13 @@ async function jsonFetch(url, options = {}) {
   }
 }
 
+// Catégorie juridique INSEE (code) → libellé court, pour le repli gouv quand Pappers est indispo.
+function formeFromCodeINSEE(c) {
+  c = String(c || ''); const p = c.slice(0, 2);
+  const m = { '10': 'Entrepreneur individuel', '54': 'SARL', '55': 'Société anonyme (SA)', '56': 'Société par actions', '57': 'SAS', '62': 'GIE', '65': 'Société civile', '69': 'Personne morale de droit privé' };
+  return m[p] || (c ? ('Société (code ' + c + ')') : '');
+}
+
 // ─── API publique ──────────────────────────────────────────────
 export const Marcel = {
 
@@ -176,11 +183,43 @@ export const Marcel = {
     }
   },
 
-  // 2. Cartographie SIREN (Pappers)
+  // 2. Cartographie SIREN — identité (Pappers, souverain) + FINANCES réelles
+  //    (API gouv recherche-entreprises = comptes déposés RNE/INPI, appelée CÔTÉ NAVIGATEUR :
+  //     l'IP de l'utilisateur évite le 429 que subit l'IP partagée des Workers).
+  //    Résilient : si Pappers tombe, l'API gouv sert aussi de repli identité.
   async cartographie(siren) {
     const s = String(siren).replace(/\s+/g, '');
     if (!/^\d{9}$/.test(s)) throw new Error('SIREN invalide (9 chiffres)');
-    return jsonFetch(`${ENDPOINTS.pappers}/entreprise/${s}/short`);
+    const [pap, gov] = await Promise.all([
+      jsonFetch(`${ENDPOINTS.pappers}/entreprise/${s}/short`).catch(() => null),
+      fetch(`https://recherche-entreprises.api.gouv.fr/search?q=${s}&per_page=1`, { headers: { Accept: 'application/json' } })
+        .then(r => (r.ok ? r.json() : null)).catch(() => null),
+    ]);
+    const gv = (gov && gov.results && gov.results[0]) || null;
+    if (!pap && !gv) throw new Error('Société introuvable');
+    // Finances (gouv, dernier exercice déposé)
+    let ca = null, resultat = null, finances_annee = null;
+    if (gv && gv.finances) {
+      const ys = Object.keys(gv.finances).filter(y => gv.finances[y]).sort();
+      const ly = ys[ys.length - 1];
+      if (ly) { ca = gv.finances[ly].ca; resultat = gv.finances[ly].resultat_net; finances_annee = ly; }
+    }
+    // Fusion normalisée (champs à plat) : Pappers prioritaire, gouv en repli
+    const out = pap ? { ...pap } : { siren: s };
+    out.nom = out.nom || (gv && gv.nom_complet) || 'Société';
+    out.forme_juridique = out.forme_juridique || (gv ? formeFromCodeINSEE(gv.nature_juridique) : '');
+    out.ville = (pap && pap.siege && pap.siege.ville) || (gv && gv.siege && gv.siege.libelle_commune) || '';
+    out.code_naf = out.code_naf || (gv && gv.activite_principale) || '';
+    out.date_creation = out.date_creation || (gv && gv.date_creation) || null;
+    if (!out.dirigeant && gv && gv.dirigeants && gv.dirigeants[0]) {
+      const g0 = gv.dirigeants[0];
+      out.dirigeant = { nom: g0.nom_complet || g0.nom || '', prenom: g0.prenoms || '' };
+    }
+    if (ca != null) out.chiffre_affaires = ca;
+    if (resultat != null) out.resultat = resultat;
+    if (finances_annee) out.finances_annee = finances_annee;
+    out.finances_source = (ca != null || resultat != null) ? 'RNE/INPI (comptes déposés)' : null;
+    return out;
   },
 
   // 3. Codex — expertise fiscale directe (premium uniquement, Marcel délègue normalement)

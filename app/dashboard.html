@@ -790,26 +790,44 @@ Promise.allSettled([
   }
 });
 
-// ─── Cartographie société principale ───
-if(me && me.primary_siren){
-  Marcel.cartographie(me.primary_siren).then(d => {
+// ─── Cartographie société : identité (Pappers) + FINANCES réelles (gouv) + saisie inline ───
+(function(){
+  function persist(siren, d){ try{ localStorage.setItem('ikcp_societe', JSON.stringify({ siren:siren, nom:d.nom, forme:d.forme_juridique, ca:(d.chiffre_affaires!=null?d.chiffre_affaires:null), resultat:(d.resultat!=null?d.resultat:null), annee:d.finances_annee||null, at:Date.now() })); }catch(_){ } }
+  function render(d){
     document.getElementById('cartoNom').textContent = d.nom || 'Société';
-    document.getElementById('carto-body').innerHTML = `
-      <div style="font-size:13px;line-height:1.7;color:var(--ink)">
-        <div><b>${d.forme_juridique?.split(',')[0] || '—'}</b> · ${d.ville || ''} · NAF ${d.code_naf || ''}</div>
-        <div style="margin-top:4px"><span style="color:var(--mute)">Capital</span> ${Marcel.Utils.formatEUR(d.capital || 0)} · <span style="color:var(--mute)">créée</span> ${new Date(d.date_creation).getFullYear()}</div>
-      </div>
-    `;
-    // Afficher le CTA Bâtisseur si une société est chargée
-    const batCta = document.getElementById('batisseur-cta');
-    if(batCta) batCta.style.display = 'inline-flex';
-  }).catch(_ => {
-    document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Cartographie indisponible.</p>';
-  });
-} else {
-  document.getElementById('carto-body').innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez votre SIREN dans le profil pour activer la cartographie.</p>';
-  document.getElementById('cartoNom').textContent = 'À configurer';
-}
+    var fin = '';
+    if(d.chiffre_affaires!=null || d.resultat!=null){
+      fin = '<div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--line)">'
+          + (d.chiffre_affaires!=null ? '<span style="color:var(--mute)">CA'+(d.finances_annee?(' '+d.finances_annee):'')+'</span> <b>'+Marcel.Utils.formatEUR(d.chiffre_affaires)+'</b>' : '')
+          + (d.resultat!=null ? ' · <span style="color:var(--mute)">résultat</span> '+Marcel.Utils.formatEUR(d.resultat) : '')
+          + '</div>';
+    }
+    document.getElementById('carto-body').innerHTML =
+      '<div style="font-size:13px;line-height:1.7;color:var(--ink)">'
+      + '<div><b>'+((d.forme_juridique||'—').split(',')[0])+'</b> · '+(d.ville||'')+' · NAF '+(d.code_naf||'')+'</div>'
+      + '<div style="margin-top:4px"><span style="color:var(--mute)">Capital</span> '+(d.capital?Marcel.Utils.formatEUR(d.capital):'n.c.')+(d.date_creation?(' · <span style="color:var(--mute)">créée</span> '+new Date(d.date_creation).getFullYear()):'')+'</div>'
+      + fin + '</div>';
+    var batCta=document.getElementById('batisseur-cta'); if(batCta) batCta.style.display='inline-flex';
+  }
+  function input(){
+    document.getElementById('cartoNom').textContent='À configurer';
+    document.getElementById('carto-body').innerHTML =
+      '<div style="font-size:13px">'
+      + '<p style="color:var(--mute);margin:0 0 8px">Votre SIREN — identité + vrais chiffres (CA, résultat) en direct.</p>'
+      + '<div style="display:flex;gap:6px">'
+      + '<input id="cartoSiren" inputmode="numeric" maxlength="11" placeholder="9 chiffres" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font-family:Outfit,sans-serif;font-size:13px;color:var(--ink)">'
+      + '<button class="btn btn-sm" onclick="var v=(document.getElementById(&quot;cartoSiren&quot;).value||&quot;&quot;).replace(/\\D/g,&quot;&quot;).slice(0,9); if(v.length===9){ try{localStorage.setItem(&quot;ikcp_pending_company&quot;,v);}catch(e){} window.doCarto(v);} else { document.getElementById(&quot;cartoSiren&quot;).style.borderColor=&quot;#C0414C&quot;; }">Cartographier</button>'
+      + '</div></div>';
+  }
+  window.doCarto = function(siren){
+    document.getElementById('carto-body').innerHTML='<p style="font-size:13px;color:var(--mute)">Cartographie en cours…</p>';
+    Marcel.cartographie(siren).then(function(d){ render(d); persist(String(siren).replace(/\D/g,''), d); })
+      .catch(function(){ document.getElementById('carto-body').innerHTML='<p style="font-size:13px;color:var(--mute);font-style:italic">Société introuvable. Vérifiez le SIREN.</p>'; });
+  };
+  var siren=(me&&me.primary_siren)||''; if(!siren){ try{ siren=localStorage.getItem('ikcp_pending_company')||''; }catch(_){ } }
+  siren=String(siren).replace(/\D/g,'');
+  if(siren.length===9) window.doCarto(siren); else input();
+})();
 
 // ─── Marcel-Live ───
 window.askMarcel = function(e){
