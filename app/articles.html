@@ -55,7 +55,7 @@ a.back{margin-left:auto;color:var(--mute);text-decoration:none;font-size:13px;bo
   <div class="top">
     <div class="mk">IK</div>
     <div><div class="kick">Bibliothèque</div></div>
-    <a class="back" id="backLink" href="/app/home">← L'app</a>
+    <a class="back" id="backLink" href="/app/dashboard">← L'app</a>
   </div>
   <h1 id="pageTitle">Guides <em>patrimoniaux</em></h1>
   <div class="sub" id="pageSub">Des repères clairs pour décider — rédigés par IKCP, pour comprendre, pas pour vendre.</div>
@@ -218,7 +218,7 @@ var $=function(id){return document.getElementById(id);};
 function showList(){
   $('reader').classList.add('hidden'); $('list').classList.remove('hidden');
   $('pageTitle').innerHTML='Guides <em>patrimoniaux</em>'; $('pageSub').textContent='Des repères clairs pour décider — rédigés par IKCP, pour comprendre, pas pour vendre.';
-  $('backLink').setAttribute('href','/app/home'); $('backLink').textContent='← L’app'; $('backLink').onclick=null;
+  $('backLink').setAttribute('href','/app/dashboard'); $('backLink').textContent='← L’app'; $('backLink').onclick=null;
   $('list').innerHTML=ARTICLES.map(function(a,i){
     return '<button class="tile" onclick="openArt('+i+')"><div class="tag">'+esc(a.tag)+'</div><div class="t">'+esc(a.t)+'</div><div class="d">'+esc(a.d)+'</div><div class="more">Lire le guide →</div></button>';
   }).join('');
