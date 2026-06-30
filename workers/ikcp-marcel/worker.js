@@ -1209,7 +1209,10 @@ export default {
       // Best-effort : si ikcp-rag n'est pas (encore) configuré, on ignore → Marcel
       // répond normalement. Quand l'index est vivant, Marcel cite TON expertise.
       try {
-        if (message) {
+        // PREMIUM UNIQUEMENT : la doctrine exclusive IKCP (fiches Notion) n'est injectée
+        // que pour un membre PAYANT (premium/fo). Free/prospect → Marcel répond avec sa
+        // culture générale + barèmes, mais SANS la doctrine propriétaire du cabinet = le moat.
+        if (message && (memberTier === 'premium' || memberTier === 'fo')) {
           const rg = await fetch('https://ikcp-rag.maxime-ead.workers.dev/search?k=4&q=' + encodeURIComponent(String(message).slice(0, 400)));
           if (rg.ok) {
             const rd = await rg.json();
