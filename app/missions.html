@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centre de missions — Marcel IA</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B2A4A">
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Marcel">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--ink:#221E18;--mute:#5F5347;--faint:#8A7E70;--line:#E9E2D6;--green:#2E7D5B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);padding:clamp(12px,3vw,30px)}
+.wrap{max-width:680px;margin:0 auto}
+.hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo{font-family:'Playfair Display',serif;font-weight:600;font-size:17px;color:var(--navy)}.logo span{color:var(--gold-d)}
+.back{margin-left:auto;color:var(--faint);text-decoration:none;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 12px}
+.kick{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);font-weight:600}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(23px,4vw,30px);color:var(--navy);margin:4px 0 4px}
+.lede{color:var(--mute);font-size:14px;margin-bottom:20px;max-width:60ch}
+.miss{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px}
+.m{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 17px;cursor:pointer;text-align:left;font-family:inherit;transition:.15s}
+.m:hover{border-color:rgba(201,169,110,.5);transform:translateY(-2px);box-shadow:0 14px 32px -22px rgba(27,42,74,.5)}
+.m .ic{font-size:24px}
+.m .t{font-family:'Playfair Display',serif;font-weight:600;font-size:16px;color:var(--navy);margin:6px 0 3px}
+.m .d{font-size:12.5px;color:var(--faint);line-height:1.45}
+.run{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 14px 38px rgba(27,42,74,.08)}
+.run .rt{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;color:var(--navy);margin-bottom:3px}
+.run .rs{font-size:12.5px;color:var(--mute);margin-bottom:16px}
+.steps{display:flex;flex-direction:column;gap:10px;margin:8px 0}
+.step{display:flex;align-items:center;gap:11px;font-size:13px;color:var(--faint);transition:.3s}
+.step.on{color:var(--navy);font-weight:500}.step.done{color:var(--green)}
+.step .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px;flex-shrink:0}
+.step.on .dot{border-color:var(--gold-d)}.step.done .dot{border-color:var(--green);background:var(--green);color:#fff}
+.step .sp{width:14px;height:14px;border:2px solid var(--gold-d);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dossier{font-size:14px;line-height:1.65;color:var(--ink)}
+.dossier h2{font-family:'Playfair Display',serif;font-weight:600;font-size:18px;color:var(--navy);margin:18px 0 7px}
+.dossier h3{font-family:'Playfair Display',serif;font-weight:600;font-size:15.5px;color:var(--navy);margin:14px 0 5px}
+.dossier ul{margin:6px 0 6px 18px}.dossier li{margin:3px 0}
+.dossier p{margin:7px 0}.dossier b,.dossier strong{color:var(--navy)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tools a{font-size:12.5px;color:var(--navy);background:var(--cream2);border:1px solid var(--line);border-radius:9px;padding:8px 12px;text-decoration:none;font-weight:500}
+.bar{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.btn{border:0;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;padding:11px 16px;font-family:inherit}
+.btn.g{background:linear-gradient(135deg,#E2C896,var(--gold));color:#20180c}
+.btn.o{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.disc{margin-top:14px;font-size:10px;color:var(--faint);line-height:1.5}
+@media print{.hd,.back,.bar,.tools,.app-tabs,#mflt-fab,#mflt-panel{display:none!important}body{background:#fff;padding:0}.run{box-shadow:none;border:0;padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd"><span class="logo">Marcel <span>IA</span></span><a class="back" href="/app/dashboard.html">← Mon espace</a></div>
+  <div class="kick">Centre de missions</div>
+  <h1>Confiez une mission à Marcel</h1>
+  <div class="lede">Vous donnez l'objectif — Marcel lit votre situation, mobilise ses expertises et vous rend un <b>dossier prêt à décider</b>.</div>
+  <div id="root"></div>
+</div>
+
+<script src="/protect.js?v=1" defer></script>
+<script src="/app/js/marcel-float.js" defer></script>
+<script>
+var API='https://ikcp-chat.maxime-ead.workers.dev/';
+function soc(){ try{ return JSON.parse(localStorage.getItem('ikcp_societe')||'null'); }catch(_){ return null; } }
+function ctx(){ var s=soc(); if(!s) return ''; var f=function(n){return n!=null?new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(n)+' €':'';}; return 'Contexte (ma société, source RNE) : '+(s.nom||'')+(s.forme?', '+s.forme:'')+(s.ca!=null?', CA '+f(s.ca):'')+(s.resultat!=null?', résultat '+f(s.resultat):'')+'. '; }
+function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function md(t){ t=esc(t);
+  t=t.replace(/^###\s?(.+)$/gm,'<h3>$1</h3>').replace(/^##\s?(.+)$/gm,'<h2>$1</h2>').replace(/^#\s?(.+)$/gm,'<h2>$1</h2>');
+  t=t.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+  t=t.replace(/^\s*[-*]\s+(.+)$/gm,'<li>$1</li>'); t=t.replace(/(<li>[\s\S]*?<\/li>)/g,function(m){return '<ul>'+m+'</ul>';}).replace(/<\/ul>\s*<ul>/g,'');
+  t=t.split(/\n{2,}/).map(function(p){return /^\s*<(h2|h3|ul|li)/.test(p.trim())?p:'<p>'+p.replace(/\n/g,'<br>')+'</p>';}).join('');
+  return t;
+}
+
+var MISSIONS={
+  transmission:{ic:'🌿',t:'Préparer ma transmission',d:'Dutreil, donation, démembrement — le bon ordre.',tools:[['Schémas','/app/strategies'],['Audit 360°','/app/bilan']],
+    prompt:"MISSION : préparer la transmission de mon patrimoine professionnel et privé. Produis un DOSSIER structuré avec ## titres : 1) Ma situation en bref ; 2) Les 3 leviers prioritaires (Pacte Dutreil, donation avec abattements, démembrement) avec ordres de grandeur chiffrés ; 3) Les étapes concrètes DANS L'ORDRE ; 4) Les pièges à éviter. Sois concret, chiffré (barèmes 2026). Termine par une question."},
+  tresorerie:{ic:'💰',t:'Optimiser ma trésorerie',d:'Faire travailler le cash qui dort.',tools:[['Schémas','/app/strategies'],['Simulateur SEL','/app/simulateur-sel']],
+    prompt:"MISSION : optimiser ma trésorerie d'entreprise et personnelle. Produis un DOSSIER structuré avec ## titres : 1) Le constat (cash qui dort, coût de l'inflation) ; 2) Les 3 leviers (réserve de précaution, remontée en holding/SPFPL, placements de trésorerie) avec ordres de grandeur ; 3) Les étapes dans l'ordre ; 4) Les pièges. Chiffré, barèmes 2026. Termine par une question."},
+  cession:{ic:'🤝',t:'Vendre ma société',d:'Différer l\'impôt, sécuriser le produit.',tools:[['Schémas','/app/strategies'],['Audit 360°','/app/bilan']],
+    prompt:"MISSION : préparer la cession de ma société en optimisant la fiscalité. Produis un DOSSIER structuré avec ## titres : 1) Ma situation ; 2) Les leviers (apport-cession 150-0 B ter, abattements dirigeant, timing) avec ordres de grandeur chiffrés ; 3) Les étapes dans l'ordre AVANT la vente ; 4) Les pièges (délai de réinvestissement, etc.). Chiffré, barèmes 2026. Termine par une question."},
+  carriere:{ic:'🎬',t:'Sécuriser ma carrière courte',d:'Créateurs, sportifs : transformer le pic.',tools:[['Simulateur carrière','/app/simulateur-carriere'],['Schémas','/app/strategies']],
+    prompt:"MISSION : sécuriser mon avenir alors que ma carrière est courte et mes revenus irréguliers (créateur/sportif). Produis un DOSSIER structuré avec ## titres : 1) Ma situation et le risque (pic bref, revenus en dents de scie) ; 2) Les 3 leviers (structuration en société, lissage + PER les années hautes, capital de reconversion + prévoyance) avec ordres de grandeur ; 3) Les étapes dans l'ordre ; 4) Les pièges. Chiffré, barèmes 2026. Termine par une question."}
+};
+
+function menu(){
+  var root=document.getElementById('root');
+  root.innerHTML='<div class="miss">'+Object.keys(MISSIONS).map(function(k){var m=MISSIONS[k];
+    return '<button class="m" data-k="'+k+'"><div class="ic">'+m.ic+'</div><div class="t">'+m.t+'</div><div class="d">'+m.d+'</div></button>';}).join('')+'</div>';
+  root.querySelectorAll('.m').forEach(function(b){ b.onclick=function(){ run(b.getAttribute('data-k')); }; });
+}
+
+function run(key){
+  var m=MISSIONS[key], root=document.getElementById('root');
+  root.innerHTML='<div class="run"><div class="rt">'+m.ic+' '+m.t+'</div><div class="rs">Marcel travaille votre dossier…</div>'+
+    '<div class="steps" id="steps">'+
+      '<div class="step" data-s="0"><span class="dot">1</span><span>Lecture de votre situation</span></div>'+
+      '<div class="step" data-s="1"><span class="dot">2</span><span>Mobilisation des expertises</span></div>'+
+      '<div class="step" data-s="2"><span class="dot">3</span><span>Rédaction du dossier</span></div>'+
+    '</div></div>';
+  var steps=root.querySelectorAll('.step'), idx=0;
+  function setStep(i){ steps.forEach(function(s,j){ s.classList.toggle('done',j<i); s.classList.toggle('on',j===i); var d=s.querySelector('.dot'); if(j===i){ d.innerHTML='<span class="sp"></span>'; } else if(j<i){ d.textContent='✓'; } else { d.textContent=(j+1); } }); }
+  setStep(0);
+  var timer=setInterval(function(){ idx=Math.min(idx+1,2); setStep(idx); }, 1800);
+  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:ctx()+m.prompt,history:[]})})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){ clearInterval(timer);
+      // SOUVERAINETÉ : on n'affiche jamais d.provider.
+      if(!d||!d.reply){ done(m,'<p>Marcel est momentanément indisponible. Réessayez dans un instant.</p>'); return; }
+      done(m, md(d.reply));
+    })
+    .catch(function(){ clearInterval(timer); done(m,'<p>Connexion interrompue. Réessayez dans un instant.</p>'); });
+}
+
+function done(m,htmlDossier){
+  var root=document.getElementById('root');
+  var tools=m.tools.map(function(t){return '<a href="'+t[1]+'">'+t[0]+' →</a>';}).join('');
+  root.innerHTML='<div class="run"><div class="rt">'+m.ic+' '+m.t+'</div><div class="rs">Dossier établi par Marcel — '+new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})+'</div>'+
+    '<div class="dossier">'+htmlDossier+'</div>'+
+    '<div class="tools">'+tools+'</div>'+
+    '<div class="bar"><button class="btn g" onclick="window.print()">📄 Télécharger en PDF</button><button class="btn o" onclick="menu()">← Autre mission</button></div>'+
+    '<div class="disc">Dossier établi à titre informatif par votre intelligence patrimoniale (art. L.541-1 CoMoFi) — ne constitue pas un conseil personnalisé. Ordres de grandeur, barèmes 2026. IKCP · ORIAS 23001568.</div></div>';
+}
+
+menu();
+</script>
+</body>
+</html>
