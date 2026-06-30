@@ -39,6 +39,17 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(23px,4vw
 .fb{flex:1;min-width:120px;background:var(--cream2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--navy);line-height:1.35}
 .fb .n{font-size:8.5px;font-weight:700;color:var(--gold-d);letter-spacing:.05em}
 .fb.g{background:var(--navy);color:#fff;border-color:var(--navy)}.fb.g .n{color:var(--gold)}
+.sch-art{font-size:10.5px;color:var(--gold-d);font-weight:700;margin:2px 0 8px}
+.sch-flow{display:flex;align-items:stretch;gap:3px;flex-wrap:wrap;margin-bottom:13px}
+.sch-node{flex:1 1 0;min-width:90px;background:var(--cream2);border:1px solid var(--line);border-radius:11px;padding:10px 11px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.sch-node.key{background:var(--navy);border-color:var(--navy)}
+.sch-node .nt{font-size:11.5px;font-weight:500;color:var(--navy);line-height:1.3}
+.sch-node.key .nt{color:#fff}
+.sch-node .ns{font-size:9.5px;color:var(--faint);margin-top:2px}
+.sch-node.key .ns{color:var(--gold)}
+.sch-arr{flex:0 0 auto;align-self:center;color:var(--gold-d);font-weight:700;font-size:13px;padding:0 1px}
+.sch-lev{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+.sch-lev span{font-size:11px;color:var(--navy);background:rgba(184,149,110,.1);border:1px solid rgba(184,149,110,.28);border-radius:999px;padding:5px 11px}
 .ctrl{margin:18px 0 14px}
 .ctrl label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute);margin-bottom:5px}
 .ctrl label b{color:var(--navy);font-family:'Playfair Display',serif;font-size:15px}
@@ -67,7 +78,7 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(23px,4vw
 <div class="wrap">
   <div class="hd"><span class="logo">Marcel <span>IA</span></span><a class="back" href="/app/dashboard.html">← Mon espace</a><span class="prem">Premium</span></div>
   <h1>Schémas de stratégie</h1>
-  <div class="lede">Choisissez votre objectif — Marcel construit le schéma adapté : le montage, étape par étape, et son impact chiffré.</div>
+  <div class="lede">Chaque montage en un schéma clair — puis son impact chiffré sur votre situation. La bibliothèque stratégique du cabinet.</div>
   <div id="root"></div>
 </div>
 
@@ -80,49 +91,72 @@ function droits(base){ base=Math.max(0,base); var t=[[8072,.05],[12109,.10],[159
 var ABATT=100000;
 
 var STRATS={
+  obo:{
+    nm:'OBO — le rachat à soi-même',
+    note:"Vous vendez une partie de vos titres à une holding de reprise financée par un prêt : vous encaissez des liquidités (cash-out) tout en restant majoritaire. La holding rembourse la dette grâce aux dividendes de la société.",
+    schema:{article:'Report possible : art. 150-0 B ter CGI',nodes:[{t:'Vous',s:'dirigeant'},{t:'Holding de reprise',key:true},{t:'Prêt bancaire',s:'dette senior'},{t:'Cash-out',s:'pour vous'}],leviers:['Vous restez majoritaire',"Intérêts d'emprunt déductibles",'Effet de levier']}
+  },
   vendre:{
     nm:'Apport-cession (art. 150-0 B ter)',
     note:"Avant la vente, vous apportez vos titres à une holding que vous contrôlez : la plus-value est mise en report d'imposition. La holding vend, puis réinvestit — l'impôt reste différé tant que 60 % du produit est réinvesti dans une activité éligible sous 2 ans.",
-    flux:['Vous détenez vos titres','Apport à votre holding','La holding cède les titres',"Réinvestir 60 % (report d'impôt)"],
+    schema:{article:'Art. 150-0 B ter CGI',nodes:[{t:'Vos titres'},{t:'Apport à holding',key:true},{t:'La holding cède'},{t:'Réinvestir 60 %'}],leviers:['Plus-value en report','Capital qui travaille','Réinvest. sous 2 ans']},
     slider:{lbl:'Plus-value de cession',min:200000,max:5000000,step:100000,val:1000000},
     calc:function(pv){ var sans=pv*0.30; return {sans:sans, avecLbl:'différé', sansSub:'PFU 30 % immédiat', apSub:'impôt reporté, capital réinvesti', gain:sans, gainLbl:'capital qui continue de travailler'}; }
   },
   transmettre:{
     nm:'Pacte Dutreil (art. 787 B)',
     note:"En contrepartie d'engagements de conservation (collectif 2 ans + individuel 4 ans) et d'une fonction de direction, la valeur transmise bénéficie d'un abattement de 75 % avant calcul des droits. Donation à 2 enfants.",
-    flux:['Vous dirigez la société','Engagement collectif (2 ans)',"Donation des titres (−75 % d'assiette)",'Engagement individuel (4 ans)'],
+    schema:{article:'Art. 787 B CGI',nodes:[{t:'Vous dirigez'},{t:'Engagement collectif',s:'2 ans'},{t:'Donation −75 %',key:true},{t:'Engagement individuel',s:'4 ans'}],leviers:['−75 % d’assiette','Fonction de direction','Conservation 2 + 4 ans']},
     slider:{lbl:'Valeur de la société',min:500000,max:10000000,step:250000,val:2000000},
     calc:function(v){ var N=2; var sans=N*droits(Math.max(0,v/N-ABATT)); var avec=N*droits(Math.max(0,(v*0.25)/N-ABATT)); return {sans:sans, avec:avec, sansSub:'droits pleins (2 enfants)', apSub:'assiette réduite à 25 %', gain:sans-avec, gainLbl:'droits économisés'}; }
   },
   tresorerie:{
     nm:'Holding / SPFPL (régime mère-fille)',
     note:"Plutôt que de sortir les dividendes en direct (flat tax 30 %), vous les faites remonter vers une holding : sous le régime mère-fille, seule une quote-part de 5 % est taxée à l'IS (~1,25 % effectif). Le capital reste disponible pour réinvestir, l'impôt personnel est différé.",
-    flux:['Société opérationnelle','Remontée des dividendes',"Holding : quote-part 5 % à l'IS",'Réinvestir avant impôt perso'],
+    schema:{article:'Régime mère-fille (art. 145 / 216 CGI)',nodes:[{t:'Société op.'},{t:'Dividendes remontent'},{t:'Holding : 5 % taxé',key:true},{t:'Réinvestir'}],leviers:['~1,25 % effectif','Quote-part 5 %','Impôt perso différé']},
     slider:{lbl:'Dividendes remontés',min:50000,max:1000000,step:50000,val:200000},
     calc:function(d){ var sans=d*0.30; var avec=d*0.05*0.25; return {sans:sans, avec:avec, sansSub:'flat tax 30 % (perso)', apSub:'~1,25 % effectif (mère-fille)', gain:sans-avec, gainLbl:'capital qui reste à investir'}; }
   },
   remuneration:{
     nm:'Arbitrage rémunération / dividendes',
-    note:"La façon de sortir votre bénéfice (rémunération en BNC/cotisations vs dividendes IS + PFU vs remontée en holding) change fortement votre net. L'outil dédié chiffre les 3 scénarios sur vos curseurs.",
-    flux:['Bénéfice de la société','Rémunération · dividendes · holding','Comparer le net en poche','Choisir le bon mix'],
-    slider:null,
+    note:"La façon de sortir votre bénéfice (rémunération + cotisations vs dividendes IS + PFU vs remontée en holding) change fortement votre net. L'outil dédié chiffre les 3 scénarios sur vos curseurs.",
+    schema:{article:'Arbitrage IR / IS',nodes:[{t:'Bénéfice société'},{t:'Rému · dividendes · holding'},{t:'Net optimisé',key:true}],leviers:['Cotisations vs PFU','Le bon mix']},
     cta:{txt:'Chiffrer mes 3 scénarios',href:'/app/simulateur-sel'}
+  },
+  demembrement:{
+    nm:'Donation démembrée (nue-propriété)',
+    note:"Vous donnez la nue-propriété et conservez l'usufruit (revenus + usage). Les droits ne portent que sur la nue-propriété, dont la valeur est réduite selon votre âge ; au décès, l'usufruit s'éteint et rejoint la nue-propriété sans nouveaux droits.",
+    schema:{article:'Art. 669 CGI · abattement art. 779 CGI',nodes:[{t:'Vous',s:'gardez l’usufruit'},{t:'Donation nue-propriété',key:true},{t:'Droits réduits',s:'selon l’âge'},{t:'Réunion au décès',s:'sans droits'}],leviers:['Barème 669 CGI','Vous gardez les revenus','Abattement 100 k€/enfant']}
+  },
+  obo_immo:{
+    nm:'OBO immobilier (SCI) & IFI',
+    note:"Vous vendez un immeuble à une SCI que vous contrôlez, financée par un prêt : l'immeuble sort de l'assiette IFI, remplacé par une créance. Attention : la dette n'est pas déductible si l'opération a un objectif principalement fiscal (clause anti-abus).",
+    schema:{article:'Art. 973-II CGI · jurisprudence 2025',nodes:[{t:'Immeuble en direct'},{t:'Vente à votre SCI',key:true},{t:'Prêt bancaire'},{t:'Sort de l’IFI'}],leviers:['Cash-out immobilier','Anti-abus 973-II','Étude obligatoire']}
   }
 };
+
+function schemaHTML(s){
+  if(!s.schema) return '';
+  var nodes=s.schema.nodes.map(function(nd,i){
+    var arr=i>0?'<span class="sch-arr">→</span>':'';
+    return arr+'<div class="sch-node'+(nd.key?' key':'')+'"><div class="nt">'+nd.t+'</div>'+(nd.s?'<div class="ns">'+nd.s+'</div>':'')+'</div>';
+  }).join('');
+  var lev=(s.schema.leviers||[]).map(function(l){return '<span>'+l+'</span>';}).join('');
+  return '<div class="sch-art">'+s.schema.article+'</div><div class="sch-flow">'+nodes+'</div>'+(lev?'<div class="sch-lev">'+lev+'</div>':'');
+}
 
 function renderInto(key){
   var s=STRATS[key];
   document.querySelectorAll('.obj').forEach(function(o){o.classList.toggle('on',o.getAttribute('data-k')===key);});
-  var flux=s.flux.map(function(step,i){ return '<div class="fb'+(i===0?' g':'')+'"><div class="n">Étape '+(i+1)+'</div>'+step+'</div>'; }).join('');
   var html='<div class="panel"><div class="snm">'+s.nm+'</div><div class="snote">'+s.note+'</div>'+
-    '<div class="sub2">Le montage, étape par étape</div><div class="flux">'+flux+'</div>';
+    '<div class="sub2">Le montage en un schéma</div>'+schemaHTML(s);
   if(s.slider){
     html+='<div class="ctrl"><label>'+s.slider.lbl+' <b id="sv">'+eur(s.slider.val)+'</b></label><input type="range" id="srange" min="'+s.slider.min+'" max="'+s.slider.max+'" step="'+s.slider.step+'" value="'+s.slider.val+'"></div>'+
       '<div class="sub2">Avant / après — l\'impact chiffré</div><div id="baOut"></div>';
   }
   if(s.cta){ html+='<div class="cta">Cet arbitrage se chiffre sur VOS montants.<br><a href="'+s.cta.href+'">'+s.cta.txt+' →</a></div>'; }
   else { html+='<div class="cta">Ce schéma mérite une étude adaptée à VOTRE situation. Lequel de ces leviers sert votre objectif prioritaire ?<br><a href="/app/marcel?q='+encodeURIComponent('Explique-moi le montage '+s.nm+' pour ma situation et les conditions à respecter.')+'">Approfondir avec Marcel →</a></div>'; }
-  html+='<div class="disc">Schéma pédagogique — ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi). Économies = ordres de grandeur, barèmes 2026, sous conditions ; toute mise en œuvre nécessite une étude formalisée (lettre de mission · cadre CIF · ORIAS 23001568).</div></div>';
+  html+='<div class="disc">Schéma pédagogique — ne constitue pas un conseil personnalisé (art. L.541-1 CoMoFi). Millésime 2026 ; économies = ordres de grandeur sous conditions ; toute mise en œuvre nécessite une étude formalisée (lettre de mission · cadre CIF · ORIAS 23001568).</div></div>';
   document.getElementById('panelHost').innerHTML=html;
   if(s.slider){
     var rg=document.getElementById('srange');
@@ -135,17 +169,20 @@ function renderInto(key){
 (function(){
   var root=document.getElementById('root');
   if(!PREMIUM){
-    root.innerHTML='<div class="gate"><h2>🔒 Réservé à Premium</h2><p>Les schémas de stratégie construisent, pour VOTRE situation, le montage étape par étape et son impact chiffré.</p><div class="names"><span class="nm">Apport-cession</span><span class="nm">Pacte Dutreil</span><span class="nm">Holding / SPFPL</span><span class="nm">Arbitrage rémunération</span></div><a class="btn" href="/app/profil.html">Passer en Premium →</a></div>';
+    root.innerHTML='<div class="gate"><h2>🔒 Réservé à Premium</h2><p>La bibliothèque de schémas montre chaque montage en un visuel clair — puis le chiffre sur VOTRE situation.</p><div class="names"><span class="nm">OBO</span><span class="nm">Apport-cession</span><span class="nm">Pacte Dutreil</span><span class="nm">Holding / SPFPL</span><span class="nm">Démembrement</span><span class="nm">OBO immobilier</span></div><a class="btn" href="/app/profil.html">Passer en Premium →</a></div>';
     return;
   }
-  root.innerHTML='<div class="qlbl">Votre objectif</div><div class="objs">'+
-    '<button class="obj" data-k="vendre"><div class="t">Vendre ma société</div><div class="d">Différer l\'impôt de plus-value</div></button>'+
-    '<button class="obj" data-k="transmettre"><div class="t">Transmettre</div><div class="d">Réduire les droits (Dutreil)</div></button>'+
+  root.innerHTML='<div class="qlbl">Choisissez un montage</div><div class="objs">'+
+    '<button class="obj" data-k="obo"><div class="t">Rendre du cash (OBO)</div><div class="d">Rester majoritaire</div></button>'+
+    '<button class="obj" data-k="vendre"><div class="t">Vendre ma société</div><div class="d">Différer l\'impôt</div></button>'+
+    '<button class="obj" data-k="transmettre"><div class="t">Transmettre</div><div class="d">Dutreil −75 %</div></button>'+
     '<button class="obj" data-k="tresorerie"><div class="t">Réinvestir ma trésorerie</div><div class="d">Holding / SPFPL</div></button>'+
-    '<button class="obj" data-k="remuneration"><div class="t">Arbitrer ma rémunération</div><div class="d">Rému / dividendes / holding</div></button>'+
+    '<button class="obj" data-k="remuneration"><div class="t">Arbitrer ma rémunération</div><div class="d">Rému / dividendes</div></button>'+
+    '<button class="obj" data-k="demembrement"><div class="t">Donner en gardant les revenus</div><div class="d">Démembrement</div></button>'+
+    '<button class="obj" data-k="obo_immo"><div class="t">OBO immobilier</div><div class="d">Immeuble & IFI</div></button>'+
     '</div><div id="panelHost"></div>';
   document.querySelectorAll('.obj').forEach(function(b){ b.onclick=function(){ renderInto(b.getAttribute('data-k')); }; });
-  renderInto('vendre');
+  renderInto('obo');
 })();
 </script>
 <script src="/app/js/sync.js" defer></script>
