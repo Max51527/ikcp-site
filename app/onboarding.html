@@ -79,10 +79,10 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
   <div class="step active" id="step1">
     <div class="marcel-mini"><div class="role">CHEF D'ORCHESTRE</div><div class="nm">Marcel</div></div>
     <h1>Bonjour. Je suis <em>Marcel.</em></h1>
-    <p class="lead">Votre intelligence patrimoniale augmentée. Je coordonne mes spécialistes pour orchestrer votre patrimoine, vos passions et votre transmission — pendant que vous dormez.<br><br>Avant de commencer, j'aimerais <em>vous connaître</em>.</p>
-    <div class="progress"><span class="active"></span><span></span><span></span><span></span></div>
+    <p class="lead">Votre intelligence patrimoniale souveraine.<br><br>Un seul point de départ : le <em>SIREN de votre société</em>. Je récupère vos chiffres, je bâtis votre cartographie — et je vous poserai mes questions au fil de l'eau. <b>Aucun formulaire à remplir.</b></p>
+    <div class="progress"><span class="active"></span><span></span></div>
     <div class="nav-actions">
-      <button class="btn-next" onclick="next(2)">Allons-y →</button>
+      <button class="btn-next" onclick="next(4)">Commencer →</button>
     </div>
   </div>
 
@@ -189,13 +189,13 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
     <!-- ─── Consentement & cadre MIF II (objectif, sans surpromesse) ─── -->
     <label id="consentWrap" style="display:flex; gap:10px; align-items:flex-start; margin:20px 0 4px; padding:14px 16px; background:var(--bg-2); border:1px solid var(--line); border-radius:10px; font-size:12px; line-height:1.55; color:var(--mute); cursor:pointer;">
       <input type="checkbox" id="consentChk" style="margin-top:3px; flex-shrink:0; accent-color:var(--accent);">
-      <span>Je comprends que Marcel et ses agents fournissent une <b style="color:var(--ink)">information patrimoniale et des analyses neutres</b> — <b style="color:var(--ink)">pas un conseil en investissement personnalisé</b> au sens de l'art. L.541-1 du Code monétaire et financier. Maxime Juveneton (CIF · ORIAS 23001568) reste mon interlocuteur humain, disponible sur demande. Outil en phase <b style="color:var(--ink)">bêta</b> · données hébergées en France (RGPD souverain). <a href="/app/securite.html" target="_blank" style="color:var(--accent)">Cadre &amp; confidentialité</a></span>
+      <span>Je comprends que Marcel et ses agents fournissent une <b style="color:var(--ink)">information patrimoniale et des analyses neutres</b> — <b style="color:var(--ink)">pas un conseil en investissement personnalisé</b> au sens de l'art. L.541-1 du Code monétaire et financier. Un conseiller CIF (ORIAS 23001568) reste mon interlocuteur humain, disponible sur demande. Outil en phase <b style="color:var(--ink)">bêta</b> · données hébergées en France (RGPD souverain). <a href="/app/securite.html" target="_blank" style="color:var(--accent)">Cadre &amp; confidentialité</a></span>
     </label>
     <div id="consentErr" style="display:none; color:var(--bad,#E53E3E); font-size:11.5px; margin:4px 0 8px;">Merci de cocher cette case pour continuer.</div>
 
-    <div class="progress"><span class="done"></span><span class="done"></span><span class="done"></span><span class="active"></span></div>
+    <div class="progress"><span class="done"></span><span class="active"></span></div>
     <div class="nav-actions">
-      <button class="btn-back" onclick="next(3)">← Retour</button>
+      <button class="btn-back" onclick="next(1)">← Retour</button>
       <button class="btn-next" id="finishBtn" onclick="finishOnboarding()">Terminer →</button>
     </div>
     <p style="margin-top:14px"><button class="btn-skip" onclick="finishOnboarding(true)">Ajouter ma société plus tard</button></p>
@@ -362,7 +362,12 @@ window.finishOnboarding = async function(skipSiren = false){
 
   // Stocke aussi en localStorage pour reload immédiat
   localStorage.setItem('marcel_profile', JSON.stringify(profile));
-  location.href = '/app/environnement?from=onboarding';
+  // « 1 geste » : on persiste la société cartographiée → le dashboard se remplit tout de suite
+  try{ const sd = data.siren_data; if(sd && sd.siren){
+    localStorage.setItem('ikcp_societe', JSON.stringify({ siren:sd.siren, nom:sd.nom, forme:sd.forme_juridique, ca:(sd.chiffre_affaires!=null?sd.chiffre_affaires:null), resultat:(sd.resultat!=null?sd.resultat:null), annee:sd.finances_annee||null, at:Date.now() }));
+    localStorage.setItem('ikcp_pending_company', sd.siren);
+  } }catch(_){}
+  location.href = '/app/dashboard.html?welcome=1';
 }
 
 window.skipAll = function(){
