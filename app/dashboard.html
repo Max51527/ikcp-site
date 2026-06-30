@@ -267,8 +267,8 @@
   <h2 style="font-family:'Playfair Display',serif;font-weight:500;font-size:21px;margin:8px 0 3px">Mon patrimoine <em style="font-style:italic;color:var(--accent)">&amp; mes questions</em></h2>
   <p style="color:var(--mute);font-size:13.5px;margin-bottom:16px">Votre situation, vos sociétés, votre veille — et Marcel pour décider.</p>
 
-  <!-- ── Diagnostic instantané personnalisé (WOW « l'IA me connaît ») ── -->
-  <article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
+  <!-- ── Diagnostic : masqué (épuration — redondant avec Score + Audit 360°) ── -->
+  <article class="card" style="display:none;background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
     <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Marcel</span></div>
     <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:18px">Vos 3 priorités, <em style="font-style:italic;color:var(--accent)">personnalisées</em></h3>
     <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre conseiller patrimonial identifie vos leviers prioritaires — en direct.</p>
@@ -296,9 +296,9 @@
     }
   })();</script>
 
-  <!-- ── Widgets row 1 : Veille + Cartographie + IFI ── -->
-  <div class="grid-3" style="margin-bottom:14px">
-    <article class="card" id="w-veille">
+  <!-- ── Cartographie (priorité 1) — pleine largeur ; veille/patrimoine masqués (doublons du haut) ── -->
+  <div class="grid-3" style="margin-bottom:14px;display:block">
+    <article class="card" id="w-veille" style="display:none">
       <div class="card-head"><span class="card-cat">Veille du jour</span><span class="pill warn" id="alertsCount">…</span></div>
       <h3>Alertes Marcel</h3>
       <div id="veille-body" class="loading">Marcel agrège votre veille…</div>
@@ -313,7 +313,7 @@
       <a href="/app/marcel?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
     </article>
 
-    <article class="card" id="w-patrimoine">
+    <article class="card" id="w-patrimoine" style="display:none">
       <div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill neutral" id="patCount">à compléter</span></div>
       <h3 id="patNet">Vue consolidée</h3>
       <div id="pat-body" class="empty" style="padding:16px 0;text-align:left">
@@ -338,8 +338,8 @@
     })();</script>
   </div>
 
-  <!-- ── Widgets row 2 : Watches + Carnet + Documents ── -->
-  <div class="grid-3" style="margin-bottom:14px">
+  <!-- ── Widgets row 2 : masqués (épuration — accessibles via Profil / Carnet / Documents) ── -->
+  <div class="grid-3" style="margin-bottom:14px;display:none">
     <article class="card">
       <div class="card-head"><span class="card-cat">Vos veilles</span><span class="pill neutral" id="watchesCount">…</span></div>
       <h3>Actifs surveillés</h3>
@@ -362,8 +362,8 @@
     </article>
   </div>
 
-  <!-- ── Widgets row 3 : Conversations + Transmission ── -->
-  <div class="grid-2">
+  <!-- ── Widgets row 3 : masqués (épuration — Transmission via missions, Conversations via Marcel) ── -->
+  <div class="grid-2" style="display:none">
     <article class="card">
       <div class="card-head"><span class="card-cat">Conversations</span></div>
       <h3>Vos derniers échanges</h3>
@@ -725,6 +725,7 @@ window.goDiagnostic = function(){
 // ─── Activation : guide l'utilisateur quand le dashboard est vide ───
 function renderActivation(profile, convsCount){
   const sec = document.getElementById('activation'); if(!sec) return;
+  return; // Épuration : checklist « 4 étapes » désactivée (le hero cartographie guide à la place).
   const p = profile || {};
   let patCount = 0;
   try { patCount = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + ((me&&me.email)||'invite')) || '[]').length; } catch(_){}
