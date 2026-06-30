@@ -486,7 +486,7 @@ function sendQuick(text){
 // Le dirigeant part de zéro → on demande à Marcel de PROPOSER spontanément
 // 3 à 5 pistes de réflexion (format exclusif : angle → avant/après chiffré →
 // question), personnalisées au SIREN si on l'a. MIF II : pistes = information,
-// jamais reco ; Marcel ajoute le disclaimer L.541-1 (déjà câblé). Souverain (Mistral UE).
+// jamais reco ; Marcel ajoute le disclaimer L.541-1 (déjà câblé). Souverain (UE).
 function revealAngles(){
   let siren = '';
   try { const p = me && me.profile_json ? JSON.parse(me.profile_json) : null; siren = (p && p.siren_data && p.siren_data.siren) || ''; } catch(_){}

@@ -563,7 +563,7 @@ async function detectOppo(){
 }
 document.getElementById('detectBtn')?.addEventListener('click', detectOppo);
 
-// ─── Audit patrimonial 360° (8 dimensions + agent Mistral par axe) ───
+// ─── Audit patrimonial 360° (8 dimensions + agent souverain par axe) ───
 // Enrichi par les comptes Powens si le membre a connecté sa banque (sinon manuel).
 function _powensUser(){ try{ if(window.Marcel&&Marcel.Auth&&Marcel.Auth.email) return Marcel.Auth.email; var s=localStorage.getItem('ikcp_email')||localStorage.getItem('email'); if(s) return s; }catch(_){} return 'me'; }
 async function powensActifs(){
