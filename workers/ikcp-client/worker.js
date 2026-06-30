@@ -150,7 +150,7 @@ async function handleAuthSend(request, env) {
   ).bind(tokenHash, email.toLowerCase(), now, expiresAt, request.headers.get('CF-Connecting-IP') || '').run();
 
   const verifyUrl = `${env.APP_URL}/auth/verify?token=${token}`;
-  const emailSent = await sendEmail(env, { to: email, subject: 'Votre lien de connexion · IKCP', html: emailTemplateMagic(verifyUrl) });
+  const emailSent = await sendEmail(env, { to: email, subject: 'Votre lien de connexion · Marcel IA', html: emailTemplateMagic(verifyUrl) });
 
   // MODE SANS RESEND : log le lien en console (visible wrangler tail ou dashboard CF)
   if (!emailSent) {
@@ -752,7 +752,7 @@ async function sendEmail(env, { to, subject, html }) {
     return false; // indique l'échec proprement
   }
   // Sender : noreply@ikcp.eu si domaine vérifié Resend, sinon fallback domaine test
-  const from = env.RESEND_FROM || 'IKCP <noreply@ikcp.eu>';
+  const from = env.RESEND_FROM || 'Marcel IA Patrimoniale <noreply@ikcp.eu>';
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
@@ -789,11 +789,14 @@ function nextMonthFirst() {
 // EMAIL TEMPLATES
 // ──────────────────────────────────────────────────────────────
 function emailTemplateMagic(verifyUrl) {
-  return `<div style="font-family:Georgia,serif;max-width:520px;margin:auto;padding:32px;background:#FAF6EE;color:#2D2520">
-    <h1 style="font-size:24px;color:#D97757;margin:0 0 16px">Votre lien de connexion</h1>
-    <p style="font-size:15px;line-height:1.6">Voici votre lien pour vous connecter à votre Salon IKCP. Valide <b>15 minutes</b>, à usage unique.</p>
-    <a href="${verifyUrl}" style="display:inline-block;padding:14px 28px;background:#D97757;color:#FAF6EE;text-decoration:none;border-radius:30px;margin:18px 0;font-weight:600">Me connecter →</a>
-    <p style="font-size:12px;color:#9B8B7C">Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>
+  return `<div style="font-family:Georgia,'Times New Roman',serif;max-width:520px;margin:auto;padding:34px;background:#FAF8F4;color:#221E18;border:1px solid #E9E2D6;border-radius:12px">
+    <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
+    <h1 style="font-size:23px;color:#1B2A4A;margin:0 0 14px">Votre lien de connexion</h1>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Voici votre accès à votre espace <b>Marcel IA</b>. Lien valide <b>15 minutes</b>, à usage unique.</p>
+    <a href="${verifyUrl}" style="display:inline-block;padding:14px 28px;background:#C9A96E;color:#20180c;text-decoration:none;border-radius:30px;margin:18px 0;font-weight:bold">Me connecter →</a>
+    <p style="font-size:12px;color:#8A7E70">Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.</p>
+    <hr style="border:none;border-top:1px solid #E9E2D6;margin:20px 0 12px">
+    <p style="font-size:11px;color:#8A7E70;margin:0">Marcel IA — intelligence patrimoniale souveraine · IKCP · ORIAS 23001568</p>
   </div>`;
 }
 function emailTemplateWelcome() {
