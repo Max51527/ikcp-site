@@ -50,6 +50,31 @@ function base(env) { return `https://${env.POWENS_DOMAIN}.biapi.pro/2.0`; }
 // Tant que les 3 réglages ne sont pas posés, le worker répond proprement (pas de plantage).
 function configured(env) { return !!(env.POWENS_DOMAIN && env.POWENS_CLIENT_ID && env.POWENS_CLIENT_SECRET); }
 
+// ── Chiffrement applicatif des jetons bancaires (AES-256-GCM) ──────────────────
+// Le jeton Powens = accès permanent aux comptes. On ne le range JAMAIS en clair :
+// chiffré avec une clé secrète (env.POWENS_ENC_KEY = base64 de 32 octets, posée via
+// `wrangler secret put POWENS_ENC_KEY`). Format stocké : "v1:" + base64(iv[12] ‖ ciphertext).
+async function encKey(env) {
+  if (!env.POWENS_ENC_KEY) throw new Error('POWENS_ENC_KEY manquante (wrangler secret put)');
+  const raw = Uint8Array.from(atob(env.POWENS_ENC_KEY), c => c.charCodeAt(0));
+  return crypto.subtle.importKey('raw', raw, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+}
+async function encToken(env, plain) {
+  const key = await encKey(env);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(plain)));
+  const out = new Uint8Array(iv.length + ct.length); out.set(iv); out.set(ct, iv.length);
+  return 'v1:' + btoa(String.fromCharCode.apply(null, out));
+}
+async function decToken(env, stored) {
+  if (!stored) return null;
+  if (stored.indexOf('v1:') !== 0) return stored; // jeton hérité en clair — rétro-compat (sera re-chiffré au prochain refresh)
+  const key = await encKey(env);
+  const buf = Uint8Array.from(atob(stored.slice(3)), c => c.charCodeAt(0));
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0, 12) }, key, buf.slice(12));
+  return new TextDecoder().decode(pt);
+}
+
 // ── Routeur des événements Powens ────────────────────────────────────────────
 // Un cas par type (cf. console Powens). Les handlers sont des STUBS : branche ta
 // logique métier où c'est indiqué. Tout est déjà loggé en D1 avant d'arriver ici.
@@ -177,12 +202,13 @@ export default {
         });
         if (!ex.ok) return json({ error: 'powens_exchange', status: ex.status, detail: (await ex.text()).slice(0, 200) }, 502, o);
         const tok = await ex.json();
-        // ranger le jeton en D1 Paris (TODO : chiffrement applicatif avant prod)
+        // ranger le jeton en D1 Paris — CHIFFRÉ (AES-256-GCM, clé secrète POWENS_ENC_KEY)
         if (env.POWENS_DB) {
           try {
+            const encrypted = await encToken(env, tok.access_token);
             await env.POWENS_DB.prepare('INSERT OR REPLACE INTO powens_tokens (member_id, access_token, id_user, created_at) VALUES (?,?,?,?)')
-              .bind(memberId, tok.access_token, tok.id_user || null, new Date().toISOString()).run();
-          } catch (_) {}
+              .bind(memberId, encrypted, tok.id_user || null, new Date().toISOString()).run();
+          } catch (e) { return json({ error: 'powens_store', detail: e.message }, 500, o); }
         }
         // renvoyer le membre vers son cockpit, comptes connectés
         return Response.redirect('https://ikcp.eu/app/cockpit?powens=ok', 302);
@@ -197,7 +223,7 @@ export default {
       try { row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first(); }
       catch (_) { return json({ connected: false, accounts: [], note: 'base non initialisée' }, 200, o); }
       if (!row) return json({ connected: false, accounts: [] }, 200, o);
-      const r = await fetch(base(env) + '/users/me/accounts', { headers: { 'Authorization': 'Bearer ' + row.access_token } });
+      const r = await fetch(base(env) + '/users/me/accounts', { headers: { 'Authorization': 'Bearer ' + (await decToken(env, row.access_token)) } });
       if (!r.ok) return json({ error: 'powens_accounts', status: r.status }, 502, o);
       const d = await r.json();
       return json({ connected: true, accounts: d.accounts || d }, 200, o);
@@ -213,7 +239,7 @@ export default {
       try { row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first(); }
       catch (_) { return json({ connected: false, accounts: [], investments: [], loans: [], note: 'base non initialisée' }, 200, o); }
       if (!row) return json({ connected: false, accounts: [], investments: [], loans: [] }, 200, o);
-      const H = { 'Authorization': 'Bearer ' + row.access_token };
+      const H = { 'Authorization': 'Bearer ' + (await decToken(env, row.access_token)) };
       // Appels parallèles ; chaque brique est best-effort (un endpoint absent ne casse pas la vue).
       const [ac, inv, ln] = await Promise.all([
         fetch(base(env) + '/users/me/accounts', { headers: H }).then(r => r.ok ? r.json() : null).catch(() => null),
