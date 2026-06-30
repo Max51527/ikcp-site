@@ -112,7 +112,8 @@ async function fetchUserContextFromClient(request) {
     const lines = [];
     let profile = {};
     try { profile = me.profile_json ? JSON.parse(me.profile_json) : {}; } catch (_) {}
-    if (profile.prenom) lines.push(`Prénom : ${profile.prenom}`);
+    // Minimisation RGPD : le PRÉNOM (donnée directement identifiante) n'est PAS envoyé au LLM —
+    // Marcel vouvoie. Les attributs pseudonymes utiles au conseil (âge, situation, activité) suffisent.
     if (profile.age) lines.push(`Âge : ${profile.age} ans`);
     if (profile.situation) lines.push(`Situation : ${profile.situation.replace(/_/g, ' ')}`);
     if (profile.profession) lines.push(`Activité : ${profile.profession.replace(/_/g, ' ')}`);
