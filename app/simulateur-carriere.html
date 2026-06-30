@@ -53,6 +53,12 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,4vw
 .piste b{color:var(--navy)}
 .cta{margin-top:16px;text-align:center;background:var(--navy);color:var(--cream);border-radius:12px;padding:15px;font-size:13px;line-height:1.5}
 .cta a{color:#E2C896;font-weight:700;text-decoration:none}
+.conv{margin-top:16px;text-align:center;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:20px 18px}
+.conv-t{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:#fff;margin-bottom:6px}
+.conv-d{font-size:12.5px;color:rgba(250,248,244,.82);line-height:1.55;max-width:42ch;margin:0 auto 14px}
+.conv-d b{color:#E2C896;font-weight:600}
+.conv-b{display:inline-block;background:linear-gradient(135deg,#E2C896,var(--gold));color:#20180c;font-weight:700;font-size:13.5px;text-decoration:none;padding:12px 22px;border-radius:999px;box-shadow:0 12px 26px -14px rgba(201,169,110,.85)}
+.conv-s{font-size:10px;color:rgba(250,248,244,.55);margin-top:11px}
 .disc{margin-top:13px;font-size:10px;color:var(--faint);line-height:1.5;text-align:center}
 </style>
 </head>
@@ -81,7 +87,14 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,4vw
       <div class="piste"><b>Capital de reconversion + prévoyance</b> : une blessure ou un changement d'algorithme ne doit pas tout arrêter.</div>
     </div>
 
-    <div class="cta" id="cta">Votre pic ne durera pas — votre patrimoine, si.<br><a id="ctaA" href="/app/marcel">Construire mon plan avec Marcel →</a></div>
+    <!-- Pont B→C : non connecté → création de compte · connecté → Marcel -->
+    <div class="conv" id="conv">
+      <div class="conv-t">Gardez ce résultat — et passez à l'action</div>
+      <div class="conv-d">Créez votre compte <b>gratuit</b> pour <b>sauvegarder votre situation</b>, recevoir votre <b>plan complet</b> et activer <b>Marcel</b>.</div>
+      <a class="conv-b" id="convA" href="/creer-mon-compte">Créer mon compte gratuit →</a>
+      <div class="conv-s">Sans engagement · données hébergées en France · export à tout moment</div>
+    </div>
+    <div class="cta" id="cta" style="display:none">Votre pic ne durera pas — votre patrimoine, si.<br><a id="ctaA" href="/app/marcel">Construire mon plan avec Marcel →</a></div>
     <div class="disc">Information patrimoniale, jamais un conseil personnalisé (art. L.541-1 CoMoFi). Hypothèses prudentes : constitution à 4 %/an, rente nette à 3 %. Ordres de grandeur. © IKCP · ORIAS 23001568.</div>
   </div>
 </div>
@@ -111,9 +124,16 @@ function compute(){
   $('out').innerHTML=html;
   var q='Je suis en carrière courte à revenus irréguliers (revenu actuel '+eur(rev)+', encore ~'+ans+' ans de pic, train de vie cible '+eur(tv)+'/an après). Comment structurer pour transformer mon pic en indépendance durable ?';
   $('ctaA').href='/app/marcel?q='+encodeURIComponent(q);
+  try{ localStorage.setItem('ikcp_pending_sim', JSON.stringify({type:'carriere',rev:rev,ans:ans,tv:tv,q:q})); }catch(_){}
 }
 ['rev','ans','tv'].forEach(function(id){$(id).addEventListener('input',compute);});
 compute();
+// Pont B→C : non connecté → création de compte ; déjà connecté → Marcel
+(function(){
+  var logged=false; try{ logged=!!localStorage.getItem('ikcp_token'); }catch(_){}
+  if(logged){ $('conv').style.display='none'; $('cta').style.display=''; }
+  else { $('conv').style.display=''; $('cta').style.display='none'; $('convA').href='/creer-mon-compte?from=simulateur-carriere'; }
+})();
 </script>
 <script src="/app/js/sync.js" defer></script>
 </body>

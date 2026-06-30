@@ -55,6 +55,11 @@
   .trust b{color:var(--ink-soft)}
   .cta{text-align:center;padding:40px 0 70px}
   .cta a{display:inline-block;padding:15px 30px;background:var(--navy);color:var(--cream);border-radius:11px;font-weight:600;font-size:15px}
+  .co-conv{margin-top:14px;text-align:center;background:linear-gradient(135deg,#1B2A4A,#0E1729);border-radius:14px;padding:18px 16px}
+  .co-conv-t{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#fff;margin-bottom:5px}
+  .co-conv-d{font-size:12px;color:rgba(250,248,244,.82);line-height:1.5;max-width:44ch;margin:0 auto 13px}
+  .co-conv-d b{color:#E2C896;font-weight:600}
+  .co-conv-b{display:inline-block;background:linear-gradient(135deg,#E2C896,#C9A96E);color:#20180c;font-weight:700;font-size:13px;text-decoration:none;padding:11px 20px;border-radius:999px;box-shadow:0 12px 26px -14px rgba(201,169,110,.85)}
   footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;font-size:12.5px;color:var(--ink-faint)}
   .disc{font-size:11px;color:var(--ink-faint);font-style:italic;margin-top:12px;line-height:1.5}
   /* ── Graphisme & dynamisme ── */
@@ -254,7 +259,7 @@
 </main>
 
 <section class="cta"><div class="wrap">
-  <a href="/marcel#beta">Demander un accès à l'intelligence patrimoniale →</a>
+  <a href="/creer-mon-compte">Créer mon compte gratuit — sauvegarder mon analyse →</a>
 </div></section>
 
 <footer><div class="wrap">© 2026 IKCP — IKIGAÏ Conseil Patrimonial · ORIAS 23001568 · <a href="/mentions-legales" style="color:var(--gold-deep)">Mentions légales</a></div></footer>
@@ -326,6 +331,11 @@
         ? '<div class="co-fin"><div class="co-fin-item"><div class="cl">Chiffre d\'affaires'+(fyear?(' '+fyear):'')+'</div><div class="cv-big">'+(ca!=null?fmt(ca):'n.c.')+'</div></div><div class="co-fin-sep"></div><div class="co-fin-item"><div class="cl">Résultat net</div><div class="cv-big">'+(rnet!=null?fmt(rnet):'n.c.')+'</div></div></div>'
         : '';
       var note=(ca==null&&rnet==null) ? '<div class="co-note">Comptes non publiés (option de confidentialité) — à saisir dans votre cockpit.</div>' : '';
+      // Pont B→C : non connecté → création de compte · connecté → espace membre
+      var _lg=false; try{_lg=!!localStorage.getItem('ikcp_token');}catch(_){}
+      var convBlock='<div class="co-conv"><div class="co-conv-t">'+(_lg?'Retrouvez cette cartographie dans votre espace':'Gardez cette cartographie')+'</div>'+
+        '<div class="co-conv-d">'+(_lg?'Ouvrez votre espace pour lancer l\'audit 360° et suivre vos leviers.':'Créez votre compte <b>gratuit</b> pour <b>sauvegarder votre société</b>, lancer votre <b>audit 360°</b> et activer <b>Marcel</b>.')+'</div>'+
+        '<a class="co-conv-b" href="'+(_lg?'/app/dashboard.html':'/creer-mon-compte?from=marcel')+'">'+(_lg?'Ouvrir mon espace →':'Créer mon compte gratuit →')+'</a></div>';
       out.innerHTML=
         '<div class="co-schema">'+
           '<div class="co-head"><div><div class="co-nm">'+esc(nom)+'</div><div class="co-fj">'+esc(forme)+'</div></div><div class="co-souv">RNE · INPI</div></div>'+
@@ -334,7 +344,10 @@
           note+
           '<div class="co-foot">✓ Identité RNE souverain · finances : comptes déposés RNE/INPI · données en France</div>'+
         '</div>'+
-        '<div id="sirenMarcel" class="out" data-allow-copy style="margin-top:14px"></div>';
+        '<div id="sirenMarcel" class="out" data-allow-copy style="margin-top:14px"></div>'+
+        convBlock;
+      // Mémorise la société pour la continuité après inscription (pré-remplit l'espace membre)
+      try{ localStorage.setItem('ikcp_pending_company', JSON.stringify({siren:v,nom:nom,forme:forme,ca:ca,resultat:rnet,ctx:window._coCtx})); }catch(_){}
       // Enchaînement automatique : Marcel analyse la société (avec ses VRAIS chiffres), sans rien redemander
       marcelInto('sirenMarcel', window._coCtx+' Donne-moi mes 3 principaux leviers — rémunération/dividendes, fiscalité, transmission — pour cette structure. Concret et chiffré.');
       revealContinue();
