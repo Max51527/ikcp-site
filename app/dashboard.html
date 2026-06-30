@@ -5,31 +5,59 @@
 <script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1B2A4A">
-<title>Marcel — Dashboard</title>
+<title>Marcel IA — Accueil</title>
 <link rel="manifest" href="/app/manifest.json">
 <link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Marcel">
+<meta name="apple-mobile-web-app-title" content="Marcel IA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+/* ── Refonte épurée — Marcel au centre ── */
+.app-h1{font-family:'Playfair Display',serif;font-weight:600}
+.mhero{background:linear-gradient(165deg,#1B2A4A,#0E1729);border-radius:20px;padding:17px 16px;margin:10px 0 6px;border:0}
+.mhero .mlab{display:flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.05em;color:#E2C896}
+.mhero .dot{width:7px;height:7px;border-radius:50%;background:#5fd6a0;box-shadow:0 0 0 3px rgba(95,214,160,.18)}
+.mhero .mq{font-family:'Playfair Display',serif;font-size:16px;line-height:1.4;color:#fff;margin:10px 0 13px}
+.mhero form{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(226,200,150,.28);border-radius:14px;padding:8px 10px}
+.mhero input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font-family:'Outfit',sans-serif;font-size:13.5px}
+.mhero input::placeholder{color:rgba(255,255,255,.5)}
+.mhero .snd{width:32px;height:32px;flex:0 0 auto;border:0;border-radius:9px;background:linear-gradient(135deg,#E2C896,#C9A96E);color:#20180c;font-weight:700;font-size:16px;cursor:pointer}
+.mhint{font-size:10.5px;color:var(--mute);text-align:center;margin:7px 0 2px}
+.mhint b{color:var(--accent)}
+.sect-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600;margin:20px 0 9px}
+.intents{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.intent{background:#fff;border:1px solid var(--line);border-top:2px solid var(--gold,#C9A96E);border-radius:13px;padding:12px 13px;font-size:12.5px;color:var(--ink);font-weight:500;line-height:1.3;text-decoration:none;display:block}
+.intent small{display:block;font-weight:400;color:var(--mute);font-size:10.5px;margin-top:3px}
+.intent:active{transform:scale(.99)}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 14px;margin-bottom:8px;text-decoration:none}
+.row .ri{width:34px;height:34px;flex:0 0 auto;border-radius:10px;background:var(--cream2,#F4EFE7);display:flex;align-items:center;justify-content:center;font-size:16px}
+.row .rt{flex:1}.row .rt b{font-size:13px;color:var(--ink);font-weight:600;display:block}.row .rt span{font-size:11px;color:var(--mute)}
+.row .pc{font-size:8.5px;color:#20180c;background:linear-gradient(120deg,#8B6F3F,#C9A96E);border-radius:999px;padding:2px 7px;font-weight:700}
+.row .chev{color:var(--mute);font-size:17px}
+/* Nav : bouton M central + état recording */
+.app-tabs .tab-m{position:relative}
+.app-tabs .tab-m .mbtn{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#1B2A4A,#0E1729);color:#E2C896;font-family:'Playfair Display',serif;font-weight:600;font-size:21px;display:flex;align-items:center;justify-content:center;margin:-22px auto 0;box-shadow:0 12px 24px -8px rgba(27,42,74,.6);border:3px solid var(--bg,#FAF8F4);transition:transform .12s;-webkit-user-select:none;user-select:none;touch-action:none}
+.app-tabs .tab-m .mbtn.rec{transform:scale(1.12);background:linear-gradient(135deg,#C0414C,#8b2f37);color:#fff;box-shadow:0 0 0 6px rgba(192,65,76,.18)}
+.app-tabs .tab-m .mlbl{font-size:9px}
+</style>
 <script src="/reveal.js?v=1" defer></script>
 </head>
 <body>
 
 <header class="app-header">
   <a href="/app/dashboard.html" class="app-brand">
-    Marcel<em>.</em>
-    <span class="app-brand-sub">intelligence patrimoniale augmentée</span>
+    Marcel<em> IA</em>
+    <span class="app-brand-sub">intelligence patrimoniale</span>
   </a>
   <div class="app-user">
     <span class="tier" id="userTier">Découverte</span>
     <div class="avatar" id="userAvatar">M</div>
     <a href="/app/gestion" class="logout" id="adminLnk" style="text-decoration:none;display:none" title="Tour de contrôle (propriétaire)">⚙ Console</a>
     <script>(function(){
-      // Raccourci Console révélé UNIQUEMENT pour la connexion propriétaire (email -> SHA-256 -> liste owner). Sinon invisible.
       function show(){var el=document.getElementById('adminLnk');if(el)el.style.display='';}
       try{ if(localStorage.getItem('ikcp_admin_secret')) show(); }catch(_){}
       var OWN=['c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3','cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030','d4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543'];
@@ -50,20 +78,44 @@
 
 <main class="app-main">
   <div class="section-label">Bonjour <span id="userPrenom">Maxime</span></div>
-  <h1 class="app-h1">Votre copilote patrimonial, <em>au quotidien.</em></h1>
-  <p class="app-lead" id="userGreeting">Votre copilote patrimonial. Commençons.</p>
+  <h1 class="app-h1">Que puis-je éclairer <em>aujourd'hui&nbsp;?</em></h1>
 
-  <!-- ════ A · HERO — Marcel cartographie votre patrimoine (étape 1, la seule) ════ -->
-  <article class="card" id="w-carto" style="border-color:rgba(201,169,110,.42);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent);margin:8px 0 14px">
-    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Étape 1 · la seule</span><span class="pill live" id="cartoStatus">SIREN</span></div>
-    <h3 id="cartoNom" style="font-family:'Playfair Display',serif;font-weight:600;font-size:20px">Marcel cartographie votre patrimoine</h3>
+  <!-- ════ Marcel au centre : la conversation ════ -->
+  <section class="mhero">
+    <div class="mlab"><span class="dot"></span> Marcel · intelligence patrimoniale</div>
+    <div class="mq">Posez votre question — je mobilise vos chiffres et mes spécialistes.</div>
+    <form onsubmit="return askMarcel(event)">
+      <input id="qInput" type="text" maxlength="280" autocomplete="off" placeholder="Payer moins d'impôts sur ma société…">
+      <button type="submit" class="snd" aria-label="Envoyer">→</button>
+    </form>
+  </section>
+  <div class="mhint">Ou <b>maintenez le bouton&nbsp;M</b> en bas pour parler à Marcel.</div>
+
+  <!-- ════ Par où commencer : 4 intentions ════ -->
+  <div class="sect-label">Par où commencer</div>
+  <div class="intents" id="intents"></div>
+  <script>(function(){
+    var Q=[
+      ['Payer moins d\'impôts','société &amp; perso','Comment optimiser légalement la fiscalité de ma société : arbitrage IR/IS, dividendes ou rémunération ?'],
+      ['Transmettre à mes enfants','droits &amp; timing','Combien puis-je transmettre à mes enfants sans droits, et comment réduire la facture ?'],
+      ['Ma trésorerie d\'entreprise','la faire travailler','Que faire de la trésorerie excédentaire de mon entreprise ?'],
+      ['Et s\'il m\'arrive qqch ?','protéger les miens','Si demain il m\'arrive quelque chose, ma famille et mon patrimoine sont-ils protégés ?']
+    ];
+    document.getElementById('intents').innerHTML=Q.map(function(q){
+      return '<a class="intent" href="/app/marcel?q='+encodeURIComponent(q[2])+'">'+q[0]+'<small>'+q[1]+'</small></a>';
+    }).join('');
+  })();</script>
+
+  <!-- ════ Reliez votre société : SIREN → vrais chiffres ════ -->
+  <article class="card" id="w-carto" style="border-color:rgba(201,169,110,.42);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent);margin:18px 0 12px">
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Votre société</span><span class="pill live" id="cartoStatus">SIREN</span></div>
+    <h3 id="cartoNom" style="font-family:'Playfair Display',serif;font-weight:600;font-size:19px">Reliez votre société</h3>
     <div id="carto-body" class="loading">Lecture profil société…</div>
-    <a href="/app/environnement" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Mon environnement société →</a>
     <a href="/app/marcel?topic=batisseur" class="btn btn-ghost btn-sm" id="batisseur-cta" style="align-self:flex-start;margin-top:8px;display:none">Patrimoine 360° →</a>
   </article>
 
-  <!-- Ce que Marcel sait (se remplit tout seul depuis localStorage) -->
-  <div id="marcelKnows" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px"></div>
+  <!-- Ce que Marcel sait (auto depuis localStorage) -->
+  <div id="marcelKnows" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px"></div>
   <script>(function(){
     function J(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(_){return null;}}
     function eur(n){return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0,notation:Math.abs(n)>=1e6?'compact':'standard'}).format(Math.round(n));}
@@ -77,522 +129,48 @@
       tile('/app/score','🎯','Score',sc&&typeof sc.score==='number'?sc.score+'/100':'à venir',!!(sc&&typeof sc.score==='number'));
   })();</script>
 
-  <!-- ════ MON PATRIMOINE — synthèse masquée (épuration A : remplacée par la tuile Patrimoine) ════ -->
-  <section id="patSynth" style="margin:0;display:none"></section>
-  <script>
-  (function(){
-    var host = document.getElementById('patSynth'); if(!host) return;
-    var CATS = {
-      immobilier:{l:'Immobilier',c:'#C24722',e:'🏠'},
-      financier:{l:'Placements financiers',c:'#C9A96E',e:'📈'},
-      societe:{l:'Sociétés / professionnel',c:'#1B2A4A',e:'🏢'},
-      non_cote:{l:'Investissement non coté',c:'#3F7A3F',e:'🪴'},
-      liquidites:{l:'Liquidités',c:'#6B655A',e:'💧'},
-      collection:{l:'Collections & passions',c:'#B8801F',e:'🎨'}
-    };
-    function eur(n){ return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0); }
-    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-    function readBiens(){
-      var biens=[];
-      try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
-        if(k && k.indexOf('ikcp_patrimoine_')===0){ var arr=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(arr)&&arr.length) biens=arr; } } }catch(_){}
-      return biens;
-    }
-    function company(){ try{ return localStorage.getItem('ikcp_pending_company')||''; }catch(_){ return ''; } }
-    function piste(byCat,total){
-      var immo=byCat.immobilier||0;
-      if(immo>1300000) return {t:'Position IFI à surveiller',d:'Votre immobilier déclaré ('+eur(immo)+') dépasse le seuil IFI de 1,3 M€.',q:'Mon immobilier dépasse le seuil IFI : quels leviers pour optimiser ma position ?'};
-      if(total>0 && ((byCat.liquidites||0)+(byCat.financier||0))>total*0.4) return {t:'Des capitaux peu optimisés ?',d:'Une part importante est en liquidités et placements — un arbitrage peut améliorer votre rendement net.',q:'Une grande partie de mon patrimoine est en liquidités et placements. Comment mieux l\'optimiser ?'};
-      if(total>0 && (byCat.societe||0)>total*0.5) return {t:'Patrimoine concentré sur la société',d:'Plus de la moitié de votre patrimoine est professionnel — diversifier et préparer la transmission devient clé.',q:'Mon patrimoine est très concentré sur ma société. Comment diversifier et préparer la transmission ?'};
-      return {t:'Faites parler vos chiffres',d:'Marcel analyse cette répartition et révèle vos leviers prioritaires.',q:'Analyse la répartition de mon patrimoine et donne-moi mes 3 leviers prioritaires, chiffrés.'};
-    }
-    function render(biens){
-      if(!biens || !biens.length){
-        host.innerHTML='<article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(201,169,110,.32)">'
-          +'<div class="card-head"><span class="card-cat" style="color:var(--accent)">Mon patrimoine</span><span class="pill neutral">à construire</span></div>'
-          +'<h3 style="font-family:\'Playfair Display\',serif;font-weight:500;font-size:19px;margin:2px 0 4px">Votre patrimoine, en un coup d\'œil</h3>'
-          +'<p style="font-size:13.5px;color:var(--mute);margin-bottom:12px">Renseignez vos premiers éléments — Marcel calcule votre répartition et révèle vos leviers. 1 minute.</p>'
-          +'<div style="display:flex;flex-wrap:wrap;gap:8px">'
-          +'<a class="btn btn-sm" href="/app/patrimoine-pro">➕ Ajouter mes biens</a>'
-          +'<a class="btn btn-ghost btn-sm" href="/app/avis">📸 Scanner mon avis</a>'
-          +'<a class="btn btn-ghost btn-sm" href="/app/marcel?q='+encodeURIComponent('Cartographie ma société à partir de mon SIREN puis donne-moi mes leviers prioritaires de dirigeant.')+'">🔍 Partir de mon SIREN</a>'
-          +'</div></article>';
-        return;
-      }
-      var total=biens.reduce(function(s,b){return s+(+b.value||0);},0);
-      var byCat={}; biens.forEach(function(b){ byCat[b.cat]=(byCat[b.cat]||0)+(+b.value||0); });
-      var rows=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];}).map(function(k){
-        var c=CATS[k]||{l:k,c:'#999',e:'•'}; var v=byCat[k]; var pct=total?Math.round(v/total*100):0;
-        return '<div style="margin:9px 0">'
-          +'<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span style="color:var(--ink)">'+c.e+' '+esc(c.l)+'</span><span style="color:var(--mute)"><b style="color:var(--ink)">'+eur(v)+'</b> · '+pct+'%</span></div>'
-          +'<div style="height:8px;background:var(--line);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+c.c+';border-radius:5px;transition:width .6s"></div></div></div>';
-      }).join('');
-      var p=piste(byCat,total); var co=company();
-      host.innerHTML='<article class="card">'
-        +'<div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill live">synchronisé</span></div>'
-        +'<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 0 2px"><div style="font-family:\'Playfair Display\',serif;font-size:34px;font-weight:600;color:var(--ink);line-height:1">'+eur(total)+'</div><div style="font-size:12.5px;color:var(--mute)">patrimoine net estimé'+(co?' · '+esc(co):'')+'</div></div>'
-        +'<div style="margin:12px 0 2px">'+rows+'</div>'
-        +'<div style="background:var(--accent-soft);border:1px solid rgba(201,169,110,.28);border-radius:12px;padding:12px 14px;margin-top:12px">'
-          +'<div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:2px">✦ '+esc(p.t)+'</div>'
-          +'<div style="font-size:13px;color:var(--ink);line-height:1.5">'+esc(p.d)+'</div>'
-          +'<a class="btn btn-sm" style="margin-top:10px" href="/app/marcel?q='+encodeURIComponent(p.q)+'">Demander à Marcel →</a></div>'
-        +'<a href="/app/patrimoine-pro" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--accent);font-weight:600;text-decoration:none">Voir mon cockpit complet →</a>'
-        +'</article>';
-    }
-    render(readBiens());
-    // Rafraîchit depuis le serveur (cross-device) si connecté — best-effort, ne casse jamais l'affichage local
-    try{ var t=localStorage.getItem('ikcp_token')||'';
-      if(t) fetch('https://ikcp-patrimoine.maxime-ead.workers.dev/state',{headers:{'Authorization':'Bearer '+t}})
-        .then(function(r){return r.ok?r.json():null;})
-        .then(function(d){ if(d && Array.isArray(d.biens) && d.biens.length) render(d.biens); }).catch(function(){});
-    }catch(_){}
-  })();
-  </script>
+  <!-- ════ Aller plus loin : 3 accès propres ════ -->
+  <div class="sect-label">Aller plus loin</div>
+  <a class="row" href="/app/bilan"><div class="ri">📄</div><div class="rt"><b>Audit patrimonial 360°</b><span>juridique · financier · fiscal · PDF</span></div><span class="chev">›</span></a>
+  <a class="row" href="/app/strategies"><div class="ri">🗺️</div><div class="rt"><b>Schémas de stratégie</b><span>OBO, Dutreil, holding, démembrement…</span></div><span class="pc">PREMIUM</span></a>
+  <a class="row" href="/app/simulateurs-pro"><div class="ri">🧮</div><div class="rt"><b>Mes simulateurs</b><span>carrière · rému/dividendes · retraite</span></div><span class="chev">›</span></a>
 
-  <!-- ── Pont site → app : reprise de l'audit public (société chargée via localStorage) ── -->
-  <div id="repriseAudit"></div>
-
-  <!-- ── Commencez ici : les 2 preuves en 10 s (WOW gratuits) ── -->
-  <section style="margin:14px 0 6px">
-    <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px">Commencez ici</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:11px">
-      <a class="card" href="/app/avis" style="padding:16px;text-decoration:none;display:block;border-color:rgba(201,169,110,.35);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)">
-        <div style="font-size:22px">📸</div>
-        <div style="font-weight:600;margin-top:4px">Scanner mon avis d'impôt</div>
-        <div style="font-size:12.5px;color:#6B5D52;margin-top:2px">Votre tranche (TMI) + vos pistes en 10 s. Gratuit.</div>
-      </a>
-      <a class="card" href="/app/marcel?q=Cartographie%20ma%20soci%C3%A9t%C3%A9%20%C3%A0%20partir%20de%20son%20SIREN%20puis%20donne-moi%20mes%20leviers%20prioritaires%20de%20dirigeant." style="padding:16px;text-decoration:none;display:none;border-color:rgba(201,169,110,.35);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)">
-        <div style="font-size:22px">🔍</div>
-        <div style="font-weight:600;margin-top:4px">Cartographier ma société</div>
-        <div style="font-size:12.5px;color:#6B5D52;margin-top:2px">SIREN → analyse + leviers prioritaires. Gratuit.</div>
-      </a>
-      <a class="card" href="/app/missions" style="padding:16px;text-decoration:none;display:block;border-color:rgba(201,169,110,.35);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)">
-        <div style="font-size:22px">🎯</div>
-        <div style="font-weight:600;margin-top:4px">Confier une mission à Marcel</div>
-        <div style="font-size:12.5px;color:#6B5D52;margin-top:2px">Transmission, trésorerie, cession… → dossier prêt à décider.</div>
-      </a>
-    </div>
-  </section>
-
-  <!-- ── Marcel veille — agent proactif (Niveau 2) : alertes autonomes ── -->
-  <div id="marcel-veille" style="margin:16px 0"></div>
+  <!-- ── Marcel veille — agent proactif (alertes autonomes) ── -->
+  <div id="marcel-veille" style="margin:18px 0 0"></div>
   <script src="/app/js/marcel-veille.js" defer></script>
 
-  <!-- ── Audit patrimonial 360° — livrable central de l'espace membre ── -->
-  <a href="/app/bilan" style="display:block;text-decoration:none;margin:16px 0 6px;background:linear-gradient(135deg,#1B2A4A,#0E1729);border-radius:16px;padding:18px 20px;box-shadow:0 14px 34px -18px rgba(27,42,74,.6)">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div style="font-size:30px">📄</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-family:'Playfair Display',serif;font-weight:600;font-size:19px;color:#fff">Votre audit patrimonial 360°</div>
-        <div style="font-size:13px;color:#C9B68F;margin-top:3px">Juridique · financier · fiscal — vos leviers en clair, exportables en PDF.</div>
-      </div>
-      <span style="background:#C9A96E;color:#20180c;font-weight:700;font-size:13px;padding:10px 16px;border-radius:10px;white-space:nowrap">Générer →</span>
-    </div>
-  </a>
-
-  <script>(function(){try{var s=localStorage.getItem('ikcp_pending_siren'),c=localStorage.getItem('ikcp_pending_company');if(!s)return;var el=document.getElementById('repriseAudit');if(!el)return;el.innerHTML='<article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(201,169,110,.32);margin:8px 0 16px"><div class="card-head"><span class="card-cat" style="color:var(--accent)">↩ Reprendre votre audit</span></div><h3 style="font-size:18px;margin:2px 0 6px">'+(c||'Votre société')+'</h3><p style="font-size:13.5px;color:var(--mute);margin-bottom:12px">Vous avez audité cette société sur le site. Marcel reprend ici, avec votre contexte.</p><a class="btn btn-sm" href="/app/marcel?q='+encodeURIComponent('Analyse la situation patrimoniale de mon entreprise '+(c||'')+' (SIREN '+s+') et mes leviers prioritaires de dirigeant.')+'">Continuer avec Marcel →</a></article>';}catch(_){}})();</script>
-
-  <!-- (barre de liens redondante retirée — épuration : la donnée mène, la nav est en bas + sections repliables) -->
-
-  <!-- ── Vos spécialistes IA souverains (repliable — épuration) ── -->
-  <details id="specialistes" style="margin:18px 0 6px">
-    <summary style="cursor:pointer;font-family:'Playfair Display',serif;font-weight:500;font-size:18px">🧠 Vos <em style="font-style:italic;color:var(--accent)">spécialistes IA</em> <span style="font-size:12px;color:var(--mute);font-weight:400">— déplier</span></summary>
-    <p style="color:var(--mute);font-size:13px;margin:8px 0 12px">Marcel mobilise le bon expert (fiscal, transmission, immobilier, 360°…). Posez votre sujet.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:11px">
-      <a class="card" href="/app/marcel?q=Comment%20optimiser%20la%20fiscalit%C3%A9%20de%20ma%20soci%C3%A9t%C3%A9%20(IS%2C%20arbitrage%20r%C3%A9mun%C3%A9ration%2Fdividendes)%20%3F" style="padding:15px;text-decoration:none;display:block">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">⚖️</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Codex</span></div>
-        <div style="font-size:12px;color:var(--mute);line-height:1.4">Fiscalité · IS, dividendes, arbitrages CGI</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:9px">Consulter →</div>
-      </a>
-      <a class="card" href="/app/marcel?q=Cartographiez%20mon%20patrimoine%20360%C2%B0%20et%20l%27int%C3%A9r%C3%AAt%20d%27une%20holding%20patrimoniale." style="padding:15px;text-decoration:none;display:block">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">🏛️</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Bâtisseur</span></div>
-        <div style="font-size:12px;color:var(--mute);line-height:1.4">Patrimoine 360° · holding, bilan dirigeant</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:9px">Consulter →</div>
-      </a>
-      <a class="card" href="/app/marcel?q=Comment%20pr%C3%A9parer%20la%20transmission%20de%20mon%20entreprise%20(pacte%20Dutreil%2C%20donation)%20%3F" style="padding:15px;text-decoration:none;display:block">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">🎁</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Hermès</span></div>
-        <div style="font-size:12px;color:var(--mute);line-height:1.4">Transmission · Dutreil, donation, succession</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:9px">Consulter →</div>
-      </a>
-      <a class="card" href="/app/marcel?q=Quelle%20est%20la%20meilleure%20d%C3%A9tention%20pour%20l%27immobilier%20de%20mon%20entreprise%20(direct%2C%20SCI%20IR%2FIS)%20%3F" style="padding:15px;text-decoration:none;display:block">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">🏠</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Architecte</span></div>
-        <div style="font-size:12px;color:var(--mute);line-height:1.4">Immobilier · murs d'exploitation, SCI, IFI</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:9px">Consulter →</div>
-      </a>
-      <a class="card" href="/app/marcel?q=Que%20faire%20de%20la%20tr%C3%A9sorerie%20exc%C3%A9dentaire%20de%20mon%20entreprise%20%3F" style="padding:15px;text-decoration:none;display:block">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">📈</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Stratège</span></div>
-        <div style="font-size:12px;color:var(--mute);line-height:1.4">Marchés · trésorerie, allocation</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:9px">Consulter →</div>
-      </a>
-      <a class="card" href="/app/marcel?q=Comment%20pr%C3%A9parer%20la%20cession%20de%20mon%20entreprise%20ou%20un%20OBO%20%3F" style="padding:15px;text-decoration:none;display:block">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px"><span style="font-size:20px">🪴</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Capital</span></div>
-        <div style="font-size:12px;color:var(--mute);line-height:1.4">Cession & non coté · OBO, private equity</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:9px">Consulter →</div>
-      </a>
-    </div>
-  </details>
-
-  <details style="margin:18px 0 6px">
-    <summary style="cursor:pointer;font-family:'Playfair Display',serif;font-weight:500;font-size:18px">🧰 Outils &amp; <em style="font-style:italic;color:var(--accent)">contenus</em> <span style="font-size:12px;color:var(--mute);font-weight:400">— déplier</span></summary>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:11px;margin-top:10px">
-      <a class="card" href="/app/simulateurs-pro" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">🧮 Simulateurs</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">12 calculs dirigeant · barèmes 2026</div></a>
-      <a class="card" href="/app/simulateur-sel" style="padding:15px;text-decoration:none;display:block;border-color:rgba(201,169,110,.35);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)"><div style="font-weight:600">⚖️ SEL : rému, dividendes ou holding ? <span style="font-size:10px;background:#3a6ea5;color:#fff;padding:1px 6px;border-radius:10px;font-weight:700">2025</span></div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Spécial profession libérale · l'arbitrage post-réforme BNC</div></a>
-      <a class="card" href="/app/diagnostic-retraite" style="padding:15px;text-decoration:none;display:block;border-color:rgba(201,169,110,.35);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)"><div style="font-weight:600">🛟 Mon trou de retraite</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">CARMF · CIPAV · CNBF — l'écart + ce que le PER comble</div></a>
-      <a class="card" href="/app/simulateur-carriere" style="padding:15px;text-decoration:none;display:block;border-color:rgba(201,169,110,.35);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)"><div style="font-weight:600">🎬 Carrière courte &amp; revenus en pic</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Créateurs · sportifs — transformer le pic en indépendance durable</div></a>
-      <a class="card" href="/app/projection" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">📈 Projection &amp; indépendance <span style="font-size:10px;background:#C9A96E;color:#20180c;padding:1px 6px;border-radius:10px;font-weight:700">Premium</span></div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Aperçu gratuit · trajectoire détaillée en Premium</div></a>
-      <a class="card" href="/app/decryptage" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">📰 À la une</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Le décryptage du mois</div></a>
-      <a class="card" href="/app/articles" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">📚 Guides</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">10 guides patrimoniaux</div></a>
-      <a class="card" href="/app/bilan" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">📄 Audit patrimonial 360°</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Juridique · financier · fiscal · export PDF</div></a>
-      <a class="card" href="/app/avis" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">📸 Photo avis d'impôt</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Lecture instantanée · TMI + pistes</div></a>
-      <a class="card" href="/app/produits" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">📒 Produits patrimoniaux</div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Tout le marché expliqué · dont la Tontine</div></a>
-      <a class="card" href="/app/strategies" style="padding:15px;text-decoration:none;display:block"><div style="font-weight:600">🗺️ Schémas de stratégie <span style="font-size:10px;background:#C9A96E;color:#20180c;padding:1px 6px;border-radius:10px;font-weight:700">Premium</span></div><div style="font-size:12.5px;color:#6B5D52;margin-top:3px">Apport-cession, Dutreil, démembrement…</div></a>
-    </div>
-  </details>
-
-  <!-- ✦ Observation proactive de Marcel (IA personnalisée, cache 1×/jour) -->
-  <article id="marcelInsight" class="card" style="display:none;background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.22);margin:8px 0 18px">
+  <!-- ✦ Observation proactive de Marcel (premium, cache journalier) -->
+  <article id="marcelInsight" class="card" style="display:none;background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.22);margin:14px 0 4px">
     <div class="card-head"><span class="card-cat" style="color:var(--accent)">✦ L'observation de Marcel</span><span class="pill" id="miPill">pour vous</span></div>
     <div id="miBody" style="font-size:14.5px;line-height:1.6;color:var(--ink)"></div>
   </article>
 
-  <!-- ── Marcel-Live champ sticky ── -->
-  <form class="marcel-live-bar" onsubmit="return askMarcel(event)">
-    <span class="label">Marcel</span>
-    <input id="qInput" type="text" placeholder="Posez votre question ou parlez 🎤" maxlength="280" autocomplete="off">
-    <button type="button" id="dashMic" onclick="dashToggleMic()" aria-label="Parler à Marcel" style="background:transparent;color:var(--mute);border:1px solid var(--line);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;transition:all 0.2s">🎤</button>
-    <button type="submit" aria-label="Envoyer">→</button>
-  </form>
-
-  <!-- ── Questions suggérées : valeur en 1 tap (onboarding « valeur d'abord ») ── -->
-  <div id="marcelStarters" style="display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 18px"></div>
-  <script>
-  (function(){
-    var el = document.getElementById('marcelStarters'); if(!el) return;
-    var Q = [
-      ['🛡️','Et si demain il m\'arrive quelque chose ?','Si demain il m\'arrive quelque chose, ma famille et mon patrimoine sont-ils protégés ?'],
-      ['📊','Payer moins d\'impôts sur ma société','Comment optimiser légalement la fiscalité de ma société : arbitrage IR/IS, dividendes ou rémunération ?'],
-      ['🎁','Transmettre à mes enfants','Combien puis-je transmettre à mes enfants sans droits de succession ?'],
-      ['💶','Ma trésorerie d\'entreprise','Que faire de la trésorerie excédentaire de mon entreprise ?']
-    ];
-    el.innerHTML = Q.map(function(q){
-      return '<a href="/app/marcel?q='+encodeURIComponent(q[2])+'" '
-        + 'style="display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;color:var(--ink);text-decoration:none;background:var(--bg);transition:.15s" '
-        + 'onmouseover="this.style.borderColor=\'var(--accent)\';this.style.color=\'var(--accent)\'" '
-        + 'onmouseout="this.style.borderColor=\'var(--line)\';this.style.color=\'var(--ink)\'">'
-        + q[0]+' '+q[1]+'</a>';
-    }).join('');
-  })();
-  </script>
-
-  <!-- ── Activation guidée (remplit le dashboard vide, % de progression) ── -->
-  <section id="activation" style="margin:4px 0 18px;display:none"></section>
-
-  <!-- ════ ESPACE 1 — Mon patrimoine & mes questions ════ -->
-  <h2 style="display:none;font-family:'Playfair Display',serif;font-weight:500;font-size:21px;margin:8px 0 3px">Mon patrimoine <em style="font-style:italic;color:var(--accent)">&amp; mes questions</em></h2>
-  <p style="display:none;color:var(--mute);font-size:13.5px;margin-bottom:16px">Votre situation, vos sociétés, votre veille — et Marcel pour décider.</p>
-
-  <!-- ── Diagnostic : masqué (épuration — redondant avec Score + Audit 360°) ── -->
-  <article class="card" style="display:none;background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25);margin-bottom:14px">
-    <div class="card-head"><span class="card-cat" style="color:var(--accent)">Diagnostic</span><span class="pill" id="diagAgent">Marcel</span></div>
-    <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:18px">Vos 3 priorités, <em style="font-style:italic;color:var(--accent)">personnalisées</em></h3>
-    <p style="font-size:13.5px;color:var(--mute);margin:4px 0 12px">À partir de votre profil et de votre société, votre conseiller patrimonial identifie vos leviers prioritaires — en direct.</p>
-    <button class="btn btn-sm" onclick="goDiagnostic()">Voir mon diagnostic →</button>
-  </article>
-
-  <!-- ── Score Patrimonial — point de départ de la découverte ── -->
-  <article class="card" id="w-score" style="margin-bottom:14px;display:none">
-    <div class="card-head"><span class="card-cat">Score Patrimonial</span><span class="pill neutral" id="scorePill">diagnostic 360°</span></div>
-    <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:18px">Où en est <em style="font-style:italic;color:var(--accent)">votre patrimoine</em> ?</h3>
-    <div id="score-body" class="loading" style="padding:8px 0">Chargement de votre score…</div>
-  </article>
-  <script>(function(){
-    var el=document.getElementById('score-body'), pill=document.getElementById('scorePill'); if(!el) return;
-    var s=null; try{ s=JSON.parse(localStorage.getItem('ikcp_score')||'null'); }catch(_){ }
-    if(s && typeof s.score==='number'){
-      var col = s.score>=75?'var(--ok,#2D7A4F)':s.score>=45?'var(--accent)':'var(--bad,#B23A2E)';
-      var verdict = s.score>=75?'Patrimoine bien tenu':s.score>=45?'De bonnes bases, des angles morts':'Patrimoine exposé';
-      if(pill){ pill.textContent='à jour'; pill.className='pill live'; }
-      el.className=''; el.style.padding='0';
-      el.innerHTML='<div style="display:flex;align-items:center;gap:16px"><div style="font-family:\'Playfair Display\',serif;font-size:42px;font-weight:600;color:'+col+';line-height:1">'+s.score+'<span style="font-size:15px;color:var(--mute)">/100</span></div><div style="flex:1"><div style="font-family:\'Playfair Display\',serif;font-size:16px;color:var(--ink)">'+verdict+'</div><div style="font-size:12px;color:var(--mute)">Vos 3 leviers prioritaires vous attendent dans le diagnostic.</div></div></div><a href="/app/score" class="btn btn-ghost btn-sm" style="margin-top:12px">Revoir / refaire mon score →</a>';
-    } else {
-      el.className=''; el.style.padding='0';
-      el.innerHTML='<p style="font-size:13.5px;color:var(--mute);margin:0 0 10px">Le point de départ de votre intelligence patrimoniale : évaluez vos 7 territoires en 2 minutes. Marcel s\'en sert pour cibler vos priorités.</p><a href="/app/score" class="btn btn-sm">Établir mon Score Patrimonial →</a>';
-    }
-  })();</script>
-
-  <!-- ── Rangée masquée (cartographie remontée en hero ; veille/patrimoine = doublons du haut) ── -->
-  <div class="grid-3" style="margin-bottom:14px;display:none">
-    <article class="card" id="w-veille" style="display:none">
-      <div class="card-head"><span class="card-cat">Veille du jour</span><span class="pill warn" id="alertsCount">…</span></div>
-      <h3>Alertes Marcel</h3>
-      <div id="veille-body" class="loading">Marcel agrège votre veille…</div>
-      <a href="/app/veille.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
-    </article>
-
-    <article class="card" id="w-patrimoine" style="display:none">
-      <div class="card-head"><span class="card-cat">Mon patrimoine</span><span class="pill neutral" id="patCount">à compléter</span></div>
-      <h3 id="patNet">Vue consolidée</h3>
-      <div id="pat-body" class="empty" style="padding:16px 0;text-align:left">
-        <p>Votre cockpit : patrimoine net, allocation par univers, indicateurs sur-mesure.</p>
-        <a href="/app/patrimoine-pro" class="btn btn-ghost btn-sm" style="margin-top:10px">Ouvrir mon cockpit →</a>
-      </div>
-    </article>
-    <script>(function(){
-      try{
-        var d=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null'); if(!d) return;
-        var keys=['immobilier','financier','tresorerie','societe','retraite','passion','autres'];
-        var assets=0,n=0; keys.forEach(function(k){var v=Number(d[k])||0; if(v>0){assets+=v;n++;}});
-        if(assets<=0) return;
-        var net=assets-(Number(d.passif)||0);
-        var eur=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(net));
-        var pill=document.getElementById('patCount'); if(pill){pill.textContent='synchronisé';pill.className='pill live';}
-        var h=document.getElementById('patNet'); if(h) h.innerHTML=eur+' <span style="font-size:14px;color:var(--accent)">€ net</span>';
-        var b=document.getElementById('pat-body'); if(b){b.className='';b.style.padding='6px 0 0';
-          b.innerHTML='<p style="font-size:12.5px;color:var(--mute)">'+n+' univers renseigné'+(n>1?'s':'')+' · suivi sur tous vos appareils.</p>'+
-          '<a href="/app/patrimoine-pro" class="btn btn-sm" style="margin-top:10px">Ouvrir mon cockpit →</a>';}
-      }catch(_){}
-    })();</script>
-  </div>
-
-  <!-- ── Widgets row 2 : masqués (épuration — accessibles via Profil / Carnet / Documents) ── -->
-  <div class="grid-3" style="margin-bottom:14px;display:none">
-    <article class="card">
-      <div class="card-head"><span class="card-cat">Vos veilles</span><span class="pill neutral" id="watchesCount">…</span></div>
-      <h3>Actifs surveillés</h3>
-      <div id="watches-body" class="loading">Chargement des veilles…</div>
-      <a href="/app/profil.html#watches" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">+ Nouvelle veille</a>
-    </article>
-
-    <article class="card">
-      <div class="card-head"><span class="card-cat">Carnet privé</span><span class="pill neutral" id="contactsCount">…</span></div>
-      <h3>Vos contacts</h3>
-      <div id="contacts-body" class="loading">Chargement carnet…</div>
-      <a href="/app/carnet.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
-    </article>
-
-    <article class="card">
-      <div class="card-head"><span class="card-cat">Documents</span><span class="pill neutral" id="docsCount">…</span></div>
-      <h3>Mes documents</h3>
-      <div id="docs-body" class="loading">Chargement documents…</div>
-      <a href="/app/documents.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Tout voir →</a>
-    </article>
-  </div>
-
-  <!-- ── Widgets row 3 : masqués (épuration — Transmission via missions, Conversations via Marcel) ── -->
-  <div class="grid-2" style="display:none">
-    <article class="card">
-      <div class="card-head"><span class="card-cat">Conversations</span></div>
-      <h3>Vos derniers échanges</h3>
-      <div id="convs-body" class="loading">Chargement…</div>
-      <a href="/app/marcel.html" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">Nouvelle conversation →</a>
-    </article>
-
-    <article class="card">
-      <div class="card-head"><span class="card-cat">Transmission</span><span class="pill neutral">à préparer</span></div>
-      <h3>État préparation</h3>
-      <div id="transmission-body" class="empty" style="padding:20px;text-align:left">
-        <p>Cartographie héritiers, Pacte Dutreil, donation, mandat de protection future…</p>
-        <a href="/app/marcel?topic=transmission" class="btn btn-ghost btn-sm" style="margin-top:10px">Activer Hermès →</a>
-      </div>
-    </article>
-  </div>
-
-  <!-- (Espace « passions & services » retiré — FOCUS DIRIGEANT : l'app se concentre sur le patrimoine du dirigeant) -->
-  <p style="color:var(--mute,#8a8178);font-size:11px;font-style:italic;text-align:center;line-height:1.5;max-width:640px;margin:26px auto 6px;padding:0 16px">Informations fournies à titre informatif — elles ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568.</p>
+  <p style="color:var(--mute,#8a8178);font-size:11px;font-style:italic;text-align:center;line-height:1.5;max-width:640px;margin:24px auto 6px;padding:0 16px">Informations fournies à titre informatif — elles ne constituent pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier. IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568.</p>
 </main>
 
-<!-- Bottom tabs -->
+<!-- Bottom tabs : Accueil · Patrimoine · [M maintenir pour parler] · Outils · Stratégies -->
 <nav class="app-tabs">
   <a href="/app/dashboard.html" class="active">
-    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
     Accueil
-  </a>
-  <a href="/app/marcel.html">
-    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 8.4 8.4 0 0 1-3-.5L3 21l1.5-6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
-    Marcel
-  </a>
-  <a href="/app/simulateurs-pro">
-    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-    Outils
   </a>
   <a href="/app/patrimoine-pro">
     <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 2 5-6"/></svg>
     Patrimoine
   </a>
-  <a href="/app/profil.html">
-    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    Profil
+  <div class="tab-m">
+    <div class="mbtn" id="navM" title="Maintenez pour parler · tapez pour ouvrir Marcel">M</div>
+    <div class="mlbl">Parler</div>
+  </div>
+  <a href="/app/simulateurs-pro">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+    Outils
+  </a>
+  <a href="/app/strategies">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l11 0M9 12l11 0M9 18l11 0"/><path d="M4 6l1 0M4 12l1 0M4 18l1 0"/></svg>
+    Stratégies
   </a>
 </nav>
-
-<!-- ══════════════════════════════════════════════
-     WIDGET FEEDBACK BÊTA (fondateurs uniquement)
-     ══════════════════════════════════════════════ -->
-<style>
-#fb-app-trigger{
-  position:fixed;right:0;top:50%;transform:translateY(-50%) rotate(-90deg);
-  transform-origin:right center;
-  background:var(--accent);color:#fff;
-  padding:8px 16px;
-  font-size:10.5px;letter-spacing:0.18em;font-weight:600;text-transform:uppercase;
-  border-radius:8px 8px 0 0;cursor:pointer;z-index:900;
-  box-shadow:-3px 0 18px rgba(194,71,34,0.28);
-  border:none;font-family:'Outfit',sans-serif;
-  transition:background 0.2s;
-}
-#fb-app-trigger:hover{background:var(--ink)}
-#fb-app-overlay{display:none;position:fixed;inset:0;background:rgba(26,24,20,0.5);z-index:910;backdrop-filter:blur(4px)}
-#fb-app-overlay.open{display:block}
-#fb-app-panel{
-  position:fixed;right:-380px;top:0;bottom:0;width:360px;max-width:92vw;
-  background:var(--bg);border-left:1px solid var(--line);z-index:920;
-  display:flex;flex-direction:column;overflow-y:auto;
-  transition:right 0.32s cubic-bezier(0.16,1,0.3,1);
-  padding:28px 22px 40px;
-}
-#fb-app-panel.open{right:0}
-#fb-app-panel .fb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-#fb-app-panel .fb-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;letter-spacing:-0.01em}
-#fb-app-panel .fb-title em{font-style:italic;color:var(--accent)}
-#fb-app-panel .fb-close{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-#fb-app-panel .fb-close:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-#fb-app-panel .fb-label{font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:10px;margin-top:18px}
-#fb-app-panel .fb-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
-#fb-app-panel .fb-chip{padding:6px 12px;border:1.5px solid var(--line);border-radius:999px;font-size:12px;cursor:pointer;transition:all 0.18s;background:transparent;font-family:'Outfit',sans-serif}
-#fb-app-panel .fb-chip:hover{border-color:var(--accent);color:var(--accent)}
-#fb-app-panel .fb-chip.on{background:rgba(194,71,34,0.08);border-color:var(--accent);color:var(--accent)}
-#fb-app-panel textarea{width:100%;min-height:90px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;line-height:1.55;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--ink);background:#fff}
-#fb-app-panel textarea:focus{border-color:var(--accent)}
-.fb-prio-row{display:flex;gap:8px;margin-bottom:4px}
-.fb-prio{flex:1;padding:8px 6px;text-align:center;border:1.5px solid var(--line);border-radius:8px;font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.18s;background:transparent}
-.fb-prio:hover{border-color:var(--accent)}
-.fb-prio.on{background:rgba(194,71,34,0.08);border-color:var(--accent);color:var(--accent);font-weight:600}
-#fb-app-panel input[type=email]{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;color:var(--ink);background:#fff}
-#fb-app-panel input[type=email]:focus{border-color:var(--accent)}
-#fb-app-panel .fb-submit{width:100%;margin-top:18px;padding:14px;background:var(--ink);color:var(--bg);border:none;border-radius:10px;font-size:13px;font-weight:700;letter-spacing:0.04em;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s}
-#fb-app-panel .fb-submit:hover{background:var(--accent);transform:translateY(-1px)}
-#fb-app-panel .fb-submit:disabled{opacity:0.55;cursor:wait;transform:none}
-#fb-app-success{display:none;text-align:center;padding:30px 10px}
-#fb-app-success .fb-ok-icon{font-size:46px;display:block;margin-bottom:14px}
-#fb-app-success h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;margin-bottom:8px}
-#fb-app-success p{font-size:13.5px;color:var(--mute);line-height:1.6}
-</style>
-
-<button id="fb-app-trigger" onclick="openAppFeedback()">★ Feedback bêta</button>
-<div id="fb-app-overlay" onclick="closeAppFeedback()"></div>
-<div id="fb-app-panel">
-  <div class="fb-head">
-    <div class="fb-title">Votre <em>retour</em></div>
-    <button class="fb-close" onclick="closeAppFeedback()">✕</button>
-  </div>
-
-  <div id="fb-app-form">
-    <div class="fb-label">Catégorie (plusieurs ok)</div>
-    <div class="fb-chips">
-      <button class="fb-chip" data-v="bug" onclick="toggleChip(this)">🐛 Anomalie</button>
-      <button class="fb-chip" data-v="ux" onclick="toggleChip(this)">👁 Ergonomie</button>
-      <button class="fb-chip" data-v="manquant" onclick="toggleChip(this)">➕ Fonctionnalité</button>
-      <button class="fb-chip" data-v="deal" onclick="toggleChip(this)">🔑 Deal Flow</button>
-      <button class="fb-chip" data-v="marcel" onclick="toggleChip(this)">🎼 Marcel</button>
-      <button class="fb-chip" data-v="idee" onclick="toggleChip(this)">💡 Idée</button>
-      <button class="fb-chip" data-v="bravo" onclick="toggleChip(this)">⭐ Bravo</button>
-    </div>
-
-    <div class="fb-label">Votre retour</div>
-    <textarea id="fb-app-text" placeholder="Ce qui fonctionne, ce qui manque, une idée…" maxlength="600"></textarea>
-
-    <div class="fb-label">Priorité pour vous</div>
-    <div class="fb-prio-row">
-      <button class="fb-prio" data-p="basse" onclick="setPrio(this)">🟢 Basse</button>
-      <button class="fb-prio" data-p="moyenne" onclick="setPrio(this)">🟡 Moyenne</button>
-      <button class="fb-prio" data-p="haute" onclick="setPrio(this)">🔴 Haute</button>
-    </div>
-
-    <div class="fb-label" style="margin-top:16px">Email (optionnel — pour suivi)</div>
-    <input type="email" id="fb-app-email" placeholder="votre@email.fr">
-
-    <button class="fb-submit" onclick="submitAppFeedback()">Envoyer mon retour →</button>
-    <div id="fb-app-msg" style="margin-top:10px;font-size:13px;color:var(--mute)"></div>
-  </div>
-
-  <div id="fb-app-success">
-    <span class="fb-ok-icon">✦</span>
-    <h3>Merci pour votre retour</h3>
-    <p>Maxime l'a reçu et y répondra si vous avez laissé votre email. Votre feedback façonne directement la prochaine version.</p>
-  </div>
-</div>
-
-<script>
-(function(){
-  let selectedChips = [];
-  let selectedPrio = '';
-
-  window.openAppFeedback = function(){
-    document.getElementById('fb-app-panel').classList.add('open');
-    document.getElementById('fb-app-overlay').classList.add('open');
-  };
-  window.closeAppFeedback = function(){
-    document.getElementById('fb-app-panel').classList.remove('open');
-    document.getElementById('fb-app-overlay').classList.remove('open');
-  };
-  window.toggleChip = function(el){
-    el.classList.toggle('on');
-    const v = el.dataset.v;
-    selectedChips = selectedChips.includes(v)
-      ? selectedChips.filter(x => x !== v)
-      : [...selectedChips, v];
-  };
-  window.setPrio = function(el){
-    document.querySelectorAll('.fb-prio').forEach(b => b.classList.remove('on'));
-    el.classList.add('on');
-    selectedPrio = el.dataset.p;
-  };
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeAppFeedback();
-  });
-
-  window.submitAppFeedback = async function(){
-    const besoin = document.getElementById('fb-app-text').value.trim();
-    if (!besoin) {
-      document.getElementById('fb-app-msg').textContent = 'Merci de décrire votre retour.';
-      return;
-    }
-    const email = document.getElementById('fb-app-email').value.trim();
-    const btn = document.querySelector('#fb-app-panel .fb-submit');
-    const msgEl = document.getElementById('fb-app-msg');
-    btn.disabled = true; btn.textContent = 'Envoi…';
-    msgEl.textContent = '';
-
-    try {
-      const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          besoin,
-          categories: selectedChips,
-          priorite: selectedPrio || 'moyenne',
-          email: email || null,
-          page: window.location.pathname,
-          source: 'app-dashboard',
-        }),
-      });
-      if (!r.ok) throw new Error();
-
-      document.getElementById('fb-app-form').style.display = 'none';
-      document.getElementById('fb-app-success').style.display = 'block';
-    } catch(err) {
-      // Fallback : email direct si le worker n'est pas encore déployé
-      const subject = encodeURIComponent('[IKCP Bêta] Feedback ' + (selectedChips.join(', ') || 'général'));
-      const body = encodeURIComponent(besoin + (email ? '\n\n— ' + email : ''));
-      window.open('mailto:maxime@ikcp.fr?subject=' + subject + '&body=' + body);
-      btn.disabled = false;
-      btn.textContent = 'Envoyer mon retour →';
-      msgEl.textContent = 'Ouverture de votre messagerie email en secours.';
-    }
-  };
-})();
-</script>
 
 <div class="toast" id="toast"></div>
 
@@ -600,243 +178,70 @@
 import { Marcel } from '/app/js/api.js';
 import { Voice } from '/app/js/voice.js';
 
-// Service Worker (offline)
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
-// Voix dashboard — saisie vocale → soumet automatique
-window.dashToggleMic = function(){
-  const btn = document.getElementById('dashMic');
-  const input = document.getElementById('qInput');
-  if(!Voice.isSupported().stt){
-    alert('Reconnaissance vocale non supportée sur ce navigateur.');
-    return;
-  }
-  if(Voice.isListening()){
-    Voice.stopListening();
-    btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
-    btn.textContent = '🎤';
-    return;
-  }
-  btn.style.background='var(--accent)'; btn.style.color='var(--bg)'; btn.style.borderColor='var(--accent)';
-  btn.textContent = '⏹';
-  Voice.startListening({
-    onInterim: t => { input.value = t; },
-    onFinal: t => {
-      input.value = t;
-      btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.style.borderColor='var(--line)';
-      btn.textContent = '🎤';
-      sessionStorage.setItem('marcel_q', t);
-      location.href = '/app/marcel?ask=1';
-    },
-    onError: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
-    onEnd: () => { btn.style.background='transparent'; btn.style.color='var(--mute)'; btn.textContent='🎤'; },
-  });
-}
+// ─── M = rester appuyé pour parler (souverain · Whisper Cloudflare) ───
+// Maintien → enregistre ; relâche → transcrit + envoie à Marcel. Tap rapide → ouvre Marcel.
+(function(){
+  var M=document.getElementById('navM'); if(!M) return;
+  var supported=false; try{ supported=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder); }catch(_){}
+  function open(){ location.href='/app/marcel'; }
+  if(!supported){ M.addEventListener('click',open); return; }
+  var active=false;
+  function go(t){ M.classList.remove('rec'); active=false; if(t&&String(t).trim()){ try{sessionStorage.setItem('marcel_q',String(t).trim());}catch(_){ } location.href='/app/marcel?ask=1'; } else { open(); } }
+  function start(e){ if(active) return; e.preventDefault(); active=true; M.classList.add('rec');
+    Voice.startRecordingPremium({ onFinal:function(t){ go(t); }, onError:function(){ go(''); }, maxSeconds:30 }); }
+  function stop(){ if(!active) return; try{ Voice.stopRecordingPremium(); }catch(_){ go(''); } }
+  M.addEventListener('pointerdown',start);
+  M.addEventListener('pointerup',stop);
+  M.addEventListener('pointerleave',stop);
+  M.addEventListener('pointercancel',stop);
+})();
 
-// Vérif session + charge données
-let me = null;
-try {
-  me = await Marcel.Auth.me();
-} catch(_) {
-  location.href = '/app/index.html';
-}
+// ─── Marcel-Live (champ + intentions) ───
+window.askMarcel = function(e){
+  e.preventDefault();
+  var q=(document.getElementById('qInput').value||'').trim();
+  if(!q) return false;
+  try{ sessionStorage.setItem('marcel_q', q); }catch(_){ }
+  location.href='/app/marcel?ask=1';
+  return false;
+};
 
-// Onboarding requis si pas encore complété
+window.logout = async function(){
+  if(!confirm('Se déconnecter de Marcel ?')) return;
+  try { await Marcel.Auth.logout(); } catch(_) {
+    document.cookie.split(';').forEach(function(c){ var k=c.trim().split('=')[0];
+      document.cookie=k+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.ikcp.eu';
+      document.cookie=k+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'; });
+    location.href='/app/index.html';
+  }
+};
+
+// ─── Session + profil ───
+let me=null;
+try { me = await Marcel.Auth.me(); } catch(_) { location.href='/app/index.html'; }
+
 if(me){
-  let profile = null;
-  try { profile = me.profile_json ? JSON.parse(me.profile_json) : null; } catch(_){}
+  let profile=null; try{ profile = me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){}
   if(!profile?.onboarding_completed && !localStorage.getItem('marcel_onboarding_skipped')){
-    const fromWelcome = new URLSearchParams(location.search).get('welcome');
-    if(!fromWelcome){
-      location.href = '/app/onboarding.html';
-    }
+    if(!new URLSearchParams(location.search).get('welcome')) location.href='/app/onboarding.html';
   }
-  // Surcharge prenom si disponible
   if(profile?.prenom) me.prenom = profile.prenom;
-  // (renderUnivers retiré — FOCUS DIRIGEANT : plus d'univers lifestyle/conciergerie)
-  // Activation : guide l'utilisateur (recalculée avec les conversations plus bas)
-  renderActivation(profile, 0);
-}
-
-if(me){
-  document.getElementById('userPrenom').textContent = me.prenom || me.display_name || me.email?.split('@')[0] || 'Maxime';
+  document.getElementById('userPrenom').textContent = me.prenom || me.display_name || (me.email?me.email.split('@')[0]:'') || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
   let tierLbl = { free:'Découverte', premium:'Premium', fo:'Premium' }[me.tier] || 'Découverte';
   if(me.trial && me.trial.active){ tierLbl = 'Premium · essai ' + me.trial.days_left + ' j'; }
-  const tierEl = document.getElementById('userTier');
-  tierEl.textContent = tierLbl;
-  if(me.tier && me.tier !== 'free') tierEl.classList.add('premium');
-  const hour = new Date().getHours();
-  const salut = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bonsoir' : 'Bonsoir');
-  if(me.trial && me.trial.active){
-    document.getElementById('userGreeting').innerHTML = `${salut}. Vous profitez de votre <b>essai Premium</b> — Marcel illimité, tous les simulateurs et vos outils sont à vous pendant ${me.trial.days_left} jours.`;
-  } else {
-    document.getElementById('userGreeting').textContent = `${salut}. Voici votre tableau de bord — par où souhaitez-vous commencer ?`;
-  }
-  // Résumé « Mon patrimoine » (module patrimoine, stockage local)
-  try {
-    const _pb = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + (me.email||'invite')) || '[]');
-    if(_pb.length){
-      const _t = _pb.reduce((s,b)=>s+(+b.value||0),0);
-      const _net = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(_t);
-      const pn = document.getElementById('patNet'); if(pn) pn.textContent = _net;
-      const pc = document.getElementById('patCount'); if(pc) pc.textContent = _pb.length + ' bien' + (_pb.length>1?'s':'');
-      const pbody = document.getElementById('pat-body');
-      if(pbody) pbody.innerHTML = '<p style="font-size:13px;color:var(--mute)">Patrimoine net estimé — répartition &amp; leviers dans le module.</p><a href="/app/patrimoine.html" class="btn btn-ghost btn-sm" style="margin-top:10px">Voir le détail →</a>';
-    }
-  } catch(_){}
+  var tierEl=document.getElementById('userTier'); tierEl.textContent=tierLbl;
+  if(me.tier && me.tier!=='free') tierEl.classList.add('premium');
 }
-
-// ─── Vos univers : relie les passions cochées (onboarding) aux agents Marcel ───
-function renderUnivers(profile){
-  const sec = document.getElementById('univers-section');
-  const grid = document.getElementById('univers-grid');
-  if(!sec || !grid) return;
-  const MAP = {
-    patrimoine:   {em:'🏛️', nom:'Patrimoine 360°',        agent:'Bâtisseur', blurb:'Vue consolidée de tout votre patrimoine.',           q:'Fais-moi un bilan patrimonial 360° de ma situation.'},
-    immobilier:   {em:'🏠', nom:'Immobilier',             agent:'Architecte',blurb:'Prix réels (DVF), arbitrages, IFI, SCI.',            page:'/app/immobilier', q:'Analyse ma stratégie immobilière et ma position IFI.'},
-    fiscalite:    {em:'📜', nom:'Fiscalité',              agent:'Codex',     blurb:'Optimisation de l’impôt, arbitrages, dispositifs.',   q:'Comment optimiser ma fiscalité cette année ?'},
-    transmission: {em:'🌳', nom:'Transmission',           agent:'Hermès',    blurb:'Succession, donation, Pacte Dutreil.',                q:'Comment préparer ma transmission sereinement ?'},
-    marches:      {em:'📊', nom:'Marchés & non coté',     agent:'Stratège',  blurb:'Allocation, placements, investissement non coté.',    q:'Comment diversifier mon allocation patrimoniale ?'},
-    voyage:       {em:'✈️', nom:'Voyage & conciergerie',  agent:'Concierge', blurb:'Voyages, tables, expériences sur-mesure.',            q:'Organisez-moi une expérience de voyage d’exception.'},
-    art:          {em:'🎨', nom:'Art & collections',      agent:'Curateur',  blurb:'Valeur, assurance, acquisition.',                     q:'Aidez-moi à évaluer et assurer ma collection d’art.'},
-    vehicules:    {em:'🏎️', nom:'Véhicules',              agent:'Curateur',  blurb:'Voitures, yachts : cote & assurance.',                q:'Quelle est la cote d’un véhicule de collection ?'},
-    horlogerie:   {em:'⌚', nom:'Horlogerie & joaillerie', agent:'Curateur',  blurb:'Montres, pièces : valeur & suivi.',                   q:'Évaluez une montre ou une pièce de joaillerie.'},
-    vins:         {em:'🍷', nom:'Vins & gastronomie',     agent:'Curateur',  blurb:'Cave, vins d’investissement.',                        q:'Conseillez-moi pour ma cave et les vins d’investissement.'},
-    bienetre:     {em:'🌸', nom:'Bien-être & longévité',  agent:'Olympe',    blurb:'Médecine privée, longévité, art de vivre.',           q:'Conseils en santé privée et longévité.'},
-    philanthropie:{em:'🌱', nom:'Philanthropie',          agent:'Mécène',    blurb:'Mécénat, fondation, impact.',                         q:'Comment structurer mon mécénat ou une fondation ?'},
-  };
-  let keys = (profile && Array.isArray(profile.spheres) && profile.spheres.length) ? profile.spheres.slice() : Object.keys(MAP);
-  keys = keys.filter(k => MAP[k]);
-  if(!keys.length) return;
-  const cnt = document.getElementById('universCount');
-  if(cnt) cnt.textContent = keys.length + (keys.length > 1 ? ' univers' : ' univers');
-  grid.innerHTML = keys.map(k => {
-    const u = MAP[k];
-    const href = u.page || ('/app/marcel?q=' + encodeURIComponent(u.q));
-    return `<a class="card" href="${href}" style="text-decoration:none;display:flex;flex-direction:column;transition:all .18s">
-      <div style="font-size:26px;line-height:1">${u.em}</div>
-      <h3 style="margin:8px 0 2px;font-size:16px">${u.nom}</h3>
-      <p style="font-size:12.5px;color:var(--mute);line-height:1.45;margin:0;flex:1">${u.blurb}</p>
-      <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:10px">${u.page ? '✦ Prix réels DVF →' : '✦ '+u.agent+' · Demander à Marcel →'}</div>
-    </a>`;
-  }).join('');
-  sec.style.display = 'block';
-}
-
-// ─── Diagnostic instantané personnalisé ───
-window.goDiagnostic = function(){
-  let p = {}; try { p = me && me.profile_json ? JSON.parse(me.profile_json) : {}; } catch(_){}
-  const bits = [];
-  if(p.profession) bits.push(p.profession);
-  if(p.situation) bits.push(p.situation);
-  if(p.siren_data && p.siren_data.nom) bits.push('dirigeant de ' + p.siren_data.nom);
-  if(Array.isArray(p.spheres) && p.spheres.length) bits.push('centres d\'intérêt : ' + p.spheres.join(', '));
-  const ctx = bits.length ? `Voici mon profil — ${bits.join(' ; ')}. ` : '';
-  const q = `${ctx}Donnez-moi mes 3 priorités patrimoniales du moment, classées, avec pour chacune l'enjeu en une phrase et la première action à envisager. Soyez concret et personnalisé.`;
-  try { sessionStorage.setItem('marcel_q', q); } catch(_){}
-  location.href = '/app/marcel?q=' + encodeURIComponent(q);
-};
-
-// ─── Activation : guide l'utilisateur quand le dashboard est vide ───
-function renderActivation(profile, convsCount){
-  const sec = document.getElementById('activation'); if(!sec) return;
-  return; // Épuration : checklist « 4 étapes » désactivée (le hero cartographie guide à la place).
-  const p = profile || {};
-  let patCount = 0;
-  try { patCount = JSON.parse(localStorage.getItem('ikcp_patrimoine_' + ((me&&me.email)||'invite')) || '[]').length; } catch(_){}
-  const steps = [
-    { ok: !!(p.onboarding_completed || p.prenom), label:'Compléter votre profil',       href:'/app/onboarding.html',             icon:'👤' },
-    { ok: !!(p.siren_data && p.siren_data.siren), label:'Cartographier votre société',   href:'/app/marcel?topic=batisseur', icon:'🏢' },
-    { ok: patCount > 0,                            label:'Ajouter un premier bien',       href:'/app/patrimoine.html',             icon:'🏠' },
-    { ok: (convsCount||0) > 0,                     label:'Poser une question à Marcel',   href:'/app/marcel.html',                 icon:'💬' },
-  ];
-  const done = steps.filter(s=>s.ok).length;
-  const pct = Math.round(done/steps.length*100);
-  if(done >= steps.length){ sec.style.display='none'; return; }
-  sec.style.display='block';
-  sec.innerHTML = `<article class="card" style="background:linear-gradient(150deg,var(--accent-soft),transparent);border-color:rgba(194,71,34,.25)">
-    <div class="card-head" style="margin-bottom:6px"><span class="card-cat" style="color:var(--accent)">Activez votre intelligence patrimoniale</span><span class="pill premium">${pct}%</span></div>
-    <h3 style="font-family:'Playfair Display',serif;font-weight:500;font-size:18px;margin-bottom:2px">Encore ${steps.length-done} étape${(steps.length-done)>1?'s':''} pour tout débloquer</h3>
-    <div style="height:7px;background:var(--bg-3);border-radius:99px;overflow:hidden;margin:12px 0 16px"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:99px;transition:width .8s cubic-bezier(.2,.7,.2,1)"></div></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px">
-      ${steps.map(s=>`<a href="${s.ok?'javascript:void 0':s.href}" style="display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:11px;text-decoration:none;color:var(--ink);${s.ok?'opacity:.5':'background:var(--cream)'}">
-        <span style="font-size:18px">${s.ok?'✅':s.icon}</span>
-        <span style="font-size:13.5px;font-weight:500;${s.ok?'text-decoration:line-through':''}">${s.label}</span>
-        ${s.ok?'':'<span style="margin-left:auto;color:var(--accent);font-weight:700">→</span>'}
-      </a>`).join('')}
-    </div>
-  </article>`;
-}
-
-// ─── Chargement parallèle des widgets ───
-Promise.allSettled([
-  Marcel.Me.alerts(true).catch(()=>[]),
-  Marcel.Me.contacts().catch(()=>[]),
-  Marcel.Me.documents().catch(()=>[]),
-  Marcel.Me.watches().catch(()=>[]),
-  Marcel.Me.conversations().catch(()=>[]),
-]).then(([alerts, contacts, docs, watches, convs]) => {
-  // Activation : recalcule la progression avec le vrai nombre de conversations
-  try { let _p=null; try{ _p = me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){}; renderActivation(_p, (convs.value||[]).length); } catch(_){}
-  // Échappement anti-XSS : toute donnée utilisateur/externe injectée en innerHTML passe par esc().
-  const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  // Veille
-  const a = alerts.value || [];
-  document.getElementById('alertsCount').textContent = `${a.length} nouv.`;
-  const vbody = document.getElementById('veille-body');
-  if(a.length === 0){
-    vbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Aucune alerte ce matin. Marcel veille.</p>';
-  } else {
-    vbody.innerHTML = a.slice(0,3).map(x => `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div style="font-size:13px;color:var(--ink);font-weight:500;line-height:1.3">${esc(x.title)}</div><div style="font-size:11px;color:var(--mute);margin-top:3px">${new Date(x.created_at).toLocaleDateString('fr-FR')}</div></div>`).join('');
-  }
-
-  // Contacts
-  const c = contacts.value || [];
-  document.getElementById('contactsCount').textContent = `${c.length}/${me?.tier === 'free' ? '5' : '∞'}`;
-  const cbody = document.getElementById('contacts-body');
-  if(c.length === 0){
-    cbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Ajoutez vos contacts (notaire, avocat, concierge).</p>';
-  } else {
-    cbody.innerHTML = c.slice(0,4).map(x => `<div style="font-size:13px;color:var(--ink);padding:6px 0">⭐ ${esc(x.nom)} <span style="color:var(--mute);font-size:11px"> · ${esc(x.category)}</span></div>`).join('');
-  }
-
-  // Documents
-  const d = docs.value || [];
-  document.getElementById('docsCount').textContent = `${d.length} doc.`;
-  const dbody = document.getElementById('docs-body');
-  if(d.length === 0){
-    dbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">DER bêta et Lettre de Mission à signer.</p>';
-  } else {
-    dbody.innerHTML = d.slice(0,3).map(x => `<div style="font-size:13px;padding:5px 0">📄 ${esc(x.title)} <span class="pill live" style="margin-left:6px;font-size:8px;padding:2px 6px">signé</span></div>`).join('');
-  }
-
-  // Watches
-  const w = watches.value || [];
-  document.getElementById('watchesCount').textContent = `${w.length} suivi${w.length > 1 ? 's' : ''}`;
-  const wbody = document.getElementById('watches-body');
-  if(w.length === 0){
-    wbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Surveillez vos actifs (montres, voitures, vins).</p>';
-  } else {
-    wbody.innerHTML = w.slice(0,3).map(x => `<div style="font-size:13px;padding:6px 0">👁 ${esc(x.query)} <span style="color:var(--mute);font-size:11px"> · cible ${Marcel.Utils.formatEUR(x.target_price)}</span></div>`).join('');
-  }
-
-  // Conversations
-  const cv = convs.value || [];
-  const cvbody = document.getElementById('convs-body');
-  if(cv.length === 0){
-    cvbody.innerHTML = '<p style="font-size:13px;color:var(--mute);font-style:italic">Pas encore de conversation. Tapez votre première question à Marcel.</p>';
-  } else {
-    cvbody.innerHTML = cv.slice(0,3).map(x => `<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="font-size:13.5px;color:var(--ink);font-weight:500">${esc(x.title || 'Conversation')}</div><div style="font-size:11px;color:var(--mute);margin-top:2px">${esc(x.agent_principal || 'Marcel')} · ${new Date(x.last_message_at).toLocaleDateString('fr-FR')}</div></div>`).join('');
-  }
-});
 
 // ─── Cartographie société : identité (Pappers) + FINANCES réelles (gouv) + saisie inline ───
 (function(){
   function persist(siren, d){ try{ localStorage.setItem('ikcp_societe', JSON.stringify({ siren:siren, nom:d.nom, forme:d.forme_juridique, ca:(d.chiffre_affaires!=null?d.chiffre_affaires:null), resultat:(d.resultat!=null?d.resultat:null), annee:d.finances_annee||null, at:Date.now() })); }catch(_){ } }
   function render(d){
     document.getElementById('cartoNom').textContent = d.nom || 'Société';
-    var fin = '';
+    var fin='';
     if(d.chiffre_affaires!=null || d.resultat!=null){
       var tile=function(lbl,val){ return '<div><div style="font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:#8B6F3F;font-weight:600">'+lbl+'</div><div style="font-family:&quot;Playfair Display&quot;,serif;font-size:16px;font-weight:600;color:#8B6F3F;line-height:1.1;margin-top:2px">'+val+'</div></div>'; };
       fin = '<div style="display:flex;gap:18px;margin-top:10px;padding:10px 13px;background:linear-gradient(120deg,rgba(184,149,110,.14),rgba(184,149,110,.03));border:1px solid rgba(184,149,110,.3);border-radius:11px">'
@@ -852,10 +257,10 @@ Promise.allSettled([
     var batCta=document.getElementById('batisseur-cta'); if(batCta) batCta.style.display='inline-flex';
   }
   function input(){
-    document.getElementById('cartoNom').textContent='À configurer';
+    document.getElementById('cartoNom').textContent='Reliez votre société';
     document.getElementById('carto-body').innerHTML =
       '<div style="font-size:13px">'
-      + '<p style="color:var(--mute);margin:0 0 8px">Votre SIREN — identité + vrais chiffres (CA, résultat) en direct.</p>'
+      + '<p style="color:var(--mute);margin:0 0 8px">Votre SIREN — identité + vrais chiffres (CA, résultat) en direct, en 5 s.</p>'
       + '<div style="display:flex;gap:6px">'
       + '<input id="cartoSiren" inputmode="numeric" maxlength="11" placeholder="9 chiffres" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font-family:Outfit,sans-serif;font-size:13px;color:var(--ink)">'
       + '<button class="btn btn-sm" onclick="var v=(document.getElementById(&quot;cartoSiren&quot;).value||&quot;&quot;).replace(/\\D/g,&quot;&quot;).slice(0,9); if(v.length===9){ try{localStorage.setItem(&quot;ikcp_pending_company&quot;,v);}catch(e){} window.doCarto(v);} else { document.getElementById(&quot;cartoSiren&quot;).style.borderColor=&quot;#C0414C&quot;; }">Cartographier</button>'
@@ -870,33 +275,11 @@ Promise.allSettled([
   siren=String(siren).replace(/\D/g,'');
   if(siren.length===9) window.doCarto(siren); else input();
 })();
-
-// ─── Marcel-Live ───
-window.askMarcel = function(e){
-  e.preventDefault();
-  const q = document.getElementById('qInput').value.trim();
-  if(!q) return false;
-  sessionStorage.setItem('marcel_q', q);
-  location.href = '/app/marcel?ask=1';
-  return false;
-}
-
-window.logout = async function(){
-  if(!confirm('Se déconnecter de Marcel ?')) return;
-  try { await Marcel.Auth.logout(); } catch(_) {
-    // Fallback si ikcp-client pas encore live : nettoyage local
-    document.cookie.split(';').forEach(c => {
-      const k = c.trim().split('=')[0];
-      document.cookie = k + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.ikcp.eu';
-      document.cookie = k + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
-    });
-    location.href = '/app/index.html';
-  }
-}
 </script>
 
 <script src="/protect.js?v=1" defer></script>
 <script src="/app/js/pwa-install.js" defer></script>
+
 <script type="module">
 // ✦ L'observation de Marcel — IA proactive personnalisée (cache journalier, gating premium/FO)
 import { Marcel } from '/app/js/api.js';
@@ -905,26 +288,24 @@ import { Marcel } from '/app/js/api.js';
   var tier=(localStorage.getItem('ikcp_tier')||'free');
   var profile={}; try{ profile=JSON.parse(localStorage.getItem('marcel_profile')||'{}')||{}; }catch(_){}
   var score=null; try{ score=JSON.parse(localStorage.getItem('ikcp_score')||'null'); }catch(_){}
-  var sd=profile.siren_data||null;
-  var hasCtx=!!(profile.profession||profile.situation||(profile.spheres&&profile.spheres.length)||sd||(score&&typeof score.score==='number'));
+  var soc=null; try{ soc=JSON.parse(localStorage.getItem('ikcp_societe')||'null'); }catch(_){}
+  var hasCtx=!!(profile.profession||profile.situation||soc||(score&&typeof score.score==='number'));
   function render(text, teaser){
     card.style.display='block';
     if(teaser) document.getElementById('miPill').textContent='Premium';
     body.innerHTML = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n+/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
-      + (teaser ? '<a href="/app/beta-invite.html" class="btn btn-sm" style="margin-top:12px;display:inline-block">💎 Rejoindre la bêta →</a>'
+      + (teaser ? '<a href="/app/profil.html" class="btn btn-sm" style="margin-top:12px;display:inline-block">💎 Passer en Premium →</a>'
                 : '<a href="/app/marcel?q='+encodeURIComponent('Approfondis ton observation sur ma situation patrimoniale.')+'" class="btn btn-ghost btn-sm" style="margin-top:12px;display:inline-block">Approfondir avec Marcel →</a>');
   }
-  if(!hasCtx) return; // pas assez de contexte → on n'affiche rien
+  if(!hasCtx) return;
   var today=new Date().toISOString().slice(0,10);
   try{ var c=JSON.parse(localStorage.getItem('ikcp_insight')||'null'); if(c&&c.date===today&&c.text){ render(c.text); return; } }catch(_){}
   if(tier!=='premium' && tier!=='fo'){ render('Passez en Premium : Marcel vous livrera chaque jour une observation personnalisée sur votre situation — angles morts, leviers prioritaires.', true); return; }
   card.style.display='block'; body.innerHTML='<span style="color:var(--mute);font-style:italic">Marcel analyse votre situation…</span>';
   var ctx=[];
-  if(profile.prenom) ctx.push('Prénom: '+profile.prenom);
   if(profile.profession) ctx.push('Profession: '+profile.profession);
   if(profile.situation) ctx.push('Situation familiale: '+profile.situation);
-  if(sd&&sd.nom) ctx.push('Société: '+sd.nom+' ('+(sd.forme_juridique||'')+', capital '+(sd.capital||'?')+'€)');
-  if(profile.spheres&&profile.spheres.length) ctx.push('Univers: '+profile.spheres.join(', '));
+  if(soc&&soc.nom) ctx.push('Société: '+soc.nom+(soc.ca!=null?(', CA '+soc.ca):''));
   if(score&&typeof score.score==='number') ctx.push('Score patrimonial: '+score.score+'/100');
   var prompt='[OBSERVATION PROACTIVE — 3 phrases maximum] À partir de ce profil, livre UNE observation patrimoniale précise et personnalisée (un angle mort ou un levier prioritaire que la personne ignore probablement), puis termine par UNE question ouverte. Dense, sans recommandation produit, sans préambule. Profil — '+ctx.join(' · ');
   try{
