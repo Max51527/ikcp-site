@@ -37,19 +37,20 @@
 /app/guide                      /app/dashboard              302
 /app/guide.html                 /app/dashboard              302
 
-# ── Resserrage V1 : 6 consoles en double → une seule (gestion) ──
-/app/admin                      /app/gestion                302
-/app/admin.html                 /app/gestion                302
-/app/console                    /app/gestion                302
-/app/console.html               /app/gestion                302
-/app/console-live               /app/gestion                302
-/app/console-live.html          /app/gestion                302
-/app/controle                   /app/gestion                302
-/app/controle.html              /app/gestion                302
-/app/pilot                      /app/gestion                302
-/app/pilot.html                 /app/gestion                302
-/app/pilotage                   /app/gestion                302
-/app/pilotage.html              /app/gestion                302
+# ── Resserrage V1 : consoles en double → une seule (console de pilotage) ──
+# console.html = LA tour de contrôle (membres, tiers, stats, feedback, candidatures, partenaires)
+/app/gestion                    /app/console                302
+/app/gestion.html               /app/console                302
+/app/admin                      /app/console                302
+/app/admin.html                 /app/console                302
+/app/console-live               /app/console                302
+/app/console-live.html          /app/console                302
+/app/controle                   /app/console                302
+/app/controle.html              /app/console                302
+/app/pilot                      /app/console                302
+/app/pilot.html                 /app/console                302
+/app/pilotage                   /app/console                302
+/app/pilotage.html              /app/console                302
 
 # ── Resserrage V1 : pages de dev / legacy → accueil ──
 /app/test                       /app/dashboard              302
