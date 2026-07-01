@@ -145,7 +145,16 @@ function sanitizeOut(s) {
     .replace(/\b(anthropic|openai|cohere|hugging\s*face|deepseek)\b/gi, 'un éditeur souverain')
     .replace(/\b(chatgpt|gpt[-\s]?[0-9o.]*|claude|llama|gemini|perplexity|copilot|mixtral)\b/gi, 'un modèle souverain')
     .replace(/\b(pappers|powens|biapi)\b/gi, 'nos sources officielles')
-    .replace(/\b(cloudflare|vectorize|workers?\.dev)\b/gi, 'notre infrastructure souveraine');
+    .replace(/\b(cloudflare|vectorize|workers?\.dev)\b/gi, 'notre infrastructure souveraine')
+    // MIF II — neutralise (déterministe) les formulations qui tranchent à la place du client (info, jamais reco)
+    .replace(/\bje (?:vous )?recommande\b/gi, 'une option est')
+    .replace(/\bje (?:vous )?conseille\b/gi, 'une piste est')
+    .replace(/\bvous devriez\b/gi, 'vous pourriez')
+    .replace(/\bprivil[ée]gi(?:ez|er)\b/gi, 'vous pouvez envisager')
+    .replace(/\boptez pour\b/gi, 'vous pouvez envisager')
+    .replace(/\ble meilleur choix\b/gi, 'une option à considérer')
+    .replace(/\bla meilleure option\b/gi, 'une option à considérer')
+    .replace(/\bid[ée]al(?:e|es)?\b/gi, 'à considérer');
 }
 
 // ── SECOURS SOUVERAIN — Mistral (FR, tier free) ──
