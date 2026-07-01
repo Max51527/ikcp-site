@@ -89,7 +89,16 @@
       <button type="submit" class="snd" aria-label="Envoyer">→</button>
     </form>
   </section>
-  <div class="mhint">Ou <b>maintenez le bouton&nbsp;M</b> en bas pour parler à Marcel.</div>
+  <div class="mhint">Ou <b>cliquez le bouton&nbsp;M</b> en bas pour parler à Marcel.</div>
+
+  <!-- ✦ Signature : révéler mes pistes de réflexion (juridiques · financières · fiscales) — MIF II strict -->
+  <section class="card" style="margin:14px 0 4px;border-color:rgba(201,169,110,.45);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)">
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">✦ Vos pistes de réflexion</span></div>
+    <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:18px;margin:2px 0 4px">Révéler mes pistes patrimoniales</h3>
+    <p style="font-size:13px;color:var(--mute);margin-bottom:12px">Juridiques · financières · fiscales — à partir de votre situation, en 10 s. <b>Information, jamais une recommandation.</b></p>
+    <button class="btn btn-sm" id="pistes-btn" onclick="revealPistes()">✦ Révéler mes pistes →</button>
+    <div id="pistes-out" style="margin-top:12px;font-size:14px;line-height:1.6;color:var(--ink)"></div>
+  </section>
 
   <!-- ════ Par où commencer : 4 intentions ════ -->
   <div class="sect-label">Par où commencer</div>
@@ -204,6 +213,29 @@ window.askMarcel = function(e){
   try{ sessionStorage.setItem('marcel_q', q); }catch(_){ }
   location.href='/app/marcel?ask=1';
   return false;
+};
+
+// ✦ SIGNATURE — Révéler mes pistes de réflexion patrimoniales (juridique/financier/fiscal · MIF II)
+function mdLite(t){
+  return String(t).replace(/[&<]/g,function(c){return c==='&'?'&amp;':'&lt;';})
+    .replace(/^#{1,3}\s?(.+)$/gm,'<div style="font-family:\'Playfair Display\',serif;font-weight:600;color:var(--navy);margin:13px 0 3px;font-size:15px">$1</div>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^\s*[-•]\s+(.+)$/gm,'• $1')
+    .replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');
+}
+window.revealPistes = async function(){
+  var out=document.getElementById('pistes-out'), btn=document.getElementById('pistes-btn'); if(!out) return;
+  var soc=null; try{ soc=JSON.parse(localStorage.getItem('ikcp_societe')||'null'); }catch(_){}
+  var ctx = (soc&&soc.nom) ? ('Ma société (source RNE) : '+soc.nom+(soc.forme?', '+soc.forme:'')+(soc.ca!=null?', CA '+soc.ca+' €':'')+(soc.resultat!=null?', résultat '+soc.resultat+' €':'')+'. ') : '';
+  if(btn){ btn.disabled=true; btn.textContent='Marcel analyse…'; }
+  out.innerHTML='<span style="color:var(--mute);font-style:italic">Marcel révèle vos pistes…</span>';
+  var prompt=ctx+"Révèle-moi 3 PISTES DE RÉFLEXION patrimoniales, une par domaine : 1) JURIDIQUE, 2) FINANCIÈRE, 3) FISCALE. Pour chacune : un titre court en ##, l'angle en 2 lignes, un ordre de grandeur chiffré (barèmes 2026) et le point de vigilance, puis UNE question ouverte. Reste STRICTEMENT informatif (art. L.541-1 CoMoFi) — aucune recommandation, aucun « il faut ».";
+  try{
+    var r=await Marcel.chat(prompt, []);
+    var t=(r&&(r.reply||r.message))||'';
+    out.innerHTML = t ? mdLite(t) : '<span style="color:var(--mute)">Réessayez dans un instant.</span>';
+  }catch(e){ out.innerHTML='<span style="color:var(--mute)">Service momentané indisponible — réessayez.</span>'; }
+  if(btn){ btn.disabled=false; btn.textContent='✦ Régénérer mes pistes →'; }
 };
 
 window.logout = async function(){
