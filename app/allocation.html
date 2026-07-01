@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marcel · Guide d'allocation d'actifs</title>
+<meta name="description" content="Comment répartir son patrimoine entre classes d'actifs selon son horizon, son risque et ses objectifs. Profils illustratifs — pour comprendre, pas pour décider à votre place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.2);--red:#C0414C;--green:#3B7D5E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 0 14px}
+.brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.brand .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.brand .ia{font-size:10px;font-weight:700;background:var(--gold);color:#20180c;padding:2px 6px;border-radius:5px}
+.back{font-size:13px;color:var(--mute);text-decoration:none}
+.lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(27px,6vw,40px);color:var(--navy);line-height:1.08;margin:8px 0 8px}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lead{color:var(--mute);font-size:15.5px;max-width:680px;margin-bottom:8px}
+section{margin-top:30px}
+h2{font-family:'Playfair Display',serif;font-weight:600;font-size:23px;color:var(--navy);display:flex;align-items:center;gap:9px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+h2 .e{font-size:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px;margin-top:14px}
+.p{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+.p h3{font-size:15.5px;color:var(--navy);font-weight:600}
+.p .d{font-size:13.5px;color:var(--ink);margin-top:5px}
+.p .meta{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.5}
+.p .meta b{color:var(--gold-d)}
+.facteurs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px;margin-top:14px}
+.fac{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:13px 15px}
+.fac .t{font-weight:600;color:var(--navy);font-size:14px}
+.fac .d{font-size:12.5px;color:var(--mute);margin-top:4px}
+.profils{display:flex;flex-direction:column;gap:16px;margin-top:16px}
+.prof{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.prof-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:9px;flex-wrap:wrap;gap:6px}
+.prof-h h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy)}
+.prof-h span{font-size:12px;color:var(--mute)}
+.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;font-size:0}
+.bar div{height:100%}
+.seg-secu{background:#8B6F3F}.seg-oblig{background:#C9A96E}.seg-act{background:#1B2A4A}.seg-immo{background:#3B7D5E}.seg-noncote{background:#C0414C}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}
+.legend span{font-size:11px;color:var(--mute);display:flex;align-items:center;gap:5px}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.dirig{background:linear-gradient(150deg,var(--cream2),transparent);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:14px}
+.dirig h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--navy);margin-bottom:6px}
+.cta{display:flex;gap:11px;flex-wrap:wrap;margin:30px 0 10px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;padding:13px 24px;font-size:15px;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--navy)}
+.disc{font-size:11.5px;color:var(--mute);line-height:1.6;margin:24px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/app/dashboard.html"><span class="nm">Marcel</span><span class="ia">IA</span></a>
+    <a class="back" href="/app/dashboard.html">← Tableau de bord</a>
+  </header>
+
+  <div class="lbl">Guide · pédagogie souveraine</div>
+  <h1>Guide d'<em>allocation d'actifs</em></h1>
+  <p class="lead">Comment répartir un patrimoine entre les grandes classes d'actifs — les principes, pas une recommandation. <b>Quatre profils illustratifs</b> pour comprendre la logique ; Marcel construit ensuite la vôtre, à partir de votre situation réelle.</p>
+
+  <!-- FACTEURS -->
+  <section id="facteurs">
+    <h2><span class="e">🧭</span> Ce qui détermine une allocation</h2>
+    <div class="facteurs">
+      <div class="fac"><div class="t">Horizon de placement</div><div class="d">Plus l'échéance est lointaine, plus le patrimoine peut absorber de la volatilité en visant un rendement plus élevé.</div></div>
+      <div class="fac"><div class="t">Tolérance au risque</div><div class="d">La capacité — financière et psychologique — à supporter une baisse temporaire sans devoir vendre au mauvais moment.</div></div>
+      <div class="fac"><div class="t">Besoin de liquidité</div><div class="d">Une part doit rester mobilisable rapidement, sans décote, pour les imprévus ou un projet proche.</div></div>
+      <div class="fac"><div class="t">Objectifs poursuivis</div><div class="d">Retraite, transmission, trésorerie d'entreprise, achat immobilier : chaque objectif appelle un dosage différent.</div></div>
+    </div>
+  </section>
+
+  <!-- CLASSES D'ACTIFS -->
+  <section id="classes">
+    <h2><span class="e">🧱</span> Les grandes classes d'actifs</h2>
+    <div class="grid">
+      <div class="p"><h3>Sécurisé (fonds €, monétaire)</h3><div class="d">Capital protégé ou quasi, liquidité immédiate, rendement modeste.</div><div class="meta"><b>Rôle :</b> épargne de précaution, socle de stabilité.</div></div>
+      <div class="p"><h3>Obligataire</h3><div class="d">Prêter à un État ou une entreprise contre un coupon. Volatilité modérée.</div><div class="meta"><b>Rôle :</b> amortisseur entre sécurité et performance.</div></div>
+      <div class="p"><h3>Actions / ETF</h3><div class="d">Part du capital d'entreprises, cotées ou via des fonds indiciels. Le moteur de performance long terme.</div><div class="meta"><b>Rôle :</b> croissance, avec de la volatilité à court terme.</div></div>
+      <div class="p"><h3>Immobilier</h3><div class="d">Direct, SCPI, ou via société (SCI). Rendement régulier, valeur refuge, effet de levier crédit.</div><div class="meta"><b>Rôle :</b> revenus + diversification, liquidité plus lente.</div></div>
+      <div class="p"><h3>Non coté & diversification</h3><div class="d">Private equity, forêts, art, collections. Décorrélé des marchés cotés, souvent illiquide.</div><div class="meta"><b>Rôle :</b> performance potentielle + diversification, sur longue durée.</div></div>
+    </div>
+    <p style="font-size:12.5px;color:var(--mute);margin-top:10px">Le détail de chaque produit (assurance-vie, PER, SCPI, private equity…) : <a href="/app/produits" style="color:var(--gold-d);font-weight:600">catalogue complet →</a></p>
+  </section>
+
+  <!-- PROFILS ILLUSTRATIFS -->
+  <section id="profils">
+    <h2><span class="e">📊</span> Quatre profils illustratifs</h2>
+    <p style="font-size:13px;color:var(--mute);margin:8px 0 4px">Des exemples génériques pour comprendre la logique — <b>pas une recommandation pour votre situation</b>.</p>
+    <div class="profils">
+      <div class="prof">
+        <div class="prof-h"><h3>Prudent</h3><span>priorité : préserver le capital</span></div>
+        <div class="bar"><div class="seg-secu" style="width:55%"></div><div class="seg-oblig" style="width:20%"></div><div class="seg-act" style="width:15%"></div><div class="seg-immo" style="width:10%"></div></div>
+      </div>
+      <div class="prof">
+        <div class="prof-h"><h3>Équilibré</h3><span>priorité : croissance mesurée</span></div>
+        <div class="bar"><div class="seg-secu" style="width:30%"></div><div class="seg-oblig" style="width:20%"></div><div class="seg-act" style="width:30%"></div><div class="seg-immo" style="width:15%"></div><div class="seg-noncote" style="width:5%"></div></div>
+      </div>
+      <div class="prof">
+        <div class="prof-h"><h3>Dynamique</h3><span>priorité : performance, horizon long</span></div>
+        <div class="bar"><div class="seg-secu" style="width:15%"></div><div class="seg-oblig" style="width:15%"></div><div class="seg-act" style="width:45%"></div><div class="seg-immo" style="width:15%"></div><div class="seg-noncote" style="width:10%"></div></div>
+      </div>
+      <div class="prof">
+        <div class="prof-h"><h3>Offensif</h3><span>priorité : performance maximale</span></div>
+        <div class="bar"><div class="seg-secu" style="width:5%"></div><div class="seg-oblig" style="width:10%"></div><div class="seg-act" style="width:55%"></div><div class="seg-immo" style="width:15%"></div><div class="seg-noncote" style="width:15%"></div></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#8B6F3F"></i>Sécurisé</span>
+      <span><i style="background:#C9A96E"></i>Obligataire</span>
+      <span><i style="background:#1B2A4A"></i>Actions / ETF</span>
+      <span><i style="background:#3B7D5E"></i>Immobilier</span>
+      <span><i style="background:#C0414C"></i>Non coté</span>
+    </div>
+  </section>
+
+  <!-- SPÉCIFICITÉ DIRIGEANT -->
+  <section id="dirigeant">
+    <h2><span class="e">🏢</span> Le cas particulier du dirigeant</h2>
+    <div class="dirig">
+      <h3>Votre société est déjà un actif — souvent le plus concentré</h3>
+      <p style="font-size:13.5px;color:var(--ink)">Pour un dirigeant, l'entreprise représente fréquemment l'essentiel du patrimoine : un actif unique, illiquide, non diversifié. La logique d'allocation doit donc intégrer cette concentration — souvent en rééquilibrant le reste du patrimoine vers plus de sécurité et de diversification, et en pilotant la trésorerie d'entreprise séparément (via une holding) pour ne pas l'exposer inutilement.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <a class="btn" href="/app/marcel?q=Compte%20tenu%20de%20ma%20situation%2C%20quels%20facteurs%20devrais-je%20prendre%20en%20compte%20pour%20penser%20mon%20allocation%20d%27actifs%20%3F">Construire ma réflexion avec Marcel →</a>
+    <a class="btn ghost" href="/app/produits">📒 Voir tous les produits →</a>
+    <a class="btn ghost" href="/app/strategies">🗺️ Schémas de stratégie (Premium) →</a>
+  </div>
+
+  <div class="disc">
+    Ce guide présente des <b>profils illustratifs génériques</b>, à but pédagogique. Il ne constitue ni un conseil en investissement, ni une recommandation personnalisée au sens de l'art. <b>L.541-1 du Code monétaire et financier</b> — ces répartitions ne prennent pas en compte votre situation réelle (patrimoine, fiscalité, objectifs, aversion au risque). Chaque classe d'actif comporte des risques, dont la perte en capital. Un conseil personnalisé suppose une étude et une lettre de mission. IKCP — ORIAS 23001568.
+  </div>
+</div>
+<script src="/protect.js?v=1" defer></script>
+<script src="/app/js/marcel-float.js" defer></script>
+</body>
+</html>
