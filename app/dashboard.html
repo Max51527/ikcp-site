@@ -180,22 +180,20 @@ import { Voice } from '/app/js/voice.js';
 
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app/sw.js').catch(()=>{});
 
-// ─── M = rester appuyé pour parler (souverain · Whisper Cloudflare) ───
-// Maintien → enregistre ; relâche → transcrit + envoie à Marcel. Tap rapide → ouvre Marcel.
+// ─── M = bouton vocal : on CLIQUE pour parler, on reclique (ou silence) pour envoyer ───
+// Sinon, on tape sa requête dans le champ Marcel ci-dessus. (Souverain · Whisper Cloudflare.)
 (function(){
-  var M=document.getElementById('navM'); if(!M) return;
+  var M=document.getElementById('navM'); var lbl=document.querySelector('.tab-m .mlbl'); if(!M) return;
   var supported=false; try{ supported=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder); }catch(_){}
-  function open(){ location.href='/app/marcel'; }
-  if(!supported){ M.addEventListener('click',open); return; }
-  var active=false;
-  function go(t){ M.classList.remove('rec'); active=false; if(t&&String(t).trim()){ try{sessionStorage.setItem('marcel_q',String(t).trim());}catch(_){ } location.href='/app/marcel?ask=1'; } else { open(); } }
-  function start(e){ if(active) return; e.preventDefault(); active=true; M.classList.add('rec');
-    Voice.startRecordingPremium({ onFinal:function(t){ go(t); }, onError:function(){ go(''); }, maxSeconds:30 }); }
-  function stop(){ if(!active) return; try{ Voice.stopRecordingPremium(); }catch(_){ go(''); } }
-  M.addEventListener('pointerdown',start);
-  M.addEventListener('pointerup',stop);
-  M.addEventListener('pointerleave',stop);
-  M.addEventListener('pointercancel',stop);
+  if(!supported){ M.addEventListener('click',function(){ location.href='/app/marcel'; }); return; }
+  var rec=false;
+  function reset(){ rec=false; M.classList.remove('rec'); if(lbl) lbl.textContent='Parler'; }
+  function send(t){ reset(); if(t&&String(t).trim()){ try{sessionStorage.setItem('marcel_q',String(t).trim());}catch(_){ } location.href='/app/marcel?ask=1'; } }
+  M.addEventListener('click',function(){
+    if(rec){ try{ Voice.stopRecordingPremium(); }catch(_){ reset(); } return; }
+    rec=true; M.classList.add('rec'); if(lbl) lbl.textContent="J'écoute…";
+    Voice.startRecordingPremium({ onFinal:function(t){ send(t); }, onError:function(){ reset(); }, maxSeconds:30 });
+  });
 })();
 
 // ─── Marcel-Live (champ + intentions) ───
@@ -317,7 +315,6 @@ import { Marcel } from '/app/js/api.js';
   }catch(_){ card.style.display='none'; }
 })();
 </script>
-<script src="/app/js/marcel-float.js" defer></script>
 <script src="/app/js/sync.js" defer></script>
 </body>
 </html>
