@@ -34,17 +34,36 @@ h2 .e{font-size:22px}
 .fac{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:13px 15px}
 .fac .t{font-weight:600;color:var(--navy);font-size:14px}
 .fac .d{font-size:12.5px;color:var(--mute);margin-top:4px}
-.profils{display:flex;flex-direction:column;gap:16px;margin-top:16px}
-.prof{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-.prof-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:9px;flex-wrap:wrap;gap:6px}
-.prof-h h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy)}
-.prof-h span{font-size:12px;color:var(--mute)}
-.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;font-size:0}
-.bar div{height:100%}
 .seg-secu{background:#8B6F3F}.seg-oblig{background:#C9A96E}.seg-act{background:#1B2A4A}.seg-immo{background:#3B7D5E}.seg-noncote{background:#C0414C}
 .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px}
 .legend span{font-size:11px;color:var(--mute);display:flex;align-items:center;gap:5px}
 .legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+/* ── Simulateur dynamique ── */
+.simu{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:16px;box-shadow:0 12px 32px rgba(27,42,74,.06)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.chip{font-size:12px;font-weight:600;color:var(--navy);background:var(--cream2);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer;font-family:inherit;transition:.15s}
+.chip:hover{border-color:var(--gold)}
+.chip.on{background:linear-gradient(135deg,var(--gold-b),var(--gold));border-color:var(--gold);color:#20180c}
+.sliders{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:6px}
+@media(max-width:520px){.sliders{grid-template-columns:1fr}}
+.sld label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute);margin-bottom:6px}
+.sld label b{color:var(--navy);font-family:'Playfair Display',serif;font-size:15px}
+.sld input[type=range]{width:100%;accent-color:var(--gold-d);height:5px}
+.simu-grid{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center;margin-top:18px}
+@media(max-width:640px){.simu-grid{grid-template-columns:1fr}}
+.donut-wrap{position:relative;width:200px;height:200px;margin:0 auto}
+.donut-wrap svg{width:100%;height:100%}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.donut-center .rl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.donut-center .rv{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:var(--navy)}
+.donut-legend{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.donut-legend .row{display:flex;align-items:center;gap:9px;font-size:13px}
+.donut-legend .row i{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+.donut-legend .row .nm{flex:1;color:var(--ink)}
+.donut-legend .row .pc{font-family:'Playfair Display',serif;font-weight:600;color:var(--navy);min-width:38px;text-align:right}
+.proj-cap{font-size:12px;color:var(--mute);margin:4px 0 8px}
+.proj-cap b{color:var(--navy)}
+.proj-hyp{font-size:11px;color:var(--mute);background:var(--cream2);border-radius:9px;padding:9px 12px;margin-top:10px;line-height:1.55}
 .dirig{background:linear-gradient(150deg,var(--cream2),transparent);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:14px}
 .dirig h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--navy);margin-bottom:6px}
 .cta{display:flex;gap:11px;flex-wrap:wrap;margin:30px 0 10px}
@@ -79,43 +98,38 @@ h2 .e{font-size:22px}
   <section id="classes">
     <h2><span class="e">🧱</span> Les grandes classes d'actifs</h2>
     <div class="grid">
-      <div class="p"><h3>Sécurisé (fonds €, monétaire)</h3><div class="d">Capital protégé ou quasi, liquidité immédiate, rendement modeste.</div><div class="meta"><b>Rôle :</b> épargne de précaution, socle de stabilité.</div></div>
-      <div class="p"><h3>Obligataire</h3><div class="d">Prêter à un État ou une entreprise contre un coupon. Volatilité modérée.</div><div class="meta"><b>Rôle :</b> amortisseur entre sécurité et performance.</div></div>
-      <div class="p"><h3>Actions / ETF</h3><div class="d">Part du capital d'entreprises, cotées ou via des fonds indiciels. Le moteur de performance long terme.</div><div class="meta"><b>Rôle :</b> croissance, avec de la volatilité à court terme.</div></div>
-      <div class="p"><h3>Immobilier</h3><div class="d">Direct, SCPI, ou via société (SCI). Rendement régulier, valeur refuge, effet de levier crédit.</div><div class="meta"><b>Rôle :</b> revenus + diversification, liquidité plus lente.</div></div>
-      <div class="p"><h3>Non coté & diversification</h3><div class="d">Private equity, forêts, art, collections. Décorrélé des marchés cotés, souvent illiquide.</div><div class="meta"><b>Rôle :</b> performance potentielle + diversification, sur longue durée.</div></div>
+      <div class="p"><h3>🛡️ Sécurisé (fonds €, monétaire)</h3><div class="d">Capital protégé ou quasi, liquidité immédiate, rendement modeste.</div><div class="meta"><b>Rôle :</b> épargne de précaution, socle de stabilité.</div></div>
+      <div class="p"><h3>📜 Obligataire</h3><div class="d">Prêter à un État ou une entreprise contre un coupon. Volatilité modérée.</div><div class="meta"><b>Rôle :</b> amortisseur entre sécurité et performance.</div></div>
+      <div class="p"><h3>📈 Actions / ETF</h3><div class="d">Part du capital d'entreprises, cotées ou via des fonds indiciels. Le moteur de performance long terme.</div><div class="meta"><b>Rôle :</b> croissance, avec de la volatilité à court terme.</div></div>
+      <div class="p"><h3>🏠 Immobilier</h3><div class="d">Direct, SCPI, ou via société (SCI). Rendement régulier, valeur refuge, effet de levier crédit.</div><div class="meta"><b>Rôle :</b> revenus + diversification, liquidité plus lente.</div></div>
+      <div class="p"><h3>💎 Non coté & diversification</h3><div class="d">Private equity, forêts, art, collections. Décorrélé des marchés cotés, souvent illiquide.</div><div class="meta"><b>Rôle :</b> performance potentielle + diversification, sur longue durée.</div></div>
     </div>
     <p style="font-size:12.5px;color:var(--mute);margin-top:10px">Le détail de chaque produit (assurance-vie, PER, SCPI, private equity…) : <a href="/app/produits" style="color:var(--gold-d);font-weight:600">catalogue complet →</a></p>
   </section>
 
-  <!-- PROFILS ILLUSTRATIFS -->
-  <section id="profils">
-    <h2><span class="e">📊</span> Quatre profils illustratifs</h2>
-    <p style="font-size:13px;color:var(--mute);margin:8px 0 4px">Des exemples génériques pour comprendre la logique — <b>pas une recommandation pour votre situation</b>.</p>
-    <div class="profils">
-      <div class="prof">
-        <div class="prof-h"><h3>Prudent</h3><span>priorité : préserver le capital</span></div>
-        <div class="bar"><div class="seg-secu" style="width:55%"></div><div class="seg-oblig" style="width:20%"></div><div class="seg-act" style="width:15%"></div><div class="seg-immo" style="width:10%"></div></div>
+  <!-- SIMULATEUR DYNAMIQUE -->
+  <section id="simulateur">
+    <h2><span class="e">🎛️</span> Le simulateur — bougez les curseurs</h2>
+    <p style="font-size:13px;color:var(--mute);margin:8px 0 4px">Une image vaut mille mots : ajustez votre horizon et votre appétit au risque, regardez la répartition et la projection se redessiner. <b>Exemple générique — pas une recommandation pour votre situation.</b></p>
+
+    <div class="simu">
+      <div class="chips" id="chips"></div>
+      <div class="sliders">
+        <div class="sld"><label>⏳ Horizon de placement <b id="lblHz">15 ans</b></label><input type="range" id="hz" min="1" max="30" step="1" value="15"></div>
+        <div class="sld"><label>⚖️ Profil de risque <b id="lblRi">Équilibré</b></label><input type="range" id="ri" min="10" max="95" step="1" value="40"></div>
       </div>
-      <div class="prof">
-        <div class="prof-h"><h3>Équilibré</h3><span>priorité : croissance mesurée</span></div>
-        <div class="bar"><div class="seg-secu" style="width:30%"></div><div class="seg-oblig" style="width:20%"></div><div class="seg-act" style="width:30%"></div><div class="seg-immo" style="width:15%"></div><div class="seg-noncote" style="width:5%"></div></div>
+
+      <div class="simu-grid">
+        <div>
+          <div class="donut-wrap" id="donutWrap"></div>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+        <div>
+          <div class="proj-cap">Projection illustrative — sur une base de <b>100 000 €</b>, sur <b id="projHz">15 ans</b></div>
+          <div id="projChart"></div>
+          <div class="proj-hyp" id="projHyp"></div>
+        </div>
       </div>
-      <div class="prof">
-        <div class="prof-h"><h3>Dynamique</h3><span>priorité : performance, horizon long</span></div>
-        <div class="bar"><div class="seg-secu" style="width:15%"></div><div class="seg-oblig" style="width:15%"></div><div class="seg-act" style="width:45%"></div><div class="seg-immo" style="width:15%"></div><div class="seg-noncote" style="width:10%"></div></div>
-      </div>
-      <div class="prof">
-        <div class="prof-h"><h3>Offensif</h3><span>priorité : performance maximale</span></div>
-        <div class="bar"><div class="seg-secu" style="width:5%"></div><div class="seg-oblig" style="width:10%"></div><div class="seg-act" style="width:55%"></div><div class="seg-immo" style="width:15%"></div><div class="seg-noncote" style="width:15%"></div></div>
-      </div>
-    </div>
-    <div class="legend">
-      <span><i style="background:#8B6F3F"></i>Sécurisé</span>
-      <span><i style="background:#C9A96E"></i>Obligataire</span>
-      <span><i style="background:#1B2A4A"></i>Actions / ETF</span>
-      <span><i style="background:#3B7D5E"></i>Immobilier</span>
-      <span><i style="background:#C0414C"></i>Non coté</span>
     </div>
   </section>
 
@@ -129,7 +143,7 @@ h2 .e{font-size:22px}
   </section>
 
   <div class="cta">
-    <a class="btn" href="/app/marcel?q=Compte%20tenu%20de%20ma%20situation%2C%20quels%20facteurs%20devrais-je%20prendre%20en%20compte%20pour%20penser%20mon%20allocation%20d%27actifs%20%3F">Construire ma réflexion avec Marcel →</a>
+    <a class="btn" id="ctaMarcel" href="/app/marcel?q=Compte%20tenu%20de%20ma%20situation%2C%20quels%20facteurs%20devrais-je%20prendre%20en%20compte%20pour%20penser%20mon%20allocation%20d%27actifs%20%3F">Construire ma réflexion avec Marcel →</a>
     <a class="btn ghost" href="/app/produits">📒 Voir tous les produits →</a>
     <a class="btn ghost" href="/app/strategies">🗺️ Schémas de stratégie (Premium) →</a>
   </div>
@@ -138,6 +152,122 @@ h2 .e{font-size:22px}
     Ce guide présente des <b>profils illustratifs génériques</b>, à but pédagogique. Il ne constitue ni un conseil en investissement, ni une recommandation personnalisée au sens de l'art. <b>L.541-1 du Code monétaire et financier</b> — ces répartitions ne prennent pas en compte votre situation réelle (patrimoine, fiscalité, objectifs, aversion au risque). Chaque classe d'actif comporte des risques, dont la perte en capital. Un conseil personnalisé suppose une étude et une lettre de mission. IKCP — ORIAS 23001568.
   </div>
 </div>
+<script>
+(function(){
+  var CLS=[
+    {k:'secu',    nm:'Sécurisé',      col:'#8B6F3F', rate:0.020},
+    {k:'oblig',   nm:'Obligataire',   col:'#C9A96E', rate:0.030},
+    {k:'act',     nm:'Actions / ETF', col:'#1B2A4A', rate:0.065},
+    {k:'immo',    nm:'Immobilier',    col:'#3B7D5E', rate:0.040},
+    {k:'noncote', nm:'Non coté',      col:'#C0414C', rate:0.070}
+  ];
+  var PROFILS=[
+    {v:10, nm:'Prudent',   secu:55,oblig:20,act:15,immo:10,noncote:0},
+    {v:40, nm:'Équilibré', secu:30,oblig:20,act:30,immo:15,noncote:5},
+    {v:70, nm:'Dynamique', secu:15,oblig:15,act:45,immo:15,noncote:10},
+    {v:95, nm:'Offensif',  secu:5, oblig:10,act:55,immo:15,noncote:15}
+  ];
+  function interpMix(v){
+    v=Math.max(10,Math.min(95,v));
+    for(var i=0;i<PROFILS.length-1;i++){
+      var a=PROFILS[i], b=PROFILS[i+1];
+      if(v>=a.v && v<=b.v){
+        var t=(v-a.v)/(b.v-a.v);
+        var lerp=function(k){return a[k]+(b[k]-a[k])*t;};
+        return {secu:lerp('secu'),oblig:lerp('oblig'),act:lerp('act'),immo:lerp('immo'),noncote:lerp('noncote')};
+      }
+    }
+    return PROFILS[PROFILS.length-1];
+  }
+  function nearestProfil(v){
+    var best=PROFILS[0], bd=Math.abs(v-PROFILS[0].v);
+    PROFILS.forEach(function(p){ var d=Math.abs(v-p.v); if(d<bd){bd=d;best=p;} });
+    return best;
+  }
+  function eur(n){ n=Math.max(0,Math.round(n)); var c=Math.abs(n)>=1e6; return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:c?1:0,notation:c?'compact':'standard'}).format(n); }
+
+  var $=function(id){return document.getElementById(id);};
+  var hzEl=$('hz'), riEl=$('ri');
+
+  // Chips de sélection rapide (raccourci vers les 4 profils repères)
+  $('chips').innerHTML = PROFILS.map(function(p){ return '<button type="button" class="chip" data-v="'+p.v+'">'+p.nm+'</button>'; }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(b){
+    b.addEventListener('click', function(){ riEl.value=b.getAttribute('data-v'); render(); });
+  });
+
+  // Donut SVG (technique stroke-dasharray, 5 segments)
+  function renderDonut(mix){
+    var R=45, C=2*Math.PI*R, cum=0;
+    var raw=[mix.secu,mix.oblig,mix.act,mix.immo,mix.noncote];
+    var rounded=raw.slice(0,4).map(function(x){return Math.round(x);});
+    rounded.push(Math.max(0,100-rounded.reduce(function(s,x){return s+x;},0)));
+    var segs=rounded.map(function(p,i){
+      var dash=(p/100*C)+' '+(C-p/100*C);
+      var off=-(cum/100*C);
+      cum+=p;
+      return '<circle cx="60" cy="60" r="'+R+'" fill="none" stroke="'+CLS[i].col+'" stroke-width="18" stroke-dasharray="'+dash+'" stroke-dashoffset="'+off+'"/>';
+    }).join('');
+    $('donutWrap').innerHTML='<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#F2ECE1" stroke-width="18"/><g transform="rotate(-90 60 60)">'+segs+'</g></svg>'+
+      '<div class="donut-center"><span class="rl">Répartition</span><span class="rv">100%</span></div>';
+    $('donutLegend').innerHTML=CLS.map(function(c,i){ return '<div class="row"><i style="background:'+c.col+'"></i><span class="nm">'+c.nm+'</span><span class="pc">'+rounded[i]+' %</span></div>'; }).join('');
+    return rounded;
+  }
+
+  // Projection illustrative (rendement pondéré + bande d'incertitude qui s'élargit avec le temps et le risque)
+  function renderProjection(mix, horizon, riskScore){
+    var rate = (mix.secu*CLS[0].rate + mix.oblig*CLS[1].rate + mix.act*CLS[2].rate + mix.immo*CLS[3].rate + mix.noncote*CLS[4].rate)/100;
+    var vol = 0.03 + (riskScore/100)*0.15;
+    var capital=100000, W=560, H=190, padL=52, padR=10, padT=10, padB=24;
+    var plotW=W-padL-padR, plotH=H-padT-padB;
+    var pts=[]; for(var t=0;t<=horizon;t++){
+      var central=capital*Math.pow(1+rate,t);
+      var spread=central*vol*Math.sqrt(Math.max(t,0.4));
+      pts.push({t:t, central:central, upper:central+spread, lower:Math.max(0,central-spread)});
+    }
+    var maxV=pts[pts.length-1].upper*1.08;
+    var xs=function(t){ return padL+(horizon>0?(t/horizon):0)*plotW; };
+    var ys=function(v){ return padT+plotH-(v/maxV)*plotH; };
+    var up=pts.map(function(p){return xs(p.t)+','+ys(p.upper);}).join(' L ');
+    var lo=pts.slice().reverse().map(function(p){return xs(p.t)+','+ys(p.lower);}).join(' L ');
+    var ce=pts.map(function(p){return xs(p.t)+','+ys(p.central);}).join(' L ');
+    var last=pts[pts.length-1];
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'">'+
+      '<line x1="'+padL+'" y1="'+padT+'" x2="'+padL+'" y2="'+(H-padB)+'" stroke="#E7DFD2"/>'+
+      '<line x1="'+padL+'" y1="'+(H-padB)+'" x2="'+(W-padR)+'" y2="'+(H-padB)+'" stroke="#E7DFD2"/>'+
+      '<path d="M '+up+' L '+lo+' Z" fill="rgba(184,149,110,.18)"/>'+
+      '<path d="M '+ce+'" fill="none" stroke="#1B2A4A" stroke-width="2.4"/>'+
+      '<circle cx="'+xs(0)+'" cy="'+ys(capital)+'" r="3.2" fill="#1B2A4A"/>'+
+      '<circle cx="'+xs(last.t)+'" cy="'+ys(last.central)+'" r="3.6" fill="#1B2A4A"/>'+
+      '<text x="'+padL+'" y="'+(padT+10)+'" font-size="10.5" fill="#8B6F3F" font-weight="600">'+eur(last.upper)+'</text>'+
+      '<text x="'+padL+'" y="'+(H-padB-6)+'" font-size="10.5" fill="#A99B8B">'+eur(last.lower)+'</text>'+
+      '<text x="4" y="'+(ys(capital)+4)+'" font-size="10" fill="#6B5D52">100 k€</text>'+
+      '<text x="'+(W-padR-2)+'" y="'+(H-6)+'" font-size="10" fill="#6B5D52" text-anchor="end">'+horizon+' ans</text>'+
+      '</svg>';
+    $('projChart').innerHTML=svg;
+    $('projHyp').innerHTML='Hypothèses de rendement annuel moyen <b>illustratives</b> — non garanties : '+CLS.map(function(c){return c.nm+' '+(c.rate*100).toFixed(1)+'%';}).join(' · ')+
+      '. La zone ombrée représente une fourchette indicative (pas une prévision). Les performances passées ne préjugent pas des performances futures — risque de perte en capital.';
+  }
+
+  function render(){
+    var hz=+hzEl.value, ri=+riEl.value;
+    var mix=interpMix(ri);
+    var np=nearestProfil(ri);
+    $('lblHz').textContent=hz+' an'+(hz>1?'s':'');
+    $('lblRi').textContent=np.nm+(np.v===ri?'':' (~)');
+    $('projHz').textContent=hz+' an'+(hz>1?'s':'');
+    Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(b){ b.classList.toggle('on', +b.getAttribute('data-v')===np.v && Math.abs(ri-np.v)<3); });
+    renderDonut(mix);
+    renderProjection(mix, hz, ri);
+    try{
+      var q='Mon horizon de placement est d\'environ '+hz+' ans et mon profil de risque se rapproche de "'+np.nm+'". Compte tenu de ma situation, quels facteurs devrais-je approfondir pour penser mon allocation ?';
+      var lnk=document.getElementById('ctaMarcel'); if(lnk) lnk.href='/app/marcel?q='+encodeURIComponent(q);
+    }catch(_){}
+  }
+  hzEl.addEventListener('input', render);
+  riEl.addEventListener('input', render);
+  render();
+})();
+</script>
 <script src="/protect.js?v=1" defer></script>
 <script src="/app/js/marcel-float.js" defer></script>
 </body>
