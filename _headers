@@ -3,13 +3,14 @@
 #  © 2026 Maxime Juveneton · ORIAS 23001568
 # ════════════════════════════════════════════════════════════════════
 
-# ⚠ CONSTAT EMPIRIQUE (2026-07-02, curl live) : Cloudflare Pages IGNORE
-# silencieusement la valeur 'no-cache' dans _headers (le default max-age=14400
-# était servi à la place — les règles no-cache n'ont jamais été actives).
-# Seules les valeurs cacheables type 'public, max-age=N[, immutable]' et
-# 'max-age=0, must-revalidate' sont honorées. Toujours vérifier via
-# curl -sI après déploiement. L'anti-JS-périmé est de toute façon assuré
-# par le SW stampé SHA (CI deploy-pages) + query-versioning ?v= des widgets.
+# ⚠ CONSTAT EMPIRIQUE (2026-07-02, curl live sur MISS) : pour les fichiers
+# .js, Cloudflare Pages FORCE un plancher max-age=14400 ('no-cache' et
+# 'max-age=0' sont réécrits en 14400 ; 'public'/'must-revalidate'/'immutable'
+# passent, et max-age>14400 type immutable 1 an est honoré). Les .json
+# acceptent max-age=0. Les anciennes règles 'no-cache' n'ont donc JAMAIS
+# été actives. Toujours vérifier via curl -sI (avec ?cachebust=) après
+# déploiement. L'anti-JS-périmé est assuré par le SW stampé SHA
+# (CI deploy-pages) + query-versioning ?v= des widgets — pas par _headers.
 
 # Modules JS de l'espace membre : toujours revalider (ETag → 304 si inchangé).
 # Code correctness-critical (Marcel, cockpit) — revalidation systématique.
