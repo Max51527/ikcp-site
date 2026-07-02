@@ -115,80 +115,9 @@
     } catch (_) {}
   });
 
-  // ── 4. Filigrane ──
-  //  • Pages publiques : tuile « IKCP.EU » très discrète + crédit bas de page.
-  //  • Espace membre (/app/) : filigrane TRAÇABLE nominatif (email/identifiant
-  //    du membre + date) → tout screenshot d'un membre devient identifiable.
-  //    Opacité très faible pour préserver le rendu premium.
-  function memberTag() {
-    var who = '';
-    try { who = localStorage.getItem('ikcp_email') || localStorage.getItem('ikcp_member_email') || ''; } catch (_) {}
-    if (!who) {
-      try {
-        var tok = localStorage.getItem('ikcp_token') || '';
-        if (tok) {
-          var part = tok.split('.')[1];
-          if (part) {
-            var pad = part.replace(/-/g, '+').replace(/_/g, '/');
-            var dec = JSON.parse(decodeURIComponent(escape(atob(pad))));
-            who = dec.email || dec.sub || dec.uid || '';
-          }
-          if (!who) who = '#' + tok.slice(-6); // empreinte courte → traçable par IKCP
-        }
-      } catch (_) {}
-    }
-    return who || 'espace-confidentiel';
-  }
-  function dateTag() {
-    try { return new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
-    catch (_) { return ''; }
-  }
+  // ── 4. Filigrane : RETIRÉ (décision Maxime 02/07/2026 — rendu épuré, traçabilité assurée
+  //    par les mentions légales + l'attribution à la copie + le bandeau d'impression). ──
 
-  function addWatermark() {
-    if (!document.body || document.body.hasAttribute('data-no-watermark')) return;
-    if (document.getElementById('ikcp-wm')) return;
-
-    var inApp = IN_APP();
-    var tileTxt, op, credit;
-    if (inApp) {
-      // Filigrane NOMINATIF traçable, ultra discret (rendu membre premium préservé)
-      var who = memberTag();
-      tileTxt = 'IKCP · ' + who + ' · ';
-      op = '0.045';
-      credit = 'Espace confidentiel IKCP · ' + who + ' · ' + dateTag();
-    } else {
-      tileTxt = 'IKCP.EU · IKCP.EU · IKCP.EU · ';
-      op = '0.035';
-      credit = 'Créé par IKCP.EU · Ardèche · Combloux · Megève';
-    }
-
-    var svg =
-      'data:image/svg+xml;utf8,' +
-      encodeURIComponent(
-        "<svg xmlns='http://www.w3.org/2000/svg' width='460' height='240'>" +
-        "<text x='0' y='120' transform='rotate(-24 0 120)' " +
-        "font-family='Arial' font-size='14' fill='%231B2A4A' fill-opacity='" + op + "'>" + tileTxt + '</text></svg>'
-      );
-    var wm = document.createElement('div');
-    wm.id = 'ikcp-wm';
-    wm.setAttribute('aria-hidden', 'true');
-    wm.style.cssText =
-      'position:fixed;inset:0;z-index:2147483640;pointer-events:none;' +
-      'background-image:url("' + svg + '");background-repeat:repeat;';
-    document.body.appendChild(wm);
-
-    var c = document.createElement('div');
-    c.id = 'ikcp-credit';
-    c.setAttribute('aria-hidden', 'true');
-    c.textContent = credit;
-    c.style.cssText =
-      'position:fixed;bottom:4px;right:8px;z-index:2147483641;pointer-events:none;' +
-      'font:600 9px/1 Arial,sans-serif;letter-spacing:.08em;color:rgba(27,42,74,' + (inApp ? '.28' : '.22') + ');' +
-      'text-transform:uppercase;user-select:none;';
-    document.body.appendChild(c);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addWatermark);
-  else addWatermark();
 
   // ── 5. Anti-glisser / anti-enregistrement des images ──
   document.addEventListener('dragstart', function (e) {
@@ -207,7 +136,6 @@
       'color:#8B6F3F;border-bottom:1px solid #C9A96E;padding:6px 0;margin-bottom:8px;}' +
       'body::after{content:"© IKCP · ORIAS 23001568 · maxime@ikcp.eu · toute reproduction est tracée";' +
       'position:fixed;bottom:0;left:0;right:0;text-align:center;font:600 8px Arial,sans-serif;color:#6B5D52;padding:4px 0;}' +
-      '#ikcp-wm{opacity:1 !important;}' +
       '}';
     (document.head || document.documentElement).appendChild(ps);
   } catch (_) {}

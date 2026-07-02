@@ -116,6 +116,6 @@ let dp = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); dp = e; const b=document.getElementById('installBtn'); b.style.display='inline-flex'; document.getElementById('installNote').style.display='none'; });
 window.installApp = async function(){ if(dp){ dp.prompt(); await dp.userChoice; dp=null; document.getElementById('installBtn').style.display='none'; } };
 </script>
-<script src="/protect.js?v=1" defer></script>
+<script src="/protect.js?v=2" defer></script>
 </body>
 </html>
