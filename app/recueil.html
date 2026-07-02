@@ -89,6 +89,7 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
       <div class="fld"><label>Situation</label><select id="f_situation"><option value="">—</option><option value="celibataire">Célibataire</option><option value="marie">Marié(e)</option><option value="pacse">Pacsé(e)</option><option value="concubinage">Concubinage</option><option value="divorce">Divorcé(e)</option><option value="veuf">Veuf(ve)</option></select></div>
       <div class="fld"><label>Régime matrimonial</label><select id="f_regime"><option value="">— / non concerné</option><option>Communauté légale (réduite aux acquêts)</option><option>Séparation de biens</option><option>Participation aux acquêts</option><option>Communauté universelle</option><option>Je ne sais pas</option></select></div>
       <div class="fld"><label>Enfants</label><input type="number" id="f_enfants" min="0" max="15" placeholder="0"></div>
+      <div class="fld"><label>Votre date de naissance</label><input type="date" id="f_naissance"></div>
       <div class="fld"><label>Enfant(s) d'une autre union ?</label><select id="f_autreUnion"><option value="">—</option><option value="oui">Oui</option><option value="non">Non</option></select></div>
     </div>
   </section>
@@ -139,7 +140,7 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
 
   <!-- 7 · VOLET JURIDIQUE -->
   <section class="blk">
-    <h2>📜 Volet juridique — questions fermées</h2>
+    <h2>📜 Volet juridique &amp; aléas de la vie — questions fermées</h2>
     <div class="hint">Répondez simplement : oui, non, ou je ne sais pas. Chaque réponse nourrit la transversalité ci-dessous.</div>
     <div id="jur"></div>
   </section>
@@ -228,7 +229,11 @@ var JQ=[
   ['mandatProtection','Avez-vous un mandat de protection future ?'],
   ['pacteAssocies','Un pacte d\'associés encadre-t-il votre société ?'],
   ['donations15','Avez-vous fait des donations il y a moins de 15 ans ?'],
-  ['prevoyance','Votre prévoyance dirigeant est-elle en place (garanties croisées, homme-clé) ?']
+  ['prevoyance','Votre prévoyance dirigeant est-elle en place (garanties croisées, homme-clé) ?'],
+  ['ij','En cas d\'arrêt de travail long, vos revenus sont-ils maintenus (indemnités journalières) ?'],
+  ['emprunteur','Vos crédits sont-ils couverts par une assurance décès-invalidité adaptée (quotités) ?'],
+  ['dependance','Êtes-vous couvert contre la perte d\'autonomie (dépendance) ?'],
+  ['tuteur','Un tuteur est-il désigné pour vos enfants si les deux parents disparaissent ?']
 ];
 function renderJur(){
   document.getElementById('jur').innerHTML=JQ.map(function(q){
@@ -282,7 +287,16 @@ function save(){
 function renderPense(){
   var J=R.juridique||{}, F=R.famille||{}, out=[];
   var add=function(q,pro,mq){ out.push({q:q,pro:pro,mq:mq}); };
-  if(J.testament && J.testament!=='oui') add('Avez-vous pensé à formaliser vos volontés (testament) — et comment s\'articule-t-il avec votre entreprise ?','Notaire','Comment un testament s\'articule-t-il avec ma situation familiale et la transmission de mon entreprise ?');
+  // Âge réel depuis la date de naissance (déclencheurs datés : cap des 70 ans, art. 990 I / 757 B CGI)
+  var age=null, mois70=null;
+  try{ if(F.naissance){ var bd=new Date(F.naissance); if(!isNaN(bd.getTime())){
+    var now=new Date(); age=now.getFullYear()-bd.getFullYear();
+    var mm=now.getMonth()-bd.getMonth(); if(mm<0||(mm===0&&now.getDate()<bd.getDate())) age--;
+    var d70=new Date(bd.getTime()); d70.setFullYear(bd.getFullYear()+70);
+    mois70=Math.ceil((d70.getTime()-now.getTime())/(30.44*24*3600*1000));
+  } } }catch(_){}
+  var hasAV=(R.fin||[]).some(function(r){ return r.type==="Assurance-vie"||r.type==="Contrat de capitalisation"; });
+  if(J.testament && J.testament!=='oui' && F.situation!=='concubinage' && F.situation!=='pacse') add('Avez-vous pensé à formaliser vos volontés (testament) — et comment s\'articule-t-il avec votre entreprise ?','Notaire','Comment un testament s\'articule-t-il avec ma situation familiale et la transmission de mon entreprise ?');
   if(F.situation==='marie' && J.donationEpoux && J.donationEpoux!=='oui') add('Avez-vous pensé à la donation entre époux, qui élargit les options du conjoint survivant ?','Notaire','Que changerait une donation entre époux dans ma situation ?');
   if(J.mandatProtection && J.mandatProtection!=='oui') add('Avez-vous pensé au mandat de protection future — qui dirige la société si vous êtes empêché ?','Notaire · Avocat','À quoi sert un mandat de protection future pour un dirigeant, et comment le mettre en place ?');
   if((R.benef||[]).length>1 && J.pacteAssocies && J.pacteAssocies!=='oui') add('Avez-vous pensé à un pacte d\'associés (sortie, décès d\'un associé, agrément) ?','Avocat','Quelles clauses un pacte d\'associés devrait-il couvrir dans une société comme la mienne ?');
@@ -293,6 +307,25 @@ function renderPense(){
   if(F.autreUnion==='oui') add('Avez-vous pensé à la protection des enfants d\'une première union (réserve, assurance-vie, clause de préciput) ?','Notaire','Comment équilibrer la protection du conjoint et celle d\'enfants d\'une première union ?');
   if(sum(R.immo,'val')>=1300000) add('Avez-vous pensé à votre position IFI — assiette réelle, dettes déductibles, immobilier professionnel exonéré ?','Votre conseiller (cabinet)','Mon immobilier dépasse 1,3 M€ : comment calculer proprement mon assiette IFI ?');
   if(J.prevoyance && J.prevoyance!=='oui') add('Avez-vous pensé à la prévoyance croisée entre associés et à la garantie homme-clé ?','Votre conseiller (cabinet)','Comment fonctionnent les garanties croisées entre associés et l\'assurance homme-clé ?');
+
+  // ── Le cap des 70 ans (assurance-vie) ──
+  if(age!=null && age>=60 && age<70 && hasAV)
+    add("Avez-vous pensé à alimenter votre assurance-vie AVANT vos 70 ans"+((mois70!=null&&mois70<=36)?(" — il vous reste environ "+mois70+" mois"):"")+" ? Les primes versées avant 70 ans ouvrent l\u2019abattement de 152 500 € PAR bénéficiaire (art. 990 I CGI).","Votre conseiller (cabinet)","Comment tirer parti de la fenêtre avant mes 70 ans pour mes versements d\u2019assurance-vie (art. 990 I CGI) ?");
+  if(age!=null && age>=70 && hasAV)
+    add("Vous avez "+age+" ans : avez-vous pensé au régime des versements APRÈS 70 ans (art. 757 B CGI — abattement global de 30 500 €, gains exonérés) et à l\u2019intérêt d\u2019un contrat dédié pour les nouveaux versements ?","Votre conseiller (cabinet)","Comment fonctionnent les versements d\u2019assurance-vie après 70 ans (art. 757 B CGI) et pourquoi un contrat séparé ?");
+  // ── Aléas de la vie ──
+  if(F.situation==="concubinage" && (!J.testament || J.testament!=="oui"))
+    add("Avez-vous pensé qu\u2019en concubinage, sans testament, votre partenaire n\u2019hérite de RIEN — et serait taxé à 60 % sur ce que vous lui laisseriez ?","Notaire","En concubinage, comment protéger mon partenaire (testament, assurance-vie, tontine) ?");
+  if(F.situation==="pacse" && (!J.testament || J.testament!=="oui"))
+    add("Avez-vous pensé qu\u2019un partenaire de Pacs n\u2019hérite PAS sans testament — l\u2019exonération de droits ne joue que si un testament l\u2019institue ?","Notaire","Pacsés : que faut-il mettre en place pour que mon partenaire hérite ?");
+  if(J.ij && J.ij!=="oui")
+    add("Avez-vous pensé au maintien de vos revenus en cas d\u2019arrêt de travail long — les indemnités journalières du dirigeant TNS sont souvent très inférieures au revenu réel ?","Votre conseiller (cabinet)","Comment évaluer mon besoin d\u2019indemnités journalières en tant que dirigeant ?");
+  if(J.emprunteur && J.emprunteur!=="oui" && sum(R.immo,"crd")>0)
+    add("Avez-vous pensé à vérifier l\u2019assurance décès-invalidité de vos crédits ("+eur(sum(R.immo,"crd"))+" restant dûs) — et la répartition des quotités entre conjoints ?","Votre conseiller (cabinet)","Comment optimiser l\u2019assurance emprunteur et les quotités sur mes crédits en cours ?");
+  if(J.dependance && J.dependance!=="oui")
+    add("Avez-vous pensé au risque de perte d\u2019autonomie — qui paierait une dépendance longue (2 500 à 4 500 €/mois) sans entamer le patrimoine familial ?","Votre conseiller (cabinet)","Comment anticiper financièrement le risque de dépendance ?");
+  if(J.tuteur && J.tuteur!=="oui" && (+F.enfants||0)>0)
+    add("Avez-vous pensé à désigner qui élèverait vos enfants si les deux parents disparaissaient (désignation d\u2019un tuteur par testament) ?","Notaire","Comment désigner un tuteur pour mes enfants et avec quelles garanties ?");
 
   var host=document.getElementById('penseList');
   if(!out.length){ host.innerHTML='<div class="ok">'+((Object.keys(J).length||R.immo.length)?'✓ Aucun point de vigilance détecté sur ce qui est renseigné — complétez le recueil pour affiner.':'Complétez le recueil ci-dessus : vos points de vigilance apparaîtront ici.')+'</div>'; return; }
@@ -307,7 +340,7 @@ function renderPense(){
   try{ var soc=JSON.parse(localStorage.getItem('ikcp_societe')||'null');
     if(soc&&soc.nom) document.getElementById('socHint').innerHTML='<b>'+esc(soc.nom)+'</b>'+(soc.forme?' · '+esc(soc.forme):'')+(soc.ca!=null?' · CA '+eur(soc.ca):'')+' — identité automatique (SIREN). Les bénéficiaires effectifs sont <b>déclaratifs</b> (le registre officiel n\'est plus en accès public libre depuis 2022).';
   }catch(_){}
-  ['f_situation','f_regime','f_enfants','f_autreUnion'].forEach(function(id){ var el=document.getElementById(id); if(el&&R.famille[id.slice(2)]!=null) el.value=R.famille[id.slice(2)]; });
+  ['f_situation','f_regime','f_enfants','f_autreUnion','f_naissance'].forEach(function(id){ var el=document.getElementById(id); if(el&&R.famille[id.slice(2)]!=null) el.value=R.famille[id.slice(2)]; });
   var sv=document.getElementById('s_valo'); if(sv&&R.s_valo) sv.value=R.s_valo;
   Object.keys(DEFS).forEach(renderRows);
   renderJur();
