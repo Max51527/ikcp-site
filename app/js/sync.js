@@ -23,7 +23,7 @@
   var H = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
   // Clés simples (objet JSON) synchronisées via le coffre. (Les biens patrimoniaux
   // gardent leur propre flux dans le Dashboard.)
-  var KEYS = ['ikcp_societe', 'ikcp_score'];
+  var KEYS = ['ikcp_societe', 'ikcp_score', 'ikcp_recueil', 'ikcp_patrimoine'];
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }

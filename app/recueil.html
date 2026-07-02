@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel · Recueil patrimonial complet</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;--gold-d:#8B6F3F;--gold-b:#E2C896;--ink:#221E18;--mute:#6B5D52;--faint:#8A7E70;--line:rgba(139,111,63,.22);--green:#2E7D5B;--red:#C0414C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--cream);line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:40px}
+.wrap{max-width:860px;margin:0 auto;padding:18px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:8px 0 14px}
+.brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.brand .nm{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:var(--navy)}
+.brand .ia{font-size:10px;font-weight:700;background:var(--gold);color:#20180c;padding:2px 6px;border-radius:5px}
+.back{font-size:13px;color:var(--faint);text-decoration:none}
+.lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,5.5vw,36px);color:var(--navy);line-height:1.1;margin:8px 0 8px}
+h1 em{font-style:italic;color:var(--gold-d)}
+.lead{color:var(--mute);font-size:14.5px;max-width:640px;margin-bottom:14px}
+.saveline{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;background:rgba(250,248,244,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 2px;margin-bottom:16px}
+.saveline .tot{font-family:'Playfair Display',serif;font-weight:600;font-size:17px;color:var(--navy)}
+.saveline .tl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.saveline .st{margin-left:auto;font-size:11px;color:var(--green)}
+section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px 18px;margin-bottom:14px}
+.blk h2{font-family:'Playfair Display',serif;font-weight:600;font-size:19px;color:var(--navy);margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.blk .hint{font-size:12px;color:var(--faint);margin-bottom:12px}
+.frm{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.fld label{display:block;font-size:11px;font-weight:600;color:var(--mute);margin-bottom:4px;letter-spacing:.02em}
+.fld input,.fld select{width:100%;min-height:44px;padding:10px 12px;background:var(--cream);border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;color:var(--ink);outline:none}
+.fld input:focus,.fld select:focus{border-color:var(--gold)}
+.rows{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.rowi{display:grid;gap:7px;align-items:end;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:10px}
+.rowi input,.rowi select{min-height:40px;padding:8px 10px;background:#fff;border:1.5px solid var(--line);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--ink);outline:none;width:100%}
+.rowi .del{min-height:40px;border:1px solid rgba(192,65,76,.35);background:#fff;color:var(--red);border-radius:9px;font-size:15px;cursor:pointer;padding:0 12px}
+.add{margin-top:9px;border:1.5px dashed var(--line);background:transparent;color:var(--gold-d);font-weight:700;font-size:13px;border-radius:10px;padding:10px 14px;cursor:pointer;font-family:inherit}
+.trio{display:flex;gap:6px;flex-wrap:wrap}
+.trio button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;font-family:inherit;cursor:pointer;color:var(--ink)}
+.trio button.on-oui{background:#EAF3EE;border-color:rgba(46,125,91,.5);color:var(--green);font-weight:700}
+.trio button.on-non{background:#FBEEEF;border-color:rgba(192,65,76,.45);color:var(--red);font-weight:700}
+.trio button.on-nsp{background:var(--cream2);border-color:var(--gold);color:var(--gold-d);font-weight:700}
+.jq{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);flex-wrap:wrap}
+.jq:last-child{border-bottom:0}
+.jq .q{font-size:13.5px;color:var(--ink);max-width:52ch}
+/* Transversalité */
+.pense{background:linear-gradient(160deg,#1B2A4A,#0E1729);border-radius:16px;padding:18px;margin:18px 0 14px}
+.pense h2{font-family:'Playfair Display',serif;font-weight:600;font-size:20px;color:#fff;margin-bottom:2px}
+.pense .s{font-size:12px;color:#C9B68F;margin-bottom:12px}
+.pcard{background:rgba(250,248,244,.06);border:1px solid rgba(226,200,150,.25);border-radius:12px;padding:12px 14px;margin-bottom:9px}
+.pcard .pq{font-size:13.5px;color:#fff;font-weight:500}
+.pcard .meta{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.pcard .pro{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#20180c;background:linear-gradient(120deg,var(--gold-b),var(--gold));border-radius:999px;padding:4px 10px}
+.pcard a{font-size:12px;color:#E2C896;font-weight:600;text-decoration:none}
+.pense .ok{font-size:13px;color:#C9B68F}
+.disc{font-size:11px;color:var(--faint);line-height:1.6;margin:18px 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.cta-b{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.btn{display:inline-block;text-decoration:none;border:0;cursor:pointer;font-family:inherit;font-weight:700;border-radius:12px;padding:13px 22px;font-size:14px;background:linear-gradient(135deg,var(--gold-b),var(--gold));color:#20180c}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--navy)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/app/dashboard.html"><span class="nm">Marcel</span><span class="ia">IA</span></a>
+    <a class="back" href="/app/dashboard.html">← Tableau de bord</a>
+  </header>
+
+  <div class="lbl">Recueil · une fois pour toutes</div>
+  <h1>Votre recueil <em>patrimonial complet</em></h1>
+  <p class="lead">Tout votre patrimoine — biens immobiliers, avoirs financiers, société, passifs — <b>et le volet juridique</b>. Saisi une fois, il alimente votre audit 360°, votre veille et Marcel. Sauvegarde automatique, données en France.</p>
+
+  <div class="saveline">
+    <div><div class="tl">Actif brut</div><div class="tot" id="tBrut">0 €</div></div>
+    <div><div class="tl">Passif</div><div class="tot" id="tPassif" style="color:var(--red)">0 €</div></div>
+    <div><div class="tl">Net</div><div class="tot" id="tNet" style="color:var(--green)">0 €</div></div>
+    <div class="st" id="saveSt"></div>
+  </div>
+
+  <!-- 1 · FAMILLE & RÉGIME -->
+  <section class="blk">
+    <h2>👪 Famille & régime matrimonial</h2>
+    <div class="hint">Le socle juridique de tout le reste — protection du conjoint, transmission, pouvoirs.</div>
+    <div class="frm">
+      <div class="fld"><label>Situation</label><select id="f_situation"><option value="">—</option><option value="celibataire">Célibataire</option><option value="marie">Marié(e)</option><option value="pacse">Pacsé(e)</option><option value="concubinage">Concubinage</option><option value="divorce">Divorcé(e)</option><option value="veuf">Veuf(ve)</option></select></div>
+      <div class="fld"><label>Régime matrimonial</label><select id="f_regime"><option value="">— / non concerné</option><option>Communauté légale (réduite aux acquêts)</option><option>Séparation de biens</option><option>Participation aux acquêts</option><option>Communauté universelle</option><option>Je ne sais pas</option></select></div>
+      <div class="fld"><label>Enfants</label><input type="number" id="f_enfants" min="0" max="15" placeholder="0"></div>
+      <div class="fld"><label>Enfant(s) d'une autre union ?</label><select id="f_autreUnion"><option value="">—</option><option value="oui">Oui</option><option value="non">Non</option></select></div>
+    </div>
+  </section>
+
+  <!-- 2 · SOCIÉTÉ & BÉNÉFICIAIRES EFFECTIFS -->
+  <section class="blk">
+    <h2>🏛️ Société & bénéficiaires effectifs</h2>
+    <div class="hint" id="socHint">Identité et chiffres : automatiques via votre SIREN (cartographie). Les bénéficiaires effectifs sont <b>déclaratifs</b> — le registre officiel (RBE) n'est plus en accès public libre depuis 2022.</div>
+    <div class="frm" style="margin-bottom:10px">
+      <div class="fld"><label>Valorisation estimée de la société (€)</label><input type="number" id="s_valo" min="0" placeholder="ex : 800 000"></div>
+    </div>
+    <div class="tl" style="font-size:11px;font-weight:700;color:var(--mute);letter-spacing:.04em">ASSOCIÉS / BÉNÉFICIAIRES EFFECTIFS (≥ 25 % ou contrôle)</div>
+    <div class="rows" id="rows_benef"></div>
+    <button class="add" onclick="addRow('benef')">+ Ajouter un bénéficiaire effectif</button>
+  </section>
+
+  <!-- 3 · IMMOBILIER -->
+  <section class="blk">
+    <h2>🏠 Biens immobiliers</h2>
+    <div class="hint">Chaque bien, sa valeur, son crédit restant et son mode de détention.</div>
+    <div class="rows" id="rows_immo"></div>
+    <button class="add" onclick="addRow('immo')">+ Ajouter un bien immobilier</button>
+  </section>
+
+  <!-- 4 · AVOIRS FINANCIERS -->
+  <section class="blk">
+    <h2>📈 Avoirs financiers</h2>
+    <div class="hint">Assurance-vie, PEA, compte-titres, PER, livrets… La clause bénéficiaire compte autant que le montant.</div>
+    <div class="rows" id="rows_fin"></div>
+    <button class="add" onclick="addRow('fin')">+ Ajouter un avoir financier</button>
+  </section>
+
+  <!-- 5 · AUTRES ACTIFS -->
+  <section class="blk">
+    <h2>💎 Autres actifs</h2>
+    <div class="hint">Non coté, collections, or, autres.</div>
+    <div class="rows" id="rows_autres"></div>
+    <button class="add" onclick="addRow('autres')">+ Ajouter un actif</button>
+  </section>
+
+  <!-- 6 · PASSIFS -->
+  <section class="blk">
+    <h2>⚖️ Passifs (hors crédits immobiliers déjà saisis)</h2>
+    <div class="hint">Comptes courants d'associés débiteurs, prêts personnels, autres dettes.</div>
+    <div class="rows" id="rows_passifs"></div>
+    <button class="add" onclick="addRow('passifs')">+ Ajouter un passif</button>
+  </section>
+
+  <!-- 7 · VOLET JURIDIQUE -->
+  <section class="blk">
+    <h2>📜 Volet juridique — questions fermées</h2>
+    <div class="hint">Répondez simplement : oui, non, ou je ne sais pas. Chaque réponse nourrit la transversalité ci-dessous.</div>
+    <div id="jur"></div>
+  </section>
+
+  <!-- TRANSVERSALITÉ -->
+  <div class="pense">
+    <h2>Avez-vous pensé à… ?</h2>
+    <div class="s">La transversalité de votre situation — chaque point renvoie vers le bon professionnel. Information, jamais une recommandation.</div>
+    <div id="penseList"><div class="ok">Complétez le recueil ci-dessus : vos points de vigilance apparaîtront ici.</div></div>
+  </div>
+
+  <div class="cta-b">
+    <a class="btn" href="/app/bilan">📄 Générer mon audit 360° →</a>
+    <a class="btn ghost" href="/app/patrimoine-pro">Voir mon cockpit →</a>
+  </div>
+
+  <div class="disc">Le recueil est déclaratif et reste sous votre contrôle (modifiable à tout moment, hébergé en France, synchronisé à votre compte). Les points « Avez-vous pensé à ? » sont des <b>questions d'information</b>, pas des recommandations personnalisées (art. L.541-1 du Code monétaire et financier) : leur mise en œuvre relève des professionnels compétents (notaire, avocat, expert-comptable) et, pour le conseil patrimonial formalisé, d'une lettre de mission. IKCP · ORIAS 23001568.</div>
+</div>
+
+<script>
+/* ═══ Recueil patrimonial — stockage ikcp_recueil + pont vers ikcp_patrimoine (cockpit/audit/veille) ═══ */
+var R = { famille:{}, s_valo:0, benef:[], immo:[], fin:[], autres:[], passifs:[], juridique:{}, maj:0 };
+try{ var saved=JSON.parse(localStorage.getItem('ikcp_recueil')||'null'); if(saved&&typeof saved==='object') R=Object.assign(R,saved); }catch(_){}
+
+function eur(n){ n=Math.round(+n||0); var c=Math.abs(n)>=1e6; return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:c?1:0,notation:c?'compact':'standard'}).format(n); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+/* ── définition des listes dynamiques ── */
+var DEFS = {
+  benef:  { cols:'1.4fr .6fr 1fr auto', fields:[
+    {k:'nom',   ph:'Prénom Nom',            t:'text'},
+    {k:'pct',   ph:'% capital',             t:'number'},
+    {k:'role',  t:'select', opts:['Dirigeant','Associé','Les deux','Autre']} ] },
+  immo:   { cols:'1.2fr 1fr .8fr .8fr 1fr auto', fields:[
+    {k:'label', ph:'ex : Résidence principale', t:'text'},
+    {k:'type',  t:'select', opts:['Résidence principale','Locatif','Secondaire','Immobilier professionnel']},
+    {k:'val',   ph:'Valeur €',             t:'number'},
+    {k:'crd',   ph:'Crédit restant €',     t:'number'},
+    {k:'det',   t:'select', opts:['Détention directe','SCI à l\'IR','SCI à l\'IS','Indivision','Démembrement']} ] },
+  fin:    { cols:'1fr 1.1fr .8fr 1fr auto', fields:[
+    {k:'type',  t:'select', opts:['Assurance-vie','PEA','Compte-titres','PER','Livrets / liquidités','Contrat de capitalisation','Autre']},
+    {k:'label', ph:'Établissement / intitulé', t:'text'},
+    {k:'val',   ph:'Valeur €',             t:'number'},
+    {k:'clause',t:'select', opts:['Clause bénéficiaire : à jour','Clause : à revoir','Clause : je ne sais pas','Non concerné']} ] },
+  autres: { cols:'1fr 1.3fr .8fr auto', fields:[
+    {k:'type',  t:'select', opts:['Non coté / participations','Collection & passion','Or & métaux','Autre']},
+    {k:'label', ph:'Description',          t:'text'},
+    {k:'val',   ph:'Valeur €',             t:'number'} ] },
+  passifs:{ cols:'1.6fr .8fr auto', fields:[
+    {k:'label', ph:'ex : prêt personnel, CCA débiteur', t:'text'},
+    {k:'val',   ph:'Restant dû €',         t:'number'} ] }
+};
+
+function renderRows(key){
+  var host=document.getElementById('rows_'+key); if(!host) return;
+  var def=DEFS[key];
+  host.innerHTML=(R[key]||[]).map(function(row,i){
+    var cells=def.fields.map(function(f){
+      if(f.t==='select'){
+        return '<select data-k="'+key+'" data-i="'+i+'" data-f="'+f.k+'">'+f.opts.map(function(o){return '<option'+(row[f.k]===o?' selected':'')+'>'+o+'</option>';}).join('')+'</select>';
+      }
+      return '<input type="'+f.t+'" placeholder="'+f.ph+'" value="'+esc(row[f.k]!=null?row[f.k]:'')+'" data-k="'+key+'" data-i="'+i+'" data-f="'+f.k+'">';
+    }).join('');
+    return '<div class="rowi" style="grid-template-columns:'+def.cols+'">'+cells+'<button class="del" onclick="delRow(\''+key+'\','+i+')" title="Retirer">✕</button></div>';
+  }).join('') || '<div style="font-size:12.5px;color:var(--faint);padding:4px 2px">Aucune ligne — ajoutez la première.</div>';
+}
+window.addRow=function(key){ var row={}; DEFS[key].fields.forEach(function(f){ row[f.k]=(f.t==='select')?f.opts[0]:''; }); (R[key]=R[key]||[]).push(row); renderRows(key); save(); };
+window.delRow=function(key,i){ R[key].splice(i,1); renderRows(key); save(); };
+
+document.addEventListener('input', function(e){
+  var el=e.target, k=el.getAttribute('data-k');
+  if(k){ R[k][+el.getAttribute('data-i')][el.getAttribute('data-f')]=(el.type==='number')?(+el.value||0):el.value; save(); return; }
+  if(el.id==='s_valo'){ R.s_valo=+el.value||0; save(); }
+  if(el.id&&el.id.indexOf('f_')===0){ R.famille[el.id.slice(2)]=el.value; save(); }
+});
+document.addEventListener('change', function(e){
+  var el=e.target;
+  if(el.getAttribute&&el.getAttribute('data-k')){ var k=el.getAttribute('data-k'); R[k][+el.getAttribute('data-i')][el.getAttribute('data-f')]=el.value; save(); }
+  else if(el.id&&el.id.indexOf('f_')===0){ R.famille[el.id.slice(2)]=el.value; save(); }
+});
+
+/* ── volet juridique (questions fermées oui/non/nsp) ── */
+var JQ=[
+  ['testament','Avez-vous un testament ?'],
+  ['donationEpoux','Une donation entre époux (« au dernier vivant ») est-elle en place ?'],
+  ['mandatProtection','Avez-vous un mandat de protection future ?'],
+  ['pacteAssocies','Un pacte d\'associés encadre-t-il votre société ?'],
+  ['donations15','Avez-vous fait des donations il y a moins de 15 ans ?'],
+  ['prevoyance','Votre prévoyance dirigeant est-elle en place (garanties croisées, homme-clé) ?']
+];
+function renderJur(){
+  document.getElementById('jur').innerHTML=JQ.map(function(q){
+    var v=R.juridique[q[0]]||'';
+    var b=function(val,lab){ return '<button class="'+(v===val?('on-'+val):'')+'" onclick="setJur(\''+q[0]+'\',\''+val+'\')">'+lab+'</button>'; };
+    return '<div class="jq"><div class="q">'+q[1]+'</div><div class="trio">'+b('oui','Oui')+b('non','Non')+b('nsp','Je ne sais pas')+'</div></div>';
+  }).join('');
+}
+window.setJur=function(k,v){ R.juridique[k]=v; renderJur(); save(); };
+
+/* ── totaux + PONT vers la clé plate ikcp_patrimoine (cockpit, audit, veille, projection) ── */
+function sum(list,f,filter){ return (list||[]).reduce(function(s,r){ return s+((!filter||filter(r))?(+r[f]||0):0); },0); }
+function computeFlat(){
+  var finType=function(t){ return function(r){ return (r.type||'').indexOf(t)===0; }; };
+  var flat={
+    immobilier: sum(R.immo,'val'),
+    societe:    +R.s_valo||0,
+    financier:  sum(R.fin,'val',function(r){ var t=r.type||''; return t!=='PER' && t.indexOf('Livrets')!==0; }),
+    tresorerie: sum(R.fin,'val',finType('Livrets')),
+    retraite:   sum(R.fin,'val',finType('PER')),
+    passion:    sum(R.autres,'val',function(r){ var t=r.type||''; return t.indexOf('Collection')===0||t.indexOf('Or')===0; }),
+    autres:     sum(R.autres,'val',function(r){ var t=r.type||''; return t.indexOf('Non coté')===0||t==='Autre'; }),
+    passif:     sum(R.passifs,'val') + sum(R.immo,'crd')
+  };
+  return flat;
+}
+var saveT;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(function(){
+    R.maj=Date.now();
+    try{
+      localStorage.setItem('ikcp_recueil', JSON.stringify(R));
+      var flat=computeFlat(); var brut=0; Object.keys(flat).forEach(function(k){ if(k!=='passif') brut+=flat[k]; });
+      // Pont : n'écrase le cockpit QUE si le recueil contient des données
+      if(brut>0 || flat.passif>0){
+        var prev={}; try{ prev=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'{}')||{}; }catch(_){}
+        localStorage.setItem('ikcp_patrimoine', JSON.stringify(Object.assign(prev,flat)));
+        localStorage.setItem('ikcp_patrimoine_ts', String(Date.now()));
+      }
+      document.getElementById('tBrut').textContent=eur(brut);
+      document.getElementById('tPassif').textContent=eur(flat.passif);
+      document.getElementById('tNet').textContent=eur(brut-flat.passif);
+      var st=document.getElementById('saveSt'); st.textContent='✓ enregistré'; setTimeout(function(){ st.textContent=''; },1600);
+    }catch(_){}
+    renderPense();
+  },350);
+}
+
+/* ── TRANSVERSALITÉ « Avez-vous pensé à ? » → question ouverte + professionnel + Marcel ── */
+function renderPense(){
+  var J=R.juridique||{}, F=R.famille||{}, out=[];
+  var add=function(q,pro,mq){ out.push({q:q,pro:pro,mq:mq}); };
+  if(J.testament && J.testament!=='oui') add('Avez-vous pensé à formaliser vos volontés (testament) — et comment s\'articule-t-il avec votre entreprise ?','Notaire','Comment un testament s\'articule-t-il avec ma situation familiale et la transmission de mon entreprise ?');
+  if(F.situation==='marie' && J.donationEpoux && J.donationEpoux!=='oui') add('Avez-vous pensé à la donation entre époux, qui élargit les options du conjoint survivant ?','Notaire','Que changerait une donation entre époux dans ma situation ?');
+  if(J.mandatProtection && J.mandatProtection!=='oui') add('Avez-vous pensé au mandat de protection future — qui dirige la société si vous êtes empêché ?','Notaire · Avocat','À quoi sert un mandat de protection future pour un dirigeant, et comment le mettre en place ?');
+  if((R.benef||[]).length>1 && J.pacteAssocies && J.pacteAssocies!=='oui') add('Avez-vous pensé à un pacte d\'associés (sortie, décès d\'un associé, agrément) ?','Avocat','Quelles clauses un pacte d\'associés devrait-il couvrir dans une société comme la mienne ?');
+  var avNonAJour=(R.fin||[]).some(function(r){ return (r.type==='Assurance-vie'||r.type==='PER') && r.clause && r.clause.indexOf('à jour')<0 && r.clause!=='Non concerné'; });
+  if(avNonAJour) add('Avez-vous pensé à relire vos clauses bénéficiaires — elles priment sur le testament ?','Votre conseiller (cabinet)','Comment vérifier que mes clauses bénéficiaires d\'assurance-vie correspondent encore à ma situation ?');
+  if((R.immo||[]).some(function(r){ return r.det==='SCI à l\'IS'; })) add('Avez-vous pensé à l\'impact de la SCI à l\'IS au moment de la revente (réintégration des amortissements) ?','Expert-comptable','Quels sont les effets de la SCI à l\'IS à la revente d\'un bien, chiffres à l\'appui ?');
+  if(J.donations15==='oui'||J.donations15==='nsp') add('Avez-vous pensé au rappel fiscal des donations de moins de 15 ans dans votre prochaine transmission ?','Notaire','Comment le rappel fiscal des donations passées joue-t-il sur mes abattements ?');
+  if(F.autreUnion==='oui') add('Avez-vous pensé à la protection des enfants d\'une première union (réserve, assurance-vie, clause de préciput) ?','Notaire','Comment équilibrer la protection du conjoint et celle d\'enfants d\'une première union ?');
+  if(sum(R.immo,'val')>=1300000) add('Avez-vous pensé à votre position IFI — assiette réelle, dettes déductibles, immobilier professionnel exonéré ?','Votre conseiller (cabinet)','Mon immobilier dépasse 1,3 M€ : comment calculer proprement mon assiette IFI ?');
+  if(J.prevoyance && J.prevoyance!=='oui') add('Avez-vous pensé à la prévoyance croisée entre associés et à la garantie homme-clé ?','Votre conseiller (cabinet)','Comment fonctionnent les garanties croisées entre associés et l\'assurance homme-clé ?');
+
+  var host=document.getElementById('penseList');
+  if(!out.length){ host.innerHTML='<div class="ok">'+((Object.keys(J).length||R.immo.length)?'✓ Aucun point de vigilance détecté sur ce qui est renseigné — complétez le recueil pour affiner.':'Complétez le recueil ci-dessus : vos points de vigilance apparaîtront ici.')+'</div>'; return; }
+  host.innerHTML=out.map(function(p){
+    return '<div class="pcard"><div class="pq">'+p.q+'</div><div class="meta"><span class="pro">→ '+p.pro+'</span><a href="/app/marcel?q='+encodeURIComponent(p.mq)+'">En parler à Marcel →</a></div></div>';
+  }).join('');
+}
+
+/* ── init ── */
+(function(){
+  // société depuis la cartographie
+  try{ var soc=JSON.parse(localStorage.getItem('ikcp_societe')||'null');
+    if(soc&&soc.nom) document.getElementById('socHint').innerHTML='<b>'+esc(soc.nom)+'</b>'+(soc.forme?' · '+esc(soc.forme):'')+(soc.ca!=null?' · CA '+eur(soc.ca):'')+' — identité automatique (SIREN). Les bénéficiaires effectifs sont <b>déclaratifs</b> (le registre officiel n\'est plus en accès public libre depuis 2022).';
+  }catch(_){}
+  ['f_situation','f_regime','f_enfants','f_autreUnion'].forEach(function(id){ var el=document.getElementById(id); if(el&&R.famille[id.slice(2)]!=null) el.value=R.famille[id.slice(2)]; });
+  var sv=document.getElementById('s_valo'); if(sv&&R.s_valo) sv.value=R.s_valo;
+  Object.keys(DEFS).forEach(renderRows);
+  renderJur();
+  save();
+})();
+</script>
+<script src="/protect.js?v=2" defer></script>
+<script src="/app/js/sync.js" defer></script>
+</body>
+</html>

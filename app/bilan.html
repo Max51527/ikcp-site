@@ -163,7 +163,19 @@ function render(biens, soc, data){
         'La transmission de vos titres de société peut bénéficier d\'une exonération de <b>75 % de l\'assiette taxable</b> (art. 787 B CGI), sous engagement de conservation.'+(assietteDut>0?' Sur une base de '+eur(assietteDut)+', l\'assiette taxée tomberait à '+eur(assietteDut*0.25)+'.':''));
       html+=piste('jur','Holding (SPFPL / société mère)','Loger vos titres dans une holding permet de remonter la trésorerie en quasi-franchise (régime mère-fille), de réinvestir avant impôt personnel et de préparer la transmission.');
     }
+    try{ var rec=JSON.parse(localStorage.getItem("ikcp_recueil")||"null");
+      if(rec && rec.juridique && Object.keys(rec.juridique).length){
+        var Jx=rec.juridique, Fx=rec.famille||{};
+        var etat=function(v){ return v==="oui"?"<b style=\"color:#2E7D5B\">en place</b>":(v==="non"?"<b style=\"color:#B0414C\">absent</b>":"<b style=\"color:var(--gold-d)\">à vérifier</b>"); };
+        html+=piste("jur","Votre volet juridique déclaré (recueil)",
+          "Régime : <b>"+esc(Fx.regime||"non renseigné")+"</b> · Testament : "+etat(Jx.testament)+" · Donation entre époux : "+etat(Jx.donationEpoux)+" · Mandat de protection : "+etat(Jx.mandatProtection)+" · Pacte d\u2019associés : "+etat(Jx.pacteAssocies)+" · Prévoyance dirigeant : "+etat(Jx.prevoyance)+".",
+          "<div class=\"ba\"><span>→ Le détail et les « Avez-vous pensé à ? » (notaire, avocat, expert-comptable) sont dans votre <b>recueil patrimonial</b></span></div>");
+      } else {
     html+=piste('jur','Régime matrimonial & mandat de protection future','Deux audits souvent oubliés : votre régime matrimonial protège-t-il votre conjoint et l\'entreprise ? Un mandat de protection future sécurise la continuité en cas d\'incapacité.');
+      }
+    }catch(_){
+    html+=piste('jur','Régime matrimonial & mandat de protection future','Deux audits souvent oubliés : votre régime matrimonial protège-t-il votre conjoint et l\'entreprise ? Un mandat de protection future sécurise la continuité en cas d\'incapacité.');
+    }
     html+='</div>';
 
     // ===== 3 · FISCAL =====
