@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B1426">
 <meta name="robots" content="noindex, nofollow">
-<title>IKCP · Console de pilotage</title>
+<title>Marcel IA · Console de pilotage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -179,18 +179,18 @@ select option{background:var(--navy-deep)}
     <button class="side-close" onclick="toggleMenu(false)" aria-label="Fermer le menu">✕</button>
     <div class="brand">
       <div class="mark">IK</div>
-      <div class="t">Console<small>Pilotage IKCP</small></div>
+      <div class="t">Console<small>Pilotage Marcel IA</small></div>
     </div>
     <nav class="nav" id="nav">
       <a href="#dashboard" class="on"><span class="ic">◆</span> Tableau de bord</a>
       <a href="#synthese"><span class="ic">◈</span> Synthèse &amp; feuille de route</a>
       <a href="#code"><span class="ic">⌥</span> Code &amp; outils</a>
-      <a href="#membres"><span class="ic">👤</span> Membres & familles</a>
-      <a href="#beta"><span class="ic">✦</span> Bêta & invitations <span class="badge" id="bdgBeta"></span></a>
+      <a href="#membres"><span class="ic">👤</span> Membres & comptes</a>
+      <a href="#beta"><span class="ic">✦</span> Accès & inscriptions <span class="badge" id="bdgBeta"></span></a>
       <a href="#partenaires"><span class="ic">🤝</span> Partenaires <span class="badge" id="bdgPart"></span></a>
       <a href="#agents"><span class="ic">⬡</span> Agents IA</a>
       <a href="#veille"><span class="ic">◷</span> Veille & contenu</a>
-      <a href="#feedback"><span class="ic">✎</span> Retours testeurs <span class="badge" id="bdgFb"></span></a>
+      <a href="#feedback"><span class="ic">✎</span> Retours membres <span class="badge" id="bdgFb"></span></a>
       <a href="#app"><span class="ic">📱</span> Application & sur-mesure</a>
       <a href="#reglages"><span class="ic">⚙</span> Réglages & liens</a>
     </nav>
@@ -239,10 +239,10 @@ select option{background:var(--navy-deep)}
       <section class="view" id="v-membres">
         <div class="card" style="margin-top:0">
           <h2>🧪 Définir un tier <span class="desc tools" style="margin:0"></span></h2>
-          <div class="desc">Pour vivre l'expérience client : connectez-vous (lien magique), passez votre email en intelligence patrimoniale ici, puis rafraîchissez l'espace membre.</div>
+          <div class="desc">Pour vivre l'expérience client : connectez-vous (lien magique), passez votre email dans le tier voulu ici, puis rafraîchissez l'espace membre.</div>
           <div class="row">
             <div><label>Email du membre</label><input type="email" id="stEmail" placeholder="maxime@ikcp.fr"></div>
-            <div><label>Tier</label><select id="stTier"><option value="fo">intelligence patrimoniale (test complet)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
+            <div><label>Tier</label><select id="stTier"><option value="fo">FO — accès complet (héritage)</option><option value="premium">Premium</option><option value="free">Découverte</option></select></div>
             <div style="flex:0 0 auto;display:flex;align-items:flex-end"><button class="btn" onclick="setTier()">Appliquer →</button></div>
           </div>
           <div id="stMsg"></div>
@@ -257,7 +257,7 @@ select option{background:var(--navy-deep)}
       <section class="view" id="v-beta">
         <div class="card" style="margin-top:0">
           <h2>Générer une invitation</h2>
-          <div class="desc">Crée un code d'accès bêta (familles fondatrices). Lien à transmettre directement à la famille.</div>
+          <div class="desc">Crée un code d'accès direct (contourne la validation d'inscription). À réserver aux clients que vous connaissez déjà.</div>
           <div class="row">
             <div><label>Email destinataire (option)</label><input type="email" id="invEmail" placeholder="client@email.fr"></div>
             <div><label>Utilisations max</label><input type="number" id="invMax" value="1" min="1"></div>
@@ -312,7 +312,7 @@ select option{background:var(--navy-deep)}
           <div style="overflow-x:auto"><table>
             <tr><th>API</th><th>Pour quoi</th><th>Quand</th></tr>
             <tr><td>Stripe</td><td>Paiement / abonnement (code prêt)</td><td><span class="pill premium">monétisation</span></td></tr>
-            <tr><td>GoCardless / Powens (DSP2)</td><td>Agrégation bancaire souveraine</td><td><span class="pill premium">post-bêta</span></td></tr>
+            <tr><td>Powens (DSP2)</td><td>Agrégation bancaire souveraine</td><td><span class="pill premium">en attente (slot prêt)</span></td></tr>
             <tr><td>INSEE Sirene</td><td>Données entreprises (gratuit, complète Pappers)</td><td><span class="pill premium">option</span></td></tr>
             <tr><td>Histovec</td><td>Historique véhicules (univers passions)</td><td><span class="pill free">option</span></td></tr>
           </table></div>
@@ -344,7 +344,7 @@ select option{background:var(--navy-deep)}
       <!-- ═══ FEEDBACK ═══ -->
       <section class="view" id="v-feedback">
         <div class="card" style="margin-top:0">
-          <h2>✎ Retours testeurs <button class="btn ghost sm tools" onclick="loadFeedback()">↻</button></h2>
+          <h2>✎ Retours membres <button class="btn ghost sm tools" onclick="loadFeedback()">↻</button></h2>
           <div class="desc">Retours envoyés depuis l'espace membre (et par email à maxime@ikcp.fr).</div>
           <div id="feedback"><div class="empty">Chargement…</div></div>
         </div>
@@ -356,7 +356,7 @@ select option{background:var(--navy-deep)}
           <div class="kpi"><span class="ic">⬡</span><div class="v">10</div><div class="l">Agents / API live</div></div>
           <div class="kpi"><span class="ic">▦</span><div class="v">15+</div><div class="l">Écrans membre</div></div>
           <div class="kpi"><span class="ic">🧮</span><div class="v">9</div><div class="l">Simulateurs</div></div>
-          <div class="kpi"><span class="ic">✦</span><div class="v">50</div><div class="l">Places bêta</div></div>
+          <div class="kpi"><span class="ic">🔐</span><div class="v">Sur validation</div><div class="l">Chaque inscription approuvée à la main</div></div>
         </div>
 
         <div class="alert warn" style="margin-top:16px"><span class="x">⚠️</span><div><b>Vérité produit :</b> aucun retour terrain à ce jour. Le prochain levier n'est pas une fonctionnalité — c'est ton <b>premier utilisateur réel</b>. Modèle : ① prestation directe aux dirigeants · ② SaaS white-label aux confrères CGP.</div></div>
@@ -366,7 +366,7 @@ select option{background:var(--navy-deep)}
           <div class="digest">
             <b>IA</b> — Moteur souverain <b>Mistral</b> (FR) : Marcel orchestrateur (MIF II serveur) · Codex · Hermès · Bâtisseur · Lifestyle · Veille · Vocal (Voxtral). Anthropic en secours technique.<br>
             <b>API réelles</b> — Pappers (SIREN) · DVF (prix m²) · Perplexity.<br>
-            <b>SaaS</b> — Auth lien magique · tiers/quotas · gating bêta 50 + accusé auto · sync D1 (patrimoine + famille) · onboarding adaptatif (typologie).<br>
+            <b>SaaS</b> — Auth lien magique · tiers/quotas · verrou d'inscription (validation personnelle de chaque demande) · sync D1 (patrimoine + famille) · onboarding adaptatif (typologie).<br>
             <b>Membre</b> — Cockpit · Radiographie 360° · 9 simulateurs · Famille &amp; gouvernance · Score « questions à se poser » · Immobilier · nav native unifiée.<br>
             <b>App</b> — PWA installable · APK Android · manifest store-ready.<br>
             <b>Funnel</b> — bandeau accueil → /decouvrir (vidéo + formulaire) → email · Configurateur white-label.<br>
@@ -394,7 +394,7 @@ select option{background:var(--navy-deep)}
 
         <div class="card">
           <h2>📅 Cap septembre</h2>
-          <div class="digest"><b>Juin</b> — tes 3 gestes + finitions (Top 10 n°4-9).<br><b>Juillet</b> — bêta douce 5-10 testeurs + vidéos.<br><b>Août</b> — itérations + relecture AMF + liste des 50.<br><b>Septembre</b> — ouverture publique. <b>Verdict : confortable</b>, seul vrai risque = la couverture juridique (n°3).</div>
+          <div class="digest"><b>Juillet</b> — GO Android (.aab + 2ᵉ empreinte), Stripe live, premiers accès validés à la main.<br><b>Août</b> — preuve sociale + doctrine 50+ fiches + vidéos depuis les schémas.<br><b>Septembre</b> — accélération SEO + ouverture du chantier B2B white-label (Option D).</div>
         </div>
       </section>
 
@@ -423,7 +423,7 @@ select option{background:var(--navy-deep)}
           <div style="overflow-x:auto"><table>
             <tr><th>Brique</th><th>Verdict</th><th>Pourquoi pour toi</th></tr>
             <tr><td><a href="https://github.com/OpenBMB/VoxCPM" target="_blank">VoxCPM</a></td><td><span class="pill fo">✅ déjà chez toi</span></td><td>C'est déjà ton moteur voix (ikcp-voice).</td></tr>
-            <tr><td><a href="https://github.com/livekit/agents" target="_blank">LiveKit Agents</a></td><td><span class="pill premium">🟡 plus tard</span></td><td>Vrai upgrade « voix temps réel / Jarvis », mais infra WebRTC lourde. Ta voix actuelle suffit pour la bêta.</td></tr>
+            <tr><td><a href="https://github.com/livekit/agents" target="_blank">LiveKit Agents</a></td><td><span class="pill premium">🟡 plus tard</span></td><td>Vrai upgrade « voix temps réel / Jarvis », mais infra WebRTC lourde. Ta voix actuelle suffit pour la V1.</td></tr>
             <tr><td><a href="https://github.com/n8n-io/n8n" target="_blank">n8n</a></td><td><span class="pill premium">🟡 à évaluer</span></td><td>Alternative <b>self-hosted souveraine</b> à Make.com. Pertinent si tu rapatries l'automatisation en France.</td></tr>
             <tr><td>Open SaaS · BoxyHQ · Vercel Sub.</td><td><span class="pill free">❌ piège</span></td><td>Tu as DÉJÀ ta base SaaS (Workers + D1 + auth + tiers). Migrer = jeter du code qui marche + perdre la souveraineté (stack US/Postgres).</td></tr>
             <tr><td>LangChain · Langflow</td><td><span class="pill free">❌ inutile</span></td><td>Marcel orchestre déjà (Option A validée). Ajouter = la complexité que tu as justement évitée.</td></tr>
@@ -449,11 +449,11 @@ select option{background:var(--navy-deep)}
           <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/pages" target="_blank">☁️ Cloudflare Pages — le site (déploiements, domaine)</a>
           <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers/overview" target="_blank">⚙️ Cloudflare Workers — les agents IA / API (logs, secrets)</a>
           <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">Application &amp; espaces</div>
-          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur intelligence patrimoniale (white-label) — packager un espace de marque</a>
+          <span class="lnk" style="opacity:.55;cursor:default">🎛️ Configurateur white-label — parqué (backlog B2B · Option D)</span>
           <a class="lnk" href="/app/patrimoine-pro" target="_blank">📊 Cockpit patrimoine (le SaaS premium)</a>
           <a class="lnk" href="/decouvrir" target="_blank">🎬 Vitrine /decouvrir (vidéo + invitation)</a>
           <a class="lnk" href="/app/dashboard" target="_blank">📲 Espace membre — installer la PWA (« écran d'accueil »)</a>
-          <div class="desc" style="margin-top:12px">📱 APK Android : construit localement (Bubblewrap). Distribution Play Store = ton compte développeur Google (je rebuild, tu soumets).</div>
+          <div class="desc" style="margin-top:12px">📱 App Android : .aab construit (PWABuilder · eu.ikcp.app). Compte Play Console créé — reste : upload du .aab, puis coller la 2ᵉ empreinte SHA-256 (Play App Signing) dans assetlinks.json.</div>
         </div>
         <div class="card">
           <h2>⚙ Centre technique — toutes tes consoles</h2>
@@ -462,10 +462,10 @@ select option{background:var(--navy-deep)}
           <a class="lnk" href="https://dash.cloudflare.com/eaddc4cc77d99dd397a62e5d5a1b6864/workers-and-pages" target="_blank">☁️ Cloudflare — hébergement, Workers (tes APIs), base D1, logs &amp; secrets</a>
           <a class="lnk" href="https://github.com/Max51527/ikcp-site" target="_blank">💻 GitHub — code source (déploiement auto à chaque push)</a>
           <a class="lnk" href="https://ikcp.notion.site/Documentation-6da4ff7ad97b45b5b7af51200303ac1c" target="_blank">📖 Documentation (Notion) — à tenir à jour</a>
-          <a class="lnk" href="https://app.notion.com/p/287f73500d774c15a7b514d3b4b78966" target="_blank">📊 Base retours bêta (Notion)</a>
+          <a class="lnk" href="https://app.notion.com/p/287f73500d774c15a7b514d3b4b78966" target="_blank">📊 Base retours membres (Notion)</a>
           <a class="lnk" href="/app/architecture.html" target="_blank">🗺️ Schéma d'architecture (vue d'ensemble)</a>
           <a class="lnk" href="/app/test.html" target="_blank">🧪 Cockpit de test (barre d'avancement)</a>
-          <a class="lnk" href="/app/studio.html" target="_blank">🎨 Studio design</a>
+          <span class="lnk" style="opacity:.55;cursor:default">🎨 Studio design — parqué</span>
           <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:16px 0 8px">APIs externes connectées · usage &amp; facturation</div>
           <a class="lnk" href="https://console.anthropic.com/settings/usage" target="_blank">🧠 Anthropic — moteur IA (Marcel · Marcel) · usage &amp; coût</a>
           <a class="lnk" href="https://www.perplexity.ai/settings/api" target="_blank">🔎 Perplexity — veille temps réel · usage</a>
@@ -483,7 +483,7 @@ select option{background:var(--navy-deep)}
             <b>MIF II</b> — chaque réponse IA finit par une question, jamais une recommandation produit (art. L.541-1 garanti côté serveur).<br>
             <b>RGPD</b> — hébergement Cloudflare WEUR (Paris), D1 SQLite Paris. Sous-traitants nommés sur les pages légales.<br>
             <b>ORIAS</b> — 23001568, mention systématique en footer.<br>
-            <b>Bêta sans avocat AMF</b> — responsabilité personnelle assumée ; RDV avocat déclenché au 1ᵉʳ client signé.
+            <b>Lancement sans avocat AMF</b> — responsabilité personnelle assumée ; RDV avocat déclenché au 1ᵉʳ client signé.
           </div>
         </div>
       </section>
@@ -500,7 +500,7 @@ select option{background:var(--navy-deep)}
             <button onclick="loadAppInfo(true)">↻ Revérifier la version</button>
             <a class="lnk" href="/app/dashboard" target="_blank" style="margin:0">📲 Ouvrir l'app (installer)</a>
           </div>
-          <div class="desc" style="margin-top:12px">📦 <b>APK Android</b> : construit localement (Bubblewrap TWA · eu.ikcp.app), pointe sur le site live. Distribution Play Store = ton compte développeur Google (je rebuild, tu soumets).</div>
+          <div class="desc" style="margin-top:12px">📦 <b>App Android</b> : .aab construit (PWABuilder · TWA eu.ikcp.app), pointe sur le site live (mise à jour automatique à chaque déploiement). Reste : upload du .aab sur ta Play Console + 2ᵉ empreinte SHA-256 → assetlinks.json.</div>
         </div>
 
         <div class="card">
@@ -519,10 +519,10 @@ select option{background:var(--navy-deep)}
         <div class="card">
           <h2>🎨 Sur-mesure — « Claude design »</h2>
           <div class="desc">Ajuster le sur-mesure d'un espace intelligence patrimoniale, sans coder. Trois leviers :</div>
-          <a class="lnk" href="/app/studio-fo" target="_blank">🎛️ Configurateur intelligence patrimoniale (white-label) — packager un espace de marque pour un confrère CGP</a>
-          <a class="lnk" href="/app/studio.html" target="_blank">🎨 Studio design — palettes, typographies, composants</a>
+          <span class="lnk" style="opacity:.55;cursor:default">🎛️ Configurateur white-label pour confrères CGP — parqué (backlog B2B · Option D)</span>
+          <span class="lnk" style="opacity:.55;cursor:default">🎨 Studio design (palettes, typos) — parqué</span>
           <div class="alert ok" style="margin-top:10px"><span class="x">💬</span><div><b>Claude design (le plus puissant)</b> — ouvre la page à ajuster et dis « Claude, change X ici ». Modif → push GitHub → en ligne en ~30 s.</div></div>
-          <div class="alert warn" style="margin-top:10px"><span class="x">🌌</span><div><b>Univers créés par le client</b> (chaque famille compose ses propres univers) = prochaine brique produit. Dis « go univers clients » et je câble l'éditeur côté membre + stockage D1.</div></div>
+          <div class="alert warn" style="margin-top:10px"><span class="x">🌌</span><div><b>Univers personnalisés par le client</b> = idée en réserve (backlog post-V1).</div></div>
         </div>
       </section>
 
@@ -642,8 +642,8 @@ const TITLES = {
   dashboard:['Tableau de <em>bord</em>','Vue d\'ensemble de la plateforme'],
   synthese:['Synthèse &amp; <em>feuille de route</em>','Où en est le projet · Top 10 à améliorer'],
   code:['Code &amp; <em>outils</em>','Dépôt GitHub, déploiement, et briques externes triées'],
-  membres:['Membres & <em>familles</em>','Comptes, tiers et activité'],
-  beta:['Bêta & <em>invitations</em>','Familles fondatrices, codes et candidatures'],
+  membres:['Membres & <em>comptes</em>','Comptes, tiers et activité'],
+  beta:['Accès & <em>inscriptions</em>','Validation personnelle des demandes, codes directs'],
   partenaires:['Partenaires & <em>réseau</em>','Avocats · notaires · assureurs · gestion de fortune — payé ou curé'],
   agents:['Agents <em>IA</em>','État live des intelligences souveraines'],
   veille:['Veille & <em>contenu</em>','Digest quotidien, CMS et publication'],
