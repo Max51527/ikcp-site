@@ -417,6 +417,16 @@ select option{background:var(--navy-deep)}
           <div class="alert ok" style="margin-top:12px"><span class="x">✓</span><div>Pour <b>ne pas</b> déployer un changement : commit sur une branche autre que <code>main</code>, ou demande-moi « ne déploie pas » → je pousse sans merger. Le déploiement n'arrive que sur <code>main</code>.</div></div>
         </div>
 
+        <div class="card" id="ghCard">
+          <h2>🔄 Modifications &amp; valeur ajoutée <button class="btn ghost sm tools" onclick="loadGitHub()">↻</button></h2>
+          <div class="desc">En direct depuis GitHub : ce qui a été livré (et ce que ça t'apporte), et les <b>propositions du lundi à valider</b>. Chaque merge = déploiement automatique.</div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 8px">Propositions à valider (Pull Requests)</div>
+          <div id="ghPRs" class="desc">Chargement…</div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Dernières livraisons sur la production</div>
+          <div id="ghSum" class="desc"></div>
+          <div id="ghCommits" class="desc">Chargement…</div>
+        </div>
+
         <div class="card">
           <h2>🧰 Briques externes — <em style="font-style:italic;color:var(--gold-bright)">mon tri pour TOI</em></h2>
           <div class="desc">Tu pars d'une stack souveraine qui marche (Cloudflare + Marcel + voix). La règle : n'ajoute que ce qui n'existe pas déjà chez toi — et ne jette JAMAIS du code qui tourne.</div>
@@ -628,6 +638,64 @@ async function unlock(){
     document.getElementById('unlockBtn').disabled = false;
   }
 }
+
+/* ─── GITHUB LIVE : modifications & valeur ajoutée (repo public, aucune clé) ─── */
+const GH_REPO = 'Max51527/ikcp-site';
+function ghType(msg){
+  const m = String(msg||'').toLowerCase();
+  if (m.startsWith('feat'))    return ['✨', 'Nouveauté',    'fo'];
+  if (m.startsWith('fix'))     return ['🔧', 'Correctif',    'premium'];
+  if (m.startsWith('propose')) return ['🗳️', 'Proposition',  'premium'];
+  if (m.startsWith('docs'))    return ['📚', 'Documentation','free'];
+  return ['⚙️', 'Technique', 'free'];
+}
+function ghClean(msg){
+  return String(msg||'').split('\n')[0].replace(/^(feat|fix|docs|ci|chore|propose)(\([^)]*\))?:\s*/i,'');
+}
+async function loadGitHub(){
+  const cEl = document.getElementById('ghCommits'), pEl = document.getElementById('ghPRs'), sEl = document.getElementById('ghSum');
+  if (!cEl) return;
+  // Pull Requests ouvertes (les propositions du lundi)
+  try {
+    const prs = await (await fetch('https://api.github.com/repos/'+GH_REPO+'/pulls?state=open&per_page=10')).json();
+    if (Array.isArray(prs) && prs.length){
+      pEl.innerHTML = prs.map(pr => {
+        const ref = (pr.head && pr.head.ref) || '';
+        const preview = ref ? ('https://' + ref.replace(/[\/_.]+/g,'-').toLowerCase() + '.ikcp-eu.pages.dev') : '';
+        return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed rgba(226,200,150,.18)">'
+          + '<span class="pill fo">à valider</span>'
+          + '<b style="flex:1;min-width:180px">' + String(pr.title||'').replace(/</g,'&lt;') + '</b>'
+          + (preview ? '<a class="lnk" style="margin:0" href="' + preview + '" target="_blank">👁 Prévisualiser</a>' : '')
+          + '<a class="lnk" style="margin:0" href="' + pr.html_url + '" target="_blank">✅ Valider / refuser sur GitHub</a>'
+          + '</div>';
+      }).join('');
+    } else if (Array.isArray(prs)) {
+      pEl.innerHTML = '✓ Aucune proposition en attente — la prochaine arrive <b>lundi 9h15</b> (routine hebdomadaire).';
+    } else { pEl.textContent = 'Indisponible (limite API atteinte — réessayez dans une heure).'; }
+  } catch(_) { pEl.textContent = 'Hors ligne ou limite API — réessayez.'; }
+  // Commits récents sur main = ce qui est EN PRODUCTION
+  try {
+    const cs = await (await fetch('https://api.github.com/repos/'+GH_REPO+'/commits?sha=main&per_page=12')).json();
+    if (!Array.isArray(cs)) { cEl.textContent = 'Indisponible (limite API — réessayez dans une heure).'; return; }
+    const weekAgo = Date.now() - 7*86400000;
+    let feats = 0, fixes = 0;
+    cEl.innerHTML = cs.map(c => {
+      const msg = (c.commit && c.commit.message) || '';
+      const [ic, lab, pill] = ghType(msg);
+      const when = new Date(c.commit.author.date);
+      if (when.getTime() > weekAgo) { if (/^feat/i.test(msg)) feats++; if (/^fix/i.test(msg)) fixes++; }
+      return '<div style="display:flex;align-items:baseline;gap:9px;padding:7px 0;border-bottom:1px dashed rgba(226,200,150,.14)">'
+        + '<span class="pill ' + pill + '" style="flex:0 0 auto">' + ic + ' ' + lab + '</span>'
+        + '<span style="flex:1;min-width:0">' + ghClean(msg).replace(/</g,'&lt;') + '</span>'
+        + '<span style="color:var(--mute);font-size:11px;white-space:nowrap">' + when.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) + '</span>'
+        + '<a href="https://github.com/' + GH_REPO + '/commit/' + c.sha + '" target="_blank" style="font-family:monospace;font-size:11px;color:var(--gold)">' + c.sha.slice(0,7) + '</a>'
+        + '</div>';
+    }).join('');
+    sEl.innerHTML = '<b>Valeur ajoutée sur 7 jours :</b> ' + feats + ' nouveauté' + (feats>1?'s':'') + ' · ' + fixes + ' correctif' + (fixes>1?'s':'') + ' — tout est en ligne automatiquement.';
+  } catch(_) { cEl.textContent = 'Hors ligne ou limite API — réessayez.'; }
+}
+try { loadGitHub(); } catch(_) {}
+
 function logout(){ sessionStorage.removeItem('ikcp_admin_secret'); localStorage.removeItem('ikcp_admin_secret'); location.reload(); }
 // Mémorisation : si la clé a déjà été saisie sur cet appareil, on déverrouille tout seul (plus de mot de passe à retaper).
 if (SECRET) { setTimeout(unlock, 50); }
