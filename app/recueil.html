@@ -152,6 +152,13 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
     <div id="penseList"><div class="ok">Complétez le recueil ci-dessus : vos points de vigilance apparaîtront ici.</div></div>
   </div>
 
+  <!-- RÉSULTATS DIRECTS — PISTES CHIFFRÉES (Premium) -->
+  <section class="blk" id="pistesBlk" style="border-color:rgba(201,169,110,.5);background:linear-gradient(155deg,#fff,var(--cream2))">
+    <h2>✦ Vos pistes chiffrées — à partir de ce recueil</h2>
+    <div class="hint">Marcel croise tout ce que vous venez de saisir (famille, âge, société, actifs, volet juridique) et chiffre vos pistes. <b>Information, jamais une recommandation</b> (art. L.541-1 CoMoFi).</div>
+    <div id="pistesZone"></div>
+  </section>
+
   <div class="cta-b">
     <a class="btn" href="/app/bilan">📄 Générer mon audit 360° →</a>
     <a class="btn ghost" href="/app/patrimoine-pro">Voir mon cockpit →</a>
@@ -345,6 +352,85 @@ function renderPense(){
   Object.keys(DEFS).forEach(renderRows);
   renderJur();
   save();
+})();
+</script>
+<script type="module">
+/* ✦ Pistes chiffrées Premium — Marcel lit le recueil complet (le jeton porte le tier → doctrine du cabinet injectée côté serveur) */
+import { Marcel } from '/app/js/api.js';
+(function(){
+  var zone=document.getElementById('pistesZone'); if(!zone) return;
+  var TIER='free'; try{ TIER=localStorage.getItem('ikcp_tier')||'free'; }catch(_){}
+  var PREMIUM=/^(premium|fo)$/.test(TIER);
+
+  function mdLite(t){
+    return String(t).replace(/[&<]/g,function(c){return c==='&'?'&amp;':'&lt;';})
+      .replace(/^#{1,3}\s?(.+)$/gm,'<div style="font-family:\'Playfair Display\',serif;font-weight:600;color:var(--navy);margin:13px 0 3px;font-size:15.5px">$1</div>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/^\s*[-•]\s+(.+)$/gm,'• $1')
+      .replace(/\n{2,}/g,'<br><br>').replace(/\n/g,'<br>');
+  }
+  function ctxRecueil(){
+    var r=null,soc=null;
+    try{ r=JSON.parse(localStorage.getItem('ikcp_recueil')||'null'); }catch(_){}
+    try{ soc=JSON.parse(localStorage.getItem('ikcp_societe')||'null'); }catch(_){}
+    if(!r) return null;
+    var F=r.famille||{}, J=r.juridique||{};
+    var age=null; try{ if(F.naissance){ var bd=new Date(F.naissance); if(!isNaN(bd.getTime())){ var n=new Date(); age=n.getFullYear()-bd.getFullYear(); var m=n.getMonth()-bd.getMonth(); if(m<0||(m===0&&n.getDate()<bd.getDate())) age--; } } }catch(_){}
+    var sum=function(l,f){ return (l||[]).reduce(function(a,x){return a+(+x[f]||0);},0); };
+    var parts=[];
+    if(age!=null) parts.push('âge '+age+' ans');
+    if(F.situation) parts.push(F.situation+(F.regime?(' ('+F.regime+')'):''));
+    if(F.enfants) parts.push(F.enfants+' enfant(s)'+(F.autreUnion==='oui'?' dont d\u2019une autre union':''));
+    if(soc&&soc.nom) parts.push('société '+soc.nom+(soc.resultat!=null?(', résultat '+Math.round(soc.resultat)+' €'):''));
+    if(+r.s_valo) parts.push('valorisation société '+r.s_valo+' €');
+    var immo=sum(r.immo,'val'), crd=sum(r.immo,'crd');
+    if(immo) parts.push('immobilier '+immo+' € (crédits restants '+crd+' €'+((r.immo||[]).some(function(b){return b.det==="SCI à l\u2019IS"||b.det==="SCI à l'IS";})?', dont SCI à l\u2019IS':'')+')');
+    var fin=sum(r.fin,'val'); if(fin) parts.push('avoirs financiers '+fin+' € ('+(r.fin||[]).map(function(x){return x.type;}).join(', ')+')');
+    var pas=sum(r.passifs,'val'); if(pas) parts.push('autres passifs '+pas+' €');
+    var jur=[]; ['testament','donationEpoux','mandatProtection','pacteAssocies','prevoyance','dependance','ij'].forEach(function(k){ if(J[k]) jur.push(k+'='+J[k]); });
+    if(jur.length) parts.push('juridique: '+jur.join(', '));
+    return parts.length? parts.join(' ; ') : null;
+  }
+
+  function renderGate(){
+    zone.innerHTML='<div style="border:1.5px dashed rgba(184,149,110,.5);border-radius:12px;padding:16px;text-align:center">'
+      +'<div style="font-family:\'Playfair Display\',serif;font-weight:600;font-size:16px;color:var(--navy)">🔒 Réservé à Premium</div>'
+      +'<div style="font-size:12.5px;color:var(--mute);margin:6px auto 12px;max-width:46ch">Vos questions « Avez-vous pensé à ? » ci-dessus sont offertes. En Premium, Marcel <b>chiffre</b> vos pistes à partir de ce recueil, nourri de la doctrine du cabinet.</div>'
+      +'<a class="btn" href="/app/profil.html" style="font-size:13px;padding:11px 18px">Passer en Premium →</a></div>';
+  }
+  function renderBtn(label){
+    zone.innerHTML='<button class="btn" id="goPistes" style="font-size:13.5px">'+label+'</button><div id="pistesOut" style="margin-top:12px;font-size:14px;line-height:1.62;color:var(--ink)"></div>';
+    document.getElementById('goPistes').addEventListener('click', generate);
+  }
+  async function generate(){
+    var btn=document.getElementById('goPistes'), out=document.getElementById('pistesOut');
+    var ctx=ctxRecueil();
+    if(!ctx){ out.innerHTML='<span style="color:var(--mute)">Complétez d\u2019abord le recueil ci-dessus — Marcel a besoin de matière.</span>'; return; }
+    btn.disabled=true; btn.textContent='Marcel chiffre vos pistes…';
+    out.innerHTML='<span style="color:var(--mute);font-style:italic">Analyse du recueil en cours (quelques secondes)…</span>';
+    var prompt='Voici mon recueil patrimonial complet : '+ctx+'. Donne-moi exactement 3 PISTES DE RÉFLEXION personnalisées et CHIFFRÉES (barèmes 2026). Pour chacune : un titre en ## ; l\u2019angle en 2 lignes ; un AVANT/APRÈS chiffré (ordres de grandeur) ; le point de vigilance ; UNE question. Croise les dimensions (âge, régime matrimonial, société, clauses, crédits). Strictement informatif (art. L.541-1 CoMoFi), aucune recommandation.';
+    try{
+      var r=await Marcel.chat(prompt, []);
+      var t=(r&&(r.reply||r.message))||'';
+      if(!t){ out.innerHTML='<span style="color:var(--mute)">Réessayez dans un instant.</span>'; }
+      else{
+        out.innerHTML=mdLite(t);
+        try{ var rec=JSON.parse(localStorage.getItem('ikcp_recueil')||'{}'); localStorage.setItem('ikcp_recueil_pistes', JSON.stringify({maj:rec.maj||0, text:t, at:Date.now()})); }catch(_){}
+      }
+    }catch(e){ out.innerHTML='<span style="color:var(--mute)">Service momentanément indisponible — réessayez.</span>'; }
+    btn.disabled=false; btn.textContent='✦ Régénérer mes pistes';
+  }
+
+  if(!PREMIUM){ renderGate(); return; }
+  // Premium : résultat direct — cache si le recueil n\u2019a pas changé, sinon bouton
+  var cached=null; try{ cached=JSON.parse(localStorage.getItem('ikcp_recueil_pistes')||'null'); }catch(_){}
+  var rec=null; try{ rec=JSON.parse(localStorage.getItem('ikcp_recueil')||'null'); }catch(_){}
+  if(cached && cached.text && rec && cached.maj===rec.maj){
+    renderBtn('✦ Régénérer mes pistes');
+    document.getElementById('pistesOut').innerHTML=mdLite(cached.text);
+  } else {
+    renderBtn('✦ Chiffrer mes pistes à partir de ce recueil →');
+  }
 })();
 </script>
 <script src="/protect.js?v=2" defer></script>
