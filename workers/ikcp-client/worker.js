@@ -800,24 +800,31 @@ function emailTemplateMagic(verifyUrl) {
   </div>`;
 }
 function emailTemplateWelcome() {
-  return `<div style="font-family:Georgia,serif;max-width:520px;margin:auto;padding:32px;background:#FAF6EE;color:#2D2520">
-    <h1 style="font-size:24px;color:#D97757">Bienvenue dans votre Salon IKCP</h1>
-    <p>Compte <b>Découverte</b> activé : 1 cartographie d'entreprise par mois (Pappers), 30 messages avec Marcel.</p>
-    <p>Pour aller plus loin : <a href="https://ikcp.eu/app/profil.html" style="color:#D97757">Premium 29 €/mois</a> — 10 lookups, Marcel personnalisé, cartographie auto.</p>
+  return `<div style="font-family:Georgia,'Times New Roman',serif;max-width:520px;margin:auto;padding:34px;background:#FAF8F4;color:#221E18;border:1px solid #E9E2D6;border-radius:12px">
+    <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
+    <h1 style="font-size:23px;color:#1B2A4A;margin:0 0 14px">Bienvenue</h1>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Votre compte <b>Découverte</b> est activé : cartographie de votre société (registre officiel), simulateurs du dirigeant et Marcel en découverte.</p>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Pour aller plus loin — audit patrimonial 360° complet, schémas de stratégie, Marcel illimité : <a href="https://ikcp.eu/app/profil.html" style="color:#8B6F3F;font-weight:bold">Premium à 49 €/mois ou 490 €/an</a>.</p>
+    <hr style="border:none;border-top:1px solid #E9E2D6;margin:20px 0 12px">
+    <p style="font-size:11px;color:#8A7E70;margin:0">Marcel IA — intelligence patrimoniale souveraine · IKCP · ORIAS 23001568</p>
   </div>`;
 }
 function emailTemplatePremiumWelcome() {
-  return `<div style="font-family:Georgia,serif;max-width:520px;margin:auto;padding:32px;background:#FAF6EE;color:#2D2520">
-    <h1 style="font-size:24px;color:#D97757">Bienvenue Premium</h1>
-    <p>Votre compte est activé. Vous bénéficiez désormais de :</p>
-    <ul><li>10 cartographies Pappers par mois</li><li>Marcel personnalisé · mémoire 90 j</li><li>Théodore (cartographie auto)</li><li>Olympe (synthèse trimestrielle)</li></ul>
-    <p>Mail prioritaire à Maxime : <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a></p>
+  return `<div style="font-family:Georgia,'Times New Roman',serif;max-width:520px;margin:auto;padding:34px;background:#FAF8F4;color:#221E18;border:1px solid #E9E2D6;border-radius:12px">
+    <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
+    <h1 style="font-size:23px;color:#1B2A4A;margin:0 0 14px">Bienvenue en Premium</h1>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Votre espace est débloqué :</p>
+    <ul style="font-size:14.5px;line-height:1.7;color:#5F5347;padding-left:20px"><li>Marcel illimité, nourri de la doctrine du cabinet</li><li>Audit patrimonial 360° complet + export PDF</li><li>Bibliothèque de schémas de stratégie (OBO, Dutreil, holding…)</li><li>Veille et alertes personnalisées</li></ul>
+    <p style="font-size:13px;color:#8A7E70">Une question ? <a href="mailto:maxime@ikcp.fr" style="color:#8B6F3F">maxime@ikcp.fr</a></p>
+    <hr style="border:none;border-top:1px solid #E9E2D6;margin:20px 0 12px">
+    <p style="font-size:11px;color:#8A7E70;margin:0">Marcel IA — intelligence patrimoniale souveraine · IKCP · ORIAS 23001568</p>
   </div>`;
 }
 function emailTemplateCancelRetention() {
-  return `<div style="font-family:Georgia,serif;max-width:520px;margin:auto;padding:32px;background:#FAF6EE;color:#2D2520">
-    <h1 style="font-size:24px;color:#D97757">On vous regrette</h1>
-    <p>Vous repassez en compte Découverte. Votre historique est préservé.</p>
+  return `<div style="font-family:Georgia,'Times New Roman',serif;max-width:520px;margin:auto;padding:34px;background:#FAF8F4;color:#221E18;border:1px solid #E9E2D6;border-radius:12px">
+    <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
+    <h1 style="font-size:23px;color:#1B2A4A;margin:0 0 14px">On vous regrette</h1>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Vous repassez en compte Découverte. Votre historique est préservé.</p>
     <p>Pour toute question : <a href="mailto:maxime@ikcp.fr">maxime@ikcp.fr</a></p>
   </div>`;
 }

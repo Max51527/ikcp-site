@@ -14,7 +14,7 @@
   if (!host) return;
 
   function readSoc(){ try{ return JSON.parse(localStorage.getItem('ikcp_societe')||'null'); }catch(_){ return null; } }
-  function readBiens(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && k.indexOf('ikcp_patrimoine_')===0){ var v=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(v)&&v.length) return v; } } }catch(_){} return []; }
+  function readBiens(){ try{ var flat=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null'); if(flat && typeof flat==='object' && !Array.isArray(flat)){ var map={tresorerie:'liquidites',passion:'collection'}; var out=[]; Object.keys(flat).forEach(function(k){ var v=+flat[k]||0; if(v>0 && k!=='passif') out.push({cat:(map[k]||k),value:v}); }); if(out.length) return out; } }catch(_){} try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && k.indexOf('ikcp_patrimoine_')===0 && k!=='ikcp_patrimoine_hist'){ var v=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(v)&&v.length) return v; } } }catch(_){} return []; }
   function eur(n){ n=Math.max(0,Math.round(n)); var c=Math.abs(n)>=1e6; return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:c?1:0,notation:c?'compact':'standard'}).format(n); }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 

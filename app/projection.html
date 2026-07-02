@@ -4,6 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#1B2A4A">
 <title>Projection patrimoniale & date d'indépendance · Marcel IA</title>
 <meta name="description" content="Projetez votre patrimoine dans le temps et estimez votre date d'indépendance financière. Aperçu gratuit, trajectoire détaillée & analyse de Marcel en Premium.">
 <meta name="robots" content="noindex">
@@ -117,9 +119,13 @@ var TIER='free'; try{ TIER=localStorage.getItem('ikcp_tier')||'free'; }catch(_){
 var isPremium = (TIER==='premium'||TIER==='fo');
 
 // Auto-remplit le patrimoine actuel depuis le cockpit s'il existe
-(function(){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
-  if(k&&k.indexOf('ikcp_patrimoine_')===0){ var a=JSON.parse(localStorage.getItem(k)||'[]');
-    if(Array.isArray(a)&&a.length){ var t=a.reduce(function(s,b){return s+(+b.value||0);},0); if(t>0){ document.getElementById('p0').value=Math.min(3000000,t);} } } } }catch(_){}
+(function(){ var t=0;
+  try{ var flat=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null');
+    if(flat&&typeof flat==='object'&&!Array.isArray(flat)){ Object.keys(flat).forEach(function(k){ if(k!=='passif') t+=(+flat[k]||0); }); } }catch(_){}
+  if(!(t>0)){ try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i);
+    if(k&&k.indexOf('ikcp_patrimoine_')===0&&k!=='ikcp_patrimoine_hist'){ var a=JSON.parse(localStorage.getItem(k)||'[]');
+      if(Array.isArray(a)&&a.length){ t=a.reduce(function(s,b){return s+(+b.value||0);},0); if(t>0) break; } } } }catch(_){} }
+  if(t>0){ try{ document.getElementById('p0').value=Math.min(3000000,t); }catch(_){} }
 })();
 
 function project(P0,S,r,age,targetAge){ var pts=[{age:age,val:P0}],v=P0; for(var a=age+1;a<=targetAge;a++){ v=v*(1+r)+S; pts.push({age:a,val:v}); } return pts; }

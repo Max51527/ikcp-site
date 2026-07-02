@@ -127,9 +127,10 @@
   <div id="marcelKnows" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px"></div>
   <script>(function(){
     function J(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(_){return null;}}
-    function eur(n){return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0,notation:Math.abs(n)>=1e6?'compact':'standard'}).format(Math.round(n));}
+    function eur(n){var c=Math.abs(n)>=1e6;return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:c?1:0,notation:c?'compact':'standard'}).format(Math.round(n));}
     var soc=J('ikcp_societe'), sc=J('ikcp_score'), biens=null;
-    try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('ikcp_patrimoine_')===0){var a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)&&a.length){biens=a;break;}}}}catch(_){}
+    try{var flat=J('ikcp_patrimoine');if(flat&&typeof flat==='object'&&!Array.isArray(flat)){var fo=[];Object.keys(flat).forEach(function(kk){var vv=+flat[kk]||0;if(vv>0&&kk!=='passif')fo.push({cat:kk,value:vv});});if(fo.length)biens=fo;}}catch(_){}
+    if(!biens){try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('ikcp_patrimoine_')===0&&k!=='ikcp_patrimoine_hist'){var a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)&&a.length){biens=a;break;}}}}catch(_){}}
     var brut=biens?biens.reduce(function(s,b){return s+(+b.value||0);},0):0;
     function tile(href,ic,t,v,ok){return '<a href="'+href+'" style="text-decoration:none;background:'+(ok?'rgba(184,149,110,.1)':'var(--cream2,#F4EFE7)')+';border:1px solid '+(ok?'rgba(184,149,110,.3)':'var(--line)')+';border-radius:11px;padding:11px 8px;text-align:center;display:block"><div style="font-size:18px">'+ic+'</div><div style="font-size:9.5px;color:var(--mute);margin-top:3px;font-weight:600">'+t+'</div><div style="font-size:10.5px;color:'+(ok?'var(--gold-deep,#8B6F3F)':'var(--mute)')+';margin-top:1px;font-weight:'+(ok?'600':'400')+'">'+v+'</div></a>';}
     var el=document.getElementById('marcelKnows'); if(el) el.innerHTML=

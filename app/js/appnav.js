@@ -95,7 +95,7 @@
   function mountFb() {
     if (document.querySelector('.ikcp-fb')) return;
     var fcss = document.createElement('style');
-    fcss.textContent = '.ikcp-fb{position:fixed;right:15px;bottom:86px;z-index:151;background:var(--accent,#C9A96E);color:#0E1729;border:0;border-radius:999px;padding:10px 15px;font:600 12.5px Outfit,system-ui,sans-serif;box-shadow:0 10px 26px -10px rgba(14,23,41,.55);cursor:pointer}'
+    fcss.textContent = '.ikcp-fb{position:fixed;right:15px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:151;background:var(--accent,#C9A96E);color:#0E1729;border:0;border-radius:999px;padding:10px 15px;font:600 12.5px Outfit,system-ui,sans-serif;box-shadow:0 10px 26px -10px rgba(14,23,41,.55);cursor:pointer}'
       + '.ikcp-fbm{position:fixed;inset:0;z-index:200;background:rgba(14,23,41,.55);display:none;align-items:flex-end;justify-content:center}.ikcp-fbm.open{display:flex}'
       + '.ikcp-fbm .box{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom))}'
       + '@media(min-width:560px){.ikcp-fbm{align-items:center}.ikcp-fbm .box{border-radius:20px}}'
@@ -151,7 +151,7 @@
       if (v < 3) return;
     } catch (_) { return; }
     var css = document.createElement('style');
-    css.textContent = '.ikcp-nps{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(12px);z-index:160;max-width:min(94vw,440px);background:#fff;border:1px solid rgba(27,42,74,.12);border-radius:16px;box-shadow:0 16px 44px -12px rgba(14,23,41,.4);padding:16px 18px;opacity:0;transition:.3s}'
+    css.textContent = '.ikcp-nps{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);z-index:160;max-width:min(94vw,440px);background:#fff;border:1px solid rgba(27,42,74,.12);border-radius:16px;box-shadow:0 16px 44px -12px rgba(14,23,41,.4);padding:16px 18px;opacity:0;transition:.3s}'
       + '.ikcp-nps.on{opacity:1;transform:translateX(-50%) translateY(0)}'
       + '.ikcp-nps h4{font-family:"Playfair Display",serif;font-weight:500;font-size:15px;margin:0 0 3px;color:#1B2A4A}'
       + '.ikcp-nps p{font-size:11.5px;color:#6E7689;margin:0 0 10px}'
