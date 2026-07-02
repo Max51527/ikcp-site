@@ -2,7 +2,12 @@ name: Deploy IKCP Site to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    # main = PRODUCTION (ikcp.eu). Toute autre branche listée = PRÉVISUALISATION
+    # Cloudflare Pages (URL dédiée <branche>.ikcp-eu.pages.dev) — la prod ne bouge pas.
+    branches:
+      - main
+      - ameliorations
+      - 'proposition/**'
     paths-ignore:
       - 'workers/**'
       - 'docs/**'
@@ -36,4 +41,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: eaddc4cc77d99dd397a62e5d5a1b6864
-          command: pages deploy . --project-name ikcp-eu --branch=main --commit-dirty=true
+          command: pages deploy . --project-name ikcp-eu --branch=${{ github.ref_name }} --commit-dirty=true
