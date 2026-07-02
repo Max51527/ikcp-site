@@ -140,6 +140,32 @@ async function handleAuthSend(request, env) {
   if (count >= 3) return json({ error: 'rate_limited', retry_after_minutes: 60 }, 429);
   await env.CLIENT_KV.put(rlKey, String(count + 1), { expirationTtl: 3600 });
 
+  // ── VERROU D'INSCRIPTION (décision Maxime 02/07/2026) ────────────────────
+  //  Chaque NOUVEL accès (email inconnu) est validé personnellement par Maxime
+  //  avant tout envoi de lien — même pour un futur payant (anti-concurrents).
+  //  Membres existants + candidatures approuvées : flux normal, inchangé.
+  //  Escape hatch : poser GATE_SIGNUPS='0' sur le worker pour rouvrir.
+  if (env.GATE_SIGNUPS !== '0') {
+    const em = email.toLowerCase();
+    const existing = await env.D1.prepare('SELECT id FROM users WHERE email = ?').bind(em).first().catch(() => null);
+    if (!existing) {
+      try { await ensureGovernanceTables(env); } catch (_) {}
+      const app = await env.D1.prepare('SELECT status FROM member_applications WHERE email = ? ORDER BY created_at DESC LIMIT 1').bind(em).first().catch(() => null);
+      if (!app || app.status !== 'approved') {
+        if (!app) {
+          try {
+            await env.D1.prepare("INSERT INTO member_applications (id, email, status, created_at) VALUES (?, ?, 'pending', ?)")
+              .bind(crypto.randomUUID(), em, Date.now()).run();
+            await sendEmail(env, { to: 'maxime@ikcp.fr', subject: '[Marcel IA] Nouvelle demande d\'accès — ' + em,
+              html: '<div style="font-family:Georgia,serif;padding:20px"><p>Nouvelle demande d\'accès à Marcel IA :</p><p style="font-size:17px"><b>' + em + '</b></p><p><a href="https://ikcp.eu/app/console" style="color:#8B6F3F;font-weight:bold">Valider ou refuser dans la console →</a></p></div>' });
+          } catch (_) {}
+        }
+        await audit(env, null, 'signup_gated', request, { email: em });
+        return json({ ok: true, pending: true, message: 'Demande d\'accès enregistrée. Chaque accès à Marcel IA est validé personnellement — vous recevrez votre lien de connexion par e-mail dès validation.' });
+      }
+    }
+  }
+
   const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
   const tokenHash = await sha256(token);
   const now = Date.now();
@@ -188,14 +214,15 @@ async function handleAuthVerify(request, env) {
     //  BETA_CAP         : nombre maximum de membres.
     //  BETA_INVITE_ONLY : true  = personne n'entre sans invitation approuvée
     //                     false = les places fondatrices s'ouvrent jusqu'au cap
-    const BETA_CAP = 50;
-    const BETA_INVITE_ONLY = false;
+    // Verrou d'inscription (02/07/2026) : personne n'entre sans validation de Maxime.
+    const BETA_CAP = 0;
+    const BETA_INVITE_ONLY = true;
 
     // 1) Candidature APPROUVÉE → admis au tier accordé (prime sur le plafond).
     let grantedTier = null, src = 'invitation';
     try {
       const appr = await env.D1.prepare("SELECT grant_tier FROM member_applications WHERE email = ? AND status = 'approved' ORDER BY reviewed_at DESC LIMIT 1").bind(row.email).first();
-      if (appr && appr.grant_tier) grantedTier = appr.grant_tier;
+      if (appr) grantedTier = appr.grant_tier || 'free';
     } catch (_) { /* table absente = pas de candidature approuvée */ }
 
     // 2) Sinon : place fondatrice ouverte tant que COUNT(users) < BETA_CAP.
@@ -820,6 +847,17 @@ function emailTemplatePremiumWelcome() {
     <p style="font-size:11px;color:#8A7E70;margin:0">Marcel IA — intelligence patrimoniale souveraine · IKCP · ORIAS 23001568</p>
   </div>`;
 }
+function emailTemplateAccessApproved() {
+  return `<div style="font-family:Georgia,'Times New Roman',serif;max-width:520px;margin:auto;padding:34px;background:#FAF8F4;color:#221E18;border:1px solid #E9E2D6;border-radius:12px">
+    <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
+    <h1 style="font-size:23px;color:#1B2A4A;margin:0 0 14px">Votre accès est validé</h1>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Bienvenue. Votre demande d'accès à Marcel IA a été validée personnellement.</p>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Pour entrer : rendez-vous sur votre espace, saisissez votre e-mail, et votre lien de connexion arrive aussitôt.</p>
+    <a href="https://ikcp.eu/app/" style="display:inline-block;padding:14px 28px;background:#C9A96E;color:#20180c;text-decoration:none;border-radius:30px;margin:14px 0;font-weight:bold">Accéder à mon espace →</a>
+    <hr style="border:none;border-top:1px solid #E9E2D6;margin:20px 0 12px">
+    <p style="font-size:11px;color:#8A7E70;margin:0">Marcel IA — intelligence patrimoniale souveraine · IKCP · ORIAS 23001568</p>
+  </div>`;
+}
 function emailTemplateCancelRetention() {
   return `<div style="font-family:Georgia,'Times New Roman',serif;max-width:520px;margin:auto;padding:34px;background:#FAF8F4;color:#221E18;border:1px solid #E9E2D6;border-radius:12px">
     <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
@@ -1132,14 +1170,20 @@ async function handleAdmin(request, env, path, method) {
     const b = await request.json().catch(() => ({}));
     const decision = b.decision === 'approve' ? 'approved' : 'rejected';
     const grantTier = decision === 'approved'
-      ? (['premium', 'fo'].includes(b.grant_tier) ? b.grant_tier : 'fo')   // fondateurs = FO par défaut
+      ? (['free', 'premium', 'fo'].includes(b.grant_tier) ? b.grant_tier : 'free')   // validation d'inscription = Découverte par défaut
       : null;
     const appRow = await env.D1.prepare('SELECT email FROM member_applications WHERE id = ?').bind(dm[1]).first();
     await env.D1.prepare('UPDATE member_applications SET status = ?, grant_tier = ?, note = ?, reviewed_at = ?, reviewed_by = ? WHERE id = ?')
       .bind(decision, grantTier, b.note || null, Date.now(), 'maxime', dm[1]).run();
-    // Si le client a déjà un compte → on applique le tier tout de suite.
     if (decision === 'approved' && appRow?.email) {
-      await env.D1.prepare('UPDATE users SET tier = ? WHERE email = ?').bind(grantTier, appRow.email).run();
+      // Compte existant : upgrade éventuel du tier (jamais de downgrade via une approbation).
+      const uRow = await env.D1.prepare('SELECT id, tier FROM users WHERE email = ?').bind(appRow.email).first();
+      const rank = { free: 0, premium: 1, fo: 2 };
+      if (uRow && grantTier && (rank[grantTier] || 0) > (rank[uRow.tier] || 0)) {
+        await env.D1.prepare('UPDATE users SET tier = ? WHERE id = ?').bind(grantTier, uRow.id).run();
+      }
+      // Prévient le candidat : accès validé → il demande son lien sur /app.
+      await sendEmail(env, { to: appRow.email, subject: 'Votre accès Marcel IA est validé', html: emailTemplateAccessApproved() }).catch(() => {});
       await emitEvent(env, null, 'application_approved', { email: appRow.email, tier: grantTier });
     }
     return json({ ok: true, status: decision, grant_tier: grantTier });

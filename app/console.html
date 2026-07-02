@@ -901,7 +901,7 @@ function renderApps(list){
       <div class="h"><span class="em">${esc(a.prenom||'')} · ${esc(a.email)}</span><span class="pill">${esc(a.code||'—')}</span></div>
       <div class="meta">${a.siren?`SIREN <b>${esc(a.siren)}</b> · `:''}Patrimoine déclaré <b>${esc(a.patrimoine_declare||'n/c')}</b> · Reçu le ${d}</div>
       <div class="acts">
-        <select id="tier-${esc(a.id)}"><option value="fo">intelligence patrimoniale (bêta)</option><option value="premium">Premium</option></select>
+        <select id="tier-${esc(a.id)}"><option value="free">Découverte (accès validé)</option><option value="premium">Premium</option><option value="fo">intelligence patrimoniale (bêta)</option></select>
         <button class="btn sm" onclick="decide('${esc(a.id)}','approve')">Approuver →</button>
         <button class="btn reject sm" onclick="decide('${esc(a.id)}','reject')">Refuser</button>
       </div>
@@ -910,7 +910,7 @@ function renderApps(list){
   }).join('');
 }
 async function decide(id, decision){
-  const tier = document.getElementById('tier-'+id)?.value || 'premium';
+  const tier = document.getElementById('tier-'+id)?.value || 'free';
   const msg = document.getElementById('msg-'+id);
   const r = await fetch(`${API}/api/v1/admin/applications/${id}/decision`, { method:'POST', headers: hdr(), body: JSON.stringify({ decision, grant_tier: tier }) });
   if(!r.ok){ msg.className='msg err'; msg.textContent='Erreur '+r.status; return; }

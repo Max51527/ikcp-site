@@ -174,6 +174,12 @@ window.askLink = async function(e){
   msg.innerHTML = '';
   try{
     const r = await Marcel.Auth.requestMagicLink(email);
+    if(r?.pending){
+      btn.textContent = 'Demande envoyée ✓';
+      msg.className = 'message ok';
+      msg.innerHTML = `✓ Demande d'accès enregistrée pour <b>${email}</b>.<br>Chaque accès est <b>validé personnellement</b> — vous recevrez votre lien de connexion par e-mail dès validation.`;
+      return false;
+    }
     btn.textContent = 'Lien envoyé ✓';
     if(r?.dev_verify_url){
       msg.className = 'message ok';
