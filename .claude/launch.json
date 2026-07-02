@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "ikcp-canonical",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["dev-server.py", "5500"],
+      "port": 5500
+    },
+    {
       "name": "ikcp-proposals",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "7890", "--directory", "proposals"],

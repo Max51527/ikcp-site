@@ -280,11 +280,20 @@ if(me){
           + (d.resultat!=null ? tile('Résultat', Marcel.Utils.formatEUR(d.resultat)) : '')
           + '</div>';
     }
+    // Questions de cadrage contextuelles (MIF II : la cartographie débouche sur des questions, jamais une reco)
+    var qs=[
+      ['💶 Rémunération ou dividendes ?','Ma société '+(d.nom||'')+' ('+((d.forme_juridique||'').split(',')[0])+(d.resultat!=null?(', résultat '+Math.round(d.resultat)+' €'):'')+') : quels critères peser entre rémunération et dividendes dans ma situation ?'],
+      ['🏦 Ma trésorerie','Au vu des chiffres de '+(d.nom||'ma société')+(d.chiffre_affaires!=null?(' (CA '+Math.round(d.chiffre_affaires)+' €)'):'')+', quelles questions me poser sur l\'emploi de ma trésorerie ?'],
+      ['🌿 Transmettre','Comment préparer la transmission de '+(d.nom||'ma société')+' — quelles options explorer et dans quel ordre ?']
+    ];
+    var qHtml='<div style="margin-top:11px"><div style="font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:6px">Vos questions, à partir de ces chiffres</div><div style="display:flex;flex-wrap:wrap;gap:6px">'
+      + qs.map(function(q){ return '<a href="/app/marcel?q='+encodeURIComponent(q[1])+'" style="font-size:11.5px;color:var(--ink);background:#fff;border:1px solid rgba(184,149,110,.35);border-radius:999px;padding:6px 11px;text-decoration:none">'+q[0]+'</a>'; }).join('')
+      + '</div></div>';
     document.getElementById('carto-body').innerHTML =
       '<div style="font-size:13px;line-height:1.7;color:var(--ink)">'
       + '<div><b>'+((d.forme_juridique||'—').split(',')[0])+'</b> · '+(d.ville||'')+' · NAF '+(d.code_naf||'')+'</div>'
       + '<div style="margin-top:4px"><span style="color:var(--mute)">Capital</span> '+(d.capital?Marcel.Utils.formatEUR(d.capital):'n.c.')+(d.date_creation?(' · <span style="color:var(--mute)">créée</span> '+new Date(d.date_creation).getFullYear()):'')+'</div>'
-      + fin + '</div>';
+      + fin + qHtml + '</div>';
     var batCta=document.getElementById('batisseur-cta'); if(batCta) batCta.style.display='inline-flex';
   }
   function input(){

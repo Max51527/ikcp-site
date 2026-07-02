@@ -207,6 +207,8 @@ export const Marcel = {
     // Fusion normalisée (champs à plat) : Pappers prioritaire, gouv en repli
     const out = pap ? { ...pap } : { siren: s };
     out.nom = out.nom || (gv && gv.nom_complet) || 'Société';
+    // L'API gouv renvoie parfois « NOM (NOM) » (sigle = nom) — on déduplique pour l'affichage
+    out.nom = String(out.nom).replace(/^(.+?)\s*\(\s*\s*\)\s*$/, '$1');
     out.forme_juridique = out.forme_juridique || (gv ? formeFromCodeINSEE(gv.nature_juridique) : '');
     out.ville = (pap && pap.siege && pap.siege.ville) || (gv && gv.siege && gv.siege.libelle_commune) || '';
     out.code_naf = out.code_naf || (gv && gv.activite_principale) || '';
