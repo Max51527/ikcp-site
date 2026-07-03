@@ -831,7 +831,7 @@ function emailTemplateWelcome() {
     <div style="font-size:18px;font-weight:bold;color:#1B2A4A;margin-bottom:18px">Marcel <span style="color:#8B6F3F">IA</span></div>
     <h1 style="font-size:23px;color:#1B2A4A;margin:0 0 14px">Bienvenue</h1>
     <p style="font-size:15px;line-height:1.6;color:#5F5347">Votre compte <b>Découverte</b> est activé : cartographie de votre société (registre officiel), simulateurs du dirigeant et Marcel en découverte.</p>
-    <p style="font-size:15px;line-height:1.6;color:#5F5347">Pour aller plus loin — audit patrimonial 360° complet, schémas de stratégie, Marcel illimité : <a href="https://ikcp.eu/app/profil.html" style="color:#8B6F3F;font-weight:bold">Premium à 49 €/mois ou 490 €/an</a>.</p>
+    <p style="font-size:15px;line-height:1.6;color:#5F5347">Pour aller plus loin — audit patrimonial 360° complet, schémas de stratégie, Marcel illimité : <a href="https://ikcp.eu/app/profil.html" style="color:#8B6F3F;font-weight:bold">Premium à 24 €/mois ou 240 €/an</a>.</p>
     <hr style="border:none;border-top:1px solid #E9E2D6;margin:20px 0 12px">
     <p style="font-size:11px;color:#8A7E70;margin:0">Marcel IA — intelligence patrimoniale souveraine · IKCP · ORIAS 23001568</p>
   </div>`;
@@ -1212,7 +1212,7 @@ async function handleAdmin(request, env, path, method) {
     const members = free + premium + fo;
     // Estimation coût IA du mois (Premium ~5€/client, FO ~30€ — voir PRICING-2026)
     const coutIA = Math.round(premium * 5 + fo * 30);
-    const revenu = premium * 59; // Premium 59€ (FO sur devis, non compté)
+    const revenu = premium * 24; // Premium 24€/mois (FO sur devis, non compté)
     return json({ members, by_tier: { free, premium, fo }, pending_applications: pending,
       marcel_messages_month: marcelMonth, signups_7d: signups7d,
       revenu_premium_estime: revenu, cout_ia_estime: coutIA, marge_estimee: revenu - coutIA });
