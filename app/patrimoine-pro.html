@@ -598,5 +598,524 @@ if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv
 <script src="/app/js/appnav.js" defer></script>
 <script src="/app/js/marcel-float.js" defer></script>
 <script src="/app/js/sync.js" defer></script>
+
+<!-- ════ MON PATRIMOINE EN IMAGES — galerie privée locale (photos jamais envoyées) ════ -->
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   MON PATRIMOINE EN IMAGES — galerie privée · module additif .pht-
+   Esprit : collection particulière — cadres crème, liseré or,
+   légendes Playfair italique, lightbox navy profond.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Section & en-tête ── */
+.pht-sec{margin:36px 0 4px}
+@media (prefers-reduced-motion:no-preference){
+  .pht-reveal{opacity:0;transform:translateY(14px);animation:phtRvu .7s cubic-bezier(.22,1,.36,1) .12s forwards}
+  @keyframes phtRvu{to{opacity:1;transform:none}}
+}
+.pht-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.pht-title{font-family:'Playfair Display',serif;font-weight:500;font-size:22px;letter-spacing:-.01em;color:var(--ink,#2C2418);margin:0}
+.pht-title em{font-style:italic;color:var(--gold,#A8884D)}
+.pht-sub{font-size:13px;color:var(--mute,#6B5D52);margin:4px 0 0}
+.pht-tools{display:flex;align-items:center;gap:12px}
+.pht-count{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep,#8B6F3F);white-space:nowrap}
+.pht-add{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(168,136,77,.55);background:linear-gradient(160deg,rgba(226,200,150,.16),transparent);color:var(--gold-deep,#8B6F3F);font:inherit;font-size:13px;font-weight:600;padding:9px 17px;border-radius:999px;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s}
+.pht-add:hover{transform:translateY(-1px);background:rgba(226,200,150,.24);box-shadow:0 10px 22px -14px rgba(139,111,63,.6)}
+.pht-add:focus-visible{outline:2px solid var(--gold,#A8884D);outline-offset:2px}
+.pht-add[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.pht-rgpd{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mute,#6B5D52);margin:10px 0 0}
+.pht-lock{font-size:11px;opacity:.8}
+
+/* ── Mur masonry (colonnes CSS) ── */
+.pht-wall{columns:220px 3;column-gap:16px;margin-top:18px}
+.pht-card{display:inline-block;width:100%;break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 16px;position:relative;background:var(--cream,#FAFAF8);border:1px solid rgba(168,136,77,.45);border-radius:3px;padding:8px 8px 11px;box-shadow:inset 0 0 0 1px rgba(250,250,248,.9),0 18px 32px -24px rgba(14,23,41,.4)}
+.pht-view{display:block;width:100%;padding:0;margin:0;border:1px solid rgba(139,111,63,.38);border-radius:2px;background:var(--nd,#0E1729);overflow:hidden;cursor:zoom-in}
+.pht-view img{display:block;width:100%;height:auto;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover){.pht-card:hover .pht-view img{transform:scale(1.025)}}
+.pht-view:focus-visible{outline:2px solid var(--gold,#A8884D);outline-offset:3px}
+.pht-cap{margin:9px 3px 0;font-family:'Playfair Display',serif;font-style:italic;font-size:13.5px;line-height:1.45;color:var(--ink,#2C2418);word-wrap:break-word}
+.pht-cap-mute{color:var(--mute,#6B5D52)}
+.pht-cat{display:flex;align-items:center;gap:7px;margin:7px 3px 0}
+.pht-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.pht-cat-lb{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep,#8B6F3F)}
+.pht-del{position:absolute;top:14px;right:14px;z-index:2;display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 8px;border-radius:999px;border:1px solid rgba(226,200,150,.4);background:rgba(14,23,41,.74);color:#FAFAF8;font:inherit;font-size:11px;line-height:1;cursor:pointer;opacity:0;transition:opacity .25s,background .2s}
+.pht-card:hover .pht-del,.pht-card:focus-within .pht-del{opacity:1}
+@media (hover:none){.pht-del{opacity:.85}}
+.pht-del:focus-visible{outline:2px solid var(--gold-bright,#E2C896);outline-offset:2px;opacity:1}
+.pht-del.pht-confirm{opacity:1;background:var(--red,#C0414C);border-color:transparent;font-weight:600}
+
+/* ── État vide — invitation ── */
+.pht-empty{border:1px dashed rgba(168,136,77,.55);border-radius:18px;background:linear-gradient(165deg,rgba(226,200,150,.12),transparent 60%);padding:40px 24px 36px;text-align:center;column-span:all}
+.pht-orn{font-size:14px;color:var(--gold,#A8884D);letter-spacing:.6em;padding-left:.6em}
+.pht-empty h3{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:20px;color:var(--ink,#2C2418);margin:12px 0 6px}
+.pht-empty p{font-size:13px;color:var(--mute,#6B5D52);line-height:1.6;max-width:440px;margin:0 auto 18px}
+
+/* ── Feuille d'ajout (catégorie + légende) ── */
+.pht-modal{position:fixed;inset:0;z-index:320;display:none;align-items:flex-end;justify-content:center;background:rgba(14,23,41,.55)}
+.pht-modal.pht-on{display:flex}
+.pht-sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--paper,#F2F0EA);border-radius:22px 22px 0 0;padding:24px 22px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px -20px rgba(14,23,41,.5)}
+@media (min-width:560px){.pht-modal{align-items:center}.pht-sheet{border-radius:22px}}
+@media (prefers-reduced-motion:no-preference){.pht-modal.pht-on .pht-sheet{animation:phtUp .35s cubic-bezier(.22,1,.36,1)}@keyframes phtUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}}
+.pht-sheet h3{font-family:'Playfair Display',serif;font-weight:500;font-size:20px;color:var(--ink,#2C2418);margin:0 0 3px}
+.pht-ssub{font-size:12.5px;color:var(--mute,#6B5D52);margin:0 0 14px}
+.pht-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line,#E7DFD2)}
+.pht-thumb{width:58px;height:58px;object-fit:cover;border-radius:6px;border:1px solid rgba(139,111,63,.4);background:var(--nd,#0E1729);flex-shrink:0}
+.pht-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pht-fields select,.pht-fields input{width:100%;border:1px solid var(--line,#E7DFD2);border-radius:9px;padding:8px 10px;font:inherit;font-size:13.5px;background:var(--bg,#fff);color:var(--ink,#2C2418)}
+.pht-fields select:focus-visible,.pht-fields input:focus-visible{outline:0;border-color:var(--gold,#A8884D);box-shadow:0 0 0 3px rgba(168,136,77,.18)}
+.pht-actions{display:flex;gap:10px;margin-top:20px}
+.pht-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:12px 18px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.pht-btn:focus-visible{outline:2px solid var(--gold,#A8884D);outline-offset:2px}
+.pht-btn-ghost{background:transparent;border:1px solid var(--line,#E7DFD2);color:var(--mute,#6B5D52)}
+.pht-btn-ghost:hover{border-color:var(--gold,#A8884D);color:var(--gold-deep,#8B6F3F)}
+.pht-btn-gold{background:var(--n,#1B2A4A);border:1px solid rgba(226,200,150,.4);color:var(--gold-bright,#E2C896)}
+.pht-btn-gold:hover{background:var(--nd,#0E1729)}
+
+/* ── Lightbox — fond navy profond ── */
+.pht-lb{position:fixed;inset:0;z-index:340;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,17,32,.965);padding:24px;text-align:center}
+.pht-lb.pht-on{display:flex}
+@media (prefers-reduced-motion:no-preference){.pht-lb.pht-on{animation:phtFade .3s ease}@keyframes phtFade{from{opacity:0}to{opacity:1}}}
+.pht-lb img{max-width:min(92vw,1080px);max-height:70vh;object-fit:contain;border:1px solid rgba(226,200,150,.42);border-radius:2px;background:var(--nd,#0E1729);box-shadow:0 50px 110px -50px rgba(0,0,0,.85)}
+.pht-lb-cap{margin-top:18px;font-family:'Playfair Display',serif;font-style:italic;font-size:16.5px;line-height:1.5;color:#FAFAF8;max-width:640px}
+.pht-lb-cat{margin-top:7px;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright,#E2C896)}
+.pht-lb-close{position:absolute;top:calc(16px + env(safe-area-inset-top));right:18px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(226,200,150,.4);background:rgba(255,255,255,.05);color:#FAFAF8;font:inherit;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pht-lb-close:hover{background:rgba(226,200,150,.18)}
+.pht-lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:1px solid rgba(226,200,150,.32);background:rgba(255,255,255,.04);color:var(--gold-bright,#E2C896);font:inherit;font-size:18px;line-height:1;cursor:pointer}
+.pht-lb-nav:hover{background:rgba(226,200,150,.15)}
+.pht-lb-prev{left:14px}
+.pht-lb-next{right:14px}
+.pht-lb-close:focus-visible,.pht-lb-nav:focus-visible{outline:2px solid var(--gold-bright,#E2C896);outline-offset:2px}
+
+/* ── Toast ── */
+.pht-toast{position:fixed;left:50%;bottom:26px;z-index:360;transform:translate(-50%,10px);max-width:90vw;text-align:center;background:var(--nd,#0E1729);color:var(--gold-bright,#E2C896);border:1px solid rgba(226,200,150,.38);border-radius:999px;padding:11px 20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;box-shadow:0 18px 40px -18px rgba(0,0,0,.6)}
+.pht-toast.pht-on{opacity:1;transform:translate(-50%,0)}
+
+/* ── Pastille 📸 sur les cartes d'univers ── */
+.pht-badge{display:inline-flex;align-items:center;margin-left:8px;padding:1px 7px;border-radius:999px;border:1px solid rgba(168,136,77,.35);background:rgba(226,200,150,.22);color:var(--gold-deep,#8B6F3F);font-size:9.5px;font-weight:700;letter-spacing:.02em;vertical-align:1px;text-transform:none}
+
+/* ── Mobile : effets légers, 2 colonnes ── */
+@media (max-width:560px){
+  .pht-wall{columns:2;column-gap:12px}
+  .pht-card{margin-bottom:12px;padding:6px 6px 9px}
+  .pht-cap{font-size:12.5px}
+  .pht-lb-nav{display:none}
+}
+
+/* ── prefers-reduced-motion : tout figé ── */
+@media (prefers-reduced-motion:reduce){
+  .pht-sec,.pht-add,.pht-view img,.pht-del,.pht-btn,.pht-toast,.pht-lb,.pht-modal .pht-sheet{transition:none!important;animation:none!important}
+  .pht-card:hover .pht-view img{transform:none!important}
+  .pht-add:hover{transform:none!important}
+}
+</style>
+<script>
+(function(){
+/* ═══════════════════════════════════════════════════════════════════
+   MON PATRIMOINE EN IMAGES — galerie privée · module additif
+   - Compression canvas (max 900px, JPEG 0.72), 100 % local
+   - localStorage 'ikcp_photos' = { catKey: [{id,dataUrl,legende,cat,ts}] }
+   - Plafond 12 photos + garde QuotaExceededError
+   - Lightbox navy (Échap / clic / flèches), pastilles 📸 via MutationObserver
+   Rien ne quitte l'appareil. Aucune dépendance. Ne casse rien si absent.
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+try{
+
+  /* ── Réglages ── */
+  var LS_KEY='ikcp_photos', MAX=12, MAX_DIM=900, JPEG_Q=0.72;
+  var REDUCED=false;
+  try{ REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(_){}
+
+  /* Miroir de CATS — le CATS de la page vit dans un <script type="module">, inaccessible d'ici. */
+  var CATS=[
+    { key:'immobilier', label:'Mon immobilier', icon:'🏠',  color:'#A8884D' },
+    { key:'financier',  label:'Mes placements', icon:'📈',  color:'#1B2A4A' },
+    { key:'tresorerie', label:'Mes liquidités', icon:'💧',  color:'#5B8A8C' },
+    { key:'societe',    label:'Mon entreprise', icon:'🏛️', color:'#7A5C2E' },
+    { key:'retraite',   label:'Ma retraite',    icon:'🛡️', color:'#C9A96E' },
+    { key:'autres',     label:'Autres',         icon:'✦',   color:'#9AA0AE' }
+  ];
+  var byKey={}; CATS.forEach(function(c){ byKey[c.key]=c; });
+
+  /* ── Store (localStorage, try/catch partout) ── */
+  function loadStore(){
+    try{
+      var s=JSON.parse(localStorage.getItem(LS_KEY)||'null');
+      if(s && typeof s==='object' && !Array.isArray(s)) return s;
+    }catch(_){}
+    return {};
+  }
+  function saveStore(s){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(s)); return true; }
+    catch(e){ return false; } /* QuotaExceededError inclus */
+  }
+  function allPhotos(s){
+    var out=[];
+    Object.keys(s).forEach(function(k){
+      if(Array.isArray(s[k])) s[k].forEach(function(p){ if(p && p.dataUrl) out.push(p); });
+    });
+    out.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+    return out;
+  }
+  var store=loadStore();
+
+  /* ── Injection de la section juste APRÈS le hero ── */
+  var hero=document.querySelector('main .hero')||document.querySelector('.hero');
+  var host=document.querySelector('main.cockpit')||document.querySelector('main')||document.body;
+  var sec=document.createElement('section');
+  sec.className='pht-sec'+(REDUCED?'':' pht-reveal');
+  sec.setAttribute('aria-label','Mon patrimoine en images');
+  sec.innerHTML=
+    '<div class="pht-head">'+
+      '<div>'+
+        '<h2 class="pht-title">Mon patrimoine <em>en images</em></h2>'+
+        '<p class="pht-sub">Votre collection particulière — résidence, immeuble, œuvre, montre, cave…</p>'+
+      '</div>'+
+      '<div class="pht-tools">'+
+        '<span class="pht-count" id="phtCount" aria-live="polite"></span>'+
+        '<button type="button" class="pht-add" id="phtAdd" aria-label="Ajouter une photo à ma collection">📷&nbsp;<span>Ajouter</span></button>'+
+      '</div>'+
+    '</div>'+
+    '<p class="pht-rgpd"><span class="pht-lock" aria-hidden="true">🔒</span>Vos photos restent sur cet appareil — elles ne sont jamais envoyées.</p>'+
+    '<div class="pht-wall" id="phtWall"></div>';
+  if(hero && hero.parentNode){ hero.insertAdjacentElement('afterend', sec); }
+  else{ host.insertBefore(sec, host.firstChild); }
+
+  /* input file caché (appareil photo sur mobile) */
+  var fileIn=document.createElement('input');
+  fileIn.type='file'; fileIn.accept='image/*'; fileIn.multiple=true;
+  fileIn.setAttribute('capture','environment');
+  fileIn.hidden=true; fileIn.tabIndex=-1; fileIn.setAttribute('aria-hidden','true');
+  sec.appendChild(fileIn);
+
+  /* ── Toast ── */
+  var toast=document.createElement('div');
+  toast.className='pht-toast'; toast.setAttribute('role','status');
+  document.body.appendChild(toast);
+  var toastTo=null;
+  function say(msg){
+    toast.textContent=msg; toast.classList.add('pht-on');
+    clearTimeout(toastTo);
+    toastTo=setTimeout(function(){ toast.classList.remove('pht-on'); },3800);
+  }
+
+  /* ── Verrou scroll (modal + lightbox) ── */
+  var locks=0;
+  function lock(on){
+    locks=Math.max(0,locks+(on?1:-1));
+    document.documentElement.style.overflow=locks>0?'hidden':'';
+  }
+
+  /* ── Feuille d'ajout (catégorie + légende) ── */
+  var pending=[], lastFocus=null;
+  var modal=document.createElement('div');
+  modal.className='pht-modal';
+  modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true');
+  modal.setAttribute('aria-label','Ajouter des photos à ma collection');
+  modal.innerHTML=
+    '<div class="pht-sheet">'+
+      '<h3>Ajouter à ma collection</h3>'+
+      '<p class="pht-ssub">Choisissez l’univers et donnez une légende à chaque pièce — comme dans un catalogue de collection.</p>'+
+      '<div id="phtRows"></div>'+
+      '<div class="pht-actions">'+
+        '<button type="button" class="pht-btn pht-btn-ghost" id="phtCancel">Annuler</button>'+
+        '<button type="button" class="pht-btn pht-btn-gold" id="phtSave">Ajouter</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(modal);
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+
+  function openModal(){
+    var rows=document.getElementById('phtRows'); if(!rows) return;
+    rows.innerHTML='';
+    pending.forEach(function(p,i){
+      var row=document.createElement('div'); row.className='pht-row';
+      var t=document.createElement('img'); t.className='pht-thumb'; t.src=p.dataUrl; t.alt='Aperçu photo '+(i+1);
+      var f=document.createElement('div'); f.className='pht-fields';
+      var sel=document.createElement('select');
+      sel.setAttribute('aria-label','Univers de la photo '+(i+1));
+      CATS.forEach(function(c){
+        var o=document.createElement('option'); o.value=c.key; o.textContent=c.icon+' '+c.label; sel.appendChild(o);
+      });
+      sel.value=p.cat||'immobilier'; p.cat=sel.value;
+      sel.addEventListener('change',function(){ p.cat=sel.value; });
+      var inp=document.createElement('input');
+      inp.type='text'; inp.maxLength=90;
+      inp.placeholder='Légende — ex. « Résidence principale — Annonay »';
+      inp.setAttribute('aria-label','Légende de la photo '+(i+1));
+      inp.addEventListener('input',function(){ p.legende=inp.value; });
+      f.appendChild(sel); f.appendChild(inp);
+      row.appendChild(t); row.appendChild(f);
+      rows.appendChild(row);
+    });
+    lastFocus=document.activeElement;
+    modal.classList.add('pht-on'); lock(true);
+    var first=rows.querySelector('select'); if(first) first.focus();
+  }
+  function closeModal(){
+    if(!modal.classList.contains('pht-on')) return;
+    modal.classList.remove('pht-on'); lock(false); pending=[];
+    if(lastFocus && lastFocus.focus){ try{ lastFocus.focus(); }catch(_){} }
+  }
+  var elCancel=document.getElementById('phtCancel');
+  if(elCancel) elCancel.addEventListener('click',closeModal);
+  var elSave=document.getElementById('phtSave');
+  if(elSave) elSave.addEventListener('click',function(){
+    if(!pending.length){ closeModal(); return; }
+    var backup=JSON.stringify(store), now=Date.now(), n=pending.length;
+    pending.forEach(function(p,i){
+      var cat=byKey[p.cat]?p.cat:'autres';
+      var item={
+        id:'pht_'+now+'_'+i+'_'+Math.random().toString(36).slice(2,7),
+        dataUrl:p.dataUrl,
+        legende:(p.legende||'').trim().slice(0,90),
+        cat:cat, ts:now+i
+      };
+      if(!Array.isArray(store[cat])) store[cat]=[];
+      store[cat].push(item);
+    });
+    if(!saveStore(store)){
+      try{ store=JSON.parse(backup); }catch(_){ store=loadStore(); }
+      closeModal();
+      say('Limite de stockage atteinte — retirez une photo ou réessayez avec moins d’images.');
+      return;
+    }
+    closeModal(); renderWall(); applyBadges();
+    say(n>1 ? n+' photos rejoignent votre collection.' : 'Votre photo rejoint la collection.');
+  });
+
+  /* ── Compression canvas : max 900px, JPEG qualité 0.72 ── */
+  function compress(file){
+    return new Promise(function(res){
+      var url;
+      try{ url=URL.createObjectURL(file); }catch(_){ return res(null); }
+      var img=new Image();
+      img.onload=function(){
+        try{
+          var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+          if(!w||!h) throw new Error('dim');
+          var k=Math.min(1, MAX_DIM/Math.max(w,h));
+          var cw=Math.max(1,Math.round(w*k)), ch=Math.max(1,Math.round(h*k));
+          var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+          cv.getContext('2d').drawImage(img,0,0,cw,ch);
+          var out=cv.toDataURL('image/jpeg',JPEG_Q);
+          try{ URL.revokeObjectURL(url); }catch(_){}
+          res(out && out.indexOf('data:image')===0 ? out : null);
+        }catch(e){ try{ URL.revokeObjectURL(url); }catch(_){} res(null); }
+      };
+      img.onerror=function(){ try{ URL.revokeObjectURL(url); }catch(_){} res(null); };
+      img.src=url;
+    });
+  }
+
+  /* ── Sélection de fichiers ── */
+  function pick(){
+    if(allPhotos(store).length>=MAX){
+      say('Votre galerie est complète ('+MAX+' pièces) — retirez une photo pour en accueillir une nouvelle.');
+      return;
+    }
+    try{ fileIn.value=''; }catch(_){}
+    fileIn.click();
+  }
+  var elAdd=document.getElementById('phtAdd');
+  if(elAdd) elAdd.addEventListener('click',pick);
+  fileIn.addEventListener('change',function(){
+    var files=Array.prototype.slice.call(fileIn.files||[]).filter(function(f){
+      return f && f.type && f.type.indexOf('image/')===0;
+    });
+    if(!files.length) return;
+    var remaining=MAX-allPhotos(store).length;
+    if(remaining<=0){ say('Limite atteinte — votre galerie accueille '+MAX+' pièces.'); return; }
+    var kept=files.slice(0,remaining);
+    if(files.length>kept.length){
+      say('Galerie limitée à '+MAX+' pièces — '+(files.length-kept.length)+' photo(s) non retenue(s).');
+    }
+    Promise.all(kept.map(compress)).then(function(urls){
+      pending=urls.filter(Boolean).map(function(u){ return { dataUrl:u, cat:'immobilier', legende:'' }; });
+      if(!pending.length){ say('Impossible de lire ces images — réessayez avec d’autres photos.'); return; }
+      openModal();
+    });
+  });
+
+  /* ── Lightbox plein écran (navy profond) ── */
+  var lb=document.createElement('div');
+  lb.className='pht-lb';
+  lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true');
+  lb.setAttribute('aria-label','Photo en plein écran');
+  var lbClose=document.createElement('button');
+  lbClose.type='button'; lbClose.className='pht-lb-close'; lbClose.textContent='✕';
+  lbClose.setAttribute('aria-label','Fermer la photo');
+  var lbPrev=document.createElement('button');
+  lbPrev.type='button'; lbPrev.className='pht-lb-nav pht-lb-prev'; lbPrev.textContent='‹';
+  lbPrev.setAttribute('aria-label','Photo précédente');
+  var lbNext=document.createElement('button');
+  lbNext.type='button'; lbNext.className='pht-lb-nav pht-lb-next'; lbNext.textContent='›';
+  lbNext.setAttribute('aria-label','Photo suivante');
+  var lbImg=document.createElement('img'); lbImg.alt='';
+  var lbCap=document.createElement('div'); lbCap.className='pht-lb-cap';
+  var lbCat=document.createElement('div'); lbCat.className='pht-lb-cat';
+  lb.appendChild(lbClose); lb.appendChild(lbPrev); lb.appendChild(lbNext);
+  lb.appendChild(lbImg); lb.appendChild(lbCap); lb.appendChild(lbCat);
+  document.body.appendChild(lb);
+
+  var lbList=[], lbIdx=0, lbOpenFlag=false, lbLast=null;
+  function updateLb(){
+    var p=lbList[lbIdx]; if(!p) return;
+    lbImg.src=p.dataUrl;
+    lbImg.alt=p.legende||'Photo de mon patrimoine';
+    lbCap.textContent=p.legende||'Sans légende';
+    var c=byKey[p.cat];
+    lbCat.textContent=(c ? c.icon+'  '+c.label : '✦  Autres')+'   ·   '+(lbIdx+1)+' / '+lbList.length;
+    var multi=lbList.length>1;
+    lbPrev.style.display=multi?'':'none';
+    lbNext.style.display=multi?'':'none';
+  }
+  function openLb(list,i){
+    lbList=list; lbIdx=i; lbLast=document.activeElement;
+    updateLb(); lb.classList.add('pht-on'); lbOpenFlag=true; lock(true);
+    try{ lbClose.focus(); }catch(_){}
+  }
+  function closeLb(){
+    if(!lbOpenFlag) return;
+    lb.classList.remove('pht-on'); lbOpenFlag=false; lock(false);
+    if(lbLast && lbLast.focus){ try{ lbLast.focus(); }catch(_){} }
+  }
+  function stepLb(d){
+    if(lbList.length<2) return;
+    lbIdx=(lbIdx+d+lbList.length)%lbList.length; updateLb();
+  }
+  lb.addEventListener('click',function(e){ if(e.target===lb) closeLb(); });
+  lbClose.addEventListener('click',closeLb);
+  lbPrev.addEventListener('click',function(e){ e.stopPropagation(); stepLb(-1); });
+  lbNext.addEventListener('click',function(e){ e.stopPropagation(); stepLb(1); });
+  document.addEventListener('keydown',function(e){
+    if(lbOpenFlag){
+      if(e.key==='Escape') closeLb();
+      else if(e.key==='ArrowLeft') stepLb(-1);
+      else if(e.key==='ArrowRight') stepLb(1);
+    } else if(modal.classList.contains('pht-on') && e.key==='Escape'){ closeModal(); }
+  });
+
+  /* ── Suppression — confirmation en deux temps ── */
+  function onDelete(btn,p){
+    if(btn.classList.contains('pht-confirm')){
+      Object.keys(store).forEach(function(k){
+        if(Array.isArray(store[k])){
+          store[k]=store[k].filter(function(x){ return x && x.id!==p.id; });
+          if(!store[k].length) delete store[k];
+        }
+      });
+      saveStore(store); renderWall(); applyBadges();
+      say('Photo retirée de votre collection.');
+    } else {
+      btn.classList.add('pht-confirm');
+      btn.textContent='Supprimer ?';
+      btn.setAttribute('aria-label','Confirmer la suppression de cette photo');
+      setTimeout(function(){
+        btn.classList.remove('pht-confirm');
+        btn.textContent='✕';
+        btn.setAttribute('aria-label','Supprimer cette photo');
+      },3500);
+    }
+  }
+
+  /* ── Rendu du mur (DOM sûr : textContent pour les légendes) ── */
+  function renderWall(){
+    var wall=document.getElementById('phtWall'); if(!wall) return;
+    var list=allPhotos(store);
+    var cnt=document.getElementById('phtCount');
+    if(cnt) cnt.textContent=list.length ? list.length+' / '+MAX+(list.length>1?' pièces':' pièce') : '';
+    var add=document.getElementById('phtAdd');
+    if(add) add.setAttribute('aria-disabled', list.length>=MAX ? 'true' : 'false');
+    wall.innerHTML='';
+    if(!list.length){
+      var em=document.createElement('div'); em.className='pht-empty';
+      em.innerHTML=
+        '<div class="pht-orn" aria-hidden="true">✦ ✦ ✦</div>'+
+        '<h3>Votre collection commence ici.</h3>'+
+        '<p>Photographiez ce qui compose votre patrimoine — votre résidence, un immeuble, une œuvre, une belle montre, votre cave. Ces images restent ici, sur cet appareil, et nulle part ailleurs.</p>';
+      var b=document.createElement('button');
+      b.type='button'; b.className='pht-add';
+      b.innerHTML='📷&nbsp;<span>Ajouter ma première photo</span>';
+      b.setAttribute('aria-label','Ajouter ma première photo');
+      b.addEventListener('click',pick);
+      em.appendChild(b); wall.appendChild(em);
+      return;
+    }
+    list.forEach(function(p,i){
+      var c=byKey[p.cat];
+      var card=document.createElement('figure'); card.className='pht-card';
+      var v=document.createElement('button');
+      v.type='button'; v.className='pht-view';
+      v.setAttribute('aria-label','Agrandir : '+(p.legende||(c?c.label:'photo')));
+      var img=document.createElement('img');
+      img.src=p.dataUrl; img.decoding='async';  /* pas de loading=lazy : image data: déjà en mémoire */
+      img.alt=p.legende||(c?c.label:'Photo de mon patrimoine');
+      v.appendChild(img);
+      v.addEventListener('click',function(){ openLb(list,i); });
+      var del=document.createElement('button');
+      del.type='button'; del.className='pht-del'; del.textContent='✕';
+      del.setAttribute('aria-label','Supprimer cette photo');
+      del.addEventListener('click',function(e){ e.stopPropagation(); onDelete(del,p); });
+      var cap=document.createElement('figcaption');
+      cap.className='pht-cap'+(p.legende?'':' pht-cap-mute');
+      cap.textContent=p.legende||'Sans légende';
+      var catRow=document.createElement('div'); catRow.className='pht-cat';
+      var dot=document.createElement('span'); dot.className='pht-dot';
+      dot.style.background=(c&&c.color)||'#9AA0AE';
+      var cl=document.createElement('span'); cl.className='pht-cat-lb';
+      cl.textContent=c ? c.icon+' '+c.label : '✦ Autres';
+      catRow.appendChild(dot); catRow.appendChild(cl);
+      card.appendChild(v); card.appendChild(del); card.appendChild(cap); card.appendChild(catRow);
+      wall.appendChild(card);
+    });
+  }
+
+  /* ── Pastilles 📸 sur les cartes d'univers (#uniGrid) ──
+     Le grid est re-rendu par innerHTML à chaque render() de la page :
+     un MutationObserver childList (SANS subtree → pas de boucle : nos
+     insertions dans .uni-lb sont des petits-enfants) ré-applique. */
+  function applyBadges(){
+    var grid=document.getElementById('uniGrid'); if(!grid) return;
+    grid.querySelectorAll('.pht-badge').forEach(function(b){ b.remove(); });
+    var counts={};
+    Object.keys(store).forEach(function(k){
+      if(Array.isArray(store[k]) && store[k].length) counts[k]=store[k].length;
+    });
+    if(!Object.keys(counts).length) return;
+    var cards=grid.querySelectorAll('.uni');
+    cards.forEach(function(card,idx){
+      var lbEl=card.querySelector('.uni-lb'); if(!lbEl) return;
+      var label=(lbEl.textContent||'').trim();
+      var cat=null;
+      for(var j=0;j<CATS.length;j++){ if(CATS[j].label===label){ cat=CATS[j]; break; } }
+      if(!cat) cat=CATS[idx]||null;      /* repli : ordre des cartes = ordre de CATS */
+      if(!cat) return;
+      var n=counts[cat.key]; if(!n) return;
+      var b=document.createElement('span');
+      b.className='pht-badge'; b.textContent='📸 '+n;
+      b.setAttribute('role','img');
+      b.setAttribute('aria-label',n+' photo'+(n>1?'s':'')+' dans cet univers');
+      lbEl.appendChild(b);
+    });
+  }
+  (function initBadges(){
+    var grid=document.getElementById('uniGrid'); if(!grid) return;
+    try{
+      new MutationObserver(function(){ applyBadges(); }).observe(grid,{ childList:true });
+    }catch(_){}
+    applyBadges();
+  })();
+
+  /* ── Init ── */
+  renderWall();
+
+}catch(err){
+  try{ console.warn('[pht] module galerie désactivé :', err); }catch(_){}
+}
+})();
+})();
+</script>
 </body>
 </html>
