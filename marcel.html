@@ -209,6 +209,37 @@
 
 <main class="wrap">
 
+  <!-- ════ À QUOI ÇA SERT — 3 moments de vie (marketing minimaliste) ════ -->
+  <section class="act use-sec">
+    <style>
+    .use-sec .use-row{display:flex;align-items:baseline;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+    .use-sec .use-row:last-of-type{border-bottom:none}
+    .use-sec .use-n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold-deep);font-weight:700;letter-spacing:.14em;flex:0 0 auto}
+    .use-sec .use-moment{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(17px,2.6vw,21px);color:var(--navy);line-height:1.3;flex:1 1 46%}
+    .use-sec .use-moment em{font-style:italic;color:var(--gold-deep)}
+    .use-sec .use-alors{font-size:13.5px;color:var(--ink-soft);line-height:1.55;flex:1 1 40%}
+    .use-sec .use-alors b{color:var(--ink)}
+    @media(max-width:640px){.use-sec .use-row{flex-direction:column;gap:6px}.use-sec .use-alors{padding-left:0}}
+    </style>
+    <div class="act-tag"><span class="dot"></span>À quoi ça sert</div>
+    <h2>Trois moments où Marcel <em>change tout.</em></h2>
+    <div class="use-row">
+      <span class="use-n">01</span>
+      <div class="use-moment">Mardi, 22h47. Une question fiscale vous trotte <em>depuis trois semaines.</em></div>
+      <div class="use-alors">Vous la posez. <b>Réponse chiffrée, sourcée, en direct</b> — avec le schéma qui rend la chose limpide. Vous dormez mieux.</div>
+    </div>
+    <div class="use-row">
+      <span class="use-n">02</span>
+      <div class="use-moment">Rendez-vous notaire jeudi. Vous ne voulez pas <em>subir la réunion.</em></div>
+      <div class="use-alors">Vous arrivez préparé : le mécanisme compris, <b>les 3 questions à poser</b>, les ordres de grandeur en tête. Le rendez-vous devient un dialogue d'égal à égal.</div>
+    </div>
+    <div class="use-row">
+      <span class="use-n">03</span>
+      <div class="use-moment">180 000 € dorment sur le compte de la société. <em>Depuis deux ans.</em></div>
+      <div class="use-alors">Marcel chiffre l'avant/après des options, pose la bonne question — <b>et vous décidez.</b> C'est votre argent, c'est votre appel.</div>
+    </div>
+  </section>
+
   <!-- SCHÉMA : LA STRUCTURE — TOUT PART DU SIREN -->
   <section class="act" id="siren-funnel">
     <div class="act-tag"><span class="dot"></span>La structure</div>
@@ -396,6 +427,78 @@
 
   <p class="adv-mifii">Information patrimoniale à visée pédagogique · ne constitue ni un conseil personnalisé ni une recommandation · art. L.541-1 CoMoFi</p>
 </section>
+
+  <!-- ════ NOTRE HISTOIRE — Made in Ardèche + démo animée (vidéo de présentation scriptée) ════ -->
+  <section class="act story-sec">
+    <style>
+    .story-sec{background:radial-gradient(120% 140% at 12% -10%,rgba(226,200,150,.13),transparent 46%),linear-gradient(158deg,#16233f,#0E1729 70%);border-color:rgba(226,200,150,.25)!important}
+    .story-sec .act-tag{color:#E2C896}
+    .story-sec h2{color:#FAF8F4}
+    .story-sec h2 em{color:#E2C896;font-style:italic}
+    .story-grid{display:flex;gap:30px;align-items:center;flex-wrap:wrap}
+    .story-txt{flex:1 1 300px;min-width:260px}
+    .story-p{color:rgba(250,248,244,.82);font-size:14.5px;line-height:1.7;margin-bottom:14px}
+    .story-p b{color:#fff}
+    .story-claim{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(16px,2.4vw,19px);line-height:1.5;color:#E2C896;border-left:2px solid rgba(226,200,150,.5);padding-left:16px;margin:18px 0}
+    .story-meta{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,248,244,.45)}
+    /* — Démo animée (phone) — */
+    .demo-wrap{flex:0 0 auto;margin:0 auto}
+    .demo-phone{width:250px;background:rgba(255,255,255,.06);border:1px solid rgba(226,200,150,.3);border-radius:30px;padding:8px;box-shadow:0 30px 60px -28px rgba(0,0,0,.7)}
+    .demo-scr{background:var(--cream);border-radius:23px;padding:13px 12px;min-height:330px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+    .demo-tag{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);text-align:center}
+    .demo-b{border-radius:11px;padding:9px 11px;font-size:11px;line-height:1.5;opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}
+    .demo-b.on{opacity:1;transform:none}
+    .demo-user{background:var(--navy);color:#fff;align-self:flex-end;max-width:88%}
+    .demo-marcel{background:#fff;border:1px solid var(--line);color:var(--ink);align-self:flex-start;max-width:92%}
+    .demo-marcel b{color:var(--navy)}
+    .demo-marcel .g{color:#2e9e6b;font-weight:700}
+    .demo-sys{font-size:9.5px;color:var(--ink-faint);text-align:center}
+    .demo-disc{font-size:8px;color:var(--ink-faint);text-align:center;margin-top:auto;font-style:italic}
+    @media(prefers-reduced-motion:reduce){.demo-b{opacity:1!important;transform:none!important;transition:none}}
+    </style>
+    <div class="act-tag"><span class="dot"></span>Notre histoire</div>
+    <h2>Née à Annonay, Ardèche. <em>Comme la première envolée.</em></h2>
+    <div class="story-grid">
+      <div class="story-txt">
+        <p class="story-p">En <b>1783, à Annonay</b>, deux entrepreneurs ardéchois — les frères Montgolfier — ont fait décoller le premier ballon. Pas depuis un salon parisien : depuis leur fabrique, avec leur audace et leur papier.</p>
+        <p class="story-p">Marcel est l'héritier symbolique de cet esprit : <b>l'ingénierie patrimoniale des grandes fortunes</b>, rendue accessible à ceux qui créent — conçue en Ardèche, <b>hébergée en France</b>, souveraine de bout en bout.</p>
+        <div class="story-claim">L'IA patrimoniale made in Ardèche, France — au service de tous les entrepreneurs qui créent de la valeur sans jamais trouver une heure pour la protéger.</div>
+        <div class="story-meta">Annonay 1783 · ikcp.eu 2026 — prendre de la hauteur, toujours</div>
+      </div>
+      <div class="demo-wrap" aria-hidden="true">
+        <div class="demo-phone"><div class="demo-scr" id="demoScr">
+          <div class="demo-tag">● Démonstration</div>
+          <div class="demo-b demo-sys" data-step="1">SIREN saisi : 552 032 534</div>
+          <div class="demo-b demo-marcel" data-step="2">🏛️ <b>Cartographie</b> — SA · finances déposées ✓ · lecture en 30 s</div>
+          <div class="demo-b demo-user" data-step="3">Ma trésorerie de 180 k€ dort. Des pistes ?</div>
+          <div class="demo-b demo-marcel" data-step="4">⚡ <b>L'essentiel</b> : 3 familles d'options à comparer. Ordre de grandeur : <span class="g">0 € → +4 à 6 k€/an</span>.<br>Quelle part devez-vous garder disponible ?</div>
+          <div class="demo-b demo-sys" data-step="5">Information, jamais une recommandation — vous décidez.</div>
+          <div class="demo-disc">Démonstration scriptée · chiffres à titre d'exemple</div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+  <script>
+  (function(){
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var steps = [].slice.call(document.querySelectorAll('#demoScr .demo-b'));
+    if (!steps.length) return;
+    if (reduced) { steps.forEach(function(b){ b.classList.add('on'); }); return; }
+    var started = false;
+    function play(){
+      steps.forEach(function(b){ b.classList.remove('on'); });
+      steps.forEach(function(b, i){ setTimeout(function(){ b.classList.add('on'); }, 700 + i*1400); });
+      setTimeout(play, 700 + steps.length*1400 + 4500);   // boucle douce
+    }
+    function go(){ if (!started) { started = true; play(); } }
+    try {
+      new IntersectionObserver(function(en, obs){
+        if (en[0] && en[0].isIntersecting) { go(); obs.disconnect(); }
+      }, {threshold:.35}).observe(document.getElementById('demoScr'));
+    } catch(e){ go(); }
+    setTimeout(go, 5000);   // filet : la démo se joue même si l'observer ne se déclenche jamais
+  })();
+  </script>
 
   <!-- CONTINUER — apparaît après le SIREN ou un clic spécialiste -->
   <section class="act" id="continue" style="display:none">
