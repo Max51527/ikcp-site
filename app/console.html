@@ -422,6 +422,8 @@ select option{background:var(--navy-deep)}
           <div class="desc">En direct depuis GitHub : ce qui a été livré (et ce que ça t'apporte), et les <b>propositions du lundi à valider</b>. Chaque merge = déploiement automatique.</div>
           <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 8px">Propositions à valider (Pull Requests)</div>
           <div id="ghPRs" class="desc">Chargement…</div>
+          <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Santé des déploiements</div>
+          <div id="ghDeploys" class="desc">Chargement…</div>
           <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:14px 0 8px">Dernières livraisons sur la production</div>
           <div id="ghSum" class="desc"></div>
           <div id="ghCommits" class="desc">Chargement…</div>
@@ -673,6 +675,28 @@ async function loadGitHub(){
       pEl.innerHTML = '✓ Aucune proposition en attente — la prochaine arrive <b>lundi 9h15</b> (routine hebdomadaire).';
     } else { pEl.textContent = 'Indisponible (limite API atteinte — réessayez dans une heure).'; }
   } catch(_) { pEl.textContent = 'Hors ligne ou limite API — réessayez.'; }
+  // Santé des déploiements — derniers runs GitHub Actions (API publique, aucune clé)
+  try {
+    const dEl = document.getElementById('ghDeploys');
+    if (dEl) {
+      const runs = await (await fetch('https://api.github.com/repos/'+GH_REPO+'/actions/runs?per_page=12')).json();
+      if (runs && Array.isArray(runs.workflow_runs)) {
+        const seen = {}, rows = [];
+        for (const r of runs.workflow_runs) {
+          if (seen[r.name]) continue; seen[r.name] = 1;               // dernier run de chaque workflow
+          const ok = r.conclusion === 'success', running = r.status !== 'completed';
+          const ic = running ? '⏳' : (ok ? '✅' : '❌');
+          const when = new Date(r.updated_at).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+          rows.push('<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px dashed rgba(226,200,150,.14)">'
+            + '<span>'+ic+'</span><span style="flex:1">'+String(r.name||'').replace(/</g,'&lt;')+'</span>'
+            + '<span style="color:var(--mute);font-size:11px;white-space:nowrap">'+when+'</span>'
+            + '<a class="lnk" style="margin:0" href="'+r.html_url+'" target="_blank">détail</a></div>');
+          if (rows.length >= 4) break;
+        }
+        dEl.innerHTML = rows.join('') || 'Aucun déploiement récent.';
+      } else { dEl.textContent = 'Indisponible (limite API — réessayez dans une heure).'; }
+    }
+  } catch(_) { const dEl = document.getElementById('ghDeploys'); if (dEl) dEl.textContent = 'Hors ligne ou limite API.'; }
   // Commits récents sur main = ce qui est EN PRODUCTION
   try {
     const cs = await (await fetch('https://api.github.com/repos/'+GH_REPO+'/commits?sha=main&per_page=12')).json();
