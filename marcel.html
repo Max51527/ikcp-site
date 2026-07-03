@@ -178,7 +178,7 @@
     <a class="bcm-cta" href="#siren-funnel">Essayer avec mon SIREN — gratuit ↓</a>
     <a class="bcm-cta ghost" href="/creer-mon-compte">Demander un accès</a>
   </div>
-  <div class="hero-who"><span>Dirigeant(e)s</span><span>Professions libérales</span><span>Influenceurs &amp; créateurs</span></div>
+  <div class="hero-who"><span>Dirigeant(e)s</span><span>Professions libérales</span><span>Nouvelle économie · créateurs &amp; influenceurs</span></div>
 </div></header>
 <style>
 .hero.bcm{position:relative;overflow:hidden;background:
@@ -258,6 +258,144 @@
     </div>
     <div class="trust" style="margin-top:16px">Indépendant · aucun produit, aucune rétro-commission. Marcel <b>coordonne</b> et éclaire — il ne remplace ni votre notaire, ni votre expert-comptable. Information, jamais une recommandation (art. L.541-1 CoMoFi).</div>
   </section>
+
+  <!-- ════ AVANTAGES DE L'APP — capacités réelles (véracité L.121-2) ════ -->
+  <section class="act adv-sec" style="display:block">
+  <style>
+    .adv-sec .adv-lead{color:var(--ink-soft);font-weight:300;font-size:15px;line-height:1.6;margin:8px 0 0;max-width:52ch}
+    .adv-sec .adv-lead b{color:var(--ink);font-weight:600}
+    .adv-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 4px}
+    .adv-kpi{position:relative;border:1px solid var(--line);border-radius:14px;padding:15px 14px 13px;background:var(--cream);overflow:hidden}
+    .adv-kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,#E2C896,var(--gold-deep))}
+    .adv-kpi-n{font-family:'Playfair Display',Georgia,serif;font-size:27px;line-height:1;color:var(--navy);letter-spacing:-.01em}
+    .adv-kpi-n span{font-size:14px;color:var(--gold-deep);font-style:italic;font-family:'Playfair Display',serif}
+    .adv-kpi-l{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:8px;line-height:1.5}
+    .adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+    .adv-card{position:relative;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px 22px 20px;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;animation:advRise .7s ease both}
+    .adv-card::before{content:'';position:absolute;left:0;top:0;height:3px;width:0;background:linear-gradient(135deg,#E2C896,var(--gold-deep));transition:width .4s ease}
+    .adv-card:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgba(27,42,74,.10);border-color:var(--gold)}
+    .adv-card:hover::before{width:100%}
+    .adv-card:nth-child(2){animation-delay:.06s}
+    .adv-card:nth-child(3){animation-delay:.12s}
+    .adv-card:nth-child(4){animation-delay:.18s}
+    @keyframes advRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .adv-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
+    .adv-ic{flex:none;width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,#1B2A4A,#0E1729);box-shadow:0 10px 24px -12px rgba(27,42,74,.6)}
+    .adv-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--gold-deep);font-weight:700;opacity:.5;padding-top:5px}
+    .adv-pre{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .adv-card h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:22px;line-height:1.16;color:var(--navy);letter-spacing:-.01em;margin-bottom:10px}
+    .adv-card h3 em{font-style:italic;color:var(--gold-deep)}
+    .adv-desc{font-size:13.5px;line-height:1.6;color:var(--ink-soft);font-weight:300}
+    .adv-proofs{list-style:none;margin:15px 0 0;padding:14px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+    .adv-proofs li{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;line-height:1.45;color:var(--ink)}
+    .adv-proofs li .adv-mk{flex:none;margin-top:2px;color:var(--gold-deep);font-size:10px}
+    .adv-proofs li b{font-weight:600;color:var(--navy)}
+    .adv-prem{display:inline-flex;align-items:center;gap:5px;flex:none;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--gold-deep);background:linear-gradient(135deg,rgba(226,200,150,.28),rgba(139,111,63,.12));border:1px solid rgba(184,149,110,.4);border-radius:999px;padding:3px 9px 2px;white-space:nowrap;line-height:1.4}
+    .adv-prem::before{content:'✦';font-size:8px;line-height:1}
+    .adv-foot{margin-top:22px;padding:18px 20px;border-radius:14px;background:linear-gradient(135deg,#1B2A4A,#0E1729);display:flex;align-items:center;gap:14px}
+    .adv-foot .adv-seal{flex:none;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:19px;background:rgba(226,200,150,.16)}
+    .adv-foot .adv-ft{font-size:12.5px;line-height:1.55;color:rgba(250,248,244,.86);font-weight:300}
+    .adv-foot .adv-ft b{color:#E2C896;font-weight:600}
+    .adv-mifii{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.06em;line-height:1.7;color:var(--ink-faint);text-transform:uppercase}
+    @media(max-width:560px){
+      .adv-kpis{grid-template-columns:1fr;gap:8px}
+      .adv-kpi{display:flex;align-items:baseline;gap:12px;padding:13px 16px}
+      .adv-kpi::before{width:2px;height:auto;bottom:0;right:auto}
+      .adv-kpi-l{margin-top:0}
+      .adv-grid{grid-template-columns:1fr}
+      .adv-card{padding:22px 20px 18px}
+      .adv-card h3{font-size:21px}
+      .adv-foot{flex-direction:column;text-align:center}
+    }
+    @media(prefers-reduced-motion:reduce){.adv-card{animation:none!important;transition:none!important}.adv-card::before{transition:none}}
+  </style>
+
+  <div class="act-tag"><span class="dot"></span>Ce que l'app change pour vous</div>
+  <h2>Votre société vous parle. <em>Enfin.</em></h2>
+  <p class="adv-lead">Vous partez d'un numéro, l'app fait le reste. Quatre manières concrètes de reprendre la main sur votre patrimoine de dirigeant — <b>sans saisie fastidieuse, sans jargon, et sans jamais décider à votre place.</b></p>
+
+  <div class="adv-kpis">
+    <div class="adv-kpi">
+      <div class="adv-kpi-n">~30<span>&nbsp;s</span></div>
+      <div class="adv-kpi-l">Société cartographiée</div>
+    </div>
+    <div class="adv-kpi">
+      <div class="adv-kpi-n">0<span>&nbsp;champ</span></div>
+      <div class="adv-kpi-l">À remplir à la main</div>
+    </div>
+    <div class="adv-kpi">
+      <div class="adv-kpi-n">100<span>&nbsp;%</span></div>
+      <div class="adv-kpi-l">Données hébergées en&nbsp;UE</div>
+    </div>
+  </div>
+
+  <div class="adv-grid">
+
+    <article class="adv-card">
+      <div class="adv-top">
+        <div class="adv-ic">🏛️</div>
+        <span class="adv-num">01</span>
+      </div>
+      <span class="adv-pre">Votre société, en 30 secondes</span>
+      <h3>Il vous connaît <em>avant votre première question.</em></h3>
+      <p class="adv-desc">Votre SIREN suffit. Le registre officiel est lu pour vous — forme, capital, dirigeant, finances déposées — et ce contexte reste présent dans chacune des réponses de Marcel. Zéro formulaire, zéro ressaisie.</p>
+      <ul class="adv-proofs">
+        <li><span class="adv-mk">◆</span><span><b>~30 s</b> pour cartographier votre structure depuis le registre officiel.</span></li>
+        <li><span class="adv-mk">◆</span><span>Une <b>photo de votre avis d'imposition</b> extrait revenu de référence, revenu imposable, impôt et <b>tranche (TMI)</b> — aucun champ à remplir, lecture souveraine.</span></li>
+      </ul>
+    </article>
+
+    <article class="adv-card">
+      <div class="adv-top">
+        <div class="adv-ic">💬</div>
+        <span class="adv-num">02</span>
+      </div>
+      <span class="adv-pre">Réponses chiffrées, en direct</span>
+      <h3>Une vraie question. <em>Une réponse tenue, à voix haute.</em></h3>
+      <p class="adv-desc">Vous posez votre question patrimoniale ou fiscale ; Marcel répond, chiffres à l'appui, et vous pouvez l'écouter. Derrière lui, une équipe de spécialistes qu'il mobilise sans que vous ayez à les solliciter — vous ne parlez qu'à lui.</p>
+      <ul class="adv-proofs">
+        <li><span class="adv-mk">◆</span><span><b>7 domaines</b> orchestrés : fiscalité, transmission, patrimoine 360°, immobilier, trésorerie, cession, retraite.</span></li>
+        <li><span class="adv-mk">◆</span><span>Chaque réponse <b>écoutable</b> en synthèse vocale, comme un point avec votre conseil.</span></li>
+      </ul>
+    </article>
+
+    <article class="adv-card">
+      <div class="adv-top">
+        <div class="adv-ic">🧭</div>
+        <span class="adv-num">03</span>
+      </div>
+      <span class="adv-pre">Les angles que vous n'aviez pas vus</span>
+      <h3>Des pistes chiffrées, <em>et à vous de trancher.</em></h3>
+      <p class="adv-desc">Marcel met en lumière des angles de réflexion que vous n'auriez pas explorés — chacun avec un avant/après chiffré et une question pour décider. Un questionnaire « Avez-vous pensé à ? » éclaire vos angles morts vers notaire, avocat ou expert-comptable. Jamais une consigne : une aide à la décision.</p>
+      <ul class="adv-proofs">
+        <li><span class="adv-mk">◆</span><span>Clause bénéficiaire, testament, <b>990 I</b>, régime matrimonial : les points qu'on oublie, signalés.</span></li>
+        <li><span class="adv-mk">◆</span><span>Simulateurs <b>rémunération / dividendes</b>, retraite TNS, carrière : vos scénarios, à tester vous-même.</span></li>
+      </ul>
+    </article>
+
+    <article class="adv-card">
+      <div class="adv-top">
+        <div class="adv-ic">📑</div>
+        <span class="adv-num">04</span>
+      </div>
+      <span class="adv-pre">Une lecture d'ensemble <span class="adv-prem">Premium</span></span>
+      <h3>Votre patrimoine 360°, <em>société et vie privée croisées.</em></h3>
+      <p class="adv-desc">Vous intégrez l'ensemble de votre patrimoine et obtenez une lecture juridique, financière et fiscale croisant entreprise et vie privée, exportable en PDF. Les montages du dirigeant vous sont expliqués visuellement, pour dialoguer d'égal à égal avec vos conseils.</p>
+      <ul class="adv-proofs">
+        <li><span class="adv-mk">◆</span><span><span class="adv-prem">Premium</span>&nbsp; <b>Audit 360° exportable</b> en PDF + schémas OBO, pacte Dutreil, holding, démembrement.</span></li>
+        <li><span class="adv-mk">◆</span><span><span class="adv-prem">Premium</span>&nbsp; Marcel <b>veille et vous alerte</b> sur vos angles patrimoniaux, en continu.</span></li>
+      </ul>
+    </article>
+
+  </div>
+
+  <div class="adv-foot">
+    <div class="adv-seal">🇫🇷</div>
+    <div class="adv-ft"><b>100 % souverain, et indépendant.</b> Intelligence française, données hébergées en France, RGPD natif — elles ne quittent jamais l'UE. Aucun produit vendu, aucune rétro-commission. À chaque étape, vous pilotez, vous décidez.</div>
+  </div>
+
+  <p class="adv-mifii">Information patrimoniale à visée pédagogique · ne constitue ni un conseil personnalisé ni une recommandation · art. L.541-1 CoMoFi</p>
+</section>
 
   <!-- CONTINUER — apparaît après le SIREN ou un clic spécialiste -->
   <section class="act" id="continue" style="display:none">
