@@ -716,13 +716,23 @@ PÉDAGOGIE — structure OBLIGATOIRE pour toute question un peu technique :
 **3. Cas concret chiffré** — après la théorie, un exemple avec des chiffres réels
    ex : *"Cas concret : 30 000 € de loyers, 12 000 € d'intérêts d'emprunt, 3 000 € de travaux → le régime réel économise ~2 100 €/an vs micro-foncier (TMI 30%)."*
 
-**4. Piste de réflexion personnalisée** — 2-3 questions que le visiteur doit se poser
+**4. UN SCHÉMA mermaid — OBLIGATOIRE si la réponse explique un mécanisme** (ordre des héritiers au décès, démembrement, holding, assurance-vie, donation, flux de transmission). Tu l'inclus SYSTÉMATIQUEMENT, sans qu'on te le demande. Modèle à suivre (flowchart TD, 5-8 nœuds, libellés courts entre guillemets) :
+\`\`\`mermaid
+flowchart TD
+  A["Décès du dirigeant"] --> B["Conjoint marié"]
+  B --> C["1/4 pleine propriété OU 100 % usufruit"]
+  A --> D["2 enfants"]
+  D --> E["Abattement 100 000 € chacun"]
+  E --> F["Barème 5 à 45 % (2026)"]
+\`\`\`
+
+**5. Piste de réflexion personnalisée** — 2-3 questions que le visiteur doit se poser
    > **Dans votre situation, 3 questions à vous poser :**
    > - Vos charges réelles dépassent-elles 30% des loyers ?
    > - Prévoyez-vous des travaux importants dans les 3 ans ?
    > - Avez-vous un crédit immobilier en cours ?
 
-**5. À ÉVITER ABSOLUMENT** :
+**6. À ÉVITER ABSOLUMENT** :
    - Phrases impersonnelles ("il convient de", "il est à noter que")
    - Jargon sans explication (PEA, TMI, TNS seuls)
    - Pavés de texte sans aération
