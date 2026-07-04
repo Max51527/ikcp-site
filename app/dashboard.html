@@ -258,7 +258,7 @@ try { me = await Marcel.Auth.me(); } catch(_) { location.href='/app/index.html';
 if(me){
   let profile=null; try{ profile = me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){}
   if(!profile?.onboarding_completed && !localStorage.getItem('marcel_onboarding_skipped')){
-    if(!new URLSearchParams(location.search).get('welcome')) location.href='/app/onboarding.html';
+    var _q=new URLSearchParams(location.search); if(!_q.get('welcome') && !_q.get('upgraded')) location.href='/app/onboarding.html';
   }
   if(profile?.prenom) me.prenom = profile.prenom;
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || (me.email?me.email.split('@')[0]:'') || 'Maxime';
@@ -267,6 +267,18 @@ if(me){
   if(me.trial && me.trial.active){ tierLbl = 'Premium · essai ' + me.trial.days_left + ' j'; }
   var tierEl=document.getElementById('userTier'); tierEl.textContent=tierLbl;
   if(me.tier && me.tier!=='free') tierEl.classList.add('premium');
+  var _up=new URLSearchParams(location.search).get('upgraded');
+  if(_up){
+    var _prem = me.tier && me.tier!=='free';
+    var _b=document.createElement('div'); _b.setAttribute('role','status');
+    _b.style.cssText='margin:0 0 14px;padding:13px 16px;border-radius:12px;background:linear-gradient(135deg,#1B2A4A,#0E1729);color:#FAF8F4;font-size:14px;display:flex;align-items:center;gap:10px';
+    _b.innerHTML = _prem
+      ? '<span style="font-size:20px">🎉</span><span>Bienvenue en <b style="color:#E2C896">Premium</b> — Marcel illimité, doctrine, veille et audit 360° sont ouverts.</span>'
+      : '<span style="font-size:20px">🎉</span><span>Paiement reçu, merci ! Votre <b style="color:#E2C896">Premium</b> s\'active dans quelques secondes…</span>';
+    var _m=document.querySelector('main')||document.querySelector('.wrap')||document.body; _m.insertBefore(_b,_m.firstChild);
+    if(history.replaceState) history.replaceState(null,'',location.pathname);
+    if(!_prem){ setTimeout(async function(){ try{ var m2=await Marcel.Auth.me(); if(m2&&m2.tier&&m2.tier!=='free'){ tierEl.textContent='Premium'; tierEl.classList.add('premium'); try{localStorage.setItem('ikcp_tier',m2.tier);}catch(e){} _b.innerHTML='<span style="font-size:20px">🎉</span><span>Bienvenue en <b style="color:#E2C896">Premium</b> — tout est ouvert.</span>'; } }catch(e){} }, 4500); }
+  }
 }
 
 // ─── Cartographie société : identité (Pappers) + FINANCES réelles (gouv) + saisie inline ───
