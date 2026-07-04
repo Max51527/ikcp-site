@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBITE — Cockpit patrimoine · démo signature IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --creme:#FAF8F4; --creme2:#F2ECE1; --navy:#1B2A4A; --navy-p:#0E1729;
+    --or:#C9A96E; --or-clair:#E2C896; --or-p:#8B6F3F; --encre:#221E18;
+    --ligne:#E7DFD2; --rouge:#C0414C;
+    --pf:'Playfair Display',serif; --ou:'Outfit',sans-serif; --mo:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--ou); background:var(--creme); color:var(--encre);
+    overflow-x:hidden; -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(1200px 700px at 85% -10%, rgba(201,169,110,.14), transparent 60%),
+      radial-gradient(900px 600px at -10% 30%, rgba(27,42,74,.05), transparent 55%),
+      radial-gradient(1000px 800px at 50% 110%, rgba(226,200,150,.12), transparent 60%);
+  }
+  ::selection{background:var(--or-clair);color:var(--navy-p)}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+
+  /* ---------- bandeau démo ---------- */
+  .demo-band{
+    background:var(--navy-p); color:var(--or-clair);
+    font-family:var(--mo); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    text-align:center; padding:9px 16px; line-height:1.5;
+  }
+  .demo-band b{color:#fff;font-weight:700}
+
+  /* ---------- header ---------- */
+  header.top{display:flex;align-items:baseline;justify-content:space-between;padding-top:26px}
+  .brand{font-family:var(--pf);font-size:20px;color:var(--navy);letter-spacing:.02em}
+  .brand em{color:var(--or-p)}
+  .top-tag{font-family:var(--mo);font-size:10px;letter-spacing:.2em;color:var(--or-p);text-transform:uppercase}
+
+  /* ---------- hero ---------- */
+  .hero-head{margin:clamp(28px,5vw,54px) 0 clamp(10px,2vw,18px)}
+  .eyebrow{font-family:var(--mo);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--or-p);display:flex;align-items:center;gap:12px}
+  .eyebrow::after{content:"";height:1px;width:64px;background:var(--or)}
+  h1{
+    font-family:var(--pf);font-weight:500;color:var(--navy);
+    font-size:clamp(34px,5.4vw,62px);line-height:1.06;margin-top:14px;max-width:14em;
+  }
+  h1 em{font-style:italic;color:var(--or-p)}
+  .hero-sub{margin-top:14px;color:#5c5648;font-size:clamp(14px,1.5vw,16.5px);font-weight:300;max-width:38em}
+
+  .hero-grid{
+    display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);
+    gap:clamp(20px,3.5vw,48px);align-items:start;
+    padding:clamp(8px,2vw,20px) 0 clamp(48px,6vw,84px);
+  }
+  @media (max-width:980px){.hero-grid{grid-template-columns:1fr}}
+
+  /* ---------- système orbital ---------- */
+  .stage-shell{position:relative;display:flex;justify-content:center;padding:clamp(26px,4vw,44px) 0 clamp(58px,7vw,72px)}
+  .stage{position:relative;width:min(100%,640px);aspect-ratio:1}
+  .stage::before{ /* atmosphère */
+    content:"";position:absolute;inset:-8%;border-radius:50%;
+    background:radial-gradient(circle at 50% 42%, rgba(226,200,150,.22), rgba(250,248,244,0) 62%);
+    pointer-events:none;
+  }
+  .stage svg.guides,.stage svg.filaments{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .rotor{position:absolute;inset:0;animation:spin 150s linear infinite;will-change:transform}
+  .counter{position:absolute;inset:0;animation:spin 150s linear infinite reverse;will-change:transform}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .stage.sys-paused .rotor,.stage.sys-paused .counter{animation-play-state:paused}
+
+  /* centre : le NET */
+  .nucleus{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:41%;min-width:172px;aspect-ratio:1;border-radius:50%;
+    background:radial-gradient(circle at 38% 30%, #FFFFFF 0%, #FBF7EE 55%, #F3EBDC 100%);
+    border:1px solid var(--ligne);
+    box-shadow:0 34px 70px -18px rgba(27,42,74,.22), 0 8px 22px rgba(27,42,74,.08), inset 0 1px 0 #fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    z-index:5;padding:6%;
+    animation:nucleus-in 1s cubic-bezier(.22,1,.36,1) both .15s;
+  }
+  .nucleus::before{
+    content:"";position:absolute;inset:5.5%;border-radius:50%;
+    border:1px dashed rgba(201,169,110,.55);pointer-events:none;
+  }
+  @keyframes nucleus-in{from{opacity:0;transform:translate(-50%,-46%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+  .n-label{font-family:var(--mo);font-size:9.5px;letter-spacing:.3em;color:var(--or-p);text-transform:uppercase}
+  .n-net{font-family:var(--pf);font-weight:600;color:var(--navy);line-height:1.05;margin-top:6px;white-space:nowrap}
+  .n-sub{font-family:var(--mo);font-size:9.5px;color:#8a8272;margin-top:8px;letter-spacing:.02em}
+  .n-sub s{text-decoration:none;color:var(--rouge)}
+  .n-chip{
+    margin-top:10px;font-size:10.5px;font-weight:500;color:var(--navy);
+    border:1px solid var(--or);border-radius:99px;padding:4px 12px;
+    background:rgba(226,200,150,.18);font-style:italic;font-family:var(--pf);
+  }
+  @media (max-width:560px){.n-sub{display:none}.n-chip{margin-top:7px}}
+
+  /* planètes */
+  .planet{position:absolute;transform:translate(-50%,-50%);z-index:4}
+  .p-inner{position:relative;width:100%;height:100%}
+  .skin{
+    position:relative;width:100%;height:100%;border-radius:50%;border:none;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 18px 38px -12px rgba(27,42,74,.30), 0 4px 10px rgba(27,42,74,.10);
+    transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease;
+    animation:pop .85s cubic-bezier(.22,1,.36,1) both;
+    overflow:visible;background:transparent;
+  }
+  @keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+  .skin:hover,.skin:focus-visible{transform:scale(1.08)}
+  .skin:focus-visible{outline:2px solid var(--or-p);outline-offset:4px}
+  .skin .disc{
+    position:absolute;inset:0;border-radius:50%;overflow:hidden;
+    border:2px solid rgba(255,255,255,.9);
+  }
+  .skin .disc::after{ /* lumière de sphère */
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 32% 26%, rgba(255,255,255,.5), rgba(255,255,255,0) 45%),
+               radial-gradient(circle at 70% 85%, rgba(14,23,41,.25), rgba(14,23,41,0) 55%);
+  }
+  .skin img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .skin .em{position:relative;z-index:2;line-height:1;filter:drop-shadow(0 2px 3px rgba(14,23,41,.35))}
+  .skin .badge{
+    position:absolute;right:2%;bottom:2%;z-index:3;
+    background:#fff;border:1.5px solid var(--or);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;line-height:1;
+    box-shadow:0 3px 8px rgba(27,42,74,.22);
+  }
+  .skin .halo{ /* anneau focus */
+    position:absolute;inset:-14%;border-radius:50%;border:1.5px dashed var(--or);
+    opacity:0;transform:scale(.8);transition:opacity .4s ease,transform .5s cubic-bezier(.22,1,.36,1);
+    pointer-events:none;
+  }
+  .ptag{
+    position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+    text-align:center;white-space:nowrap;pointer-events:none;
+    animation:fadeup .8s ease both;
+  }
+  @keyframes fadeup{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
+  .ptag .pname{display:block;font-size:11px;font-weight:600;color:var(--navy);letter-spacing:.02em;text-shadow:0 1px 0 var(--creme)}
+  .ptag .pval{display:block;font-family:var(--mo);font-size:10px;color:var(--or-p);margin-top:1px}
+  @media (max-width:560px){.ptag .pname{font-size:9.5px}.ptag .pval{font-size:8.5px}}
+
+  /* focus */
+  .stage.focused .planet{opacity:.25;transition:opacity .5s ease}
+  .planet{transition:opacity .5s ease}
+  .stage.focused .planet.active{opacity:1}
+  .planet.active .skin{transform:scale(1.16);box-shadow:0 30px 60px -14px rgba(27,42,74,.4)}
+  .planet.active .halo{opacity:1;transform:scale(1)}
+  .stage.focused .nucleus{opacity:.55;transition:opacity .5s ease}
+  .nucleus{transition:opacity .5s ease;cursor:pointer}
+
+  /* contrôle orbite */
+  .orbit-ctl{
+    position:absolute;left:0;bottom:6px;display:flex;align-items:center;gap:10px;
+    background:none;border:none;color:var(--or-p);
+    font-family:var(--mo);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  }
+  .orbit-ctl .dot{
+    width:26px;height:26px;border-radius:50%;border:1px solid var(--or);
+    display:inline-flex;align-items:center;justify-content:center;
+    color:var(--or-p);font-size:9px;background:rgba(255,255,255,.6);
+    transition:background .3s ease, transform .3s ease;
+  }
+  .orbit-ctl:hover .dot{background:var(--or-clair);transform:scale(1.08)}
+
+  /* ---------- colonne latérale ---------- */
+  .aside{display:flex;flex-direction:column;gap:14px;padding-top:clamp(10px,2vw,30px)}
+  .tile{
+    background:rgba(255,255,255,.66);border:1px solid var(--ligne);border-radius:18px;
+    padding:16px 20px;box-shadow:0 10px 26px -14px rgba(27,42,74,.12);
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  }
+  .tile .tl{font-family:var(--mo);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:#8a8272}
+  .tile .tv{font-family:var(--pf);font-size:clamp(19px,2vw,23px);font-weight:600;color:var(--navy);white-space:nowrap}
+  .tile .tv.neg{color:var(--rouge)}
+  .tile .tv.it{font-style:italic;font-weight:500;font-size:clamp(17px,1.8vw,20px)}
+
+  .hint{
+    border:1px dashed var(--or);border-radius:18px;padding:18px 20px;
+    color:var(--or-p);font-size:13px;font-weight:300;
+    background:rgba(226,200,150,.10);line-height:1.55;
+  }
+  .hint b{font-weight:600;color:var(--navy)}
+
+  /* panneau détail */
+  .dpanel{
+    background:#fff;border:1px solid var(--ligne);border-radius:22px;
+    box-shadow:0 30px 60px -22px rgba(27,42,74,.28);
+    padding:22px;position:relative;
+    opacity:0;transform:translateY(14px);pointer-events:none;
+    transition:opacity .45s ease, transform .55s cubic-bezier(.22,1,.36,1);
+    max-height:0;overflow:hidden;padding-top:0;padding-bottom:0;border-width:0;
+  }
+  .dpanel.open{opacity:1;transform:translateY(0);pointer-events:auto;max-height:900px;padding:22px;border-width:1px}
+  .dp-close{
+    position:absolute;top:12px;right:14px;background:none;border:none;
+    font-size:20px;line-height:1;color:#a99f8c;transition:color .25s, transform .25s;
+  }
+  .dp-close:hover{color:var(--navy);transform:rotate(90deg)}
+  .dp-head{display:flex;gap:12px;align-items:flex-start}
+  .dp-emoji{
+    flex:0 0 auto;width:44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:20px;
+    border:1px solid var(--ligne);
+  }
+  .dp-name{font-family:var(--pf);font-size:19px;font-weight:600;color:var(--navy)}
+  .dp-desc{font-size:12.5px;font-weight:300;color:#6b6455;margin-top:3px;line-height:1.5}
+  .dp-nums{display:flex;align-items:baseline;gap:12px;margin:16px 0 4px;flex-wrap:wrap}
+  .dp-val{font-family:var(--pf);font-size:30px;font-weight:600;color:var(--navy)}
+  .dp-pct{font-family:var(--mo);font-size:11px;color:var(--or-p);letter-spacing:.06em}
+  .dp-photos{display:flex;gap:10px;margin-top:14px}
+  .dp-photos figure{flex:1;min-width:0}
+  .dp-photos img{
+    width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;display:block;
+    border:1px solid var(--ligne);box-shadow:0 10px 22px -12px rgba(27,42,74,.3);
+  }
+  .dp-photos figcaption{
+    font-family:var(--pf);font-style:italic;font-size:11.5px;color:var(--or-p);
+    margin-top:6px;line-height:1.35;
+  }
+  .dp-cta{
+    margin-top:18px;width:100%;border:none;border-radius:12px;
+    background:var(--navy);color:var(--or-clair);
+    font-size:13px;font-weight:500;letter-spacing:.04em;padding:13px 18px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    transition:background .3s ease, transform .3s ease, box-shadow .3s ease;
+  }
+  .dp-cta span{transition:transform .3s ease}
+  .dp-cta:hover{background:var(--navy-p);transform:translateY(-1px);box-shadow:0 12px 26px -10px rgba(14,23,41,.45)}
+  .dp-cta:hover span{transform:translateX(5px)}
+
+  /* ---------- section allocation ---------- */
+  .sec-alloc{padding:clamp(8px,2vw,24px) 0 clamp(56px,7vw,90px)}
+  .alloc-band{
+    background:var(--creme2);border:1px solid var(--ligne);border-radius:30px;
+    padding:clamp(26px,4.5vw,54px);
+    box-shadow:0 24px 60px -30px rgba(27,42,74,.18), inset 0 1px 0 rgba(255,255,255,.7);
+  }
+  .sec-head{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:clamp(18px,3vw,34px)}
+  .sec-head h2{font-family:var(--pf);font-weight:500;font-size:clamp(26px,3.4vw,38px);color:var(--navy)}
+  .sec-head h2 em{color:var(--or-p)}
+  .sec-head p{font-size:13.5px;font-weight:300;color:#6b6455}
+  .sec-num{font-family:var(--mo);font-size:10px;letter-spacing:.26em;color:var(--or-p)}
+
+  .alloc-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(22px,4vw,52px);align-items:center}
+  @media (max-width:900px){.alloc-grid{grid-template-columns:1fr}}
+  .rings-wrap{display:flex;justify-content:center}
+  #ringsSvg{width:min(100%,600px);height:auto;overflow:visible}
+
+  #ringsSvg .track{fill:none;stroke:var(--navy);stroke-opacity:.055;stroke-width:13}
+  #ringsSvg .arc{
+    fill:none;stroke-width:13;stroke-linecap:round;
+    stroke-dasharray:0 100;
+    transition:stroke-dasharray 1.6s cubic-bezier(.22,1,.36,1), opacity .4s ease;
+  }
+  .sec-alloc.in .arc{stroke-dasharray:var(--p) 100}
+  #ringsSvg .mark{opacity:0;transition:opacity .8s ease}
+  .sec-alloc.in .mark{opacity:1}
+  #ringsSvg .pctl{font-family:var(--mo);font-size:16px;font-weight:700;fill:var(--or-p)}
+  #ringsSvg .badge-c{fill:#fff;stroke:var(--or);stroke-width:1.2}
+  #ringsSvg .badge-e{font-size:13px}
+  #ringsSvg .ctr-l{font-family:var(--mo);font-size:10px;letter-spacing:.28em;fill:var(--or-p)}
+  #ringsSvg .ctr-v{font-family:var(--pf);font-size:24px;font-weight:600;fill:var(--navy)}
+  #ringsSvg .leader{stroke:var(--or);stroke-width:1;stroke-dasharray:2 3;fill:none;opacity:.6}
+
+  /* légende */
+  .legend{display:flex;flex-direction:column;gap:4px}
+  .lrow{
+    display:grid;grid-template-columns:34px 1fr auto auto;align-items:center;gap:12px;
+    padding:11px 14px;border-radius:14px;border:1px solid transparent;
+    transition:background .3s ease,border-color .3s ease,transform .3s ease;
+    cursor:pointer;background:none;text-align:left;width:100%;
+  }
+  .lrow:hover,.lrow:focus-visible{background:rgba(255,255,255,.75);border-color:var(--ligne);transform:translateX(4px)}
+  .lrow:focus-visible{outline:2px solid var(--or-p);outline-offset:2px}
+  .lrow .le{
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:14px;border:1px solid var(--ligne);background:#fff;
+  }
+  .lrow .ln{min-width:0}
+  .lrow .ln b{display:block;font-size:13.5px;font-weight:600;color:var(--navy);letter-spacing:.01em}
+  .lrow .bar{height:3px;border-radius:2px;background:rgba(27,42,74,.08);margin-top:6px;overflow:hidden}
+  .lrow .bar i{display:block;height:100%;border-radius:2px;width:0;transition:width 1.4s cubic-bezier(.22,1,.36,1) .3s}
+  .sec-alloc.in .lrow .bar i{width:var(--w)}
+  .lrow .lv{font-family:var(--mo);font-size:12.5px;color:var(--navy);white-space:nowrap}
+  .lrow .lp{font-family:var(--mo);font-size:11.5px;font-weight:700;color:var(--or-p);white-space:nowrap;min-width:52px;text-align:right}
+  .l-total{
+    margin-top:14px;padding:14px 16px;border-top:1px solid var(--ligne);
+    font-family:var(--mo);font-size:10.5px;color:#8a8272;letter-spacing:.03em;line-height:1.8;
+  }
+  .l-total b{color:var(--navy);font-weight:700}
+  .l-total s{text-decoration:none;color:var(--rouge)}
+  .l-total .net{color:var(--or-p);font-weight:700}
+  @media (max-width:560px){
+    .lrow{grid-template-columns:28px 1fr auto;gap:9px;padding:9px 8px}
+    .lrow .lp{grid-column:3;min-width:44px}
+    .lrow .lv{font-size:11px}
+    .lrow .le{width:26px;height:26px;font-size:12px}
+  }
+
+  /* ---------- approfondir ---------- */
+  .sec-deep{padding-bottom:clamp(60px,8vw,100px)}
+  .deep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,22px);margin-top:clamp(18px,3vw,30px)}
+  @media (max-width:820px){.deep-grid{grid-template-columns:1fr}}
+  .dcard{
+    text-align:left;background:rgba(255,255,255,.7);border:1px solid var(--ligne);border-radius:22px;
+    padding:clamp(20px,2.5vw,28px);position:relative;overflow:hidden;
+    transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease, border-color .45s ease;
+  }
+  .dcard::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--or);
+    transform:scaleY(0);transform-origin:top;transition:transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  .dcard:hover{transform:translateY(-6px);box-shadow:0 26px 52px -22px rgba(27,42,74,.3);border-color:var(--or)}
+  .dcard:hover::before{transform:scaleY(1)}
+  .dcard .idx{font-family:var(--mo);font-size:10px;letter-spacing:.3em;color:var(--or-p)}
+  .dcard h3{font-family:var(--pf);font-weight:600;font-size:clamp(19px,2vw,22px);color:var(--navy);margin:10px 0 8px}
+  .dcard p{font-size:13px;font-weight:300;color:#6b6455;line-height:1.6}
+  .dcard .go{
+    display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+    font-family:var(--mo);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--navy);
+  }
+  .dcard .go span{transition:transform .35s ease;color:var(--or-p)}
+  .dcard:hover .go span{transform:translateX(6px)}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--ligne);background:rgba(242,236,225,.5)}
+  .foot-quote{
+    text-align:center;font-family:var(--pf);font-style:italic;font-size:clamp(15px,1.8vw,18px);
+    color:var(--navy);padding:clamp(30px,4vw,44px) 24px 8px;font-weight:500;
+  }
+  .foot-quote::after{content:"";display:block;width:44px;height:1px;background:var(--or);margin:18px auto 0}
+  .foot-legal{
+    text-align:center;font-family:var(--mo);font-size:9.5px;letter-spacing:.14em;color:#8a8272;
+    padding:16px 24px 34px;line-height:2;text-transform:uppercase;
+  }
+
+  /* toast */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);
+    background:var(--navy-p);color:var(--or-clair);border:1px solid rgba(201,169,110,.4);
+    font-family:var(--mo);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+    padding:11px 22px;border-radius:99px;z-index:60;opacity:0;
+    transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .4s ease;pointer-events:none;
+    box-shadow:0 18px 40px -12px rgba(14,23,41,.5);white-space:nowrap;
+  }
+  .toast.show{transform:translate(-50%,0);opacity:1}
+
+  /* reveal on scroll */
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .9s cubic-bezier(.22,1,.36,1)}
+  .rv.in{opacity:1;transform:translateY(0)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+    .rv{opacity:1;transform:none}
+    .sec-alloc .arc{stroke-dasharray:var(--p) 100}
+    .sec-alloc .mark{opacity:1}
+    .sec-alloc .lrow .bar i{width:var(--w)}
+    .dpanel{max-height:none;overflow:visible}
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-band">Proposition signature <b>ORBITE</b> — démo, données fictives</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">IKCP <em>· Cockpit Patrimoine</em></div>
+    <div class="top-tag">Signature 01 — Orbite</div>
+  </header>
+
+  <section class="hero-head">
+    <div class="eyebrow">Système patrimonial · 4 juillet 2026</div>
+    <h1>Votre patrimoine est un <em>système</em>.<br>Chaque univers gravite autour du net.</h1>
+    <p class="hero-sub">Six univers en orbite autour d'une seule vérité. Touchez une planète pour la mettre en lumière — le poids de chacune se lit à l'œil nu.</p>
+  </section>
+
+  <section class="hero-grid">
+    <div class="stage-shell">
+      <div class="stage" id="stage" aria-label="Système patrimonial orbital">
+        <svg class="guides" viewBox="0 0 100 100" aria-hidden="true"></svg>
+        <div class="rotor" id="rotor">
+          <svg class="filaments" viewBox="0 0 100 100" aria-hidden="true"></svg>
+        </div>
+        <div class="nucleus" id="nucleus" role="button" tabindex="0" aria-label="Patrimoine net — recentrer la vue">
+          <span class="n-label">Patrimoine net</span>
+          <span class="n-net" id="netVal">1 583 000 €</span>
+          <span class="n-sub">Biens 1 843 000 € · Passif <s>− 260 000 €</s></span>
+          <span class="n-chip">Dirigeant établi</span>
+        </div>
+      </div>
+      <button class="orbit-ctl" id="orbitCtl" aria-pressed="false">
+        <span class="dot" id="orbitIco">❚❚</span>
+        <span id="orbitTxt">Orbite active</span>
+      </button>
+    </div>
+
+    <aside class="aside">
+      <div class="tile rv"><span class="tl">Total des biens</span><span class="tv">1 843 000 €</span></div>
+      <div class="tile rv"><span class="tl">Passif</span><span class="tv neg">− 260 000 €</span></div>
+      <div class="tile rv"><span class="tl">Profil</span><span class="tv it">Dirigeant établi</span></div>
+      <div class="hint rv" id="hintCard"><b>Touchez un univers</b> pour le mettre en lumière — montant, poids et pièces du dossier apparaissent ici.</div>
+      <div class="dpanel" id="dpanel" aria-live="polite"></div>
+    </aside>
+  </section>
+</div>
+
+<!-- ═══════════ ALLOCATION ═══════════ -->
+<section class="sec-alloc" id="alloc">
+  <div class="wrap">
+    <div class="alloc-band">
+      <div class="sec-head rv">
+        <span class="sec-num">02 —</span>
+        <h2>L'allocation, en <em>anneaux</em></h2>
+        <p>Du plus lourd au plus fin, chaque anneau parcourt son poids exact.</p>
+      </div>
+      <div class="alloc-grid">
+        <div class="rings-wrap rv">
+          <svg id="ringsSvg" viewBox="0 0 660 640" role="img" aria-label="Allocation du patrimoine en anneaux concentriques">
+            <!-- pistes -->
+            <g>
+              <circle class="track" cx="330" cy="320" r="250"/>
+              <circle class="track" cx="330" cy="320" r="216"/>
+              <circle class="track" cx="330" cy="320" r="182"/>
+              <circle class="track" cx="330" cy="320" r="148"/>
+              <circle class="track" cx="330" cy="320" r="114"/>
+              <circle class="track" cx="330" cy="320" r="80"/>
+            </g>
+            <!-- arcs (départ 12h, sens horaire) -->
+            <g transform="rotate(-90 330 320)">
+              <circle class="arc" data-k="immobilier" cx="330" cy="320" r="250" pathLength="100" stroke="#A8884D" style="--p:48.3; transition-delay:.05s"/>
+              <circle class="arc" data-k="societe"    cx="330" cy="320" r="216" pathLength="100" stroke="#7A5C2E" style="--p:24.4; transition-delay:.15s"/>
+              <circle class="arc" data-k="financier"  cx="330" cy="320" r="182" pathLength="100" stroke="#1B2A4A" style="--p:16.8; transition-delay:.25s"/>
+              <circle class="arc" data-k="tresorerie" cx="330" cy="320" r="148" pathLength="100" stroke="#5B8A8C" style="--p:4.6;  transition-delay:.35s"/>
+              <circle class="arc" data-k="retraite"   cx="330" cy="320" r="114" pathLength="100" stroke="#C9A96E" style="--p:3.7;  transition-delay:.45s"/>
+              <circle class="arc" data-k="autres"     cx="330" cy="320" r="80"  pathLength="100" stroke="#9AA0AE" style="--p:2.2;  transition-delay:.55s"/>
+            </g>
+            <!-- badges emoji au départ (12h) -->
+            <g class="mark" style="transition-delay:.5s">
+              <circle class="badge-c" cx="330" cy="70"  r="13"/><text class="badge-e" x="330" y="74.5" text-anchor="middle">🏠</text>
+              <circle class="badge-c" cx="330" cy="104" r="13"/><text class="badge-e" x="330" y="108.5" text-anchor="middle">🏛️</text>
+              <circle class="badge-c" cx="330" cy="138" r="13"/><text class="badge-e" x="330" y="142.5" text-anchor="middle">📈</text>
+              <circle class="badge-c" cx="330" cy="172" r="13"/><text class="badge-e" x="330" y="176.5" text-anchor="middle">💧</text>
+              <circle class="badge-c" cx="330" cy="206" r="13"/><text class="badge-e" x="330" y="210.5" text-anchor="middle">🛡️</text>
+              <circle class="badge-c" cx="330" cy="240" r="13"/><text class="badge-e" x="330" y="244.5" text-anchor="middle" fill="#9AA0AE" font-size="12">✦</text>
+            </g>
+            <!-- extrémités : point + label or -->
+            <g class="mark" style="transition-delay:.9s">
+              <circle cx="356.6" cy="568.6" r="4" fill="#A8884D"/><text class="pctl" x="300" y="575" text-anchor="middle">48,3 %</text>
+              <circle cx="545.9" cy="311.9" r="4" fill="#7A5C2E"/><text class="pctl" x="543" y="366" text-anchor="middle">24,4 %</text>
+              <circle cx="488.4" cy="230.4" r="4" fill="#1B2A4A"/><text class="pctl" x="507" y="278" text-anchor="middle">16,8 %</text>
+              <circle cx="372.2" cy="178.1" r="4" fill="#5B8A8C"/><text class="pctl" x="410" y="199" text-anchor="middle" font-size="13">4,6 %</text>
+              <circle cx="356.3" cy="209.1" r="4" fill="#C9A96E"/><text class="pctl" x="388" y="227" text-anchor="middle" font-size="13">3,7 %</text>
+              <circle cx="341"   cy="240.8" r="4" fill="#9AA0AE"/><text class="pctl" x="367" y="256" text-anchor="middle" font-size="13">2,2 %</text>
+            </g>
+            <!-- centre -->
+            <g class="mark" style="transition-delay:.7s">
+              <text class="ctr-l" x="330" y="308" text-anchor="middle">ACTIF BRUT</text>
+              <text class="ctr-v" x="330" y="338" text-anchor="middle">1 843 000 €</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="legend rv">
+          <button class="lrow" data-k="immobilier"><span class="le">🏠</span><span class="ln"><b>Mon immobilier</b><span class="bar"><i style="--w:100%;background:#A8884D"></i></span></span><span class="lv">890 000 €</span><span class="lp">48,3 %</span></button>
+          <button class="lrow" data-k="societe"><span class="le">🏛️</span><span class="ln"><b>Mon entreprise</b><span class="bar"><i style="--w:50.6%;background:#7A5C2E"></i></span></span><span class="lv">450 000 €</span><span class="lp">24,4 %</span></button>
+          <button class="lrow" data-k="financier"><span class="le">📈</span><span class="ln"><b>Mes placements</b><span class="bar"><i style="--w:34.8%;background:#1B2A4A"></i></span></span><span class="lv">310 000 €</span><span class="lp">16,8 %</span></button>
+          <button class="lrow" data-k="tresorerie"><span class="le">💧</span><span class="ln"><b>Mes liquidités</b><span class="bar"><i style="--w:9.6%;background:#5B8A8C"></i></span></span><span class="lv">85 000 €</span><span class="lp">4,6 %</span></button>
+          <button class="lrow" data-k="retraite"><span class="le">🛡️</span><span class="ln"><b>Ma retraite</b><span class="bar"><i style="--w:7.6%;background:#C9A96E"></i></span></span><span class="lv">68 000 €</span><span class="lp">3,7 %</span></button>
+          <button class="lrow" data-k="autres"><span class="le">✦</span><span class="ln"><b>Autres</b><span class="bar"><i style="--w:4.5%;background:#9AA0AE"></i></span></span><span class="lv">40 000 €</span><span class="lp">2,2 %</span></button>
+          <div class="l-total">Biens <b>1 843 000 €</b> − Passif <s>260 000 €</s> = Net <span class="net">1 583 000 €</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ APPROFONDIR ═══════════ -->
+<section class="sec-deep">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-num">03 —</span>
+      <h2>Approfondir</h2>
+      <p>Le système observé, place à l'exploration.</p>
+    </div>
+    <div class="deep-grid">
+      <button class="dcard rv">
+        <span class="idx">01 · PISTES</span>
+        <h3>Révéler mes angles</h3>
+        <p>Trois angles détectés dans la structure de vos univers. Que révèle un immobilier à 48,3 % ?</p>
+        <span class="go">Ouvrir le briefing <span>→</span></span>
+      </button>
+      <button class="dcard rv" style="transition-delay:.1s">
+        <span class="idx">02 · SIMULATEURS</span>
+        <h3>Chiffrer un scénario</h3>
+        <p>Transmission, cession, holding — projetez un avant / après sur vos propres chiffres.</p>
+        <span class="go">Lancer une simulation <span>→</span></span>
+      </button>
+      <button class="dcard rv" style="transition-delay:.2s">
+        <span class="idx">03 · COFFRE</span>
+        <h3>Réunir les pièces</h3>
+        <p>Actes, statuts, relevés — chaque univers documenté, daté, prêt pour la suite.</p>
+        <span class="go">Ouvrir le coffre <span>→</span></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="foot-quote">« Annonay, 1783 — tout ce qui est patiemment construit finit par s'élever. »</p>
+  <p class="foot-legal">Information, pas un conseil personnalisé (art. L.541-1 CoMoFi) · IKCP ORIAS 23001568<br>ORBITE — proposition signature · démo, données fictives</p>
+</footer>
+
+<div class="toast" id="toast">Démo — navigation simulée</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ————— 1. Photos : dégradés élégants en canvas → dataURL ————— */
+  function grain(x,w,h){
+    x.globalAlpha=.05;
+    for(var i=0;i<900;i++){
+      x.fillStyle = Math.random()<.5 ? "#FFFFFF" : "#000000";
+      x.fillRect(Math.random()*w, Math.random()*h, 1.3, 1.3);
+    }
+    x.globalAlpha=1;
+  }
+  function makePhoto(draw){
+    var c=document.createElement("canvas"); c.width=640; c.height=420;
+    var x=c.getContext("2d"); draw(x,640,420); grain(x,640,420);
+    return c.toDataURL("image/png");
+  }
+  var PHOTOS=[
+    { cap:"Résidence principale — Lyon 6ᵉ",
+      url:makePhoto(function(x,w,h){
+        var g=x.createLinearGradient(0,0,0,h); g.addColorStop(0,"#2E426B"); g.addColorStop(.6,"#1B2A4A"); g.addColorStop(1,"#0E1729");
+        x.fillStyle=g; x.fillRect(0,0,w,h);
+        var r=x.createRadialGradient(w*.72,h*.24,10,w*.72,h*.24,220); r.addColorStop(0,"rgba(226,200,150,.75)"); r.addColorStop(1,"rgba(226,200,150,0)");
+        x.fillStyle=r; x.fillRect(0,0,w,h);
+        x.fillStyle="rgba(226,200,150,.9)"; x.beginPath(); x.arc(w*.72,h*.24,26,0,7); x.fill();
+        x.fillStyle="rgba(14,23,41,.85)";
+        x.fillRect(w*.08,h*.62,110,h*.38); x.fillRect(w*.26,h*.5,90,h*.5); x.fillRect(w*.44,h*.68,130,h*.32); x.fillRect(w*.68,h*.56,100,h*.44);
+        x.strokeStyle="rgba(201,169,110,.85)"; x.lineWidth=1.5;
+        x.beginPath(); x.moveTo(0,h*.62); x.lineTo(w,h*.62); x.stroke();
+      })},
+    { cap:"Immeuble de rapport — Annonay",
+      url:makePhoto(function(x,w,h){
+        var g=x.createLinearGradient(0,0,w*.3,h); g.addColorStop(0,"#C79A62"); g.addColorStop(.55,"#A8884D"); g.addColorStop(1,"#6B4E24");
+        x.fillStyle=g; x.fillRect(0,0,w,h);
+        var r=x.createRadialGradient(w*.2,h*.15,10,w*.2,h*.15,320); r.addColorStop(0,"rgba(255,244,220,.5)"); r.addColorStop(1,"rgba(255,244,220,0)");
+        x.fillStyle=r; x.fillRect(0,0,w,h);
+        for(var i=0;i<5;i++) for(var j=0;j<3;j++){
+          x.fillStyle="rgba(250,248,244,.16)";
+          x.fillRect(w*.18+i*84, h*.2+j*98, 46, 66);
+          x.fillStyle="rgba(34,30,24,.18)";
+          x.fillRect(w*.18+i*84, h*.2+j*98+66, 46, 5);
+        }
+        x.strokeStyle="rgba(250,248,244,.7)"; x.lineWidth=1.5;
+        x.beginPath(); x.moveTo(0,h*.86); x.lineTo(w,h*.86); x.stroke();
+      })},
+    { cap:"Cave patrimoniale — Saint-Joseph",
+      url:makePhoto(function(x,w,h){
+        var g=x.createLinearGradient(0,0,0,h); g.addColorStop(0,"#5B2733"); g.addColorStop(.55,"#3A1520"); g.addColorStop(1,"#1D0B10");
+        x.fillStyle=g; x.fillRect(0,0,w,h);
+        var r=x.createRadialGradient(w*.5,h*.1,10,w*.5,h*.1,300); r.addColorStop(0,"rgba(226,200,150,.35)"); r.addColorStop(1,"rgba(226,200,150,0)");
+        x.fillStyle=r; x.fillRect(0,0,w,h);
+        x.strokeStyle="rgba(201,169,110,.5)"; x.lineWidth=2;
+        for(var i=0;i<3;i++){
+          x.beginPath(); x.arc(w*(.25+i*.25), h*.78, 74, Math.PI, 0); x.stroke();
+          x.fillStyle="rgba(14,23,41,.5)";
+          x.beginPath(); x.arc(w*(.25+i*.25), h*.78, 66, Math.PI, 0); x.lineTo(w*(.25+i*.25)+66, h); x.lineTo(w*(.25+i*.25)-66, h); x.closePath(); x.fill();
+        }
+        x.strokeStyle="rgba(201,169,110,.7)"; x.lineWidth=1;
+        x.beginPath(); x.moveTo(0,h*.94); x.lineTo(w,h*.94); x.stroke();
+      })}
+  ];
+
+  /* ————— 2. Données du système ————— */
+  var U=[
+    {key:"immobilier",label:"Mon immobilier",val:"890 000 €",pct:"48,3 %",color:"#A8884D",emoji:"🏠",
+     angle:215,orbit:34,size:.21,min:68,photos:[0,1],
+     desc:"Résidence principale et immeuble de rapport — la fondation du système."},
+    {key:"societe",label:"Mon entreprise",val:"450 000 €",pct:"24,4 %",color:"#7A5C2E",emoji:"🏛️",
+     angle:320,orbit:36,size:.145,min:54,photos:[],
+     desc:"Titres de la société d'exploitation, valorisation prudente."},
+    {key:"financier",label:"Mes placements",val:"310 000 €",pct:"16,8 %",color:"#1B2A4A",emoji:"📈",
+     angle:25,orbit:37,size:.125,min:50,photos:[],
+     desc:"Assurance-vie, PEA, comptes-titres — la part liquide de long terme."},
+    {key:"tresorerie",label:"Mes liquidités",val:"85 000 €",pct:"4,6 %",color:"#5B8A8C",emoji:"💧",
+     angle:85,orbit:40,size:.092,min:42,photos:[],
+     desc:"Disponibilités et comptes courants — le carburant du quotidien."},
+    {key:"retraite",label:"Ma retraite",val:"68 000 €",pct:"3,7 %",color:"#C9A96E",emoji:"🛡️",
+     angle:128,orbit:41,size:.088,min:40,photos:[],
+     desc:"PER et droits en constitution — l'horizon lointain du système."},
+    {key:"autres",label:"Autres",val:"40 000 €",pct:"2,2 %",color:"#9AA0AE",emoji:"✦",
+     angle:178,orbit:44,size:.082,min:38,photos:[2],
+     desc:"Cave patrimoniale et objets de collection — les satellites précieux."}
+  ];
+  function pos(u){
+    var a=u.angle*Math.PI/180;
+    return { x:50+u.orbit*Math.sin(a), y:50-u.orbit*Math.cos(a) };
+  }
+
+  /* ————— 3. Construction du système orbital ————— */
+  var stage=document.getElementById("stage");
+  var rotor=document.getElementById("rotor");
+  var guides=stage.querySelector("svg.guides");
+  var fil=rotor.querySelector("svg.filaments");
+  var NS="http://www.w3.org/2000/svg";
+
+  U.forEach(function(u){
+    var c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",50); c.setAttribute("cy",50); c.setAttribute("r",u.orbit);
+    c.setAttribute("fill","none"); c.setAttribute("stroke","#D9CDB8");
+    c.setAttribute("stroke-width","1"); c.setAttribute("vector-effect","non-scaling-stroke");
+    c.setAttribute("stroke-dasharray","0.4 1.4"); c.setAttribute("opacity",".55");
+    guides.appendChild(c);
+  });
+
+  U.forEach(function(u,i){
+    var p=pos(u);
+    var l=document.createElementNS(NS,"line");
+    l.setAttribute("x1",50); l.setAttribute("y1",50);
+    l.setAttribute("x2",p.x); l.setAttribute("y2",p.y);
+    l.setAttribute("stroke","#C9A96E"); l.setAttribute("stroke-width","1");
+    l.setAttribute("vector-effect","non-scaling-stroke"); l.setAttribute("opacity",".45");
+    fil.appendChild(l);
+    var d=document.createElementNS(NS,"circle");
+    d.setAttribute("cx",p.x); d.setAttribute("cy",p.y); d.setAttribute("r",".7");
+    d.setAttribute("fill","#C9A96E");
+    fil.appendChild(d);
+
+    var planet=document.createElement("div");
+    planet.className="planet"; planet.dataset.k=u.key;
+    planet.style.left=p.x+"%"; planet.style.top=p.y+"%";
+
+    var inner=document.createElement("div"); inner.className="counter p-inner";
+    var btn=document.createElement("button");
+    btn.className="skin"; btn.setAttribute("aria-label",u.label+" — "+u.val+", "+u.pct+" du total");
+    btn.style.animationDelay=(0.25+i*0.12)+"s";
+
+    var disc=document.createElement("span"); disc.className="disc";
+    if(u.photos.length){
+      disc.style.borderColor="#C9A96E";
+      var img=document.createElement("img");
+      img.src=PHOTOS[u.photos[0]].url; img.alt=PHOTOS[u.photos[0]].cap;
+      disc.appendChild(img);
+      var badge=document.createElement("span");
+      badge.className="badge"; badge.textContent=u.emoji;
+      btn.appendChild(disc); btn.appendChild(badge);
+    }else{
+      disc.style.background="radial-gradient(circle at 34% 28%, "+u.color+"E6, "+u.color+")";
+      var em=document.createElement("span"); em.className="em"; em.textContent=u.emoji;
+      disc.appendChild(em);
+      btn.appendChild(disc);
+    }
+    var halo=document.createElement("span"); halo.className="halo";
+    btn.appendChild(halo);
+
+    var tag=document.createElement("span"); tag.className="ptag";
+    tag.style.animationDelay=(0.55+i*0.12)+"s";
+    tag.innerHTML='<span class="pname">'+u.label+'</span><span class="pval">'+u.val+" · "+u.pct+'</span>';
+
+    inner.appendChild(btn); inner.appendChild(tag);
+    planet.appendChild(inner);
+    rotor.appendChild(planet);
+    btn.addEventListener("click",function(){ toggleFocus(u.key); });
+  });
+
+  /* tailles en px, recalculées au resize (60fps : layout une fois, puis transform only) */
+  function layout(){
+    var W=stage.clientWidth;
+    U.forEach(function(u){
+      var el=rotor.querySelector('.planet[data-k="'+u.key+'"]');
+      var d=Math.max(W*u.size, u.min);
+      el.style.width=d+"px"; el.style.height=d+"px";
+      var em=el.querySelector(".em"); if(em) em.style.fontSize=(d*.42)+"px";
+      var badge=el.querySelector(".badge");
+      if(badge){ var b=Math.max(d*.3,18); badge.style.width=b+"px"; badge.style.height=b+"px"; badge.style.fontSize=(b*.52)+"px"; }
+    });
+    var net=document.getElementById("netVal");
+    net.style.fontSize=Math.max(W*.058,22)+"px";
+  }
+  layout();
+  window.addEventListener("resize",layout);
+
+  /* ————— 4. Pause / reprise de l'orbite ————— */
+  var ctl=document.getElementById("orbitCtl");
+  var manualPause=false;
+  function applyPause(){
+    var paused = manualPause || !!focusedKey || reduced;
+    stage.classList.toggle("sys-paused", paused);
+    document.getElementById("orbitIco").textContent = manualPause ? "▶" : "❚❚";
+    document.getElementById("orbitTxt").textContent = manualPause ? "Orbite en pause" : "Orbite active";
+    ctl.setAttribute("aria-pressed", manualPause ? "true" : "false");
+  }
+  ctl.addEventListener("click",function(){ manualPause=!manualPause; applyPause(); });
+
+  /* ————— 5. Focus univers ————— */
+  var focusedKey=null;
+  var dpanel=document.getElementById("dpanel");
+  var hintCard=document.getElementById("hintCard");
+
+  function toggleFocus(k){ (focusedKey===k) ? closeFocus() : openFocus(k); }
+
+  function openFocus(k){
+    var u=U.filter(function(x){return x.key===k;})[0];
+    if(!u) return;
+    focusedKey=k;
+    stage.classList.add("focused");
+    U.forEach(function(x){
+      rotor.querySelector('.planet[data-k="'+x.key+'"]').classList.toggle("active", x.key===k);
+    });
+    var ph="";
+    if(u.photos.length){
+      ph='<div class="dp-photos">'+u.photos.map(function(i){
+        return '<figure><img src="'+PHOTOS[i].url+'" alt=""><figcaption>'+PHOTOS[i].cap+'</figcaption></figure>';
+      }).join("")+"</div>";
+    }
+    dpanel.innerHTML=
+      '<button class="dp-close" aria-label="Fermer le détail">×</button>'+
+      '<div class="dp-head"><span class="dp-emoji" style="background:'+u.color+'1F">'+u.emoji+'</span>'+
+      '<div><div class="dp-name">'+u.label+'</div><div class="dp-desc">'+u.desc+'</div></div></div>'+
+      '<div class="dp-nums"><span class="dp-val">'+u.val+'</span><span class="dp-pct">'+u.pct+' DU TOTAL DES BIENS</span></div>'+
+      ph+
+      '<button class="dp-cta">Explorer cet univers <span>→</span></button>';
+    dpanel.classList.add("open");
+    hintCard.style.display="none";
+    dpanel.querySelector(".dp-close").addEventListener("click",closeFocus);
+    dpanel.querySelector(".dp-cta").addEventListener("click",function(){ toast("Démo — navigation simulée"); });
+    applyPause();
+    if(window.innerWidth<980 && !reduced) dpanel.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+  function closeFocus(){
+    focusedKey=null;
+    stage.classList.remove("focused");
+    rotor.querySelectorAll(".planet.active").forEach(function(p){p.classList.remove("active");});
+    dpanel.classList.remove("open");
+    hintCard.style.display="";
+    applyPause();
+  }
+  document.getElementById("nucleus").addEventListener("click",closeFocus);
+  document.getElementById("nucleus").addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();closeFocus();} });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeFocus(); });
+
+  /* ————— 6. Allocation : survol légende ↔ anneaux, clic → focus ————— */
+  var arcs=document.querySelectorAll("#ringsSvg .arc");
+  document.querySelectorAll(".lrow").forEach(function(row){
+    var k=row.dataset.k;
+    row.addEventListener("mouseenter",function(){
+      arcs.forEach(function(a){ a.style.opacity = (a.dataset.k===k) ? "1" : ".16"; });
+    });
+    row.addEventListener("mouseleave",function(){
+      arcs.forEach(function(a){ a.style.opacity="1"; });
+    });
+    row.addEventListener("click",function(){
+      openFocus(k);
+      stage.scrollIntoView({behavior: reduced ? "auto" : "smooth", block:"center"});
+    });
+  });
+
+  /* ————— 7. Révélations au scroll ————— */
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var t=e.target;
+        t.classList.add("in"); io.unobserve(t);
+        if(t.style.transitionDelay) setTimeout(function(){ t.style.transitionDelay="0s"; },1400);
+      }
+    });
+  },{threshold:.18});
+  document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
+  io.observe(document.getElementById("alloc"));
+
+  /* ————— 8. Toast + cartes Approfondir ————— */
+  var toastEl=document.getElementById("toast"), toastT=null;
+  function toast(msg){
+    toastEl.textContent=msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastT);
+    toastT=setTimeout(function(){ toastEl.classList.remove("show"); },2200);
+  }
+  document.querySelectorAll(".dcard").forEach(function(c){
+    c.addEventListener("click",function(){ toast("Démo — navigation simulée"); });
+  });
+
+  applyPause();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CONSTELLATION · Cockpit patrimoine — Démo IKCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ CONSTELLATION — carte du ciel patrimonial · IKCP ============ */
+:root{
+  --creme:#FAF8F4; --creme2:#F2ECE1;
+  --navy:#1B2A4A; --nuit:#0E1729;
+  --or:#C9A96E; --or-clair:#E2C896; --or-profond:#8B6F3F;
+  --encre:#221E18; --lignes:#E7DFD2; --rouge:#C0414C;
+  --pf:'Playfair Display',serif; --ot:'Outfit',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--nuit); color:var(--creme); font-family:var(--ot);
+  font-weight:300; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+/* Voûte céleste : halos profonds fixes */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(27,42,74,.85), transparent 70%),
+    radial-gradient(900px 600px at 85% 110%, rgba(27,42,74,.6), transparent 70%),
+    radial-gradient(700px 500px at 8% 55%, rgba(139,111,63,.10), transparent 70%);
+}
+#sky{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden}
+.tw{position:absolute; border-radius:50%; background:var(--creme);
+  animation:tw var(--t,4s) ease-in-out var(--dl,0s) infinite alternate}
+.tw.gold{background:var(--or-clair)}
+@keyframes tw{from{opacity:calc(var(--o,.5)*.15)}to{opacity:var(--o,.5)}}
+.comet{position:fixed; top:14%; left:-12%; width:150px; height:1px; z-index:0; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(226,200,150,.9));
+  transform:translate(0,0) rotate(16deg); opacity:0;
+  animation:comet 17s linear 5s infinite}
+@keyframes comet{
+  0%{opacity:0; transform:translate(0,0) rotate(16deg)}
+  1.5%{opacity:.85}
+  7%{opacity:0; transform:translate(64vw,19vw) rotate(16deg)}
+  100%{opacity:0; transform:translate(64vw,19vw) rotate(16deg)}
+}
+main,header.ribbon,footer{position:relative; z-index:1}
+
+/* ---------- Bandeau démo ---------- */
+.ribbon{
+  position:sticky; top:0; z-index:60; text-align:center;
+  padding:10px 16px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--or);
+  background:rgba(14,23,41,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(201,169,110,.22);
+}
+.ribbon strong{color:var(--or-clair); font-weight:600}
+
+/* ---------- Héro ---------- */
+.hero{max-width:1120px; margin:0 auto; padding:60px 20px 30px; text-align:center}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.34em; text-transform:uppercase;
+  color:var(--or); margin-bottom:20px}
+.eyebrow::before,.eyebrow::after{content:'✦'; margin:0 14px; color:var(--or-profond); font-size:9px}
+h1{font-family:var(--pf); font-weight:500; font-size:clamp(2.1rem,5.4vw,3.9rem);
+  line-height:1.12; letter-spacing:.01em}
+h1 em{font-style:italic; color:var(--or-clair); font-weight:500}
+.lede{margin:18px auto 0; max-width:520px; font-size:clamp(.95rem,1.4vw,1.06rem);
+  color:var(--creme2); opacity:.72; line-height:1.65}
+
+/* ---------- Orrery / constellation ---------- */
+.orrery{position:relative; width:min(92vw,660px); aspect-ratio:1/1; margin:44px auto 0}
+#lines{position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none}
+#lines .ring{stroke:rgba(201,169,110,.38); stroke-width:1px; vector-effect:non-scaling-stroke;
+  transition:stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1)}
+#lines .spoke{stroke:rgba(201,169,110,.14); stroke-width:1px; vector-effect:non-scaling-stroke;
+  stroke-dasharray:2 3}
+.center{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:46%; aspect-ratio:1/1; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
+  text-align:center; padding:9%; pointer-events:none;
+  background:radial-gradient(circle, rgba(27,42,74,.82) 0%, rgba(27,42,74,.35) 55%, transparent 72%);
+  opacity:0; transition:opacity 1.1s ease .15s;
+}
+body.loaded .center{opacity:1}
+.center::before{content:''; position:absolute; inset:7%; border-radius:50%;
+  border:1px dashed rgba(201,169,110,.3); animation:spin 100s linear infinite}
+.center::after{content:''; position:absolute; inset:14%; border-radius:50%;
+  border:1px solid rgba(201,169,110,.14)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.c-eyebrow{font-family:var(--mono); font-size:9.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--or)}
+.c-total{font-family:var(--pf); font-weight:600; font-size:clamp(1.35rem,4.6vw,2.4rem); color:var(--creme)}
+.c-sub{font-family:var(--mono); font-size:clamp(8px,1.5vw,10.5px); color:var(--creme2); opacity:.62; letter-spacing:.04em}
+.c-chip{font-family:var(--mono); font-size:clamp(8px,1.5vw,9.5px); letter-spacing:.18em; text-transform:uppercase;
+  color:var(--or-clair); border:1px solid rgba(201,169,110,.45); border-radius:999px; padding:5px 12px; margin-top:4px}
+
+/* Étoiles-univers */
+.star{
+  position:absolute; width:var(--d); height:var(--d); border:0; background:none; padding:0;
+  cursor:pointer; z-index:3; color:inherit; font:inherit;
+  transform:translate(-50%,-50%) scale(.3); opacity:0;
+  transition:transform .9s cubic-bezier(.22,1,.36,1), opacity .9s ease;
+  transition-delay:calc(.5s + var(--i)*.12s);
+}
+body.loaded .star{transform:translate(-50%,-50%) scale(1); opacity:1}
+.star::before,.star::after{content:''; position:absolute; left:50%; top:50%;
+  width:calc(var(--d)*2.5); height:1px; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(226,200,150,var(--fa,.4)),transparent);
+  transform:translate(-50%,-50%)}
+.star::after{transform:translate(-50%,-50%) rotate(90deg)}
+.star-core{
+  position:relative; z-index:1; width:100%; height:100%; border-radius:50%;
+  display:grid; place-items:center; font-size:calc(var(--d)*.38); line-height:1;
+  background:radial-gradient(circle at 34% 28%, rgba(250,248,244,.18), rgba(27,42,74,.92) 62%, rgba(14,23,41,.95));
+  border:1px solid rgba(201,169,110,.55);
+  box-shadow:0 0 var(--gl) rgba(201,169,110,var(--ga)), inset 0 0 16px rgba(201,169,110,.16);
+  transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease, border-color .45s ease;
+}
+.star:hover .star-core, .star:focus-visible .star-core{
+  transform:scale(1.1); border-color:var(--or-clair);
+  box-shadow:0 0 calc(var(--gl)*1.6) rgba(201,169,110,calc(var(--ga) + .15)), inset 0 0 22px rgba(201,169,110,.28);
+}
+.star.active .star-core{border-color:var(--or-clair);
+  box-shadow:0 0 calc(var(--gl)*1.5) rgba(201,169,110,calc(var(--ga) + .2)),
+             0 0 0 2px rgba(226,200,150,.55), inset 0 0 22px rgba(201,169,110,.3)}
+.star:focus-visible{outline:none}
+.star-label{position:absolute; top:calc(100% + 9px); left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; gap:3px; white-space:nowrap; pointer-events:none}
+.sl-name{font-family:var(--ot); font-weight:400; font-size:13px; letter-spacing:.03em; color:var(--creme2);
+  transition:color .3s}
+.sl-val{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--or); opacity:.85}
+.star:hover .sl-name,.star.active .sl-name{color:var(--or-clair)}
+.star:hover{z-index:6}
+
+/* Médaillon photo au survol (pointeur précis uniquement) */
+.medallion{position:absolute; left:50%; top:50%; z-index:7; width:118px; pointer-events:none;
+  display:none; opacity:0;
+  transform:translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(.55);
+  transition:opacity .4s ease, transform .5s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (pointer:fine){ .medallion{display:block} }
+.star:hover .medallion,.star:focus-visible .medallion{opacity:1;
+  transform:translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(1)}
+.medallion .m-img{width:118px; height:118px; border-radius:50%; background-size:cover; background-position:center;
+  border:1px solid rgba(226,200,150,.7);
+  box-shadow:0 0 34px rgba(201,169,110,.45), 0 10px 30px rgba(0,0,0,.5)}
+.medallion .m-cap{display:block; margin-top:8px; text-align:center;
+  font-family:var(--pf); font-style:italic; font-size:12px; color:var(--or-clair); white-space:normal; line-height:1.35}
+
+/* Puces tactiles mobiles */
+.chips{display:none; flex-wrap:wrap; justify-content:center; gap:8px; margin:26px auto 0; max-width:420px}
+.chip{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; cursor:pointer;
+  color:var(--creme2); background:rgba(27,42,74,.4); border:1px solid rgba(201,169,110,.3);
+  border-radius:999px; padding:8px 13px; transition:all .3s}
+.chip.active{background:linear-gradient(135deg,var(--or-clair),var(--or)); color:var(--nuit); border-color:var(--or-clair); font-weight:600}
+
+/* ---------- Carte focus ---------- */
+.focus{max-width:660px; margin:40px auto 0; padding:0 20px}
+.focus-card{
+  text-align:left; border-radius:20px; padding:28px 30px;
+  background:linear-gradient(155deg, rgba(27,42,74,.6), rgba(14,23,41,.72));
+  border:1px solid rgba(201,169,110,.28);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  box-shadow:0 24px 60px rgba(0,0,0,.35);
+}
+.focus-card.swap{animation:swap .55s cubic-bezier(.22,1,.36,1)}
+@keyframes swap{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
+.f-top{display:flex; align-items:center; gap:16px}
+.f-emoji{width:52px; height:52px; flex:none; border-radius:50%; display:grid; place-items:center; font-size:22px;
+  background:radial-gradient(circle at 35% 30%, rgba(250,248,244,.14), rgba(27,42,74,.9));
+  border:1px solid rgba(201,169,110,.5); box-shadow:0 0 18px rgba(201,169,110,.3)}
+.f-id{flex:1; min-width:0; display:flex; flex-direction:column; gap:3px}
+.f-name{font-family:var(--pf); font-size:1.35rem; font-weight:600}
+.f-key{font-family:var(--mono); font-size:9.5px; letter-spacing:.26em; color:var(--or); text-transform:uppercase}
+.f-pct{font-family:var(--pf); font-style:italic; font-weight:600; font-size:1.7rem; color:var(--or-clair)}
+.f-amount{font-family:var(--pf); font-weight:600; font-size:clamp(1.8rem,4.5vw,2.5rem); margin-top:18px; letter-spacing:.01em}
+.f-bar{height:3px; border-radius:99px; background:rgba(231,223,210,.12); margin:14px 0 16px; overflow:hidden}
+.f-bar span{display:block; height:100%; border-radius:99px; transition:width 1s cubic-bezier(.22,1,.36,1)}
+.f-desc{font-size:.95rem; line-height:1.65; color:var(--creme2); opacity:.8}
+.f-photos{display:flex; gap:22px; margin-top:22px; flex-wrap:wrap}
+.f-ph{display:flex; flex-direction:column; align-items:center; gap:9px; width:112px}
+.f-ph img{width:104px; height:104px; border-radius:50%; object-fit:cover;
+  border:1px solid rgba(226,200,150,.6); box-shadow:0 0 26px rgba(201,169,110,.35), 0 8px 22px rgba(0,0,0,.45)}
+.f-ph figcaption{font-family:var(--pf); font-style:italic; font-size:12px; text-align:center;
+  color:var(--or-clair); line-height:1.35}
+.cta{display:inline-block; margin-top:26px; cursor:pointer; border:0;
+  font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--nuit); background:linear-gradient(135deg,var(--or-clair),var(--or));
+  padding:13px 24px; border-radius:999px;
+  box-shadow:0 0 0 rgba(201,169,110,0); transition:box-shadow .4s, transform .4s}
+.cta:hover{box-shadow:0 0 28px rgba(201,169,110,.5); transform:translateY(-2px)}
+
+/* ---------- Allocation — cadran astronomique ---------- */
+.alloc{max-width:1040px; margin:0 auto; padding:110px 20px 40px; text-align:center}
+h2{font-family:var(--pf); font-weight:500; font-size:clamp(1.7rem,3.6vw,2.5rem)}
+h2 em{font-style:italic; color:var(--or-clair)}
+.sec-eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:.32em; text-transform:uppercase;
+  color:var(--or); margin-bottom:16px}
+.alloc-sub{margin:14px auto 0; max-width:460px; font-size:.95rem; color:var(--creme2); opacity:.68; line-height:1.6}
+.alloc-grid{display:grid; grid-template-columns:minmax(300px,440px) minmax(300px,1fr);
+  gap:56px; align-items:center; margin-top:52px; text-align:left}
+.dial-wrap{position:relative; margin:0 auto; width:100%; max-width:440px}
+#dial{width:100%; height:auto; display:block}
+#dial .track{fill:none; stroke:rgba(201,169,110,.09); stroke-width:9}
+#dial .tick{stroke:rgba(201,169,110,.28); stroke-width:1}
+#dial .arc{fill:none; stroke-width:9; stroke-linecap:round;
+  transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+  filter:drop-shadow(0 0 5px rgba(201,169,110,.35))}
+#dial .arc.dim{opacity:.18}
+#dial .dial-c1{fill:none; stroke:rgba(201,169,110,.2); stroke-width:1; stroke-dasharray:1 4}
+.dial-center{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; gap:5px; align-items:center; text-align:center; pointer-events:none}
+.dc-num{font-family:var(--pf); font-weight:600; font-size:clamp(1.15rem,2.6vw,1.55rem)}
+.dc-lab{font-family:var(--mono); font-size:9.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--or)}
+.legend{display:flex; flex-direction:column}
+.lrow{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px;
+  padding:15px 10px; cursor:pointer; border-bottom:1px solid rgba(231,223,210,.1);
+  border-radius:10px; transition:background .3s}
+.lrow:first-child{border-top:1px solid rgba(231,223,210,.1)}
+.lrow:hover{background:rgba(201,169,110,.06)}
+.l-dot{width:9px; height:9px; border-radius:50%; background:var(--c);
+  box-shadow:0 0 9px var(--c)}
+.l-body{display:flex; flex-direction:column; gap:2px; min-width:0}
+.l-name{font-weight:400; font-size:.98rem; letter-spacing:.02em}
+.l-eur{font-family:var(--mono); font-size:11px; color:var(--creme2); opacity:.6; letter-spacing:.05em}
+.l-pct{font-family:var(--pf); font-style:italic; font-weight:600; font-size:1.55rem; color:var(--or-clair); text-align:right}
+.alloc-foot{margin-top:26px; font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--creme2); opacity:.55; text-align:left; padding-left:10px}
+.alloc-foot b{color:var(--or-clair); font-weight:600}
+
+/* ---------- Approfondir ---------- */
+.deep{max-width:1040px; margin:0 auto; padding:100px 20px 60px; text-align:center}
+.deep-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; margin-top:44px; text-align:left}
+.dcard{position:relative; border-radius:18px; padding:28px 26px;
+  background:linear-gradient(160deg, rgba(27,42,74,.42), rgba(14,23,41,.55));
+  border:1px solid rgba(231,223,210,.12);
+  transition:transform .45s cubic-bezier(.22,1,.36,1), border-color .45s, box-shadow .45s}
+.dcard:hover{transform:translateY(-5px); border-color:rgba(201,169,110,.5);
+  box-shadow:0 18px 44px rgba(0,0,0,.35), 0 0 24px rgba(201,169,110,.12)}
+.d-tag{font-family:var(--mono); font-size:9px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--or); opacity:.85}
+.d-emoji{font-size:26px; display:block; margin:16px 0 12px}
+.d-title{font-family:var(--pf); font-weight:600; font-size:1.25rem; margin-bottom:9px}
+.d-txt{font-size:.9rem; line-height:1.6; color:var(--creme2); opacity:.68}
+.d-link{display:inline-block; margin-top:16px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--or-clair)}
+
+/* ---------- Footer ---------- */
+footer{padding:56px 20px 44px; text-align:center; border-top:1px solid rgba(231,223,210,.08); margin-top:40px}
+.foot-mark{font-family:var(--pf); font-style:italic; font-size:1.05rem; color:var(--or-clair); margin-bottom:14px}
+.foot-legal{font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--creme2); opacity:.5; line-height:2}
+
+/* ---------- Révélations au scroll ---------- */
+.reveal{opacity:0; transform:translateY(26px); transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1; transform:none}
+
+/* ---------- Toast ---------- */
+#toast{position:fixed; left:50%; bottom:28px; transform:translate(-50%,80px); z-index:80;
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--nuit);
+  background:linear-gradient(135deg,var(--or-clair),var(--or)); border-radius:999px; padding:12px 22px;
+  opacity:0; transition:transform .5s cubic-bezier(.22,1,.36,1), opacity .5s; pointer-events:none;
+  box-shadow:0 12px 34px rgba(0,0,0,.45)}
+#toast.show{transform:translate(-50%,0); opacity:1}
+
+/* ---------- Mobile ---------- */
+@media (max-width:900px){
+  .alloc-grid{grid-template-columns:1fr; gap:36px}
+  .dial-wrap{max-width:360px}
+}
+@media (max-width:640px){
+  .hero{padding-top:44px}
+  .orrery{width:min(94vw,420px); margin-top:34px}
+  .center{width:48%}
+  .center::before{inset:11%}
+  .center::after{inset:18%}
+  .sl-name{font-size:10.5px}
+  .sl-val{font-size:9px}
+  .chips{display:flex}
+  .focus-card{padding:22px 20px}
+  .f-pct{font-size:1.4rem}
+  .alloc{padding-top:80px}
+  .deep{padding-top:70px}
+}
+
+/* ---------- Mouvement réduit ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important; transition:none !important}
+  .star,.center{opacity:1 !important; transform:translate(-50%,-50%) !important}
+  .reveal{opacity:1; transform:none}
+  .comet{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true"></div>
+<div class="comet" aria-hidden="true"></div>
+
+<header class="ribbon">Proposition signature <strong>CONSTELLATION</strong> — démo, données fictives</header>
+
+<main>
+  <!-- ============ HÉRO : la carte du ciel ============ -->
+  <section class="hero">
+    <p class="eyebrow reveal in">IKCP · Cockpit patrimoine</p>
+    <h1 class="reveal in">La <em>carte du ciel</em><br>de votre patrimoine</h1>
+    <p class="lede reveal in">Six univers, une seule constellation. Chaque étoile brille à la mesure de son poids&nbsp;— touchez-la pour l&rsquo;explorer.</p>
+
+    <div class="orrery" id="orrery" role="group" aria-label="Constellation patrimoniale">
+      <svg id="lines" viewBox="0 0 100 100" aria-hidden="true"></svg>
+      <div class="center">
+        <span class="c-eyebrow">Patrimoine net</span>
+        <span class="c-total">1&#8239;583&#8239;000&nbsp;€</span>
+        <span class="c-sub">Biens 1&#8239;843&#8239;000&nbsp;€ · Passif 260&#8239;000&nbsp;€</span>
+        <span class="c-chip">Dirigeant établi</span>
+      </div>
+      <!-- étoiles injectées par le script -->
+    </div>
+
+    <div class="chips" id="chips"></div>
+
+    <div class="focus">
+      <div class="focus-card" id="focusCard" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ============ ALLOCATION : cadran astronomique ============ -->
+  <section class="alloc">
+    <p class="sec-eyebrow reveal">Répartition</p>
+    <h2 class="reveal">L&rsquo;allocation, lue comme un <em>cadran céleste</em></h2>
+    <p class="alloc-sub reveal">Chaque anneau porte un univers&nbsp;; l&rsquo;arc doré mesure sa part du ciel.</p>
+
+    <div class="alloc-grid">
+      <div class="dial-wrap reveal">
+        <svg id="dial" viewBox="0 0 400 400" aria-hidden="true"></svg>
+        <div class="dial-center">
+          <span class="dc-num">1&#8239;843&#8239;000&nbsp;€</span>
+          <span class="dc-lab">6 univers · biens</span>
+        </div>
+      </div>
+      <div>
+        <div class="legend reveal" id="legend"></div>
+        <p class="alloc-foot reveal">Passif 260&#8239;000&nbsp;€ &nbsp;·&nbsp; patrimoine net <b>1&#8239;583&#8239;000&nbsp;€</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ APPROFONDIR (esquisse du parcours) ============ -->
+  <section class="deep">
+    <p class="sec-eyebrow reveal">Et ensuite</p>
+    <h2 class="reveal">Approfondir votre <em>ciel</em></h2>
+    <div class="deep-grid">
+      <article class="dcard reveal">
+        <span class="d-tag">○ Aperçu du parcours</span>
+        <span class="d-emoji">🧭</span>
+        <h3 class="d-title">Pistes à explorer</h3>
+        <p class="d-txt">Des angles chiffrés AVANT&nbsp;/&nbsp;APRÈS, préparés pour votre situation — à vous de décider.</p>
+        <span class="d-link">Découvrir →</span>
+      </article>
+      <article class="dcard reveal">
+        <span class="d-tag">○ Aperçu du parcours</span>
+        <span class="d-emoji">📐</span>
+        <h3 class="d-title">Simulateurs</h3>
+        <p class="d-txt">Transmission, cession, fiscalité&nbsp;: testez vos hypothèses en quelques gestes, en toute autonomie.</p>
+        <span class="d-link">Simuler →</span>
+      </article>
+      <article class="dcard reveal">
+        <span class="d-tag">○ Aperçu du parcours</span>
+        <span class="d-emoji">🗂️</span>
+        <h3 class="d-title">Coffre documents</h3>
+        <p class="d-txt">Statuts, actes, contrats — toutes vos pièces réunies sous la même voûte, prêtes à servir.</p>
+        <span class="d-link">Ouvrir →</span>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p class="foot-mark">« Vous pilotez. Vous décidez. »</p>
+  <p class="foot-legal">
+    Information, pas un conseil personnalisé (art. L.541-1 CoMoFi) · IKCP ORIAS 23001568<br>
+    Démonstration — données fictives · Signature CONSTELLATION
+  </p>
+</footer>
+
+<div id="toast" role="status">Démo — navigation simulée</div>
+
+<script>
+(function(){
+  'use strict';
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NBSP = ' '; /* espace fine insécable pour les montants */
+
+  /* ============ Photos : dégradés élégants générés en canvas ============ */
+  function makePhoto(stops, lightX, lightY){
+    var c = document.createElement('canvas'); c.width = 560; c.height = 560;
+    var x = c.getContext('2d');
+    var g = x.createLinearGradient(0, 0, 560, 560);
+    for (var i = 0; i < stops.length; i++) g.addColorStop(i / (stops.length - 1), stops[i]);
+    x.fillStyle = g; x.fillRect(0, 0, 560, 560);
+    /* lueur douce */
+    var r = x.createRadialGradient(lightX, lightY, 20, lightX, lightY, 420);
+    r.addColorStop(0, 'rgba(250,248,244,0.20)'); r.addColorStop(1, 'rgba(250,248,244,0)');
+    x.fillStyle = r; x.fillRect(0, 0, 560, 560);
+    /* vignette */
+    var v = x.createRadialGradient(280, 280, 180, 280, 280, 420);
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.38)');
+    x.fillStyle = v; x.fillRect(0, 0, 560, 560);
+    /* grain discret */
+    for (var n = 0; n < 5200; n++){
+      x.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.05).toFixed(3) + ')';
+      x.fillRect(Math.random() * 560, Math.random() * 560, 1, 1);
+    }
+    /* filet or */
+    x.strokeStyle = 'rgba(226,200,150,0.35)'; x.lineWidth = 2;
+    x.strokeRect(14, 14, 532, 532);
+    return c.toDataURL('image/jpeg', 0.86);
+  }
+  var PHOTOS = [
+    { cap: 'Résidence principale — Lyon', url: makePhoto(['#121D36','#1B2A4A','#33497A'], 400, 130) },
+    { cap: 'Immeuble de rapport — Annonay', url: makePhoto(['#4E3A1F','#8B6F3F','#C9A96E'], 150, 120) },
+    { cap: 'Cave & collection — Rhône', url: makePhoto(['#2E101B','#5C2231','#7E3242'], 300, 440) }
+  ];
+
+  /* ============ Données du client fictif (codées en dur) ============ */
+  var U = [
+    { key:'immobilier', label:'Mon immobilier',  eur:'890'+NBSP+'000'+NBSP+'€', pct:48.3, pctTxt:'48,3'+NBSP+'%', color:'#A8884D', disp:'#C0A263', emoji:'🏠', photos:[0,1],
+      desc:'Résidence principale et immeuble de rapport — le socle foncier de votre constellation.' },
+    { key:'societe',    label:'Mon entreprise',  eur:'450'+NBSP+'000'+NBSP+'€', pct:24.4, pctTxt:'24,4'+NBSP+'%', color:'#7A5C2E', disp:'#A3814A', emoji:'🏛️', photos:[],
+      desc:'Vos parts de société : la valeur de votre outil professionnel, estimée avec prudence.' },
+    { key:'financier',  label:'Mes placements',  eur:'310'+NBSP+'000'+NBSP+'€', pct:16.8, pctTxt:'16,8'+NBSP+'%', color:'#1B2A4A', disp:'#5E7BB3', emoji:'📈', photos:[],
+      desc:'Assurance-vie, PEA, comptes-titres — la part liquide et diversifiée de votre ciel.' },
+    { key:'tresorerie', label:'Mes liquidités', eur:'85'+NBSP+'000'+NBSP+'€', pct:4.6, pctTxt:'4,6'+NBSP+'%', color:'#5B8A8C', disp:'#74A9AB', emoji:'💧', photos:[],
+      desc:'Liquidités disponibles : votre marge de manœuvre immédiate.' },
+    { key:'retraite',   label:'Ma retraite',     eur:'68'+NBSP+'000'+NBSP+'€', pct:3.7, pctTxt:'3,7'+NBSP+'%', color:'#C9A96E', disp:'#C9A96E', emoji:'🛡️', photos:[],
+      desc:'PER et droits acquis — le capital de votre futur temps libre.' },
+    { key:'autres',     label:'Autres',          eur:'40'+NBSP+'000'+NBSP+'€', pct:2.2, pctTxt:'2,2'+NBSP+'%', color:'#9AA0AE', disp:'#AEB4C2', emoji:'✦', photos:[2],
+      desc:'Cave, collection, divers — les éclats singuliers de votre patrimoine.' }
+  ];
+  var byKey = {}; U.forEach(function(u){ byKey[u.key] = u; });
+
+  /* ============ Voûte étoilée de fond ============ */
+  var sky = document.getElementById('sky');
+  var frag = document.createDocumentFragment();
+  for (var s = 0; s < 110; s++){
+    var d = document.createElement('span');
+    d.className = 'tw' + (Math.random() < 0.16 ? ' gold' : '');
+    var sz = (0.8 + Math.random() * 1.6).toFixed(2);
+    d.style.cssText = 'left:' + (Math.random()*100).toFixed(2) + '%;top:' + (Math.random()*100).toFixed(2) +
+      '%;width:' + sz + 'px;height:' + sz + 'px;--o:' + (0.18 + Math.random()*0.5).toFixed(2) +
+      ';--t:' + (2.6 + Math.random()*4.5).toFixed(2) + 's;--dl:' + (Math.random()*5).toFixed(2) + 's';
+    if (RM) d.style.opacity = (0.12 + Math.random()*0.3).toFixed(2);
+    frag.appendChild(d);
+  }
+  sky.appendChild(frag);
+
+  /* ============ Constellation : étoiles + traits ============ */
+  var orrery = document.getElementById('orrery');
+  var svg = document.getElementById('lines');
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var CX = 50, CY = 50, R = 38;
+  var pos = [];
+
+  U.forEach(function(u, i){
+    var a = (-90 + i * 60) * Math.PI / 180;
+    pos.push({ x: CX + R * Math.cos(a), y: CY + R * Math.sin(a), a: a });
+  });
+
+  /* traits : rayons discrets + anneau de constellation */
+  var ringLines = [];
+  U.forEach(function(u, i){
+    var sp = document.createElementNS(SVGNS, 'line');
+    sp.setAttribute('class', 'spoke');
+    sp.setAttribute('x1', CX); sp.setAttribute('y1', CY);
+    sp.setAttribute('x2', pos[i].x.toFixed(3)); sp.setAttribute('y2', pos[i].y.toFixed(3));
+    svg.appendChild(sp);
+  });
+  U.forEach(function(u, i){
+    var j = (i + 1) % U.length;
+    var ln = document.createElementNS(SVGNS, 'line');
+    ln.setAttribute('class', 'ring');
+    ln.setAttribute('x1', pos[i].x.toFixed(3)); ln.setAttribute('y1', pos[i].y.toFixed(3));
+    ln.setAttribute('x2', pos[j].x.toFixed(3)); ln.setAttribute('y2', pos[j].y.toFixed(3));
+    svg.appendChild(ln); ringLines.push(ln);
+  });
+
+  function starDiam(pct){
+    var mobile = window.innerWidth < 640;
+    return Math.round((mobile ? 24 : 34) + Math.sqrt(pct) * (mobile ? 6.2 : 9));
+  }
+
+  var stars = [];
+  U.forEach(function(u, i){
+    var b = document.createElement('button');
+    b.className = 'star'; b.type = 'button';
+    b.setAttribute('data-k', u.key);
+    b.setAttribute('aria-label', u.label + ' — ' + u.eur + ', ' + u.pctTxt);
+    b.style.left = pos[i].x + '%';
+    b.style.top = pos[i].y + '%';
+    b.style.setProperty('--i', i);
+    b.style.setProperty('--ga', Math.min(0.8, 0.22 + u.pct / 100 * 0.9).toFixed(2));
+    b.style.setProperty('--fa', Math.min(0.55, 0.12 + u.pct / 100).toFixed(2));
+
+    var html = '<span class="star-core">' + u.emoji + '</span>' +
+      '<span class="star-label"><span class="sl-name">' + u.label + '</span>' +
+      '<span class="sl-val">' + u.eur + ' · ' + u.pctTxt + '</span></span>';
+    if (u.photos.length){
+      html += '<span class="medallion"><span class="m-img" style="background-image:url(' + PHOTOS[u.photos[0]].url + ')"></span>' +
+        '<span class="m-cap">' + PHOTOS[u.photos[0]].cap + '</span></span>';
+    }
+    b.innerHTML = html;
+    orrery.appendChild(b);
+    stars.push(b);
+    b.addEventListener('click', function(){ setFocus(u.key, true); });
+  });
+
+  function sizeStars(){
+    U.forEach(function(u, i){
+      var d = starDiam(u.pct);
+      var st = stars[i].style;
+      st.setProperty('--d', d + 'px');
+      st.setProperty('--gl', Math.round(12 + u.pct * 1.5) + 'px');
+      var m = stars[i].querySelector('.medallion');
+      if (m){
+        var off = d / 2 + 92;
+        m.style.setProperty('--mx', (Math.cos(pos[i].a) * off).toFixed(1) + 'px');
+        m.style.setProperty('--my', (Math.sin(pos[i].a) * off).toFixed(1) + 'px');
+      }
+    });
+  }
+  sizeStars();
+  var rT; window.addEventListener('resize', function(){ clearTimeout(rT); rT = setTimeout(sizeStars, 160); });
+
+  /* tracé animé des traits d'anneau */
+  if (!RM){
+    ringLines.forEach(function(ln, i){
+      var len = ln.getTotalLength();
+      ln.style.strokeDasharray = len;
+      ln.style.strokeDashoffset = len;
+      setTimeout(function(){ ln.style.strokeDashoffset = 0; }, 700 + i * 140);
+    });
+  }
+
+  /* ============ Puces mobiles ============ */
+  var chips = document.getElementById('chips');
+  U.forEach(function(u){
+    var c = document.createElement('button');
+    c.className = 'chip'; c.type = 'button';
+    c.setAttribute('data-k', u.key);
+    c.textContent = u.emoji + ' ' + u.label;
+    c.addEventListener('click', function(){ setFocus(u.key, true); });
+    chips.appendChild(c);
+  });
+
+  /* ============ Carte focus ============ */
+  var focusCard = document.getElementById('focusCard');
+  var current = null;
+  function setFocus(k, animate){
+    if (current === k) { if (animate) pulse(); return; }
+    current = k;
+    var u = byKey[k];
+    stars.forEach(function(s){ s.classList.toggle('active', s.getAttribute('data-k') === k); });
+    Array.prototype.forEach.call(chips.children, function(c){
+      c.classList.toggle('active', c.getAttribute('data-k') === k);
+    });
+    var ph = '';
+    if (u.photos.length){
+      ph = '<div class="f-photos">' + u.photos.map(function(pi){
+        return '<figure class="f-ph"><img src="' + PHOTOS[pi].url + '" alt="' + PHOTOS[pi].cap + '">' +
+          '<figcaption>' + PHOTOS[pi].cap + '</figcaption></figure>';
+      }).join('') + '</div>';
+    }
+    focusCard.innerHTML =
+      '<div class="f-top">' +
+        '<span class="f-emoji">' + u.emoji + '</span>' +
+        '<div class="f-id"><span class="f-name">' + u.label + '</span>' +
+        '<span class="f-key">Univers · ' + u.key + '</span></div>' +
+        '<span class="f-pct">' + u.pctTxt + '</span>' +
+      '</div>' +
+      '<div class="f-amount">' + u.eur + '</div>' +
+      '<div class="f-bar"><span style="width:0%;background:linear-gradient(90deg,' + u.disp + ',#E2C896)"></span></div>' +
+      '<p class="f-desc">' + u.desc + '</p>' + ph +
+      '<button class="cta" type="button">Explorer cet univers →</button>';
+    focusCard.querySelector('.cta').addEventListener('click', showToast);
+    var bar = focusCard.querySelector('.f-bar span');
+    if (RM) { bar.style.width = u.pct + '%'; }
+    else { setTimeout(function(){ bar.style.width = u.pct + '%'; }, 60); }
+    if (animate && !RM) pulse();
+  }
+  function pulse(){
+    focusCard.classList.remove('swap');
+    void focusCard.offsetWidth;
+    focusCard.classList.add('swap');
+  }
+  setFocus('immobilier', false);
+
+  /* ============ Toast (navigation simulée) ============ */
+  var toast = document.getElementById('toast'); var tT;
+  function showToast(){
+    toast.classList.add('show');
+    clearTimeout(tT);
+    tT = setTimeout(function(){ toast.classList.remove('show'); }, 2100);
+  }
+
+  /* ============ Cadran astronomique — allocation ============ */
+  var dial = document.getElementById('dial');
+  var DCX = 200, DCY = 200;
+  function pt(r, deg){
+    var rad = (deg - 90) * Math.PI / 180;
+    return [DCX + r * Math.cos(rad), DCY + r * Math.sin(rad)];
+  }
+  function arcPath(r, a0, a1){
+    var p0 = pt(r, a0), p1 = pt(r, a1);
+    var laf = (a1 - a0) > 180 ? 1 : 0;
+    return 'M ' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) +
+      ' A ' + r + ' ' + r + ' 0 ' + laf + ' 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+  }
+  /* graduation extérieure */
+  for (var t = 0; t < 72; t++){
+    var deg = t * 5;
+    var long_ = (t % 6 === 0);
+    var q0 = pt(long_ ? 186 : 190, deg), q1 = pt(194, deg);
+    var tick = document.createElementNS(SVGNS, 'line');
+    tick.setAttribute('class', 'tick');
+    tick.setAttribute('x1', q0[0].toFixed(2)); tick.setAttribute('y1', q0[1].toFixed(2));
+    tick.setAttribute('x2', q1[0].toFixed(2)); tick.setAttribute('y2', q1[1].toFixed(2));
+    if (!long_) tick.style.opacity = 0.4;
+    dial.appendChild(tick);
+  }
+  var inner = document.createElementNS(SVGNS, 'circle');
+  inner.setAttribute('class', 'dial-c1');
+  inner.setAttribute('cx', DCX); inner.setAttribute('cy', DCY); inner.setAttribute('r', 46);
+  dial.appendChild(inner);
+
+  var radii = [172, 148, 124, 100, 76, 58];
+  var arcs = [];
+  U.forEach(function(u, i){
+    var r = radii[i];
+    var track = document.createElementNS(SVGNS, 'circle');
+    track.setAttribute('class', 'track');
+    track.setAttribute('cx', DCX); track.setAttribute('cy', DCY); track.setAttribute('r', r);
+    dial.appendChild(track);
+
+    var sweep = Math.max(u.pct * 3.6, 3);
+    var a = document.createElementNS(SVGNS, 'path');
+    a.setAttribute('class', 'arc');
+    a.setAttribute('d', arcPath(r, 0, sweep));
+    a.setAttribute('stroke', u.disp);
+    a.setAttribute('data-k', u.key);
+    dial.appendChild(a);
+    arcs.push(a);
+  });
+
+  /* légende */
+  var legend = document.getElementById('legend');
+  U.forEach(function(u){
+    var row = document.createElement('div');
+    row.className = 'lrow';
+    row.setAttribute('data-k', u.key);
+    row.style.setProperty('--c', u.disp);
+    row.innerHTML =
+      '<span class="l-dot"></span>' +
+      '<span class="l-body"><span class="l-name">' + u.emoji + '&nbsp; ' + u.label + '</span>' +
+      '<span class="l-eur">' + u.eur + '</span></span>' +
+      '<span class="l-pct">' + u.pctTxt + '</span>';
+    row.addEventListener('mouseenter', function(){
+      arcs.forEach(function(a){ a.classList.toggle('dim', a.getAttribute('data-k') !== u.key); });
+    });
+    row.addEventListener('mouseleave', function(){
+      arcs.forEach(function(a){ a.classList.remove('dim'); });
+    });
+    row.addEventListener('click', function(){
+      setFocus(u.key, true);
+      document.getElementById('focusCard').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
+    });
+    legend.appendChild(row);
+  });
+
+  /* animation des arcs à l'apparition */
+  var dialArmed = false;
+  function armDial(){
+    if (dialArmed) return; dialArmed = true;
+    arcs.forEach(function(a, i){
+      var len = a.getTotalLength();
+      if (RM){ return; }
+      a.style.transition = 'none';
+      a.style.strokeDasharray = len;
+      a.style.strokeDashoffset = len;
+      void a.getBoundingClientRect();
+      a.style.transition = '';
+      setTimeout(function(){ a.style.strokeDashoffset = 0; }, 150 + i * 130);
+    });
+  }
+
+  /* ============ Révélations au scroll ============ */
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !RM){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          e.target.classList.add('in');
+          if (e.target.classList.contains('dial-wrap')) armDial();
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('in'); });
+    armDial();
+  }
+
+  /* ============ Entrée orchestrée ============ */
+  window.addEventListener('load', function(){
+    sizeStars(); /* recalage si la fenêtre a changé pendant le chargement */
+    requestAnimationFrame(function(){ document.body.classList.add('loaded'); });
+  });
+  /* filet de sécurité si 'load' a déjà eu lieu */
+  setTimeout(function(){ document.body.classList.add('loaded'); }, 900);
+})();
+</script>
+</body>
+</html>
