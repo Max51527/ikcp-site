@@ -60,9 +60,9 @@ IKCP_PAPPERS_URL = "https://ikcp-pappers.maxime-ead.workers.dev"
 # Adresse expéditeur email (à changer si domaine non vérifié dans Resend) :
 # RESEND_FROM = "IKCP <onboarding@resend.dev>"   ← décommenter si ikcp.eu pas vérifié
 
-# (Sprint 3) Stripe products — à remplir après création dans Stripe Dashboard :
-# STRIPE_PRICE_PREMIUM_MONTHLY = "price_xxx"
-# STRIPE_PRICE_PREMIUM_YEARLY  = "price_xxx"
+# Stripe products (identifiants publics, mode TEST — remplacer par les price_ LIVE à la bascule) :
+STRIPE_PRICE_PREMIUM_MONTHLY = "price_1ToPkNL0UeKYHH25SfYsKJBp"
+STRIPE_PRICE_PREMIUM_YEARLY  = "price_1ToPloL0UeKYHH25UCGBLZfH"
 
 [observability]
 enabled = true
