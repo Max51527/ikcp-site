@@ -162,8 +162,8 @@ async function refreshSirens(){
       sirenList.classList.remove('loading');
       sirenList.innerHTML = sirens.map(s => `
         <div style="padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px">
-          <b>${s.nom_societe}</b>
-          <div style="color:var(--mute);font-size:11.5px;margin-top:2px">${s.siren} · ${s.forme_juridique?.split(',')[0] || ''}</div>
+          <b>${s.nom_societe && s.nom_societe !== 'null' ? s.nom_societe : 'Votre société'}</b>
+          <div style="color:var(--mute);font-size:11.5px;margin-top:2px">${s.siren}${s.forme_juridique ? ' · ' + s.forme_juridique.split(',')[0] : ''}</div>
         </div>
       `).join('');
     }
