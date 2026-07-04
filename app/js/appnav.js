@@ -146,9 +146,15 @@
   function mountNps() {
     try {
       if (localStorage.getItem('ikcp_nps_done')) return;
-      var v = (parseInt(localStorage.getItem('ikcp_visits') || '0', 10) || 0) + 1;
-      localStorage.setItem('ikcp_visits', String(v));
-      if (v < 3) return;
+      // Jours DISTINCTS (pas pages vues) : le client vit d'abord, on demande ensuite
+      var today = new Date().toISOString().slice(0, 10);
+      var days = parseInt(localStorage.getItem('ikcp_visit_days') || '0', 10) || 0;
+      if (localStorage.getItem('ikcp_last_day') !== today) { days += 1; localStorage.setItem('ikcp_last_day', today); localStorage.setItem('ikcp_visit_days', String(days)); }
+      if (days < 3) return;
+      // Et une vraie action accomplie (société reliée ou patrimoine saisi)
+      var acted = false;
+      try { acted = !!(localStorage.getItem('ikcp_societe') || localStorage.getItem('ikcp_patrimoine')); } catch (_) {}
+      if (!acted) return;
     } catch (_) { return; }
     var css = document.createElement('style');
     css.textContent = '.ikcp-nps{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);z-index:160;max-width:min(94vw,440px);background:#fff;border:1px solid rgba(27,42,74,.12);border-radius:16px;box-shadow:0 16px 44px -12px rgba(14,23,41,.4);padding:16px 18px;opacity:0;transition:.3s}'
@@ -164,7 +170,7 @@
     var scale = ''; for (var n = 0; n <= 10; n++) scale += '<button type="button" data-n="' + n + '">' + n + '</button>';
     box.innerHTML = '<button class="x" type="button" aria-label="Fermer">×</button><h4>Une question rapide</h4><p>De 0 à 10, recommanderiez-vous IKCP à un proche dirigeant ?</p><div class="sc">' + scale + '</div>';
     document.body.appendChild(box);
-    setTimeout(function () { box.classList.add('on'); }, 1600);
+    setTimeout(function () { box.classList.add('on'); }, 9000);
     function done() { try { localStorage.setItem('ikcp_nps_done', '1'); } catch (_) {} box.classList.remove('on'); setTimeout(function () { box.remove(); }, 300); }
     box.querySelector('.x').onclick = done;
     box.querySelector('.sc').addEventListener('click', function (e) {

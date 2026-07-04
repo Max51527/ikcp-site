@@ -243,6 +243,26 @@
   <div class="uni-grid reveal-up" id="uniGrid" style="animation-delay:.18s"></div>
 
   <!-- ════ MARCEL INSIGHT ════ -->
+  <!-- ── Approfondir (ordinateur) : lectures & simulateurs contextualisés ── -->
+  <section id="deepDive" class="reveal-up" style="display:none;margin:26px 0 6px">
+    <style>
+    #deepDive h2{font-family:'Playfair Display',serif;font-weight:500;font-size:24px;color:var(--ink);margin-bottom:4px}
+    #deepDive h2 em{font-style:italic;color:var(--gold-deep)}
+    #deepDive .dd-sub{color:var(--mute);font-size:13.5px;margin-bottom:14px}
+    #deepDive .dd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    #deepDive .dd-card{display:block;text-decoration:none;background:var(--bg-2,#fff);border:1px solid var(--line,#E7DFD2);border-left:3px solid var(--gold,#C9A96E);border-radius:14px;padding:15px 16px;transition:transform .18s,box-shadow .18s}
+    #deepDive .dd-card:hover{transform:translateY(-3px);box-shadow:0 16px 36px -14px rgba(27,42,74,.25)}
+    #deepDive .dd-k{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+    #deepDive .dd-t{font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:3px}
+    #deepDive .dd-d{font-size:12px;color:var(--mute);line-height:1.5}
+    #deepDive .dd-pc{font-size:8.5px;color:#20180c;background:linear-gradient(120deg,#8B6F3F,#C9A96E);border-radius:999px;padding:2px 7px;font-weight:700}
+    @media(max-width:1099px){#deepDive{display:none!important}}
+    </style>
+    <h2>Approfondir <em>votre situation</em></h2>
+    <p class="dd-sub">Lectures et simulateurs choisis d'après VOTRE allocation — l'écran large sert à ça.</p>
+    <div class="dd-grid" id="ddGrid"></div>
+  </section>
+
   <section class="insight reveal-up" id="insight" style="display:none;animation-delay:.2s">
     <div class="ie">✦ L'observation de Marcel</div>
     <p class="it" id="insightBody"></p>
@@ -537,6 +557,28 @@ function drawUnivers(d, assets, empty){
     </a>`;
   }).join('');
   requestAnimationFrame(()=>{ document.querySelectorAll('.uni-mb i').forEach(b=> b.style.width=Math.min(100,b.dataset.w)+'%'); });
+  renderDeepDive(d, assets);
+}
+
+// ── Approfondir : cartes contextualisées à l'allocation (desktop) ──
+function renderDeepDive(d, assets){
+  const el = document.getElementById('ddGrid'), sec = document.getElementById('deepDive');
+  if (!el || !sec) return;
+  if (!(assets > 0) || window.innerWidth < 1100) { sec.style.display = 'none'; return; }
+  const pc = k => assets > 0 ? (Number(d[k]) || 0) / assets * 100 : 0;
+  const cards = [];
+  if (pc('immobilier') >= 30) cards.push(
+    { k:'🏠 Immobilier ' + pc('immobilier').toFixed(0) + ' %', t:'Détention : direct, SCI, démembrement ?', d:'Le schéma expliqué visuellement, et les questions à poser au notaire.', h:'/app/strategies', prem:true },
+    { k:'🏠 Immobilier', t:'En parler à Marcel', d:'« Ma détention immobilière est-elle adaptée à ma situation ? »', h:'/app/marcel?topic=immobilier' });
+  if (pc('tresorerie') < 8) cards.push(
+    { k:'💧 Liquidités ' + pc('tresorerie').toFixed(0) + ' %', t:'Trésorerie de précaution : quel niveau viser ?', d:'Marcel chiffre votre coussin de sécurité idéal — information, jamais une consigne.', h:'/app/marcel?topic=tresorerie' });
+  if (pc('societe') >= 20) cards.push(
+    { k:'🏛️ Entreprise ' + pc('societe').toFixed(0) + ' %', t:'Rémunération ou dividendes : testez vos scénarios', d:'Le simulateur du dirigeant, avec vos montants.', h:'/app/simulateurs-pro' });
+  if (pc('retraite') < 10) cards.push(
+    { k:'🛡️ Retraite ' + pc('retraite').toFixed(0) + ' %', t:'Votre retraite de dirigeant, projetée', d:'Simulateur carrière + PER : combien manque-t-il, et quel effort le comble ?', h:'/app/simulateurs-pro' });
+  cards.push({ k:'📄 Synthèse', t:'Audit patrimonial 360° en PDF', d:'La lecture juridique + financière + fiscale de l\'ensemble, exportable.', h:'/app/bilan' });
+  el.innerHTML = cards.slice(0, 4).map(c => '<a class="dd-card" href="' + c.h + '"><div class="dd-k">' + c.k + (c.prem ? ' <span class="dd-pc">PREMIUM</span>' : '') + '</div><div class="dd-t">' + c.t + '</div><div class="dd-d">' + c.d + '</div></a>').join('');
+  sec.style.display = 'block';
 }
 
 // ── edit ──
@@ -692,6 +734,8 @@ if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv
 
 /* ── Pastille 📸 sur les cartes d'univers ── */
 .pht-badge{display:inline-flex;align-items:center;margin-left:8px;padding:1px 7px;border-radius:999px;border:1px solid rgba(168,136,77,.35);background:rgba(226,200,150,.22);color:var(--gold-deep,#8B6F3F);font-size:9.5px;font-weight:700;letter-spacing:.02em;vertical-align:1px;text-transform:none}
+.pht-thumb{position:absolute;right:12px;bottom:12px;width:46px;height:46px;border-radius:10px;object-fit:cover;border:2px solid rgba(226,200,150,.75);box-shadow:0 6px 16px -6px rgba(14,23,41,.45);pointer-events:none}
+.uni{position:relative}
 
 /* ── Mobile : effets légers, 2 colonnes ── */
 @media (max-width:560px){
@@ -1079,6 +1123,7 @@ try{
   function applyBadges(){
     var grid=document.getElementById('uniGrid'); if(!grid) return;
     grid.querySelectorAll('.pht-badge').forEach(function(b){ b.remove(); });
+    grid.querySelectorAll('.pht-thumb').forEach(function(b){ b.remove(); });
     var counts={};
     Object.keys(store).forEach(function(k){
       if(Array.isArray(store[k]) && store[k].length) counts[k]=store[k].length;
@@ -1098,6 +1143,16 @@ try{
       b.setAttribute('role','img');
       b.setAttribute('aria-label',n+' photo'+(n>1?'s':'')+' dans cet univers');
       lbEl.appendChild(b);
+      /* Vignette réelle : la première photo de l'univers vit DANS la carte */
+      try{
+        var ph0=(store[cat.key]||[])[0];
+        if(ph0 && ph0.dataUrl){
+          var th=document.createElement('img');
+          th.className='pht-thumb'; th.src=ph0.dataUrl; th.alt='';
+          th.setAttribute('aria-hidden','true');
+          card.appendChild(th);
+        }
+      }catch(_){ }
     });
   }
   (function initBadges(){
