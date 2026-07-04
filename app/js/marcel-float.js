@@ -19,12 +19,12 @@
 
   var css = document.createElement('style');
   css.textContent =
-    '#mflt-fab{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9400;width:58px;height:58px;border-radius:50%;border:1.5px solid rgba(201,169,110,.55);background:#FAF8F4;box-shadow:0 12px 30px -10px rgba(14,23,41,.5);cursor:pointer;display:grid;place-items:center;padding:0;animation:mflt-bob 4s ease-in-out infinite}' +
+    '#mflt-fab{position:fixed;left:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9400;width:58px;height:58px;border-radius:50%;border:1.5px solid rgba(201,169,110,.55);background:#FAF8F4;box-shadow:0 12px 30px -10px rgba(14,23,41,.5);cursor:pointer;display:grid;place-items:center;padding:0;animation:mflt-bob 4s ease-in-out infinite}' +
     '#mflt-fab:hover{transform:translateY(-2px)}' +
     '@keyframes mflt-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}' +
     '@media(prefers-reduced-motion:reduce){#mflt-fab{animation:none}}' +
     '#mflt-fab .dot{position:absolute;top:-3px;right:-3px;width:15px;height:15px;border-radius:50%;background:#C0414C;border:2px solid #FAF8F4}' +
-    '#mflt-panel{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9401;width:min(360px,calc(100vw - 28px));max-height:72vh;background:#FAF8F4;border:1px solid rgba(139,111,63,.25);border-radius:18px;box-shadow:0 24px 60px -16px rgba(14,23,41,.55);display:none;flex-direction:column;overflow:hidden;font-family:Outfit,system-ui,sans-serif}' +
+    '#mflt-panel{position:fixed;left:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:9401;width:min(360px,calc(100vw - 28px));max-height:72vh;background:#FAF8F4;border:1px solid rgba(139,111,63,.25);border-radius:18px;box-shadow:0 24px 60px -16px rgba(14,23,41,.55);display:none;flex-direction:column;overflow:hidden;font-family:Outfit,system-ui,sans-serif}' +
     '#mflt-panel.on{display:flex;animation:mflt-up .25s ease}' +
     '@keyframes mflt-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}' +
     '.mflt-h{display:flex;align-items:center;gap:10px;padding:13px 15px;background:#1B2A4A;color:#fff}' +
