@@ -297,6 +297,42 @@ footer .m{color:var(--or3)}
   <a class="go" href="/app/patrimoine-pro">Renseigner mon patrimoine (2&nbsp;min) <span class="ar">&rarr;</span></a>
 </section>
 
+
+<!-- ── Expérience univers : problématiques + rattachement ── -->
+<section style="max-width:1180px;margin:0 auto;padding:8px clamp(18px,4vw,40px) clamp(30px,5vw,54px)">
+  <div style="text-align:center;margin-bottom:18px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#8B6F3F">Vos problématiques</div>
+    <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(1.5rem,3.2vw,2.1rem);color:#1B2A4A;margin-top:8px">Les questions de votre monde, <em style="color:#8B6F3F">prêtes à poser.</em></h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+    <a href="/app/marcel?q=Ma%20carri%C3%A8re%20sportive%20est%20courte%20%3A%20comment%20s%C3%A9curiser%20mes%20revenus%20actuels%20%3F" style="display:block;text-decoration:none;background:#fff;border:1px solid #E7DFD2;border-left:3px solid #C9A96E;border-radius:14px;padding:15px 16px">
+      <div style="font-size:13.5px;font-weight:600;color:#1B2A4A;line-height:1.4">Carrière courte : sécuriser mes revenus actuels</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8B6F3F;margin-top:7px">Demander à Marcel →</div>
+    </a>
+    <a href="/app/marcel?q=Comment%20me%20prot%C3%A9ger%20financi%C3%A8rement%20en%20cas%20de%20blessure%20qui%20stoppe%20ma%20carri%C3%A8re%20%3F" style="display:block;text-decoration:none;background:#fff;border:1px solid #E7DFD2;border-left:3px solid #C9A96E;border-radius:14px;padding:15px 16px">
+      <div style="font-size:13.5px;font-weight:600;color:#1B2A4A;line-height:1.4">Blessure = revenus coupés : comment me protéger ?</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8B6F3F;margin-top:7px">Demander à Marcel →</div>
+    </a>
+    <a href="/app/marcel?q=Comment%20pr%C3%A9parer%20ma%20reconversion%20pendant%20mes%20ann%C3%A9es%20de%20carri%C3%A8re%20sportive%20%3F" style="display:block;text-decoration:none;background:#fff;border:1px solid #E7DFD2;border-left:3px solid #C9A96E;border-radius:14px;padding:15px 16px">
+      <div style="font-size:13.5px;font-weight:600;color:#1B2A4A;line-height:1.4">Préparer ma reconversion dès maintenant</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8B6F3F;margin-top:7px">Demander à Marcel →</div>
+    </a>
+  </div>
+  <div style="text-align:center;margin-top:22px">
+    <button type="button" id="mondeBtn" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;background:#0E1729;color:#E2C896;border:1px solid rgba(201,169,110,.5);border-radius:99px;padding:14px 26px;cursor:pointer">★ Faire de cet univers mon espace</button>
+    <div style="font-size:11px;color:#9a8f7c;margin-top:8px">Votre tableau de bord s'ouvrira dans cet univers.</div>
+  </div>
+</section>
+<script>
+(function(){
+  var K='sportif';
+  var b=document.getElementById('mondeBtn'); if(!b) return;
+  function on(){ b.textContent='✓ Votre espace — Sport · MMA · E-sport'; b.style.background='linear-gradient(120deg,#E2C896,#C9A96E)'; b.style.color='#20180c'; b.style.borderColor='transparent'; }
+  try{ if(localStorage.getItem('ikcp_monde')===K) on(); }catch(e){}
+  b.addEventListener('click',function(){ try{ localStorage.setItem('ikcp_monde',K); }catch(e){} on(); });
+})();
+</script>
+
 <footer>
   <p>Information, pas un conseil personnalis&eacute; (art. L.541-1 CoMoFi)<br>
   <span class="m">IKCP &middot; ORIAS 23001568</span></p>

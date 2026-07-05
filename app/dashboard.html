@@ -141,6 +141,15 @@
 
   <!-- ════ Aller plus loin : 3 accès propres ════ -->
   <div class="sect-label">Aller plus loin</div>
+  <div id="mondeRow"></div>
+  <script>(function(){
+    var M={dirigeant:['⌚','Dirigeant(e)'],liberal:['🧭','Profession libérale'],createur:['✨','Créateurs & influenceurs'],sportif:['🏆','Sport · MMA · E-sport']};
+    try{
+      var k=localStorage.getItem('ikcp_monde');
+      if(k&&M[k]) document.getElementById('mondeRow').innerHTML='<a class="row" style="border-color:rgba(201,169,110,.55)" href="/app/univers-'+k+'"><div class="ri">'+M[k][0]+'</div><div class="rt"><b>Mon univers — '+M[k][1]+'</b><span>votre patrimoine, dans votre monde</span></div><span class="chev">›</span></a>';
+      else document.getElementById('mondeRow').innerHTML='<a class="row" href="/app/univers-dirigeant"><div class="ri">🌍</div><div class="rt"><b>Choisir mon univers</b><span>dirigeant · libéral · créateur · sport — chacun son espace</span></div><span class="chev">›</span></a>';
+    }catch(e){}
+  })();</script>
   <a class="row" href="/app/avis"><div class="ri">📸</div><div class="rt"><b>Lire mon avis d'imposition</b><span>une photo suffit — Marcel extrait vos chiffres &amp; votre tranche</span></div><span class="chev">›</span></a>
   <a class="row" href="/app/bilan"><div class="ri">📄</div><div class="rt"><b>Faire mon audit patrimonial 360°</b><span>démarré automatiquement depuis votre SIREN — ou saisie manuelle dédiée</span></div><span class="chev">›</span></a>
   <a class="row" href="/app/strategies"><div class="ri">🗺️</div><div class="rt"><b>Schémas de stratégie</b><span>OBO, Dutreil, holding, démembrement…</span></div><span class="pc">PREMIUM</span></a>
