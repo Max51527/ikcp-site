@@ -546,9 +546,13 @@ function drawAlloc(d, assets, empty){
 }
 
 function drawUnivers(d, assets, empty){
+  try{ var _rec=JSON.parse(localStorage.getItem('ikcp_recueil')||'null');
+    var _soc=CATS.filter(function(x){return x.key==='societe';})[0];
+    if(_soc) _soc.label=(_rec&&+_rec.s_nb>1)?'Mes entreprises':'Mon entreprise';
+  }catch(e){}
   $('uniGrid').innerHTML = CATS.map(c=>{
     const v=Number(d[c.key])||0, pc= assets>0? v/assets*100 : 0;
-    return `<a class="uni" style="--c:${c.color}" href="${c.href}">
+    return `<a class="uni" data-k="${c.key}" style="--c:${c.color}" href="${c.href}">
       <div class="uni-top"><span class="uni-ic">${c.icon}</span>
         ${v>0?`<span class="uni-pc">${pc.toFixed(0)}%</span>`:`<span class="uni-pc" style="color:var(--mute);background:var(--bg-2)">+</span>`}</div>
       <div class="uni-lb">${c.label}</div>
@@ -557,6 +561,12 @@ function drawUnivers(d, assets, empty){
     </a>`;
   }).join('');
   requestAnimationFrame(()=>{ document.querySelectorAll('.uni-mb i').forEach(b=> b.style.width=Math.min(100,b.dataset.w)+'%'); });
+  try{ var _ri=JSON.parse(localStorage.getItem('ikcp_recueil')||'null');
+    if(_ri&&Array.isArray(_ri.immo)&&_ri.immo.some(function(x){return /SCI/i.test((x&&x.det)||'');})){
+      var _it=$('uniGrid').querySelector('.uni[data-k="immobilier"] .uni-top');
+      if(_it&&!_it.querySelector('.sci-tag')){ var _t=document.createElement('span'); _t.className='sci-tag'; _t.textContent='dont SCI'; _t.title='Une partie de votre immobilier est détenue via SCI'; _t.style.cssText='font-size:8px;font-weight:700;letter-spacing:.05em;color:#7A5C2E;background:rgba(168,136,77,.18);border:1px solid rgba(168,136,77,.4);border-radius:99px;padding:1px 6px'; _it.appendChild(_t); }
+    }
+  }catch(e){}
   renderDeepDive(d, assets);
 }
 
@@ -1132,9 +1142,9 @@ try{
     var cards=grid.querySelectorAll('.uni');
     cards.forEach(function(card,idx){
       var lbEl=card.querySelector('.uni-lb'); if(!lbEl) return;
-      var label=(lbEl.textContent||'').trim();
+      var k=card.getAttribute('data-k');
       var cat=null;
-      for(var j=0;j<CATS.length;j++){ if(CATS[j].label===label){ cat=CATS[j]; break; } }
+      for(var j=0;j<CATS.length;j++){ if(CATS[j].key===k){ cat=CATS[j]; break; } }
       if(!cat) cat=CATS[idx]||null;      /* repli : ordre des cartes = ordre de CATS */
       if(!cat) return;
       var n=counts[cat.key]; if(!n) return;

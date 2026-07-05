@@ -100,6 +100,7 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
     <div class="hint" id="socHint">Identité et chiffres : automatiques via votre SIREN (cartographie). Les bénéficiaires effectifs sont <b>déclaratifs</b> — le registre officiel (RBE) n'est plus en accès public libre depuis 2022.</div>
     <div class="frm" style="margin-bottom:10px">
       <div class="fld"><label>Valorisation estimée de la société (€)</label><input type="number" id="s_valo" min="0" placeholder="ex : 800 000"></div>
+      <div class="fld"><label>Nombre de sociétés que vous détenez</label><input type="number" id="s_nb" min="1" step="1" placeholder="1"></div>
     </div>
     <div class="tl" style="font-size:11px;font-weight:700;color:var(--mute);letter-spacing:.04em">ASSOCIÉS / BÉNÉFICIAIRES EFFECTIFS (≥ 25 % ou contrôle)</div>
     <div class="rows" id="rows_benef"></div>
@@ -169,7 +170,7 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
 
 <script>
 /* ═══ Recueil patrimonial — stockage ikcp_recueil + pont vers ikcp_patrimoine (cockpit/audit/veille) ═══ */
-var R = { famille:{}, s_valo:0, benef:[], immo:[], fin:[], autres:[], passifs:[], juridique:{}, maj:0 };
+var R = { famille:{}, s_valo:0, s_nb:1, benef:[], immo:[], fin:[], autres:[], passifs:[], juridique:{}, maj:0 };
 try{ var saved=JSON.parse(localStorage.getItem('ikcp_recueil')||'null'); if(saved&&typeof saved==='object') R=Object.assign(R,saved); }catch(_){}
 
 function eur(n){ n=Math.round(+n||0); var c=Math.abs(n)>=1e6; return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:c?1:0,notation:c?'compact':'standard'}).format(n); }
@@ -221,6 +222,7 @@ document.addEventListener('input', function(e){
   var el=e.target, k=el.getAttribute('data-k');
   if(k){ R[k][+el.getAttribute('data-i')][el.getAttribute('data-f')]=(el.type==='number')?(+el.value||0):el.value; save(); return; }
   if(el.id==='s_valo'){ R.s_valo=+el.value||0; save(); }
+  if(el.id==='s_nb'){ R.s_nb=Math.max(1,Math.round(+el.value||1)); save(); }
   if(el.id&&el.id.indexOf('f_')===0){ R.famille[el.id.slice(2)]=el.value; save(); }
 });
 document.addEventListener('change', function(e){
@@ -349,6 +351,7 @@ function renderPense(){
   }catch(_){}
   ['f_situation','f_regime','f_enfants','f_autreUnion','f_naissance'].forEach(function(id){ var el=document.getElementById(id); if(el&&R.famille[id.slice(2)]!=null) el.value=R.famille[id.slice(2)]; });
   var sv=document.getElementById('s_valo'); if(sv&&R.s_valo) sv.value=R.s_valo;
+  var snb=document.getElementById('s_nb'); if(snb&&R.s_nb>1) snb.value=R.s_nb;
   Object.keys(DEFS).forEach(renderRows);
   renderJur();
   save();
