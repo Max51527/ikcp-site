@@ -240,8 +240,9 @@ section.alloc{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px) clam
 .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:860px){.legend{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.legend{grid-template-columns:1fr 1fr;gap:10px}}
+@media(max-width:430px){.legend{grid-template-columns:1fr}.lg-card{min-width:0}}
 .lg-card{
-  display:flex;align-items:center;gap:13px;text-align:left;background:var(--blanc);
+  display:flex;align-items:center;gap:13px;text-align:left;background:var(--blanc);min-width:0;
   border:1px solid var(--ligne);border-radius:2px;padding:13px 15px;
   transition:transform .35s cubic-bezier(.3,1.3,.4,1), border-color .35s, box-shadow .35s;
 }
@@ -249,10 +250,10 @@ section.alloc{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px) clam
 .lg-card.on{border-color:var(--or-d);box-shadow:0 0 0 1px var(--or-d), 0 12px 24px -16px rgba(11,21,38,.45)}
 .lg-gauge{flex:none;width:54px;height:54px}
 .lg-gauge svg{width:100%;height:100%;display:block}
-.lg-txt{min-width:0}
+.lg-txt{min-width:0;overflow:hidden}
 .lg-txt .lab{font-size:13px;font-weight:600;color:var(--encre);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg-txt .pct{font-family:var(--jm);font-size:15px;font-weight:600;color:var(--or-d);line-height:1.3}
-.lg-txt .eur{font-family:var(--jm);font-size:10.5px;color:var(--mute)}
+.lg-txt .eur{font-family:var(--jm);font-size:10.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 @media(max-width:480px){.lg-gauge{width:44px;height:44px}.lg-txt .lab{font-size:11.5px}.lg-txt .pct{font-size:13px}}
 
 /* ─── problématiques ─── */
