@@ -827,8 +827,14 @@
       if(Array.isArray(d.follow_ups)&&d.follow_ups.length){
         h+='<div class="chips">'+d.follow_ups.slice(0,3).map(function(f){return '<span class="chip" onclick="ask('+JSON.stringify(f).replace(/"/g,'&quot;')+')">'+esc(f)+'</span>';}).join('')+'</div>';
       }
-      el.innerHTML=h+DISC;
-    }catch(e){ clearInterval(iv); el.innerHTML='<p class="think">Service momentanément indisponible. Réessayez.</p>'; }
+      el.innerHTML=h+DISC; window._mRetry=0;
+    }catch(e){
+      clearInterval(iv);
+      if(!window._mRetry){ window._mRetry=1; el.innerHTML='<div class="loader"><span class="ld"></span><span class="ld"></span><span class="ld"></span><em>Un instant — Marcel reprend votre analyse…</em></div>'; setTimeout(function(){ marcelInto(elId, message); }, 1200); return; }
+      window._mRetry=0;
+      el.innerHTML='<p class="think">Marcel est très sollicité à l'instant.</p><button class="chip" style="cursor:pointer" onclick="window._mRetry=0;marcelInto(''+elId+'', window._mLastMsg)">↻ Relancer l'analyse</button>';
+      window._mLastMsg=message;
+    }
   }
   function revealContinue(){ var c=document.getElementById('continue'); if(c) c.style.display='block'; }
 
