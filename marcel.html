@@ -209,6 +209,107 @@
 
 <main class="wrap">
 
+  <!-- ════ VOS MONDES — le mobile + chaque cible, son espace graphique & ses problématiques ════ -->
+  <section class="act cib-sec">
+    <style>
+    .cib-sec .cib-grid{display:flex;gap:26px;align-items:flex-start}
+    .cib-sec .cib-phone{flex:0 0 218px;position:sticky;top:18px}
+    .cib-sec .cib-cards{flex:1;display:grid;gap:10px;min-width:0}
+    @media(max-width:720px){.cib-sec .cib-grid{flex-direction:column;align-items:center}.cib-sec .cib-phone{position:static;flex:0 0 auto}}
+    /* téléphone */
+    .cib-ph{width:218px;background:var(--white);border:1px solid var(--line);border-radius:30px;padding:7px;box-shadow:0 30px 60px -26px rgba(27,42,74,.5)}
+    .cib-scr{position:relative;background:linear-gradient(165deg,#1B2A4A,#0E1729);border-radius:24px;min-height:390px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 12px}
+    .cib-scr .wm{position:absolute;top:12px;left:0;right:0;text-align:center;font-family:'Playfair Display',serif;font-size:12px;color:#FAF8F4}.cib-scr .wm b{color:#E2C896;font-weight:600}
+    .cib-scene{display:none;flex-direction:column;align-items:center;gap:12px;animation:cibIn .5s ease both}
+    .cib-scene.on{display:flex}
+    @keyframes cibIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+    .cib-scene .lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#E2C896}
+    .cib-scene .net{font-family:'Playfair Display',serif;font-size:17px;color:#fff}
+    .cib-scene svg{width:150px;height:150px}
+    .cib-note{text-align:center;font-size:10.5px;color:var(--ink-faint);margin-top:9px}
+    /* cartes cibles */
+    .cib-card{display:flex;gap:13px;align-items:flex-start;text-align:left;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:14px 15px;cursor:pointer;transition:border-color .25s,transform .25s,box-shadow .25s;width:100%;font-family:inherit}
+    .cib-card:hover{transform:translateY(-2px)}
+    .cib-card.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 14px 30px -18px rgba(139,111,63,.5)}
+    .cib-card .mini{flex:0 0 46px;width:46px;height:46px}
+    .cib-card .mini svg{width:100%;height:100%}
+    .cib-card h3{font-family:'Playfair Display',serif;font-weight:600;font-size:16.5px;color:var(--navy);margin:0 0 4px}
+    .cib-card p{font-size:12px;color:var(--ink-soft);line-height:1.55;margin:0}
+    .cib-card p b{color:var(--ink);font-weight:600}
+    @media(prefers-reduced-motion:no-preference){
+      .cib-fill{stroke-dasharray:0 100;animation:cibFill 1.4s cubic-bezier(.22,.8,.3,1) .4s forwards}
+      @keyframes cibFill{to{stroke-dasharray:var(--f,60) 100}}
+      .cib-tw{animation:cibTw 2.6s ease-in-out infinite}
+      @keyframes cibTw{0%,100%{opacity:.5}50%{opacity:1}}
+    }
+    </style>
+    <div class="act-tag"><span class="dot"></span>Vos mondes</div>
+    <h2>Chaque monde a <em>son espace.</em></h2>
+    <p style="color:var(--ink-soft);font-size:14.5px;max-width:60ch;margin-bottom:18px">Un même copilote — mais votre espace épouse <b>votre</b> réalité : vos problématiques, votre lecture, votre univers graphique. Touchez votre monde, le mobile change.</p>
+    <div class="cib-grid">
+      <div class="cib-phone">
+        <div class="cib-ph"><div class="cib-scr">
+          <div class="wm">Marcel <b>IA</b></div>
+          <div class="cib-scene on" data-k="hub">
+            <span class="lbl">Espace universel</span>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="20" fill="rgba(226,200,150,.16)" stroke="#E2C896" stroke-width="1.2"/><circle cx="60" cy="60" r="36" fill="none" stroke="rgba(226,200,150,.35)" stroke-width=".8" stroke-dasharray="2 4"/><circle cx="60" cy="60" r="52" fill="none" stroke="rgba(226,200,150,.22)" stroke-width=".8" stroke-dasharray="2 5"/><circle cx="96" cy="44" r="6" fill="#C9A96E"/><circle cx="26" cy="76" r="4.5" fill="#5B8A8C"/><circle cx="72" cy="106" r="3.5" fill="#A8884D"/><text x="60" y="64" text-anchor="middle" font-family="Georgia" font-size="10" fill="#FAF8F4" font-style="italic">1,58 M€</text></svg>
+            <span class="net">Votre vue d'ensemble</span>
+          </div>
+          <div class="cib-scene" data-k="dirigeant">
+            <span class="lbl">Dirigeant(e)</span>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="rgba(250,248,244,.05)" stroke="rgba(226,200,150,.4)" stroke-width="1"/><g stroke="rgba(226,200,150,.5)" stroke-width="1.4"><line x1="60.0" y1="16.0" x2="60.0" y2="12.0"/><line x1="82.0" y1="21.9" x2="84.0" y2="18.4"/><line x1="98.1" y1="38.0" x2="101.6" y2="36.0"/><line x1="104.0" y1="60.0" x2="108.0" y2="60.0"/><line x1="98.1" y1="82.0" x2="101.6" y2="84.0"/><line x1="82.0" y1="98.1" x2="84.0" y2="101.6"/><line x1="60.0" y1="104.0" x2="60.0" y2="108.0"/><line x1="38.0" y1="98.1" x2="36.0" y2="101.6"/><line x1="21.9" y1="82.0" x2="18.4" y2="84.0"/><line x1="16.0" y1="60.0" x2="12.0" y2="60.0"/><line x1="21.9" y1="38.0" x2="18.4" y2="36.0"/><line x1="38.0" y1="21.9" x2="36.0" y2="18.4"/></g><circle class="cib-fill" style="--f:72" cx="60" cy="60" r="40" fill="none" stroke="#C9A96E" stroke-width="7" stroke-linecap="round" pathLength="100" transform="rotate(-90 60 60)"/><text x="60" y="58" text-anchor="middle" font-family="Georgia" font-size="9.5" fill="#FAF8F4" font-style="italic">Cadran</text><text x="60" y="72" text-anchor="middle" font-family="Georgia" font-size="8" fill="#E2C896">qui se remplit</text></svg>
+            <span class="net">Société ↔ patrimoine, relié</span>
+          </div>
+          <div class="cib-scene" data-k="liberal">
+            <span class="lbl">Profession libérale</span>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="rgba(250,248,244,.05)" stroke="rgba(226,200,150,.4)" stroke-width="1"/><g stroke="rgba(226,200,150,.55)" stroke-width="1"><line x1="60" y1="12" x2="60" y2="24"/><line x1="60" y1="96" x2="60" y2="108"/><line x1="12" y1="60" x2="24" y2="60"/><line x1="96" y1="60" x2="108" y2="60"/></g><polygon points="60,26 66,60 60,68 54,60" fill="#E2C896"/><polygon points="60,94 54,60 60,52 66,60" fill="rgba(226,200,150,.35)"/><circle cx="60" cy="60" r="5" fill="#0E1729" stroke="#C9A96E" stroke-width="1.5"/><text x="60" y="86" text-anchor="middle" font-family="Georgia" font-size="8.5" fill="#E2C896" font-style="italic">Votre cap</text></svg>
+            <span class="net">L'indépendance, protégée</span>
+          </div>
+          <div class="cib-scene" data-k="createur">
+            <span class="lbl">Créateur · Influenceur</span>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><g fill="#E2C896"><circle class="cib-tw" cx="30" cy="78" r="2.4"/><circle class="cib-tw" style="animation-delay:.5s" cx="48" cy="46" r="3.6"/><circle class="cib-tw" style="animation-delay:1s" cx="74" cy="58" r="2.8"/><circle class="cib-tw" style="animation-delay:1.4s" cx="92" cy="30" r="4.6"/><circle cx="62" cy="92" r="2"/></g><g stroke="rgba(226,200,150,.45)" stroke-width=".8"><line x1="30" y1="78" x2="48" y2="46"/><line x1="48" y1="46" x2="74" y2="58"/><line x1="74" y1="58" x2="92" y2="30"/><line x1="62" y1="92" x2="30" y2="78"/></g><text x="60" y="112" text-anchor="middle" font-family="Georgia" font-size="8.5" fill="#E2C896" font-style="italic">Votre étoile monte</text></svg>
+            <span class="net">Le pic devient un capital</span>
+          </div>
+          <div class="cib-scene" data-k="sportif">
+            <span class="lbl">Sportif · E-sport</span>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="48" fill="none" stroke="rgba(226,200,150,.18)" stroke-width="7"/><circle class="cib-fill" style="--f:82" cx="60" cy="60" r="48" fill="none" stroke="#C9A96E" stroke-width="7" stroke-linecap="round" pathLength="100" transform="rotate(-90 60 60)"/><circle cx="60" cy="60" r="34" fill="none" stroke="rgba(91,138,140,.25)" stroke-width="6"/><circle class="cib-fill" style="--f:55" cx="60" cy="60" r="34" fill="none" stroke="#5B8A8C" stroke-width="6" stroke-linecap="round" pathLength="100" transform="rotate(-90 60 60)"/><text x="60" y="57" text-anchor="middle" font-family="Georgia" font-size="9" fill="#FAF8F4" font-style="italic">Records</text><text x="60" y="70" text-anchor="middle" font-family="Georgia" font-size="8" fill="#E2C896">battus</text></svg>
+            <span class="net">La carrière courte, sécurisée</span>
+          </div>
+        </div></div>
+        <div class="cib-note">📱 Aperçu — touchez un monde ci-contre</div>
+      </div>
+      <div class="cib-cards">
+        <button type="button" class="cib-card on" data-k="dirigeant" onclick="cibGo(this)">
+          <span class="mini"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="none" stroke="#E7DFD2" stroke-width="4"/><circle cx="23" cy="23" r="20" fill="none" stroke="#C9A96E" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="72 100" transform="rotate(-90 23 23)"/><circle cx="23" cy="23" r="4" fill="#1B2A4A"/></svg></span>
+          <span><h3>Dirigeant(e)</h3><p><b>Rémunération ou dividendes</b> · trésorerie d'entreprise qui dort · préparer la transmission (Dutreil, holding) — votre société et votre patrimoine enfin reliés.</p></span>
+        </button>
+        <button type="button" class="cib-card" data-k="liberal" onclick="cibGo(this)">
+          <span class="mini"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="none" stroke="#E7DFD2" stroke-width="1.4"/><polygon points="23,7 26,23 23,27 20,23" fill="#C9A96E"/><polygon points="23,39 20,23 23,19 26,23" fill="#E7DFD2"/><circle cx="23" cy="23" r="2.6" fill="#1B2A4A"/></svg></span>
+          <span><h3>Profession libérale</h3><p><b>BNC, charges, arrêt de travail</b> (vos revenus s'arrêtent si vous vous arrêtez) · retraite à bâtir soi-même · passer en société d'exercice : quand, comment ?</p></span>
+        </button>
+        <button type="button" class="cib-card" data-k="createur" onclick="cibGo(this)">
+          <span class="mini"><svg viewBox="0 0 46 46"><g fill="#C9A96E"><circle cx="12" cy="30" r="1.8"/><circle cx="19" cy="17" r="2.6"/><circle cx="29" cy="22" r="2"/><circle cx="36" cy="11" r="3.2"/></g><g stroke="#E7DFD2" stroke-width="1"><line x1="12" y1="30" x2="19" y2="17"/><line x1="19" y1="17" x2="29" y2="22"/><line x1="29" y1="22" x2="36" y2="11"/></g></svg></span>
+          <span><h3>Créateur · Influenceur</h3><p><b>Revenus en dents de scie</b> · structurer (société, droits d'image) · transformer un pic d'audience en capital durable — avant le changement d'algorithme.</p></span>
+        </button>
+        <button type="button" class="cib-card" data-k="sportif" onclick="cibGo(this)">
+          <span class="mini"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="19" fill="none" stroke="#E7DFD2" stroke-width="3.4"/><circle cx="23" cy="23" r="19" fill="none" stroke="#C9A96E" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="82 100" transform="rotate(-90 23 23)"/><circle cx="23" cy="23" r="12" fill="none" stroke="#E7DFD2" stroke-width="3"/><circle cx="23" cy="23" r="12" fill="none" stroke="#5B8A8C" stroke-width="3" stroke-linecap="round" pathLength="100" stroke-dasharray="55 100" transform="rotate(-90 23 23)"/></svg></span>
+          <span><h3>Sportif · E-sport</h3><p><b>Carrière courte, revenus concentrés</b> · blessure ou déréférencement = revenus coupés · préparer la reconversion pendant les années fastes.</p></span>
+        </button>
+        <button type="button" class="cib-card" data-k="hub" onclick="cibGo(this)">
+          <span class="mini"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="8" fill="rgba(201,169,110,.25)" stroke="#C9A96E" stroke-width="1.2"/><circle cx="23" cy="23" r="15" fill="none" stroke="#E7DFD2" stroke-width="1" stroke-dasharray="2 3"/><circle cx="23" cy="23" r="20" fill="none" stroke="#E7DFD2" stroke-width="1" stroke-dasharray="2 4"/><circle cx="37" cy="16" r="2.6" fill="#C9A96E"/><circle cx="10" cy="30" r="2" fill="#5B8A8C"/></svg></span>
+          <span><h3>L'espace universel</h3><p>Plusieurs casquettes à la fois ? <b>La vue d'ensemble</b> qui relie tout : société(s), immobilier, placements, famille — un seul tableau de bord.</p></span>
+        </button>
+      </div>
+    </div>
+    <script>
+    function cibGo(btn){
+      var k = btn.getAttribute('data-k');
+      document.querySelectorAll('.cib-card').forEach(function(c){ c.classList.toggle('on', c===btn); });
+      document.querySelectorAll('.cib-scene').forEach(function(sc){ sc.classList.toggle('on', sc.getAttribute('data-k')===k); });
+    }
+    </script>
+  </section>
+
   <!-- ════ À QUOI ÇA SERT — 3 moments de vie (marketing minimaliste) ════ -->
   <section class="act use-sec">
     <style>
