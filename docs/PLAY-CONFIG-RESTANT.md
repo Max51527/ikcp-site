@@ -13,10 +13,10 @@
 
 ## 🔲 Restant — réponses préparées
 
-### A. Coordonnées fiche (Paramètres de la fiche → Coordonnées → Modifier) — 1 min
-- E-mail : `maxime@ikcp.fr` · Site Web : `https://ikcp.eu` · Téléphone : vide.
+### A. Coordonnées fiche — ✅ FAIT (7 juil.) : e-mail maxime@ikcp.fr + site https://ikcp.eu enregistrés.
 
-### B. Classification du contenu (questionnaire IARC) — 3 min
+### B. Classification du contenu (questionnaire IARC) — ⚠️ À FAIRE EN MANUEL (3 min)
+> Le renderer de CE formulaire gèle l'automatisation (champ e-mail refuse la saisie pilotée, aux 2 sessions). À remplir à la main :
 - E-mail : `maxime@ikcp.fr` · Catégorie : **« Tous les autres types d'applications »** (déjà pré-rempli par Claude, cliquer Suivant).
 - Questionnaire : répondre **Non à tout** (violence, sexualité, langage, substances, jeux d'argent, contenu généré par utilisateurs*, achat de biens numériques → **Oui** pour « produits numériques » si demandé (abonnement Premium), partage de position → Non, infos personnelles → l'app collecte e-mail → suivre l'intitulé exact ; en cas de doute répondre au plus factuel).
 - Résultat attendu : PEGI 3 / Tous publics.
