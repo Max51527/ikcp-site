@@ -58,6 +58,7 @@ export default {
       if (path === '/health') return json({ status: 'ok', service: 'ikcp-client', version: '2.0' }); // M1 : cartographie des bindings retirée (ne pas exposer la conf à un anonyme)
       if (path === '/auth/send' && method === 'POST') return await handleAuthSend(request, env);
       if (path === '/auth/verify' && method === 'GET') return await handleAuthVerify(request, env);
+      if (path === '/auth/demo' && method === 'POST') return await handleAuthDemo(request, env);
       if (path === '/stripe/webhook' && method === 'POST') return await handleStripeWebhook(request, env);
 
       // ─── CABINET POLLING (Bearer service token) ────────
@@ -279,6 +280,52 @@ async function handleAuthVerify(request, env) {
       'Set-Cookie': cookieValue,
     },
   });
+}
+
+// ── ACCÈS DÉMO EXAMINATEUR (Google Play review) ─────────────────────────────
+//  Gated : n'existe que si le secret DEMO_ACCESS_CODE est posé sur le worker
+//  (wrangler secret put DEMO_ACCESS_CODE). Sans secret → 404, feature éteinte.
+//  Le code est destiné à être communiqué à Google dans la Play Console ; le
+//  compte servi est un compte de démonstration (données fictives, premium)
+//  qui ne passe PAS par le verrou d'inscription ni par l'e-mail.
+const DEMO_EMAIL = 'demo-review@ikcp.eu';
+
+async function handleAuthDemo(request, env) {
+  if (!env.DEMO_ACCESS_CODE) return json({ error: 'not_found' }, 404);
+
+  // Rate-limit KV : 5 essais/heure par IP (le code est long, la fenêtre est étroite).
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rlKey = `rl:demo:${ip}`;
+  const count = parseInt((await env.CLIENT_KV.get(rlKey)) || '0');
+  if (count >= 5) return json({ error: 'rate_limited' }, 429);
+  await env.CLIENT_KV.put(rlKey, String(count + 1), { expirationTtl: 3600 });
+
+  const { code } = await request.json().catch(() => ({}));
+  // Comparaison par empreinte (longueur constante, pas de fuite par timing).
+  if (!code || (await sha256(String(code))) !== (await sha256(env.DEMO_ACCESS_CODE))) {
+    return json({ error: 'invalid_code' }, 403);
+  }
+
+  await ensureUserColumns(env);
+  let user = await env.D1.prepare('SELECT * FROM users WHERE email = ?').bind(DEMO_EMAIL).first();
+  if (!user) {
+    const id = crypto.randomUUID();
+    await env.D1.prepare('INSERT INTO users (id, email, tier, created_at, last_login_at, source) VALUES (?, ?, ?, ?, ?, ?)')
+      .bind(id, DEMO_EMAIL, 'premium', Date.now(), Date.now(), 'demo-review').run();
+    user = { id, email: DEMO_EMAIL, tier: 'premium' };
+  }
+  // État garanti à chaque connexion : premium + onboarding déjà fait + nom parlant.
+  await env.D1.prepare("UPDATE users SET tier = 'premium', display_name = ?, prenom = ?, profile_json = ?, last_login_at = ? WHERE id = ?")
+    .bind('Compte de démonstration', 'Démo', JSON.stringify({ onboarding_completed: true, prenom: 'Démo' }), Date.now(), user.id).run();
+
+  const sessionToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+  const sessionHash = await sha256(sessionToken);
+  await env.D1.prepare(
+    'INSERT INTO sessions (token_hash, user_id, created_at, expires_at, ip, user_agent) VALUES (?, ?, ?, ?, ?, ?)'
+  ).bind(sessionHash, user.id, Date.now(), Date.now() + SESSION_TTL_DAYS * 86_400_000, ip, (request.headers.get('User-Agent') || '').slice(0, 500)).run();
+
+  await audit(env, user.id, 'login_demo', request);
+  return json({ token: sessionToken });
 }
 
 async function handleLogout(session, env) {

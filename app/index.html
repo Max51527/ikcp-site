@@ -136,6 +136,17 @@ footer a:hover{color:var(--navy)}
       Connexion sécurisée · sans mot de passe
     </div>
   </form>
+
+  <!-- Accès examinateur (Google Play review) — visible uniquement avec ?review=1,
+       actif uniquement si le secret DEMO_ACCESS_CODE est posé sur le worker. -->
+  <div id="reviewBox" style="display:none;margin-top:18px;border:1px dashed rgba(139,111,63,.5);border-radius:12px;padding:14px 16px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#8B6F3F;margin-bottom:8px">Reviewer access · Accès examinateur</div>
+    <form onsubmit="return demoLogin(event)" style="display:flex;gap:8px">
+      <input id="demoCode" type="password" placeholder="Access code" autocomplete="off" style="flex:1;min-width:0;padding:11px 12px;border:1px solid rgba(139,111,63,.4);border-radius:9px;font-family:'JetBrains Mono',monospace;font-size:13px">
+      <button type="submit" id="demoBtn" style="padding:11px 16px;background:#1B2A4A;color:#FAF8F4;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">Entrer</button>
+    </form>
+    <div id="demoMsg" style="font-size:11.5px;margin-top:7px;color:#8B6F3F"></div>
+  </div>
 </main>
 
 <nav class="aux">
@@ -163,6 +174,40 @@ Marcel.Auth.me().then(() => location.replace('/app/dashboard.html')).catch(() =>
 try { const _pf = localStorage.getItem('ikcp_prefill_email'); if(_pf){ const _e = document.getElementById('email'); if(_e) _e.value = _pf; localStorage.removeItem('ikcp_prefill_email'); } } catch(_) {}
 
 window.toggleHelp = function(){ document.getElementById('helpText').classList.toggle('show'); };
+
+// ── Accès examinateur (Google Play review) — ?review=1 ──
+try { if (new URLSearchParams(location.search).get('review') === '1') document.getElementById('reviewBox').style.display = ''; } catch(_) {}
+window.demoLogin = async function(e){
+  e.preventDefault();
+  const code = document.getElementById('demoCode').value.trim();
+  const btn = document.getElementById('demoBtn');
+  const msg = document.getElementById('demoMsg');
+  if(!code) return false;
+  btn.disabled = true; btn.textContent = '…'; msg.textContent = '';
+  try{
+    const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/auth/demo', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code })
+    });
+    const d = await r.json().catch(()=>({}));
+    if(!r.ok || !d.token) throw new Error(d.error || 'refused');
+    localStorage.setItem('ikcp_token', d.token);
+    localStorage.setItem('ikcp_tier', 'premium');
+    localStorage.setItem('marcel_onboarding_skipped', '1');
+    localStorage.setItem('ikcp_monde', 'dirigeant');
+    // Jeu de données de démonstration (fictif) pour un tableau de bord parlant.
+    localStorage.setItem('ikcp_recueil', JSON.stringify({
+      famille:{ situation:'marie', enfants:2 }, s_valo:850000, s_nb:1,
+      immo:[ {lib:'Résidence principale (démo)', val:520000, det:'direct'}, {lib:'Appartement locatif (démo)', val:240000, det:'SCI à l\'IS'} ],
+      fin:[ {lib:'Assurance-vie (démo)', val:130000}, {lib:'PEA (démo)', val:70000} ],
+      autres:[], passifs:[ {lib:'Crédit résidence (démo)', val:180000} ], maj: 1
+    }));
+    location.replace('/app/dashboard.html');
+  }catch(err){
+    btn.disabled = false; btn.textContent = 'Entrer';
+    msg.textContent = err.message === 'rate_limited' ? 'Trop d\'essais — réessayez dans une heure.' : 'Code refusé.';
+  }
+  return false;
+};
 
 window.askLink = async function(e){
   e.preventDefault();

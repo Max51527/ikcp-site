@@ -31,10 +31,9 @@ Déclarer **collecte** :
 
 ### D. Informations de connexion (testing credentials) — DÉCISION REQUISE
 Notre connexion = lien e-mail → l'examinateur Google ne peut pas recevoir nos e-mails.
-**Reco Claude (à faire coder demain, ~45 min)** : compte démo + code d'examen :
-- secret worker `DEMO_ACCESS_CODE`, compte `demo-review@ikcp.eu` (tier premium, données fictives),
-- sur /app/index : si e-mail = demo-review@ikcp.eu ET code fourni → jeton direct sans e-mail.
-- Puis remplir : « Toutes les fonctionnalités ne sont pas accessibles sans identifiants » + username `demo-review@ikcp.eu` + le code + instructions EN/FR.
+**✅ CODÉ (7 juil. soir)** : endpoint `POST /auth/demo` (gated par secret `DEMO_ACCESS_CODE`, rate-limit 5/h/IP, compte `demo-review@ikcp.eu` premium + données fictives seedées) + page `ikcp.eu/app/index.html?review=1` (champ « Reviewer access »).
+**Reste 1 geste Maxime** : lancer `pose-code-demo.ps1` (fenêtre préparée) → génère le code + le pose sur le worker + le copie dans le presse-papiers.
+**Puis remplir dans Play Console** : « Tout ou partie des fonctionnalités sont limitées » → username `demo-review@ikcp.eu` · password = le code · instructions : `Open https://ikcp.eu/app/index.html?review=1 , enter the access code in the "Reviewer access" box, tap "Entrer". You will be logged into a demo account (fictional data).`
 ⚠️ Tâche **bloquante pour « Cible et contenu »** (Google l'exige avant).
 
 ### E. Cible et contenu — 1 min (après D)
