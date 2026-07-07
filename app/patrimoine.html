@@ -169,10 +169,9 @@
     if(!POWENS_ENABLED){ alert("L'agrégation bancaire automatique est en cours d'ouverture. En attendant, ajoutez vos biens à la main — Marcel en tire déjà tous les leviers."); return; }
     if((window.IKCP_TIER||'free')==='free'){ if(confirm("L'agrégation de vos comptes — la vue 360° pro + perso de votre patrimoine de dirigeant — fait partie de Premium. Découvrir Premium ?")) location.href='/app/profil.html'; return; }
     var b=document.getElementById('powensBtn'); if(!b) return; var t=b.textContent; b.disabled=true; b.textContent='Connexion…';
-    var user='me';
-    try{ if(window.Marcel&&Marcel.Auth&&Marcel.Auth.email){ user=Marcel.Auth.email; } else { var s=localStorage.getItem('ikcp_email')||localStorage.getItem('email'); if(s) user=s; } }catch(_){}
+    var tok=''; try{ tok=localStorage.getItem('ikcp_token')||''; }catch(_){}
     try{
-      var r=await fetch('https://ikcp-powens.maxime-ead.workers.dev/connect?user='+encodeURIComponent(user),{method:'POST',headers:{'Content-Type':'application/json'}});
+      var r=await fetch('https://ikcp-powens.maxime-ead.workers.dev/connect',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok}});
       var d=await r.json().catch(function(){return {};});
       if(d.webview_url){ window.location.href=d.webview_url; return; }
       if(d.error==='powens_not_configured'){ alert('La connexion bancaire arrive très bientôt — encore quelques réglages côté banque. En attendant, vous pouvez ajouter vos biens à la main.'); }
@@ -565,10 +564,10 @@ document.getElementById('detectBtn')?.addEventListener('click', detectOppo);
 
 // ─── Audit patrimonial 360° (8 dimensions + agent souverain par axe) ───
 // Enrichi par les comptes Powens si le membre a connecté sa banque (sinon manuel).
-function _powensUser(){ try{ if(window.Marcel&&Marcel.Auth&&Marcel.Auth.email) return Marcel.Auth.email; var s=localStorage.getItem('ikcp_email')||localStorage.getItem('email'); if(s) return s; }catch(_){} return 'me'; }
 async function powensActifs(){
   try{
-    const r = await fetch('https://ikcp-powens.maxime-ead.workers.dev/wealth?user='+encodeURIComponent(_powensUser()));
+    var _tk=''; try{ _tk=localStorage.getItem('ikcp_token')||''; }catch(_){}
+    const r = await fetch('https://ikcp-powens.maxime-ead.workers.dev/wealth', { headers: { 'Authorization': 'Bearer '+_tk } });
     const d = await r.json().catch(function(){return{};});
     if(!d || !d.connected) return null;
     const actifs=[], dettes=[];

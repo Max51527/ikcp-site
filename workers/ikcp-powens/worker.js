@@ -75,6 +75,20 @@ async function decToken(env, stored) {
   return new TextDecoder().decode(pt);
 }
 
+// ── Authentification MEMBRE (anti-IDOR) ─────────────────────────────────────
+// Le member_id vient TOUJOURS de la session validée par ikcp-client — jamais
+// d'un paramètre d'URL. Sans jeton valide : 401.
+async function requireMember(req) {
+  const auth = req.headers.get('Authorization') || '';
+  if (!auth.startsWith('Bearer ')) return null;
+  try {
+    const r = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return (u && u.id) ? String(u.id) : null;
+  } catch (_) { return null; }
+}
+
 // ── Routeur des événements Powens ────────────────────────────────────────────
 // Un cas par type (cf. console Powens). Les handlers sont des STUBS : branche ta
 // logique métier où c'est indiqué. Tout est déjà loggé en D1 avant d'arriver ici.
@@ -163,7 +177,15 @@ export default {
 
     // ── 1) /connect : prépare la connexion bancaire, renvoie l'URL de la Webview ──
     if (url.pathname === '/connect' && req.method === 'POST') {
-      const memberId = url.searchParams.get('user') || 'anon'; // qui connecte sa banque ?
+      const memberId = await requireMember(req);              // session obligatoire
+      if (!memberId) return json({ error: 'unauthorized' }, 401, o);
+      // state opaque à usage unique (1 h) : le callback ne fait JAMAIS confiance
+      // à un identifiant fourni par l'extérieur.
+      const state = crypto.randomUUID();
+      if (env.POWENS_DB) {
+        await env.POWENS_DB.prepare('CREATE TABLE IF NOT EXISTS powens_states (state TEXT PRIMARY KEY, member_id TEXT NOT NULL, created_at INTEGER)').run();
+        await env.POWENS_DB.prepare('INSERT INTO powens_states (state, member_id, created_at) VALUES (?,?,?)').bind(state, memberId, Date.now()).run();
+      }
       try {
         // a. créer un utilisateur Powens anonyme → on récupère un auth_token
         const init = await fetch(base(env) + '/auth/init', {
@@ -184,7 +206,7 @@ export default {
           + '?client_id=' + encodeURIComponent(env.POWENS_CLIENT_ID)
           + '&redirect_uri=' + encodeURIComponent(redirect)
           + '&code=' + encodeURIComponent(code)
-          + '&state=' + encodeURIComponent(memberId); // pour savoir QUI revient
+          + '&state=' + encodeURIComponent(state); // jeton opaque → résolu en D1 au callback
         return json({ webview_url: webview, id_user: ini.id_user || null }, 200, o);
       } catch (e) { return json({ error: e.message }, 502, o); }
     }
@@ -192,8 +214,18 @@ export default {
     // ── 2) /callback : Powens nous renvoie ici après la connexion bancaire ──
     if (url.pathname === '/callback') {
       const code = url.searchParams.get('code');
-      const memberId = url.searchParams.get('state') || 'anon';
+      const state = url.searchParams.get('state') || '';
       if (!code) return json({ error: 'missing_code' }, 400, o);
+      // Résoudre le state → member_id (one-shot, 1 h max). State inconnu = refus.
+      let memberId = null;
+      if (env.POWENS_DB && state) {
+        try {
+          const st = await env.POWENS_DB.prepare('SELECT member_id, created_at FROM powens_states WHERE state = ?').bind(state).first();
+          if (st && Date.now() - (st.created_at || 0) < 3600_000) memberId = st.member_id;
+          await env.POWENS_DB.prepare('DELETE FROM powens_states WHERE state = ?').bind(state).run();
+        } catch (_) {}
+      }
+      if (!memberId) return json({ error: 'invalid_state' }, 403, o);
       try {
         // échanger le code (avec nos secrets) contre un access_token PERMANENT
         const ex = await fetch(base(env) + '/auth/token/access', {
@@ -217,7 +249,8 @@ export default {
 
     // ── 3) /accounts : lire les comptes/soldes du membre (via le jeton rangé) ──
     if (url.pathname === '/accounts') {
-      const memberId = url.searchParams.get('user') || 'anon';
+      const memberId = await requireMember(req);
+      if (!memberId) return json({ error: 'unauthorized' }, 401, o);
       if (!env.POWENS_DB) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-powens-db et bind POWENS_DB.' }, 500, o);
       let row = null;
       try { row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first(); }
@@ -233,7 +266,8 @@ export default {
     // Un seul appel pour le cockpit : comptes + investissements + crédits du membre.
     // Alimente directement la base patrimoniale unifiée (cf. ikcp-patrimoine).
     if (url.pathname === '/wealth') {
-      const memberId = url.searchParams.get('user') || 'anon';
+      const memberId = await requireMember(req);
+      if (!memberId) return json({ error: 'unauthorized' }, 401, o);
       if (!env.POWENS_DB) return json({ error: 'no_db', hint: 'Crée la D1 ikcp-powens-db et bind POWENS_DB.' }, 500, o);
       let row = null;
       try { row = await env.POWENS_DB.prepare('SELECT access_token FROM powens_tokens WHERE member_id=?').bind(memberId).first(); }
