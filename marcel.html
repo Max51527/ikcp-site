@@ -391,6 +391,155 @@
     <div class="trust" style="margin-top:16px">Indépendant · aucun produit, aucune rétro-commission. Marcel <b>coordonne</b> et éclaire — il ne remplace ni votre notaire, ni votre expert-comptable. Information, jamais une recommandation (art. L.541-1 CoMoFi).</div>
   </section>
 
+  <!-- ════ SIMULATEURS TEASER — calcul instantané, pont vers l'app ════ -->
+  <section class="act sim-sec" id="simulateurs">
+  <style>
+    .sim-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 18px}
+    .sim-tab{flex:1;min-width:150px;padding:12px 10px;border:1px solid var(--line);border-radius:12px;background:var(--cream);cursor:pointer;text-align:left;font-family:'Outfit',sans-serif;transition:border-color .15s,transform .15s}
+    .sim-tab b{display:block;font-size:13.5px;color:var(--navy);font-weight:600;line-height:1.3}
+    .sim-tab span{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
+    .sim-tab.on{border-color:var(--gold);background:#fff;box-shadow:0 6px 18px rgba(27,42,74,.07)}
+    .sim-tab:hover{transform:translateY(-1px)}
+    .sim-pane{display:none}
+    .sim-pane.on{display:block;animation:simIn .25s ease}
+    @keyframes simIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .sim-ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+    .sim-fld{flex:1;min-width:170px}
+    .sim-fld label{display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+    .sim-fld input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:11px;font-size:16px;font-weight:600;color:var(--navy);outline:none;background:var(--cream)}
+    .sim-fld input:focus{border-color:var(--gold)}
+    .sim-opts{display:flex;gap:6px}
+    .sim-opt{padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--cream);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+    .sim-opt.on{background:var(--navy);color:var(--cream);border-color:var(--navy)}
+    .sim-res{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px;background:linear-gradient(180deg,#fff,var(--cream));padding:16px 18px}
+    .sim-big{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,5vw,34px);color:var(--navy);letter-spacing:-.01em;line-height:1.1}
+    .sim-big em{font-style:italic;color:var(--gold-deep);font-size:.55em}
+    .sim-sub{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.55}
+    .sim-q{margin-top:12px;padding-top:11px;border-top:1px dashed var(--line);font-size:13.5px;color:var(--navy);font-weight:600;font-style:italic}
+    .sim-cta{display:inline-block;margin-top:12px;padding:12px 20px;background:var(--navy);color:var(--cream);border-radius:10px;font-size:13.5px;font-weight:600;text-decoration:none}
+    .sim-cta:hover{opacity:.92}
+    .sim-hyp{font-size:10.5px;color:var(--ink-faint);margin-top:10px;line-height:1.6}
+    @media(max-width:560px){.sim-tabs{flex-direction:column}.sim-tab{min-width:0}}
+  </style>
+    <div class="act-tag"><span class="dot"></span>Essayez, là, maintenant</div>
+    <h2>Trois questions que se posent tous les dirigeants. <em>Vos chiffres, en 5 secondes.</em></h2>
+    <p style="color:var(--ink-soft);font-size:14.5px;max-width:58ch;margin-bottom:16px">Aucun compte, aucune saisie d'e-mail. Bougez un chiffre, le résultat suit. Puis Marcel va beaucoup plus loin — sur <b>votre</b> société réelle — dans l'application.</p>
+
+    <div class="sim-tabs" role="tablist">
+      <button class="sim-tab on" data-sim="don" onclick="simTab('don')"><b>🎁 Donner à mes enfants</b><span>Droits de donation 2026</span></button>
+      <button class="sim-tab" data-sim="div" onclick="simTab('div')"><b>🏢 Sortir de l'argent de ma société</b><span>Le vrai coût des dividendes</span></button>
+      <button class="sim-tab" data-sim="treso" onclick="simTab('treso')"><b>😴 Ma trésorerie dort</b><span>Ce que l'attente coûte</span></button>
+    </div>
+
+    <!-- Donation ligne directe -->
+    <div class="sim-pane on" id="sim-don">
+      <div class="sim-ctrl">
+        <div class="sim-fld"><label>Montant donné à un enfant (€)</label><input type="number" id="donM" value="250000" min="0" step="10000" inputmode="numeric" oninput="simDon()"></div>
+        <div class="sim-fld" style="flex:0 1 auto"><label>Abattement 100 000 €</label>
+          <div class="sim-opts"><button class="sim-opt on" id="donA1" onclick="donAb(1)">Disponible</button><button class="sim-opt" id="donA0" onclick="donAb(0)">Déjà utilisé</button></div>
+        </div>
+      </div>
+      <div class="sim-res">
+        <div class="sim-big" id="donR">—</div>
+        <div class="sim-sub" id="donS"></div>
+        <div class="sim-q">Et si vous donniez en deux temps, ou à deux parents ? L'abattement de 100 000 € se renouvelle tous les 15 ans — avez-vous chiffré le coût d'attendre ?</div>
+        <a class="sim-cta" href="/creer-mon-compte?from=simu-don">Chiffrer mes scénarios avec Marcel →</a>
+      </div>
+      <div class="sim-hyp">Hypothèses : donation en pleine propriété, parent → enfant, barème ligne directe 2026 (service-public.gouv.fr), abattement 100 000 € par parent et par enfant. Ordre de grandeur pédagogique — information générale, pas un conseil personnalisé.</div>
+    </div>
+
+    <!-- Dividendes -->
+    <div class="sim-pane" id="sim-div">
+      <div class="sim-ctrl">
+        <div class="sim-fld"><label>Montant net souhaité dans votre poche (€)</label><input type="number" id="divM" value="30000" min="0" step="5000" inputmode="numeric" oninput="simDiv()"></div>
+        <div class="sim-fld" style="flex:0 1 auto"><label>Taux d'IS de votre société</label>
+          <div class="sim-opts"><button class="sim-opt on" id="divT25" onclick="divIS(.25)">25 %</button><button class="sim-opt" id="divT15" onclick="divIS(.15)">15 % (PME)</button></div>
+        </div>
+      </div>
+      <div class="sim-res">
+        <div class="sim-big" id="divR">—</div>
+        <div class="sim-sub" id="divS"></div>
+        <div class="sim-q">La rémunération suit une toute autre mécanique (cotisations, IR, droits retraite). Connaissez-vous le coût réel de chaque euro que vous vous versez — et la meilleure combinaison pour vous ?</div>
+        <a class="sim-cta" href="/creer-mon-compte?from=simu-div">Comparer rémunération / dividendes avec Marcel →</a>
+      </div>
+      <div class="sim-hyp">Hypothèses : société à l'IS, dividendes au PFU 30 % (12,8 % IR + 17,2 % prélèvements sociaux), hors cas particuliers (TNS majoritaire au-delà de 10 % du capital, option barème…). Ordre de grandeur pédagogique — information générale, pas un conseil personnalisé.</div>
+    </div>
+
+    <!-- Trésorerie -->
+    <div class="sim-pane" id="sim-treso">
+      <div class="sim-ctrl">
+        <div class="sim-fld"><label>Trésorerie non utilisée (€)</label><input type="number" id="treM" value="150000" min="0" step="10000" inputmode="numeric" oninput="simTre()"></div>
+        <div class="sim-fld" style="flex:0 1 auto"><label>Horizon</label>
+          <div class="sim-opts"><button class="sim-opt" id="treH5" onclick="treH(5)">5 ans</button><button class="sim-opt on" id="treH10" onclick="treH(10)">10 ans</button><button class="sim-opt" id="treH15" onclick="treH(15)">15 ans</button></div>
+        </div>
+      </div>
+      <div class="sim-res">
+        <div class="sim-big" id="treR">—</div>
+        <div class="sim-sub" id="treS"></div>
+        <div class="sim-q">Combien dort sur votre compte professionnel aujourd'hui — et depuis combien d'années ?</div>
+        <a class="sim-cta" href="/creer-mon-compte?from=simu-treso">Explorer les pistes avec Marcel →</a>
+      </div>
+      <div class="sim-hyp">Hypothèse : inflation de 2 %/an (cible BCE) — l'inflation réelle varie chaque année. Perte de pouvoir d'achat, pas une promesse de rendement. Information générale, pas un conseil personnalisé.</div>
+    </div>
+
+    <div class="trust" style="margin-top:14px">⚖️ Barèmes 2026 vérifiés aux sources officielles · information patrimoniale, jamais un conseil personnalisé (art. L.541-1 CoMoFi).</div>
+
+  <script>
+  (function(){
+    var EUR=function(n){return Math.round(n).toLocaleString('fr-FR')+' €'};
+    var PCT=function(n){return (n*100).toLocaleString('fr-FR',{maximumFractionDigits:1}).replace('.',',')+' %'};
+
+    window.simTab=function(k){
+      document.querySelectorAll('.sim-tab').forEach(function(t){t.classList.toggle('on',t.dataset.sim===k)});
+      document.querySelectorAll('.sim-pane').forEach(function(p){p.classList.toggle('on',p.id==='sim-'+k)});
+    };
+
+    /* ── Donation ligne directe — barème 2026 ── */
+    var donAbat=1;
+    window.donAb=function(v){donAbat=v;document.getElementById('donA1').classList.toggle('on',v===1);document.getElementById('donA0').classList.toggle('on',v===0);simDon();};
+    function droitsLD(t){
+      var T=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
+      var d=0,p=0;
+      for(var i=0;i<T.length&&t>p;i++){d+=(Math.min(t,T[i][0])-p)*T[i][1];p=T[i][0];}
+      return d;
+    }
+    window.simDon=function(){
+      var m=+document.getElementById('donM').value||0;
+      var taxable=Math.max(0,m-(donAbat?100000:0));
+      var d=droitsLD(taxable);
+      document.getElementById('donR').innerHTML=EUR(d)+' <em>de droits estimés</em>';
+      document.getElementById('donS').innerHTML=d===0
+        ? 'Donation intégralement couverte par l’abattement : <b>0 € de droits</b>. Il vous reste '+EUR(100000-m)+' d’abattement disponible sur 15 ans.'
+        : 'Sur '+EUR(m)+' donnés : '+(donAbat?'abattement de 100 000 €, puis ':'')+EUR(taxable)+' taxables au barème → taux effectif <b>'+PCT(m?d/m:0)+'</b>. Votre enfant reçoit '+EUR(m-d)+' nets si les droits sont pris sur la donation.';
+    };
+
+    /* ── Dividendes — IS puis PFU 30 % ── */
+    var divTx=.25;
+    window.divIS=function(t){divTx=t;document.getElementById('divT25').classList.toggle('on',t===.25);document.getElementById('divT15').classList.toggle('on',t===.15);simDiv();};
+    window.simDiv=function(){
+      var n=+document.getElementById('divM').value||0;
+      var brut=n/0.7;                 /* avant PFU 30 % */
+      var resultat=brut/(1-divTx);    /* résultat avant IS nécessaire */
+      var friction=resultat?1-n/resultat:0;
+      document.getElementById('divR').innerHTML=EUR(resultat)+' <em>à générer en société</em>';
+      document.getElementById('divS').innerHTML='Pour '+EUR(n)+' nets via dividendes : votre société doit dégager '+EUR(resultat)+' de résultat → IS '+PCT(divTx)+' ('+EUR(resultat-brut)+'), puis flat tax 30 % ('+EUR(brut-n)+'). Friction totale : <b>'+PCT(friction)+'</b>.';
+    };
+
+    /* ── Trésorerie — érosion inflation 2 %/an ── */
+    var treN=10;
+    window.treH=function(n){treN=n;[5,10,15].forEach(function(x){document.getElementById('treH'+x).classList.toggle('on',x===n)});simTre();};
+    window.simTre=function(){
+      var m=+document.getElementById('treM').value||0;
+      var perte=m*(1-Math.pow(1.02,-treN));
+      document.getElementById('treR').innerHTML='− '+EUR(perte)+' <em>de pouvoir d’achat</em>';
+      document.getElementById('treS').innerHTML='À 2 % d’inflation par an, '+EUR(m)+' laissés sur un compte non rémunéré ne « vaudront » plus que <b>'+EUR(m-perte)+'</b> dans '+treN+' ans. L’attente a un prix — même sans rien perdre en apparence.';
+    };
+
+    simDon();simDiv();simTre();
+  })();
+  </script>
+  </section>
+
   <!-- ════ AVANTAGES DE L'APP — capacités réelles (véracité L.121-2) ════ -->
   <section class="act adv-sec" style="display:block">
   <style>
@@ -832,7 +981,7 @@
       clearInterval(iv);
       if(!window._mRetry){ window._mRetry=1; el.innerHTML='<div class="loader"><span class="ld"></span><span class="ld"></span><span class="ld"></span><em>Un instant — Marcel reprend votre analyse…</em></div>'; setTimeout(function(){ marcelInto(elId, message); }, 1200); return; }
       window._mRetry=0;
-      el.innerHTML='<p class="think">Marcel est très sollicité à l'instant.</p><button class="chip" style="cursor:pointer" onclick="window._mRetry=0;marcelInto(''+elId+'', window._mLastMsg)">↻ Relancer l'analyse</button>';
+      el.innerHTML='<p class="think">Marcel est très sollicité à l’instant.</p><button class="chip" style="cursor:pointer" onclick="window._mRetry=0;marcelInto(\''+elId+'\', window._mLastMsg)">↻ Relancer l’analyse</button>';
       window._mLastMsg=message;
     }
   }
