@@ -52,12 +52,16 @@ export default {
       const status = token ? 'success' : 'error';
       const content = token ? { token, provider: 'github' } : { error: data.error || 'no_token' };
 
+      // Message attendu par Decap/Sveltia CMS : "authorization:github:<status>:<json>".
+      // On sérialise le message COMPLET en littéral JS via JSON.stringify → guillemets
+      // échappés proprement, aucun risque de chaîne non terminée (bug historique ligne 60).
+      const message = 'authorization:github:' + status + ':' + JSON.stringify(content);
+      const jsMessage = JSON.stringify(message);
+
       return htmlResponse(
         '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>' +
         '<script>(function(){' +
-        'function send(){if(window.opener){window.opener.postMessage(' +
-        "'authorization:github:" + status + ":' + JSON.stringify(" + JSON.stringify(content) + ")" +
-        ",\"*\");}}' +
+        'function send(){if(window.opener){window.opener.postMessage(' + jsMessage + ',"*");}}' +
         'window.addEventListener("message",send,false);send();' +
         'setTimeout(function(){window.close();},1000);' +
         '})();</script>' +
