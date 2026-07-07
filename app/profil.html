@@ -21,45 +21,102 @@
 </header>
 
 <main class="app-main">
+<style>
+  /* ── Esprit fintech patrimoniale ── */
+  .pf-hero{display:flex;gap:14px;align-items:center;margin-top:20px}
+  .pf-ava{flex:0 0 54px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-deep));color:var(--gold-bright);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:23px;font-style:italic}
+  .pf-hero h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;margin:0;line-height:1.2}
+  .pf-hero .meta{margin:2px 0 6px}
+  /* carte de membre (bank-card) */
+  .pf-card{position:relative;margin-top:18px;border-radius:18px;padding:22px 22px 18px;background:linear-gradient(130deg,#1B2A4A 0%,#0E1729 68%,#16233E 100%);color:#FAF8F4;overflow:hidden;box-shadow:0 24px 50px -24px rgba(14,23,41,.55)}
+  .pf-card::before{content:"";position:absolute;top:-70px;right:-60px;width:230px;height:230px;border-radius:50%;border:1px solid rgba(226,200,150,.22)}
+  .pf-card::after{content:"";position:absolute;top:-30px;right:-20px;width:150px;height:150px;border-radius:50%;border:1px dashed rgba(226,200,150,.16)}
+  .pf-card .wm{font-family:'Playfair Display',serif;font-size:15px}.pf-card .wm b{color:#E2C896;font-weight:600}
+  .pf-chip{position:absolute;top:20px;right:22px;width:34px;height:25px;border-radius:5px;background:linear-gradient(135deg,#E2C896,#8B6F3F);opacity:.9}
+  .pf-card .pl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#E2C896;margin-top:22px}
+  .pf-card .pn{font-family:'Playfair Display',serif;font-size:clamp(19px,4vw,24px);margin-top:4px}
+  .pf-card .pe{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(250,248,244,.65);margin-top:6px;letter-spacing:.04em}
+  .pf-card .row-b{position:relative;z-index:1;margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  /* KPI fintech */
+  .pf-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .pf-kpi{background:var(--card,#fff);border:1px solid var(--line);border-radius:14px;padding:13px 14px;text-decoration:none;color:inherit;display:block}
+  .pf-kpi b{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--navy);display:block;line-height:1.1}
+  .pf-kpi span{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:block;margin-top:5px;line-height:1.5}
+  @media(max-width:520px){.pf-kpis{grid-template-columns:1fr 1fr}.pf-kpi:last-child{grid-column:1/-1}}
+  /* rangées data */
+  .pf-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .pf-row .mono{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--mute)}
+  .pf-sov{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:26px;border:1px solid var(--line);border-radius:14px;padding:13px 16px;background:var(--card,#fff);font-size:12px;color:var(--mute)}
+  .pf-sov b{color:var(--ink)}
+  .pf-h{font-family:'Playfair Display',serif;font-size:20px;margin:34px 0 4px;font-weight:600}
+  .pf-sub{color:var(--mute);font-size:13px;margin-bottom:12px}
+</style>
+
   <div class="section-label">Mon compte</div>
   <h1 class="app-h1">Votre profil. <em>Votre souveraineté.</em></h1>
 
-  <div class="grid-2" style="margin-top:24px">
-    <article class="card">
-      <span class="card-cat">Identité</span>
+  <!-- Identité -->
+  <div class="pf-hero">
+    <div class="pf-ava" id="pfAva">·</div>
+    <div>
       <h3 id="profilNom">Chargement…</h3>
       <p id="profilEmail" class="meta"></p>
-      <p>Tier : <span class="pill" id="profilTier">…</span></p>
-    </article>
-
-    <article class="card" id="billingCard" style="display:none" data-anchor="abonnement"><a id="abonnement" style="position:relative;top:-80px"></a>
-      <span class="card-cat">Abonnement</span>
-      <h3 id="billingTitle">Votre formule</h3>
-      <p id="billingDesc" class="meta" style="margin-bottom:14px"></p>
-      <div id="billingActions"></div>
-      <p class="meta" style="margin-top:12px;font-size:11px;font-style:italic">Paiement sécurisé via Stripe. <a href="/cgv.html" target="_blank" style="color:var(--accent)">CGV</a> · sans engagement, résiliable à tout moment.</p>
-    </article>
-
-    <article class="card">
-      <span class="card-cat">Sociétés rattachées</span>
-      <h3>Vos SIREN</h3>
-      <div id="sirens-list" class="loading">Chargement…</div>
-      <form onsubmit="return addSiren(event)" style="margin-top:14px;display:flex;gap:8px">
-        <input id="new-siren" type="text" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-family:'JetBrains Mono',monospace" required>
-        <button type="submit" class="btn btn-accent btn-sm">Cartographier</button>
-      </form>
-    </article>
+      <span class="pill" id="profilTier">…</span>
+    </div>
   </div>
 
-  <h3 id="patrimoine" style="font-family:'Playfair Display',serif;font-size:22px;margin:40px 0 16px;font-weight:500">Patrimoine déclaré</h3>
-  <p style="color:var(--mute);font-size:13.5px;margin-bottom:14px">Pour activer la jauge IFI et la consolidation patrimoine, déclarez vos biens immobiliers et financiers.</p>
-  <div class="empty"><h4>Déclaration patrimoine</h4><p>Déclarez vos actifs immobiliers, financiers et professionnels pour activer la jauge IFI et la consolidation Bâtisseur. Disponible Sprint 2.</p><a href="/app/marcel?topic=batisseur" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:10px">Activer Bâtisseur →</a></div>
+  <!-- Carte de membre + abonnement -->
+  <article class="pf-card" id="billingCard" style="display:none" data-anchor="abonnement"><a id="abonnement" style="position:relative;top:-80px"></a>
+    <div class="wm">Marcel <b>IA</b></div>
+    <div class="pf-chip" aria-hidden="true"></div>
+    <div class="pl" id="billingTitle">Votre formule</div>
+    <div class="pn" id="pfPlanName">—</div>
+    <div class="pe" id="pfPlanEmail"></div>
+    <p id="billingDesc" class="meta" style="position:relative;z-index:1;color:rgba(250,248,244,.78);margin-top:12px;font-size:12.5px;line-height:1.6"></p>
+    <div class="row-b" id="billingActions"></div>
+    <p class="meta" style="position:relative;z-index:1;margin-top:12px;font-size:10.5px;font-style:italic;color:rgba(250,248,244,.5)">Paiement sécurisé via Stripe. <a href="/cgv.html" target="_blank" style="color:#E2C896">CGV</a> · sans engagement, résiliable à tout moment.</p>
+  </article>
 
-  <h3 id="watches" style="font-family:'Playfair Display',serif;font-size:22px;margin:40px 0 16px;font-weight:500">Veilles de marché</h3>
-  <p style="color:var(--mute);font-size:13.5px;margin-bottom:14px">Surveillez vos actifs (montres, voitures, vins, art). Marcel vous alerte si la cote passe sous votre cible.</p>
+  <!-- KPI -->
+  <div class="pf-kpis">
+    <a class="pf-kpi" href="#sirens"><b id="kpiSirens">—</b><span>Société(s) rattachée(s)</span></a>
+    <a class="pf-kpi" href="/app/patrimoine-pro"><b id="kpiPat">—</b><span>Patrimoine · cockpit</span></a>
+    <a class="pf-kpi" id="kpiMondeLink" href="/app/dashboard.html"><b id="kpiMonde">—</b><span>Mon univers</span></a>
+  </div>
+
+  <!-- Sociétés -->
+  <h3 class="pf-h" id="sirens">Sociétés rattachées</h3>
+  <p class="pf-sub">Chaque SIREN ajouté est cartographié depuis le registre officiel, puis relié à votre analyse.</p>
+  <article class="card">
+    <div id="sirens-list" class="loading">Chargement…</div>
+    <form onsubmit="return addSiren(event)" style="margin-top:14px;display:flex;gap:8px">
+      <input id="new-siren" type="text" pattern="[0-9 ]{9,11}" maxlength="11" placeholder="9 chiffres SIREN" style="flex:1;min-width:0;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-family:'JetBrains Mono',monospace" required>
+      <button type="submit" class="btn btn-accent btn-sm">Cartographier</button>
+    </form>
+  </article>
+
+  <!-- Patrimoine -->
+  <h3 class="pf-h" id="patrimoine">Patrimoine déclaré</h3>
+  <p class="pf-sub">Vos biens (immobilier, financier, professionnel) se déclarent dans le recueil — ils alimentent le cockpit, le bilan et les analyses de Marcel.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <a href="/app/recueil" class="btn btn-ghost btn-sm">Compléter mon recueil →</a>
+    <a href="/app/patrimoine-pro" class="btn btn-ghost btn-sm">Ouvrir le cockpit →</a>
+  </div>
+
+  <!-- Veilles -->
+  <h3 class="pf-h" id="watches">Veilles de marché</h3>
+  <p class="pf-sub">Surveillez vos actifs (montres, voitures, vins, art). Marcel vous alerte si la cote passe sous votre cible.</p>
   <div id="watches-list" class="loading">Chargement…</div>
 
-  <h3 style="font-family:'Playfair Display',serif;font-size:22px;margin:40px 0 16px;font-weight:500;color:var(--bad)">RGPD · droits</h3>
+  <!-- Souveraineté -->
+  <div class="pf-sov">
+    <span>🇫🇷 <b>Données hébergées en France</b> — base chiffrée, région Paris</span>
+    <span>🔒 Connexion par lien sécurisé, aucun mot de passe stocké</span>
+    <span>📦 Export & suppression en un clic, ci-dessous</span>
+  </div>
+
+  <!-- RGPD -->
+  <h3 class="pf-h" style="color:var(--bad)">RGPD · vos droits</h3>
   <div class="grid-2">
     <article class="card">
       <h3>📦 Exporter mes données</h3>
@@ -105,12 +162,27 @@ let me;
 try { me = await Marcel.Auth.me(); } catch(_){ location.href='/app/index.html'; }
 
 if(me){
-  document.getElementById('profilNom').textContent = me.display_name || me.prenom || me.email;
+  const nom = me.display_name || me.prenom || me.email;
+  document.getElementById('profilNom').textContent = nom;
   document.getElementById('profilEmail').textContent = me.email;
+  document.getElementById('pfAva').textContent = (nom||'·').trim().charAt(0).toUpperCase();
   const lbl = {free:'Découverte',premium:'Premium Essentiel',fo:'Premium intelligence patrimoniale'}[me.tier] || 'Découverte';
   const t = document.getElementById('profilTier');
   t.textContent = lbl;
   t.classList.add(me.tier === 'free' ? 'neutral' : 'live');
+  document.getElementById('pfPlanName').textContent = lbl;
+  document.getElementById('pfPlanEmail').textContent = (me.email||'').replace(/^(..)[^@]*/, '$1•••');
+
+  // KPI univers + patrimoine (déclaratif local)
+  try{
+    const M={dirigeant:'Dirigeant(e)',liberal:'Libérale',createur:'Créateur',sportif:'Sportif'};
+    const k=localStorage.getItem('ikcp_monde');
+    document.getElementById('kpiMonde').textContent = (k&&M[k]) ? M[k] : 'À choisir';
+    if(k&&M[k]) document.getElementById('kpiMondeLink').href='/app/univers-'+k;
+    const R=JSON.parse(localStorage.getItem('ikcp_recueil')||'null');
+    const nb=R?((R.immo||[]).length+(R.fin||[]).length+(R.autres||[]).length+(R.s_valo>0?1:0)):0;
+    document.getElementById('kpiPat').textContent = nb>0 ? nb+' bien'+(nb>1?'s':'') : 'À déclarer';
+  }catch(_){}
 
   // ── Carte abonnement (Stripe) ──
   const card = document.getElementById('billingCard');
@@ -120,7 +192,7 @@ if(me){
     const b = document.createElement('button');
     b.textContent = label;
     b.className = 'btn ' + (primary ? 'btn-primary' : 'btn-ghost');
-    b.style.cssText = 'padding:11px 18px;border-radius:9px;font-weight:600;font-size:13.5px;cursor:pointer;border:none;' + (primary ? 'background:var(--accent);color:#fff;' : 'background:transparent;border:1px solid var(--line);color:var(--ink);');
+    b.style.cssText = 'padding:11px 18px;border-radius:9px;font-weight:600;font-size:13.5px;cursor:pointer;border:none;' + (primary ? 'background:linear-gradient(120deg,#E2C896,#C9A96E);color:#20180c;' : 'background:transparent;border:1px solid rgba(226,200,150,.45);color:#E2C896;');
     b.onclick = fn;
     return b;
   };
@@ -156,14 +228,16 @@ async function refreshSirens(){
   try {
     // Tenter endpoint dédié, fallback sur me.sirens si indisponible
     const sirens = await Marcel.Me.sirens().catch(() => me?.sirens || []);
+    const kpiS = document.getElementById('kpiSirens');
+    if(kpiS) kpiS.textContent = sirens.length || '0';
     if(sirens.length === 0){
-      sirenList.innerHTML = '<p style="color:var(--mute);font-size:13px;font-style:italic">Aucune société rattachée.</p>';
+      sirenList.innerHTML = '<p style="color:var(--mute);font-size:13px;font-style:italic">Aucune société rattachée — ajoutez votre SIREN ci-dessous.</p>';
     } else {
       sirenList.classList.remove('loading');
       sirenList.innerHTML = sirens.map(s => `
-        <div style="padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px">
-          <b>${s.nom_societe && s.nom_societe !== 'null' ? s.nom_societe : 'Votre société'}</b>
-          <div style="color:var(--mute);font-size:11.5px;margin-top:2px">${s.siren}${s.forme_juridique ? ' · ' + s.forme_juridique.split(',')[0] : ''}</div>
+        <div class="pf-row">
+          <b>${s.nom_societe && s.nom_societe !== 'null' ? s.nom_societe : 'Votre société'}${s.forme_juridique ? ' <span style="color:var(--mute);font-weight:400;font-size:12px">· ' + s.forme_juridique.split(',')[0] + '</span>' : ''}</b>
+          <span class="mono">${s.siren}</span>
         </div>
       `).join('');
     }
