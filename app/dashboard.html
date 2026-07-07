@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<script>
+/* Garde d'entrée (TWA Android démarre ici) : pas de jeton et pas de lien magique
+   → connexion immédiatement, AVANT tout affichage. Évite le flash dashboard→login. */
+try{
+  if(!localStorage.getItem('ikcp_token') && !/[#&]s=/.test(location.hash||'')){
+    location.replace('/app/index.html');
+  }
+}catch(e){}
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1B2A4A">
 <title>Marcel IA — Accueil</title>
@@ -47,6 +56,13 @@
 <script src="/reveal.js?v=1" defer></script>
 </head>
 <body>
+
+<!-- Voile de démarrage : couvre l'interface le temps de valider la session (retiré par le script). -->
+<div id="bootVeil" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(170deg,#FAF8F4,#F2ECE1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .3s">
+  <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1B2A4A,#0E1729);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-style:italic;font-size:24px;color:#E2C896">M</div>
+  <div style="font-family:'Playfair Display',serif;font-size:15px;color:#1B2A4A">Marcel <em style="color:#8B6F3F">IA</em></div>
+</div>
+<script>setTimeout(function(){var v=document.getElementById('bootVeil');if(v){v.style.opacity='0';setTimeout(function(){v.remove()},350)}},4000)</script>
 
 <header class="app-header">
   <a href="/app/dashboard.html" class="app-brand">
@@ -262,13 +278,14 @@ window.logout = async function(){
 
 // ─── Session + profil ───
 let me=null;
-try { me = await Marcel.Auth.me(); } catch(_) { location.href='/app/index.html'; }
+try { me = await Marcel.Auth.me(); } catch(_) { location.replace('/app/index.html'); }
 
 if(me){
   let profile=null; try{ profile = me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){}
   if(!profile?.onboarding_completed && !localStorage.getItem('marcel_onboarding_skipped')){
-    var _q=new URLSearchParams(location.search); if(!_q.get('welcome') && !_q.get('upgraded')) location.href='/app/onboarding.html';
+    var _q=new URLSearchParams(location.search); if(!_q.get('welcome') && !_q.get('upgraded')) location.replace('/app/onboarding.html');
   }
+  var _bv=document.getElementById('bootVeil'); if(_bv){ _bv.style.opacity='0'; setTimeout(function(){_bv.remove()},350); }
   if(profile?.prenom) me.prenom = profile.prenom;
   document.getElementById('userPrenom').textContent = me.prenom || me.display_name || (me.email?me.email.split('@')[0]:'') || 'Maxime';
   document.getElementById('userAvatar').textContent = (me.prenom || me.email || 'M').charAt(0).toUpperCase();
