@@ -671,6 +671,9 @@ async function handleStripeWebhook(request, env) {
   if (!valid) return json({ error: 'invalid_signature' }, 401);
 
   const event = JSON.parse(body);
+  // Auto-réparation : la table d'idempotence doit exister avant toute lecture
+  // (sinon le webhook 500 en boucle et le passage Premium n'arrive jamais).
+  await env.D1.prepare('CREATE TABLE IF NOT EXISTS stripe_events (id TEXT PRIMARY KEY, type TEXT, payload_json TEXT, ts INTEGER, processed_at INTEGER)').run();
   const seen = await env.D1.prepare('SELECT id FROM stripe_events WHERE id = ?').bind(event.id).first();
   if (seen) return json({ received: true, idempotent: true });
   await env.D1.prepare('INSERT INTO stripe_events (id, type, payload_json, ts) VALUES (?, ?, ?, ?)')
