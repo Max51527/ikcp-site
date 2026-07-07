@@ -58,6 +58,12 @@
 }
 .veille-search button:hover { background: var(--accent); }
 .veille-search button:disabled { opacity: 0.5; cursor: wait; }
+@media (max-width: 560px) {
+  .veille-search { flex-wrap: wrap; }
+  .veille-search input { flex: 1 1 100%; min-width: 0; }
+  .veille-search select { flex: 1; min-width: 0; }
+  .veille-search button { flex: 1; white-space: normal; }
+}
 .veille-result {
   background: var(--bg);
   border: 1px solid var(--line);
@@ -320,8 +326,8 @@ function markdownToHtml(s){
     .replace(/^\s*(souhaitez-vous|voulez-vous)[^\n]*\?\s*$/gim,'')           // question méta finale
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/^### (.+)$/gm,'<h4 style="font-family:'Playfair Display',serif;font-weight:500;margin:14px 0 6px">$1</h4>')
-    .replace(/^## (.+)$/gm,'<h3 style="font-family:'Playfair Display',serif;font-weight:500;margin:16px 0 8px">$1</h3>')
+    .replace(/^### (.+)$/gm,'<h4 style="font-family:Georgia,serif;font-weight:500;margin:14px 0 6px">$1</h4>')
+    .replace(/^## (.+)$/gm,'<h3 style="font-family:Georgia,serif;font-weight:500;margin:16px 0 8px">$1</h3>')
     .replace(/^\- (.+)$/gm,'<li style="margin:4px 0">$1</li>')
     .replace(/(<li.*<\/li>)/gs,'<ul style="margin:8px 0 8px 18px">$1</ul>')
     .replace(/\n\n/g,'</p><p style="margin:8px 0">')

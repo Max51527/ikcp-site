@@ -215,7 +215,7 @@ function render(biens, soc, data){
   try{ document.getElementById('meta').textContent='Édité le '+new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})+(soc&&soc.nom?' · '+soc.nom:''); }catch(_){}
   if(!biens.length && !soc){
     document.getElementById('body').innerHTML='<div class="empty" style="text-align:center;padding:40px 22px">'
-      +'<div style="font-family:'Playfair Display',serif;font-size:24px;color:#1B2A4A;margin-bottom:8px">Votre audit patrimonial vous attend.</div>'
+      +'<div style="font-family:Georgia,serif;font-size:24px;color:#1B2A4A;margin-bottom:8px">Votre audit patrimonial vous attend.</div>'
       +'<p style="color:#6B5D52;font-size:14px;margin:0 0 22px">Deux façons de le démarrer — choisissez la vôtre :</p>'
       +'<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">'
       +'<a href="/app/dashboard" style="display:inline-block;background:linear-gradient(135deg,#E2C896,#C9A96E);color:#20180c;font-weight:700;font-size:14px;text-decoration:none;padding:14px 24px;border-radius:100px">⚡ Automatique — relier mon SIREN (30 s)</a>'
