@@ -20,7 +20,7 @@ jobs:
         run: |
           set -u
           # Workers déployés à surveiller (cms-auth/feedback exclus tant que non déployés)
-          WORKERS="ikcp-chat ikcp-codex ikcp-hermes ikcp-batisseur ikcp-lifestyle ikcp-veille ikcp-client ikcp-temoin ikcp-collector ikcp-voice ikcp-pappers"
+          WORKERS="ikcp-chat ikcp-codex ikcp-hermes ikcp-batisseur ikcp-lifestyle ikcp-veille ikcp-client ikcp-temoin ikcp-collector ikcp-voice ikcp-pappers ikcp-powens ikcp-patrimoine ikcp-rag"
           DOWN=""
           echo "── Health check $(date -u +'%Y-%m-%d %H:%M UTC') ──"
           for w in $WORKERS; do
@@ -30,6 +30,17 @@ jobs:
             else
               echo "❌ $w [$code]"
               DOWN="$DOWN $w"
+            fi
+          done
+          # Le site + l'app eux-mêmes (ce que voient les clients et le téléphone)
+          for u in "https://ikcp.eu/marcel|site-vitrine" "https://ikcp.eu/app/index.html|app-login" "https://ikcp.eu/app/manifest.json|app-manifest" "https://ikcp.eu/.well-known/assetlinks.json|android-assetlinks"; do
+            url="${u%%|*}"; nom="${u##*|}"
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 12 "$url" || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "✅ $nom [$code]"
+            else
+              echo "❌ $nom [$code] — $url"
+              DOWN="$DOWN $nom"
             fi
           done
           echo "────────────────────────────"
