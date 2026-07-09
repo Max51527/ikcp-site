@@ -143,6 +143,8 @@ async function sendOpt(){
     if(!p||!e)return;
     var W='https://ikcp-prospect.maxime-ead.workers.dev';
     try{if(W)await fetch(W,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'Succession Ardèche IKCP',prenom:p,email:e,date:new Date().toISOString()})})}catch(x){}
+    try{ var _ok=document.getElementById('optOK'); if(_ok) _ok.style.display='block'; var _f=document.getElementById('optP'); if(_f) _f.value=''; var _e=document.getElementById('optE'); if(_e) _e.value=''; }catch(_){}
+}
 </script><script src="/mobile-cta.js"></script>
 <script src="/chatbot-widget.js?v=21"></script>
 <div style="max-width:700px;margin:40px auto;padding:0 20px;">

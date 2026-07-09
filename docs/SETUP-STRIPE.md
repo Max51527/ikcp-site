@@ -13,8 +13,8 @@
 ## Étape 2 — Créer le produit & les prix
 Produits → **+ Add product** :
 - **Nom** : `IKCP Premium`
-- **Prix 1** : mensuel récurrent — ex. **59 €/mois** → copie l'ID `price_...` (= `PREMIUM_MONTHLY`)
-- **Prix 2** : annuel récurrent — ex. **590 €/an** (2 mois offerts) → copie l'ID `price_...` (= `PREMIUM_YEARLY`)
+- **Prix 1** : mensuel récurrent — ex. **24,00 €/mois** → copie l'ID `price_...` (= `PREMIUM_MONTHLY`)
+- **Prix 2** : annuel récurrent — ex. **240,00 €/an** (2 mois offerts) → copie l'ID `price_...` (= `PREMIUM_YEARLY`)
 
 *(FO = « sur recommandation », pas de produit self-serve : accordé via la console admin.)*
 
