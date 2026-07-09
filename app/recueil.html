@@ -277,12 +277,12 @@ function save(){
     try{
       localStorage.setItem('ikcp_recueil', JSON.stringify(R));
       var flat=computeFlat(); var brut=0; Object.keys(flat).forEach(function(k){ if(k!=='passif') brut+=flat[k]; });
-      // Pont : n'écrase le cockpit QUE si le recueil contient des données
-      if(brut>0 || flat.passif>0){
-        var prev={}; try{ prev=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'{}')||{}; }catch(_){}
-        localStorage.setItem('ikcp_patrimoine', JSON.stringify(Object.assign(prev,flat)));
-        localStorage.setItem('ikcp_patrimoine_ts', String(Date.now()));
-      }
+      // Pont recueil → cockpit : on écrit TOUJOURS (save() ne se déclenche que sur
+      // une action de l'utilisateur ; computeFlat produit des 0 explicites → un
+      // vidage du recueil se répercute bien sur le cockpit/bilan, plus de montant fantôme).
+      var prev={}; try{ prev=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'{}')||{}; }catch(_){}
+      localStorage.setItem('ikcp_patrimoine', JSON.stringify(Object.assign(prev,flat)));
+      localStorage.setItem('ikcp_patrimoine_ts', String(Date.now()));
       document.getElementById('tBrut').textContent=eur(brut);
       document.getElementById('tPassif').textContent=eur(flat.passif);
       document.getElementById('tNet').textContent=eur(brut-flat.passif);
@@ -337,7 +337,7 @@ function renderPense(){
     add("Avez-vous pensé à désigner qui élèverait vos enfants si les deux parents disparaissaient (désignation d\u2019un tuteur par testament) ?","Notaire","Comment désigner un tuteur pour mes enfants et avec quelles garanties ?");
 
   var host=document.getElementById('penseList');
-  if(!out.length){ host.innerHTML='<div class="ok">'+((Object.keys(J).length||R.immo.length)?'✓ Aucun point de vigilance détecté sur ce qui est renseigné — complétez le recueil pour affiner.':'Complétez le recueil ci-dessus : vos points de vigilance apparaîtront ici.')+'</div>'; return; }
+  if(!out.length){ host.innerHTML='<div class="ok">'+((Object.keys(J).length||(R.immo||[]).length)?'✓ Aucun point de vigilance détecté sur ce qui est renseigné — complétez le recueil pour affiner.':'Complétez le recueil ci-dessus : vos points de vigilance apparaîtront ici.')+'</div>'; return; }
   host.innerHTML=out.map(function(p){
     return '<div class="pcard"><div class="pq">'+p.q+'</div><div class="meta"><span class="pro">→ '+p.pro+'</span><a href="/app/marcel?q='+encodeURIComponent(p.mq)+'">En parler à Marcel →</a></div></div>';
   }).join('');

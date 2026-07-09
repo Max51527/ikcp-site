@@ -638,6 +638,7 @@ window.saveSim = async function(){
 };
 
 function drawChart(labels, data) {
+  if (!window.Chart) return;   // Chart.js indisponible (CDN bloqué/hors-ligne) : le graphe manque mais le calcul et le déverrouillage Premium continuent
   const ctx = document.getElementById('simChart');
   if (chart) chart.destroy();
   chart = new Chart(ctx, {

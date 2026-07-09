@@ -119,8 +119,11 @@ function render(biens, soc, data){
   var brut=biens.reduce(function(a,b){return a+(+b.value||0);},0);
   var byCat={}; biens.forEach(function(b){ byCat[b.cat]=(byCat[b.cat]||0)+(+b.value||0); });
   var bilan=(data&&data.bilan)||{};
-  var net = bilan.actif_net_cents!=null ? bilan.actif_net_cents/100 : brut;
-  var passif = bilan.passif_cents!=null ? bilan.passif_cents/100 : 0;
+  // Passif local (dettes + crédits restants saisis au recueil) en repli quand le
+  // serveur ne fournit pas le bilan → l'audit ne surestime plus le patrimoine net.
+  var localPassif=0; try{ var _p=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null'); if(_p&&typeof _p==='object'&&!Array.isArray(_p)) localPassif=+_p.passif||0; }catch(_){}
+  var passif = bilan.passif_cents!=null ? bilan.passif_cents/100 : localPassif;
+  var net = bilan.actif_net_cents!=null ? bilan.actif_net_cents/100 : (brut - passif);
   var oppo=(data&&data.opportunites)||[];
   var PREMIUM = /^(premium|fo)$/.test((function(){try{return localStorage.getItem('ikcp_tier')||'free';}catch(_){return 'free';}})());
   try{

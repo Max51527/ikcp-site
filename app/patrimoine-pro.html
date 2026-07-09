@@ -304,7 +304,9 @@ const CATS = [
   { key:'financier',  label:'Mes placements',     icon:'📈', color:'#1B2A4A', href:'/app/marcel?topic=marches' },
   { key:'tresorerie', label:'Mes liquidités',     icon:'💧', color:'#5B8A8C', href:'/app/marcel?topic=tresorerie' },
   { key:'societe',    label:'Mon entreprise',     icon:'🏛️', color:'#7A5C2E', href:'/app/environnement' },
-  { key:'retraite',   label:'Ma retraite',        icon:'🛡️', color:'#C9A96E', href:'/app/marcel?topic=retraite' },  { key:'autres',     label:'Autres',             icon:'✦',  color:'#9AA0AE', href:'/app/marcel' },
+  { key:'retraite',   label:'Ma retraite',        icon:'🛡️', color:'#C9A96E', href:'/app/marcel?topic=retraite' },
+  { key:'passion',    label:'Collections & passions', icon:'🎨', color:'#A65D57', href:'/app/marcel' },
+  { key:'autres',     label:'Autres',             icon:'✦',  color:'#9AA0AE', href:'/app/marcel' },
 ];
 const TYPO = {
   indep:  {label:'L’Indépendant',           short:'Indépendant',      sub:'TNS · libéral',     topic:'retraite',     cta:'Optimiser ma rémunération'},
@@ -601,9 +603,9 @@ function openEdit(){
 }
 function closeEdit(){ $('editModal').classList.remove('open'); }
 function saveEdit(){
-  const nd={};
-  CATS.forEach(c=>{ const v=parseFloat($('f_'+c.key).value); if(v>0) nd[c.key]=Math.round(v); });
-  const p=parseFloat($('f_passif').value); if(p>0) nd.passif=Math.round(p);
+  const nd=Object.assign({}, data);   // préserve toute clé hors formulaire (robustesse anti-perte)
+  CATS.forEach(c=>{ const v=parseFloat($('f_'+c.key).value); if(v>0) nd[c.key]=Math.round(v); else delete nd[c.key]; });
+  const p=parseFloat($('f_passif').value); if(p>0) nd.passif=Math.round(p); else delete nd.passif;
   data=nd;
   try{ localStorage.setItem('ikcp_patrimoine', JSON.stringify(nd)); localStorage.setItem(TS_KEY, String(Date.now())); }catch(_){}
   // snapshot mensuel pour la courbe (honnête : se construit dans le temps)
@@ -788,6 +790,7 @@ try{
     { key:'tresorerie', label:'Mes liquidités', icon:'💧',  color:'#5B8A8C' },
     { key:'societe',    label:'Mon entreprise', icon:'🏛️', color:'#7A5C2E' },
     { key:'retraite',   label:'Ma retraite',    icon:'🛡️', color:'#C9A96E' },
+    { key:'passion',    label:'Collections & passions', icon:'🎨', color:'#A65D57' },
     { key:'autres',     label:'Autres',         icon:'✦',   color:'#9AA0AE' }
   ];
   var byKey={}; CATS.forEach(function(c){ byKey[c.key]=c; });

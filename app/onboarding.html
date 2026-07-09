@@ -328,7 +328,12 @@ window.finishOnboarding = async function(skipSiren = false){
   const btn = document.getElementById('finishBtn');
   if(btn){ btn.disabled = true; btn.textContent = 'Enregistrement…'; }
 
-  data.typologie = computeTypologie(data.profession, data.patrimoine, data.objectif);
+  // Ne dériver la typologie QUE si un profil a réellement été saisi. Sinon (parcours
+  // SIREN-seul, sans formulaire) on laisse null : le cockpit appliquera son heuristique
+  // SIREN + patrimoine net au lieu d'un « etabli » par défaut faussé pour tout le monde.
+  data.typologie = (data.profession || data.patrimoine || data.objectif)
+    ? computeTypologie(data.profession, data.patrimoine, data.objectif)
+    : null;
   const profile = {
     prenom: data.prenom,
     age: data.age,
