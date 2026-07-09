@@ -122,8 +122,34 @@ const Voice = {
     return t.trim();
   },
 
-  /** Synthèse vocale — Marcel parle */
-  speak(text, { rate = 1.0, pitch = 1.0, voiceName } = {}) {
+  /** Choisit la MEILLEURE voix française disponible, par score de naturel.
+   *  Les voix « neuronales » (Natural/Neural/Online/Enhanced/Premium/Google/Siri)
+   *  rendent bien mieux qu'une voix locale robotique : on les privilégie fortement,
+   *  quel que soit l'appareil. Cache le résultat (le calcul est stable par session). */
+  _bestVoice(voiceName) {
+    const voices = (window.speechSynthesis.getVoices && window.speechSynthesis.getVoices()) || [];
+    if (!voices.length) return null;
+    if (voiceName) { const v = voices.find(v => v.name === voiceName); if (v) return v; }
+    if (this._voiceCache && this._voiceCache.count === voices.length) return this._voiceCache.voice;
+    const fr = voices.filter(v => /^fr/i.test(v.lang || ''));
+    const pool = fr.length ? fr : voices;
+    const score = (v) => {
+      const n = (v.name || '');
+      let s = 0;
+      if (/natural|neural|enhanced|premium|online|siri/i.test(n)) s += 100;   // voix neuronales OS (Windows/iOS/macOS)
+      if (/google/i.test(n)) s += 90;                                         // Google TTS (Android) = très naturel
+      if (/denise|éloïse|eloise|vivienne|amélie|amelie|audrey|thomas|daniel|henri|paul/i.test(n)) s += 40; // bonnes voix FR nommées
+      if (/fr-FR/i.test(v.lang || '')) s += 15;                              // français de France
+      if (v.localService === false) s += 20;                                 // voix « cloud » de l'OS = souvent neuronale
+      return s;
+    };
+    const best = pool.slice().sort((a, b) => score(b) - score(a))[0] || null;
+    this._voiceCache = { count: voices.length, voice: best };
+    return best;
+  },
+
+  /** Synthèse vocale — Marcel parle. Livraison posée (rate 0.97) pour un rendu premium. */
+  speak(text, { rate = 0.97, pitch = 1.0, voiceName } = {}) {
     if (!('speechSynthesis' in window)) return;
     if (!text || typeof text !== 'string') return;
 
@@ -144,17 +170,9 @@ const Voice = {
     }
     if (buf.trim()) chunks.push(buf.trim());
 
-    // Sélection voix française
-    const voices = window.speechSynthesis.getVoices();
-    let voice = null;
-    if (voiceName) voice = voices.find(v => v.name === voiceName);
-    // Priorité aux voix neuronales (bien meilleur rendu) : Natural / Online / Google
-    if (!voice) voice = voices.find(v => /^fr/i.test(v.lang) && /natural|online|neural|google|denise|éloïse|eloise|vivienne/i.test(v.name));
-    if (!voice) voice = voices.find(v => v.lang === 'fr-FR' && /femme|female|amelie|amélie|audrey|virginie|marie|hortense/i.test(v.name));
-    if (!voice) voice = voices.find(v => v.lang === 'fr-FR');
-    if (!voice) voice = voices.find(v => v.lang.startsWith('fr'));
+    const voice = this._bestVoice(voiceName);
 
-    chunks.forEach((chunk, i) => {
+    chunks.forEach((chunk) => {
       const u = new SpeechSynthesisUtterance(chunk);
       u.lang = 'fr-FR';
       u.rate = rate;
