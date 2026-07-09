@@ -1448,6 +1448,17 @@ export default {
         return new Response(JSON.stringify({ reply: "Marcel est momentanément indisponible. Vous pouvez réessayer dans un instant, ou réessayer avec Marcel.", provider: 'mistral-souverain', error: 'sovereign_unavailable' }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
       }
 
+      // ── VERROU DE SOUVERAINETÉ (aligné sur Codex/Hermès/Bâtisseur/Lifestyle) ──
+      // Si l'on a fait le choix Mistral (LLM_PRIMARY=mistral), une clé absente ou
+      // expirée ne doit JAMAIS faire servir l'intelligence patrimoniale par un moteur
+      // US en primaire : on répond « indisponible » plutôt que de trahir la promesse
+      // souveraine sans le dire. En temps normal (clé présente) ce point n'est jamais
+      // atteint — le bloc Mistral ci-dessus répond et retourne. Échappatoire dev :
+      // poser ALLOW_US_FALLBACK='true' sur le worker.
+      if (env.LLM_PRIMARY === 'mistral' && env.ALLOW_US_FALLBACK !== 'true') {
+        return new Response(JSON.stringify({ reply: "Marcel est momentanément indisponible (moteur souverain). Réessayez dans un instant.", provider: 'mistral-souverain', error: 'sovereign_unavailable' }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
+      }
+
       while (totalIterations < MAX_ITER) {
         totalIterations++;
         const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {

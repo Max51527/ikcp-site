@@ -82,13 +82,13 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-grad
 <script>
 var GROUPS = [
   { g:'Orchestrateur', items:[
-    { n:'Marcel', role:'Chef d\'orchestre — point d\'entrée unique', w:'ikcp-chat', model:'Sonnet 4.6 · Opus (FO)', cls:'sonnet', prov:'Anthropic', ic:'🎼' },
+    { n:'Marcel', role:'Chef d\'orchestre — point d\'entrée unique', w:'ikcp-chat', model:'Mistral Large (souverain FR)', cls:'sonnet', prov:'Mistral', ic:'🎼' },
   ]},
-  { g:'Sous-agents experts (Claude)', items:[
-    { n:'Codex', role:'Fiscalité approfondie — CGI, BOFIP, jurisprudence', w:'ikcp-codex', model:'Opus 4.7', cls:'opus', prov:'Anthropic', ic:'📜' },
-    { n:'Hermès', role:'Transmission & succession', w:'ikcp-hermes', model:'Opus 4.7', cls:'opus', prov:'Anthropic', ic:'🌳' },
-    { n:'Bâtisseur', role:'Patrimoine 360° multi-entités', w:'ikcp-batisseur', model:'Opus 4.7', cls:'opus', prov:'Anthropic', ic:'🏛️' },
-    { n:'Lifestyle ×9', role:'Art de vivre & conciergerie (Architecte, Stratège, Concierge…)', w:'ikcp-lifestyle', model:'Sonnet 4.6', cls:'sonnet', prov:'Anthropic', ic:'🛎️' },
+  { g:'Sous-agents experts (Mistral souverain)', items:[
+    { n:'Codex', role:'Fiscalité approfondie — CGI, BOFIP, jurisprudence', w:'ikcp-codex', model:'Mistral Large (souverain FR)', cls:'opus', prov:'Mistral', ic:'📜' },
+    { n:'Hermès', role:'Transmission & succession', w:'ikcp-hermes', model:'Mistral Large (souverain FR)', cls:'opus', prov:'Mistral', ic:'🌳' },
+    { n:'Bâtisseur', role:'Patrimoine 360° multi-entités', w:'ikcp-batisseur', model:'Mistral Large (souverain FR)', cls:'opus', prov:'Mistral', ic:'🏛️' },
+    { n:'Lifestyle ×9', role:'Art de vivre & conciergerie (Architecte, Stratège, Concierge…)', w:'ikcp-lifestyle', model:'Mistral Large (souverain FR)', cls:'sonnet', prov:'Mistral', ic:'🛎️' },
   ]},
   { g:'Veille & voix', items:[
     { n:'Veille', role:'Temps réel — loi de finances, jurisprudence', w:'ikcp-veille', model:'Perplexity Pro', cls:'ppx', prov:'Perplexity', ic:'🔔' },
@@ -126,11 +126,11 @@ all.forEach(function(a){
       // clé API
       var kEl=document.getElementById('key-'+a.w);
       var cfg = d.configured || {};
-      if(a.prov==='Anthropic'){
-        if(cfg.api_key === true){ kEl.innerHTML='<div class="key ok">🔑 clé Claude reliée ✓</div>'; }
+      if(a.prov==='Mistral'){
+        if(cfg.api_key === true){ kEl.innerHTML='<div class="key ok">🔑 clé Mistral reliée ✓</div>'; }
         else if(cfg.api_key === false){
-          kEl.innerHTML='<div class="key no">🔑 clé Claude manquante</div>'
-            + '<div class="action"><b>Action :</b> dans <code>wrangler secret put ANTHROPICAPIKEY</code> (dossier <b>'+a.w+'</b>) ou via Cloudflare → puis basculer <code>live:true</code> dans Marcel. → relie '+a.n+' à Claude Console.</div>';
+          kEl.innerHTML='<div class="key no">🔑 clé Mistral manquante</div>'
+            + '<div class="action"><b>Action :</b> dans <code>wrangler secret put MISTRAL_API_KEY</code> (dossier <b>'+a.w+'</b>) ou via Cloudflare. → relie '+a.n+' à Mistral (souverain FR).</div>';
           document.getElementById('ag-'+a.w).classList.add('alert');
           keyMissing.push(a.n);
         } else { kEl.innerHTML='<div class="key ok">🔑 reliée ✓</div>'; }
