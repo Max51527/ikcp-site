@@ -175,6 +175,54 @@ export default {
       return json({ error: 'powens_not_configured', hint: 'Pose POWENS_DOMAIN (var) + POWENS_CLIENT_ID & POWENS_CLIENT_SECRET (secrets) sur le worker.' }, 503, o);
     }
 
+    // ── 0) /admin/test-connect : vérifie la poignée de main OAuth avec Powens ──
+    // sans passer par un vrai membre. Rejoue les étapes (a) et (b) du /connect
+    // ci-dessous (auth/init puis auth/token/code) avec les vraies clés sandbox déjà
+    // posées, et rapporte où ça a réussi/échoué. Ne complète PAS la connexion
+    // bancaire (étape suivante = un humain qui choisit sa banque dans la Webview —
+    // rien d'automatisable ni de souhaitable ici). N'écrit aucun état en D1.
+    if (url.pathname === '/admin/test-connect' && req.method === 'POST') {
+      if (!env.POWENS_ADMIN) return json({ error: 'powens_admin_missing', hint: 'Pose POWENS_ADMIN sur ikcp-powens (et sur ikcp-client, même valeur).' }, 503, o);
+      if (req.headers.get('X-Admin-Token') !== env.POWENS_ADMIN) return json({ error: 'unauthorized' }, 401, o);
+      const diag = { domain: env.POWENS_DOMAIN || null, steps: {} };
+      try {
+        const init = await fetch(base(env) + '/auth/init', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ client_id: env.POWENS_CLIENT_ID, client_secret: env.POWENS_CLIENT_SECRET }),
+        });
+        const initBody = await init.text();
+        diag.steps.auth_init = { ok: init.ok, status: init.status, detail: init.ok ? undefined : initBody.slice(0, 200) };
+        if (!init.ok) { diag.verdict = 'echec_auth_init'; return json(diag, 200, o); }
+        const ini = JSON.parse(initBody);
+        diag.steps.auth_init.id_user_present = !!ini.id_user;
+
+        const cr = await fetch(base(env) + '/auth/token/code', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ini.auth_token },
+          body: JSON.stringify({}),
+        });
+        const crBody = await cr.text();
+        diag.steps.auth_token_code = { ok: cr.ok, status: cr.status, detail: cr.ok ? undefined : crBody.slice(0, 200) };
+        if (!cr.ok) { diag.verdict = 'echec_auth_token_code'; return json(diag, 200, o); }
+        const code = JSON.parse(crBody).code || '';
+        diag.steps.auth_token_code.code_obtenu = !!code;
+
+        const redirect = env.POWENS_REDIRECT_URI || 'https://ikcp-powens.maxime-ead.workers.dev/callback';
+        const webview = (env.POWENS_WEBVIEW || 'https://webview.powens.com') + '/fr/connect'
+          + '?client_id=' + encodeURIComponent(env.POWENS_CLIENT_ID)
+          + '&redirect_uri=' + encodeURIComponent(redirect)
+          + '&code=' + encodeURIComponent(code ? code.slice(0, 6) + '…(tronqué)' : '')
+          + '&state=test-diagnostic';
+        diag.webview_url_exemple = webview;
+        diag.verdict = 'ok';
+        diag.note = "L'échange serveur (client_id/secret → code Webview) fonctionne. L'étape suivante (un humain choisit sa banque dans la Webview) ne peut pas être testée automatiquement.";
+        return json(diag, 200, o);
+      } catch (e) {
+        diag.verdict = 'exception';
+        diag.error = String(e).slice(0, 300);
+        return json(diag, 200, o);
+      }
+    }
+
     // ── 1) /connect : prépare la connexion bancaire, renvoie l'URL de la Webview ──
     if (url.pathname === '/connect' && req.method === 'POST') {
       const memberId = await requireMember(req);              // session obligatoire

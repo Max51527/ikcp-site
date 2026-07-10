@@ -1313,6 +1313,20 @@ async function handleAdmin(request, env, path, method) {
     } catch (e) { return json({ error: 'veille_unreachable', message: e.message }, 502); }
   }
 
+  // ── POWENS : vérifier la poignée de main OAuth sandbox, sans membre réel ──
+  if (path === '/api/v1/admin/powens-test-connect' && method === 'POST') {
+    if (!env.POWENS_ADMIN) return json({ error: 'powens_admin_missing', hint: 'Pose le secret POWENS_ADMIN sur ikcp-client ET ikcp-powens (même valeur).' }, 503);
+    try {
+      const r = await fetch('https://ikcp-powens.maxime-ead.workers.dev/admin/test-connect', {
+        method: 'POST',
+        headers: { 'X-Admin-Token': env.POWENS_ADMIN },
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) return json({ error: d.error || 'powens_error', status: r.status, hint: d.hint || null }, 502);
+      return json(d);
+    } catch (e) { return json({ error: 'powens_unreachable', message: e.message }, 502); }
+  }
+
   // ── ATELIER : lire / publier un fichier du dépôt depuis le navigateur ──
   // Le jeton GitHub vit UNIQUEMENT ici (secret worker), jamais côté client.
   // Garde-fou : seules les pages (.html) du site et de l'app + les feuilles de
