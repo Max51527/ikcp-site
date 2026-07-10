@@ -99,6 +99,39 @@ async function auditLog(env, userId, action, metadata) {
   } catch (_) { /* audit non-bloquant */ }
 }
 
+// ─── Faits fiscaux 2026 vérifiés — source de vérité côté serveur ──────────
+// Un modèle de langage sans accès au web invente des « actualités » plausibles.
+// Ce bloc est injecté dans le prompt ET sert de filtre de publication.
+// À revérifier à chaque millésime (loi de finances).
+const FAITS_VERIFIES = `FAITS VÉRIFIÉS (contredire l'un d'eux est une faute grave) :
+- Donation en ligne directe : abattement de 100 000 € par parent et par enfant, renouvelable tous les QUINZE (15) ANS. C'est le délai de rappel fiscal (art. 784 du CGI). Il n'a JAMAIS été porté à 20 ans.
+- Prélèvement forfaitaire unique (« flat tax ») : 30 %, soit 12,8 % d'impôt sur le revenu + 17,2 % de prélèvements sociaux.
+- Dispositif Pinel : ÉTEINT depuis le 31 décembre 2024. Aucune prolongation, aucun recentrage. Ne jamais le présenter comme accessible.
+- Abattement dirigeant partant à la retraite : 500 000 € (art. 150-0 D ter du CGI).`;
+
+// Filtre déterministe (aucune IA) : bloque la publication d'un texte qui
+// contredit un fait vérifié. Une regex ne remplace pas un fiscaliste, mais
+// elle attrape la classe d'erreur exacte qui a été publiée le 10/07/2026.
+const PIEGES = [
+  {
+    re: /(?:abattement|100\s?000)[\s\S]{0,160}?\b(?:dix|vingt|vingt-cinq|trente|10|20|25|30)\s*ans\b/i,
+    quoi: "délai de rappel des donations annoncé autrement que 15 ans (art. 784 CGI)",
+  },
+  {
+    re: /\bpinel\b[\s\S]{0,110}?(?:prolong|prorog|maintenu|reconduit|jusqu['’ ]?en\s*20(?:2[5-9]|3\d))/i,
+    quoi: "dispositif Pinel présenté comme encore en vigueur (éteint le 31/12/2024)",
+  },
+  {
+    re: /\b(?:loi de finances|budget)\s*20(?:2[7-9]|[3-9]\d)\b/i,
+    quoi: "référence à une loi de finances non encore votée",
+  },
+];
+
+function detecterPieges(texte) {
+  const t = texte || '';
+  return PIEGES.filter((p) => p.re.test(t)).map((p) => p.quoi);
+}
+
 // ─── Veille — Perplexity (défaut) OU Mistral souverain (LLM_PRIMARY=mistral) ───
 async function callPerplexity(env, query, mode) {
   // ── VEILLE SOUVERAINE — Mistral (FR) si LLM_PRIMARY=mistral (zéro US) ──
@@ -115,7 +148,14 @@ async function callPerplexity(env, query, mode) {
           model: env.MISTRAL_MODEL || 'mistral-large-latest',
           temperature: 0.2, max_tokens: 1800,
           messages: [
-            { role: 'system', content: `Tu es l'agent de veille souverain du Family Office IKCP. Réponds en français, structuré markdown, pour dirigeants français fortunés (patrimoine / fiscal / lifestyle / collections). Distingue clairement les faits établis des estimations et signale quand une donnée mérite une vérification à jour. Termine par une question d'orientation (jamais de recommandation produit — conformité MIF II).` },
+            { role: 'system', content: `Tu es l'agent de veille souverain du Family Office IKCP. Réponds en français, structuré markdown, pour dirigeants français fortunés (patrimoine / fiscal / lifestyle / collections).
+
+Tu n'as AUCUN accès au web. Tu ne connais donc pas l'actualité récente.
+INTERDICTION ABSOLUE d'inventer une actualité, une réforme, une date d'entrée en vigueur ou un chiffre fiscal dont tu n'es pas certain. Si l'on te demande l'actualité, dis que tu ne peux pas la vérifier plutôt que de la deviner.
+
+${FAITS_VERIFIES}
+
+Distingue clairement les faits établis des estimations et signale quand une donnée mérite une vérification à jour. Termine par une question d'orientation (jamais de recommandation produit — conformité MIF II).` },
             { role: 'user', content: query },
           ],
         }),
@@ -140,11 +180,14 @@ async function callPerplexity(env, query, mode) {
       messages: [
         {
           role: 'system',
-          content: `Tu es l'agent de veille de Cassius (Family Office IKCP).
+          content: `Tu es l'agent de veille du Family Office IKCP.
 Réponds en français, sourcé, structuré markdown.
 Cible : dirigeants français HNW, contexte patrimonial / fiscal / lifestyle / collections.
-Cite toutes les sources avec URL.
+Cite toutes les sources avec URL. N'affirme RIEN qui ne soit étayé par une source que tu cites.
 Distingue clairement les faits récents des estimations.
+
+${FAITS_VERIFIES}
+
 Termine par une question d'orientation (jamais une recommandation produit, conformité MIF II).`,
         },
         { role: 'user', content: query },
@@ -297,14 +340,33 @@ export default {
         .replace(/^\s*(je ne vois pas|je n['’]ai pas trouvé|en revanche,? les résultats)[^\n]*\n?/gim, '')
         .replace(/^\s*(souhaitez-vous|voulez-vous)[^\n]*\?\s*$/gim, '')
         .trim();
-      const payload = JSON.stringify({
-        date: new Date(event.scheduledTime).toISOString().slice(0, 10),
-        summary: cleanSummary,
-        sources: (res.sources || []).slice(0, 6),
-        generated_at: event.scheduledTime,
-      });
+
+      const sources = (res.sources || []).slice(0, 6);
+      const date = new Date(event.scheduledTime).toISOString().slice(0, 10);
+
+      // ─── GARDE DE PUBLICATION ────────────────────────────────────────
+      // Le 10/07/2026, un digest non sourcé a affirmé aux membres que
+      // l'abattement donation se renouvelait « tous les 20 ans » (c'est 15)
+      // et que le Pinel était prolongé jusqu'en 2027 (il est éteint).
+      // Un CGP engage sa responsabilité professionnelle sur ces chiffres.
+      // Règle : rien de non sourcé, rien qui contredise un fait vérifié.
+      const motifs = [];
+      if (sources.length < 2) motifs.push(`digest non sourcé (${sources.length} source(s), minimum 2)`);
+      for (const p of detecterPieges(cleanSummary)) motifs.push(p);
+      if (!cleanSummary || cleanSummary.length < 80) motifs.push('digest vide ou trop court');
+
+      if (motifs.length) {
+        // On ne publie pas. On conserve le rejet 7 jours pour inspection.
+        await env.VEILLE_CACHE.put('daily_digest_rejete', JSON.stringify({
+          date, summary: cleanSummary, sources, motifs, generated_at: event.scheduledTime,
+        }), { expirationTtl: 604800 });
+        await auditLog(env, 'cron', 'daily_digest_bloque', { motifs, summary: cleanSummary });
+        return; // /digest continuera de renvoyer le dernier digest VALIDE, ou rien.
+      }
+
+      const payload = JSON.stringify({ date, summary: cleanSummary, sources, generated_at: event.scheduledTime });
       await env.VEILLE_CACHE.put('daily_digest', payload, { expirationTtl: 129600 }); // 36 h
-      await auditLog(env, 'cron', 'daily_digest', { len: res.summary.length });
+      await auditLog(env, 'cron', 'daily_digest', { len: cleanSummary.length, sources_count: sources.length });
     } catch (e) {
       await auditLog(env, 'cron', 'daily_digest_error', { error: String(e).slice(0, 200) });
     }
