@@ -1285,6 +1285,34 @@ async function handleAdmin(request, env, path, method) {
     } catch (e) { return json({ error: 'rag_unreachable', message: e.message }, 502); }
   }
 
+  // ── VEILLE : régénérer le digest du jour à la demande (hors cron 6h UTC) ──
+  // La console n'a qu'UNE clé (x-admin-secret). Ce relais détient la clé
+  // veille côté serveur et la transmet à ikcp-veille : sert à vérifier
+  // qu'une correction fonctionne sans attendre le lendemain.
+  if (path === '/api/v1/admin/veille-regenerate' && method === 'POST') {
+    if (!env.VEILLE_ADMIN) return json({ error: 'veille_admin_missing', hint: 'Pose le secret VEILLE_ADMIN sur ikcp-client ET ikcp-veille (même valeur).' }, 503);
+    try {
+      const r = await fetch('https://ikcp-veille.maxime-ead.workers.dev/admin/regenerate', {
+        method: 'POST',
+        headers: { 'X-Admin-Token': env.VEILLE_ADMIN },
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) return json({ error: d.error || 'veille_error', status: r.status, hint: d.hint || null }, 502);
+      return json(d);
+    } catch (e) { return json({ error: 'veille_unreachable', message: e.message }, 502); }
+  }
+  if (path === '/api/v1/admin/veille-last-rejected' && method === 'GET') {
+    if (!env.VEILLE_ADMIN) return json({ error: 'veille_admin_missing', hint: 'Pose le secret VEILLE_ADMIN sur ikcp-client ET ikcp-veille (même valeur).' }, 503);
+    try {
+      const r = await fetch('https://ikcp-veille.maxime-ead.workers.dev/admin/last-rejected', {
+        headers: { 'X-Admin-Token': env.VEILLE_ADMIN },
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) return json({ error: d.error || 'veille_error', status: r.status }, 502);
+      return json(d);
+    } catch (e) { return json({ error: 'veille_unreachable', message: e.message }, 502); }
+  }
+
   // ── ATELIER : lire / publier un fichier du dépôt depuis le navigateur ──
   // Le jeton GitHub vit UNIQUEMENT ici (secret worker), jamais côté client.
   // Garde-fou : seules les pages (.html) du site et de l'app + les feuilles de

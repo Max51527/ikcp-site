@@ -328,8 +328,13 @@ select option{background:var(--navy-deep)}
       <section class="view" id="v-veille">
         <div class="card" style="margin-top:0">
           <h2>◷ Digest du jour <button class="btn ghost sm tools" onclick="loadDigest()">↻</button></h2>
-          <div class="desc">Veille patrimoniale produite automatiquement chaque matin (6h UTC).</div>
+          <div class="desc">Veille patrimoniale produite automatiquement chaque matin (6h UTC). Un filtre serveur bloque toute publication non sourcée ou contredisant un fait vérifié (voir « rejeté » ci-dessous).</div>
           <div id="digest" class="digest"><div class="empty">Chargement…</div></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
+            <button class="btn" id="veilleRegenBtn" onclick="veilleRegenerate()">Régénérer maintenant (sans attendre demain)</button>
+            <button class="btn ghost sm" onclick="veilleLastRejected()">Voir le dernier rejeté</button>
+          </div>
+          <div id="veilleRegenOut" style="font-size:12.5px;margin-top:10px;line-height:1.6"></div>
         </div>
         <!-- ═══ DOCUMENTATION PATRIMONIALE (base de connaissances de Marcel) ═══ -->
         <div class="card">
@@ -1163,6 +1168,40 @@ async function loadDigest(){
       el.innerHTML = (when?`<div style="font-size:11px;color:var(--mute);margin-bottom:10px">Mis à jour : ${when}</div>`:'') + html;
     } else el.innerHTML = '<div class="empty">Pas encore de digest — il se génère chaque matin à 6h UTC.</div>';
   }catch(_){ el.innerHTML='<div class="empty">Digest indisponible.</div>'; }
+}
+
+async function veilleRegenerate(){
+  const btn = document.getElementById('veilleRegenBtn'), out = document.getElementById('veilleRegenOut');
+  btn.disabled = true; btn.textContent = 'Génération en cours… (jusqu\'à 20 s)'; out.innerHTML = '';
+  try{
+    const r = await fetch(`${API}/api/v1/admin/veille-regenerate`, { method:'POST', headers: hdr() });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.hint || d.error || ('HTTP '+r.status));
+    if(d.published){
+      out.innerHTML = '<div style="color:#4FBF8B">✓ Publié — ' + (d.sources_count||0) + ' source(s). Le digest ci-dessus est à jour.</div>';
+      loadDigest();
+    } else {
+      out.innerHTML = '<div style="color:#E2A66C">⛔ Bloqué par la garde de véracité — rien de publié :<ul style="margin:6px 0 0 18px;padding:0">'
+        + (d.motifs||[]).map(m => '<li>' + esc(m) + '</li>').join('') + '</ul></div>';
+    }
+  }catch(e){ out.innerHTML = '<div style="color:#E06C6C">Échec : ' + esc(e.message) + '</div>'; }
+  btn.disabled = false; btn.textContent = 'Régénérer maintenant (sans attendre demain)';
+}
+
+async function veilleLastRejected(){
+  const out = document.getElementById('veilleRegenOut');
+  out.innerHTML = '<div class="empty">Chargement…</div>';
+  try{
+    const r = await fetch(`${API}/api/v1/admin/veille-last-rejected`, { headers: hdr() });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.hint || d.error || ('HTTP '+r.status));
+    if(!d.rejected){ out.innerHTML = '<div class="empty">Aucun rejet en mémoire (7 j de rétention).</div>'; return; }
+    const x = d.rejected;
+    out.innerHTML = '<div style="border:1px solid rgba(224,108,108,.3);border-radius:10px;padding:12px 14px">'
+      + '<div style="font-size:11px;color:#8C97AC;margin-bottom:6px">Rejeté le ' + esc(x.date||'') + ' (source : ' + esc(x.source||'?') + ')</div>'
+      + '<div style="font-size:12px;color:#E2A66C;margin-bottom:8px">Motifs : ' + (x.motifs||[]).map(esc).join(' · ') + '</div>'
+      + '<div style="font-size:12px;white-space:pre-wrap;opacity:.75">' + esc(x.summary||'') + '</div></div>';
+  }catch(e){ out.innerHTML = '<div style="color:#E06C6C">Échec : ' + esc(e.message) + '</div>'; }
 }
 
 /* ─── FEEDBACK ─── */

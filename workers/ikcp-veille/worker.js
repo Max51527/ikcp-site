@@ -316,59 +316,92 @@ export default {
       return json({ digest: null, note: 'Digest pas encore généré (cron quotidien 6h UTC).' }, 200, origin);
     }
 
+    // ─── /admin/regenerate : déclenche le digest à la demande (hors cron) ──
+    // Sert à vérifier tout de suite qu'une correction fonctionne, au lieu
+    // d'attendre le prochain passage du cron (06:00 UTC). Même clé des deux
+    // côtés (VEILLE_ADMIN), jamais transmise au navigateur — le relais vit
+    // dans ikcp-client (POST /api/v1/admin/veille-regenerate).
+    if (url.pathname === '/admin/regenerate' && request.method === 'POST') {
+      if (!env.VEILLE_ADMIN) return json({ error: 'veille_admin_missing', hint: 'Pose VEILLE_ADMIN sur ikcp-veille (et sur ikcp-client, même valeur).' }, 503, origin);
+      if (request.headers.get('X-Admin-Token') !== env.VEILLE_ADMIN) return json({ error: 'unauthorized' }, 401, origin);
+      const result = await generateDigest(env, Date.now(), 'manuel');
+      return json(result, 200, origin);
+    }
+
+    // ─── /admin/last-rejected : dernier digest bloqué, pour inspection ──
+    if (url.pathname === '/admin/last-rejected' && request.method === 'GET') {
+      if (!env.VEILLE_ADMIN) return json({ error: 'veille_admin_missing' }, 503, origin);
+      if (request.headers.get('X-Admin-Token') !== env.VEILLE_ADMIN) return json({ error: 'unauthorized' }, 401, origin);
+      const rejected = await env.VEILLE_CACHE.get('daily_digest_rejete');
+      return json({ rejected: rejected ? JSON.parse(rejected) : null }, 200, origin);
+    }
+
     return json({ error: 'not_found', path: url.pathname }, 404, origin);
   },
 
   // ─── CRON quotidien (06:00 UTC) — veille patrimoniale du jour ──
-  // Génère un digest général via Perplexity (1 appel quick ≈ coût négligeable)
-  // et le stocke 36 h en KV. Comble le « gap automatisation » : les membres
-  // voient une veille fraîche chaque jour sans appel personnalisé coûteux.
   async scheduled(event, env, ctx) {
-    if (!env.PERPLEXITY_API_KEY) return;
-    const q = "Tu rédiges la « veille patrimoniale du jour » pour un CLIENT QUI N'EST PAS un professionnel de la finance (un dirigeant, une famille). "
-      + "Donne les 3 actualités patrimoniales ou fiscales françaises les plus importantes du moment (loi de finances, transmission, immobilier, holding, placements). "
-      + "RÈGLES STRICTES : "
-      + "1) Français simple, clair et rassurant — on s'adresse à quelqu'un d'intelligent mais non spécialiste. "
-      + "2) Pour chaque point : un titre court en gras (## ), puis UNE phrase commençant par « Concrètement pour vous : » qui explique l'impact sans jargon. Si un terme technique est indispensable, explique-le en 3 mots entre parenthèses. "
-      + "3) INTERDIT : les numéros de référence type [1], tout commentaire sur les sources, toute question à la fin, tout préambule (« je ne vois pas… », « voici… »). "
-      + "Commence DIRECTEMENT par le titre du premier point. Maximum 130 mots au total.";
-    try {
-      const res = await callPerplexity(env, q, 'quick');
-      // Nettoyage serveur : retire les renvois [n] et tout préambule/question méta résiduels.
-      const cleanSummary = (res.summary || '')
-        .replace(/\[\d+\](?:\s*\[\d+\])*/g, '')
-        .replace(/^\s*(je ne vois pas|je n['’]ai pas trouvé|en revanche,? les résultats)[^\n]*\n?/gim, '')
-        .replace(/^\s*(souhaitez-vous|voulez-vous)[^\n]*\?\s*$/gim, '')
-        .trim();
-
-      const sources = (res.sources || []).slice(0, 6);
-      const date = new Date(event.scheduledTime).toISOString().slice(0, 10);
-
-      // ─── GARDE DE PUBLICATION ────────────────────────────────────────
-      // Le 10/07/2026, un digest non sourcé a affirmé aux membres que
-      // l'abattement donation se renouvelait « tous les 20 ans » (c'est 15)
-      // et que le Pinel était prolongé jusqu'en 2027 (il est éteint).
-      // Un CGP engage sa responsabilité professionnelle sur ces chiffres.
-      // Règle : rien de non sourcé, rien qui contredise un fait vérifié.
-      const motifs = [];
-      if (sources.length < 2) motifs.push(`digest non sourcé (${sources.length} source(s), minimum 2)`);
-      for (const p of detecterPieges(cleanSummary)) motifs.push(p);
-      if (!cleanSummary || cleanSummary.length < 80) motifs.push('digest vide ou trop court');
-
-      if (motifs.length) {
-        // On ne publie pas. On conserve le rejet 7 jours pour inspection.
-        await env.VEILLE_CACHE.put('daily_digest_rejete', JSON.stringify({
-          date, summary: cleanSummary, sources, motifs, generated_at: event.scheduledTime,
-        }), { expirationTtl: 604800 });
-        await auditLog(env, 'cron', 'daily_digest_bloque', { motifs, summary: cleanSummary });
-        return; // /digest continuera de renvoyer le dernier digest VALIDE, ou rien.
-      }
-
-      const payload = JSON.stringify({ date, summary: cleanSummary, sources, generated_at: event.scheduledTime });
-      await env.VEILLE_CACHE.put('daily_digest', payload, { expirationTtl: 129600 }); // 36 h
-      await auditLog(env, 'cron', 'daily_digest', { len: cleanSummary.length, sources_count: sources.length });
-    } catch (e) {
-      await auditLog(env, 'cron', 'daily_digest_error', { error: String(e).slice(0, 200) });
-    }
+    await generateDigest(env, event.scheduledTime, 'cron');
   },
 };
+
+// ─── Génération + garde de publication du digest quotidien ────────────────
+// Génère un digest général (1 appel quick ≈ coût négligeable), le stocke
+// 36 h en KV s'il passe la garde de véracité, sinon le rejette et dit pourquoi.
+// Utilisée par le CRON (06:00 UTC) ET par /admin/regenerate (déclenchement
+// manuel — vérifier une correction sans attendre le lendemain).
+async function generateDigest(env, timestamp, source) {
+  if (!env.PERPLEXITY_API_KEY) return { published: false, motifs: ['PERPLEXITY_API_KEY absente sur ikcp-veille'] };
+  const q = "Tu rédiges la « veille patrimoniale du jour » pour un CLIENT QUI N'EST PAS un professionnel de la finance (un dirigeant, une famille). "
+    + "Donne les 3 actualités patrimoniales ou fiscales françaises les plus importantes du moment (loi de finances, transmission, immobilier, holding, placements). "
+    + "RÈGLES STRICTES : "
+    + "1) Français simple, clair et rassurant — on s'adresse à quelqu'un d'intelligent mais non spécialiste. "
+    + "2) Pour chaque point : un titre court en gras (## ), puis UNE phrase commençant par « Concrètement pour vous : » qui explique l'impact sans jargon. Si un terme technique est indispensable, explique-le en 3 mots entre parenthèses. "
+    + "3) INTERDIT : les numéros de référence type [1], tout commentaire sur les sources, toute question à la fin, tout préambule (« je ne vois pas… », « voici… »). "
+    + "Commence DIRECTEMENT par le titre du premier point. Maximum 130 mots au total.";
+  try {
+    const res = await callPerplexity(env, q, 'quick');
+    // Nettoyage serveur : retire les renvois [n] et tout préambule/question méta résiduels.
+    const cleanSummary = (res.summary || '')
+      .replace(/\[\d+\](?:\s*\[\d+\])*/g, '')
+      .replace(/^\s*(je ne vois pas|je n['’]ai pas trouvé|en revanche,? les résultats)[^\n]*\n?/gim, '')
+      .replace(/^\s*(souhaitez-vous|voulez-vous)[^\n]*\?\s*$/gim, '')
+      .trim();
+
+    const sources = (res.sources || []).slice(0, 6);
+    const date = new Date(timestamp).toISOString().slice(0, 10);
+
+    // ─── GARDE DE PUBLICATION ────────────────────────────────────────
+    // Le 10/07/2026, un digest non sourcé a affirmé aux membres que
+    // l'abattement donation se renouvelait « tous les 20 ans » (c'est 15)
+    // et que le Pinel était prolongé jusqu'en 2027 (il est éteint).
+    // Un CGP engage sa responsabilité professionnelle sur ces chiffres.
+    // Règle : rien de non sourcé, rien qui contredise un fait vérifié.
+    // Conséquence assumée : tant que LLM_PRIMARY=mistral (sources toujours
+    // vides), AUCUN digest ne peut passer cette garde. C'est voulu — voir
+    // FAITS_VERIFIES plus haut. Décision de fond encore à trancher : basculer
+    // ponctuellement sur Perplexity (sourcé, US) ou brancher le corpus RAG
+    // souverain (ikcp-rag) comme source de vérité pour Mistral.
+    const motifs = [];
+    if (sources.length < 2) motifs.push(`digest non sourcé (${sources.length} source(s), minimum 2)`);
+    for (const p of detecterPieges(cleanSummary)) motifs.push(p);
+    if (!cleanSummary || cleanSummary.length < 80) motifs.push('digest vide ou trop court');
+
+    if (motifs.length) {
+      // On ne publie pas. On conserve le rejet 7 jours pour inspection.
+      await env.VEILLE_CACHE.put('daily_digest_rejete', JSON.stringify({
+        date, summary: cleanSummary, sources, motifs, generated_at: timestamp, source,
+      }), { expirationTtl: 604800 });
+      await auditLog(env, source, 'daily_digest_bloque', { motifs, summary: cleanSummary });
+      return { published: false, motifs, summary: cleanSummary, sources_count: sources.length };
+    }
+
+    const payload = JSON.stringify({ date, summary: cleanSummary, sources, generated_at: timestamp });
+    await env.VEILLE_CACHE.put('daily_digest', payload, { expirationTtl: 129600 }); // 36 h
+    await auditLog(env, source, 'daily_digest', { len: cleanSummary.length, sources_count: sources.length });
+    return { published: true, summary: cleanSummary, sources_count: sources.length };
+  } catch (e) {
+    await auditLog(env, source, 'daily_digest_error', { error: String(e).slice(0, 200) });
+    return { published: false, motifs: ['erreur : ' + String(e).slice(0, 200)] };
+  }
+}
