@@ -115,6 +115,15 @@
     <span>📦 Export & suppression en un clic, ci-dessous</span>
   </div>
 
+  <!-- Installation de l'app -->
+  <h3 class="pf-h" id="installer">Installer l’application</h3>
+  <p class="pf-sub">Marcel s’installe comme un vrai logiciel : icône sur votre bureau ou votre écran d’accueil, ouverture en plein écran, sans barre d’adresse. Mêmes données, même session que sur votre téléphone.</p>
+  <article class="card">
+    <div id="pwaState" style="font-size:14px;line-height:1.5">Vérification…</div>
+    <button id="pwaBtn" class="btn btn-accent btn-sm" onclick="installApp()" style="align-self:flex-start;margin-top:12px;display:none">Installer sur cet appareil</button>
+    <div id="pwaHow" class="meta" style="margin-top:10px;font-size:12.5px;line-height:1.6"></div>
+  </article>
+
   <!-- Mot de passe -->
   <h3 class="pf-h">Mot de passe</h3>
   <p class="pf-sub">Définissez un mot de passe pour vous connecter <b>sans recevoir d'email</b> à chaque fois. Votre session reste active 30 jours.</p>
@@ -328,6 +337,56 @@ window.logout = async function(){
     location.href = '/app/index.html';
   }
 }
+
+/* ─── Installer l'application (PWA) ───────────────────────────────
+   window.IKCPInstall est fourni par /app/js/pwa-install.js.
+   Trois états possibles :
+   1. déjà installée      → on le dit, pas de bouton
+   2. le navigateur est prêt → bouton qui ouvre la vraie boîte de dialogue
+   3. le navigateur ne propose rien → chemin de menu exact à suivre
+────────────────────────────────────────────────────────────────── */
+function renderInstall(){
+  const st = document.getElementById('pwaState');
+  const btn = document.getElementById('pwaBtn');
+  const how = document.getElementById('pwaHow');
+  if(!st || !btn || !how) return;
+  const I = window.IKCPInstall;
+  if(!I){ st.textContent = 'Module d’installation indisponible sur ce navigateur.'; return; }
+
+  if(I.installed()){
+    st.innerHTML = '✅ <b>Application installée</b> — vous l’utilisez en ce moment.';
+    btn.style.display = 'none';
+    how.innerHTML = '';
+    return;
+  }
+  if(I.canPrompt()){
+    st.innerHTML = '📲 <b>Prête à être installée</b> sur cet appareil.';
+    btn.style.display = '';
+    btn.disabled = false;
+    btn.textContent = 'Installer sur cet appareil';
+    how.innerHTML = '';
+    return;
+  }
+  st.innerHTML = 'ℹ️ Votre navigateur n’a pas encore proposé l’installation automatique.';
+  btn.style.display = 'none';
+  how.innerHTML = '<b>À la main :</b> ' + I.howto();
+}
+
+window.installApp = async function(){
+  const btn = document.getElementById('pwaBtn');
+  const st = document.getElementById('pwaState');
+  const I = window.IKCPInstall;
+  if(!I) return;
+  btn.disabled = true; btn.textContent = 'Installation…';
+  const r = await I.prompt();
+  if(r === 'accepted'){ st.innerHTML = '✅ <b>Installée.</b> Retrouvez Marcel dans votre menu Démarrer ou sur votre écran d’accueil.'; btn.style.display='none'; }
+  else if(r === 'dismissed'){ btn.disabled = false; btn.textContent = 'Installer sur cet appareil'; }
+  else { renderInstall(); }
+}
+
+window.addEventListener('ikcp:install-ready', renderInstall);
+window.addEventListener('ikcp:install-done', renderInstall);
+window.addEventListener('load', function(){ setTimeout(renderInstall, 300); });
 </script>
 <script src="/protect.js?v=2" defer></script>
 <script src="/app/js/pwa-install.js" defer></script>

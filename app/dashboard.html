@@ -70,6 +70,11 @@ try{
     <span class="app-brand-sub">intelligence patrimoniale</span>
   </a>
   <div class="app-user">
+    <!-- Apparaît uniquement si l'app n'est pas encore installée sur cet appareil -->
+    <button id="hdrInstall" type="button" title="Installer Marcel comme application"
+      style="display:none;background:transparent;border:1px solid rgba(201,169,110,.6);color:#8B6F3F;border-radius:20px;padding:5px 12px;font:600 12px Outfit,system-ui,sans-serif;cursor:pointer;white-space:nowrap">
+      ⤓ Installer l’app
+    </button>
     <span class="tier" id="userTier">Découverte</span>
     <div class="avatar" id="userAvatar">M</div>
     <a href="/app/console" class="logout" id="adminLnk" style="text-decoration:none;display:none" title="Tour de contrôle (propriétaire)">⚙ Console</a>
@@ -359,6 +364,26 @@ if(me){
 
 <script src="/protect.js?v=2" defer></script>
 <script src="/app/js/pwa-install.js" defer></script>
+<script>
+/* Pastille « Installer l'app » de l'en-tête.
+   Si Chrome/Edge est prêt → clic = vraie boîte de dialogue d'installation.
+   Sinon → on renvoie vers le profil, qui affiche le chemin de menu exact. */
+(function(){
+  function sync(){
+    var b = document.getElementById('hdrInstall');
+    if(!b || !window.IKCPInstall) return;
+    if(window.IKCPInstall.installed()){ b.style.display='none'; return; }
+    b.style.display = '';
+    b.onclick = function(){
+      if(window.IKCPInstall.canPrompt()) window.IKCPInstall.prompt().then(sync);
+      else location.href = '/app/profil#installer';
+    };
+  }
+  window.addEventListener('ikcp:install-ready', sync);
+  window.addEventListener('ikcp:install-done', sync);
+  window.addEventListener('load', function(){ setTimeout(sync, 300); });
+})();
+</script>
 
 <script type="module">
 // ✦ L'observation de Marcel — IA proactive personnalisée (cache journalier, gating premium/FO)
