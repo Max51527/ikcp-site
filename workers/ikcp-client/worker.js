@@ -62,6 +62,35 @@ export default {
       if (path === '/auth/login' && method === 'POST') return await handleAuthLogin(request, env);
       if (path === '/stripe/webhook' && method === 'POST') return await handleStripeWebhook(request, env);
 
+      // ─── DIAGNOSTIC : vérifier que le tarif "mensuel"/"annuel" configuré
+      // correspond vraiment à l'intervalle Stripe attendu (jamais renvoyé au
+      // client normal — clé dédiée, jamais la même qu'ADMIN_SECRET). ──────
+      if (path === '/diag/stripe-prices' && method === 'POST') {
+        if (!env.STRIPE_DIAG_ADMIN) return json({ error: 'diag_admin_missing', hint: 'Pose STRIPE_DIAG_ADMIN sur ikcp-client.' }, 503);
+        if (request.headers.get('X-Admin-Token') !== env.STRIPE_DIAG_ADMIN) return json({ error: 'unauthorized' }, 401);
+        if (!env.STRIPE_SECRET_KEY) return json({ error: 'stripe_key_missing' }, 503);
+        const ids = { monthly: env.STRIPE_PRICE_PREMIUM_MONTHLY, yearly: env.STRIPE_PRICE_PREMIUM_YEARLY };
+        const out = {};
+        for (const [label, id] of Object.entries(ids)) {
+          if (!id) { out[label] = { error: 'id_absent' }; continue; }
+          try {
+            const r = await fetch(`https://api.stripe.com/v1/prices/${id}`, {
+              headers: { 'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}` },
+            });
+            const d = await r.json();
+            if (!r.ok) { out[label] = { error: d.error?.message || 'stripe_error', status: r.status }; continue; }
+            out[label] = {
+              id,
+              montant: d.unit_amount ? (d.unit_amount / 100) : null,
+              devise: d.currency,
+              intervalle: d.recurring?.interval || null,
+              coherent: label === 'monthly' ? d.recurring?.interval === 'month' : d.recurring?.interval === 'year',
+            };
+          } catch (e) { out[label] = { error: String(e).slice(0, 150) }; }
+        }
+        return json(out);
+      }
+
       // ─── CABINET POLLING (Bearer service token) ────────
       if (path.startsWith('/api/v1/cabinet/')) return await handleCabinet(request, env);
 
