@@ -381,7 +381,13 @@ if(me){
   }
   window.addEventListener('ikcp:install-ready', sync);
   window.addEventListener('ikcp:install-done', sync);
-  window.addEventListener('load', function(){ setTimeout(sync, 300); });
+  // pwa-install.js est en « defer » : il s'exécute après ce script.
+  // On attend activement que l'API soit là plutôt que de parier sur « load ».
+  (function boot(n){
+    if(window.IKCPInstall){ sync(); return; }
+    if(n > 30) return;                      // ~6 s : on renonce en silence
+    setTimeout(function(){ boot(n + 1); }, 200);
+  })(0);
 })();
 </script>
 

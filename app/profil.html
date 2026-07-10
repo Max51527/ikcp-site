@@ -384,9 +384,19 @@ window.installApp = async function(){
   else { renderInstall(); }
 }
 
+window.renderInstall = renderInstall; // ce bloc est un module : rien n'est global par défaut
+
+/* pwa-install.js est chargé en « defer » : il s'exécute APRÈS ce module.
+   On ne peut donc pas se fier à l'ordre, ni à l'événement « load » (déjà
+   passé selon les navigateurs). On attend activement que l'API existe. */
+(function boot(n){
+  if(window.IKCPInstall){ renderInstall(); return; }
+  if(n > 30){ renderInstall(); return; }        // ~6 s, puis message de repli
+  setTimeout(function(){ boot(n + 1); }, 200);
+})(0);
+
 window.addEventListener('ikcp:install-ready', renderInstall);
 window.addEventListener('ikcp:install-done', renderInstall);
-window.addEventListener('load', function(){ setTimeout(renderInstall, 300); });
 </script>
 <script src="/protect.js?v=2" defer></script>
 <script src="/app/js/pwa-install.js" defer></script>
