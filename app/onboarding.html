@@ -119,6 +119,8 @@ body{display:flex;flex-direction:column;min-height:100vh;background:var(--bg)}
         <option value="profession_liberale">Profession libérale</option>
         <option value="cadre">Cadre dirigeant</option>
         <option value="entrepreneur">Entrepreneur · holding</option>
+        <option value="createur_contenu">Créateur de contenu / influenceur</option>
+        <option value="sportif">Sportif (y compris e-sport / gaming compétitif)</option>
         <option value="rentier">Investisseur / retraité actif</option>
         <option value="autre">Autre</option>
       </select>
@@ -226,6 +228,9 @@ function computeTypologie(prof, pat, obj){
   if(obj==='transmettre') return (pat==='3_10m') ? 'famille' : 'cedant';
   if(pat==='3_10m') return 'cedant';
   if(pat==='moins_1m' || prof==='profession_liberale') return 'indep';
+  // Carrière courte / revenus irréguliers (créateurs, sportifs, e-sport) : mêmes enjeux
+  // de structuration que le TNS/indépendant, quel que soit le patrimoine déjà accumulé.
+  if(prof==='createur_contenu' || prof==='sportif') return 'indep';
   if(prof==='entrepreneur' && pat!=='1_3m') return 'famille';
   return 'etabli';
 }
