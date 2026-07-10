@@ -272,6 +272,22 @@ export const Marcel = {
         body: JSON.stringify({ email }),
       });
     },
+    /** Connexion par mot de passe (sans email). Renvoie {token} → session 30 j. */
+    async login(email, password) {
+      const r = await jsonFetch(`${ENDPOINTS.client}/auth/login`, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+      if (r && r.token) { try { localStorage.setItem(TOKEN_KEY, r.token); } catch (_) {} }
+      return r;
+    },
+    /** Définit / change son mot de passe (utilisateur déjà connecté). */
+    async setPassword(password) {
+      return jsonFetch(`${ENDPOINTS.client}/api/v1/me/password`, {
+        method: 'POST',
+        body: JSON.stringify({ password }),
+      });
+    },
     async logout() {
       try { await jsonFetch(`${ENDPOINTS.client}/auth/logout`, { method: 'GET' }); } catch (_) {}
       clearToken();

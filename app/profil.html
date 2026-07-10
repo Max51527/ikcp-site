@@ -115,6 +115,18 @@
     <span>📦 Export & suppression en un clic, ci-dessous</span>
   </div>
 
+  <!-- Mot de passe -->
+  <h3 class="pf-h">Mot de passe</h3>
+  <p class="pf-sub">Définissez un mot de passe pour vous connecter <b>sans recevoir d'email</b> à chaque fois. Votre session reste active 30 jours.</p>
+  <article class="card">
+    <form onsubmit="return setMyPassword(event)" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <input id="newPw" type="password" placeholder="Nouveau mot de passe (8 car. min.)" autocomplete="new-password" minlength="8" style="flex:1;min-width:180px;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:var(--bg)">
+      <button type="submit" class="btn btn-accent btn-sm" id="pwSaveBtn">Enregistrer</button>
+    </form>
+    <div id="pwSaveMsg" style="font-size:12.5px;margin-top:8px;color:var(--mute)"></div>
+    <p class="meta" style="margin-top:8px;font-size:11px;font-style:italic">Stocké chiffré (haché), jamais en clair. Ensuite, connexion directe avec e-mail + mot de passe sur la page d'accueil.</p>
+  </article>
+
   <!-- RGPD -->
   <h3 class="pf-h" style="color:var(--bad)">RGPD · vos droits</h3>
   <div class="grid-2">
@@ -274,6 +286,21 @@ window.addSiren = async function(e){
   }catch(_){ alert('Cartographie impossible. Vérifiez le SIREN.') }
   return false;
 }
+
+window.setMyPassword = async function(e){
+  e.preventDefault();
+  const pw = document.getElementById('newPw').value;
+  const btn = document.getElementById('pwSaveBtn'), msg = document.getElementById('pwSaveMsg');
+  if(!pw || pw.length < 8){ msg.style.color='var(--bad)'; msg.textContent='8 caractères minimum.'; return false; }
+  btn.disabled = true; btn.textContent = '…';
+  try{
+    await Marcel.Auth.setPassword(pw);
+    msg.style.color='var(--success,#2e9e6b)'; msg.textContent='✓ Mot de passe enregistré. Vous pouvez désormais vous connecter avec e-mail + mot de passe.';
+    document.getElementById('newPw').value='';
+  }catch(_){ msg.style.color='var(--bad)'; msg.textContent='Échec — réessayez.'; }
+  btn.disabled = false; btn.textContent = 'Enregistrer';
+  return false;
+};
 
 window.exportRgpd = async function(){
   try {

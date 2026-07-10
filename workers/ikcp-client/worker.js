@@ -59,6 +59,7 @@ export default {
       if (path === '/auth/send' && method === 'POST') return await handleAuthSend(request, env);
       if (path === '/auth/verify' && method === 'GET') return await handleAuthVerify(request, env);
       if (path === '/auth/demo' && method === 'POST') return await handleAuthDemo(request, env);
+      if (path === '/auth/login' && method === 'POST') return await handleAuthLogin(request, env);
       if (path === '/stripe/webhook' && method === 'POST') return await handleStripeWebhook(request, env);
 
       // ─── CABINET POLLING (Bearer service token) ────────
@@ -81,6 +82,7 @@ export default {
       if (path === '/api/v1/me/referral' && method === 'GET') return await handleReferralCode(session, env);
 
       if (path === '/api/v1/me' && method === 'GET') return await handleMe(session, env);
+      if (path === '/api/v1/me/password' && method === 'POST') return await handleSetPassword(request, session, env);
       if (path === '/api/v1/usage' && method === 'GET') return await handleUsage(session, env);
       if (path === '/api/v1/usage/marcel' && method === 'POST') return await handleMarcelUsage(session, env);
       if (path === '/api/v1/pappers/lookup' && method === 'POST') return await handlePappersLookup(request, session, env);
@@ -328,6 +330,71 @@ async function handleAuthDemo(request, env) {
   return json({ token: sessionToken });
 }
 
+// ── AUTH PAR MOT DE PASSE (alternative au lien magique — zéro email à chaque connexion) ──
+// Mot de passe JAMAIS stocké en clair : PBKDF2-SHA256, 210 000 itérations, sel aléatoire
+// 16 octets, format « pbkdf2$iterations$sel_b64$hash_b64 ». Web Crypto natif Workers.
+async function hashPassword(password) {
+  const enc = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 210000, hash: 'SHA-256' }, key, 256);
+  const b64 = (buf) => btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+  return `pbkdf2$210000$${b64(salt)}$${b64(bits)}`;
+}
+async function verifyPassword(password, stored) {
+  try {
+    const [algo, iterStr, saltB64, hashB64] = String(stored).split('$');
+    if (algo !== 'pbkdf2') return false;
+    const iterations = parseInt(iterStr, 10) || 210000;
+    const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+    const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, key, 256);
+    const computed = btoa(String.fromCharCode.apply(null, new Uint8Array(bits)));
+    if (computed.length !== (hashB64 || '').length) return false;
+    let diff = 0;                                       // comparaison à temps constant
+    for (let i = 0; i < computed.length; i++) diff |= computed.charCodeAt(i) ^ hashB64.charCodeAt(i);
+    return diff === 0;
+  } catch (_) { return false; }
+}
+
+async function handleAuthLogin(request, env) {
+  await ensureUserColumns(env);
+  const { email, password } = await request.json().catch(() => ({}));
+  const em = (email || '').toLowerCase().trim();
+  if (!em || !password) return json({ error: 'invalid' }, 400);
+  // Anti-force-brute : 10 tentatives / 15 min par IP.
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rlKey = `rl:login:${ip}`;
+  const count = parseInt((await env.CLIENT_KV.get(rlKey)) || '0');
+  if (count >= 10) return json({ error: 'rate_limited' }, 429);
+  await env.CLIENT_KV.put(rlKey, String(count + 1), { expirationTtl: 900 });
+
+  const user = await env.D1.prepare('SELECT id, email, tier, password_hash FROM users WHERE email = ?').bind(em).first();
+  // Réponse générique : ne révèle jamais si le compte existe ou si c'est le mot de passe qui est faux.
+  const bad = () => json({ error: 'bad_credentials' }, 401);
+  if (!user || !user.password_hash) return bad();
+  if (!(await verifyPassword(password, user.password_hash))) return bad();
+
+  await env.D1.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').bind(Date.now(), user.id).run();
+  const sessionToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+  const sessionHash = await sha256(sessionToken);
+  await env.D1.prepare('INSERT INTO sessions (token_hash, user_id, created_at, expires_at, ip, user_agent) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(sessionHash, user.id, Date.now(), Date.now() + SESSION_TTL_DAYS * 86_400_000, ip, (request.headers.get('User-Agent') || '').slice(0, 500)).run();
+  await audit(env, user.id, 'login_password', request);
+  return json({ token: sessionToken });               // session 30 j → pas de reconnexion quotidienne
+}
+
+async function handleSetPassword(request, session, env) {
+  await ensureUserColumns(env);
+  const { password } = await request.json().catch(() => ({}));
+  if (!password || String(password).length < 8) return json({ error: 'weak_password', hint: '8 caractères minimum' }, 400);
+  const hash = await hashPassword(String(password));
+  await env.D1.prepare('UPDATE users SET password_hash = ? WHERE id = ?').bind(hash, session.user_id).run();
+  await audit(env, session.user_id, 'set_password', request);
+  return json({ ok: true });
+}
+
 async function handleLogout(session, env) {
   await env.D1.prepare('UPDATE sessions SET revoked_at = ? WHERE token_hash = ?').bind(Date.now(), session.token_hash).run();
   return new Response(null, {
@@ -370,7 +437,7 @@ async function requireSession(request, env) {
 async function ensureUserColumns(env) {
   // Auto-réparation du schéma : ajoute les colonnes étendues si la base date
   // d'une version antérieure (SQLite n'a pas ADD COLUMN IF NOT EXISTS → try/catch).
-  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT', 'memory_json TEXT']) {
+  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT', 'memory_json TEXT', 'password_hash TEXT']) {
     try { await env.D1.prepare(`ALTER TABLE users ADD COLUMN ${col}`).run(); } catch (_) { /* colonne déjà présente */ }
   }
 }

@@ -137,6 +137,17 @@ footer a:hover{color:var(--navy)}
     </div>
   </form>
 
+  <!-- Connexion par mot de passe (sans email) — pour qui en a défini un dans son profil -->
+  <div style="margin-top:14px;text-align:center">
+    <button type="button" id="pwToggle" onclick="togglePw()" style="background:none;border:none;color:var(--gold-deep,#8B6F3F);font-size:12.5px;cursor:pointer;text-decoration:underline;font-family:inherit">J'ai un mot de passe — me connecter directement</button>
+  </div>
+  <form id="pwForm" onsubmit="return pwLogin(event)" style="display:none;margin-top:12px">
+    <div class="field"><input id="pwPass" type="password" placeholder="Votre mot de passe" autocomplete="current-password"></div>
+    <button type="submit" class="validate" id="pwBtn">Se connecter</button>
+    <div id="pwMsg" style="font-size:12px;margin-top:7px;color:var(--gold-deep,#8B6F3F)"></div>
+    <div class="secure-note" style="font-size:11px;opacity:.8">Première fois ? Recevez un lien ci-dessus, puis créez votre mot de passe dans <b>Profil</b>.</div>
+  </form>
+
   <!-- Accès examinateur (Google Play review) — visible uniquement avec ?review=1,
        actif uniquement si le secret DEMO_ACCESS_CODE est posé sur le worker. -->
   <div id="reviewBox" style="display:none;margin-top:18px;border:1px dashed rgba(139,111,63,.5);border-radius:12px;padding:14px 16px">
@@ -174,6 +185,32 @@ Marcel.Auth.me().then(() => location.replace('/app/dashboard.html')).catch(() =>
 try { const _pf = localStorage.getItem('ikcp_prefill_email'); if(_pf){ const _e = document.getElementById('email'); if(_e) _e.value = _pf; localStorage.removeItem('ikcp_prefill_email'); } } catch(_) {}
 
 window.toggleHelp = function(){ document.getElementById('helpText').classList.toggle('show'); };
+
+// ── Connexion par mot de passe (sans email) ──
+window.togglePw = function(){
+  var f=document.getElementById('pwForm'), t=document.getElementById('pwToggle');
+  var open=f.style.display!=='none';
+  f.style.display=open?'none':'block'; t.style.display=open?'':'none';
+  if(!open){ var p=document.getElementById('pwPass'); if(p) p.focus(); }
+};
+window.pwLogin = async function(e){
+  e.preventDefault();
+  var email=(document.getElementById('email').value||'').trim();
+  var pass=document.getElementById('pwPass').value;
+  var btn=document.getElementById('pwBtn'), msg=document.getElementById('pwMsg');
+  if(!email){ msg.textContent='Saisissez d\'abord votre email ci-dessus.'; return false; }
+  if(!pass){ msg.textContent='Saisissez votre mot de passe.'; return false; }
+  btn.disabled=true; btn.textContent='Connexion…'; msg.textContent='';
+  try{
+    var r=await Marcel.Auth.login(email, pass);
+    if(r && r.token){ location.replace('/app/dashboard.html'); return false; }
+    throw new Error('no_token');
+  }catch(err){
+    btn.disabled=false; btn.textContent='Se connecter';
+    msg.textContent = /rate_limited/.test(err.message) ? 'Trop de tentatives — réessayez dans 15 min.' : 'Email ou mot de passe incorrect.';
+  }
+  return false;
+};
 
 // ── Accès examinateur (Google Play review) — ?review=1 ──
 try { if (new URLSearchParams(location.search).get('review') === '1') document.getElementById('reviewBox').style.display = ''; } catch(_) {}
