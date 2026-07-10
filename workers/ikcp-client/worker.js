@@ -1263,6 +1263,28 @@ async function handleAdmin(request, env, path, method) {
   if (!env.ADMIN_SECRET) return json({ error: 'admin_not_configured' }, 503);
   if (request.headers.get('x-admin-secret') !== env.ADMIN_SECRET) return json({ error: 'forbidden' }, 403);
 
+  // ── DOCUMENTATION PATRIMONIALE : ajouter une fiche à la base de connaissances ──
+  // La console n'a qu'UNE clé (x-admin-secret). Ce relais détient la clé RAG côté
+  // serveur et la transmet à ikcp-rag : le jeton d'écriture de la doctrine ne
+  // transite jamais par le navigateur.
+  if (path === '/api/v1/admin/rag-ingest' && method === 'POST') {
+    if (!env.RAG_ADMIN) return json({ error: 'rag_admin_missing', hint: 'Pose le secret RAG_ADMIN sur ikcp-client ET ikcp-rag (même valeur).' }, 503);
+    const b = await request.json().catch(() => ({}));
+    const text = String(b.text || '');
+    if (text.length < 20) return json({ error: 'empty_text', hint: '20 caractères minimum.' }, 400);
+    const source = String(b.source || 'console').replace(/[^a-z0-9_-]/gi, '').slice(0, 40) || 'console';
+    try {
+      const r = await fetch('https://ikcp-rag.maxime-ead.workers.dev/ingest-push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Token': env.RAG_ADMIN },
+        body: JSON.stringify({ text, source }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) return json({ error: d.error || 'rag_error', status: r.status, hint: d.hint || null }, 502);
+      return json(d);
+    } catch (e) { return json({ error: 'rag_unreachable', message: e.message }, 502); }
+  }
+
   // ── ATELIER : lire / publier un fichier du dépôt depuis le navigateur ──
   // Le jeton GitHub vit UNIQUEMENT ici (secret worker), jamais côté client.
   // Garde-fou : seules les pages (.html) du site et de l'app + les feuilles de

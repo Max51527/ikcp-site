@@ -331,6 +331,50 @@ select option{background:var(--navy-deep)}
           <div class="desc">Veille patrimoniale produite automatiquement chaque matin (6h UTC).</div>
           <div id="digest" class="digest"><div class="empty">Chargement…</div></div>
         </div>
+        <!-- ═══ DOCUMENTATION PATRIMONIALE (base de connaissances de Marcel) ═══ -->
+        <div class="card">
+          <h2>📚 Documentation patrimoniale <span class="pill" id="ragState">…</span></h2>
+          <div class="desc">La doctrine que <b>Marcel cite</b> à vos membres. Cherchez dedans, ou ajoutez une fiche.</div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px">
+            <input id="ragQ" placeholder="Chercher dans la doctrine (ex : pacte Dutreil, OBO, démembrement)" onkeydown="if(event.key==='Enter')ragSearch()"
+                   style="flex:1;min-width:200px;padding:10px 12px;border:1px solid rgba(226,200,150,.2);border-radius:9px;background:rgba(255,255,255,.05);color:inherit;font-family:inherit;font-size:13px">
+            <button class="btn" onclick="ragSearch()">Chercher</button>
+          </div>
+          <div id="ragOut"><div class="empty">Tapez une requête pour voir ce que Marcel connaît.</div></div>
+
+          <details style="margin-top:14px">
+            <summary style="cursor:pointer;font-size:13px;color:#E2C896">➕ Ajouter une fiche à la doctrine</summary>
+            <div style="margin-top:10px">
+              <input id="ragSource" placeholder="Nom de la fiche (ex : dutreil-2026)" maxlength="40"
+                     style="width:100%;padding:9px 12px;border:1px solid rgba(226,200,150,.2);border-radius:9px;background:rgba(255,255,255,.05);color:inherit;font-family:inherit;font-size:12.5px;margin-bottom:8px">
+              <textarea id="ragText" rows="6" placeholder="Collez ici le texte de la fiche (20 caractères minimum). Elle sera découpée, indexée, et Marcel pourra la citer."
+                        style="width:100%;padding:10px 12px;border:1px solid rgba(226,200,150,.2);border-radius:9px;background:rgba(255,255,255,.05);color:inherit;font-family:inherit;font-size:12.5px;line-height:1.6;resize:vertical"></textarea>
+              <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+                <button class="btn" id="ragAddBtn" onclick="ragAdd()">Indexer cette fiche</button>
+                <span id="ragAddMsg" style="font-size:12px;color:#8C97AC"></span>
+              </div>
+              <div style="font-size:11px;color:#8C97AC;margin-top:8px;line-height:1.6">⚠ Réutiliser un nom de fiche existant <b>écrase</b> l'ancienne. Ce que vous indexez ici, Marcel le citera à vos membres — vérifiez les barèmes.</div>
+            </div>
+          </details>
+        </div>
+
+        <!-- ═══ RECHERCHE AUGMENTÉE (veille) ═══ -->
+        <div class="card">
+          <h2>🔎 Recherche augmentée <span class="pill" id="veilleState">…</span></h2>
+          <div class="desc">Interroge le moteur de veille, sans quitter la console.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px">
+            <input id="vQ" placeholder="Ex : réforme du pacte Dutreil 2026, cote Rolex Daytona…" onkeydown="if(event.key==='Enter')veilleSearch()"
+                   style="flex:1;min-width:200px;padding:10px 12px;border:1px solid rgba(226,200,150,.2);border-radius:9px;background:rgba(255,255,255,.05);color:inherit;font-family:inherit;font-size:13px">
+            <select id="vMode" style="padding:10px;border:1px solid rgba(226,200,150,.2);border-radius:9px;background:rgba(255,255,255,.05);color:inherit;font-family:inherit;font-size:12.5px">
+              <option value="quick">Rapide</option>
+              <option value="deep">Approfondie</option>
+            </select>
+            <button class="btn" id="vBtn" onclick="veilleSearch()">Rechercher</button>
+          </div>
+          <div id="vOut"><div class="empty">Posez une question pour lancer une recherche.</div></div>
+        </div>
+
         <div class="card">
           <h2>✏️ Contenu & publication</h2>
           <div class="desc">Éditer le site sans coder, puis publier.</div>
@@ -765,7 +809,7 @@ function load(sec, force){
   if(sec==='beta'){ loadApps(); }
   if(sec==='partenaires'){ loadPartners(); }
   if(sec==='agents'){ loadAgents(); loadAutos(); }
-  if(sec==='veille'){ loadDigest(); }
+  if(sec==='veille'){ loadDigest(); ragHealth(); veilleHealth(); }
   if(sec==='feedback'){ loadFeedback('feedback'); }
   if(sec==='reglages'){ loadConfig(); }
   if(sec==='app'){ loadAppInfo(); }
@@ -1026,6 +1070,87 @@ async function genCode(){
 }
 
 /* ─── VEILLE ─── */
+/* ═══ DOCUMENTATION PATRIMONIALE (RAG) ═══ */
+async function ragHealth(){
+  const p = document.getElementById('ragState'); if(!p) return;
+  try{
+    const d = await (await fetch(W('rag')+'/health',{cache:'no-store'})).json();
+    p.textContent = d.ready ? 'indexée' : 'hors ligne';
+    p.className = 'pill ' + (d.ready ? 'premium' : 'free');
+    p.title = 'Moteur : ' + (d.embed||'?') + ' · région ' + (d.region||'?');
+  }catch(_){ p.textContent='injoignable'; p.className='pill free'; }
+}
+async function ragSearch(){
+  const q = (document.getElementById('ragQ').value||'').trim();
+  const out = document.getElementById('ragOut');
+  if(!q){ return; }
+  out.innerHTML = '<div class="empty">Recherche…</div>';
+  try{
+    const d = await (await fetch(W('rag')+'/search?q='+encodeURIComponent(q)+'&k=5')).json();
+    const f = (d.fiches||[]).filter(x => x.score >= 0.45);   // seuil doctrine
+    if(!f.length){ out.innerHTML = '<div class="empty">Rien de pertinent. Marcel n\'a pas cette doctrine — ajoutez une fiche ci-dessous.</div>'; return; }
+    out.innerHTML = f.map(x =>
+      '<div style="border:1px solid rgba(226,200,150,.16);border-left:3px solid #C9A96E;border-radius:10px;padding:11px 13px;margin-bottom:8px">'
+      + '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#8C97AC;margin-bottom:6px">pertinence ' + Math.round(x.score*100) + ' %</div>'
+      + '<div style="font-size:12.5px;line-height:1.65;white-space:pre-wrap">' + esc(x.text.slice(0,600)) + (x.text.length>600?'…':'') + '</div></div>'
+    ).join('');
+  }catch(_){ out.innerHTML = '<div class="empty">Recherche impossible.</div>'; }
+}
+async function ragAdd(){
+  const text = document.getElementById('ragText').value||'';
+  const source = (document.getElementById('ragSource').value||'').trim();
+  const btn = document.getElementById('ragAddBtn'), msg = document.getElementById('ragAddMsg');
+  if(text.trim().length < 20){ msg.style.color='#E06C6C'; msg.textContent='20 caractères minimum.'; return; }
+  if(!confirm('Indexer cette fiche dans la doctrine ?\n\nMarcel pourra la citer à vos membres. Un nom de fiche existant écrase l\'ancienne.')) return;
+  btn.disabled = true; btn.textContent = 'Indexation…'; msg.textContent='';
+  try{
+    const r = await fetch(`${API}/api/v1/admin/rag-ingest`, { method:'POST', headers: hdr(), body: JSON.stringify({ text, source: source||'console' }) });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.hint || d.error || ('HTTP '+r.status));
+    msg.style.color='#4FBF8B';
+    msg.textContent = '✓ ' + (d.chunks||0) + ' passages indexés (' + (d.chars||0) + ' caractères).';
+    document.getElementById('ragText').value=''; document.getElementById('ragSource').value='';
+  }catch(e){ msg.style.color='#E06C6C'; msg.textContent = 'Échec : ' + e.message; }
+  btn.disabled = false; btn.textContent = 'Indexer cette fiche';
+}
+
+/* ═══ RECHERCHE AUGMENTÉE (veille) ═══ */
+async function veilleHealth(){
+  const p = document.getElementById('veilleState'); if(!p) return;
+  try{
+    const d = await (await fetch(W('veille')+'/health',{cache:'no-store'})).json();
+    const ok = d && d.configured && d.configured.api_key;
+    p.textContent = ok ? 'en ligne' : 'non configurée';
+    p.className = 'pill ' + (ok ? 'premium' : 'free');
+  }catch(_){ p.textContent='injoignable'; p.className='pill free'; }
+}
+async function veilleSearch(){
+  const q = (document.getElementById('vQ').value||'').trim();
+  const mode = document.getElementById('vMode').value;
+  const out = document.getElementById('vOut'), btn = document.getElementById('vBtn');
+  if(!q) return;
+  btn.disabled = true; out.innerHTML = '<div class="empty">Recherche en cours… (l\'approfondie peut prendre 1 min)</div>';
+  try{
+    const r = await fetch(W('veille')+'/search', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query:q, mode, user_id:'admin-console', tier:'fo' })
+    });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error==='rate_limited' ? 'Quota atteint, réessayez plus tard.' : (d.error||('HTTP '+r.status)));
+    const srcs = (d.sources||[]);
+    out.innerHTML =
+      '<div style="border:1px solid rgba(226,200,150,.16);border-left:3px solid #C9A96E;border-radius:10px;padding:13px 15px">'
+      + '<div style="font-size:12.5px;line-height:1.7;white-space:pre-wrap">' + esc(d.summary||'') + '</div>'
+      + (srcs.length
+          ? '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(226,200,150,.14);font-size:11.5px;color:#8C97AC">Sources : '
+            + srcs.map((s,i)=>'<a href="'+esc(String(s))+'" target="_blank" rel="noopener" style="color:#E2C896">['+(i+1)+']</a>').join(' ') + '</div>'
+          : '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(226,200,150,.14);font-size:11px;color:#8C97AC">Aucune source citée — moteur souverain (pas de recherche web en direct). Voir la note ci-dessous.</div>')
+      + '<div style="margin-top:10px;font-size:10.5px;color:#8C97AC;font-style:italic">Moteur : ' + esc(d.model||'?') + ' · Information générale, pas un conseil personnalisé (art. L.541-1 CoMoFi). Vérifiez toujours les barèmes.</div>'
+      + '</div>';
+  }catch(e){ out.innerHTML = '<div class="empty">Échec : ' + esc(e.message) + '</div>'; }
+  btn.disabled = false;
+}
+
 async function loadDigest(){
   const el = document.getElementById('digest');
   try{
