@@ -46,9 +46,13 @@
 #  ('unsafe-inline'/'unsafe-eval' restent nécessaires : l'app a des scripts
 #   inline + onclick + libs (Chart/Mermaid) — la vraie protection est connect-src.)
 # ════════════════════════════════════════════════════════════════════
+#  Framing : SAMEORIGIN (et non DENY) — nécessaire à l'Atelier (/app/atelier),
+#  qui affiche nos propres pages en aperçu dans une iframe. La protection
+#  anti-clickjacking reste ENTIÈRE : aucun site tiers ne peut encadrer ikcp.eu,
+#  seules nos propres pages le peuvent (frame-ancestors 'self').
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
+  X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), camera=(self), microphone=(self), payment=(self)
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.maxime-ead.workers.dev https://recherche-entreprises.api.gouv.fr https://api.github.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.maxime-ead.workers.dev https://recherche-entreprises.api.gouv.fr https://api.github.com; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'self'

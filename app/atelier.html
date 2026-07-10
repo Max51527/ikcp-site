@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>L'Atelier — Marcel IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0E1729;--navy2:#16223B;--panel:#16223B;--line:rgba(226,200,150,.16);
+        --gold:#C9A96E;--gold2:#E2C896;--cream:#FAF8F4;--mute:#8C97AC;--ok:#4FBF8B;--bad:#E06C6C}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--navy);color:var(--cream);font-family:'Outfit',system-ui,sans-serif;min-height:100vh}
+  /* ── Porte ── */
+  #gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#16223B,#0B1220);z-index:50}
+  .gbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:34px 30px;width:min(400px,92vw);text-align:center}
+  .glogo{width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:linear-gradient(135deg,#22345C,#0E1729);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:22px;color:var(--gold2)}
+  .gbox h1{font-family:'Playfair Display',serif;font-size:23px;font-weight:600}
+  .gbox p{color:var(--mute);font-size:13px;margin:7px 0 18px}
+  input,textarea,select{font-family:inherit;color:var(--cream);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:12px 14px;width:100%;outline:none;font-size:14px}
+  input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+  .btn{background:linear-gradient(120deg,var(--gold2),var(--gold));color:#20180c;border:none;border-radius:10px;padding:12px 18px;font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--gold2)}
+  .gbox .btn{margin-top:12px;width:100%}
+  /* ── Barre ── */
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--navy2);position:sticky;top:0;z-index:20}
+  .brand{font-family:'Playfair Display',serif;font-size:17px;color:var(--cream)}
+  .brand em{color:var(--gold2);font-style:italic}
+  header select{width:auto;min-width:230px;padding:9px 12px;font-size:13px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{background:transparent;border:none;color:var(--mute);padding:9px 13px;font-size:12.5px;cursor:pointer;font-family:inherit}
+  .seg button.on{background:rgba(226,200,150,.14);color:var(--gold2);font-weight:600}
+  .spacer{flex:1}
+  #status{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mute)}
+  /* ── Corps ── */
+  .wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;height:calc(100vh - 61px)}
+  @media(max-width:900px){.wrap{grid-template-columns:1fr;height:auto}}
+  .pane{min-width:0;display:flex;flex-direction:column}
+  .pane + .pane{border-left:1px solid var(--line)}
+  .pane-h{display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-family:'JetBrains Mono',monospace}
+  /* Aperçu */
+  .stage{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;background:#0B1220}
+  .phone{width:393px;max-width:100%;height:760px;border:10px solid #2A2A2A;border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 30px 60px -25px rgba(0,0,0,.7);flex:0 0 auto}
+  .desk{width:100%;height:70vh;min-height:520px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  iframe{width:100%;height:100%;border:0;display:block}
+  /* Éditeur */
+  #editor{flex:1;min-height:340px;border:0;border-radius:0;resize:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;background:#0B1220;padding:14px 16px}
+  .foot{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:11px 14px;border-top:1px solid var(--line);background:var(--navy2)}
+  .foot input{flex:1;min-width:160px;padding:9px 12px;font-size:12.5px}
+  .hint{font-size:11px;color:var(--mute);padding:0 14px 10px}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+  .badge.ok{color:var(--ok);border-color:rgba(79,191,139,.4)}
+  .badge.bad{color:var(--bad);border-color:rgba(224,108,108,.4)}
+</style>
+</head>
+<body>
+
+<!-- ── Porte d'accès (même clé que la Console) ── -->
+<div id="gate">
+  <div class="gbox">
+    <div class="glogo">IK</div>
+    <h1>L'Atelier</h1>
+    <p>Voir l'app, la modifier, publier. Accès réservé.</p>
+    <input id="secret" type="password" placeholder="Clé admin" onkeydown="if(event.key==='Enter')unlock()">
+    <button class="btn" onclick="unlock()">Déverrouiller →</button>
+    <div id="gateMsg" style="font-size:12px;color:var(--bad);margin-top:10px"></div>
+  </div>
+</div>
+
+<header>
+  <span class="brand">L'<em>Atelier</em></span>
+  <select id="pageSel" onchange="openFile(this.value)"></select>
+  <div class="seg">
+    <button id="mPhone" class="on" onclick="setDevice('phone')">📱 Téléphone</button>
+    <button id="mDesk" onclick="setDevice('desk')">🖥️ Ordinateur</button>
+  </div>
+  <div class="seg">
+    <button id="mLive" class="on" onclick="setMode('live')">En ligne</button>
+    <button id="mDraft" onclick="setMode('draft')">Mon brouillon</button>
+  </div>
+  <div class="spacer"></div>
+  <span id="status">—</span>
+  <button class="btn ghost" onclick="location.href='/app/console'">← Console</button>
+</header>
+
+<div class="wrap">
+  <!-- Aperçu -->
+  <section class="pane">
+    <div class="pane-h"><span id="prevLbl">Aperçu</span><span class="spacer"></span><span id="prevBadge" class="badge">en ligne</span></div>
+    <div class="stage" id="stage">
+      <div class="phone" id="frameBox"><iframe id="prev" sandbox="allow-scripts allow-same-origin allow-forms"></iframe></div>
+    </div>
+  </section>
+
+  <!-- Éditeur -->
+  <section class="pane">
+    <div class="pane-h"><span id="fileLbl">Aucun fichier</span><span class="spacer"></span><span id="shaBadge" class="badge">—</span></div>
+    <textarea id="editor" spellcheck="false" placeholder="Choisissez une page ci-dessus…"></textarea>
+    <div class="foot">
+      <button class="btn ghost" onclick="previewDraft()">👁 Voir mon brouillon</button>
+      <input id="msg" placeholder="Ce que vous changez (ex : nouveau titre d'accueil)">
+      <button class="btn" id="pubBtn" onclick="publish()">🚀 Publier</button>
+    </div>
+    <div class="hint">Publier crée une version conservée : en cas de souci, « Annuler-la-derniere-publication » sur votre bureau, ou Revert sur GitHub. Le backend, la CI et la liaison Android ne sont pas modifiables ici — impossible de casser l'app.</div>
+  </section>
+</div>
+
+<script>
+const API = 'https://ikcp-client.maxime-ead.workers.dev';
+let SECRET = localStorage.getItem('ikcp_admin_secret') || '';
+let CUR = { path:'', sha:'', content:'' };
+let DEVICE = 'phone', MODE = 'live';
+
+const $ = id => document.getElementById(id);
+const hdr = () => ({ 'Content-Type':'application/json', 'x-admin-secret': SECRET });
+const setStatus = (t) => { $('status').textContent = t; };
+
+/* Pages modifiables — le serveur applique la même liste blanche. */
+const PAGES = [
+  ['📱 APPLICATION', [
+    ['app/dashboard.html','Accueil de l\'app'], ['app/marcel.html','Marcel (chat)'],
+    ['app/patrimoine-pro.html','Cockpit patrimoine'], ['app/profil.html','Profil'],
+    ['app/simulateurs-pro.html','Simulateurs'], ['app/veille.html','Veille'],
+    ['app/recueil.html','Recueil'], ['app/bilan.html','Bilan'], ['app/strategies.html','Stratégies'],
+    ['app/index.html','Connexion'], ['app/onboarding.html','Onboarding'],
+    ['app/univers-dirigeant.html','Univers Dirigeant'], ['app/univers-liberal.html','Univers Libérale'],
+    ['app/univers-createur.html','Univers Créateur'], ['app/univers-sportif.html','Univers Sportif'],
+  ]],
+  ['🌐 SITE PUBLIC', [
+    ['marcel.html','Landing Marcel'], ['cabinet.html','Cabinet'], ['index.html','Accueil site'],
+    ['creer-mon-compte.html','Créer un compte'], ['decouvrir.html','Découvrir'],
+  ]],
+  ['🎨 STYLE', [ ['app/css/marcel.css','Feuille de style de l\'app'] ]],
+];
+
+function fillPages(){
+  const s = $('pageSel');
+  s.innerHTML = '<option value="">— Choisir une page —</option>' + PAGES.map(([g, items]) =>
+    `<option disabled>──── ${g} ────</option>` + items.map(([p,l]) => `<option value="${p}">${l}</option>`).join('')
+  ).join('');
+}
+
+/* ── Porte ── */
+async function unlock(){
+  const v = ($('secret').value || SECRET).trim();
+  if(!v) return;
+  SECRET = v;
+  $('gateMsg').textContent = 'Vérification…';
+  try{
+    const r = await fetch(`${API}/api/v1/admin/stats`, { headers: hdr() });
+    if(r.status === 403){ $('gateMsg').textContent = 'Clé incorrecte.'; return; }
+    if(!r.ok && r.status !== 503) throw new Error('HTTP '+r.status);
+    localStorage.setItem('ikcp_admin_secret', SECRET);
+    $('gate').style.display = 'none';
+    fillPages(); setStatus('prêt');
+  }catch(e){ $('gateMsg').textContent = 'Connexion impossible. Réessayez.'; }
+}
+if(SECRET){ unlock(); }
+
+/* ── Aperçu ── */
+const liveUrl = p => 'https://ikcp.eu/' + p;
+function setDevice(d){
+  DEVICE = d;
+  $('mPhone').classList.toggle('on', d==='phone'); $('mDesk').classList.toggle('on', d==='desk');
+  const box = $('frameBox');
+  box.className = d==='phone' ? 'phone' : 'desk';
+  render();
+}
+function setMode(m){
+  MODE = m;
+  $('mLive').classList.toggle('on', m==='live'); $('mDraft').classList.toggle('on', m==='draft');
+  $('prevBadge').textContent = m==='live' ? 'en ligne' : 'brouillon (non publié)';
+  $('prevBadge').className = 'badge' + (m==='draft' ? ' ok' : '');
+  render();
+}
+function render(){
+  const f = $('prev');
+  if(!CUR.path){ f.removeAttribute('src'); f.removeAttribute('srcdoc'); return; }
+  if(MODE === 'live'){ f.removeAttribute('srcdoc'); f.src = liveUrl(CUR.path); return; }
+  // Brouillon : on rend le contenu de l'éditeur tel quel. Pas de balise <base>
+  // (interdite par la politique base-uri 'none') : les pages utilisent des chemins
+  // absolus (/app/css/…), qui se résolvent depuis l'origine du document parent.
+  let html = $('editor').value;
+  if(CUR.path.endsWith('.css')){
+    html = '<html><head><style>' + html + '</style></head><body style="font-family:system-ui;padding:20px;color:#333">Aperçu de la feuille de style — ouvrez une page pour la voir appliquée.</body></html>';
+  }
+  f.removeAttribute('src');
+  f.srcdoc = html;
+}
+
+/* ── Charger / publier ── */
+async function openFile(p){
+  if(!p){ CUR = {path:'',sha:'',content:''}; $('editor').value=''; $('fileLbl').textContent='Aucun fichier'; render(); return; }
+  setStatus('chargement…'); $('editor').value = '';
+  try{
+    const r = await fetch(`${API}/api/v1/admin/file?path=${encodeURIComponent(p)}`, { headers: hdr() });
+    const d = await r.json();
+    if(!r.ok){
+      setStatus('erreur');
+      $('editor').value = d.error === 'github_token_missing'
+        ? '⚠ Le jeton GitHub n\'est pas encore posé sur le serveur.\n\n' + (d.hint||'') + '\n\nLancez le script « pose-jeton-github » sur votre bureau, puis rechargez cette page.'
+        : '⚠ Lecture impossible : ' + (d.error || r.status);
+      return;
+    }
+    CUR = { path: d.path, sha: d.sha, content: d.content };
+    $('editor').value = d.content;
+    $('fileLbl').textContent = d.path;
+    $('shaBadge').textContent = 'v' + String(d.sha).slice(0,7);
+    setMode('live'); setStatus('chargé');
+  }catch(e){ setStatus('erreur réseau'); }
+}
+function previewDraft(){ if(!CUR.path) return; setMode('draft'); }
+
+async function publish(){
+  if(!CUR.path){ return; }
+  const content = $('editor').value;
+  if(content === CUR.content){ setStatus('aucun changement'); return; }
+  if(!confirm('Publier cette modification sur ' + CUR.path + ' ?\n\nElle sera en ligne dans ~1 minute. Réversible à tout moment.')) return;
+  const btn = $('pubBtn'); btn.disabled = true; btn.textContent = 'Publication…'; setStatus('envoi…');
+  try{
+    const r = await fetch(`${API}/api/v1/admin/file`, {
+      method:'POST', headers: hdr(),
+      body: JSON.stringify({ path: CUR.path, content, sha: CUR.sha, message: ($('msg').value || 'maj depuis l\'Atelier') })
+    });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.detail || d.error || ('HTTP ' + r.status));
+    CUR.content = content;
+    setStatus('✓ publié (' + (d.commit||'ok') + ') — en ligne dans ~1 min');
+    $('msg').value = '';
+    // Recharge le sha (le fichier a changé) puis repasse en aperçu « en ligne » après le déploiement.
+    setTimeout(() => openFile(CUR.path), 70000);
+  }catch(e){ setStatus('✗ échec : ' + e.message); alert('Publication impossible : ' + e.message); }
+  btn.disabled = false; btn.textContent = '🚀 Publier';
+}
+</script>
+</body>
+</html>

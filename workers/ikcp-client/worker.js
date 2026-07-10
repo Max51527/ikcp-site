@@ -1262,6 +1262,51 @@ async function handleReferralCode(session, env) {
 async function handleAdmin(request, env, path, method) {
   if (!env.ADMIN_SECRET) return json({ error: 'admin_not_configured' }, 503);
   if (request.headers.get('x-admin-secret') !== env.ADMIN_SECRET) return json({ error: 'forbidden' }, 403);
+
+  // ── ATELIER : lire / publier un fichier du dépôt depuis le navigateur ──
+  // Le jeton GitHub vit UNIQUEMENT ici (secret worker), jamais côté client.
+  // Garde-fou : seules les pages (.html) du site et de l'app + les feuilles de
+  // style de l'app sont modifiables. JAMAIS workers/ (code serveur), .github/
+  // (CI), .well-known/ (liaison Android) — pour qu'une erreur d'atelier ne
+  // puisse jamais casser le backend, le déploiement ni l'app Android.
+  if (path === '/api/v1/admin/file') {
+    if (!env.GITHUB_TOKEN) return json({ error: 'github_token_missing', hint: 'Pose GITHUB_TOKEN (PAT fine-grained, Contents: Read and write) sur le worker ikcp-client.' }, 503);
+    const REPO = env.GITHUB_REPO || 'Max51527/ikcp-site';
+    const okPath = (p) => typeof p === 'string' && !p.includes('..') && (
+      /^[A-Za-z0-9._-]+\.html$/.test(p) ||            // page du SITE (racine)
+      /^app\/[A-Za-z0-9._-]+\.html$/.test(p) ||        // page de l'APP
+      /^app\/css\/[A-Za-z0-9._-]+\.css$/.test(p)       // style de l'APP
+    );
+    const gh = (u, init) => fetch(u, { ...(init || {}), headers: { 'Authorization': `Bearer ${env.GITHUB_TOKEN}`, 'Accept': 'application/vnd.github+json', 'User-Agent': 'ikcp-atelier', ...((init && init.headers) || {}) } });
+
+    if (method === 'GET') {
+      const p = new URL(request.url).searchParams.get('path') || '';
+      if (!okPath(p)) return json({ error: 'path_not_allowed' }, 400);
+      const r = await gh(`https://api.github.com/repos/${REPO}/contents/${encodeURI(p)}?ref=main`);
+      if (!r.ok) return json({ error: 'github_read', status: r.status }, 502);
+      const d = await r.json();
+      const bytes = Uint8Array.from(atob(String(d.content || '').replace(/\n/g, '')), c => c.charCodeAt(0));
+      return json({ path: p, sha: d.sha, content: new TextDecoder().decode(bytes) });
+    }
+    if (method === 'POST') {
+      const body = await request.json().catch(() => ({}));
+      const p = body.path, content = body.content, sha = body.sha;
+      if (!okPath(p)) return json({ error: 'path_not_allowed' }, 400);
+      if (typeof content !== 'string' || !sha) return json({ error: 'invalid' }, 400);
+      const enc = new TextEncoder().encode(content);
+      let bin = '';                                    // base64 par tranches (gros fichiers)
+      for (let i = 0; i < enc.length; i += 0x8000) bin += String.fromCharCode.apply(null, enc.subarray(i, i + 0x8000));
+      const r = await gh(`https://api.github.com/repos/${REPO}/contents/${encodeURI(p)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ message: String(body.message || `atelier: maj ${p}`).slice(0, 120), content: btoa(bin), sha, branch: 'main' }),
+      });
+      if (!r.ok) return json({ error: 'github_write', status: r.status, detail: (await r.text()).slice(0, 200) }, 502);
+      const d = await r.json();
+      return json({ ok: true, commit: (d.commit && d.commit.sha ? d.commit.sha.slice(0, 7) : null) });
+    }
+    return json({ error: 'method_not_allowed' }, 405);
+  }
+
   await ensureGovernanceTables(env);
 
   // Lister les candidatures
