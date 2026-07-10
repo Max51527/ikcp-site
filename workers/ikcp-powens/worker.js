@@ -21,12 +21,17 @@
  *
  * SÉCURITÉ (règles IKCP) :
  *   - client_id / client_secret = SECRETS Cloudflare, jamais dans ce fichier.
- *   - access_token rangé en D1 Paris (chiffrement applicatif = TODO renfort).
+ *   - access_token rangé en D1 Paris CHIFFRÉ (AES-256-GCM, clé POWENS_ENC_KEY —
+ *     voir encToken/decToken plus bas). Fait, pas un TODO.
  *   - Aucune donnée bancaire ne quitte la France (Powens FR + D1 Paris).
  *
- * ⚠️ Les chemins d'API ci-dessous (/auth/init, /auth/token/code, /auth/token/access,
- *    /users/me/accounts) suivent le standard biapi mais sont À CONFIRMER dans la doc
- *    de TON sandbox. La STRUCTURE est bonne ; on ajustera les chemins au test.
+ * Chemins d'API vérifiés le 10/07/2026 via /admin/test-connect contre le vrai
+ * sandbox (docs.powens.com/api-reference/overview/authentication) :
+ *   - POST /auth/init             (body client_id + client_secret)
+ *   - GET  /auth/token/code       (Authorization: Bearer <auth_token>, ?type=singleAccess
+ *                                  — PAS un POST : renvoyait 405 avant correction)
+ *   - POST /auth/token/access     (body client_id + client_secret + code)
+ *   - /users/me/accounts encore non revérifié par ce moyen.
  */
 
 const ALLOWED = [
@@ -196,9 +201,8 @@ export default {
         const ini = JSON.parse(initBody);
         diag.steps.auth_init.id_user_present = !!ini.id_user;
 
-        const cr = await fetch(base(env) + '/auth/token/code', {
-          method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ini.auth_token },
-          body: JSON.stringify({}),
+        const cr = await fetch(base(env) + '/auth/token/code?type=singleAccess', {
+          method: 'GET', headers: { 'Authorization': 'Bearer ' + ini.auth_token },
         });
         const crBody = await cr.text();
         diag.steps.auth_token_code = { ok: cr.ok, status: cr.status, detail: cr.ok ? undefined : crBody.slice(0, 200) };
@@ -243,9 +247,10 @@ export default {
         if (!init.ok) return json({ error: 'powens_init', status: init.status, detail: (await init.text()).slice(0, 200) }, 502, o);
         const ini = await init.json();
         // b. transformer l'auth_token en « code » court (valable pour la Webview)
-        const cr = await fetch(base(env) + '/auth/token/code', {
-          method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ini.auth_token },
-          body: JSON.stringify({}),
+        //    GET, pas POST : confirmé via /admin/test-connect (le POST renvoyait 405)
+        //    et la doc officielle docs.powens.com/api-reference/overview/authentication.
+        const cr = await fetch(base(env) + '/auth/token/code?type=singleAccess', {
+          method: 'GET', headers: { 'Authorization': 'Bearer ' + ini.auth_token },
         });
         const code = cr.ok ? (await cr.json()).code : '';
         // c. construire l'URL de la Webview Powens Connect
