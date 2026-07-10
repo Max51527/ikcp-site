@@ -445,3 +445,65 @@ export const Marcel = {
 
 // Expose globalement pour debug console
 if (typeof window !== 'undefined') window.Marcel = Marcel;
+
+// ─── Détection automatique d'une nouvelle version ───────────────────────────
+// Charge une fois le numéro de la version en ligne (/version.json, écrit par le
+// déploiement). À chaque retour sur l'app (focus / onglet visible), on relit ce
+// numéro : s'il a changé, une nouvelle version est en ligne → on met à jour le
+// service worker et on propose un rafraîchissement en un geste.
+// C'est ce qui remplace le « fermer/rouvrir l'app deux fois ».
+(function versionWatch() {
+  if (typeof window === 'undefined' || typeof fetch !== 'function' || typeof document === 'undefined') return;
+  let loadedSha = null;
+  let checking = false;
+
+  const readSha = async () => {
+    try {
+      const r = await fetch('/version.json', { cache: 'no-store' });
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d && d.sha ? String(d.sha) : null;
+    } catch (_) { return null; }
+  };
+
+  const showBanner = () => {
+    if (document.getElementById('ikcpUpdate')) return;
+    const bar = document.createElement('div');
+    bar.id = 'ikcpUpdate';
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9999;display:flex;gap:10px;align-items:center;background:#1B2A4A;color:#FAF8F4;border:1px solid rgba(226,200,150,.5);border-radius:99px;padding:9px 10px 9px 16px;box-shadow:0 16px 34px -14px rgba(14,23,41,.6);font-family:Outfit,system-ui,sans-serif;font-size:13px;max-width:92vw';
+    const txt = document.createElement('span');
+    txt.textContent = 'Nouvelle version disponible';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'Actualiser';
+    btn.style.cssText = 'background:linear-gradient(120deg,#E2C896,#C9A96E);color:#20180c;border:0;border-radius:99px;padding:7px 14px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap';
+    btn.addEventListener('click', async () => {
+      btn.disabled = true; btn.textContent = '…';
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(r => r.update().catch(() => {})));
+        }
+      } catch (_) {}
+      location.reload();
+    });
+    bar.appendChild(txt); bar.appendChild(btn);
+    document.body.appendChild(bar);
+  };
+
+  const check = async () => {
+    if (checking || document.hidden) return;
+    checking = true;
+    const sha = await readSha();
+    checking = false;
+    if (!sha) return;
+    if (!loadedSha) { loadedSha = sha; return; }   // première lecture = version de référence
+    if (sha !== loadedSha) showBanner();
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check, { once: true });
+  else check();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+  window.addEventListener('focus', check);
+})();

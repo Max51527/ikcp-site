@@ -64,6 +64,16 @@ self.addEventListener('fetch', event => {
     return; // pas d'intercept, network direct
   }
 
+  // 🔄 /version.json : JAMAIS caché. C'est le témoin qui permet à l'app de
+  //    détecter qu'une nouvelle version est en ligne. Un service worker
+  //    intercepte TOUTES les requêtes des pages qu'il contrôle (pas seulement
+  //    celles de son dossier) : sans cette exclusion, la branche « cache
+  //    d'abord » ci-dessous le servait depuis le cache, et l'app n'aurait
+  //    jamais vu passer un déploiement.
+  if (url.pathname === '/version.json') {
+    return; // pas d'intercept, réseau direct
+  }
+
   // ✅ Network first pour HTML (toujours frais quand connecté, cache si offline)
   if (event.request.mode === 'navigate' || event.request.destination === 'document') {
     event.respondWith(
@@ -79,9 +89,13 @@ self.addEventListener('fetch', event => {
   }
 
   // ✅ Network first pour le JS applicatif (anti-cache-obsolète : api.js toujours frais en ligne)
+  //    ⚠ cache:'no-store' est INDISPENSABLE : Cloudflare Pages force un plancher
+  //    max-age=14400 (4 h) sur les .js, et un fetch() nu relit ce cache HTTP du
+  //    navigateur. Sans no-store, api.js restait périmé jusqu'à 4 h après un
+  //    déploiement — la vraie cause des « mises à jour qui n'arrivent pas ».
   if (url.pathname.startsWith('/app/js/') || url.pathname.endsWith('.js')) {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-store' })
         .then(response => {
           if (response.ok && response.type !== 'opaque') {
             const clone = response.clone();

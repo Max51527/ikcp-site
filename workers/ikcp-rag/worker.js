@@ -154,7 +154,13 @@ export default {
     //    Pas de NOTION_TOKEN ni de partage requis : le contenu arrive dans le body. ──
     if (url.pathname === '/ingest-push' && req.method === 'POST') {
       if (!ready(env)) return json({ error: 'rag_not_ready', hint: 'binding VEC + un moteur embeddings (AI ou MISTRAL_API_KEY)' }, 503, o);
-      if (env.RAG_ADMIN) { const t = url.searchParams.get('token') || req.headers.get('X-Admin-Token') || ''; if (t !== env.RAG_ADMIN) return json({ error: 'unauthorized' }, 401, o); }
+      // ── VERROU D'ÉCRITURE : FERMÉ PAR DÉFAUT (fail-closed). ──
+      // Sans RAG_ADMIN posé, AUCUNE écriture n'est possible. Auparavant le verrou
+      // n'existait que si le secret existait : la base de doctrine était donc
+      // ouverte en écriture, et un tiers pouvait y injecter de la fausse doctrine
+      // que Marcel aurait ensuite citée à un client. Fail-closed, toujours.
+      if (!env.RAG_ADMIN) return json({ error: 'ingest_locked', hint: 'Écriture verrouillée : pose le secret RAG_ADMIN sur le worker ikcp-rag.' }, 503, o);
+      { const t = url.searchParams.get('token') || req.headers.get('X-Admin-Token') || ''; if (t !== env.RAG_ADMIN) return json({ error: 'unauthorized' }, 401, o); }
       let body; try { body = await req.json(); } catch { return json({ error: 'bad_json' }, 400, o); }
       const text = (body && body.text) || '';
       const source = String((body && body.source) || 'push').replace(/[^a-z0-9_-]/gi, '').slice(0, 40) || 'push';
@@ -175,7 +181,9 @@ export default {
     // ── POST /ingest : tire la page Notion côté worker (requiert NOTION_TOKEN + partage). ──
     if (url.pathname === '/ingest' && req.method === 'POST') {
       if (!configured(env)) return json({ error: 'notion_pull_not_configured', hint: 'pose NOTION_TOKEN + partage l\'intégration sur la page Documentation, ou utilise /ingest-push' }, 503, o);
-      if (env.RAG_ADMIN) { const t = url.searchParams.get('token') || req.headers.get('X-Admin-Token') || ''; if (t !== env.RAG_ADMIN) return json({ error: 'unauthorized' }, 401, o); }
+      // Même verrou fail-closed que /ingest-push : pas de RAG_ADMIN → pas d'écriture.
+      if (!env.RAG_ADMIN) return json({ error: 'ingest_locked', hint: 'Écriture verrouillée : pose le secret RAG_ADMIN sur le worker ikcp-rag.' }, 503, o);
+      { const t = url.searchParams.get('token') || req.headers.get('X-Admin-Token') || ''; if (t !== env.RAG_ADMIN) return json({ error: 'unauthorized' }, 401, o); }
       try { const res = await ingest(env); return json({ ok: true, ...res }, 200, o); }
       catch (e) { return json({ error: 'ingest', message: e.message }, 502, o); }
     }
