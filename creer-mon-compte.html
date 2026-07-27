@@ -36,8 +36,8 @@ h1 em{font-style:italic;color:var(--gold-d)}
 .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
 .fine{font-size:12.5px;color:var(--mute)}
 /* offres */
-.offres{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0 8px}
-@media(max-width:760px){.offres{grid-template-columns:1fr}}
+.offres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin:18px 0 8px}
+@media(max-width:980px){.offres{grid-template-columns:1fr}}
 .offre{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column}
 .offre.pro{background:linear-gradient(165deg,var(--navy),var(--navy2));color:var(--cream);border-color:transparent;position:relative;overflow:hidden}
 .offre.pro::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.22),transparent 70%)}
@@ -172,20 +172,33 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
       </div>
       <div class="offre pro">
         <div class="nom">Le pilotage · Premium</div>
-        <div class="px">24 €<small> / mois</small></div>
-        <div class="acc">Le copilote continu du dirigeant : vos leviers chiffrés, vos spécialistes, votre app.</div>
+        <div class="px">9,99 €<small> / mois</small></div>
+        <div class="acc">Le copilote continu du dirigeant : l'audit 360° complet et vos pistes de réflexion chiffrées.</div>
         <ul>
           <li>Tout Découverte, sans limite</li>
+          <li><b>Audit 360° complet</b> : volet juridique + fiscal, avec pistes de réflexion chiffrées</li>
           <li>Marcel illimité + mémoire + spécialistes IA (fiscal, transmission, 360°, retraite)</li>
           <li><b>Projection détaillée</b> : trajectoire année par année, scénarios, leviers</li>
           <li><b>Veille &amp; alertes personnalisées</b> sur VOTRE situation (loi, seuils, échéances)</li>
           <li>Chiffrage personnalisé (rému/dividendes, compte courant d'associé, transmission)</li>
-          <li>Schémas de stratégies (apport-cession, Dutreil, démembrement…)</li>
           <li>Application mobile + historique synchronisé</li>
           <li class="soon">Agrégation bancaire DSP2 (agréée ACPR) <span class="tag">en ouverture</span></li>
           <li class="soon">Import de bilan par OCR souverain <span class="tag">en ouverture</span></li>
         </ul>
-        <div class="b"><a class="btn gold" href="/app/" style="width:100%;text-align:center">Passer en Premium</a><div class="note">24 €/mois ou 240 €/an (2 mois offerts) · sans engagement · accès validé personnellement</div></div>
+        <div class="b"><a class="btn gold" href="/app/" style="width:100%;text-align:center">Passer en Premium</a><div class="note">9,99 €/mois · sans engagement · accès validé personnellement</div></div>
+      </div>
+      <div class="offre">
+        <div class="nom">Stratégies · Annuel</div>
+        <div class="px">249 €<small> / an</small></div>
+        <div class="acc">Premium, plus la bibliothèque complète des montages patrimoniaux du dirigeant.</div>
+        <ul>
+          <li>Tout Premium, sans limite</li>
+          <li><b>Bibliothèque de stratégies patrimoniales</b> : ~70 fiches (structuration, rémunération, immobilier, placements, transmission, protection, fiscalité)</li>
+          <li>Chaque fiche renvoie vers le bon professionnel (notaire, avocat, expert-comptable…)</li>
+          <li>Schémas de stratégies (apport-cession, Dutreil, démembrement…)</li>
+          <li>Mise à jour continue au fil des évolutions légales</li>
+        </ul>
+        <div class="b"><a class="btn ghost" href="/app/" style="width:100%;text-align:center">Choisir Stratégies</a><div class="note">249 €/an · sans engagement · accès validé personnellement</div></div>
       </div>
     </div>
     <div class="mifii">Marcel propose des pistes de réflexion personnalisées à votre situation et conclut par une question — jamais une recommandation produit. Le conseil personnalisé formalisé relève d'une lettre de mission (art. L.541-1 du Code monétaire et financier).</div>

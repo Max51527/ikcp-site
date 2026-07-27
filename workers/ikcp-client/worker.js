@@ -466,7 +466,7 @@ async function requireSession(request, env) {
 async function ensureUserColumns(env) {
   // Auto-réparation du schéma : ajoute les colonnes étendues si la base date
   // d'une version antérieure (SQLite n'a pas ADD COLUMN IF NOT EXISTS → try/catch).
-  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT', 'memory_json TEXT', 'password_hash TEXT']) {
+  for (const col of ['display_name TEXT', 'prenom TEXT', 'profile_json TEXT', 'consents_json TEXT', 'source TEXT', 'stripe_customer_id TEXT', 'stripe_subscription_id TEXT', 'memory_json TEXT', 'password_hash TEXT', 'has_strategies INTEGER DEFAULT 0']) {
     try { await env.D1.prepare(`ALTER TABLE users ADD COLUMN ${col}`).run(); } catch (_) { /* colonne déjà présente */ }
   }
 }
@@ -722,7 +722,9 @@ async function handlePappersLookup(request, session, env) {
 // ──────────────────────────────────────────────────────────────
 async function handleStripeCheckout(request, session, env) {
   const { plan } = await request.json().catch(() => ({}));
-  const priceMap = { monthly: env.STRIPE_PRICE_PREMIUM_MONTHLY, yearly: env.STRIPE_PRICE_PREMIUM_YEARLY };
+  // 3 paliers (verrouillés le 27/07/2026) : Découverte 0€ (pas de checkout),
+  // Premium 9,99€/mois, Stratégies 249€/an (Premium + bibliothèque ~70 fiches).
+  const priceMap = { monthly: env.STRIPE_PRICE_PREMIUM_MONTHLY, strategies: env.STRIPE_PRICE_STRATEGIES_ANNUAL };
   const priceId = priceMap[plan];
   if (!priceId) return json({ error: 'invalid_plan' }, 400);
 
@@ -734,6 +736,7 @@ async function handleStripeCheckout(request, session, env) {
   params.append('success_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html?upgraded=1`);
   params.append('cancel_url', `${env.FRONT_URL || 'https://ikcp.eu'}/app/dashboard.html`);
   params.append('metadata[user_id]', session.user_id);
+  params.append('metadata[plan]', plan); // lu par le webhook pour distinguer premium simple / +stratégies
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
@@ -781,9 +784,11 @@ async function handleStripeWebhook(request, env) {
   switch (event.type) {
     case 'checkout.session.completed':
       if (userId) {
-        await env.D1.prepare('UPDATE users SET tier = ?, stripe_customer_id = ?, stripe_subscription_id = ? WHERE id = ?')
-          .bind('premium', obj.customer, obj.subscription, userId).run();
-        await audit(env, userId, 'tier_upgraded', request, { from: 'free', to: 'premium' });
+        await ensureUserColumns(env); // has_strategies peut manquer sur une base ancienne
+        const hasStrategies = obj.metadata?.plan === 'strategies' ? 1 : 0;
+        await env.D1.prepare('UPDATE users SET tier = ?, stripe_customer_id = ?, stripe_subscription_id = ?, has_strategies = MAX(has_strategies, ?) WHERE id = ?')
+          .bind('premium', obj.customer, obj.subscription, hasStrategies, userId).run();
+        await audit(env, userId, 'tier_upgraded', request, { from: 'free', to: 'premium', plan: obj.metadata?.plan || 'inconnu' });
         await emitEvent(env, userId, 'subscription_upgraded', { from_tier: 'free', to_tier: 'premium' });
         const u = await env.D1.prepare('SELECT email FROM users WHERE id = ?').bind(userId).first();
         if (u) await sendEmail(env, { to: u.email, subject: 'Bienvenue Premium · IKCP', html: emailTemplatePremiumWelcome() });
