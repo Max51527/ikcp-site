@@ -80,6 +80,14 @@ export default {
       });
     }
 
+    // S2S : appelé uniquement par Marcel (delegateToSpecialist envoie déjà ce
+    // header). Fail-CLOSED : contrairement au motif utilisé sur Codex/Hermès/
+    // Bâtisseur (qui laissait l'accès ouvert si le secret n'était pas posé),
+    // ici l'absence du secret bloque l'accès au lieu de l'autoriser.
+    if (!env.INTERNAL_TOKEN || request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
+      return Response.json({ error: 'unauthorized' }, { status: 401, headers: corsHeaders(origin) });
+    }
+
     if (!env.ANTHROPICAPIKEY) {
       return Response.json({ error: 'api_key_missing' }, {
         status: 500, headers: corsHeaders(origin)

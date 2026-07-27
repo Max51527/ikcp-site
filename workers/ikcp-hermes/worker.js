@@ -173,7 +173,9 @@ export default {
         status: 405, headers: corsHeaders(origin)
       });
     }
-    if (env.INTERNAL_TOKEN && request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
+    // S2S : appelé uniquement par Marcel. Fail-CLOSED : un secret manquant/perdu
+    // bloque l'accès au lieu de rouvrir silencieusement l'endpoint Opus au public.
+    if (!env.INTERNAL_TOKEN || request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
       return Response.json({ error: 'unauthorized' }, { status: 401, headers: corsHeaders(origin) });
     }
     if (!env.ANTHROPICAPIKEY) {

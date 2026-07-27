@@ -270,8 +270,9 @@ export default {
       );
     }
 
-    // S2S : si INTERNAL_TOKEN est posé, exiger le jeton interne (appel Marcel). Fail-open tant qu'absent.
-    if (env.INTERNAL_TOKEN && request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
+    // S2S : appelé uniquement par Marcel. Fail-CLOSED : un secret manquant/perdu
+    // bloque l'accès au lieu de rouvrir silencieusement l'endpoint Opus au public.
+    if (!env.INTERNAL_TOKEN || request.headers.get('X-Internal-Token') !== env.INTERNAL_TOKEN) {
       return Response.json({ error: 'unauthorized' }, { status: 401, headers: corsHeaders(origin) });
     }
 
