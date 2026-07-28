@@ -141,7 +141,7 @@
         </div>
         <p>Rémunération, dividendes, trésorerie, retraite, prévoyance, protection et transmission — une ergonomie pensée pour smartphone, des estimations en temps réel.</p>
         <div class="kpis">
-          <div class="kpi"><span class="hint">Simulateurs</span><strong>12</strong></div>
+          <div class="kpi"><span class="hint">Simulateurs</span><strong id="kpiCount">—</strong></div>
           <div class="kpi"><span class="hint">Profils</span><strong>SASU · EURL · BNC</strong></div>
           <div class="kpi"><span class="hint">Usage</span><strong>100% mobile</strong></div>
         </div>
@@ -232,6 +232,22 @@ function droitsDonation(taxable){
   return droits;
 }
 const PFU_IR = 0.128, PS = 0.172, ABAT_DIRIGEANT_RETRAITE = 500000;
+const BAREME_IFI_2026 = [
+  { seuil:800000,    taux:0     },
+  { seuil:1300000,   taux:0.005 },
+  { seuil:2570000,   taux:0.007 },
+  { seuil:5000000,   taux:0.01  },
+  { seuil:10000000,  taux:0.0125},
+  { seuil:Infinity,  taux:0.015 }
+];
+function droitsIFI(patrimoine){
+  let ifi = 0, prev = 0;
+  for (const t of BAREME_IFI_2026){
+    if (patrimoine > prev){ ifi += (Math.min(patrimoine, t.seuil) - prev) * t.taux; prev = t.seuil; } else break;
+  }
+  if (patrimoine >= 1300000 && patrimoine < 1400000) ifi = Math.max(0, ifi - (17500 - 0.0125*patrimoine));
+  return ifi;
+}
 
 const simulators = [
   {
@@ -540,16 +556,67 @@ const simulators = [
         chart:{ labels:['Capital','Intérêts'], values:[principal, total-principal] }
       }
     }
+  },
+  {
+    id:'dutreil', category:'Transmission', title:'Pacte Dutreil (art. 787 B)', desc:'Économie de droits sur la transmission de titres, exonération 75 %.',
+    fields:[
+      {key:'valeur', label:'Valeur des titres transmis', type:'number', value:3000000},
+      {key:'abattementEnfant', label:'Abattement (100000 si enfant, 0 sinon)', type:'number', value:100000, step:'100000'},
+      {key:'reduction50', label:'Donation pleine propriété avant 65 ans : réduction 50 % (1=oui, 0=non)', type:'number', value:1, step:'1'}
+    ],
+    calc:v => {
+      const abat = Math.max(v.abattementEnfant, 0);
+      const sans = droitsDonation(Math.max(v.valeur - abat, 0));
+      let avec = droitsDonation(Math.max(v.valeur*0.25 - abat, 0));
+      if (v.reduction50) avec *= 0.5;
+      return {
+        primary:[
+          ['Droits SANS Dutreil', euro(sans)],
+          [`Droits AVEC Dutreil (75 % exonérés${v.reduction50?' + réduction 50 %':''})`, euro(avec)],
+          ['Économie estimée', euro(sans-avec)],
+          ['Coût effectif de transmission', v.valeur>0 ? pct(avec/v.valeur) : '0,0 %']
+        ],
+        secondary:[
+          `Le pacte Dutreil (art. 787 B CGI) exonère 75 % de la valeur des titres transmis de l'assiette taxable, sous engagement collectif de conservation de 2 ans puis individuel de 4 ans, et activité opérationnelle éligible.`,
+          `La réduction de 50 % des droits s'applique en cas de donation en pleine propriété avant 65 ans (art. 790 CGI) — cumulable avec Dutreil.`
+        ],
+        chart:{ labels:['Droits AVEC Dutreil','Économie'], values:[avec, sans-avec] }
+      }
+    }
+  },
+  {
+    id:'ifi', category:'Fiscal', title:'Exposition à l’IFI', desc:'Impôt sur la fortune immobilière — barème et décote 1,3–1,4 M€.',
+    fields:[
+      {key:'patrimoine', label:'Patrimoine immobilier net taxable', type:'number', value:1800000}
+    ],
+    calc:v => {
+      const ifi = v.patrimoine < 1300000 ? 0 : droitsIFI(v.patrimoine);   // sous 1,3 M€ : non assujetti, pas juste barème à taux nul
+      const decote = (v.patrimoine >= 1300000 && v.patrimoine < 1400000) ? (17500 - 0.0125*v.patrimoine) : 0;
+      const rows = [['Patrimoine taxable', euro(v.patrimoine)], ['IFI estimé', euro(ifi)]];
+      if (decote > 0) rows.push(['Décote (1,3–1,4 M€)', '−'+euro(decote)]);
+      rows.push(['Taux effectif', v.patrimoine>0 ? pct(ifi/v.patrimoine) : '0,0 %']);
+      return {
+        primary: rows,
+        secondary:[
+          v.patrimoine < 1300000
+            ? `Sous le seuil d'assujettissement de 1,3 M€ — marge avant imposition : ${euro(1300000-v.patrimoine)}.`
+            : `Barème progressif officiel de l'IFI (0 % à 1,5 %), avec décote linéaire entre 1,3 et 1,4 M€ de patrimoine taxable.`,
+          `Le passif déductible (emprunts en cours, travaux) et l'exonération de l'outil professionnel réduisent souvent fortement cette base — non modélisés ici (cadrage indicatif).`
+        ],
+        chart:{ labels:['IFI estimé','Patrimoine net'], values:[ifi, Math.max(v.patrimoine-ifi,0)] }
+      }
+    }
   }
 ];
 
-let activeId = simulators[0].id;
+const _qsStrategie = new URLSearchParams(location.search).get('strategie');
+let activeId = (_qsStrategie && simulators.some(s => s.id === _qsStrategie)) ? _qsStrategie : simulators[0].id;
 let chart;
 
 /* ═══ Freemium : 4 calculs de base gratuits, stratégie patrimoniale = Premium ═══ */
 const API_CLIENT = 'https://ikcp-client.maxime-ead.workers.dev';
 const API_CONFIG = 'https://ikcp-patrimoine.maxime-ead.workers.dev/config';
-let TIER = 'free', GATING_OFF = false, PREMIUM_EUR = 59;
+let TIER = 'free', GATING_OFF = false, PREMIUM_EUR = 9.99;
 function token(){ try{ return localStorage.getItem('ikcp_token') || ''; }catch(_){ return ''; } }
 async function loadTier(){
   const t = token();
@@ -673,9 +740,15 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 });
 
+document.getElementById('kpiCount').textContent = simulators.length;
 renderSimList();
 renderActive();
-loadTier().then(() => { renderSimList(); });   // re-render le catalogue si Premium (déverrouille)
+if (_qsStrategie && simulators.some(s => s.id === _qsStrategie)) { switchScreen('screen-calcul'); setNav('screen-calcul'); }
+loadTier().then(() => {
+  renderSimList();
+  const sim = getActive();
+  (isUnlocked(sim) ? renderActive() : renderTeaser(sim));   // re-évalue le verrou une fois le tier connu (déeplien inclus)
+});
 </script>
 <script src="/protect.js?v=2" defer></script>
 <script src="/app/js/marcel-float.js" defer></script>
