@@ -1,6 +1,14 @@
 # ════════════════════════════════════════════════════════════════════
 #  IKCP — robots.txt
 #  © 2026 Maxime Juveneton — Tous droits réservés
+#
+#  Stratégie 2026 : GEO (Generative Engine Optimization)
+#  → Autoriser les bots de RECHERCHE/CITATION en temps réel
+#     (ChatGPT-User, OAI-SearchBot, PerplexityBot, PerplexityUser,
+#      Claude-Web, ClaudeBot, Gemini User)
+#  → Bloquer les bots d'ENTRAÎNEMENT sur données massives
+#     (GPTBot, Google-Extended, CCBot, Bytespider, Meta-ExternalAgent,
+#      Amazonbot, Applebot-Extended, cohere-ai, Diffbot, etc.)
 # ════════════════════════════════════════════════════════════════════
 
 # Crawlers classiques (moteurs de recherche) — autorisés
@@ -12,67 +20,138 @@ Disallow: /audio/
 Disallow: /docs/
 Disallow: /proposals/
 Disallow: /_archive/
-Disallow: /webmaster.html
-Disallow: /app/console.html
-Disallow: /app/admin.html
 
 # ════════════════════════════════════════════════════════════════════
-# OPT-OUT EXPLICITE pour les crawlers d'entraînement IA
-# (le contenu de ce site est protégé, l'autorisation d'utilisation
-#  pour entraîner des modèles n'est PAS accordée)
+# BOTS DE CITATION AUTORISÉS (Generative Engine Optimization)
+# → Lisent le contenu au moment où l'IA répond à un prompt utilisateur
+# → Permettent à IKCP d'être cité dans ChatGPT, Perplexity, Claude, etc.
 # ════════════════════════════════════════════════════════════════════
 
+# ChatGPT — user browsing / search
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+# Perplexity — index + lecture live
+User-agent: PerplexityBot
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+User-agent: PerplexityUser
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+# Claude — recherche web + citation
+User-agent: Claude-Web
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+# Google Gemini — user search grounding
+User-agent: Google-CloudVertexBot
+Allow: /
+Disallow: /icons/
+Disallow: /workers/
+Disallow: /audio/
+Disallow: /docs/
+
+# Microsoft Copilot / Bing — utilise déjà bingbot (universel)
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Kagi
+User-agent: KagiBot
+Allow: /
+
+# Andi
+User-agent: AndiBot
+Allow: /
+
+# Mistral
+User-agent: MistralAI-User
+Allow: /
+
+# Neeva / Search-CGI
+User-agent: Neevabot
+Allow: /
+
+# ════════════════════════════════════════════════════════════════════
+# BOTS D'ENTRAÎNEMENT REFUSÉS
+# → Collectent en masse pour entraîner les futurs modèles
+# → Le contenu de ce site est protégé — pas d'usage sans licence
+# ════════════════════════════════════════════════════════════════════
+
+# OpenAI — collecte pour entraînement
 User-agent: GPTBot
 Disallow: /
 
-User-agent: ChatGPT-User
-Disallow: /
-
-User-agent: OAI-SearchBot
-Disallow: /
-
-User-agent: anthropic-ai
-Disallow: /
-
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: Claude-Web
-Disallow: /
-
+# Google — entraînement Gemini (distinct de la recherche)
 User-agent: Google-Extended
 Disallow: /
 
-User-agent: PerplexityBot
+# Anthropic — bot d'entraînement historique (nomenclature ancienne)
+User-agent: anthropic-ai
 Disallow: /
 
-User-agent: PerplexityUser
-Disallow: /
-
+# Common Crawl — source d'entraînement de nombreux LLM
 User-agent: CCBot
 Disallow: /
 
+# ByteDance / TikTok
 User-agent: Bytespider
 Disallow: /
 
+# Meta
 User-agent: FacebookBot
 Disallow: /
 
 User-agent: Meta-ExternalAgent
 Disallow: /
 
+# Amazon
 User-agent: Amazonbot
 Disallow: /
 
+# Apple
 User-agent: Applebot-Extended
 Disallow: /
 
+# Cohere
 User-agent: cohere-ai
 Disallow: /
 
+# Diffbot / scraping massif
 User-agent: Diffbot
 Disallow: /
 
+# Autres scrapers d'entraînement
 User-agent: ImagesiftBot
 Disallow: /
 
@@ -82,4 +161,9 @@ Disallow: /
 User-agent: Timpibot
 Disallow: /
 
+# ════════════════════════════════════════════════════════════════════
+# SITEMAPS
+# ════════════════════════════════════════════════════════════════════
+
 Sitemap: https://ikcp.eu/sitemap.xml
+Sitemap: https://ikcp.eu/sitemap-images.xml
