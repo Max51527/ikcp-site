@@ -3,7 +3,1127 @@
     "role": "Bibliothèque des stratégies dirigeant — contenu client-facing de la fiche (gated : servi uniquement si session.tier==='premium' && has_strategies===1, jamais embarqué en HTML statique). Distinct de workers/ikcp-patrimoine/strategies.json qui porte le moteur de scoring d'éligibilité (score_eligibilite.regles) — les deux se raccrochent par slug/strategie_key quand ils coexistent.",
     "version": "v1",
     "cible": 70,
-    "actuel": 0
+    "actuel": 4
   },
-  "fiches": []
+  "fiches": [
+    {
+      "slug": "arbitrage_remuneration_dividendes",
+      "categorie": "Rémunération du dirigeant",
+      "titre": "Arbitrer rémunération, dividendes et capitalisation",
+      "sousTitre": "Trouver, exercice après exercice, le bon dosage entre salaire, dividende et mise en réserve pour un dirigeant de société à l'IS",
+      "resumeExecutif": [
+        "Chaque euro qui sort de votre société a un coût différent selon qu'il part en rémunération, en dividende, ou reste capitalisé dans la structure.",
+        "Ce coût dépend d'abord de votre statut social : président assimilé salarié (SASU/SAS) et gérant majoritaire TNS (SARL/EURL) ne jouent pas avec les mêmes règles.",
+        "Bénéfice principal : un arbitrage annuel bien calibré peut réduire le prélèvement global (IS, charges sociales, IR, prélèvements sociaux) tout en pilotant vos droits retraite et prévoyance.",
+        "Limite principale : il n'existe pas de dosage universel — l'optimum dépend du résultat de l'année, se recalcule à chaque exercice, et un excès de dividendes fragilise votre protection sociale."
+      ],
+      "profilCible": [
+        "Président de SASU/SAS, assimilé salarié, avec un résultat distribuable",
+        "Gérant majoritaire de SARL/EURL au régime social des indépendants (TNS)",
+        "Dirigeant dont la société est à l'impôt sur les sociétés (IS)",
+        "Dirigeant qui pilote sa rémunération chaque année en fonction du résultat"
+      ],
+      "complexite": "intermediaire",
+      "horizonMiseEnOeuvre": "0-90 jours (décision à caler avant la clôture d'exercice / l'affectation du résultat en AG)",
+      "requiresHumanValidation": false,
+      "probleme": "Un dirigeant de société à l'IS a en réalité trois façons de faire sortir (ou pas) l'argent de son entreprise : se verser un salaire, se verser un dividende, ou laisser le résultat en réserve dans la société. Chacune de ces trois voies a un coût fiscal et social différent, et ce coût n'est pas le même selon que le dirigeant est assimilé salarié (président de SASU/SAS) ou travailleur non salarié — TNS (gérant majoritaire de SARL/EURL). Beaucoup de dirigeants reconduisent le même schéma d'une année sur l'autre par habitude, sans reprendre le calcul, alors que le résultat de la société, les seuils fiscaux et les besoins personnels évoluent chaque exercice.",
+      "questionType": "« Je peux me verser plus cette année, faut-il augmenter mon salaire, me verser un dividende, ou laisser l'argent dans la société ? »",
+      "quandEviter": [
+        "Société avec peu ou pas de résultat distribuable sur l'exercice : l'arbitrage devient plus théorique que financier",
+        "Dirigeant proche du départ à la retraite avec des trimestres ou des points encore à valider : basculer trop vite en dividendes peut amputer les derniers droits",
+        "SARL/EURL au capital social très faible : les dividendes au-delà de 10 % du capital social + primes d'émission + comptes courants d'associés basculent vite en assiette de cotisations TNS, ce qui change tout le calcul",
+        "Trésorerie professionnelle tendue ou besoin de financer un investissement proche : distribuer un dividende peut priver l'exploitation de sa marge de sécurité",
+        "Dirigeant sans visibilité sur le résultat prévisionnel de l'exercice en cours : arbitrer sur une estimation fragile expose à un mauvais dosage"
+      ],
+      "schemaEtapes": [
+        {
+          "titre": "Diagnostic du statut social",
+          "description": "Identifier si le dirigeant est assimilé salarié (SASU/SAS) ou TNS (gérant majoritaire SARL/EURL), car les règles de coût diffèrent radicalement."
+        },
+        {
+          "titre": "Chiffrage du résultat distribuable",
+          "description": "Estimer avec l'expert-comptable le résultat prévisionnel de l'exercice et la trésorerie disponible pour une distribution."
+        },
+        {
+          "titre": "Simulation comparative",
+          "description": "Chiffrer plusieurs scénarios de répartition (rémunération seule, dividende seul, mix, capitalisation) et leur coût global net-net."
+        },
+        {
+          "titre": "Intégration protection sociale",
+          "description": "Vérifier l'impact de chaque scénario sur les droits retraite, la prévoyance et les indemnités journalières avant d'arbitrer."
+        },
+        {
+          "titre": "Formalisation de la décision",
+          "description": "Ajuster le bulletin de paie et/ou faire voter l'affectation du résultat en assemblée générale avant la clôture de l'exercice."
+        }
+      ],
+      "explicationClaire": "Le résultat de votre société à l'IS (impôt sur les sociétés) est d'abord taxé au niveau de la société : 15 % jusqu'à 42 500 € de bénéfice (sous conditions), puis 25 % au-delà. Ce qu'il reste peut ensuite sortir de deux façons vers le dirigeant : en rémunération (un salaire, charge déductible du résultat de la société, mais qui supporte des cotisations sociales et l'impôt sur le revenu selon le barème progressif), ou en dividende (prélevé sur le bénéfice déjà taxé à l'IS, puis imposé chez le dirigeant au PFU — prélèvement forfaitaire unique — de 30 % (12,8 % d'impôt sur le revenu + 17,2 % de prélèvements sociaux), ou sur option au barème progressif). Troisième option, souvent oubliée : ne rien sortir et laisser le résultat en réserve dans la société — cela ne coûte que l'IS déjà payé, et peut servir à financer un projet, constituer une trésorerie de précaution, ou préparer une structuration en holding.\n\nLa différence essentielle tient au statut social du dirigeant. Le président de SASU/SAS est assimilé salarié : ses dividendes ne supportent pas de cotisations sociales (seulement le PFU), ce qui les rend souvent plus légers à court terme, mais sa protection sociale (retraite, prévoyance) dépend uniquement de ce qu'il s'est versé en salaire. Le gérant majoritaire de SARL/EURL, lui, est TNS : ses cotisations sociales (environ 35 à 45 % du revenu net selon le niveau) financent une protection sociale généralement moins coûteuse à droits égaux, mais dès que ses dividendes dépassent 10 % du capital social + primes d'émission + comptes courants d'associés, la part excédentaire est elle-même soumise à cotisations sociales — ce qui referme une partie de l'avantage apparent du dividende.\n\nIl n'y a donc pas de règle universelle : le bon dosage dépend du statut, du niveau de résultat, de l'âge et des besoins de couverture sociale du dirigeant, et il se recalcule chaque année. C'est un arbitrage de pilotage annuel, pas une décision figée une fois pour toutes — et un simulateur chiffré ne doit jamais conclure par un dosage à appliquer, seulement éclairer les ordres de grandeur pour préparer la discussion avec l'expert-comptable.",
+      "aRetenir": "Rémunération, dividende et capitalisation ont chacun un coût et un effet différents sur vos impôts, vos charges sociales et vos droits sociaux : le bon dosage se recalcule chaque exercice, en fonction du résultat réel et de votre statut (assimilé salarié ou TNS), jamais par habitude.",
+      "prerequis": {
+        "juridiques": [
+          "Société à l'IS (SASU, SAS, SARL ou EURL)",
+          "Statut social du dirigeant clairement identifié (assimilé salarié ou TNS)",
+          "Capacité de distribution vérifiée (réserves disponibles, respect du droit des sociétés)"
+        ],
+        "fiscaux": [
+          "Résultat fiscal de l'exercice connu ou estimé avec fiabilité",
+          "Historique d'imposition personnelle du dirigeant (tranche marginale d'imposition)",
+          "Arbitrage PFU (30 %) vs option barème progressif à évaluer selon le foyer fiscal"
+        ],
+        "sociaux": [
+          "Niveau de couverture retraite et prévoyance déjà constitué",
+          "Pour les SARL/EURL : montant du capital social + primes d'émission + comptes courants d'associés (seuil des 10 %)",
+          "Besoins de couverture (arrêt de travail, invalidité, retraite) identifiés"
+        ],
+        "financiers": [
+          "Trésorerie professionnelle disponible sans fragiliser l'exploitation",
+          "Besoins de trésorerie personnelle du dirigeant sur l'année"
+        ],
+        "documentaires": [
+          "Derniers bulletins de paie du dirigeant",
+          "Liasse fiscale ou situation comptable intermédiaire",
+          "Statuts et procès-verbaux d'affectation du résultat des exercices précédents"
+        ]
+      },
+      "miseEnOeuvre": [
+        {
+          "etape": 1,
+          "titre": "Faire le point avec l'expert-comptable",
+          "description": "Estimer le résultat prévisionnel de l'exercice et la trésorerie mobilisable sans risque pour l'exploitation.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "situation comptable intermédiaire",
+            "prévisionnel de trésorerie"
+          ]
+        },
+        {
+          "etape": 2,
+          "titre": "Simuler plusieurs scénarios de répartition",
+          "description": "Chiffrer au moins trois hypothèses (rémunération renforcée, dividende renforcé, mix équilibré) avec leur coût global et leur net perçu.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "simulation chiffrée par scénario"
+          ]
+        },
+        {
+          "etape": 3,
+          "titre": "Vérifier l'impact sur la protection sociale",
+          "description": "Mesurer l'effet de chaque scénario sur les droits retraite, la prévoyance et les indemnités journalières, en particulier si la part dividendes augmente.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "relevé de carrière / points retraite",
+            "contrat de prévoyance en cours"
+          ]
+        },
+        {
+          "etape": 4,
+          "titre": "Arbitrer et formaliser",
+          "description": "Retenir le scénario privilégié, ajuster le bulletin de paie si besoin, et préparer la décision d'affectation du résultat pour l'assemblée générale.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "projet de bulletin de paie",
+            "projet de PV d'affectation du résultat"
+          ]
+        },
+        {
+          "etape": 5,
+          "titre": "Acter la décision avant la clôture",
+          "description": "Faire voter l'affectation du résultat en assemblée générale dans les délais légaux et transmettre les pièces à l'expert-comptable pour la liasse.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "PV d'assemblée générale signé",
+            "déclaration de revenus de capitaux mobiliers à anticiper"
+          ]
+        }
+      ],
+      "benefices": [
+        "Réduction potentielle du coût global de prélèvement (IS + charges sociales + IR + prélèvements sociaux) à niveau de revenu constant",
+        "Pilotage volontaire des droits sociaux (retraite, prévoyance) plutôt que subi",
+        "Meilleure gestion de la trésorerie personnelle du dirigeant sur l'année",
+        "Souplesse : l'arbitrage peut être revu chaque exercice selon le résultat réel",
+        "Effet de levier possible si la part capitalisée sert à préparer une structuration ultérieure (ex. holding)"
+      ],
+      "risques": [
+        "Sous-protection sociale si la part dividendes devient trop dominante (moins de trimestres validés, prévoyance réduite pour un assimilé salarié)",
+        "Pour les SARL/EURL : requalification en cotisations sociales de la part de dividendes dépassant 10 % du capital + primes + comptes courants d'associés",
+        "Instabilité réglementaire : les règles sociales et fiscales applicables aux dividendes de dirigeant ont déjà évolué et peuvent encore changer",
+        "Erreur d'anticipation si le résultat réel de l'exercice diffère fortement du prévisionnel utilisé pour l'arbitrage",
+        "Risque de trésorerie si la distribution fragilise le besoin en fonds de roulement de la société"
+      ],
+      "impacts360": {
+        "fiscalitePersonnelle": "La rémunération est imposée à l'IR selon le barème progressif (0 à 45 % par tranche) après abattement, le dividende est imposé au PFU de 30 % (12,8 % IR + 17,2 % PS) sauf option pour le barème progressif — l'arbitrage doit être rapporté à la tranche marginale d'imposition réelle du foyer.",
+        "fiscaliteSociete": "La rémunération est une charge déductible qui réduit le bénéfice imposable à l'IS ; le dividende est prélevé sur un résultat déjà taxé à l'IS (15 % jusqu'à 42 500 €, 25 % au-delà) — capitaliser ne change rien à l'IS déjà dû sur l'exercice.",
+        "chargesSociales": "Le président assimilé salarié paie des cotisations sur sa rémunération mais pas sur ses dividendes (hors PS) ; le gérant majoritaire TNS paie environ 35 à 45 % de cotisations sur son revenu net, et ses dividendes au-delà de 10 % du capital + primes + CCA basculent aussi en assiette sociale.",
+        "protectionSociale": "Une rémunération trop faible réduit la couverture prévoyance (arrêt de travail, invalidité, décès) et peut limiter l'accès à certaines garanties calculées sur le salaire déclaré.",
+        "retraite": "Les droits à la retraite (base et complémentaire) se construisent avant tout sur la rémunération déclarée. Pour un président assimilé salarié, les dividendes n'entrent jamais dans cette assiette. Pour un gérant majoritaire TNS, seule la part de dividendes requalifiée en revenu professionnel au-delà du seuil des 10 % (capital + primes + CCA) génère des cotisations et donc des droits ; l'essentiel des dividendes reste hors assiette retraite. Dans les deux cas, un dirigeant qui bascule trop vite vers le dividende ralentit l'acquisition de trimestres et de points.",
+        "tresoreriePersonnelle": "Le dividende est en général versé une fois par an après l'AG d'affectation du résultat, alors que la rémunération est mensuelle et régulière — l'arbitrage doit tenir compte du rythme de vos besoins personnels.",
+        "tresorerieProfessionnelle": "Capitaliser (ne pas distribuer) préserve la trésorerie de la société et sa capacité d'autofinancement ; distribuer un dividende important peut réduire la marge de manœuvre pour un investissement ou un aléa.",
+        "transmission": "Le résultat laissé en réserve augmente la valeur des titres de la société, ce qui peut jouer sur une future cession (impact sur la plus-value) ou une transmission (Dutreil, donation) — un point à anticiper en amont.",
+        "gouvernance": "L'affectation du résultat (mise en réserve ou distribution) est une décision d'assemblée générale : en présence de coassociés, elle doit être arbitrée collectivement et documentée par un procès-verbal."
+      },
+      "simulateurId": "dividendes-vs-salaire",
+      "questionsMarcel": [
+        "Suis-je éligible à cette stratégie ?",
+        "Quelles données me manquent ?",
+        "Quels sont les risques dans ma situation ?",
+        "Compare cette stratégie avec une alternative",
+        "Prépare les questions pour mon expert-comptable"
+      ],
+      "checklist": [
+        {
+          "id": "verifier-statut-social",
+          "label": "Vérifier mon statut social exact (assimilé salarié ou TNS)",
+          "responsable": "vous"
+        },
+        {
+          "id": "estimer-resultat-exercice",
+          "label": "Estimer avec l'expert-comptable le résultat distribuable de l'exercice",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "simuler-scenarios",
+          "label": "Faire chiffrer au moins 3 scénarios de répartition rémunération/dividende",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "verifier-seuil-tns",
+          "label": "Vérifier le seuil des 10 % du capital + primes + CCA si SARL/EURL",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "checker-protection-sociale",
+          "label": "Vérifier l'impact sur mes droits retraite et ma prévoyance",
+          "responsable": "vous"
+        },
+        {
+          "id": "preparer-pv-ag",
+          "label": "Préparer le projet de PV d'affectation du résultat",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "voter-affectation",
+          "label": "Faire voter l'affectation du résultat en assemblée générale avant clôture",
+          "responsable": "vous"
+        }
+      ],
+      "documents": [
+        "Derniers bulletins de paie du dirigeant",
+        "Situation comptable intermédiaire ou liasse fiscale N-1",
+        "Statuts de la société",
+        "Procès-verbaux d'affectation du résultat des exercices précédents",
+        "Relevé de carrière retraite",
+        "Contrat de prévoyance en cours (le cas échéant)"
+      ],
+      "casPratique": {
+        "profil": "Dirigeant fictif, à titre d'illustration pédagogique — président d'une SASU de conseil, résultat net avant rémunération d'environ 150 000 €.",
+        "situationInitiale": "Le dirigeant se verse une rémunération fixe reconduite depuis 3 ans sans avoir recalculé l'arbitrage, alors que le résultat de la société a progressé.",
+        "decision": "Illustration d'une piste explorée avec l'expert-comptable : ajuster le curseur entre rémunération et dividende compte tenu du nouveau niveau de résultat, sans dégrader la couverture prévoyance déjà jugée nécessaire par le dirigeant.",
+        "chronologie": "Simulation chiffrée en amont de clôture (J-90) → échanges avec l'expert-comptable sur les scénarios → décision d'ajustement du bulletin de paie et projet de PV d'affectation → validation en AG avant clôture d'exercice.",
+        "resultatsAttendus": "Illustratif : un dosage mieux ajusté au résultat réel peut réduire le prélèvement global à niveau de revenu net comparable — l'ampleur exacte dépend entièrement de la situation individuelle et doit être chiffrée au cas par cas.",
+        "vigilances": "Ce cas est un exemple pédagogique générique, pas une recommandation. Toute application chiffrée doit être vérifiée avec l'expert-comptable sur les données réelles du dirigeant et de sa société."
+      },
+      "faq": [
+        {
+          "q": "Le PFU à 30 % est-il toujours plus avantageux que le salaire ?",
+          "r": "Pas nécessairement. Le PFU (12,8 % IR + 17,2 % PS) peut être intéressant pour un dirigeant en tranche marginale élevée, mais il ne crée aucun droit social et le dividende sort d'un résultat déjà taxé à l'IS. Une comparaison chiffrée sur votre situation reste indispensable — le barème progressif sur option peut même être plus favorable pour un foyer faiblement imposé."
+        },
+        {
+          "q": "Pourquoi les dividendes sont-ils traités différemment en SARL/EURL et en SASU/SAS ?",
+          "r": "Parce que le statut social change : le gérant majoritaire de SARL/EURL est travailleur non salarié (TNS) et une partie de ses dividendes peut être requalifiée en revenu professionnel soumis à cotisations sociales (au-delà de 10 % du capital + primes + comptes courants d'associés), alors que le président de SASU/SAS, assimilé salarié, ne supporte pas cette requalification sur ses dividendes."
+        },
+        {
+          "q": "Capitaliser (ne rien distribuer) a-t-il un intérêt si je n'ai pas de projet immédiat ?",
+          "r": "Cela peut en avoir un : cela limite l'IS déjà payé à ce qui a été acquitté sur l'exercice, préserve la trésorerie de la société, et peut préparer une structuration ultérieure (ex. holding) — mais ce n'est pertinent que si la trésorerie a un usage futur identifié, sinon l'argent reste immobilisé sans objectif clair."
+        },
+        {
+          "q": "Dois-je refaire cet arbitrage tous les ans ?",
+          "r": "Oui, en principe. Le résultat de la société, les seuils fiscaux, votre tranche d'imposition et vos besoins de couverture sociale évoluent chaque exercice : un arbitrage figé depuis plusieurs années est rarement optimal."
+        },
+        {
+          "q": "Cette fiche me dit-elle quel dosage choisir ?",
+          "r": "Non. Cette fiche explique la mécanique et les leviers ; elle ne constitue pas une recommandation personnalisée. Le dosage précis se construit avec votre expert-comptable, sur vos chiffres réels."
+        }
+      ],
+      "sources": [
+        "Art. 62 CGI — imposition de la rémunération des gérants majoritaires",
+        "Art. 200 A CGI — prélèvement forfaitaire unique (PFU) sur les revenus de capitaux mobiliers, option pour le barème progressif",
+        "Art. 219 CGI — taux de l'impôt sur les sociétés (taux réduit PME 15 % jusqu'à 42 500 €, 25 % au-delà)",
+        "Art. L131-6 et suivants du Code de la sécurité sociale — assiette sociale des travailleurs non salariés, y compris la part de dividendes excédant 10 % du capital social pour les gérants majoritaires (référence BOFiP précise non garantie ici, à faire confirmer par l'expert-comptable)",
+        "Barèmes et taux 2026 vérifiés en interne IKCP (référentiel fiscal 2026)"
+      ],
+      "avertissement": "Cette fiche a une vocation pédagogique et informative. Elle ne constitue ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération. Toute décision doit être validée au regard de votre situation avec les professionnels compétents (art. L.541-1 du Code monétaire et financier).",
+      "version": "1.0",
+      "dateRevue": "2026-07-28",
+      "auteur": "IKCP"
+    },
+    {
+      "slug": "holding_patrimoniale",
+      "categorie": "Structuration",
+      "titre": "La holding animatrice : structurer vos participations et vos dividendes",
+      "sousTitre": "Regrouper vos sociétés sous une société mère pour faire remonter vos dividendes en quasi-franchise d'impôt (régime mère-fille), capitaliser votre trésorerie et préparer une cession ou une transmission",
+      "resumeExecutif": [
+        "Votre société d'exploitation à l'IS génère des excédents de trésorerie récurrents que vous ne consommez pas immédiatement.",
+        "Une holding interposée entre vous et votre société permet de faire remonter les dividendes avec une fiscalité très allégée (régime mère-fille, quote-part de frais et charges de 5% seulement).",
+        "Bénéfice principal : la trésorerie capitalisée au niveau de la holding reste disponible pour financer un réinvestissement, une croissance externe ou préparer une transmission, sans frottement fiscal immédiat à ce stade.",
+        "Limite principale : ce n'est pertinent que si vous n'avez pas besoin de sortir cette trésorerie de la sphère professionnelle pour votre vie personnelle — et le montage doit avoir une substance économique réelle, sous peine de requalification pour abus de droit."
+      ],
+      "profilCible": [
+        "Dirigeant d'une société d'exploitation soumise à l'IS, avec trésorerie disponible récurrente au-delà des besoins du cycle d'exploitation",
+        "Dirigeant qui n'a pas de besoin de consommation immédiate de ses dividendes à titre personnel",
+        "Dirigeant envisageant une croissance externe, une diversification d'actifs professionnels, ou une cession/transmission à moyen-long terme",
+        "Dirigeant déjà à la tête de plusieurs sociétés ou anticipant la création d'une nouvelle activité"
+      ],
+      "complexite": "experte",
+      "horizonMiseEnOeuvre": "3-9 mois",
+      "requiresHumanValidation": true,
+      "probleme": "Quand une société d'exploitation à l'IS accumule une trésorerie que le dirigeant ne consomme pas immédiatement, la sortir en dividendes vers son patrimoine personnel a un coût fiscal immédiat : le prélèvement forfaitaire unique de 30% (12,8% d'impôt sur le revenu + 17,2% de prélèvements sociaux), ou davantage en cas d'option pour le barème progressif. Or cet argent n'est pas destiné à la consommation immédiate — il peut avoir vocation à financer un rachat de société, une nouvelle activité, un investissement professionnel, ou simplement à être mis de côté en vue d'une cession ou d'une transmission future. Interposer une société holding entre le dirigeant et sa société d'exploitation permet de faire remonter les dividendes à ce niveau intermédiaire avec une fiscalité très réduite, et de les réemployer sans qu'ils transitent par le patrimoine personnel du dirigeant.",
+      "questionType": "« J'ai plus de 300 000 € de trésorerie qui dort dans ma société et je n'en ai pas besoin pour vivre — comment l'utiliser pour investir ou préparer la suite sans tout perdre en impôt au moment de la sortir ? »",
+      "quandEviter": [
+        "Trésorerie professionnelle excédentaire faible ou ponctuelle (généralement en-deçà de 100 000 €, ordre de grandeur indicatif et non un seuil légal — à valider au cas par cas, cf. FAQ) : le coût de structuration et de gestion annuel de la holding peut dépasser le gain fiscal attendu",
+        "Société soumise à l'impôt sur le revenu (BIC/BNC en nom propre, société de personnes sans option IS) : le régime mère-fille ne s'applique pas",
+        "Besoin de consommer personnellement les dividendes à court terme : la trésorerie capitalisée en holding reste dans la sphère professionnelle tant qu'elle n'est pas redistribuée aux personnes physiques",
+        "Projet de cession de la société d'exploitation déjà engagé ou imminent, sans autre motif que fiscal : le montage risque d'être requalifié en abus de droit s'il n'a pas de substance économique réelle et antérieure au projet de cession",
+        "Dirigeant sans aucune visibilité sur un usage futur de la trésorerie capitalisée (pas de projet de réinvestissement, de croissance externe ou de transmission) : la rigidité de la structure n'est alors pas justifiée"
+      ],
+      "schemaEtapes": [
+        {
+          "titre": "Constitution de la holding",
+          "description": "Création d'une société mère (SAS ou SARL selon la gouvernance souhaitée), détenue directement par le dirigeant."
+        },
+        {
+          "titre": "Apport ou cession des titres de la société d'exploitation",
+          "description": "Le dirigeant transfère tout ou partie de ses titres à la holding, en apport (report d'imposition possible sous conditions) ou en cession."
+        },
+        {
+          "titre": "Remontée des dividendes en régime mère-fille",
+          "description": "La société d'exploitation distribue ses dividendes à la holding, qui les reçoit quasi-exonérés d'IS (quote-part de frais et charges de 5% seulement)."
+        },
+        {
+          "titre": "Capitalisation ou réemploi au niveau de la holding",
+          "description": "La trésorerie remontée finance un réinvestissement, une croissance externe, ou reste capitalisée en vue d'une transmission."
+        },
+        {
+          "titre": "Caractérisation de l'animation (si holding animatrice recherchée)",
+          "description": "La holding définit et met en œuvre une politique de groupe et anime effectivement ses filiales, condition d'accès à certains régimes de faveur (Dutreil, IFI biens professionnels)."
+        }
+      ],
+      "explicationClaire": "Une société holding est une société dont l'objet est de détenir des participations dans d'autres sociétés — ici, votre société d'exploitation. On distingue la holding « passive » (elle se contente de détenir les titres et d'encaisser les dividendes) de la holding « animatrice » (elle participe activement à la conduite de la politique du groupe et rend des services à ses filiales — stratégie, gestion, prestations administratives ou financières facturées). Cette distinction est déterminante : une holding animatrice peut ouvrir l'accès à des régimes de faveur réservés aux biens professionnels (exonération d'IFI notamment) ou à la transmission d'entreprise (pacte Dutreil), ce qui n'est en principe pas le cas d'une holding purement passive.\n\nLe levier fiscal central de l'opération est le régime mère-fille (art. 145 et 216 du Code général des impôts) : lorsque la holding détient au moins 5% du capital de sa filiale depuis au moins 2 ans, les dividendes qu'elle reçoit de cette filiale sont exonérés d'impôt sur les sociétés, à l'exception d'une quote-part de frais et charges de 5% qui reste imposée à l'IS (15% jusqu'à 42 500 € de bénéfice, 25% au-delà, selon le régime de la holding). Concrètement, sur 100 000 € de dividendes remontés, de l'ordre de 95 000 € échappent à toute imposition immédiate à ce niveau — contre une fiscalité de 30% (prélèvement forfaitaire unique) si ces mêmes dividendes avaient été versés directement au dirigeant personne physique.\n\nCette trésorerie capitalisée dans la holding peut ensuite être réemployée — rachat d'une autre société, investissement, financement d'un nouveau projet — sans avoir transité par le patrimoine personnel du dirigeant, et donc sans frottement fiscal à ce stade. En revanche, le jour où la holding redistribue à son tour ces sommes au dirigeant personne physique, la fiscalité personnelle (PFU 30% ou barème) s'applique alors normalement : la holding ne supprime pas l'impôt, elle le reporte et permet de capitaliser en franchise quasi-totale dans l'intervalle. C'est aussi un outil structurant pour préparer une transmission ou une cession : une holding bien caractérisée comme animatrice, avec substance économique réelle et suffisamment antérieure à un éventuel projet de cession, peut faciliter l'articulation avec un pacte Dutreil (réduction de 75% de la valeur transmise, sous engagements de conservation) ou avec un mécanisme de réinvestissement du produit de cession (report d'imposition de l'art. 150-0 B ter CGI en cas d'apport-cession).",
+      "aRetenir": "La holding ne supprime pas l'impôt sur les dividendes, elle en reporte et en allège la charge tant que la trésorerie reste capitalisée dans la structure professionnelle (quote-part de 5% seulement au lieu de 30% de PFU) — mais elle exige une substance économique réelle et un horizon de moyen-long terme pour ne pas être requalifiée en montage artificiel.",
+      "prerequis": {
+        "juridiques": [
+          "Société(s) d'exploitation existante(s) et immatriculée(s)",
+          "Capacité à constituer une nouvelle société (statuts, capital social)",
+          "Le cas échéant, accord des associés/actionnaires minoritaires de la société d'exploitation"
+        ],
+        "fiscaux": [
+          "Société d'exploitation soumise à l'impôt sur les sociétés (IS)",
+          "Détention par la holding d'au moins 5% du capital de la filiale, pendant au moins 2 ans, pour bénéficier du régime mère-fille",
+          "Analyse préalable de l'option apport vs cession de titres (impact sur la plus-value et le report d'imposition éventuel)"
+        ],
+        "sociaux": [
+          "Statut social du dirigeant à réexaminer selon la gouvernance retenue pour la holding",
+          "Vigilance sur la rémunération éventuelle du dirigeant au niveau de la holding si celle-ci facture des prestations à la filiale"
+        ],
+        "financiers": [
+          "Excédents de trésorerie récurrents et significatifs dans la société d'exploitation, au-delà des besoins du fonds de roulement",
+          "Capacité à financer les frais de structuration (constitution, actes, honoraires)",
+          "Absence de besoin de consommation personnelle immédiate de cette trésorerie"
+        ],
+        "documentaires": [
+          "Dernières liasses fiscales de la société d'exploitation",
+          "Statuts et K-bis de la société d'exploitation",
+          "Tableau de répartition du capital et pacte d'associés existant",
+          "Prévisionnel de trésorerie de la société d'exploitation"
+        ]
+      },
+      "miseEnOeuvre": [
+        {
+          "etape": 1,
+          "titre": "Diagnostic patrimonial et fiscal préalable",
+          "description": "Analyse de la structure existante, du niveau de trésorerie récurrente, des objectifs (croissance externe, transmission, cession) et de la pertinence du montage.",
+          "acteurs": [
+            "expert-comptable",
+            "avocat fiscaliste"
+          ],
+          "documents": [
+            "liasses fiscales",
+            "tableau de détention du capital"
+          ]
+        },
+        {
+          "etape": 2,
+          "titre": "Choix de la forme juridique et de la gouvernance de la holding",
+          "description": "Détermination de la forme (SAS/SARL), du capital, de la présidence/gérance et des statuts, en cohérence avec les objectifs de transmission éventuels.",
+          "acteurs": [
+            "avocat fiscaliste",
+            "expert-comptable"
+          ],
+          "documents": [
+            "projet de statuts"
+          ]
+        },
+        {
+          "etape": 3,
+          "titre": "Constitution de la holding",
+          "description": "Immatriculation de la société holding et ouverture d'un compte bancaire dédié.",
+          "acteurs": [
+            "avocat fiscaliste",
+            "expert-comptable"
+          ],
+          "documents": [
+            "statuts signés",
+            "attestation de dépôt de capital",
+            "extrait K-bis"
+          ]
+        },
+        {
+          "etape": 4,
+          "titre": "Apport ou cession des titres de la société d'exploitation à la holding",
+          "description": "Transfert des titres détenus par le dirigeant vers la holding, avec analyse du régime applicable (apport avec report d'imposition possible sous conditions, ou cession).",
+          "acteurs": [
+            "avocat fiscaliste",
+            "expert-comptable",
+            "commissaire aux apports le cas échéant"
+          ],
+          "documents": [
+            "traité d'apport ou acte de cession",
+            "rapport du commissaire aux apports"
+          ]
+        },
+        {
+          "etape": 5,
+          "titre": "Formalisation de la politique d'animation (si holding animatrice visée)",
+          "description": "Mise en place effective de prestations de services, conventions de management fees, direction commune entre holding et filiale, pour caractériser une animation réelle et traçable.",
+          "acteurs": [
+            "avocat fiscaliste",
+            "expert-comptable"
+          ],
+          "documents": [
+            "conventions de prestations de services",
+            "procès-verbaux d'assemblée"
+          ]
+        },
+        {
+          "etape": 6,
+          "titre": "Mise en œuvre de la remontée de dividendes",
+          "description": "Vote et distribution des dividendes de la filiale vers la holding sous le régime mère-fille, suivi fiscal de la quote-part de frais et charges.",
+          "acteurs": [
+            "expert-comptable"
+          ],
+          "documents": [
+            "procès-verbal de distribution",
+            "déclaration fiscale IS de la holding"
+          ]
+        }
+      ],
+      "benefices": [
+        "Fiscalité très allégée sur la remontée de dividendes (quote-part de frais et charges de 5% seulement, contre 30% de PFU en cas de versement direct au dirigeant)",
+        "Capacité de réinvestissement immédiat de la trésorerie capitalisée (croissance externe, diversification d'actifs professionnels) sans frottement fiscal à ce stade",
+        "Lisibilité et structuration du groupe en cas de développement multi-sociétés",
+        "Outil de préparation à la transmission (articulation possible avec un pacte Dutreil, sous conditions) ou à la cession (réemploi du produit de cession via l'apport-cession de l'art. 150-0 B ter CGI, sous conditions)"
+      ],
+      "risques": [
+        "Requalification pour abus de droit (art. L.64 du Livre des procédures fiscales) si le montage n'a pas de substance économique réelle ou s'il est mis en place uniquement pour échapper à l'impôt à l'approche d'une cession",
+        "Coût de structuration et de gestion récurrent (comptabilité, juridique, fiscalité d'un véhicule supplémentaire)",
+        "Rigidité : la trésorerie capitalisée en holding reste dans la sphère professionnelle tant qu'elle n'est pas redistribuée au dirigeant, avec une nouvelle fiscalité personnelle à ce moment-là",
+        "Nécessité de caractériser précisément l'animation (prestations facturées, direction commune, politique de groupe formalisée) pour prétendre aux régimes réservés aux holdings animatrices (Dutreil, IFI biens professionnels) — une holding purement passive n'y a en principe pas droit",
+        "Vigilance particulière en cas d'apport-cession (art. 150-0 B ter CGI) : le report d'imposition est conditionné à un réinvestissement économique d'une partie significative du produit de cession dans un délai encadré si la holding cède les titres apportés peu de temps après l'apport"
+      ],
+      "impacts360": {
+        "fiscalitePersonnelle": "Pas de fiscalité personnelle immédiate sur les dividendes remontés à la holding, car ils ne transitent pas par le dirigeant ; l'imposition personnelle (PFU 30% ou barème) redevient due seulement lorsque la holding distribue à son tour au dirigeant.",
+        "fiscaliteSociete": "Régime mère-fille (art. 145 et 216 CGI) : quote-part de frais et charges de 5% imposée à l'IS au niveau de la holding (15% jusqu'à 42 500 € de bénéfice, 25% au-delà) ; le reste des dividendes est quasi-exonéré.",
+        "chargesSociales": "En principe neutre sur les dividendes remontés à la holding, sans cotisations sociales à ce niveau ; à surveiller si le dirigeant perçoit une rémunération de la holding pour des prestations de management.",
+        "protectionSociale": "Neutre en tant que telle ; dépend du statut social retenu si le dirigeant devient également mandataire rémunéré de la holding.",
+        "retraite": "Neutre : l'opération ne génère pas de droits à retraite supplémentaires, sauf rémunération distincte perçue au titre d'un mandat social dans la holding.",
+        "tresoreriePersonnelle": "Pas d'impact positif immédiat : la trésorerie reste capitalisée au niveau professionnel tant qu'elle n'est pas redistribuée personnellement.",
+        "tresorerieProfessionnelle": "Capitalisation renforcée au niveau du groupe, disponible pour financer un réinvestissement, une croissance externe ou un nouveau projet, sans frottement fiscal immédiat lors de la remontée.",
+        "transmission": "Structure pouvant faciliter une transmission ultérieure, en articulation possible avec un pacte Dutreil sous conditions strictes d'animation et d'engagements de conservation, à condition d'anticiper suffisamment en amont de tout projet de cession ou de donation.",
+        "gouvernance": "Création d'un niveau de gouvernance supplémentaire (organes de la holding), utile en cas de développement multi-sociétés ou de préparation à une transmission progressive à des héritiers ou associés."
+      },
+      "simulateurId": null,
+      "questionsMarcel": [
+        "Suis-je éligible à cette stratégie ?",
+        "Quelles données me manquent ?",
+        "Quels sont les risques dans ma situation ?",
+        "Compare cette stratégie avec une alternative",
+        "Prépare les questions pour mon expert-comptable"
+      ],
+      "checklist": [
+        {
+          "id": "diagnostic-tresorerie",
+          "label": "Faire chiffrer par l'expert-comptable le niveau de trésorerie professionnelle réellement excédentaire (au-delà du besoin en fonds de roulement)",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "choix-apport-cession",
+          "label": "Arbitrer entre apport et cession de titres avec l'avocat fiscaliste (impact sur la plus-value et le report d'imposition)",
+          "responsable": "avocat"
+        },
+        {
+          "id": "redaction-statuts",
+          "label": "Faire rédiger les statuts de la holding en cohérence avec les objectifs de gouvernance et de transmission",
+          "responsable": "avocat"
+        },
+        {
+          "id": "formalisation-animation",
+          "label": "Formaliser les prestations de services et la politique de groupe si une holding animatrice est recherchée",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "validation-substance",
+          "label": "Faire valider la substance économique du montage pour sécuriser le risque d'abus de droit",
+          "responsable": "avocat"
+        },
+        {
+          "id": "suivi-fiscal-annuel",
+          "label": "Organiser le suivi fiscal annuel de la quote-part de frais et charges et des distributions",
+          "responsable": "expert-comptable"
+        }
+      ],
+      "documents": [
+        "Dernières liasses fiscales de la société d'exploitation",
+        "Statuts et K-bis de la société d'exploitation et de la holding",
+        "Tableau de répartition du capital et pacte d'associés",
+        "Traité d'apport ou acte de cession des titres",
+        "Rapport du commissaire aux apports (si apport)",
+        "Conventions de prestations de services intragroupe",
+        "Procès-verbaux d'assemblée générale (constitution, distributions)",
+        "Prévisionnel de trésorerie du groupe"
+      ],
+      "casPratique": {
+        "profil": "Dirigeant d'une SAS à l'IS, activité de conseil, 52 ans",
+        "situationInitiale": "La société génère un résultat distribuable récurrent et a accumulé plus de 400 000 € de trésorerie excédentaire sur plusieurs exercices, sans besoin de consommation personnelle immédiate ; le dirigeant envisage de racheter une société complémentaire dans les deux à trois ans et de préparer progressivement la transmission de son groupe.",
+        "decision": "Constitution d'une holding détenue directement par le dirigeant, apport des titres de la société d'exploitation, mise en place d'une convention de prestations de management pour caractériser l'animation.",
+        "chronologie": "Mois 1-2 : diagnostic et choix de structuration. Mois 3-4 : constitution de la holding et apport des titres. Mois 5 : première distribution de dividendes vers la holding sous le régime mère-fille. Mois 6 et suivants : suivi de la politique d'animation et étude du projet de croissance externe.",
+        "resultatsAttendus": "Sur 100 000 € de dividendes remontés à la holding, de l'ordre de 95 000 € échappent à l'impôt sur les sociétés immédiat (quote-part de frais et charges de 5% seulement), contre une fiscalité de l'ordre de 30% si ces mêmes sommes avaient été versées directement au dirigeant. Cette trésorerie capitalisée peut ensuite financer tout ou partie du projet de croissance externe — ordre de grandeur donné à titre pédagogique, à faire chiffrer précisément sur le cas réel.",
+        "vigilances": "L'antériorité de la holding par rapport à tout projet de cession de la société d'exploitation doit être suffisante, et l'animation doit être réelle et documentée (conventions, facturation effective, direction commune), pour ne pas exposer le montage à une requalification pour abus de droit."
+      },
+      "faq": [
+        {
+          "q": "Une holding permet-elle de ne jamais payer d'impôt sur mes dividendes ?",
+          "r": "Non. Le régime mère-fille allège fortement la fiscalité au moment où les dividendes remontent de la filiale vers la holding (quote-part de frais et charges de 5% seulement), mais l'impôt personnel (PFU 30% ou barème) redevient dû le jour où la holding vous reverse cette trésorerie à titre personnel. La holding reporte et réduit l'impôt, elle ne le supprime pas."
+        },
+        {
+          "q": "Quelle différence entre une holding passive et une holding animatrice ?",
+          "r": "Une holding passive se contente de détenir des titres et d'encaisser des dividendes. Une holding animatrice participe activement à la conduite de la politique de ses filiales et leur rend des services (stratégie, gestion, prestations facturées). Cette distinction conditionne l'accès à certains régimes de faveur, comme l'exonération d'IFI au titre des biens professionnels ou l'articulation avec un pacte Dutreil — à faire valider précisément avec un professionnel selon votre situation."
+        },
+        {
+          "q": "Puis-je créer ma holding juste avant de vendre ma société pour payer moins d'impôt sur la plus-value ?",
+          "r": "C'est précisément le scénario qui expose le plus au risque de requalification pour abus de droit. L'administration fiscale et le juge examinent l'antériorité et la substance économique du montage : une holding créée peu de temps avant une cession, sans autre finalité que fiscale, est un motif classique de contrôle. Ce point doit être anticipé très en amont avec un avocat fiscaliste."
+        },
+        {
+          "q": "À partir de quel niveau de trésorerie une holding devient-elle pertinente ?",
+          "r": "Il n'existe pas de seuil légal, mais le coût de structuration et de gestion annuel d'une société supplémentaire doit rester proportionné au gain fiscal attendu. En pratique, l'opération est généralement étudiée à partir d'excédents de trésorerie récurrents significatifs — à valider au cas par cas avec votre expert-comptable."
+        },
+        {
+          "q": "La holding a-t-elle un impact sur mon IFI personnel ?",
+          "r": "Cela dépend de la qualification de la holding. Si elle est reconnue comme animatrice au sens de l'article 975 du CGI, les titres peuvent bénéficier de l'exonération des biens professionnels à l'IFI, sous conditions strictes. Si elle reste passive, cette exonération n'est en principe pas acquise. Ce point technique doit être vérifié précisément avec un professionnel au regard de votre situation."
+        }
+      ],
+      "sources": [
+        "Art. 145 CGI (conditions d'application du régime mère-fille)",
+        "Art. 216 CGI (quote-part de frais et charges de 5% sur les dividendes de filiales)",
+        "Art. 787 B CGI (pacte Dutreil-transmission)",
+        "Art. 790 CGI (réduction de droits de 50% en cas de donation en pleine propriété avant 65 ans)",
+        "Art. 150-0 B ter CGI (report d'imposition en cas d'apport de titres à une société contrôlée par l'apporteur, suivi de cession)",
+        "Art. L.64 du Livre des procédures fiscales (procédure de répression des abus de droit)",
+        "Art. 975 CGI (exonération d'IFI des biens professionnels, dont les titres de holding animatrice sous conditions — référence à faire confirmer avec un professionnel selon la situation)",
+        "Doctrine administrative BOFiP sur la notion de holding animatrice (référence précise à valider avec un professionnel, la position administrative évoluant régulièrement)"
+      ],
+      "avertissement": "Cette fiche a une vocation pédagogique et informative. Elle ne constitue ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération. Toute décision doit être validée au regard de votre situation avec les professionnels compétents (art. L.541-1 du Code monétaire et financier).",
+      "version": "1.0",
+      "dateRevue": "2026-07-28",
+      "auteur": "IKCP"
+    },
+    {
+      "slug": "interessement-pee-pereco",
+      "categorie": "Épargne salariale & optimisation de trésorerie",
+      "titre": "Intéressement, PEE et PERECO : transformer la trésorerie d'entreprise en épargne salariale quasi exonérée",
+      "sousTitre": "Fidéliser vos salariés et valoriser votre excédent de trésorerie avec un forfait social à 0 % en TPE/PME",
+      "resumeExecutif": [
+        "Dispositif facultatif combinant intéressement, PEE et PERECO pour transformer une trésorerie d'entreprise excédentaire en épargne salariale collective.",
+        "L'intéressement déclenche la prime selon une formule liée aux résultats ou à la performance ; le PEE et le PERECO reçoivent et font fructifier ces sommes sur 5 ans ou jusqu'à la retraite.",
+        "Bénéfice principal : pour les entreprises de moins de 50 salariés, le forfait social tombe à 0 %, seule la CSG/CRDS à 9,7 % restant due sur les sommes versées.",
+        "Limite principale : les sommes sont bloquées 5 ans (PEE) ou jusqu'au départ en retraite (PERECO), sauf cas de déblocage anticipé prévus par la loi."
+      ],
+      "profilCible": [
+        "Dirigeant de PME/TPE soumise à l'IS, effectif idéalement inférieur à 50 salariés, avec un résultat bénéficiaire récurrent ou en croissance",
+        "Trésorerie d'entreprise excédentaire et stable sur plusieurs exercices, au-delà du besoin en fonds de roulement",
+        "Volonté de fidéliser et motiver les salariés sans augmenter durablement la masse salariale fixe (salaires, charges patronales classiques)",
+        "Dirigeant lui-même intéressé à se constituer une épargne dans le même cadre social que ses salariés (éligibilité ouverte de 1 à 249 salariés)"
+      ],
+      "complexite": "intermediaire",
+      "horizonMiseEnOeuvre": "60-120 jours",
+      "requiresHumanValidation": false,
+      "probleme": "Beaucoup de dirigeants de PME laissent dormir une trésorerie excédentaire sur le compte courant de leur société, faute d'outil pour la faire fructifier sans la sortir immédiatement (et donc sans subir la fiscalité et les charges d'un dividende ou d'un salaire). Dans le même temps, ils cherchent à motiver et fidéliser leurs salariés sans alourdir durablement leur masse salariale fixe. L'intéressement, couplé à un PEE et un PERECO, répond aux deux enjeux à la fois : il permet de redistribuer une part de la performance de l'entreprise sous une forme largement exonérée de charges sociales, tout en construisant une épargne collective bloquée qui profite autant aux salariés qu'au dirigeant lui-même.",
+      "questionType": "« J'ai de la trésorerie qui dort sur le compte de ma société : comment la faire fructifier tout en motivant mes salariés, sans plomber mes charges sociales ? »",
+      "quandEviter": [
+        "Résultat de l'entreprise instable, cyclique ou déficitaire sur plusieurs exercices : une formule d'intéressement sans effet réel démotive plus qu'elle ne motive",
+        "Trésorerie excédentaire ponctuelle (exercice exceptionnel isolé) : un accord engage sur 1 à 5 ans, à ne pas caler sur un seul bon exercice",
+        "Effectif atteignant ou dépassant 50 salariés sans vérification préalable du taux de forfait social réellement applicable au moment de la mise en place",
+        "Société sans aucun salarié (dirigeant seul en SASU/EURL) : l'intérêt collectif disparaît, un PER individuel est en général plus adapté",
+        "Besoin de liquidités à court terme pour le dirigeant lui-même : les sommes placées sont bloquées 5 ans (PEE) ou jusqu'à la retraite (PERECO)"
+      ],
+      "schemaEtapes": [
+        {
+          "titre": "Diagnostic de la capacité contributive",
+          "description": "Vérifier que la trésorerie et le résultat de l'entreprise permettent d'engager un accord pluriannuel sans tension de trésorerie."
+        },
+        {
+          "titre": "Construction de la formule d'intéressement",
+          "description": "Choisir des critères de déclenchement (résultat, ratio financier, objectifs qualitatifs) et un mode de répartition entre salariés."
+        },
+        {
+          "titre": "Formalisation de l'accord",
+          "description": "Signer l'accord d'intéressement, par accord collectif ou décision unilatérale de l'employeur (DUE) selon l'effectif."
+        },
+        {
+          "titre": "Mise en place du PEE et du PERECO",
+          "description": "Choisir un teneur de compte (banque ou assureur), définir la gamme de fonds et rédiger les règlements de plan."
+        },
+        {
+          "titre": "Dépôt administratif",
+          "description": "Déposer l'accord et les règlements auprès de la DDETS via la plateforme TéléAccords dans les délais légaux."
+        },
+        {
+          "titre": "Communication et adhésion des salariés",
+          "description": "Informer chaque salarié de ses droits, du règlement des plans et des choix d'affectation possibles."
+        }
+      ],
+      "explicationClaire": "L'intéressement est une prime collective facultative, calculée selon une formule que vous définissez vous-même (par exemple un pourcentage du résultat, ou l'atteinte d'objectifs) et versée à tous les salariés selon une clé de répartition (uniforme, proportionnelle au salaire ou au temps de présence). Contrairement à une prime classique, cette somme n'est pas un salaire : elle échappe aux cotisations sociales patronales et salariales de droit commun. Le PEE (plan d'épargne entreprise) est le « compte d'accueil » de cette prime : le salarié, et le dirigeant sous conditions, peut y placer son intéressement et des versements volontaires, avec un abondement possible de l'entreprise (une somme complémentaire versée par l'employeur). Les sommes sont bloquées 5 ans, sauf déblocage anticipé (achat de la résidence principale, mariage, naissance d'un 3e enfant, divorce, invalidité, décès, rupture du contrat de travail, création d'entreprise, surendettement). Le PERECO (plan d'épargne retraite d'entreprise collectif, anciennement PERCO) fonctionne sur le même principe mais avec un horizon plus long : l'épargne reste bloquée jusqu'au départ à la retraite, sauf cas de déblocage anticipé plus restreints (achat de la résidence principale, invalidité, décès, surendettement, fin de droits au chômage). Le forfait social est une cotisation patronale spécifique qui s'applique normalement sur les sommes d'épargne salariale pour compenser leur exonération de charges sociales classiques. Pour les entreprises de moins de 50 salariés, ce forfait social est ramené à 0 % : c'est le principal levier d'optimisation de cette stratégie, car il n'existe quasiment aucun autre mode de rémunération collective aussi peu chargé socialement. Seules restent dues la CSG (contribution sociale généralisée) et la CRDS (contribution au remboursement de la dette sociale), au taux global de 9,7 %, prélevées à la source sur les sommes versées. Côté entreprise, les sommes versées au titre de l'intéressement et de l'abondement sont des charges déductibles du résultat imposable à l'IS, ce qui réduit d'autant la base taxable au taux de 15 % (jusqu'à 42 500 € de bénéfice, sous conditions) ou 25 % au-delà. Depuis la loi PACTE (2019), le dirigeant lui-même peut bénéficier de ces dispositifs dans les entreprises de 1 à 249 salariés, dans les mêmes conditions que ses salariés, dès lors qu'un accord d'intéressement est mis en place. Attention toutefois : les plafonds précis (plafond individuel d'intéressement exprimé en pourcentage du PASS, plafond annuel de la sécurité sociale, plafonds d'abondement du PEE et du PERECO) sont révisés chaque année et ne figurent pas dans les barèmes vérifiés de cette fiche : ils doivent être confirmés avec votre expert-comptable au moment de la mise en place, tout comme le taux de forfait social si l'effectif approche ou dépasse le seuil de 50 salariés.",
+      "aRetenir": "L'intéressement, le PEE et le PERECO forment un triptyque qui transforme une part de la performance de l'entreprise en épargne salariale quasi exonérée de charges sociales (forfait social 0 % sous 50 salariés, CSG/CRDS 9,7 % seulement), au prix d'un blocage de 5 ans ou jusqu'à la retraite. C'est un outil collectif dont l'intérêt dépend directement de la stabilité du résultat de l'entreprise et de l'adhésion réelle des salariés.",
+      "prerequis": {
+        "juridiques": [
+          "Société employant au moins un salarié en plus du dirigeant (l'intérêt collectif du dispositif repose sur l'effectif)",
+          "Absence d'accord d'intéressement déjà en vigueur couvrant la même période, ou accord arrivant à échéance",
+          "Existence ou création d'un CSE (comité social et économique) si l'effectif l'impose, pour la consultation le cas échéant"
+        ],
+        "fiscaux": [
+          "Société soumise à l'impôt sur les sociétés (IS), avec un résultat suffisant pour que les sommes versées soient réellement déductibles",
+          "Vérification du millésime en vigueur des plafonds (PASS, plafonds d'abondement) au moment de la signature de l'accord"
+        ],
+        "sociaux": [
+          "Effectif de l'entreprise clairement établi sur les 5 dernières années (seuil de 50 salariés déterminant pour le taux de forfait social)",
+          "Confirmation du taux de CSG/CRDS applicable (9,7 %) auprès de l'expert-comptable au moment des versements"
+        ],
+        "financiers": [
+          "Trésorerie et résultat suffisamment stables pour tenir un engagement pluriannuel (accord conclu pour 1 à 5 ans)",
+          "Budget prévisionnel de l'enveloppe d'intéressement et, le cas échéant, de l'abondement employeur au PEE/PERECO"
+        ],
+        "documentaires": [
+          "Bilans et liasses fiscales des 3 derniers exercices",
+          "Effectif moyen annuel et historique des variations d'effectif",
+          "Convention collective applicable (peut prévoir des dispositions spécifiques sur l'épargne salariale)"
+        ]
+      },
+      "miseEnOeuvre": [
+        {
+          "etape": 1,
+          "titre": "Diagnostic de la capacité contributive",
+          "description": "Analyser avec l'expert-comptable la trésorerie, le résultat et la récurrence des excédents pour calibrer un engagement soutenable sur 1 à 5 ans.",
+          "acteurs": [
+            "dirigeant",
+            "expert-comptable"
+          ],
+          "documents": [
+            "bilan et liasse fiscale des 3 derniers exercices",
+            "prévisionnel de trésorerie"
+          ]
+        },
+        {
+          "etape": 2,
+          "titre": "Construction de la formule d'intéressement",
+          "description": "Définir les critères de déclenchement (résultat, ratio financier, objectifs qualitatifs) et la clé de répartition entre salariés, en s'assurant du caractère aléatoire exigé par la loi.",
+          "acteurs": [
+            "dirigeant",
+            "expert-comptable",
+            "avocat en droit social (recommandé)"
+          ],
+          "documents": [
+            "projet de formule de calcul",
+            "simulations sur les 3 derniers exercices"
+          ]
+        },
+        {
+          "etape": 3,
+          "titre": "Formalisation de l'accord d'intéressement",
+          "description": "Signer l'accord par la voie adaptée à l'effectif (accord collectif, référendum, ou décision unilatérale de l'employeur pour les entreprises de moins de 50 salariés dépourvues de délégué syndical/CSE).",
+          "acteurs": [
+            "dirigeant",
+            "CSE le cas échéant",
+            "avocat en droit social"
+          ],
+          "documents": [
+            "projet d'accord d'intéressement",
+            "PV de consultation du CSE si applicable"
+          ]
+        },
+        {
+          "etape": 4,
+          "titre": "Mise en place du PEE et du PERECO",
+          "description": "Sélectionner un teneur de compte (banque ou assureur), négocier la gamme de fonds proposée et rédiger les règlements des deux plans.",
+          "acteurs": [
+            "dirigeant",
+            "teneur de compte épargne salariale",
+            "expert-comptable"
+          ],
+          "documents": [
+            "règlement du PEE",
+            "règlement du PERECO",
+            "notice d'information des fonds"
+          ]
+        },
+        {
+          "etape": 5,
+          "titre": "Dépôt administratif",
+          "description": "Déposer l'accord d'intéressement et les règlements de plan auprès de la DDETS via la plateforme TéléAccords, dans les délais légaux pour sécuriser les exonérations.",
+          "acteurs": [
+            "dirigeant",
+            "expert-comptable"
+          ],
+          "documents": [
+            "accord signé",
+            "formulaire de dépôt TéléAccords",
+            "récépissé de dépôt"
+          ]
+        },
+        {
+          "etape": 6,
+          "titre": "Communication et adhésion des salariés",
+          "description": "Informer individuellement chaque salarié de ses droits, du fonctionnement des plans et des choix d'affectation possibles (versement immédiat ou placement).",
+          "acteurs": [
+            "dirigeant",
+            "service RH"
+          ],
+          "documents": [
+            "notice d'information individuelle",
+            "bulletin de choix d'affectation"
+          ]
+        }
+      ],
+      "benefices": [
+        "Forfait social ramené à 0 % sur l'intéressement, la participation et l'abondement pour les entreprises de moins de 50 salariés",
+        "Sommes déductibles du résultat imposable à l'IS pour l'entreprise, réduisant la base taxable",
+        "Exonération de charges sociales classiques (seule la CSG/CRDS à 9,7 % reste due) : un mode de redistribution nettement moins chargé qu'un salaire ou une prime classique",
+        "Outil de fidélisation et de motivation collective, sans engagement permanent sur la masse salariale fixe",
+        "Le dirigeant lui-même peut en bénéficier (entreprises de 1 à 249 salariés), dans les mêmes conditions que ses salariés",
+        "Diversifie l'usage de la trésorerie excédentaire de l'entreprise au lieu de la laisser improductive"
+      ],
+      "risques": [
+        "Formule d'intéressement mal calibrée : trop générale, elle peut être requalifiée par l'URSSAF en complément de salaire (perte des exonérations, rappel de charges) ; trop ambitieuse, elle démotive",
+        "Caractère aléatoire de l'intéressement : une formule garantissant quasi systématiquement un versement peut être remise en cause par l'administration",
+        "Blocage des sommes 5 ans (PEE) ou jusqu'à la retraite (PERECO), sauf cas de déblocage anticipé limitativement énumérés par la loi",
+        "Engagement pluriannuel (1 à 5 ans) : un retournement d'activité peut rendre la formule inadaptée avant son terme",
+        "Charge administrative récurrente : suivi des accords, dépôt, information des salariés, gestion des plans avec le teneur de compte",
+        "Plafonds et taux (PASS, forfait social, abondement) révisés chaque année : une fiche non actualisée peut conduire à une erreur de calcul",
+        "Aucun moteur d'éligibilité automatisé n'est encore connecté à cette fiche dans Marcel (pas d'entrée dans le référentiel strategies.json) : l'analyse de pertinence pour votre situation reste qualitative à ce stade, à valider avec votre expert-comptable et, si besoin, un avocat en droit social"
+      ],
+      "impacts360": {
+        "fiscalitePersonnelle": "Pour le salarié comme pour le dirigeant éligible, les sommes versées sur le PEE ou le PERECO échappent à l'impôt sur le revenu tant qu'elles restent bloquées (hors CSG/CRDS 9,7 % prélevée à la source) ; en cas de versement immédiat sans placement, l'intéressement est en revanche soumis au barème de l'IR comme un revenu classique.",
+        "fiscaliteSociete": "Les sommes versées au titre de l'intéressement et de l'abondement sont des charges déductibles du résultat imposable, réduisant la base soumise à l'IS (15 % jusqu'à 42 500 € de bénéfice sous conditions, 25 % au-delà).",
+        "chargesSociales": "Forfait social à 0 % pour les entreprises de moins de 50 salariés sur l'intéressement, la participation et l'abondement ; seule la CSG/CRDS à 9,7 % reste due sur les sommes versées, contre les cotisations patronales et salariales classiques dues sur un salaire ou une prime ordinaire.",
+        "protectionSociale": "Les sommes versées en intéressement n'entrant pas dans l'assiette des cotisations sociales classiques, elles ne génèrent pas de droits supplémentaires en matière d'assurance maladie, chômage ou prévoyance (contrairement au salaire).",
+        "retraite": "Le PERECO constitue une brique de retraite collective complémentaire ; les versements volontaires y ouvrent droit, comme sur un PER individuel, à une déduction du revenu imposable dans la limite du plafond global de déduction (88 911 € en 2026, plafond partagé avec les autres produits PER).",
+        "tresoreriePersonnelle": "Le dirigeant éligible immobilise une partie de sa rémunération variable pendant 5 ans (PEE) ou jusqu'à la retraite (PERECO) : un arbitrage à faire avec ses autres besoins de liquidités.",
+        "tresorerieProfessionnelle": "L'entreprise mobilise une part de sa trésorerie excédentaire de façon récurrente et engageante (accord pluriannuel), ce qui suppose une capacité contributive stable et budgétée à l'avance.",
+        "transmission": "Sans effet direct sur la transmission du patrimoine professionnel du dirigeant ; l'épargne constituée sur le PEE/PERECO du dirigeant entre dans son patrimoine personnel transmissible selon les règles de droit commun (succession, donation).",
+        "gouvernance": "La mise en place d'un accord d'intéressement et de plans d'épargne salariale renforce l'image sociale de l'entreprise (attractivité RH) et peut nécessiter, selon l'effectif, une consultation du CSE, ce qui structure le dialogue social interne."
+      },
+      "simulateurId": null,
+      "questionsMarcel": [
+        "Suis-je éligible à cette stratégie ?",
+        "Quelles données me manquent ?",
+        "Quels sont les risques dans ma situation ?",
+        "Compare cette stratégie avec une alternative",
+        "Prépare les questions pour mon expert-comptable"
+      ],
+      "checklist": [
+        {
+          "id": "diagnostic-tresorerie",
+          "label": "Faire valider par l'expert-comptable la capacité de l'entreprise à tenir un engagement pluriannuel",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "choix-formule",
+          "label": "Définir une formule d'intéressement au caractère réellement aléatoire, testée sur 3 exercices passés",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "choix-vehicule-accord",
+          "label": "Choisir la voie de conclusion de l'accord (collectif, référendum ou DUE selon l'effectif)",
+          "responsable": "avocat"
+        },
+        {
+          "id": "redaction-accord",
+          "label": "Rédiger et faire signer l'accord d'intéressement",
+          "responsable": "avocat"
+        },
+        {
+          "id": "reglements-plans",
+          "label": "Rédiger les règlements du PEE et du PERECO avec le teneur de compte choisi",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "depot-teleaccords",
+          "label": "Déposer l'accord et les règlements sur la plateforme TéléAccords dans les délais légaux",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "information-salaries",
+          "label": "Informer individuellement chaque salarié de ses droits et des choix d'affectation",
+          "responsable": "vous"
+        },
+        {
+          "id": "verif-plafonds-annuels",
+          "label": "Vérifier chaque année les plafonds et taux en vigueur (PASS, forfait social, abondement) avant le calcul",
+          "responsable": "expert-comptable"
+        }
+      ],
+      "documents": [
+        "Accord d'intéressement signé",
+        "Règlement du PEE",
+        "Règlement du PERECO",
+        "Récépissé de dépôt TéléAccords (DDETS)",
+        "Notice d'information individuelle remise aux salariés",
+        "Bulletins de calcul et de répartition de l'intéressement",
+        "Bilans et liasses fiscales des 3 derniers exercices"
+      ],
+      "casPratique": {
+        "profil": "Dirigeant président d'une SAS de conseil, 12 salariés, résultat net récurrent autour de 150 000 € sur les 3 derniers exercices, trésorerie excédentaire stable d'environ 200 000 €.",
+        "situationInitiale": "La trésorerie s'accumule sur le compte de la société sans usage défini ; deux salariés clés ont récemment reçu des offres concurrentes ; le dirigeant hésite entre une augmentation de salaire pérenne et un outil plus flexible.",
+        "decision": "Mise en place à explorer d'un accord d'intéressement indexé sur le résultat net, couplé à un PEE avec abondement employeur et un PERECO ; le dirigeant, potentiellement éligible en tant que président de SAS avec un effectif de 12 salariés, participerait au même dispositif, sous réserve de validation par l'expert-comptable.",
+        "chronologie": "Mois 1-2 : diagnostic et construction de la formule avec l'expert-comptable. Mois 2-3 : rédaction et signature de l'accord (DUE envisageable en l'absence de CSE avec délégué syndical), mise en place des règlements PEE/PERECO avec un teneur de compte. Mois 3-4 : dépôt TéléAccords et communication aux salariés. Exercice N+1 : premier calcul et versement de l'intéressement.",
+        "resultatsAttendus": "Une part de la performance de l'entreprise potentiellement redistribuée avec un forfait social à 0 % (effectif inférieur à 50 salariés) et seule la CSG/CRDS à 9,7 % due sur les sommes versées, à comparer chiffres à l'appui avec une augmentation de salaire équivalente et ses charges patronales classiques, avant toute décision.",
+        "vigilances": "Le caractère réellement aléatoire de la formule doit être démontrable sur plusieurs exercices ; l'effectif doit rester surveillé chaque année pour conserver le forfait social à 0 % ; les plafonds (PASS, abondement) doivent être revérifiés au moment du premier calcul avec l'expert-comptable."
+      },
+      "faq": [
+        {
+          "q": "Le dirigeant peut-il vraiment bénéficier de l'intéressement au même titre que ses salariés ?",
+          "r": "Potentiellement oui : depuis la loi PACTE, dans les entreprises de 1 à 249 salariés, le chef d'entreprise (et son conjoint collaborateur ou associé) peut être bénéficiaire de l'intéressement, du PEE et du PERECO, dès lors qu'un accord est en place et applicable à l'ensemble des salariés. Les modalités précises doivent être vérifiées avec l'expert-comptable au regard du statut exact du dirigeant."
+        },
+        {
+          "q": "Que se passe-t-il si l'entreprise dépasse 50 salariés en cours d'accord ?",
+          "r": "Le franchissement du seuil de 50 salariés a des conséquences sur le taux de forfait social applicable et peut déclencher d'autres obligations. Ce point doit être anticipé avec l'expert-comptable dès la conception de l'accord, en particulier si l'effectif est proche du seuil."
+        },
+        {
+          "q": "Peut-on débloquer l'épargne avant les 5 ans du PEE ?",
+          "r": "Oui, dans des cas limitativement énumérés par la loi : achat ou agrandissement de la résidence principale, mariage ou Pacs, naissance ou adoption d'un 3e enfant, divorce avec garde d'un enfant, invalidité, décès, rupture du contrat de travail, création ou reprise d'entreprise, surendettement. Chaque cas doit être justifié auprès du teneur de compte."
+        },
+        {
+          "q": "L'intéressement peut-il remplacer une augmentation de salaire ?",
+          "r": "Non, la loi interdit expressément que l'intéressement se substitue à un élément de rémunération existant (salaire, prime habituelle). C'est un complément, pas un substitut, et cette règle est strictement contrôlée par l'URSSAF."
+        },
+        {
+          "q": "Faut-il un PEE et un PERECO, ou un seul suffit-il ?",
+          "r": "Les deux répondent à des horizons différents : le PEE pour une épargne à moyen terme (5 ans, projets de vie), le PERECO pour la retraite. Il est possible de démarrer uniquement avec un PEE, mais coupler les deux permet d'orienter une partie de l'intéressement vers la retraite avec un avantage fiscal supplémentaire à l'entrée, à étudier au cas par cas."
+        }
+      ],
+      "sources": [
+        "Art. L. 3312-1 et suivants du Code du travail (intéressement)",
+        "Art. L. 3332-1 et suivants du Code du travail (plan d'épargne d'entreprise)",
+        "Art. L. 3334-1 et suivants du Code du travail (plan d'épargne retraite d'entreprise collectif)",
+        "Art. L. 137-15 et suivants du Code de la sécurité sociale (forfait social) — taux et seuils à revérifier chaque année, référence non garantie à 100 % dans cette fiche",
+        "Loi n°2019-486 du 22 mai 2019 relative à la croissance et la transformation des entreprises (loi PACTE)",
+        "Loi n°2023-1107 du 29 novembre 2023 portant transposition de l'accord national interprofessionnel relatif au partage de la valeur",
+        "BOFiP-Impôts, BOI-RSA-ES (épargne salariale) — références précises de sous-fiches à confirmer, non garanties à 100 % dans cette fiche"
+      ],
+      "avertissement": "Cette fiche a une vocation pédagogique et informative. Elle ne constitue ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération. Toute décision doit être validée au regard de votre situation avec les professionnels compétents (art. L.541-1 du Code monétaire et financier).",
+      "version": "1.0",
+      "dateRevue": "2026-07-28",
+      "auteur": "IKCP"
+    },
+    {
+      "slug": "per-dirigeant",
+      "categorie": "Retraite & épargne",
+      "titre": "Le PER individuel : déduire aujourd'hui, préparer sa retraite demain",
+      "sousTitre": "Piloter sa tranche marginale d'imposition dans le temps grâce au plan d'épargne retraite",
+      "resumeExecutif": [
+        "Les versements volontaires sur un PER individuel se déduisent du revenu imposable, dans la limite d'un plafond annuel de 88 911€ en 2026 (report possible sur 3 ans).",
+        "L'économie d'impôt est immédiate et proportionnelle à votre tranche marginale d'imposition (TMI), jusqu'à 45%.",
+        "Bénéfice principal : lisser l'IR entre les années de forte activité et la retraite, avec une sortie flexible en capital, en rente viagère, ou un mix des deux.",
+        "Limite principale : les sommes sont bloquées jusqu'à la liquidation de la retraite (sauf cas de déblocage anticipé) et l'impôt n'est que différé, pas supprimé, à la sortie."
+      ],
+      "profilCible": [
+        "Dirigeant ou profession libérale imposé à une TMI d'au moins 30%, avec une capacité d'épargne disponible sans besoin de liquidité avant la retraite",
+        "TNS ou assimilé-salarié souhaitant lisser son IR entre une année de forte activité et des revenus de retraite anticipés plus faibles",
+        "Dirigeant ayant déjà arbitré sa rémunération (salaire/dividendes) et disposant d'un reliquat de trésorerie personnelle à placer avant le 31 décembre"
+      ],
+      "complexite": "intermediaire",
+      "horizonMiseEnOeuvre": "0-30 jours",
+      "requiresHumanValidation": false,
+      "probleme": "Un dirigeant qui dégage un revenu imposable élevé une année donnée paie l'impôt sur le revenu au barème progressif, parfois jusqu'à 41% ou 45% sur la tranche haute. S'il n'a pas anticipé, il subit cette imposition en totalité alors qu'il pourrait légalement en décaler une partie vers sa retraite, période où ses revenus - et donc sa tranche d'imposition - seront probablement plus faibles. Le PER individuel est l'outil prévu par la loi pour organiser ce décalage, mais encore faut-il vérifier son plafond de déduction disponible, calibrer le bon montant, et ne pas immobiliser une épargne dont on pourrait avoir besoin avant la retraite.",
+      "questionType": "« J'ai un excédent de trésorerie personnelle cette année et une grosse imposition qui arrive, dois-je le placer sur mon PER pour payer moins d'impôt ? »",
+      "quandEviter": [
+        "TMI actuelle faible (0% ou 11%) : la déduction n'apporte que peu ou pas d'avantage fiscal, une enveloppe liquide (assurance-vie, PEA) est souvent plus pertinente",
+        "Besoin de liquidité prévisible avant la retraite sur un projet non couvert par les cas de déblocage anticipé",
+        "Épargne de précaution insuffisante par ailleurs : ne jamais loger la trésorerie de sécurité sur un PER",
+        "Anticipation d'une TMI plus élevée à la retraite qu'aujourd'hui (cas rare, ex. forte hausse de revenus patrimoniaux prévue)",
+        "Plafond de déduction déjà saturé par des versements sur un contrat Madelin retraite ou un PER d'entreprise (le plafond est global, tous supports confondus)"
+      ],
+      "schemaEtapes": [
+        {
+          "titre": "Vérifier le plafond disponible",
+          "description": "Consulter l'avis d'imposition ou l'espace impots.gouv.fr pour connaître le plafond épargne retraite disponible, cumul des 3 années précédentes inclus."
+        },
+        {
+          "titre": "Calibrer le montant selon la TMI",
+          "description": "Simuler l'économie d'impôt (montant versé x TMI) et fixer le versement en cohérence avec la trésorerie personnelle disponible."
+        },
+        {
+          "titre": "Choisir et ouvrir le contrat",
+          "description": "Comparer les PER du marché (frais, gestion pilotée, options de sortie) et ouvrir le contrat retenu."
+        },
+        {
+          "titre": "Verser avant le 31 décembre",
+          "description": "Effectuer le versement avant la clôture de l'année fiscale pour qu'il s'impute sur le revenu imposable de l'année en cours."
+        },
+        {
+          "titre": "Déclarer le versement",
+          "description": "Reporter le montant versé dans la déclaration de revenus, dans la case dédiée à l'épargne retraite."
+        },
+        {
+          "titre": "Anticiper la sortie",
+          "description": "Réévaluer 5 à 10 ans avant la retraite l'arbitrage entre sortie en capital, en rente viagère, ou un mix des deux."
+        }
+      ],
+      "explicationClaire": "Le PER individuel (PERin) est un compte d'épargne créé par la loi PACTE de 2019, destiné à préparer la retraite. Il fonctionne comme une enveloppe de capitalisation : vous versez librement les sommes de votre choix, ces sommes sont investies selon une allocation que vous choisissez (fonds euros sécurisé, unités de compte plus dynamiques, gestion pilotée qui désensibilise automatiquement le risque à l'approche de la retraite), et elles restent bloquées jusqu'à votre départ en retraite - sauf cas de déblocage anticipé prévus par la loi (achat de la résidence principale, invalidité, décès du conjoint, surendettement, fin de droits au chômage, cessation d'activité non salariée suite à liquidation judiciaire).\n\nL'intérêt fiscal du PER tient à un mécanisme simple : chaque versement volontaire peut être déduit de votre revenu imposable, dans la limite d'un plafond individuel annuel (88 911€ en 2026), lui-même cumulable avec les plafonds non utilisés des 3 années précédentes et mutualisable avec votre conjoint. Concrètement, si votre tranche marginale d'imposition (TMI - le taux d'impôt qui s'applique à la dernière tranche de vos revenus) est de 41%, un versement de 10 000€ réduit votre impôt de l'année de 4 100€. Mais attention : ce n'est pas un cadeau fiscal, c'est un décalage dans le temps. L'impôt non payé aujourd'hui sera dû plus tard, à la sortie du PER. La stratégie n'est donc pertinente que si votre TMI à la retraite sera probablement plus basse qu'aujourd'hui - ce qui est le cas le plus fréquent pour un dirigeant dont les revenus baissent après la cessation d'activité.\n\nÀ la retraite, vous choisissez comment récupérer votre épargne : en capital (en une fois ou de façon fractionnée), en rente viagère (un revenu garanti à vie), ou en mixant les deux - une souplesse propre au PER, plus large que les anciens contrats Madelin ou PERP. La fiscalité de sortie dépend de ce choix : en cas de sortie en capital, la part correspondant aux versements que vous avez déduits est réintégrée dans votre revenu imposable et taxée au barème IR, tandis que la plus-value générée est taxée au prélèvement forfaitaire unique de 30% (12,8% d'IR + 17,2% de prélèvements sociaux) ou sur option au barème. En cas de sortie en rente, un régime spécifique de taxation des rentes s'applique, avec des règles qui varient selon que les versements ont été déduits ou non - un point technique à valider précisément avec votre expert-comptable au moment de la liquidation.",
+      "aRetenir": "Le PER n'exonère pas d'impôt, il le décale dans le temps : son intérêt dépend de l'écart entre votre TMI actuelle et votre TMI anticipée à la retraite, et il ne doit mobiliser que de l'épargne dont vous n'aurez pas besoin avant la liquidation de vos droits.",
+      "prerequis": {
+        "juridiques": [
+          "Être une personne physique fiscalement domiciliée en France",
+          "Aucune condition d'âge minimum ou maximum légale pour ouvrir un PER individuel (à vérifier selon les conditions du contrat choisi)"
+        ],
+        "fiscaux": [
+          "Être imposable à l'IR (TMI > 0%) pour que la déduction ait un effet réel",
+          "Disposer d'un plafond de déduction disponible suffisant (vérifiable sur l'avis d'imposition ou impots.gouv.fr)"
+        ],
+        "sociaux": [
+          "Aucune condition de statut social particulière : le PER individuel est ouvert aux salariés, TNS, dirigeants assimilés-salariés et professions libérales"
+        ],
+        "financiers": [
+          "Capacité d'épargne disponible sans besoin de liquidité avant la retraite",
+          "Épargne de précaution déjà constituée par ailleurs (le PER ne doit pas être le seul matelas de trésorerie personnelle)"
+        ],
+        "documentaires": [
+          "Avis d'imposition N-1",
+          "Pièce d'identité et justificatif de domicile (KYC ouverture de contrat)",
+          "RIB pour les versements"
+        ]
+      },
+      "miseEnOeuvre": [
+        {
+          "etape": 1,
+          "titre": "Diagnostic du plafond de déduction disponible",
+          "description": "Récupérer sur l'avis d'imposition ou l'espace particulier impots.gouv.fr le plafond épargne retraite disponible pour l'année, incluant le report des plafonds non utilisés des 3 années précédentes.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "Avis d'imposition N-1",
+            "Espace impots.gouv.fr"
+          ]
+        },
+        {
+          "etape": 2,
+          "titre": "Calibrage du montant selon la TMI",
+          "description": "Simuler l'économie d'impôt attendue (montant versé x TMI) et fixer le montant du versement en cohérence avec la trésorerie personnelle disponible et le plafond calculé.",
+          "acteurs": [
+            "vous",
+            "expert-comptable",
+            "CGP"
+          ],
+          "documents": [
+            "Simulation IR",
+            "Dernier avis d'imposition"
+          ]
+        },
+        {
+          "etape": 3,
+          "titre": "Sélection et ouverture du contrat",
+          "description": "Comparer les PER disponibles sur le marché (frais d'entrée, frais de gestion, frais d'arbitrage, options de gestion pilotée, conditions de sortie) puis ouvrir le contrat retenu.",
+          "acteurs": [
+            "vous",
+            "CGP"
+          ],
+          "documents": [
+            "Document d'informations clés (DIC)",
+            "Conditions générales du contrat"
+          ]
+        },
+        {
+          "etape": 4,
+          "titre": "Versement avant le 31 décembre",
+          "description": "Effectuer le virement sur le PER avant la clôture de l'année civile pour que la déduction s'applique sur le revenu imposable de l'année en cours.",
+          "acteurs": [
+            "vous"
+          ],
+          "documents": [
+            "Justificatif de virement",
+            "Attestation de versement du gestionnaire"
+          ]
+        },
+        {
+          "etape": 5,
+          "titre": "Déclaration du versement à l'IR",
+          "description": "Reporter le montant versé dans la case dédiée à l'épargne retraite de la déclaration de revenus, en s'appuyant sur l'attestation fiscale annuelle transmise par le gestionnaire du PER.",
+          "acteurs": [
+            "vous",
+            "expert-comptable"
+          ],
+          "documents": [
+            "Attestation fiscale annuelle du PER",
+            "Déclaration de revenus (formulaire 2042)"
+          ]
+        },
+        {
+          "etape": 6,
+          "titre": "Pilotage de l'allocation et anticipation de la sortie",
+          "description": "Suivre annuellement l'allocation du PER (désensibilisation progressive du risque à l'approche de la retraite) et réévaluer 5 à 10 ans avant la liquidation l'arbitrage entre sortie en capital, en rente, ou un mix des deux.",
+          "acteurs": [
+            "vous",
+            "CGP"
+          ],
+          "documents": [
+            "Relevés de compte annuels du PER",
+            "Simulation de revenus à la retraite"
+          ]
+        }
+      ],
+      "benefices": [
+        "Économie d'impôt immédiate proportionnelle à la TMI, jusqu'à 45% du montant versé",
+        "Capitalisation de l'économie d'impôt réinvestie, avec effet de levier sur le long terme",
+        "Flexibilité de sortie (capital, rente, ou mix) plus large que les anciens contrats Madelin ou PERP",
+        "Plafond mutualisable avec le conjoint et report possible sur 3 ans en cas de sous-utilisation",
+        "Sortie anticipée possible sans attendre la retraite pour l'achat de la résidence principale",
+        "Option de versement non déduit possible : dans ce cas, le capital correspondant sort sans imposition, seule la plus-value est taxée"
+      ],
+      "risques": [
+        "Blocage des fonds jusqu'à la retraite, hors cas de déblocage anticipé strictement définis par la loi",
+        "L'avantage fiscal n'est qu'un décalage : le capital déduit est réintégré au barème IR à la sortie, ce n'est pas une exonération",
+        "Risque de marché sur la partie investie en unités de compte, sans garantie en capital hors fonds euros",
+        "Frais parfois significatifs (entrée, gestion, arbitrage) qui peuvent éroder la performance nette sur la durée",
+        "Erreur d'arbitrage si la TMI à la retraite s'avère finalement proche ou supérieure à la TMI actuelle",
+        "Horizon très long (parfois plusieurs décennies) exposé à un risque de changement des règles fiscales entre le versement et la sortie"
+      ],
+      "impacts360": {
+        "fiscalitePersonnelle": "Réduction immédiate du revenu imposable à hauteur du versement (dans la limite du plafond disponible), donc baisse de l'IR de l'année ; imposition différée et généralement partielle à la sortie (barème IR sur le capital déduit, PFU 30% sur les gains).",
+        "fiscaliteSociete": "Aucun impact si le versement est réalisé à titre personnel par le dirigeant : ce n'est pas une charge déductible de la société. À ne pas confondre avec un PER d'entreprise (PERO/PERECO) alimenté par la société, qui suit un régime différent.",
+        "chargesSociales": "Aucune cotisation sociale sur un versement volontaire personnel : ce n'est pas un élément de rémunération soumis à charges.",
+        "protectionSociale": "Le PER n'améliore pas les droits à la retraite obligatoire par répartition (régime de base et complémentaire) ; il constitue une épargne complémentaire par capitalisation, distincte des cotisations sociales retraite.",
+        "retraite": "Constitue un complément de revenu à la retraite, disponible en capital, en rente viagère, ou en combinaison des deux selon l'arbitrage effectué.",
+        "tresoreriePersonnelle": "Immobilisation des sommes versées jusqu'à la retraite (hors cas de déblocage anticipé), à piloter en cohérence avec les autres réserves de liquidité du foyer.",
+        "tresorerieProfessionnelle": "Neutre si le versement est personnel et non financé par la société.",
+        "transmission": "En cas de décès avant la liquidation du PER, les sommes sont transmises aux bénéficiaires désignés selon des règles qui dépendent du support du contrat (assurantiel ou bancaire) et de l'âge au décès ; le régime exact (proche de l'assurance-vie ou de la succession classique) doit être vérifié contrat par contrat, ce point n'est pas détaillé ici avec certitude.",
+        "gouvernance": "Aucun impact sur la gouvernance de l'entreprise : le PER individuel est un produit d'épargne personnelle du dirigeant, sans lien avec les statuts ou les organes de décision."
+      },
+      "simulateurId": "versement-per",
+      "questionsMarcel": [
+        "Suis-je éligible à cette stratégie ?",
+        "Quelles données me manquent ?",
+        "Quels sont les risques dans ma situation ?",
+        "Compare cette stratégie avec une alternative",
+        "Prépare les questions pour mon expert-comptable"
+      ],
+      "checklist": [
+        {
+          "id": "verifier-plafond",
+          "label": "Vérifier le plafond de déduction disponible sur l'avis d'imposition ou impots.gouv.fr",
+          "responsable": "vous"
+        },
+        {
+          "id": "calculer-tmi",
+          "label": "Calculer sa TMI actuelle et estimer sa TMI probable à la retraite",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "comparer-contrats",
+          "label": "Comparer au moins 2 à 3 PER (frais, gestion pilotée, options de sortie)",
+          "responsable": "vous"
+        },
+        {
+          "id": "verser-avant-31-decembre",
+          "label": "Effectuer le versement avant le 31 décembre pour l'imputer sur l'année fiscale en cours",
+          "responsable": "vous"
+        },
+        {
+          "id": "declarer-versement",
+          "label": "Reporter le versement dans la déclaration de revenus, case dédiée à l'épargne retraite",
+          "responsable": "expert-comptable"
+        },
+        {
+          "id": "reevaluer-sortie",
+          "label": "Réévaluer la stratégie de sortie (capital/rente) 5 à 10 ans avant la retraite",
+          "responsable": "vous"
+        }
+      ],
+      "documents": [
+        "Avis d'imposition N-1",
+        "Attestation fiscale annuelle du PER",
+        "Document d'informations clés (DIC) et conditions générales du contrat",
+        "Déclaration de revenus (formulaire 2042)"
+      ],
+      "casPratique": {
+        "profil": "Dirigeant de SASU (président assimilé-salarié), 48 ans, rémunération et dividendes plaçant le foyer fiscal dans la tranche à 41%.",
+        "situationInitiale": "Le dirigeant dégage un excédent de trésorerie personnelle de 20 000€ en fin d'année qu'il souhaite placer. Son plafond de déduction disponible, report des 3 années précédentes inclus, s'élève à 45 000€.",
+        "decision": "Versement de 20 000€ sur un PER individuel avant le 31 décembre, en gestion pilotée à horizon retraite (environ 17 ans), sans mobiliser l'épargne de précaution déjà constituée par ailleurs.",
+        "chronologie": "Décembre N : vérification du plafond disponible et versement de 20 000€. Mai N+1 : déclaration du versement, réduction du revenu imposable de 20 000€ sur la déclaration IR. Chaque année suivante : suivi de l'allocation et désensibilisation progressive du risque. Environ 5 ans avant la retraite : premier arbitrage sur le mode de sortie envisagé.",
+        "resultatsAttendus": "Économie d'impôt immédiate estimée à 20 000€ x 41% = 8 200€ sur l'IR de l'année du versement. Constitution d'un capital retraite dont la fiscalité de sortie sera réévaluée selon la TMI réelle du dirigeant au moment de la liquidation, probablement plus basse qu'en période d'activité.",
+        "vigilances": "Confirmer que le versement ne dépasse pas le plafond disponible (l'excédent ne serait pas déductible) ; s'assurer que la somme versée n'est pas nécessaire avant la retraite ; revoir l'allocation financière régulièrement, en particulier la trajectoire de désensibilisation du risque à l'approche de l'échéance ; ne pas considérer l'économie d'impôt comme un gain net définitif tant que la fiscalité de sortie n'a pas été anticipée."
+      },
+      "faq": [
+        {
+          "q": "Le versement sur mon PER est-il toujours intéressant fiscalement ?",
+          "r": "Non, cela dépend de l'écart entre votre TMI actuelle et votre TMI anticipée à la retraite. Si votre TMI actuelle est à 0% ou 11%, la déduction apporte peu ou pas d'avantage ; l'intérêt est maximal quand la TMI actuelle est nettement supérieure à celle attendue à la retraite (typiquement 41% ou 45% aujourd'hui contre 11% ou 30% demain)."
+        },
+        {
+          "q": "Puis-je récupérer mon argent avant la retraite ?",
+          "r": "Seulement dans les cas de déblocage anticipé prévus par la loi : achat de la résidence principale, invalidité, décès du conjoint, surendettement, expiration des droits au chômage, ou cessation d'activité non salariée suite à liquidation judiciaire. En dehors de ces cas, les fonds restent bloqués jusqu'à la retraite."
+        },
+        {
+          "q": "Quelle est la différence entre sortie en capital et sortie en rente ?",
+          "r": "La sortie en capital vous donne la disponibilité immédiate des fonds (en une fois ou fractionnée), avec une imposition au barème IR sur la part correspondant aux versements déduits. La sortie en rente viagère vous garantit un revenu à vie, imposé selon un régime spécifique de taxation des rentes qu'il faut valider précisément avec votre expert-comptable au moment de la liquidation."
+        },
+        {
+          "q": "Que se passe-t-il si je choisis de ne pas déduire mes versements ?",
+          "r": "C'est une option possible à l'entrée : dans ce cas, le capital correspondant aux versements non déduits sort de retraite sans être réimposé, seule la plus-value générée est taxée. C'est une alternative pertinente quand la déduction n'apporte pas ou peu d'avantage (TMI faible)."
+        },
+        {
+          "q": "Le plafond de déduction est-il le même pour un salarié et un TNS ?",
+          "r": "Le mécanisme de calcul diffère selon le statut (assimilé-salarié ou travailleur non salarié) et les revenus professionnels de référence. Le chiffre de 88 911€ correspond au plafond individuel de droit commun 2026 ; le calcul précis applicable à votre statut TNS doit être vérifié avec votre expert-comptable, car il peut différer de ce plafond de référence."
+        },
+        {
+          "q": "Que devient mon PER en cas de décès avant la retraite ?",
+          "r": "Les sommes sont transmises aux bénéficiaires désignés dans la clause bénéficiaire du contrat, selon des règles qui dépendent du support (assurantiel ou bancaire) et de l'âge au moment du décès. Ce point technique doit être vérifié précisément avec votre CGP ou votre notaire, il n'est pas détaillé avec certitude dans cette fiche."
+        }
+      ],
+      "sources": [
+        "Art. 163 quatervicies CGI (déduction des cotisations d'épargne retraite)",
+        "Art. L.224-1 et suivants du Code monétaire et financier (cadre juridique du PER, loi PACTE n°2019-486 du 22 mai 2019)",
+        "Art. 158 CGI (régime d'imposition des pensions et rentes)",
+        "Art. 200 A CGI (taux du prélèvement forfaitaire unique de 30%, applicable aux gains générés par le PER lors du dénouement)",
+        "Références BOFiP précises sur la fiscalité de sortie du PER (capital et rente) à confirmer avant toute diffusion : les numéros exacts de fiches BOFiP ne sont pas garantis dans cette fiche et doivent être vérifiés par un professionnel avant citation client.",
+        "Art. L.541-1 du Code monétaire et financier (encadrement du conseil en investissement)"
+      ],
+      "avertissement": "Cette fiche a une vocation pédagogique et informative. Elle ne constitue ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération. Toute décision doit être validée au regard de votre situation avec les professionnels compétents (art. L.541-1 du Code monétaire et financier).",
+      "version": "1.0",
+      "dateRevue": "2026-07-28",
+      "auteur": "IKCP"
+    }
+  ]
 }
