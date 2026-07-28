@@ -27,6 +27,8 @@
  *  → ou via Cloudflare Dashboard → Workers → ikcp-client → Logs
  */
 
+import STRATEGIES_CONTENT from './strategies-content.json'; // bundlé par wrangler — Bibliothèque des stratégies dirigeant (gated has_strategies)
+
 // Règle Maxime : le FREE ne consomme AUCUN token LLM.
 // free = simulateurs (JS local, 0 token) + 1 cartographie SIREN/mois (Pappers, 0 token LLM).
 // Marcel conversationnel (LLM) = Premium. Le teaser Marcel public reste géré par
@@ -112,6 +114,10 @@ export default {
 
       if (path === '/api/v1/me' && method === 'GET') return await handleMe(session, env);
       if (path === '/api/v1/me/password' && method === 'POST') return await handleSetPassword(request, session, env);
+
+      if (path === '/api/v1/strategies' && method === 'GET') return handleStrategiesCatalogue(session);
+      const stratM = path.match(/^\/api\/v1\/strategies\/([a-z0-9_-]+)$/);
+      if (stratM && method === 'GET') return handleStrategieDetail(stratM[1], session);
       if (path === '/api/v1/usage' && method === 'GET') return await handleUsage(session, env);
       if (path === '/api/v1/usage/marcel' && method === 'POST') return await handleMarcelUsage(session, env);
       if (path === '/api/v1/pappers/lookup' && method === 'POST') return await handlePappersLookup(request, session, env);
@@ -446,10 +452,19 @@ async function requireSession(request, env) {
   }
   if (!token) return null;
   const tokenHash = await sha256(token);
-  const row = await env.D1.prepare(
-    'SELECT s.token_hash, s.user_id, s.expires_at, s.revoked_at, u.email, u.tier, u.created_at ' +
-    'FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?'
-  ).bind(tokenHash).first();
+  let row;
+  try {
+    row = await env.D1.prepare(
+      'SELECT s.token_hash, s.user_id, s.expires_at, s.revoked_at, u.email, u.tier, u.created_at, u.has_strategies ' +
+      'FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?'
+    ).bind(tokenHash).first();
+  } catch (_) {
+    // has_strategies peut manquer sur une base ancienne pas encore migrée.
+    row = await env.D1.prepare(
+      'SELECT s.token_hash, s.user_id, s.expires_at, s.revoked_at, u.email, u.tier, u.created_at ' +
+      'FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?'
+    ).bind(tokenHash).first();
+  }
   if (!row) return null;
   if (row.revoked_at) return null;
   if (Date.now() > row.expires_at) return null;
@@ -457,6 +472,7 @@ async function requireSession(request, env) {
   // Se propage à tous les handlers (Marcel, mémoire, quotas, thème).
   row.stored_tier = row.tier;
   row.tier = effectiveTier(row.tier, row.created_at);
+  row.has_strategies = Number(row.has_strategies) === 1;
   return row;
 }
 
@@ -543,6 +559,7 @@ async function handleMe(session, env) {
     id:           userRow?.id || session.user_id,
     email:        userRow?.email || session.email,
     tier:         session.tier,                                          // tier EFFECTIF (essai = premium)
+    has_strategies: session.has_strategies === true,                     // palier 249€/an (affichage seul — le vrai gate est côté /api/v1/strategies)
     stored_tier:  session.stored_tier || userRow?.tier || 'free',
     trial:        trialInfo(session.stored_tier || userRow?.tier, userRow?.created_at),
     display_name: userRow?.display_name || null,
@@ -564,6 +581,48 @@ async function handleUsage(session, env) {
     'SELECT year_month, pappers_lookups, marcel_messages FROM usage WHERE user_id = ? ORDER BY year_month DESC LIMIT 12'
   ).bind(session.user_id).all();
   return json({ history: rows.results || [] });
+}
+
+// ── BIBLIOTHÈQUE DES STRATÉGIES DIRIGEANT (palier « Stratégies » 249€/an) ───
+// Catalogue : teaser accessible à tout membre connecté (titre + résumé tronqué,
+// sans les sections à valeur commerciale). Fiche complète : gated has_strategies,
+// vérifié ici côté serveur — jamais dans le HTML/JS statique du front.
+function handleStrategiesCatalogue(session) {
+  const list = (STRATEGIES_CONTENT.fiches || []).map(f => ({
+    slug: f.slug,
+    categorie: f.categorie,
+    titre: f.titre,
+    sousTitre: f.sousTitre,
+    teaser: (f.resumeExecutif && f.resumeExecutif[0]) || '',
+    complexite: f.complexite,
+    horizonMiseEnOeuvre: f.horizonMiseEnOeuvre,
+    hasSimulateur: !!f.simulateurId,
+    requiresHumanValidation: !!f.requiresHumanValidation,
+    version: f.version,
+    dateRevue: f.dateRevue,
+  }));
+  return json({
+    total: STRATEGIES_CONTENT._meta?.cible || list.length,
+    disponibles: list.length,
+    unlocked: session.tier === 'premium' && session.has_strategies === true,
+    fiches: list,
+  });
+}
+function handleStrategieDetail(slug, session) {
+  const fiche = (STRATEGIES_CONTENT.fiches || []).find(f => f.slug === slug);
+  if (!fiche) return json({ error: 'not_found' }, 404);
+  const unlocked = session.tier === 'premium' && session.has_strategies === true;
+  if (!unlocked) {
+    return json({
+      locked: true,
+      slug: fiche.slug,
+      categorie: fiche.categorie,
+      titre: fiche.titre,
+      sousTitre: fiche.sousTitre,
+      teaser: (fiche.resumeExecutif && fiche.resumeExecutif[0]) || '',
+    });
+  }
+  return json({ locked: false, ...fiche });
 }
 
 // ──────────────────────────────────────────────────────────────

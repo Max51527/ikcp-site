@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<script>
+try{
+  if(!localStorage.getItem('ikcp_token') && !/[#&]s=/.test(location.hash||'')){
+    location.replace('/app/index.html');
+  }
+}catch(e){}
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="manifest" href="/app/manifest.json">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel — Bibliothèque des stratégies dirigeant · IKCP</title>
+<meta name="description" content="Stratégies patrimoniales pour dirigeants et professions libérales : comprendre, simuler, prioriser et préparer vos décisions." />
+<link href="/assets/vendor/fonts.css" rel="stylesheet">
+<style>
+:root, [data-theme="light"] {
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2rem);
+  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem;
+  --color-bg:#FAF8F4; --color-surface:#FFFFFF; --color-surface-2:#FBF7EF; --color-surface-offset:#F4EFE7; --color-border:#DCD3C4; --color-divider:#E4DBCC;
+  --color-text:#221E18; --color-text-muted:#6B5D52; --color-text-faint:#A99B8B; --color-text-inverse:#FAF8F4;
+  --color-primary:#1B2A4A; --color-primary-hover:#0E1729; --color-success:#3B7D5E; --color-warning:#964219; --color-error:#A12C7B; --color-gold:#C9A96E;
+  --radius-sm:.5rem; --radius-md:.9rem; --radius-lg:1.2rem; --radius-xl:1.5rem; --radius-full:9999px;
+  --shadow-sm:0 2px 8px rgba(27,42,74,.06); --shadow-md:0 12px 32px rgba(27,42,74,.10);
+  --font-body:'Outfit', sans-serif; --font-display:'Playfair Display', serif;
+}
+[data-theme="dark"] {
+  --color-bg:#0E1729; --color-surface:#16233C; --color-surface-2:#1A2A47; --color-surface-offset:#1E2F4D; --color-border:#2C3E5E; --color-divider:#243450;
+  --color-text:#FAF8F4; --color-text-muted:#B1AEA8; --color-text-faint:#77746E; --color-text-inverse:#0E1729;
+  --color-primary:#E2C896; --color-primary-hover:#C9A96E; --color-success:#7FCBA4; --color-warning:#D08A60; --color-error:#DD86BD; --color-gold:#E2C896;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow-md:0 12px 32px rgba(0,0,0,.35);
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; min-height:100vh; background:var(--color-bg); color:var(--color-text); font-family:var(--font-body); font-size:var(--text-base); line-height:1.5; }
+button,input,select { font:inherit; }
+.app { max-width:760px; margin:0 auto; padding-bottom:5rem; }
+.topbar { position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:color-mix(in srgb, var(--color-bg) 88%, transparent); border-bottom:1px solid var(--color-divider); padding:max(env(safe-area-inset-top),.5rem) var(--space-4) var(--space-3); display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.brand { display:flex; align-items:center; gap:var(--space-3); }
+.logo { width:42px; height:42px; border-radius:14px; display:grid; place-items:center; color:var(--color-text-inverse); background:linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 65%, var(--color-gold))); box-shadow:var(--shadow-sm); font-size:18px; }
+.brand h1 { margin:0; font:600 var(--text-lg)/1.05 var(--font-display); }
+.brand p { margin:.15rem 0 0; color:var(--color-text-muted); font-size:var(--text-xs); }
+.toggle { border:1px solid var(--color-border); background:var(--color-surface); color:var(--color-text); border-radius:var(--radius-full); padding:.55rem .8rem; }
+.hero { padding:var(--space-6) var(--space-4) var(--space-4); }
+.hero-card, .card { background:var(--color-surface); border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent); border-radius:var(--radius-xl); box-shadow:var(--shadow-sm); }
+.hero-card { padding:var(--space-5); display:grid; gap:var(--space-4); }
+.eyebrow { color:var(--color-gold); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
+h2,h3,h4 { margin:0; }
+.hero-card h2 { font:600 clamp(1.6rem, 4vw, 2.15rem)/1.15 var(--font-display); }
+.hero-card h2 em { font-style:italic; color:var(--color-gold); }
+.hero-card p { margin:0; color:var(--color-text-muted); }
+.kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
+.kpi { padding:.85rem; border-radius:1rem; background:var(--color-surface-offset); border:1px solid var(--color-border); text-align:center; }
+.kpi strong { display:block; font-size:var(--text-lg); }
+.hint { color:var(--color-text-muted); font-size:var(--text-sm); }
+.section { padding:var(--space-4); }
+.section-head { display:flex; justify-content:space-between; align-items:end; gap:1rem; margin-bottom:var(--space-4); }
+.section-head p { margin:0; color:var(--color-text-muted); font-size:var(--text-sm); }
+.search { display:flex; gap:.6rem; margin-bottom:var(--space-4); flex-wrap:wrap; }
+.search input[type=search] { flex:1; min-width:180px; border:1px solid var(--color-border); background:var(--color-surface); color:var(--color-text); min-height:46px; border-radius:.9rem; padding:.7rem 1rem; }
+.chips { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:var(--space-4); }
+.chip { border:1px solid var(--color-border); background:var(--color-surface); color:var(--color-text-muted); border-radius:var(--radius-full); padding:.5rem 1rem; font-size:var(--text-xs); cursor:pointer; }
+.chip.active { background:var(--color-primary); color:var(--color-text-inverse); border-color:var(--color-primary); }
+.reco-row { display:flex; gap:.7rem; overflow-x:auto; padding-bottom:.3rem; margin-bottom:var(--space-5); }
+.reco-card { flex:0 0 auto; width:230px; padding:1rem; border-radius:1.1rem; background:linear-gradient(150deg, color-mix(in srgb, var(--color-gold) 14%, var(--color-surface)), var(--color-surface)); border:1px solid var(--color-gold); cursor:pointer; }
+.reco-card .badge { font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--color-gold); }
+.reco-card h4 { font:600 15px var(--font-display); margin:.3rem 0; color:var(--color-primary); }
+.reco-card small { color:var(--color-text-muted); font-size:11.5px; display:block; }
+.strat-list { display:grid; gap:.85rem; }
+.strat-item { display:flex; justify-content:space-between; gap:1rem; align-items:center; padding:1rem; border:1px solid var(--color-border); border-radius:1rem; background:var(--color-surface-2); cursor:pointer; }
+.strat-item .cat { font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--color-gold); font-weight:700; }
+.strat-item h4 { font:600 15px var(--font-display); margin:.25rem 0 .2rem; color:var(--color-primary); }
+.strat-item small { color:var(--color-text-muted); }
+.strat-item .tags { display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.4rem; }
+.tag-sm { font-size:10px; padding:.2rem .5rem; border-radius:.5rem; background:var(--color-surface-offset); color:var(--color-text-muted); }
+.strat-item .arrow { color:var(--color-text-faint); }
+.fiche-panel { padding:var(--space-4); display:grid; gap:var(--space-5); }
+.fiche-head { padding:1.2rem; }
+.fiche-head .badges { display:flex; gap:.4rem; flex-wrap:wrap; margin:.5rem 0 .8rem; }
+.badge-pill { font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:.3rem .65rem; border-radius:var(--radius-full); background:var(--color-surface-offset); color:var(--color-text-muted); }
+.badge-pill.warn { background:color-mix(in srgb, var(--color-warning) 16%, var(--color-surface)); color:var(--color-warning); }
+.fiche-head h2 { font:600 clamp(1.4rem,3.5vw,1.9rem)/1.2 var(--font-display); color:var(--color-primary); }
+.fiche-head .sub { color:var(--color-text-muted); margin-top:.3rem; }
+.cta-row { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+.btn { display:inline-flex; align-items:center; gap:.4rem; border:0; border-radius:.9rem; padding:.75rem 1.1rem; font-weight:600; font-size:var(--text-sm); cursor:pointer; text-decoration:none; }
+.btn-primary { background:linear-gradient(135deg, var(--color-gold), color-mix(in srgb, var(--color-gold) 70%, white)); color:#20180c; }
+.btn-ghost { background:var(--color-surface-2); color:var(--color-text); border:1px solid var(--color-border); }
+.fiche-sec h3 { font:600 var(--text-lg)/1.3 var(--font-display); color:var(--color-primary); margin-bottom:.6rem; }
+.fiche-sec p, .fiche-sec li { color:var(--color-text); font-size:var(--text-sm); line-height:1.65; }
+.fiche-sec ul { margin:0; padding-left:1.1rem; }
+.retenir { padding:.9rem 1rem; border-radius:.9rem; background:color-mix(in srgb, var(--color-gold) 10%, var(--color-surface)); border:1px solid var(--color-gold); font-size:var(--text-sm); }
+.steps { display:grid; gap:.6rem; }
+.step { display:flex; gap:.7rem; padding:.8rem; border-radius:.9rem; background:var(--color-surface-2); border:1px solid var(--color-border); }
+.step .n { flex:0 0 auto; width:26px; height:26px; border-radius:50%; background:var(--color-primary); color:var(--color-text-inverse); display:grid; place-items:center; font-size:12px; font-weight:700; }
+.impact-grid { display:grid; grid-template-columns:1fr; gap:.55rem; }
+.impact-row { padding:.7rem .85rem; border-radius:.8rem; background:var(--color-surface-2); border:1px solid var(--color-border); }
+.impact-row b { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--color-gold); margin-bottom:.2rem; }
+.checklist { display:grid; gap:.5rem; }
+.check-item { display:flex; align-items:flex-start; gap:.6rem; padding:.7rem .85rem; border-radius:.8rem; background:var(--color-surface-2); border:1px solid var(--color-border); }
+.check-item input { margin-top:.2rem; width:18px; height:18px; }
+.check-item .resp { display:block; font-size:11px; color:var(--color-text-faint); margin-top:.15rem; }
+.check-progress { height:8px; border-radius:99px; background:var(--color-surface-offset); overflow:hidden; }
+.check-progress i { display:block; height:100%; background:var(--color-gold); }
+.faq-item { border-bottom:1px solid var(--color-divider); padding:.7rem 0; }
+.faq-item summary { font-weight:600; cursor:pointer; color:var(--color-primary); }
+.faq-item p { margin:.5rem 0 0; }
+.cas-pratique { display:grid; gap:.5rem; font-size:var(--text-sm); }
+.cas-pratique b { color:var(--color-gold); }
+.marcel-q { display:flex; flex-direction:column; gap:.5rem; }
+.marcel-q a { text-decoration:none; color:var(--color-text); background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:.8rem; padding:.65rem .85rem; font-size:var(--text-sm); }
+.sources { font-size:11.5px; color:var(--color-text-faint); }
+.locked-panel { padding:2rem 1.3rem; text-align:center; }
+.locked-panel h3 { font:600 var(--text-lg) var(--font-display); color:var(--color-primary); margin-bottom:.5rem; }
+.locked-panel p { color:var(--color-text-muted); max-width:44ch; margin:0 auto 1rem; }
+.blur-block { filter:blur(6px); user-select:none; padding:1rem; background:var(--color-surface-2); border-radius:.9rem; margin:1rem 0; }
+.disclaimer { margin:var(--space-4); padding:1rem; border-radius:1rem; background:var(--color-surface-2); border:1px solid var(--color-border); font-size:var(--text-xs); color:var(--color-text-muted); line-height:1.6; }
+.footer-nav { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:min(760px,100%); background:color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter:blur(14px); border-top:1px solid var(--color-divider); padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom)); display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+.footer-nav button { min-height:48px; border-radius:1rem; color:var(--color-text-muted); background:transparent; border:0; }
+.footer-nav button.active { background:var(--color-surface); color:var(--color-primary); border:1px solid var(--color-border); }
+.loading { text-align:center; color:var(--color-text-muted); padding:2rem; font-size:var(--text-sm); }
+@media (max-width:420px){ .kpis { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">📚</div>
+      <div>
+        <h1>Marcel · Stratégies</h1>
+        <p>Bibliothèque du dirigeant · 🇫🇷</p>
+      </div>
+    </div>
+    <button class="toggle" id="themeToggle" aria-label="Basculer le thème">◐</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-card">
+      <div>
+        <div class="eyebrow">Stratégies patrimoniales</div>
+        <h2>Comprenez les leviers <em>adaptés à votre situation.</em></h2>
+      </div>
+      <p>Chaque fiche explique le mécanisme, chiffre l'impact, relie un simulateur et une checklist — jamais une recommandation automatique.</p>
+      <div class="kpis">
+        <div class="kpi"><span class="hint">Fiches en ligne</span><strong id="kpiCount">—</strong></div>
+        <div class="kpi"><span class="hint">Recommandées</span><strong id="kpiReco">—</strong></div>
+        <div class="kpi"><span class="hint">Votre accès</span><strong id="kpiAcces">—</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="screen-catalogue">
+    <div id="recoBlock" style="display:none">
+      <div class="section-head"><div><h3>Recommandées pour vous</h3><p>Détectées à partir de votre société et de votre recueil patrimonial.</p></div></div>
+      <div class="reco-row" id="recoRow"></div>
+    </div>
+
+    <div class="section-head">
+      <div><h3>Catalogue</h3><p id="catalogueSub">Chargement…</p></div>
+    </div>
+    <div class="search">
+      <input type="search" id="searchInput" placeholder="Rechercher une stratégie (holding, PER, Dutreil…)">
+    </div>
+    <div class="chips" id="catChips"></div>
+    <div class="strat-list" id="stratList"><div class="loading">Chargement des stratégies…</div></div>
+  </section>
+
+  <section class="section" id="screen-fiche" hidden>
+    <div id="ficheContent"><div class="loading">Chargement de la fiche…</div></div>
+  </section>
+
+  <div class="disclaimer">⚠️ Ces fiches ont une vocation pédagogique et informative. Elles ne constituent ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération au sens de l'art. L.541-1 du Code monétaire et financier. Toute décision doit être validée, au regard de votre situation, avec les professionnels compétents. — IKCP · ORIAS 23001568.</div>
+</div>
+
+<nav class="footer-nav" aria-label="Navigation mobile">
+  <button class="active" data-screen="screen-catalogue">Catalogue</button>
+  <button data-screen="screen-fiche">Fiche</button>
+</nav>
+
+<script src="/protect.js?v=2" defer></script>
+<script src="/app/js/pwa-install.js" defer></script>
+<script src="/app/js/marcel-float.js" defer></script>
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+
+const API_CLIENT = 'https://ikcp-client.maxime-ead.workers.dev';
+const API_PATRIMOINE = 'https://ikcp-patrimoine.maxime-ead.workers.dev';
+const euro = c => new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR', maximumFractionDigits:0 }).format((c||0)/100);
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function token(){ try{ return localStorage.getItem('ikcp_token') || ''; }catch(_){ return ''; } }
+function authHeaders(){ const t = token(); return t ? { 'Authorization': 'Bearer ' + t } : {}; }
+
+const COMPLEXITE_LABEL = { simple:'Simple', intermediaire:'Intermédiaire', avancee:'Avancée', experte:'Experte' };
+
+let CATALOGUE = [];
+let RECO = [];
+let UNLOCKED = false;
+let activeCategory = 'all';
+let searchTerm = '';
+
+function switchScreen(id) {
+  ['screen-catalogue','screen-fiche'].forEach(s => { document.getElementById(s).hidden = s !== id; });
+  document.querySelectorAll('.footer-nav button').forEach(b => b.classList.toggle('active', b.dataset.screen === id));
+}
+document.querySelectorAll('.footer-nav button').forEach(btn => {
+  btn.addEventListener('click', () => switchScreen(btn.dataset.screen));
+});
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const root = document.documentElement;
+  root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+function renderChips() {
+  const cats = ['all', ...new Set(CATALOGUE.map(f => f.categorie))];
+  document.getElementById('catChips').innerHTML = cats.map(c =>
+    `<button class="chip${c===activeCategory?' active':''}" data-cat="${esc(c)}">${c==='all'?'Toutes':esc(c)}</button>`
+  ).join('');
+  document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { activeCategory = b.dataset.cat; renderList(); renderChips(); }));
+}
+
+function cardHtml(f) {
+  const reco = RECO.find(r => r.strategie_key === f.slug);
+  return `<article class="strat-item" data-slug="${esc(f.slug)}">
+    <div style="flex:1;min-width:0">
+      <div class="cat">${esc(f.categorie)}${reco ? ' · Recommandée' : ''}</div>
+      <h4>${esc(f.titre)}${!UNLOCKED ? ' 🔒' : ''}</h4>
+      <small>${esc(f.sousTitre || f.teaser || '')}</small>
+      <div class="tags">
+        <span class="tag-sm">${COMPLEXITE_LABEL[f.complexite] || f.complexite || ''}</span>
+        <span class="tag-sm">${esc(f.horizonMiseEnOeuvre || '')}</span>
+        ${f.hasSimulateur ? '<span class="tag-sm">Simulateur</span>' : ''}
+        ${f.requiresHumanValidation ? '<span class="tag-sm">Validation humaine</span>' : ''}
+      </div>
+    </div>
+    <span class="arrow">→</span>
+  </article>`;
+}
+
+function renderList() {
+  const list = CATALOGUE.filter(f => (activeCategory==='all' || f.categorie===activeCategory))
+    .filter(f => !searchTerm || (f.titre+' '+f.sousTitre+' '+f.categorie).toLowerCase().includes(searchTerm));
+  document.getElementById('stratList').innerHTML = list.length
+    ? list.map(cardHtml).join('')
+    : '<div class="loading">Aucune stratégie ne correspond à votre recherche.</div>';
+  document.querySelectorAll('.strat-item').forEach(el => el.addEventListener('click', () => openFiche(el.dataset.slug)));
+}
+
+function renderReco() {
+  if (!RECO.length) return;
+  document.getElementById('recoBlock').style.display = '';
+  document.getElementById('recoRow').innerHTML = RECO.slice(0,5).map(r => {
+    const f = CATALOGUE.find(c => c.slug === r.strategie_key);
+    if (!f) return '';
+    return `<div class="reco-card" data-slug="${esc(f.slug)}"><div class="badge">Score ${Math.round((r.score||0)*100)}%</div><h4>${esc(f.titre)}</h4><small>${esc(r.declencheur || '')}</small></div>`;
+  }).join('');
+  document.querySelectorAll('.reco-card').forEach(el => el.addEventListener('click', () => openFiche(el.dataset.slug)));
+}
+
+function sectionList(title, items) {
+  if (!items || !items.length) return '';
+  return `<div class="fiche-sec"><h3>${esc(title)}</h3><ul>${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`;
+}
+
+async function loadChecklistState() {
+  try {
+    const r = await fetch(API_PATRIMOINE + '/state', { headers: authHeaders() });
+    if (!r.ok) return {};
+    const d = await r.json();
+    return (d.data && d.data.strategiesChecklist) || {};
+  } catch (_) { return {}; }
+}
+async function saveChecklistState(slug, itemId, checked) {
+  const cur = await loadChecklistState();
+  cur[slug] = cur[slug] || {};
+  cur[slug][itemId] = checked;
+  try { await fetch(API_PATRIMOINE + '/state', { method:'POST', headers:{ 'Content-Type':'application/json', ...authHeaders() }, body: JSON.stringify({ strategiesChecklist: cur }) }); } catch (_) {}
+}
+
+async function ficheHtml(f) {
+  const checklistState = (await loadChecklistState())[f.slug] || {};
+  const done = (f.checklist||[]).filter(c => checklistState[c.id]).length;
+  const total = (f.checklist||[]).length;
+  const marcelPrefill = q => '/app/marcel?q=' + encodeURIComponent(`Concernant « ${f.titre} » — ${q}`);
+
+  return `
+  <div class="card fiche-head">
+    <div class="badges">
+      <span class="badge-pill">${esc(f.categorie)}</span>
+      <span class="badge-pill">${COMPLEXITE_LABEL[f.complexite]||f.complexite||''}</span>
+      <span class="badge-pill">${esc(f.horizonMiseEnOeuvre||'')}</span>
+      ${f.requiresHumanValidation ? '<span class="badge-pill warn">Validation humaine conseillée</span>' : ''}
+    </div>
+    <h2>${esc(f.titre)}</h2>
+    <div class="sub">${esc(f.sousTitre||'')}</div>
+    <div class="cta-row">
+      ${f.simulateurId ? `<a class="btn btn-primary" href="/app/simulateurs-pro?strategie=${encodeURIComponent(f.simulateurId)}">Lancer le simulateur →</a>` : ''}
+      <a class="btn btn-ghost" href="${marcelPrefill('Suis-je éligible à cette stratégie ?')}">Poser une question à Marcel</a>
+      ${f.requiresHumanValidation ? `<a class="btn btn-ghost" href="${marcelPrefill('Ma situation nécessite une validation humaine sur cette stratégie — comment organiser ça avec IKCP ?')}">Préparer mon rendez-vous</a>` : ''}
+    </div>
+  </div>
+
+  ${(f.resumeExecutif||[]).length ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Résumé exécutif</h3><ul>${f.resumeExecutif.map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>` : ''}
+
+  <div class="card fiche-sec" style="padding:1.1rem">
+    <h3>Le problème du dirigeant</h3>
+    <p>${esc(f.probleme||'')}</p>
+    ${f.questionType ? `<p class="hint" style="margin-top:.5rem">${esc(f.questionType)}</p>` : ''}
+  </div>
+
+  ${sectionList('Pour qui', f.profilCible) ? `<div class="card fiche-sec" style="padding:1.1rem">${sectionList('Pour qui', f.profilCible)}</div>` : ''}
+  ${sectionList('Quand éviter cette stratégie', f.quandEviter) ? `<div class="card fiche-sec" style="padding:1.1rem">${sectionList('Quand éviter cette stratégie', f.quandEviter)}</div>` : ''}
+
+  ${f.explicationClaire ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Explication en clair</h3><p>${esc(f.explicationClaire)}</p>${f.aRetenir?`<div class="retenir" style="margin-top:.8rem">✦ ${esc(f.aRetenir)}</div>`:''}</div>` : ''}
+
+  ${f.miseEnOeuvre && f.miseEnOeuvre.length ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Mise en œuvre</h3><div class="steps">${f.miseEnOeuvre.map(s=>`<div class="step"><div class="n">${s.etape||''}</div><div><b>${esc(s.titre||'')}</b><div class="hint">${esc(s.description||'')}</div>${s.acteurs&&s.acteurs.length?`<div class="hint">Acteurs : ${s.acteurs.map(esc).join(', ')}</div>`:''}</div></div>`).join('')}</div></div>` : ''}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+    ${sectionList('Bénéfices potentiels', f.benefices) ? `<div class="card fiche-sec" style="padding:1.1rem">${sectionList('Bénéfices potentiels', f.benefices)}</div>` : ''}
+    ${sectionList('Limites et risques', f.risques) ? `<div class="card fiche-sec" style="padding:1.1rem">${sectionList('Limites et risques', f.risques)}</div>` : ''}
+  </div>
+
+  ${f.impacts360 ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Impacts à 360°</h3><div class="impact-grid">${Object.entries(f.impacts360).filter(([,v])=>v).map(([k,v])=>`<div class="impact-row"><b>${esc(k)}</b>${esc(v)}</div>`).join('')}</div></div>` : ''}
+
+  ${f.questionsMarcel && f.questionsMarcel.length ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Questions à Marcel</h3><div class="marcel-q">${f.questionsMarcel.map(q=>`<a href="${marcelPrefill(q)}">${esc(q)} →</a>`).join('')}</div></div>` : ''}
+
+  ${f.checklist && f.checklist.length ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Checklist opérationnelle</h3><div class="hint" style="margin-bottom:.4rem">${done}/${total}</div><div class="check-progress"><i style="width:${total?Math.round(done/total*100):0}%"></i></div><div class="checklist" style="margin-top:.7rem">${f.checklist.map(c=>`<label class="check-item"><input type="checkbox" data-item="${esc(c.id)}" ${checklistState[c.id]?'checked':''}><span>${esc(c.label)}${c.responsable?`<span class="resp">${esc(c.responsable)}</span>`:''}</span></label>`).join('')}</div></div>` : ''}
+
+  ${f.documents && f.documents.length ? `<div class="card fiche-sec" style="padding:1.1rem">${sectionList('Documents à réunir', f.documents)}</div>` : ''}
+
+  ${f.casPratique ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>Cas pratique</h3><div class="cas-pratique"><div><b>Profil</b> — ${esc(f.casPratique.profil||'')}</div><div><b>Situation initiale</b> — ${esc(f.casPratique.situationInitiale||'')}</div><div><b>Décision</b> — ${esc(f.casPratique.decision||'')}</div><div><b>Chronologie</b> — ${esc(f.casPratique.chronologie||'')}</div><div><b>Résultats attendus</b> — ${esc(f.casPratique.resultatsAttendus||'')}</div><div><b>Vigilances</b> — ${esc(f.casPratique.vigilances||'')}</div></div><p class="hint" style="margin-top:.6rem">Exemple fictif mais réaliste, ne constitue pas une garantie de résultat.</p></div>` : ''}
+
+  ${f.faq && f.faq.length ? `<div class="card fiche-sec" style="padding:1.1rem"><h3>FAQ</h3>${f.faq.map(q=>`<details class="faq-item"><summary>${esc(q.q)}</summary><p>${esc(q.r)}</p></details>`).join('')}</div>` : ''}
+
+  <div class="card" style="padding:1rem">
+    <div class="sources">${(f.sources||[]).map(esc).join(' · ')}</div>
+    <div class="sources" style="margin-top:.3rem">Version ${esc(f.version||'1.0')} · Dernière revue ${esc(f.dateRevue||'')} · IKCP</div>
+  </div>
+
+  <div class="disclaimer">${esc(f.avertissement || "Cette fiche a une vocation pédagogique et informative. Elle ne constitue ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération. Toute décision doit être validée au regard de votre situation avec les professionnels compétents (art. L.541-1 du Code monétaire et financier).")}</div>
+  `;
+}
+
+function lockedHtml(d) {
+  return `<div class="card locked-panel">
+    <h3>${esc(d.titre)} 🔒</h3>
+    <p>${esc(d.teaser || 'Fiche réservée au palier Stratégies.')}</p>
+    <div class="blur-block">●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●</div>
+    <a class="btn btn-primary" href="/app/creer-mon-compte.html">Débloquer la bibliothèque — 249 €/an →</a>
+  </div>`;
+}
+
+async function openFiche(slug) {
+  switchScreen('screen-fiche');
+  const el = document.getElementById('ficheContent');
+  el.innerHTML = '<div class="loading">Chargement de la fiche…</div>';
+  history.replaceState(null, '', '?fiche=' + encodeURIComponent(slug));
+  try {
+    const r = await fetch(API_CLIENT + '/api/v1/strategies/' + encodeURIComponent(slug), { headers: authHeaders() });
+    const d = await r.json();
+    if (d.locked) { el.innerHTML = lockedHtml(d); return; }
+    el.innerHTML = await ficheHtml(d);
+    el.querySelectorAll('.check-item input').forEach(cb => {
+      cb.addEventListener('change', () => saveChecklistState(slug, cb.dataset.item, cb.checked));
+    });
+  } catch (_) {
+    el.innerHTML = '<div class="loading">Fiche indisponible pour le moment.</div>';
+  }
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.trim().toLowerCase(); renderList(); });
+
+(async () => {
+  let tierLbl = 'Découverte';
+  try {
+    const me = await Marcel.Auth.me();
+    UNLOCKED = me?.tier === 'premium' && me?.has_strategies === true;
+    tierLbl = UNLOCKED ? 'Stratégies débloquées' : (me?.tier === 'premium' ? 'Premium (sans Stratégies)' : 'Découverte');
+  } catch (_) { location.replace('/app/index.html'); return; }
+  document.getElementById('kpiAcces').textContent = tierLbl;
+
+  try {
+    const r = await fetch(API_CLIENT + '/api/v1/strategies', { headers: authHeaders() });
+    const d = await r.json();
+    CATALOGUE = d.fiches || [];
+    document.getElementById('kpiCount').textContent = d.disponibles ?? CATALOGUE.length;
+    document.getElementById('catalogueSub').textContent = `${CATALOGUE.length} stratégie(s) disponible(s) sur ${d.total || 70} à venir.`;
+  } catch (_) {
+    document.getElementById('catalogueSub').textContent = 'Catalogue indisponible pour le moment.';
+  }
+  renderChips();
+  renderList();
+
+  try {
+    const r = await fetch(API_PATRIMOINE + '/opportunites', { method:'POST', headers: authHeaders() });
+    if (r.ok) { const d = await r.json(); RECO = d.opportunites || []; }
+  } catch (_) {}
+  document.getElementById('kpiReco').textContent = RECO.length;
+  renderReco();
+
+  const qsFiche = new URLSearchParams(location.search).get('fiche');
+  if (qsFiche) openFiche(qsFiche);
+})();
+</script>
+<script src="/app/js/sync.js" defer></script>
+</body>
+</html>
