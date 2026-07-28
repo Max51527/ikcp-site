@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{document.documentElement.setAttribute('data-tier',(localStorage.getItem('ikcp_tier')||'free'))}catch(e){}</script>
+<script>
+try{
+  if(!localStorage.getItem('ikcp_token') && !/[#&]s=/.test(location.hash||'')){
+    location.replace('/app/index.html');
+  }
+}catch(e){}
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B2A4A">
+<title>Marcel — Vos priorités patrimoniales</title>
+<link rel="manifest" href="/app/manifest.json">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+
+<link href="/assets/vendor/fonts.css" rel="stylesheet">
+<link rel="stylesheet" href="/app/css/marcel.css">
+<style>
+.pr-filters{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 22px}
+.pr-filter{padding:8px 15px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--mute);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif}
+.pr-filter.active{background:var(--ink,#1B2A4A);color:#fff;border-color:var(--ink,#1B2A4A)}
+
+.pr-top{display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.pr-card{background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;cursor:pointer;transition:box-shadow .15s}
+.pr-card:hover{box-shadow:0 10px 28px -16px rgba(27,42,74,.35)}
+.pr-card.u-critical{border-left-color:#C0414C}
+.pr-card.u-high{border-left-color:#C9A96E}
+.pr-card.u-medium{border-left-color:#8B6F3F}
+.pr-card.u-low{border-left-color:var(--line)}
+.pr-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.pr-title{font-family:'Playfair Display',serif;font-weight:600;font-size:17px;color:var(--ink);line-height:1.3}
+.pr-badges{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto}
+.pr-badge{font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pr-badge.urg-critical{background:rgba(192,65,76,.12);color:#C0414C}
+.pr-badge.urg-high{background:rgba(201,169,110,.18);color:#8B6F3F}
+.pr-badge.urg-medium{background:rgba(139,111,63,.12);color:#8B6F3F}
+.pr-badge.urg-low{background:var(--line);color:var(--mute)}
+.pr-badge.impact-high{background:rgba(27,42,74,.08);color:var(--ink)}
+.pr-meta{font-size:11.5px;color:var(--mute);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.pr-explain{font-size:13.5px;color:var(--ink);line-height:1.55}
+.pr-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;line-height:1.6}
+.pr-card.open .pr-detail{display:block}
+.pr-detail .why{color:var(--mute);font-style:italic;margin-bottom:10px}
+.pr-docs{margin:8px 0 12px}
+.pr-docs li{margin-left:18px;font-size:12.5px;color:var(--mute)}
+.pr-action{display:inline-block;background:var(--accent,#1B2A4A);color:#fff;text-decoration:none;font-size:13px;font-weight:600;padding:9px 16px;border-radius:9px}
+
+.pr-secondary{display:flex;flex-direction:column;gap:8px}
+.pr-row{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:11px 14px;text-decoration:none;color:inherit;cursor:pointer}
+.pr-row .dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.pr-row .dot.u-critical{background:#C0414C}.pr-row .dot.u-high{background:#C9A96E}.pr-row .dot.u-medium{background:#8B6F3F}.pr-row .dot.u-low{background:var(--line)}
+.pr-row .rt{flex:1;font-size:13px}
+.pr-row .rt b{display:block;font-weight:600}
+.pr-row .rt span{font-size:11px;color:var(--mute)}
+
+.pr-demo-flag{background:rgba(201,169,110,.14);border:1px solid rgba(201,169,110,.4);border-radius:11px;padding:12px 15px;font-size:12.5px;color:var(--gold-d,#8B6F3F);margin-bottom:18px}
+.pr-mif2{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;color:var(--mute);line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="/app/dashboard.html" class="app-brand">Marcel<em>.</em><span class="app-brand-sub">Vos priorités</span></a>
+  <div class="app-user">
+    <span class="tier" id="prTier">—</span>
+  </div>
+</header>
+
+<main class="app-main">
+  <div class="section-label">Vos priorités</div>
+  <h1 class="app-h1">Vos priorités <em>patrimoniales</em>.</h1>
+  <p class="app-lead">MARCEL a identifié les décisions qui auront le plus d'impact sur votre situation.</p>
+
+  <div id="demoFlag" style="display:none" class="pr-demo-flag">📖 Exemple illustratif — reliez votre société et complétez votre recueil pour voir <b>vos</b> priorités réelles.</div>
+
+  <div class="pr-filters" id="filters">
+    <button class="pr-filter active" data-f="all">Tous</button>
+    <button class="pr-filter" data-f="decision_ready">À décider</button>
+    <button class="pr-filter" data-f="to_analyze">À analyser</button>
+    <button class="pr-filter" data-f="in_progress">En cours</button>
+    <button class="pr-filter" data-f="completed">Finalisés</button>
+  </div>
+
+  <div id="top" class="pr-top"><div class="loading">Chargement de vos priorités…</div></div>
+
+  <div class="section-label" id="secLabel" style="display:none">Autres pistes</div>
+  <div id="secondary" class="pr-secondary"></div>
+
+  <div class="pr-mif2">Ces priorités sont des pistes de réflexion générées à partir de vos données déclarées — jamais une recommandation personnalisée au sens de l'art. L.541-1 du Code monétaire et financier. Une mise en œuvre nécessite une étude adaptée à votre situation, formalisée par une lettre de mission.</div>
+</main>
+
+<script src="/protect.js?v=2" defer></script>
+<script src="/app/js/pwa-install.js" defer></script>
+<script src="/app/js/marcel-float.js" defer></script>
+<script type="module">
+import { Marcel } from '/app/js/api.js';
+
+const STATUS_LABEL = { detected:'Détecté', to_analyze:'À analyser', simulation_ready:'Simulation prête', decision_ready:'À décider', in_progress:'En cours', completed:'Finalisé' };
+const URG_LABEL = { critical:'Critique', high:'Prioritaire', medium:'À suivre', low:'Secondaire' };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function actionHref(p){
+  if(p.nextActionType==='simulateur' && p.linkedSimulatorId) return '/app/simulateurs-pro?strategie='+encodeURIComponent(p.linkedSimulatorId);
+  if(p.nextActionType==='profil') return '/app/profil.html';
+  return '/app/marcel?q='+encodeURIComponent('Concernant « '+p.title+' » — '+p.whyNow+' Quelles questions dois-je me poser ?');
+}
+
+function cardHtml(p, i){
+  const docs = (p.requiredDocuments||[]).length ? '<div class="pr-docs"><b style="font-size:12px">Documents utiles :</b><ul>'+p.requiredDocuments.map(d=>'<li>'+esc(d)+'</li>').join('')+'</ul></div>' : '';
+  return '<article class="pr-card u-'+p.urgency+'" data-id="'+esc(p.id)+'" onclick="this.classList.toggle(\'open\')">'
+    + '<div class="pr-head"><div class="pr-title">'+esc(p.title)+'</div>'
+    + '<div class="pr-badges"><span class="pr-badge urg-'+p.urgency+'">'+URG_LABEL[p.urgency]+'</span>'+(p.impact==='high'?'<span class="pr-badge impact-high">Impact élevé</span>':'')+'</div></div>'
+    + '<div class="pr-meta"><span>⏱ '+esc(p.horizon)+'</span><span>· '+ (STATUS_LABEL[p.status]||p.status) +'</span></div>'
+    + '<div class="pr-explain">'+esc(p.explanation)+'</div>'
+    + '<div class="pr-detail"><div class="why">'+esc(p.whyNow)+'</div>'+docs
+    + '<a class="pr-action" href="'+actionHref(p)+'" onclick="event.stopPropagation()">'+esc(p.nextActionLabel||'En savoir plus →')+'</a></div>'
+    + '</article>';
+}
+function rowHtml(p){
+  return '<a class="pr-row" href="'+actionHref(p)+'"><span class="dot u-'+p.urgency+'"></span>'
+    + '<div class="rt"><b>'+esc(p.title)+'</b><span>'+ (STATUS_LABEL[p.status]||p.status) +' · '+esc(p.horizon)+'</span></div></a>';
+}
+
+let ALL = [];
+function render(filter){
+  const list = filter==='all' ? ALL : ALL.filter(p => p.status===filter || (filter==='decision_ready' && p.status==='simulation_ready'));
+  const rank = { critical:0, high:1, medium:2, low:3 };
+  const sorted = list.slice().sort((a,b) => (rank[a.urgency]??9) - (rank[b.urgency]??9));
+  const top = sorted.slice(0,3), rest = sorted.slice(3);
+  document.getElementById('top').innerHTML = top.length ? top.map(cardHtml).join('') : '<div class="empty" style="text-align:center;color:var(--mute);padding:30px 0">Rien dans ce filtre pour l\'instant.</div>';
+  const secEl = document.getElementById('secondary'), secLabel = document.getElementById('secLabel');
+  if(rest.length){ secLabel.style.display=''; secEl.innerHTML = rest.map(rowHtml).join(''); }
+  else { secLabel.style.display='none'; secEl.innerHTML=''; }
+}
+
+document.getElementById('filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.pr-filter'); if(!btn) return;
+  document.querySelectorAll('.pr-filter').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render(btn.dataset.f);
+});
+
+(async () => {
+  try {
+    const me = await Marcel.Auth.me();
+    const tierLbl = { free:'Découverte', premium:'Premium', fo:'Premium' }[me?.tier] || 'Découverte';
+    document.getElementById('prTier').textContent = tierLbl;
+  } catch(_) { location.replace('/app/index.html'); return; }
+
+  ALL = await Marcel.MemberExperience.getPriorities();
+  if (ALL.some(p => String(p.id).startsWith('demo-'))) document.getElementById('demoFlag').style.display = '';
+  render('all');
+})();
+</script>
+<script src="/app/js/sync.js" defer></script>
+</body>
+</html>

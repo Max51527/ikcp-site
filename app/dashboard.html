@@ -112,6 +112,19 @@ try{
   </section>
   <div class="mhint">Ou <b>cliquez le bouton&nbsp;M</b> en bas pour parler à Marcel.</div>
 
+  <!-- ✦ Votre prochain meilleur mouvement — Member Experience Layer, brique 1 -->
+  <section class="card" id="nba-card" style="display:none;margin:14px 0 4px;border-color:rgba(27,42,74,.18);background:linear-gradient(150deg,#1B2A4A,#0E1729);color:#FAF8F4">
+    <div class="card-head"><span class="card-cat" style="color:#E2C896">✦ Votre prochain meilleur mouvement</span></div>
+    <h3 id="nba-title" style="font-family:'Playfair Display',serif;font-weight:600;font-size:18px;margin:2px 0 6px;color:#fff">—</h3>
+    <p id="nba-explain" style="font-size:13px;color:rgba(250,248,244,.78);line-height:1.5;margin-bottom:10px"></p>
+    <div id="nba-why" style="font-size:12px;color:rgba(226,200,150,.85);font-style:italic;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a id="nba-cta" href="#" class="btn btn-sm" style="background:linear-gradient(135deg,#E2C896,#C9A96E);color:#20180c">→</a>
+      <a href="/app/priorites" class="btn btn-sm btn-ghost" style="border-color:rgba(226,200,150,.4);color:#E2C896">Comprendre avant d'agir</a>
+    </div>
+    <div style="font-size:10.5px;color:rgba(250,248,244,.5);margin-top:10px">Analyse indicative : validation nécessaire selon votre situation.</div>
+  </section>
+
   <!-- ✦ Signature : révéler mes pistes de réflexion (juridiques · financières · fiscales) — MIF II strict -->
   <section class="card" style="margin:14px 0 4px;border-color:rgba(201,169,110,.45);background:linear-gradient(150deg,var(--accent-soft,#F4EFE7),transparent)">
     <div class="card-head"><span class="card-cat" style="color:var(--accent)">✦ Vos pistes de réflexion</span></div>
@@ -119,6 +132,7 @@ try{
     <p style="font-size:13px;color:var(--mute);margin-bottom:12px">Juridiques · financières · fiscales — à partir de votre situation, en 10 s. <b>Information, jamais une recommandation.</b></p>
     <button class="btn btn-sm" id="pistes-btn" onclick="revealPistes()">✦ Révéler mes pistes →</button>
     <div id="pistes-out" style="margin-top:12px;font-size:14px;line-height:1.6;color:var(--ink)"></div>
+    <a href="/app/priorites" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--accent);font-weight:600;text-decoration:none">Voir toutes mes priorités →</a>
   </section>
 
   <!-- ════ Par où commencer : 4 intentions ════ -->
@@ -298,6 +312,23 @@ if(me){
   if(me.trial && me.trial.active){ tierLbl = 'Premium · essai ' + me.trial.days_left + ' j'; }
   var tierEl=document.getElementById('userTier'); tierEl.textContent=tierLbl;
   if(me.tier && me.tier!=='free') tierEl.classList.add('premium');
+
+  // ✦ Votre prochain meilleur mouvement (Member Experience Layer)
+  (async function(){
+    try{
+      var nba = await Marcel.MemberExperience.getNextBestAction();
+      if(!nba) return;
+      document.getElementById('nba-title').textContent = nba.title;
+      document.getElementById('nba-explain').textContent = nba.explanation;
+      document.getElementById('nba-why').textContent = nba.whyNow;
+      var cta = document.getElementById('nba-cta');
+      cta.textContent = nba.nextActionLabel || 'En savoir plus →';
+      cta.href = nba.nextActionType==='simulateur' && nba.linkedSimulatorId ? '/app/simulateurs-pro?strategie='+encodeURIComponent(nba.linkedSimulatorId)
+        : nba.nextActionType==='profil' ? '/app/profil.html'
+        : '/app/marcel?q='+encodeURIComponent('Concernant « '+nba.title+' » — '+nba.whyNow+' Quelles questions dois-je me poser ?');
+      document.getElementById('nba-card').style.display='';
+    }catch(_){ /* bloc non-bloquant */ }
+  })();
   var _up=new URLSearchParams(location.search).get('upgraded');
   if(_up){
     var _prem = me.tier && me.tier!=='free';

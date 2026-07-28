@@ -117,6 +117,132 @@ function formeFromCodeINSEE(c) {
   return m[p] || (c ? ('Société (code ' + c + ')') : '');
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// Member Experience Layer — brique 1 : priorités patrimoniales
+// ═══════════════════════════════════════════════════════════════════════
+//
+// @typedef {'critical'|'high'|'medium'|'low'} PriorityUrgency
+// @typedef {'high'|'medium'|'low'} PriorityImpact
+// @typedef {'detected'|'to_analyze'|'simulation_ready'|'decision_ready'|'in_progress'|'completed'} PriorityStatus
+//
+// @typedef {Object} PatrimonialPriority
+// @property {string} id
+// @property {string} title
+// @property {string} category            - 'financier' | 'juridique' | 'fiscal' | 'social'
+// @property {PriorityUrgency} urgency
+// @property {PriorityImpact} impact
+// @property {string} horizon              - ex. "0-90 jours", "3-18 mois"
+// @property {PriorityStatus} status
+// @property {string} explanation          - en clair, sans jargon
+// @property {string} whyNow                - pourquoi cette priorité, maintenant
+// @property {string[]} requiredDocuments
+// @property {string|null} linkedSimulatorId
+// @property {string|null} nextActionLabel
+// @property {'marcel'|'simulateur'|'document'|'profil'} nextActionType
+// @property {number} createdAt
+
+// Mêmes clés localStorage que app/bilan.html / app/dashboard.html — on lit
+// les VRAIES données du membre, jamais une seconde source de vérité.
+function _readSocieteME() { try { return JSON.parse(localStorage.getItem('ikcp_societe') || 'null'); } catch (_) { return null; } }
+function _readPatrimoineME() { try { return JSON.parse(localStorage.getItem('ikcp_patrimoine') || 'null'); } catch (_) { return null; } }
+function _readRecueilME() { try { return JSON.parse(localStorage.getItem('ikcp_recueil') || 'null'); } catch (_) { return null; } }
+
+const PER_PLAFOND_2026 = 88911;
+const IFI_SEUIL_2026 = 1_300_000;
+
+// Profil de démonstration (Thomas Martin) — affiché UNIQUEMENT si le membre
+// n'a strictement rien renseigné (aucun SIREN relié, aucun bien déclaré) :
+// sert d'aperçu de ce que produit la page, jamais présenté comme ses vraies données.
+function _demoPriorities() {
+  const now = Date.now();
+  return [
+    { id: 'demo-liquidite', title: 'Répartir vos liquidités entre rémunération, investissements et holding', category: 'financier', urgency: 'high', impact: 'high', horizon: '0-90 jours', status: 'to_analyze', explanation: "Un exemple : président de SAS avec holding, trésorerie qui dort sur le compte de la société.", whyNow: "Exemple illustratif — reliez votre société (SIREN) pour voir VOS priorités réelles.", requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'Relier ma société →', nextActionType: 'profil', createdAt: now },
+    { id: 'demo-protection', title: 'Consolider la protection du dirigeant en cas d\'arrêt de travail', category: 'social', urgency: 'high', impact: 'high', horizon: '0-90 jours', status: 'detected', explanation: "Exemple : la prévoyance TNS/Madelin est souvent sous-dimensionnée face au train de vie réel.", whyNow: "Exemple illustratif.", requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'Voir un exemple', nextActionType: 'marcel', createdAt: now },
+    { id: 'demo-transmission', title: 'Préparer la transmission de la holding et de l\'entreprise', category: 'juridique', urgency: 'medium', impact: 'high', horizon: '5 ans et plus', status: 'detected', explanation: "Exemple : le pacte Dutreil exonère jusqu'à 75 % de l'assiette taxable, sous engagement de conservation.", whyNow: "Exemple illustratif.", requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'Voir un exemple', nextActionType: 'marcel', createdAt: now },
+  ];
+}
+
+// Règles déterministes — MÊMES signaux que app/bilan.html, reformulés en
+// PatrimonialPriority. Aucune IA ici : c'est intentionnellement lisible et
+// vérifiable. Les agents Marcel (diagnostic/rémunération/holding/protection/
+// transmission) viendront enrichir cette liste plus tard, sans changer la forme.
+function _derivePriorities() {
+  const soc = _readSocieteME();
+  const pat = _readPatrimoineME();
+  const rec = _readRecueilME();
+  const out = [];
+  const now = Date.now();
+
+  if (!soc && !pat) return _demoPriorities();
+
+  // ── Financier : concentration + liquidités dormantes ──
+  if (pat && typeof pat === 'object') {
+    const map = { tresorerie: 'liquidites', passion: 'collection' };
+    const byCat = {};
+    let brut = 0;
+    Object.keys(pat).forEach((k) => { if (k === 'passif') return; const v = +pat[k] || 0; if (v > 0) { const c = map[k] || k; byCat[c] = (byCat[c] || 0) + v; brut += v; } });
+    const cats = Object.keys(byCat).sort((a, b) => byCat[b] - byCat[a]);
+    if (cats.length && brut) {
+      const top = cats[0], topShare = Math.round((byCat[top] / brut) * 100);
+      if (topShare >= 50) {
+        out.push({ id: 'concentration', title: `Réduire la concentration sur ${top}`, category: 'financier', urgency: 'medium', impact: 'high', horizon: '3-18 mois', status: 'detected', explanation: `${topShare} % de votre patrimoine déclaré repose sur un seul poste — un choc sur cet actif toucherait l'essentiel de votre patrimoine.`, whyNow: 'Détecté à partir de votre recueil patrimonial.', requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'En discuter avec Marcel →', nextActionType: 'marcel', createdAt: now });
+      }
+      const liq = byCat.liquidites || 0;
+      if (liq > 0 && liq / brut > 0.25) {
+        out.push({ id: 'liquidites-dormantes', title: 'Faire travailler vos liquidités disponibles', category: 'financier', urgency: 'medium', impact: 'medium', horizon: '0-90 jours', status: 'to_analyze', explanation: `Vos liquidités représentent ${Math.round((liq / brut) * 100)} % de votre patrimoine déclaré. Au-delà d'une réserve de précaution, elles perdent de la valeur face à l'inflation.`, whyNow: 'Détecté à partir de votre recueil patrimonial.', requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'Explorer les pistes →', nextActionType: 'marcel', createdAt: now });
+      }
+    }
+    const localPassif = +pat.passif || 0;
+    if (localPassif > 0 && brut > 0 && localPassif / brut > 0.6) {
+      out.push({ id: 'endettement', title: 'Faire le point sur votre niveau d\'endettement', category: 'financier', urgency: 'high', impact: 'high', horizon: '0-90 jours', status: 'detected', explanation: `Votre passif déclaré représente une part importante de votre actif brut — un point de vigilance avant tout nouvel engagement.`, whyNow: 'Détecté à partir de votre recueil patrimonial.', requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'En discuter avec Marcel →', nextActionType: 'marcel', createdAt: now });
+    }
+  }
+
+  // ── Juridique : société → Dutreil / holding ──
+  if (soc && soc.nom) {
+    out.push({ id: 'holding-dutreil', title: 'Structurer la transmission de vos titres', category: 'juridique', urgency: 'medium', impact: 'high', horizon: '5 ans et plus', status: 'detected', explanation: `Le pacte Dutreil peut exonérer jusqu'à 75 % de l'assiette taxable sur la transmission de ${soc.nom}, sous engagement de conservation (art. 787 B CGI).`, whyNow: `Détecté via votre société reliée (${soc.nom}).`, requiredDocuments: ['Statuts de la société', 'Répartition du capital'], linkedSimulatorId: 'dutreil', nextActionLabel: 'Simuler l\'économie →', nextActionType: 'simulateur', createdAt: now });
+  }
+
+  // ── Fiscal : arbitrage rémunération, PER, IFI ──
+  if (soc && soc.resultat != null && soc.resultat > 0) {
+    out.push({ id: 'arbitrage-remuneration', title: 'Arbitrer rémunération, dividendes et holding', category: 'fiscal', urgency: 'high', impact: 'high', horizon: '0-90 jours', status: 'to_analyze', explanation: 'La façon de sortir le bénéfice de votre société change fortement votre net perçu — l\'écart se chiffre souvent en dizaines de milliers d\'euros par an.', whyNow: `Détecté via le résultat de ${soc.nom || 'votre société'}.`, requiredDocuments: ['Dernier bilan comptable'], linkedSimulatorId: 'remuneration', nextActionLabel: 'Simuler l\'arbitrage →', nextActionType: 'simulateur', createdAt: now });
+  }
+  out.push({ id: 'per', title: 'Utiliser votre plafond de déduction PER', category: 'fiscal', urgency: 'low', impact: 'medium', horizon: '0-90 jours', status: 'detected', explanation: `Vous pouvez déduire jusqu'à ${PER_PLAFOND_2026.toLocaleString('fr-FR')} € de votre revenu imposable 2026 (plafonds des 3 dernières années reportables).`, whyNow: 'Levier disponible chaque année, à activer avant le 31 décembre.', requiredDocuments: [], linkedSimulatorId: 'per', nextActionLabel: 'Simuler →', nextActionType: 'simulateur', createdAt: now });
+  const immoTotal = pat && typeof pat === 'object' ? (+pat.immobilier || 0) : 0;
+  if (immoTotal >= IFI_SEUIL_2026) {
+    out.push({ id: 'ifi', title: 'Piloter votre exposition à l\'IFI', category: 'fiscal', urgency: 'high', impact: 'high', horizon: '3-18 mois', status: 'detected', explanation: `Votre immobilier déclaré (${immoTotal.toLocaleString('fr-FR')} €) dépasse le seuil d'assujettissement de ${IFI_SEUIL_2026.toLocaleString('fr-FR')} €.`, whyNow: 'Détecté à partir de votre recueil patrimonial.', requiredDocuments: [], linkedSimulatorId: 'ifi', nextActionLabel: 'Simuler mon IFI →', nextActionType: 'simulateur', createdAt: now });
+  }
+
+  // ── Social/protection : régime matrimonial, mandat, prévoyance (recueil) ──
+  if (rec && rec.juridique) {
+    const J = rec.juridique;
+    if (J.testament !== 'oui' || J.mandatProtection !== 'oui' || J.prevoyance !== 'oui') {
+      out.push({ id: 'protection-famille', title: 'Compléter votre protection personnelle et familiale', category: 'social', urgency: 'high', impact: 'high', horizon: '0-90 jours', status: 'to_analyze', explanation: 'Testament, mandat de protection future, prévoyance dirigeant : des éléments déclarés absents ou à vérifier dans votre recueil.', whyNow: 'Détecté à partir de votre recueil patrimonial (volet juridique).', requiredDocuments: [], linkedSimulatorId: null, nextActionLabel: 'Compléter mon recueil →', nextActionType: 'profil', createdAt: now });
+    }
+  }
+
+  return out.length ? out : _demoPriorities();
+}
+
+function memberExperienceApi() {
+  return {
+    /** @returns {Promise<PatrimonialPriority[]>} */
+    async getPriorities() {
+      // Étape 1 (aujourd'hui) : règles déterministes locales, décrites plus haut.
+      // Étape 2 (à venir) : GET /api/v1/me/priorities côté ikcp-client, une fois
+      // les agents Marcel branchés — cette fonction changera de source, jamais
+      // de forme (même objet PatrimonialPriority), donc rien à changer côté UI.
+      return _derivePriorities();
+    },
+    /** @returns {Promise<PatrimonialPriority|null>} La priorité la plus urgente, pour le dashboard. */
+    async getNextBestAction() {
+      const list = await this.getPriorities();
+      const rank = { critical: 0, high: 1, medium: 2, low: 3 };
+      return list.slice().sort((a, b) => (rank[a.urgency] ?? 9) - (rank[b.urgency] ?? 9))[0] || null;
+    },
+  };
+}
+
 // ─── API publique ──────────────────────────────────────────────
 export const Marcel = {
 
@@ -412,6 +538,15 @@ export const Marcel = {
       return true;
     },
   },
+
+  // ─── Vos priorités patrimoniales (Member Experience Layer, brique 1) ──
+  // Aujourd'hui : règles déterministes sur les VRAIES données du membre
+  // (mêmes signaux que app/bilan.html : concentration, liquidités dormantes,
+  // Dutreil/holding, arbitrage rémunération, PER, IFI, régime matrimonial).
+  // Demain : ces mêmes priorités pourront être produites par les agents
+  // Marcel (diagnostic, rémunération, holding, protection, transmission) —
+  // la forme des objets ne change pas, seule la source change.
+  MemberExperience: memberExperienceApi(),
 
   // ─── Accès gouverné : invitation / parrainage (public) ──────
   Invite: {
