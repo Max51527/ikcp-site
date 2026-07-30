@@ -122,7 +122,7 @@ footer a:hover{color:var(--navy)}
 </div>
 
 <main class="card">
-  <div class="eyebrow">Espace client</div>
+  <div class="eyebrow" id="eyebrow">Espace client</div>
   <form onsubmit="return askLink(event)">
     <div class="field">
       <input id="email" type="email" name="email" placeholder="Votre adresse email" required autocomplete="email" autofocus>
@@ -177,6 +177,17 @@ footer a:hover{color:var(--navy)}
 import { Marcel } from '/app/js/api.js';
 
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/app/sw.js').catch(()=>{}); }
+
+// Plan choisi sur la page tarifs (?plan=premium|strategies) : mémorisé pour être
+// finalisé (redirection Stripe) une fois connecté — voir dashboard.html.
+const PLAN_LABEL = { premium: 'Finaliser Premium — 9,99 €/mois', strategies: 'Finaliser Stratégies — 249 €/an' };
+try {
+  const _plan = new URLSearchParams(location.search).get('plan');
+  if (_plan && PLAN_LABEL[_plan]) {
+    localStorage.setItem('ikcp_pending_plan', _plan);
+    const _eb = document.getElementById('eyebrow'); if (_eb) _eb.textContent = PLAN_LABEL[_plan];
+  }
+} catch(_) {}
 
 // Déjà connecté → dashboard
 Marcel.Auth.me().then(() => location.replace('/app/dashboard.html')).catch(() => {});

@@ -137,8 +137,8 @@ try{
 
   <!-- ✦ Bibliothèque des stratégies dirigeant (palier Stratégies 249€/an) -->
   <section class="card" id="strat-lib-card" style="margin:14px 0 4px">
-    <div class="card-head"><span class="card-cat" style="color:var(--accent)">📚 Bibliothèque</span></div>
-    <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:18px;margin:2px 0 4px">Stratégies patrimoniales dirigeant</h3>
+    <div class="card-head"><span class="card-cat" style="color:var(--accent)">📚 Bibliothèque</span><span style="margin-left:auto;font-size:8.5px;color:#20180c;background:linear-gradient(120deg,#8B6F3F,#C9A96E);border-radius:999px;padding:2px 7px;font-weight:700">+249 €/AN</span></div>
+    <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:18px;margin:2px 0 4px">Fiches stratégies patrimoniales</h3>
     <p style="font-size:13px;color:var(--mute);margin-bottom:12px" id="strat-lib-desc">Fiches détaillées reliées à un simulateur et une checklist — rémunération, holding, transmission, retraite.</p>
     <a href="/app/strategies-dirigeant.html" class="btn btn-sm" id="strat-lib-cta">Explorer les stratégies →</a>
   </section>
@@ -195,7 +195,7 @@ try{
   })();</script>
   <a class="row" href="/app/avis"><div class="ri">📸</div><div class="rt"><b>Lire mon avis d'imposition</b><span>une photo suffit — Marcel extrait vos chiffres &amp; votre tranche</span></div><span class="chev">›</span></a>
   <a class="row" href="/app/bilan"><div class="ri">📄</div><div class="rt"><b>Faire mon audit patrimonial 360°</b><span>démarré automatiquement depuis votre SIREN — ou saisie manuelle dédiée</span></div><span class="chev">›</span></a>
-  <a class="row" href="/app/strategies"><div class="ri">🗺️</div><div class="rt"><b>Schémas de stratégie</b><span>OBO, Dutreil, holding, démembrement…</span></div><span class="pc">PREMIUM</span></a>
+  <a class="row" href="/app/strategies"><div class="ri">🗺️</div><div class="rt"><b>Schémas de montages (7)</b><span>OBO, Dutreil, holding, démembrement…</span></div><span class="pc">Inclus Premium</span></a>
   <a class="row" href="/app/simulateurs-pro"><div class="ri">🧮</div><div class="rt"><b>Mes simulateurs</b><span>carrière · rému/dividendes · retraite</span></div><span class="chev">›</span></a>
   <a class="row" href="/app/recueil"><div class="ri">📋</div><div class="rt"><b>Recueil patrimonial complet</b><span>tous vos biens + volet juridique · « Avez-vous pensé à ? »</span></div><span class="chev">›</span></a>
 
@@ -308,6 +308,18 @@ let me=null;
 try { me = await Marcel.Auth.me(); } catch(_) { location.replace('/app/index.html'); }
 
 if(me){
+  // Plan choisi sur la page tarifs, finalisé maintenant que le membre est connecté.
+  var _pendingPlan = null;
+  try { _pendingPlan = localStorage.getItem('ikcp_pending_plan'); } catch(_) {}
+  if (_pendingPlan) {
+    try { localStorage.removeItem('ikcp_pending_plan'); } catch(_) {}
+    var _planKey = _pendingPlan === 'strategies' ? 'strategies' : 'monthly';
+    try {
+      var _co = await Marcel.Billing.checkout(_planKey);
+      if (_co && _co.checkout_url) { location.href = _co.checkout_url; }
+    } catch(_) { /* échec silencieux : le membre reste sur le dashboard, peut réessayer depuis Profil */ }
+  }
+
   let profile=null; try{ profile = me.profile_json ? JSON.parse(me.profile_json) : null; }catch(_){}
   if(!profile?.onboarding_completed && !localStorage.getItem('marcel_onboarding_skipped')){
     var _q=new URLSearchParams(location.search); if(!_q.get('welcome') && !_q.get('upgraded')) location.replace('/app/onboarding.html');
@@ -342,7 +354,10 @@ if(me){
     var _prem = me.tier && me.tier!=='free';
     var _b=document.createElement('div'); _b.setAttribute('role','status');
     _b.style.cssText='margin:0 0 14px;padding:13px 16px;border-radius:12px;background:linear-gradient(135deg,#1B2A4A,#0E1729);color:#FAF8F4;font-size:14px;display:flex;align-items:center;gap:10px';
-    _b.innerHTML = _prem
+    var _strat = _prem && me.has_strategies === true;
+    _b.innerHTML = _strat
+      ? '<span style="font-size:20px">🎉</span><span>Bienvenue en <b style="color:#E2C896">Stratégies</b> — Marcel illimité, doctrine, veille, audit 360° et vos fiches sont prêts. <a href="/app/strategies-dirigeant.html" style="color:#E2C896;font-weight:600">Découvrir la bibliothèque →</a></span>'
+      : _prem
       ? '<span style="font-size:20px">🎉</span><span>Bienvenue en <b style="color:#E2C896">Premium</b> — Marcel illimité, doctrine, veille et audit 360° sont ouverts.</span>'
       : '<span style="font-size:20px">🎉</span><span>Paiement reçu, merci ! Votre <b style="color:#E2C896">Premium</b> s\'active dans quelques secondes…</span>';
     var _m=document.querySelector('main')||document.querySelector('.wrap')||document.body; _m.insertBefore(_b,_m.firstChild);
