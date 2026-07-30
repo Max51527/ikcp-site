@@ -446,7 +446,7 @@ function countUp(el, to){
   const tick=(t)=>{ const p=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-p,3);
     if(p<1){ el.textContent=EUR(to*e); _ctr=requestAnimationFrame(tick); }
     else { el.innerHTML=EUR(to)+'<span class="cur">€</span>'; } };
-  el.textContent='0'; _ctr=requestAnimationFrame(tick);
+  el.textContent=EUR(to); _ctr=requestAnimationFrame(tick); // valeur finale d'abord (si le rAF ne se déclenche jamais, le bon chiffre reste affiché)
 }
 
 function kpiTile(x){ const t=x.tone||'neutral';

@@ -20,7 +20,7 @@
       --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
       --color-bg: #FAF8F4; --color-surface: #FFFFFF; --color-surface-2: #FBF7EF; --color-surface-offset: #F4EFE7; --color-border: #DCD3C4; --color-divider:#E4DBCC;
       --color-text:#221E18; --color-text-muted:#6B5D52; --color-text-faint:#A99B8B; --color-text-inverse:#FAF8F4;
-      --color-primary:#1B2A4A; --color-primary-hover:#0E1729; --color-success:#3B7D5E; --color-warning:#964219; --color-error:#A12C7B; --color-gold:#C9A96E;
+      --color-primary:#1B2A4A; --color-primary-hover:#0E1729; --color-success:#3B7D5E; --color-warning:#964219; --color-error:#B91C1C; --color-gold:#C9A96E; --color-gold-text:#8B6F3F;
       --radius-sm:.5rem; --radius-md:.9rem; --radius-lg:1.2rem; --radius-xl:1.5rem; --radius-full:9999px;
       --shadow-sm:0 2px 8px rgba(27,42,74,.06); --shadow-md:0 12px 32px rgba(27,42,74,.10);
       --font-body:'Outfit', sans-serif; --font-display:'Playfair Display', serif;
@@ -28,7 +28,7 @@
     [data-theme="dark"] {
       --color-bg:#0E1729; --color-surface:#16233C; --color-surface-2:#1A2A47; --color-surface-offset:#1E2F4D; --color-border:#2C3E5E; --color-divider:#243450;
       --color-text:#FAF8F4; --color-text-muted:#B1AEA8; --color-text-faint:#77746E; --color-text-inverse:#0E1729;
-      --color-primary:#E2C896; --color-primary-hover:#C9A96E; --color-success:#7FCBA4; --color-warning:#D08A60; --color-error:#DD86BD; --color-gold:#E2C896;
+      --color-primary:#E2C896; --color-primary-hover:#C9A96E; --color-success:#7FCBA4; --color-warning:#D08A60; --color-error:#E4788C; --color-gold:#E2C896; --color-gold-text:#E2C896;
       --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow-md:0 12px 32px rgba(0,0,0,.35);
     }
     * { box-sizing:border-box; }
@@ -63,10 +63,10 @@
       border-radius:var(--radius-xl); box-shadow:var(--shadow-sm);
     }
     .hero-card { padding:var(--space-5); display:grid; gap:var(--space-4); }
-    .eyebrow { color:var(--color-gold); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
+    .eyebrow { color:var(--color-gold-text); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
     h2,h3 { margin:0; }
     .hero-card h2 { font:600 clamp(1.75rem, 4vw, 2.35rem)/1.1 var(--font-display); }
-    .hero-card h2 em { font-style:italic; color:var(--color-gold); }
+    .hero-card h2 em { font-style:italic; color:var(--color-gold-text); }
     .hero-card p { margin:0; color:var(--color-text-muted); }
     .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
     .kpi { padding:.9rem; border-radius:1rem; background:var(--color-surface-offset); border:1px solid var(--color-border); }
@@ -79,10 +79,11 @@
     .sim-item {
       display:flex; justify-content:space-between; gap:1rem; align-items:center; padding:1rem 1rem;
       border:1px solid var(--color-border); border-radius:1rem; background:var(--color-surface-2); cursor:pointer;
+      color:var(--color-text); font:inherit;
     }
     .sim-item.active { border-color:var(--color-gold); background:color-mix(in srgb, var(--color-gold) 9%, var(--color-surface)); }
     .sim-item small { display:block; color:var(--color-text-muted); margin-top:.2rem; }
-    .tag { font-size:var(--text-xs); color:var(--color-gold); font-weight:700; }
+    .tag { font-size:var(--text-xs); color:var(--color-gold-text); font-weight:700; }
     .sim-panel { padding:var(--space-5); display:grid; gap:var(--space-5); }
     .field-grid { display:grid; gap:.9rem; }
     .field label { display:block; margin-bottom:.35rem; font-size:var(--text-sm); color:var(--color-text-muted); }
@@ -116,7 +117,7 @@
 <body>
   <div class="app">
     <header class="topbar">
-      <div class="brand">
+      <a class="brand" href="/app/dashboard.html" aria-label="Retour à mon espace" style="text-decoration:none;color:inherit">
         <div class="logo" aria-hidden="true">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 3C8 3 5 6.2 5 10.1C5 14.7 11.2 20.2 12 21C12.8 20.2 19 14.7 19 10.1C19 6.2 16 3 12 3Z" fill="currentColor"/>
@@ -124,9 +125,9 @@
         </div>
         <div>
           <h1>Marcel · Simulateurs</h1>
-          <p>Dirigeant(e)s &amp; professions libérales · 🇫🇷</p>
+          <p>← Mon espace</p>
         </div>
-      </div>
+      </a>
       <div class="actions">
         <button class="chip" id="refreshLabel">Barèmes vérifiés · 2026</button>
         <button class="toggle" id="themeToggle" aria-label="Basculer le thème">◐</button>

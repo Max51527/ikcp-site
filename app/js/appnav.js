@@ -27,7 +27,7 @@
       svg: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>' },
     patrimoine: { id:'patrimoine', label: 'Patrimoine', href: '/app/patrimoine-pro', match: ['patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'priorites', 'strategies-dirigeant'],
       svg: '<path d="M4 20V11M9.3 20V4M14.6 20v-6M20 20V8"/><path d="M2.5 20h19"/>' },
-    univers:    { id:'univers', label: 'Univers', href: '/app/univers', match: ['univers', 'conciergerie', 'collections', 'famille'],
+    univers:    { id:'univers', label: 'Univers', href: '/app/univers-dirigeant', match: ['univers', 'univers-dirigeant', 'univers-liberal', 'univers-createur', 'univers-sportif', 'conciergerie', 'collections', 'famille'],
       svg: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 5.3-5.3 2.2 2.2-5.3z"/>' },
     veille:     { id:'veille', label: 'Veille', href: '/app/veille', match: ['veille'],
       svg: '<path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 8-2.5 8h17S18 14.5 18 8.5"/><path d="M13.6 21a2 2 0 0 1-3.2 0"/>' }
@@ -48,7 +48,7 @@
     + 'border-top:1px solid rgba(27,42,74,.08);padding:7px 4px calc(7px + env(safe-area-inset-bottom));'
     + 'box-shadow:0 -10px 34px -18px rgba(27,42,74,.32);font-family:Outfit,system-ui,-apple-system,sans-serif}'
     + '.ikcp-appnav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;'
-    + 'color:#a59b90;font-size:10px;font-weight:600;letter-spacing:.02em;padding:3px 0;line-height:1;'
+    + 'color:#6B5D52;font-size:10px;font-weight:600;letter-spacing:.02em;padding:3px 0;line-height:1;'
     + 'transition:color .18s;-webkit-tap-highlight-color:transparent;position:relative}'
     + '.ikcp-appnav a svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}'
     + '.ikcp-appnav a.active{color:var(--accent,#1B2A4A)}'
@@ -117,7 +117,7 @@
       + '<button type="button" data-t="manque">🧩 Il manque…</button>'
       + '<button type="button" data-t="jadore">❤️ J\'adore</button>'
       + '</div>'
-      + '<textarea id="ikcpFbT" placeholder="Votre retour…"></textarea>'
+      + '<textarea id="ikcpFbT" placeholder="Votre retour…" aria-label="Votre avis ou retour"></textarea>'
       + '<div class="row"><button type="button" class="cancel">Annuler</button><button type="button" class="send">Envoyer</button></div></div>';
     document.body.appendChild(btn); document.body.appendChild(modal);
     var fbType = '';

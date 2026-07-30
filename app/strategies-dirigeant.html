@@ -26,7 +26,7 @@ try{
   --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem;
   --color-bg:#FAF8F4; --color-surface:#FFFFFF; --color-surface-2:#FBF7EF; --color-surface-offset:#F4EFE7; --color-border:#DCD3C4; --color-divider:#E4DBCC;
   --color-text:#221E18; --color-text-muted:#6B5D52; --color-text-faint:#A99B8B; --color-text-inverse:#FAF8F4;
-  --color-primary:#1B2A4A; --color-primary-hover:#0E1729; --color-success:#3B7D5E; --color-warning:#964219; --color-error:#A12C7B; --color-gold:#C9A96E;
+  --color-primary:#1B2A4A; --color-primary-hover:#0E1729; --color-success:#3B7D5E; --color-warning:#964219; --color-error:#B91C1C; --color-gold:#C9A96E; --color-gold-text:#8B6F3F;
   --radius-sm:.5rem; --radius-md:.9rem; --radius-lg:1.2rem; --radius-xl:1.5rem; --radius-full:9999px;
   --shadow-sm:0 2px 8px rgba(27,42,74,.06); --shadow-md:0 12px 32px rgba(27,42,74,.10);
   --font-body:'Outfit', sans-serif; --font-display:'Playfair Display', serif;
@@ -34,7 +34,7 @@ try{
 [data-theme="dark"] {
   --color-bg:#0E1729; --color-surface:#16233C; --color-surface-2:#1A2A47; --color-surface-offset:#1E2F4D; --color-border:#2C3E5E; --color-divider:#243450;
   --color-text:#FAF8F4; --color-text-muted:#B1AEA8; --color-text-faint:#77746E; --color-text-inverse:#0E1729;
-  --color-primary:#E2C896; --color-primary-hover:#C9A96E; --color-success:#7FCBA4; --color-warning:#D08A60; --color-error:#DD86BD; --color-gold:#E2C896;
+  --color-primary:#E2C896; --color-primary-hover:#C9A96E; --color-success:#7FCBA4; --color-warning:#D08A60; --color-error:#E4788C; --color-gold:#E2C896; --color-gold-text:#E2C896;
   --shadow-sm:0 2px 8px rgba(0,0,0,.25); --shadow-md:0 12px 32px rgba(0,0,0,.35);
 }
 * { box-sizing:border-box; }
@@ -51,10 +51,10 @@ button,input,select { font:inherit; }
 .hero { padding:var(--space-6) var(--space-4) var(--space-4); }
 .hero-card, .card { background:var(--color-surface); border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent); border-radius:var(--radius-xl); box-shadow:var(--shadow-sm); }
 .hero-card { padding:var(--space-5); display:grid; gap:var(--space-4); }
-.eyebrow { color:var(--color-gold); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
+.eyebrow { color:var(--color-gold-text); font-size:var(--text-xs); text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
 h2,h3,h4 { margin:0; }
 .hero-card h2 { font:600 clamp(1.6rem, 4vw, 2.15rem)/1.15 var(--font-display); }
-.hero-card h2 em { font-style:italic; color:var(--color-gold); }
+.hero-card h2 em { font-style:italic; color:var(--color-gold-text); }
 .hero-card p { margin:0; color:var(--color-text-muted); }
 .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
 .kpi { padding:.85rem; border-radius:1rem; background:var(--color-surface-offset); border:1px solid var(--color-border); text-align:center; }
@@ -70,12 +70,12 @@ h2,h3,h4 { margin:0; }
 .chip.active { background:var(--color-primary); color:var(--color-text-inverse); border-color:var(--color-primary); }
 .reco-row { display:flex; gap:.7rem; overflow-x:auto; padding-bottom:.3rem; margin-bottom:var(--space-5); }
 .reco-card { flex:0 0 auto; width:230px; padding:1rem; border-radius:1.1rem; background:linear-gradient(150deg, color-mix(in srgb, var(--color-gold) 14%, var(--color-surface)), var(--color-surface)); border:1px solid var(--color-gold); cursor:pointer; }
-.reco-card .badge { font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--color-gold); }
+.reco-card .badge { font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--color-gold-text); }
 .reco-card h4 { font:600 15px var(--font-display); margin:.3rem 0; color:var(--color-primary); }
 .reco-card small { color:var(--color-text-muted); font-size:11.5px; display:block; }
 .strat-list { display:grid; gap:.85rem; }
 .strat-item { display:flex; justify-content:space-between; gap:1rem; align-items:center; padding:1rem; border:1px solid var(--color-border); border-radius:1rem; background:var(--color-surface-2); cursor:pointer; }
-.strat-item .cat { font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--color-gold); font-weight:700; }
+.strat-item .cat { font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--color-gold-text); font-weight:700; }
 .strat-item h4 { font:600 15px var(--font-display); margin:.25rem 0 .2rem; color:var(--color-primary); }
 .strat-item small { color:var(--color-text-muted); }
 .strat-item .tags { display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.4rem; }
@@ -101,7 +101,7 @@ h2,h3,h4 { margin:0; }
 .step .n { flex:0 0 auto; width:26px; height:26px; border-radius:50%; background:var(--color-primary); color:var(--color-text-inverse); display:grid; place-items:center; font-size:12px; font-weight:700; }
 .impact-grid { display:grid; grid-template-columns:1fr; gap:.55rem; }
 .impact-row { padding:.7rem .85rem; border-radius:.8rem; background:var(--color-surface-2); border:1px solid var(--color-border); }
-.impact-row b { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--color-gold); margin-bottom:.2rem; }
+.impact-row b { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--color-gold-text); margin-bottom:.2rem; }
 .checklist { display:grid; gap:.5rem; }
 .check-item { display:flex; align-items:flex-start; gap:.6rem; padding:.7rem .85rem; border-radius:.8rem; background:var(--color-surface-2); border:1px solid var(--color-border); }
 .check-item input { margin-top:.2rem; width:18px; height:18px; }
@@ -112,7 +112,7 @@ h2,h3,h4 { margin:0; }
 .faq-item summary { font-weight:600; cursor:pointer; color:var(--color-primary); }
 .faq-item p { margin:.5rem 0 0; }
 .cas-pratique { display:grid; gap:.5rem; font-size:var(--text-sm); }
-.cas-pratique b { color:var(--color-gold); }
+.cas-pratique b { color:var(--color-gold-text); }
 .marcel-q { display:flex; flex-direction:column; gap:.5rem; }
 .marcel-q a { text-decoration:none; color:var(--color-text); background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:.8rem; padding:.65rem .85rem; font-size:var(--text-sm); }
 .sources { font-size:11.5px; color:var(--color-text-faint); }
@@ -227,7 +227,7 @@ function renderChips() {
 
 function cardHtml(f) {
   const reco = RECO.find(r => r.strategie_key === f.slug);
-  return `<article class="strat-item" data-slug="${esc(f.slug)}">
+  return `<article class="strat-item" data-slug="${esc(f.slug)}" tabindex="0" role="button" aria-label="Ouvrir la fiche : ${esc(f.titre)}">
     <div style="flex:1;min-width:0">
       <div class="cat">${esc(f.categorie)}${reco ? ' · Recommandée' : ''}</div>
       <h4>${esc(f.titre)}${!UNLOCKED ? ' 🔒' : ''}</h4>
@@ -249,7 +249,10 @@ function renderList() {
   document.getElementById('stratList').innerHTML = list.length
     ? list.map(cardHtml).join('')
     : '<div class="loading">Aucune stratégie ne correspond à votre recherche.</div>';
-  document.querySelectorAll('.strat-item').forEach(el => el.addEventListener('click', () => openFiche(el.dataset.slug)));
+  document.querySelectorAll('.strat-item').forEach(el => {
+    el.addEventListener('click', () => openFiche(el.dataset.slug));
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFiche(el.dataset.slug); } });
+  });
 }
 
 function renderReco() {
@@ -258,9 +261,12 @@ function renderReco() {
   document.getElementById('recoRow').innerHTML = RECO.slice(0,5).map(r => {
     const f = CATALOGUE.find(c => c.slug === r.strategie_key);
     if (!f) return '';
-    return `<div class="reco-card" data-slug="${esc(f.slug)}"><div class="badge">Score ${Math.round((r.score||0)*100)}%</div><h4>${esc(f.titre)}</h4><small>${esc(r.declencheur || '')}</small></div>`;
+    return `<div class="reco-card" data-slug="${esc(f.slug)}" tabindex="0" role="button" aria-label="Ouvrir la fiche recommandée : ${esc(f.titre)}"><div class="badge">Score ${Math.round((r.score||0)*100)}%</div><h4>${esc(f.titre)}</h4><small>${esc(r.declencheur || '')}</small></div>`;
   }).join('');
-  document.querySelectorAll('.reco-card').forEach(el => el.addEventListener('click', () => openFiche(el.dataset.slug)));
+  document.querySelectorAll('.reco-card').forEach(el => {
+    el.addEventListener('click', () => openFiche(el.dataset.slug));
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFiche(el.dataset.slug); } });
+  });
 }
 
 function sectionList(title, items) {
@@ -352,7 +358,7 @@ function lockedHtml(d) {
     <h3>${esc(d.titre)} 🔒</h3>
     <p>${esc(d.teaser || 'Fiche réservée au palier Stratégies.')}</p>
     <div class="blur-block">●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●</div>
-    <a class="btn btn-primary" href="/app/creer-mon-compte.html">Débloquer la bibliothèque — 249 €/an →</a>
+    <a class="btn btn-primary" href="/creer-mon-compte.html#offres">Débloquer la bibliothèque — 249 €/an →</a>
   </div>`;
 }
 

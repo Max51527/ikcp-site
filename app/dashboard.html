@@ -106,7 +106,7 @@ try{
     <div class="mlab"><span class="dot"></span> Marcel · intelligence patrimoniale</div>
     <div class="mq">Posez votre question — je mobilise vos chiffres et mes spécialistes.</div>
     <form onsubmit="return askMarcel(event)">
-      <input id="qInput" type="text" maxlength="280" autocomplete="off" placeholder="Payer moins d'impôts sur ma société…">
+      <input id="qInput" type="text" maxlength="280" autocomplete="off" placeholder="Payer moins d'impôts sur ma société…" aria-label="Poser une question à Marcel">
       <button type="submit" class="snd" aria-label="Envoyer">→</button>
     </form>
   </section>
@@ -386,7 +386,7 @@ if(me){
       '<div style="font-size:13px">'
       + '<p style="color:var(--mute);margin:0 0 8px">Votre SIREN — identité + vrais chiffres (CA, résultat) en direct, en 5 s.</p>'
       + '<div style="display:flex;gap:6px">'
-      + '<input id="cartoSiren" inputmode="numeric" maxlength="11" placeholder="9 chiffres" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font-family:Outfit,sans-serif;font-size:13px;color:var(--ink)">'
+      + '<input id="cartoSiren" inputmode="numeric" maxlength="11" placeholder="9 chiffres" aria-label="Numéro SIREN de votre société" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;font-family:Outfit,sans-serif;font-size:13px;color:var(--ink)">'
       + '<button class="btn btn-sm" onclick="var v=(document.getElementById(&quot;cartoSiren&quot;).value||&quot;&quot;).replace(/\\D/g,&quot;&quot;).slice(0,9); if(v.length===9){ try{localStorage.setItem(&quot;ikcp_pending_company&quot;,v);}catch(e){} window.doCarto(v);} else { document.getElementById(&quot;cartoSiren&quot;).style.borderColor=&quot;#C0414C&quot;; }">Cartographier</button>'
       + '</div></div>';
   }
