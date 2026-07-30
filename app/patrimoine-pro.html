@@ -644,7 +644,7 @@ async function loadInsight(){
 // ── boot ──
 loadData();
 try{ const p=JSON.parse(localStorage.getItem('ikcp_profile')||'null'); if(p&&p.prenom){ $('userAvatar').textContent=(p.prenom[0]||'M').toUpperCase(); } }catch(_){}
-setView(hasData()?'real':'etabli');
+setView('real'); // toujours l'état réel par défaut (même vide) — le profil démo reste un choix explicite, jamais l'écran d'atterrissage
 syncFromServer();   // récupère le patrimoine depuis la base D1 si plus récent (multi-appareils)
 // recharge les graphes quand Chart.js (defer) est prêt
 if(!window.Chart){ const iv=setInterval(()=>{ if(window.Chart){ clearInterval(iv); render(); } },120); setTimeout(()=>clearInterval(iv),4000); }

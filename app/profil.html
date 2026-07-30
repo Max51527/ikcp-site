@@ -219,23 +219,34 @@ if(me){
   };
   card.style.display = '';
   if(me.tier === 'free'){
-    desc.innerHTML = 'Vous êtes en <b>Découverte</b> (gratuit). Passez en <b>Premium</b> pour Marcel en illimité + la veille augmentée.';
+    desc.innerHTML = 'Vous êtes en <b>Découverte</b> (gratuit). Passez en <b>Premium</b> pour Marcel en illimité + la veille augmentée, ou <b>Stratégies</b> pour la bibliothèque de fiches en plus.';
     const go = async (plan, el) => {
       el.disabled = true; el.textContent = 'Redirection…';
       try { const r = await Marcel.Billing.checkout(plan); if(r.checkout_url) location.href = r.checkout_url; else throw 0; }
       catch(_){ el.disabled = false; el.textContent = 'Réessayer'; alert('Paiement momentanément indisponible. Réessayez plus tard.'); }
     };
-    const bM = btn('Passer Premium · mensuel', e => go('monthly', e.target));
-    const bY = btn('Premium · annuel (2 mois offerts)', e => go('yearly', e.target), false);
-    actions.append(bM, document.createTextNode(' '), bY);
+    const bM = btn('Passer Premium · 9,99€/mois', e => go('monthly', e.target));
+    const bS = btn('Stratégies · 249€/an', e => go('strategies', e.target), false);
+    actions.append(bM, document.createTextNode(' '), bS);
   } else if(me.tier === 'premium'){
-    desc.innerHTML = 'Vous êtes en <b>Premium</b>. Gérez votre abonnement (facture, moyen de paiement, résiliation) via le portail sécurisé.';
+    desc.innerHTML = me.has_strategies
+      ? 'Vous êtes en <b>Stratégies</b>. Gérez votre abonnement (facture, moyen de paiement, résiliation) via le portail sécurisé.'
+      : 'Vous êtes en <b>Premium</b>. Gérez votre abonnement, ou ajoutez la <b>bibliothèque Stratégies</b> (249€/an).';
     const bP = btn('Gérer mon abonnement', async e => {
       e.target.disabled = true; e.target.textContent = 'Ouverture…';
       try { const r = await Marcel.Billing.portal(); if(r.portal_url) location.href = r.portal_url; else throw 0; }
       catch(_){ e.target.disabled = false; e.target.textContent = 'Réessayer'; alert('Portail momentanément indisponible.'); }
     });
     actions.append(bP);
+    if (!me.has_strategies) {
+      const go = async (plan, el) => {
+        el.disabled = true; el.textContent = 'Redirection…';
+        try { const r = await Marcel.Billing.checkout(plan); if(r.checkout_url) location.href = r.checkout_url; else throw 0; }
+        catch(_){ el.disabled = false; el.textContent = 'Réessayer'; alert('Paiement momentanément indisponible. Réessayez plus tard.'); }
+      };
+      const bS = btn('Ajouter Stratégies · 249€/an', e => go('strategies', e.target), false);
+      actions.append(document.createTextNode(' '), bS);
+    }
   } else { // fo
     desc.innerHTML = 'Vous êtes en <b>intelligence patrimoniale</b> — accès complet aux 11 spécialistes. Pour toute question sur votre formule, contactez Maxime.';
     const bC = btn('Contacter Maxime', () => location.href = 'mailto:maxime@ikcp.eu?subject=Mon%20abonnement%20Family%20Office', false);
