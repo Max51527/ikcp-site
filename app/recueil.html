@@ -287,6 +287,9 @@ function save(){
       document.getElementById('tPassif').textContent=eur(flat.passif);
       document.getElementById('tNet').textContent=eur(brut-flat.passif);
       var st=document.getElementById('saveSt'); st.textContent='✓ enregistré'; setTimeout(function(){ st.textContent=''; },1600);
+      // Sauvegarde serveur immédiate (coffre /state) — avant : uniquement 5 s après
+      // chargement + beforeunload, peu fiable sur mobile → saisies perdues possibles.
+      if(window.IKCPSync && window.IKCPSync.push) window.IKCPSync.push();
     }catch(_){}
     renderPense();
   },350);
@@ -438,5 +441,6 @@ import { Marcel } from '/app/js/api.js';
 </script>
 <script src="/protect.js?v=2" defer></script>
 <script src="/app/js/sync.js" defer></script>
+<script src="/app/js/appnav.js" defer></script>
 </body>
 </html>

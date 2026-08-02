@@ -377,7 +377,10 @@ window.finishOnboarding = async function(skipSiren = false){
     localStorage.setItem('ikcp_societe', JSON.stringify({ siren:sd.siren, nom:sd.nom, forme:sd.forme_juridique, ca:(sd.chiffre_affaires!=null?sd.chiffre_affaires:null), resultat:(sd.resultat!=null?sd.resultat:null), annee:sd.finances_annee||null, at:Date.now() }));
     localStorage.setItem('ikcp_pending_company', sd.siren);
   } }catch(_){}
-  location.href = '/app/dashboard.html?welcome=1';
+  // « Tout part du bilan patrimonial » : l'onboarding débouche sur le bilan.
+  // Exception : un plan choisi sur la page tarifs attend → dashboard (qui déclenche le checkout Stripe).
+  var _pp = null; try{ _pp = localStorage.getItem('ikcp_pending_plan'); }catch(_){}
+  location.href = _pp ? '/app/dashboard.html?welcome=1' : '/app/bilan.html?welcome=1';
 }
 
 window.skipAll = function(){

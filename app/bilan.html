@@ -232,8 +232,17 @@ function render(biens, soc, data){
       .then(function(r){return r.ok?r.json():null;}).then(function(d){ if(d) render(biens,soc,d); }).catch(function(){});
   }
 })();
+
+// Nouvel appareil : sync.js (defer) hydrate le localStorage APRÈS le premier rendu.
+// Si la page s'est affichée vide et que la synchro apporte des données, on re-rend —
+// avant ce correctif, il fallait recharger la page à la main pour voir son bilan.
+window.addEventListener('ikcp-sync-hydrated', function(){
+  var biens=readBiens(), soc=readSociete();
+  if(biens.length || soc) render(biens, soc, null);
+});
 </script>
 <script src="/app/js/marcel-float.js" defer></script>
 <script src="/app/js/sync.js" defer></script>
+<script src="/app/js/appnav.js" defer></script>
 </body>
 </html>

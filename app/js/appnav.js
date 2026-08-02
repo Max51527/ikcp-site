@@ -12,7 +12,7 @@
  */
 (function () {
   // Pages qui reçoivent la barre (sans .html, URLs propres Cloudflare Pages)
-  var SHOW_ON = ['dashboard', 'patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'priorites', 'strategies-dirigeant', 'famille', 'univers', 'conciergerie', 'collections', 'veille', 'carnet', 'documents', 'profil', 'securite'];
+  var SHOW_ON = ['dashboard', 'bilan', 'recueil', 'patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'priorites', 'strategies-dirigeant', 'famille', 'univers', 'conciergerie', 'collections', 'veille', 'carnet', 'documents', 'profil', 'securite'];
 
   // Page courante : dernier segment, sans extension
   var seg = (location.pathname.replace(/\/+$/, '').split('/').pop() || '').replace(/\.html$/, '');
@@ -25,7 +25,7 @@
   var OTHERS = {
     accueil:    { id:'accueil', label: 'Accueil', href: '/app/dashboard', match: ['dashboard'],
       svg: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>' },
-    patrimoine: { id:'patrimoine', label: 'Patrimoine', href: '/app/patrimoine-pro', match: ['patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'priorites', 'strategies-dirigeant'],
+    patrimoine: { id:'patrimoine', label: 'Bilan', href: '/app/bilan', match: ['bilan', 'recueil', 'patrimoine', 'patrimoine-pro', 'diagnostic', 'simulateurs', 'score', 'priorites', 'strategies-dirigeant'],
       svg: '<path d="M4 20V11M9.3 20V4M14.6 20v-6M20 20V8"/><path d="M2.5 20h19"/>' },
     univers:    { id:'univers', label: 'Univers', href: '/app/univers-dirigeant', match: ['univers', 'univers-dirigeant', 'univers-liberal', 'univers-createur', 'univers-sportif', 'conciergerie', 'collections', 'famille'],
       svg: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 5.3-5.3 2.2 2.2-5.3z"/>' },
