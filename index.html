@@ -1470,6 +1470,34 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           animation: fadeIn 1.3s ease both;
           animation-delay: 0.3s;
         }
+
+        /* ─── Montgolfière d'envol — le lien visuel avec « Prendre de la hauteur » ─── */
+        @keyframes envol {
+          0%   { transform: translateY(140px) scale(0.88); opacity: 0; }
+          45%  { opacity: 1; }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .envol-stage {
+          position: absolute;
+          top: -46px;
+          right: -18px;
+          width: 92px;
+          z-index: 5;
+          cursor: pointer;
+          animation: envol 3s cubic-bezier(0.22, 0.8, 0.3, 1) 0.6s both;
+          filter: drop-shadow(0 14px 22px rgba(14, 23, 41, 0.28));
+        }
+        .envol-stage img {
+          width: 100%;
+          height: auto;
+          display: block;
+          animation: montgolFloat 5s ease-in-out 3.6s infinite;
+        }
+        .envol-stage:hover img { animation-play-state: paused; }
+        @media (max-width: 1023px) { .envol-stage { display: none; } }
+        @media (prefers-reduced-motion: reduce) {
+          .envol-stage, .envol-stage img { animation: none; }
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* ═══ Hero visuel — IA × Humain (concept B) ═══ */
@@ -2525,6 +2553,10 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
 
       <!-- ═══ RIGHT ═══ -->
       <div class="hero-right">
+        <!-- Montgolfière d'envol — écho visuel du slogan « Prendre de la hauteur », mène au bilan -->
+        <a class="envol-stage" href="#bilan-patrimonial" aria-label="Prendre de la hauteur — commencer votre bilan patrimonial" title="Commencer votre bilan patrimonial">
+          <img src="/icons/montgolfiere.png" alt="" onerror="this.parentElement.style.display='none'">
+        </a>
 
         <!-- ═══ Concept B — IA × Humain (le trait d'union) ═══ -->
         <div class="hero-orbit">
