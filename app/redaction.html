@@ -75,8 +75,21 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
   <div class="brand">Rédaction<i>.</i></div>
   <span class="badge" id="who">vérification…</span>
   <div style="flex:1"></div>
+  <button class="btn btn-o" id="tabF" onclick="setTab('fiches')">Fiches</button>
+  <button class="btn btn-o" id="tabT" onclick="setTab('textes')">Textes du site</button>
   <a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Mon espace</a>
 </header>
+
+<!-- ═══ Onglet TEXTES DU SITE ═══ -->
+<div id="vueTextes" style="display:none;max-width:900px;margin:0 auto;padding:20px">
+  <div class="panel" style="margin-bottom:14px">
+    <h2>Textes du site</h2>
+    <div class="hint">Modifiez un texte, il est en ligne immédiatement — sans redéploiement.
+      Videz le champ pour revenir au texte d'origine.</div>
+    <div class="msg" id="msgT"></div>
+  </div>
+  <div id="champs"></div>
+</div>
 
 <div class="wrap" id="app" style="display:none">
   <aside class="panel">
@@ -224,6 +237,71 @@ document.getElementById('list').addEventListener('click',function(e){
   var b=e.target.closest('.item'); if(b) open_(b.dataset.s);
 });
 
+/* ── Onglets ── */
+var TAB='fiches';
+function setTab(t){
+  TAB=t;
+  document.getElementById('app').style.display = (t==='fiches')?'grid':'none';
+  document.getElementById('vueTextes').style.display = (t==='textes')?'block':'none';
+  document.getElementById('tabF').style.borderColor = (t==='fiches')?'var(--gold)':'var(--line)';
+  document.getElementById('tabT').style.borderColor = (t==='textes')?'var(--gold)':'var(--line)';
+  if(t==='textes') chargerTextes();
+}
+
+/* ── Textes du site : les clés éditables, groupées par page ──
+   Chaque clé correspond à un attribut data-cms dans le HTML public. */
+var CHAMPS=[
+  ['Page d\'accueil',[
+    ['home.hero.headline_1','Titre — 1re ligne','input'],
+    ['home.hero.headline_em','Titre — 2e ligne (en doré)','input'],
+    ['home.hero.subtitle','Sous-titre du hero (HTML autorisé)','textarea'],
+    ['home.hero.cta_primary','Bouton principal','input'],
+    ['home.hero.cta_secondary','Bouton secondaire','input'],
+    ['home.services.title','Section services — titre','input'],
+    ['home.services.description','Section services — texte','textarea'],
+  ]],
+];
+var VALEURS={};
+function msgT(t,ok){var m=document.getElementById('msgT');m.textContent=t;
+  m.className='msg '+(ok?'ok':'err');setTimeout(function(){m.className='msg'},4000)}
+
+function chargerTextes(){
+  fetch(API+'/api/v1/atelier/contenu',{headers:H()})
+    .then(function(r){return r.json()}).then(function(d){
+      VALEURS={};(d.contenu||[]).forEach(function(c){VALEURS[c.cle]=c.valeur});
+      renderChamps();
+    }).catch(function(){msgT('Chargement impossible.',false)});
+}
+function renderChamps(){
+  document.getElementById('champs').innerHTML=CHAMPS.map(function(grp){
+    return '<div class="panel" style="margin-bottom:14px"><h2>'+esc(grp[0])+'</h2>'
+      + grp[1].map(function(c){
+          var v=VALEURS[c[0]]||'';
+          var champ = c[2]==='textarea'
+            ? '<textarea data-cle="'+esc(c[0])+'">'+esc(v)+'</textarea>'
+            : '<input data-cle="'+esc(c[0])+'" value="'+esc(v)+'">';
+          return '<div class="fld"><label>'+esc(c[1])+'</label>'+champ
+            + '<div class="sub">'+esc(c[0])+(v?'':' — vide : texte d\'origine conservé')+'</div>'
+            + '<button class="btn btn-g" style="margin-top:7px" data-save="'+esc(c[0])+'">Publier ce texte</button></div>';
+        }).join('')
+      + '</div>';
+  }).join('');
+}
+document.getElementById('champs').addEventListener('click',function(e){
+  var b=e.target.closest('[data-save]');if(!b)return;
+  var cle=b.dataset.save;
+  var el=document.querySelector('[data-cle="'+cle+'"]');
+  b.disabled=true;
+  fetch(API+'/api/v1/atelier/contenu',{method:'PUT',headers:H(),
+    body:JSON.stringify({cle:cle,valeur:el.value})})
+    .then(function(r){return r.json()}).then(function(d){
+      b.disabled=false;
+      if(d.ok){VALEURS[cle]=el.value;
+        msgT(d.supprime?'Texte d\'origine restauré.':'Publié — en ligne immédiatement.',true);}
+      else msgT(d.error||'Échec.',false);
+    }).catch(function(){b.disabled=false;msgT('Réseau indisponible.',false)});
+});
+
 function load(){
   fetch(API+'/api/v1/atelier/fiches',{headers:H()}).then(function(r){
     if(r.status===403||r.status===401){document.getElementById('denied').style.display='';return null}
@@ -232,6 +310,7 @@ function load(){
     if(!d)return;
     document.getElementById('app').style.display='grid';
     document.getElementById('who').textContent='propriétaire';
+    document.getElementById('tabF').style.borderColor='var(--gold)';
     FICHES=d.fiches||[];renderList();
   }).catch(function(){document.getElementById('denied').style.display=''});
 }

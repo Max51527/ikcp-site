@@ -58,6 +58,11 @@ export default {
 
       // ─── PUBLIC ROUTES ──────────────────────────────────
       if (path === '/health') return json({ status: 'ok', service: 'ikcp-client', version: '2.0' }); // M1 : cartographie des bindings retirée (ne pas exposer la conf à un anonyme)
+
+      // ─── CONTENU ÉDITORIAL — surcharges publiées depuis /app/redaction ──
+      // Public et cacheable : cms-hydrate.js le fusionne par-dessus _data/*.json.
+      // Renvoie {} tant que rien n'a été édité → coût quasi nul.
+      if (path === '/api/v1/contenu' && method === 'GET') return await handleContenuPublic(env);
       if (path === '/auth/send' && method === 'POST') return await handleAuthSend(request, env);
       if (path === '/auth/verify' && method === 'GET') return await handleAuthVerify(request, env);
       if (path === '/auth/demo' && method === 'POST') return await handleAuthDemo(request, env);
@@ -633,9 +638,57 @@ async function isOwner(session) {
   return OWNER_HASHES.includes(await sha256(String(session.email).trim().toLowerCase()));
 }
 
+// ── CONTENU ÉDITORIAL : surcharges de textes du site (édition « type WordPress ») ──
+// Stockées en D1, servies publiquement, fusionnées par cms-hydrate.js par-dessus
+// _data/*.json. Le HTML garde toujours son texte par défaut : si la base tombe ou
+// si rien n'est édité, le site s'affiche normalement.
+async function ensureContenuTable(env) {
+  await env.D1.prepare(
+    'CREATE TABLE IF NOT EXISTS contenu (cle TEXT PRIMARY KEY, valeur TEXT, updated_at TEXT)'
+  ).run();
+}
+async function handleContenuPublic(env) {
+  try {
+    await ensureContenuTable(env);
+    const rows = await env.D1.prepare('SELECT cle, valeur FROM contenu').all();
+    const out = {};
+    (rows.results || []).forEach(r => { out[r.cle] = r.valeur; });
+    return new Response(JSON.stringify(out), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60', ...corsHeaders() },
+    });
+  } catch (_) {
+    return new Response('{}', { headers: { 'Content-Type': 'application/json', ...corsHeaders() } });
+  }
+}
+
 // ── ATELIER : CRUD des fiches (propriétaire uniquement) ──
 async function handleAtelier(request, session, env, path, method) {
   if (!(await isOwner(session))) return json({ error: 'forbidden' }, 403);
+
+  // Textes du site
+  if (path === '/api/v1/atelier/contenu') {
+    await ensureContenuTable(env);
+    if (method === 'GET') {
+      const rows = await env.D1.prepare('SELECT cle, valeur, updated_at FROM contenu').all();
+      return json({ contenu: rows.results || [] });
+    }
+    if (method === 'PUT') {
+      const b = await request.json().catch(() => null);
+      if (!b || typeof b.cle !== 'string') return json({ error: 'bad_json' }, 400);
+      const cle = b.cle.trim().slice(0, 120);
+      if (!/^[a-z]+\.[a-z0-9_.]+$/i.test(cle)) return json({ error: 'cle_invalide' }, 400);
+      if (b.valeur === null || b.valeur === '') {
+        await env.D1.prepare('DELETE FROM contenu WHERE cle=?').bind(cle).run();
+        return json({ ok: true, cle, supprime: true });
+      }
+      await env.D1.prepare(
+        'INSERT INTO contenu (cle, valeur, updated_at) VALUES (?,?,?) ' +
+        'ON CONFLICT(cle) DO UPDATE SET valeur=excluded.valeur, updated_at=excluded.updated_at'
+      ).bind(cle, String(b.valeur).slice(0, 8000), new Date().toISOString()).run();
+      return json({ ok: true, cle });
+    }
+  }
+
   await ensureFichesTable(env);
 
   if (path === '/api/v1/atelier/fiches' && method === 'GET') {

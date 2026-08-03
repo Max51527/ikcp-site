@@ -44,4 +44,24 @@
       .then(function (d) { if (d) applyPrefix(prefix, d); })
       .catch(function () { /* silencieux : le HTML par défaut reste affiché */ });
   });
+
+  // ── Surcharges éditées en direct depuis /app/redaction (stockées en base) ──
+  // Appliquées APRÈS les JSON : une modification faite dans l'interface d'édition
+  // l'emporte, sans redéploiement. En cas d'indisponibilité, le site garde le
+  // texte des JSON, puis celui du HTML — deux filets de sécurité.
+  if (document.querySelector('[data-cms]')) {
+    fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/contenu')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (o) {
+        if (!o) return;
+        Object.keys(o).forEach(function (cle) {
+          document.querySelectorAll('[data-cms="' + cle + '"]').forEach(function (el) {
+            if (o[cle] == null || o[cle] === '') return;
+            if (el.hasAttribute('data-cms-html')) el.innerHTML = o[cle];
+            else el.textContent = o[cle];
+          });
+        });
+      })
+      .catch(function () { /* silencieux */ });
+  }
 })();
