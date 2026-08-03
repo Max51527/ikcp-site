@@ -76,9 +76,82 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
   <span class="badge" id="who">vérification…</span>
   <div style="flex:1"></div>
   <button class="btn btn-o" id="tabF" onclick="setTab('fiches')">Fiches</button>
+  <button class="btn btn-o" id="tabS" onclick="setTab('simus')">Simulateurs</button>
   <button class="btn btn-o" id="tabT" onclick="setTab('textes')">Textes du site</button>
   <a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Mon espace</a>
 </header>
+
+<!-- ═══ Onglet SIMULATEURS ═══ -->
+<div id="vueSimus" style="display:none;max-width:1100px;margin:0 auto;padding:20px">
+  <div class="panel" style="margin-bottom:14px">
+    <div class="row">
+      <h2 style="margin:0">Simulateurs</h2>
+      <div style="flex:1"></div>
+      <button class="btn btn-g" onclick="nouveauSimu()">+ Nouveau simulateur</button>
+    </div>
+    <div class="hint" style="margin-top:8px">Aucun code à écrire : vous enchaînez des étapes de calcul
+      choisies dans une liste. Les barèmes fiscaux 2026 sont fournis — vous ne les ressaisissez pas.</div>
+    <div class="msg" id="msgS"></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:250px 1fr;gap:16px;align-items:start" id="simuGrid">
+    <aside class="panel">
+      <h2 style="font-size:15px">Mes simulateurs</h2>
+      <div class="list" id="listS"></div>
+    </aside>
+
+    <main id="editS" style="display:none">
+      <div class="panel" style="margin-bottom:12px">
+        <div class="row">
+          <button class="btn btn-g" onclick="saveSimu('publie')">Publier</button>
+          <button class="btn btn-o" onclick="saveSimu('brouillon')">Brouillon</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-d" onclick="supprSimu()">Supprimer</button>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:12px">
+        <div class="two">
+          <div class="fld"><label>Identifiant</label><input id="s_id" placeholder="donation-simple"></div>
+          <div class="fld"><label>Univers</label><select id="s_categorie">
+            <option>Mon couple</option><option>Mon immobilier</option><option>Ma retraite</option>
+            <option>Ma succession</option><option>Mon entreprise</option><option>Transverse</option>
+          </select></div>
+        </div>
+        <div class="fld"><label>Titre affiché</label><input id="s_titre" placeholder="Droits de donation"></div>
+        <div class="fld"><label>Description courte</label><input id="s_description"></div>
+        <div class="fld"><label>Question de clôture (obligatoire — MIF II)</label><input id="s_question"
+          placeholder="Combien de fenêtres de transmission vous reste-t-il ?"></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:12px">
+        <div class="row"><h2 style="margin:0;font-size:15px">1 · Ce que l'utilisateur saisit</h2>
+          <div style="flex:1"></div><button class="btn btn-o" onclick="addChamp()">+ Champ</button></div>
+        <div class="hint">2 à 4 champs maximum.</div>
+        <div id="champsS" style="margin-top:10px"></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:12px">
+        <div class="row"><h2 style="margin:0;font-size:15px">2 · Les étapes de calcul</h2>
+          <div style="flex:1"></div><button class="btn btn-o" onclick="addEtape()">+ Étape</button></div>
+        <div class="hint">Chaque étape combine deux valeurs. A et B peuvent être : un champ saisi,
+          le résultat d'une étape précédente, une constante fiscale, ou un nombre fixe.</div>
+        <div id="etapesS" style="margin-top:10px"></div>
+      </div>
+
+      <div class="panel" style="margin-bottom:12px">
+        <div class="fld"><label>3 · Résultats à afficher (identifiants d'étapes, séparés par des virgules)</label>
+          <input id="s_resultats" placeholder="part, taxable, total"></div>
+      </div>
+
+      <div class="panel">
+        <h2 style="font-size:15px">Aperçu en direct</h2>
+        <div class="hint">Le calcul tourne ici exactement comme il tournera pour vos membres.</div>
+        <div id="apercu" style="margin-top:12px"></div>
+      </div>
+    </main>
+  </div>
+</div>
 
 <!-- ═══ Onglet TEXTES DU SITE ═══ -->
 <div id="vueTextes" style="display:none;max-width:900px;margin:0 auto;padding:20px">
@@ -212,6 +285,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
   <p style="margin-top:14px"><a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Retour à mon espace</a></p>
 </div>
 
+<script src="/app/js/formule.js"></script>
 <script>
 var API='https://ikcp-client.maxime-ead.workers.dev';
 function tok(){try{return localStorage.getItem('ikcp_token')||''}catch(e){return ''}}
@@ -242,10 +316,145 @@ var TAB='fiches';
 function setTab(t){
   TAB=t;
   document.getElementById('app').style.display = (t==='fiches')?'grid':'none';
+  document.getElementById('vueSimus').style.display = (t==='simus')?'block':'none';
   document.getElementById('vueTextes').style.display = (t==='textes')?'block':'none';
   document.getElementById('tabF').style.borderColor = (t==='fiches')?'var(--gold)':'var(--line)';
+  document.getElementById('tabS').style.borderColor = (t==='simus')?'var(--gold)':'var(--line)';
   document.getElementById('tabT').style.borderColor = (t==='textes')?'var(--gold)':'var(--line)';
   if(t==='textes') chargerTextes();
+  if(t==='simus') chargerSimus();
+}
+
+/* ══ SIMULATEURS — formules guidées, aucun code saisi ══ */
+var SIMUS=[], SC=null;
+function msgS(t,ok){var m=document.getElementById('msgS');m.textContent=t;
+  m.className='msg '+(ok?'ok':'err');setTimeout(function(){m.className='msg'},4500)}
+
+function chargerSimus(){
+  fetch(API+'/api/v1/atelier/simulateurs',{headers:H()})
+    .then(function(r){return r.json()}).then(function(d){
+      SIMUS=d.simulateurs||[];renderListS();
+      var sel=document.getElementById('f_simulateurId');
+      if(sel){/* alimente la liste déroulante côté fiches */}
+    }).catch(function(){msgS('Chargement impossible.',false)});
+}
+function renderListS(){
+  document.getElementById('listS').innerHTML=SIMUS.map(function(s){
+    return '<button class="item'+(SC&&SC.id===s.id?' on':'')+'" data-i="'+esc(s.id)+'">'
+      +'<b><span class="dot '+(s._statut==='publie'?'pub':'dra')+'"></span>'+esc(s.titre||s.id)+'</b>'
+      +'<small>'+esc(s.categorie||'—')+'</small></button>';
+  }).join('')||'<div style="padding:12px;font-size:12.5px;color:var(--faint)">Aucun simulateur.</div>';
+}
+document.getElementById('listS').addEventListener('click',function(e){
+  var b=e.target.closest('.item');if(!b)return;
+  SC=SIMUS.filter(function(s){return s.id===b.dataset.i})[0];fillSimu();renderListS();
+});
+function nouveauSimu(){
+  SC={id:'',titre:'',description:'',categorie:'Transverse',question:'',
+      champs:[{cle:'montant',label:'Montant',defaut:100000}],
+      etapes:[],resultats:[],_statut:'brouillon'};
+  fillSimu();renderListS();
+}
+function fillSimu(){
+  if(!SC)return;
+  document.getElementById('editS').style.display='';
+  ['id','titre','description','categorie','question'].forEach(function(k){s('s_'+k,SC[k])});
+  s('s_resultats',(SC.resultats||[]).join(', '));
+  renderChampsS();renderEtapesS();apercu();
+}
+function renderChampsS(){
+  document.getElementById('champsS').innerHTML=(SC.champs||[]).map(function(c,i){
+    return '<div class="two" style="align-items:end;margin-bottom:8px">'
+      +'<div class="fld" style="margin:0"><label>Identifiant</label><input data-c="'+i+'" data-k="cle" value="'+esc(c.cle)+'"></div>'
+      +'<div class="fld" style="margin:0"><label>Libellé affiché</label><input data-c="'+i+'" data-k="label" value="'+esc(c.label)+'"></div>'
+      +'<div class="fld" style="margin:0"><label>Valeur par défaut</label><input type="number" data-c="'+i+'" data-k="defaut" value="'+esc(c.defaut)+'"></div>'
+      +'<div><button class="btn btn-d" data-delc="'+i+'">Retirer</button></div></div>';
+  }).join('');
+}
+function renderEtapesS(){
+  var refs=(SC.champs||[]).map(function(c){return c.cle})
+    .concat((SC.etapes||[]).map(function(e){return e.cle}));
+  var ops=window.IKCPFormule?IKCPFormule.listeOps():[];
+  var cons=window.IKCPFormule?IKCPFormule.listeConstantes():[];
+  function selRef(val,idx,champ){
+    var o='<option value="">—</option>';
+    refs.forEach(function(r){o+='<option value="'+esc(r)+'"'+(val===r?' selected':'')+'>'+esc(r)+'</option>'});
+    cons.forEach(function(c){var v='const:'+c;
+      o+='<option value="'+esc(v)+'"'+(val===v?' selected':'')+'>constante · '+esc(c)+'</option>'});
+    var fixe=(String(val||'').indexOf('nb:')===0)?String(val).slice(3):'';
+    o+='<option value="__nb"'+(fixe!==''?' selected':'')+'>un nombre fixe…</option>';
+    return '<select data-e="'+idx+'" data-k="'+champ+'">'+o+'</select>'
+      +'<input type="number" placeholder="nombre" data-e="'+idx+'" data-k="'+champ+'_nb" value="'+esc(fixe)+'"'
+      +' style="margin-top:5px;'+(fixe!==''?'':'display:none')+'">';
+  }
+  document.getElementById('etapesS').innerHTML=(SC.etapes||[]).map(function(e,i){
+    var oo='';ops.forEach(function(k){oo+='<option value="'+esc(k)+'"'+(e.op===k?' selected':'')+'>'
+      +esc(IKCPFormule.OPS_LIBELLES[k])+'</option>'});
+    return '<div class="panel" style="background:var(--surface-2);margin-bottom:8px">'
+      +'<div class="two"><div class="fld" style="margin:0"><label>Identifiant du résultat</label>'
+      +'<input data-e="'+i+'" data-k="cle" value="'+esc(e.cle)+'"></div>'
+      +'<div class="fld" style="margin:0"><label>Libellé affiché</label>'
+      +'<input data-e="'+i+'" data-k="label" value="'+esc(e.label)+'"></div></div>'
+      +'<div class="fld" style="margin:10px 0 0"><label>Opération</label><select data-e="'+i+'" data-k="op">'+oo+'</select></div>'
+      +'<div class="two" style="margin-top:10px">'
+      +'<div class="fld" style="margin:0"><label>Valeur A</label>'+selRef(e.a,i,'a')+'</div>'
+      +'<div class="fld" style="margin:0"><label>Valeur B</label>'+selRef(e.b,i,'b')+'</div></div>'
+      +'<button class="btn btn-d" style="margin-top:10px" data-dele="'+i+'">Retirer cette étape</button></div>';
+  }).join('');
+}
+function addChamp(){SC.champs=SC.champs||[];SC.champs.push({cle:'champ'+(SC.champs.length+1),label:'',defaut:0});renderChampsS();renderEtapesS()}
+function addEtape(){SC.etapes=SC.etapes||[];SC.etapes.push({cle:'etape'+(SC.etapes.length+1),label:'',op:'additionner',a:'',b:''});renderEtapesS()}
+
+document.getElementById('vueSimus').addEventListener('input',function(e){
+  var t=e.target;if(!SC)return;
+  if(t.dataset.c!=null){var c=SC.champs[+t.dataset.c];
+    c[t.dataset.k]=(t.dataset.k==='defaut')?parseFloat(t.value)||0:t.value;
+    if(t.dataset.k==='cle')renderEtapesS();apercu();return}
+  if(t.dataset.e!=null){var et=SC.etapes[+t.dataset.e],k=t.dataset.k;
+    if(k.slice(-3)==='_nb'){et[k.slice(0,-3)]='nb:'+(t.value||0)}
+    else if(t.value==='__nb'){et[k]='nb:0';renderEtapesS()}
+    else et[k]=t.value;
+    if(k==='cle')renderEtapesS();apercu();return}
+  ['id','titre','description','categorie','question','resultats'].forEach(function(k){
+    if(t.id==='s_'+k){SC[k]=(k==='resultats')
+      ?t.value.split(',').map(function(x){return x.trim()}).filter(Boolean):t.value;apercu()}});
+});
+document.getElementById('vueSimus').addEventListener('click',function(e){
+  var b=e.target.closest('[data-delc]');if(b){SC.champs.splice(+b.dataset.delc,1);renderChampsS();renderEtapesS();apercu();return}
+  var d=e.target.closest('[data-dele]');if(d){SC.etapes.splice(+d.dataset.dele,1);renderEtapesS();apercu()}
+});
+
+function apercu(){
+  if(!SC||!window.IKCPFormule)return;
+  var saisies={};(SC.champs||[]).forEach(function(c){saisies[c.cle]=c.defaut});
+  var r=IKCPFormule.calculer(SC,saisies);
+  var EUR=function(v){return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(v)+' €'};
+  document.getElementById('apercu').innerHTML=
+    (r.resultats.length?r.resultats.map(function(x){
+      return '<div class="two" style="padding:8px 0;border-bottom:1px solid var(--line)">'
+        +'<span>'+esc(x.label)+'</span><b style="text-align:right">'+EUR(x.valeur)+'</b></div>'}).join('')
+      :'<div class="hint">Renseignez les identifiants de résultats à afficher.</div>')
+    +(SC.question?'<div class="warn" style="margin-top:12px">'+esc(SC.question)+'</div>':'')
+    +'<div class="hint" style="margin-top:10px">Simulation pédagogique — ne constitue pas un conseil (art. L.541-1).</div>';
+}
+function saveSimu(statut){
+  if(!SC)return;
+  var id=(SC.id||'').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'-');
+  if(!id){msgS('L\'identifiant est obligatoire.',false);return}
+  if(!SC.question){msgS('La question de clôture est obligatoire (MIF II).',false);return}
+  SC.id=id;
+  fetch(API+'/api/v1/atelier/simulateurs/'+encodeURIComponent(id),
+    {method:'PUT',headers:H(),body:JSON.stringify(Object.assign({},SC,{_statut:statut}))})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.ok){msgS(statut==='publie'?'Publié — disponible pour vos membres.':'Brouillon enregistré.',true);chargerSimus()}
+      else msgS(d.error||'Échec.',false);
+    }).catch(function(){msgS('Réseau indisponible.',false)});
+}
+function supprSimu(){
+  if(!SC||!SC.id)return;
+  if(!confirm('Supprimer le simulateur « '+(SC.titre||SC.id)+' » ?'))return;
+  fetch(API+'/api/v1/atelier/simulateurs/'+encodeURIComponent(SC.id),{method:'DELETE',headers:H()})
+    .then(function(){SC=null;document.getElementById('editS').style.display='none';chargerSimus()});
 }
 
 /* ── Textes du site : les clés éditables, groupées par page ──
@@ -323,8 +532,41 @@ function open_(slug){
       document.getElementById('f_slug').disabled=true;
     });
 }
+/* Modèle de fiche : une nouvelle fiche démarre pré-remplie avec la trame
+   (structure des 9 blocs + garde-fous MIF II). On remplace le texte entre
+   crochets, on ne repart pas de la page blanche. */
+var MODELE={
+  slug:'',categorie:'Ma succession',titre:'',sousTitre:'',
+  complexite:'simple',horizonMiseEnOeuvre:'0-90 jours',simulateurId:null,
+  requiresHumanValidation:false,
+  resumeExecutif:[
+    '[Ce que ce levier permet de faire, en une ligne]',
+    '[Pour qui il est pertinent]',
+    '[Le bénéfice principal]',
+    '[LA limite principale — ne pas l\'adoucir, c\'est elle qui rend la fiche crédible]'
+  ],
+  probleme:'[La situation vécue, écrite en « vous ». Ton de coach qui reconnaît le problème, pas de manuel.]',
+  questionType:'« [La question que se pose vraiment le lecteur, telle qu\'il la formulerait] ? »',
+  profilCible:['[Profil 1]','[Profil 2]'],
+  quandEviter:['[Profil ou situation où ce levier n\'est pas adapté]','[Contre-indication de calendrier]','[Risque qui doit faire renoncer]'],
+  explicationClaire:'[300 à 450 mots. Chaque terme technique défini à sa première apparition. Analogie bienvenue si elle est exacte.]',
+  aRetenir:'[La synthèse en une ou deux phrases]',
+  ordresDeGrandeur:{avant:{label:'[Situation sans le levier]',montant:0},
+    apres:{label:'[Situation avec le levier]',montant:0},
+    hypotheses:['[Hypothèse 1 — âge, montant, situation familiale]','[Hypothèse 2]'],
+    mention:'Ces ordres de grandeur illustrent le mécanisme — votre situation réelle peut en différer sensiblement.'},
+  benefices:['[Bénéfice chiffré ou concret]'],
+  risques:['[Risque de requalification]','[Coût ou contrainte]','[Irréversibilité éventuelle]'],
+  miseEnOeuvre:[{etape:1,titre:'[Première étape]',description:'[Ce qu\'on fait concrètement]',acteurs:['expert-comptable'],documents:[]}],
+  documents:['[Document à réunir]'],
+  checklist:[{id:'c1',label:'[Action à cocher]',responsable:'vous'}],
+  questionsMarcel:['Suis-je concerné par ce levier ?','Quelles données me manquent pour trancher ?','Quels sont les risques dans ma situation ?'],
+  faq:[{q:'[Question fréquente]',r:'[Réponse courte et précise]'}],
+  sources:['[Art. XXX CGI]','[Barème 2026 — préciser la source]'],
+  _statut:'brouillon'
+};
 function nouvelle(){
-  CUR={slug:'',_statut:'brouillon'};fill(CUR);
+  CUR=JSON.parse(JSON.stringify(MODELE));fill(CUR);
   document.getElementById('editor').style.display='';
   document.getElementById('empty').style.display='none';
   document.getElementById('f_slug').disabled=false;renderList();

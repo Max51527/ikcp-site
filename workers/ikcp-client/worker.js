@@ -120,6 +120,7 @@ export default {
       if (path === '/api/v1/me' && method === 'GET') return await handleMe(session, env);
       if (path === '/api/v1/me/password' && method === 'POST') return await handleSetPassword(request, session, env);
 
+      if (path === '/api/v1/simulateurs' && method === 'GET') return await handleSimulateursMembre(session, env);
       if (path === '/api/v1/strategies' && method === 'GET') return await handleStrategiesCatalogue(session, env);
       const stratM = path.match(/^\/api\/v1\/strategies\/([a-z0-9_-]+)$/);
       if (stratM && method === 'GET') return await handleStrategieDetail(stratM[1], session, env);
@@ -642,6 +643,29 @@ async function isOwner(session) {
 // Stockées en D1, servies publiquement, fusionnées par cms-hydrate.js par-dessus
 // _data/*.json. Le HTML garde toujours son texte par défaut : si la base tombe ou
 // si rien n'est édité, le site s'affiche normalement.
+async function ensureSimulateursTable(env) {
+  await env.D1.prepare(
+    "CREATE TABLE IF NOT EXISTS simulateurs (id TEXT PRIMARY KEY, data TEXT NOT NULL, " +
+    "statut TEXT DEFAULT 'brouillon', updated_at TEXT)"
+  ).run();
+}
+// Simulateurs publiés — servis au membre du palier Stratégies (249 €/an).
+async function handleSimulateursMembre(session, env) {
+  const unlocked = session.tier === 'premium' && session.has_strategies === true;
+  try {
+    await ensureSimulateursTable(env);
+    const rows = await env.D1.prepare("SELECT id, data FROM simulateurs WHERE statut='publie'").all();
+    const list = (rows.results || []).map(r => {
+      try { return { ...JSON.parse(r.data), id: r.id }; } catch (_) { return null; }
+    }).filter(Boolean);
+    if (!unlocked) {
+      // Teaser : on annonce ce qui existe, jamais les formules ni les résultats.
+      return json({ unlocked: false, simulateurs: list.map(s => ({ id: s.id, titre: s.titre, description: s.description })) });
+    }
+    return json({ unlocked: true, simulateurs: list });
+  } catch (_) { return json({ unlocked, simulateurs: [] }); }
+}
+
 async function ensureContenuTable(env) {
   await env.D1.prepare(
     'CREATE TABLE IF NOT EXISTS contenu (cle TEXT PRIMARY KEY, valeur TEXT, updated_at TEXT)'
@@ -664,6 +688,40 @@ async function handleContenuPublic(env) {
 // ── ATELIER : CRUD des fiches (propriétaire uniquement) ──
 async function handleAtelier(request, session, env, path, method) {
   if (!(await isOwner(session))) return json({ error: 'forbidden' }, 403);
+
+  // Simulateurs — formules guidées (aucun code exécutable stocké : le worker
+  // ne fait que persister une liste d'étapes, évaluée par app/js/formule.js
+  // au moyen d'une liste fermée d'opérations).
+  if (path === '/api/v1/atelier/simulateurs') {
+    await ensureSimulateursTable(env);
+    if (method === 'GET') {
+      const rows = await env.D1.prepare('SELECT id, data, statut, updated_at FROM simulateurs').all();
+      return json({ simulateurs: (rows.results || []).map(r => {
+        try { return { ...JSON.parse(r.data), id: r.id, _statut: r.statut, _maj: r.updated_at }; }
+        catch (_) { return null; }
+      }).filter(Boolean) });
+    }
+  }
+  const simM = path.match(/^\/api\/v1\/atelier\/simulateurs\/([a-z0-9_-]+)$/i);
+  if (simM) {
+    await ensureSimulateursTable(env);
+    const id = simM[1];
+    if (method === 'PUT') {
+      const b = await request.json().catch(() => null);
+      if (!b || typeof b !== 'object') return json({ error: 'bad_json' }, 400);
+      const statut = b._statut === 'publie' ? 'publie' : 'brouillon';
+      const data = { ...b }; delete data._statut; delete data._maj; data.id = id;
+      await env.D1.prepare(
+        'INSERT INTO simulateurs (id, data, statut, updated_at) VALUES (?,?,?,?) ' +
+        'ON CONFLICT(id) DO UPDATE SET data=excluded.data, statut=excluded.statut, updated_at=excluded.updated_at'
+      ).bind(id, JSON.stringify(data).slice(0, 120000), statut, new Date().toISOString()).run();
+      return json({ ok: true, id, statut });
+    }
+    if (method === 'DELETE') {
+      await env.D1.prepare('DELETE FROM simulateurs WHERE id=?').bind(id).run();
+      return json({ ok: true, deleted: id });
+    }
+  }
 
   // Textes du site
   if (path === '/api/v1/atelier/contenu') {
