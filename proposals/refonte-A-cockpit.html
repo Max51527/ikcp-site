@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Refonte A — Cockpit · IKCP.EU</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B1426; --navy-2:#111E36; --navy-3:#18294A;
+  --gold:#C9A96E; --gold-hot:#E8CF9A; --gold-dim:rgba(201,169,110,.22);
+  --cream:#FAF8F4; --ink:#E4E9F2; --mute:#8B9BB4; --faint:#5A6B85;
+  --green:#4ADE80; --red:#F87171;
+  --font-d:'Playfair Display',serif; --font-b:'Outfit',sans-serif; --font-m:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--navy);color:var(--ink);font-family:var(--font-b);line-height:1.6;overflow-x:hidden}
+
+/* grain + halos atmosphériques */
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 15% 0%,rgba(201,169,110,.10),transparent 60%),
+             radial-gradient(ellipse 50% 40% at 90% 30%,rgba(58,90,150,.16),transparent 60%)}
+.wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+/* ─── barre instruments ─── */
+.hud{position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);
+  background:linear-gradient(180deg,rgba(11,20,38,.94),rgba(11,20,38,.72));
+  border-bottom:1px solid var(--gold-dim)}
+.hud-in{max-width:1240px;margin:0 auto;padding:14px clamp(18px,4vw,44px);display:flex;align-items:center;gap:26px}
+.mark{font-family:var(--font-d);font-size:19px;letter-spacing:.16em;color:var(--cream)}
+.mark i{color:var(--gold);font-style:normal}
+.hud-tag{font-family:var(--font-m);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);padding-left:16px;border-left:1px solid var(--gold-dim)}
+.hud-sp{flex:1}
+.hud-live{display:flex;align-items:center;gap:7px;font-family:var(--font-m);font-size:10px;letter-spacing:.14em;color:var(--mute)}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.btn-g{background:linear-gradient(135deg,var(--gold-hot),var(--gold));color:#1a1408;border:none;
+  padding:10px 20px;border-radius:6px;font-family:var(--font-b);font-weight:700;font-size:13px;cursor:pointer;
+  box-shadow:0 6px 24px -8px rgba(201,169,110,.7)}
+
+/* ─── hero instrument ─── */
+.hero{padding:70px 0 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+@media(max-width:940px){.hero{grid-template-columns:1fr;gap:40px;padding-top:44px}}
+.eyebrow{font-family:var(--font-m);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px}
+.eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gold-dim),transparent)}
+h1{font-family:var(--font-d);font-weight:500;font-size:clamp(38px,6vw,68px);line-height:1.04;letter-spacing:-.02em;color:var(--cream)}
+h1 em{font-style:italic;color:var(--gold);display:block}
+.lede{color:var(--mute);font-size:16.5px;margin:22px 0 30px;max-width:46ch}
+.lede b{color:var(--ink);font-weight:600}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-ghost{border:1px solid var(--gold-dim);background:transparent;color:var(--gold);padding:11px 20px;border-radius:6px;
+  font-family:var(--font-b);font-weight:600;font-size:13px;cursor:pointer;transition:.25s}
+.btn-ghost:hover{background:rgba(201,169,110,.08);border-color:var(--gold)}
+
+/* cadran altimètre */
+.gauge-wrap{position:relative;display:grid;place-items:center;min-height:380px}
+.gauge{position:relative;width:min(340px,80vw);aspect-ratio:1}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge-core{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.gauge-val{font-family:var(--font-d);font-size:clamp(40px,7vw,58px);color:var(--cream);line-height:1}
+.gauge-lbl{font-family:var(--font-m);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);margin-top:10px}
+.gauge-delta{font-family:var(--font-m);font-size:12px;color:var(--green);margin-top:8px}
+.ticks{position:absolute;inset:0;animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tick{position:absolute;top:0;left:50%;width:1px;height:9px;background:var(--gold-dim);transform-origin:50% 170px}
+
+/* ─── onglets univers ─── */
+.section{padding:56px 0;border-top:1px solid rgba(201,169,110,.12)}
+.sec-h{display:flex;align-items:baseline;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.sec-n{font-family:var(--font-m);font-size:11px;color:var(--gold);letter-spacing:.2em}
+h2{font-family:var(--font-d);font-weight:500;font-size:clamp(24px,3.4vw,34px);color:var(--cream)}
+.sec-sub{color:var(--faint);font-size:14px;margin-left:auto}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.tab{background:var(--navy-2);border:1px solid rgba(201,169,110,.16);color:var(--mute);
+  padding:11px 18px;border-radius:8px;font-size:13.5px;font-weight:500;cursor:pointer;transition:.22s;
+  display:flex;align-items:center;gap:9px;font-family:var(--font-b)}
+.tab:hover{border-color:var(--gold-dim);color:var(--ink)}
+.tab.on{background:linear-gradient(135deg,rgba(201,169,110,.18),rgba(201,169,110,.06));
+  border-color:var(--gold);color:var(--gold-hot);box-shadow:0 0 26px -8px rgba(201,169,110,.5)}
+.tab .lk{font-size:10px;opacity:.8}
+
+.panel{display:none;animation:fade .45s ease both}
+.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:14px}
+
+.card{background:linear-gradient(160deg,var(--navy-2),var(--navy));border:1px solid rgba(201,169,110,.14);
+  border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:.3s}
+.card:hover{border-color:var(--gold-dim);transform:translateY(-3px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5}
+.card-k{font-family:var(--font-m);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.card h3{font-family:var(--font-d);font-weight:500;font-size:18px;color:var(--cream);margin-bottom:7px}
+.card p{font-size:13.5px;color:var(--mute);line-height:1.55}
+.card-foot{display:flex;align-items:center;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid rgba(201,169,110,.12)}
+.pill{font-family:var(--font-m);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.pill.free{background:rgba(74,222,128,.14);color:var(--green);border:1px solid rgba(74,222,128,.3)}
+.pill.prem{background:linear-gradient(135deg,var(--gold),var(--gold-hot));color:#1a1408;font-weight:700}
+.card.locked{opacity:.9}
+.card.locked h3::after{content:' 🔒';font-size:13px}
+
+/* ─── simulateur instrument ─── */
+.simu{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+@media(max-width:860px){.simu{grid-template-columns:1fr}}
+.simu-in{background:var(--navy-2);border:1px solid rgba(201,169,110,.16);border-radius:12px;padding:22px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-family:var(--font-m);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.fld input[type=range]{width:100%;accent-color:var(--gold);height:4px}
+.fld-v{font-family:var(--font-d);font-size:26px;color:var(--gold-hot);margin-top:4px}
+.readout{background:linear-gradient(160deg,var(--navy-3),var(--navy-2));border:1px solid var(--gold-dim);border-radius:12px;padding:22px}
+.ro-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid rgba(201,169,110,.1)}
+.ro-row:last-of-type{border:none}
+.ro-k{font-size:13px;color:var(--mute)}
+.ro-v{font-family:var(--font-m);font-size:17px;color:var(--cream);font-weight:600}
+.ro-v.hi{color:var(--green)}
+.q-close{margin-top:16px;padding:14px;background:rgba(201,169,110,.08);border-left:2px solid var(--gold);
+  border-radius:0 8px 8px 0;font-size:13.5px;color:var(--ink);font-style:italic}
+
+/* ─── Marcel ─── */
+.marcel{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;
+  background:linear-gradient(135deg,var(--navy-2),rgba(24,41,74,.6));border:1px solid var(--gold-dim);
+  border-radius:14px;padding:26px}
+@media(max-width:700px){.marcel{grid-template-columns:1fr;text-align:center}}
+.orb{width:88px;height:88px;border-radius:50%;position:relative;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,var(--navy-3),var(--navy));border:1px solid var(--gold);
+  box-shadow:0 0 40px -6px rgba(201,169,110,.45);margin:0 auto}
+.orb span{font-family:var(--font-d);font-style:italic;font-size:26px;color:var(--gold-hot)}
+.orb::before,.orb::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--gold-dim);
+  animation:orbit 9s linear infinite}
+.orb::after{inset:-16px;animation-duration:14s;animation-direction:reverse}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.marcel h3{font-family:var(--font-d);font-size:21px;color:var(--cream);margin-bottom:7px}
+.marcel p{color:var(--mute);font-size:14px;margin-bottom:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:rgba(201,169,110,.09);border:1px solid var(--gold-dim);color:var(--gold);
+  padding:7px 13px;border-radius:20px;font-size:12px;cursor:pointer;transition:.2s}
+.chip:hover{background:rgba(201,169,110,.18)}
+
+.disc{font-size:11px;color:var(--faint);line-height:1.6;padding:22px 0 50px;border-top:1px solid rgba(201,169,110,.12);margin-top:40px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hud">
+  <div class="hud-in">
+    <div class="mark">IKCP<i>.</i></div>
+    <div class="hud-tag">Cockpit patrimonial</div>
+    <div class="hud-sp"></div>
+    <div class="hud-live"><span class="pulse"></span>MARCEL EN LIGNE</div>
+    <button class="btn-g">Ouvrir mon cockpit</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Direction A · Cockpit</div>
+      <h1>Pilotez.<em>Ne subissez plus.</em></h1>
+      <p class="lede">Votre patrimoine devient un <b>tableau de bord</b> : chaque levier chiffré, chaque angle mort éclairé. <b>Comprendre pour décider par vous-même.</b></p>
+      <div class="cta-row">
+        <button class="btn-g">Lancer mon bilan — gratuit</button>
+        <button class="btn-ghost">Voir un cockpit d'exemple</button>
+      </div>
+    </div>
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <div class="ticks" id="ticks"></div>
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(201,169,110,.12)" stroke-width="10"/>
+          <circle cx="100" cy="100" r="86" fill="none" stroke="url(#gg)" stroke-width="10" stroke-linecap="round"
+                  stroke-dasharray="540" stroke-dashoffset="150" id="arc"/>
+          <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#C9A96E"/><stop offset="100%" stop-color="#E8CF9A"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="gauge-core">
+          <div class="gauge-val" id="score">72</div>
+          <div class="gauge-lbl">Score patrimonial</div>
+          <div class="gauge-delta">▲ 3 leviers activables</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-h">
+      <span class="sec-n">01</span><h2>Vos univers</h2>
+      <span class="sec-sub">Tout part de votre bilan patrimonial</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-p="fam">👫 Famille <span class="lk">gratuit</span></button>
+      <button class="tab" data-p="inv">📈 Investissements <span class="lk">premium</span></button>
+      <button class="tab" data-p="pla">🏦 Placements <span class="lk">premium</span></button>
+      <button class="tab" data-p="imm">🏠 Immobilier <span class="lk">mixte</span></button>
+      <button class="tab" data-p="ret">🎯 Retraite <span class="lk">mixte</span></button>
+      <button class="tab" data-p="ent">💼 Entreprise <span class="lk">premium</span></button>
+    </div>
+
+    <div class="panel on" data-p="fam"><div class="grid3">
+      <div class="card"><div class="card-k">Simulateur</div><h3>Protection du conjoint</h3><p>Ce que votre conjoint percevrait réellement demain — et l'écart avec ce que vous imaginez.</p><div class="card-foot"><span class="pill free">Gratuit</span><span class="pill" style="color:var(--faint)">sans inscription</span></div></div>
+      <div class="card"><div class="card-k">Simulateur</div><h3>Famille recomposée</h3><p>Répartition entre enfants de lits différents, droits du conjoint survivant.</p><div class="card-foot"><span class="pill free">Gratuit</span></div></div>
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>Régime matrimonial</h3><p>Communauté, séparation, participation aux acquêts : ce que chacun change concrètement.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+    </div></div>
+
+    <div class="panel" data-p="inv"><div class="grid3">
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>Diversifier hors immobilier</h3><p>Mesurer votre concentration réelle, puis les contreparties de chaque piste.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card locked"><div class="card-k">Simulateur</div><h3>Risque de concentration</h3><p>La part de votre patrimoine qui dépend d'un seul actif.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>Trésorerie qui dort</h3><p>Poche mobilisable après sécurité opérationnelle.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+    </div></div>
+
+    <div class="panel" data-p="pla"><div class="grid3">
+      <div class="card locked"><div class="card-k">Catalogue</div><h3>Tous les placements</h3><p>Assurance-vie, PEA, PER, SCPI, non coté — mécanisme, fiscalité, liquidité.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card locked"><div class="card-k">Guide</div><h3>Allocation d'actifs</h3><p>Répartir selon horizon, tolérance au risque et objectifs.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card"><div class="card-k">Simulateur</div><h3>Assurance-vie & transmission</h3><p>Abattement de 152 500 € par bénéficiaire — ce qu'il en reste.</p><div class="card-foot"><span class="pill free">Gratuit</span></div></div>
+    </div></div>
+
+    <div class="panel" data-p="imm"><div class="grid3">
+      <div class="card"><div class="card-k">Simulateur</div><h3>IFI</h3><p>Seuil, décote, taux effectif sur votre patrimoine immobilier net.</p><div class="card-foot"><span class="pill free">Gratuit</span></div></div>
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>SCI familiale</h3><p>Détenir à plusieurs, transmettre progressivement.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card"><div class="card-k">Simulateur</div><h3>LMNP & succession</h3><p>Location meublée : ce qui se passe à la transmission.</p><div class="card-foot"><span class="pill free">Gratuit</span></div></div>
+    </div></div>
+
+    <div class="panel" data-p="ret"><div class="grid3">
+      <div class="card"><div class="card-k">Simulateur</div><h3>Capital retraite cible</h3><p>Le capital à constituer pour la rente que vous visez.</p><div class="card-foot"><span class="pill free">Gratuit</span></div></div>
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>PER : déduire aujourd'hui</h3><p>Plafond 2026 de 88 911 € — et pourquoi ce n'est pas un cadeau mais un report.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card locked"><div class="card-k">Simulateur</div><h3>Effort d'épargne</h3><p>Le versement mensuel nécessaire, à horizon choisi.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+    </div></div>
+
+    <div class="panel" data-p="ent"><div class="grid3">
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>Rémunération vs dividendes</h3><p>L'arbitrage se recalcule chaque exercice — jamais par habitude.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card locked"><div class="card-k">Fiche stratégie</div><h3>Pacte Dutreil</h3><p>Exonération de 75 % sous engagement — et ce qui la fait tomber.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+      <div class="card locked"><div class="card-k">Simulateur</div><h3>Produit de cession net</h3><p>Après PFU et abattement dirigeant retraite.</p><div class="card-foot"><span class="pill prem">Premium</span></div></div>
+    </div></div>
+  </section>
+
+  <section class="section">
+    <div class="sec-h"><span class="sec-n">02</span><h2>Simulateur — instrument de vol</h2></div>
+    <div class="simu">
+      <div class="simu-in">
+        <div class="fld">
+          <label>Montant transmis à vos enfants</label>
+          <input type="range" id="r1" min="0" max="1000000" step="10000" value="300000">
+          <div class="fld-v" id="v1">300 000 €</div>
+        </div>
+        <div class="fld">
+          <label>Nombre d'enfants</label>
+          <input type="range" id="r2" min="1" max="5" step="1" value="2">
+          <div class="fld-v" id="v2">2</div>
+        </div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Abattements cumulés</span><span class="ro-v" id="o1">200 000 €</span></div>
+        <div class="ro-row"><span class="ro-k">Assiette taxable</span><span class="ro-v" id="o2">100 000 €</span></div>
+        <div class="ro-row"><span class="ro-k">Droits de donation</span><span class="ro-v" id="o3">—</span></div>
+        <div class="ro-row"><span class="ro-k">Net reçu</span><span class="ro-v hi" id="o4">—</span></div>
+        <div class="q-close">Ces abattements se rechargent tous les 15 ans. Combien de « fenêtres » de transmission pouvez-vous encore ouvrir avant vos 80 ans ?</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-h"><span class="sec-n">03</span><h2>Marcel, intégré partout</h2></div>
+    <div class="marcel">
+      <div class="orb"><span>M</span></div>
+      <div>
+        <h3>Il connaît déjà votre bilan.</h3>
+        <p>Pas un chatbot générique : Marcel lit vos chiffres, cite la doctrine, et conclut par une question — jamais par une recommandation.</p>
+        <div class="chips">
+          <span class="chip">Pourquoi ce score de 72 ?</span>
+          <span class="chip">Mon angle mort le plus coûteux ?</span>
+          <span class="chip">Prépare mes questions au notaire</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="disc">Maquette de travail — direction A. Les chiffres affichés sont illustratifs. Information à vocation pédagogique, ne constituant ni un conseil personnalisé ni une recommandation d'opération au sens de l'art. L.541-1 du Code monétaire et financier. IKCP · ORIAS 23001568.</div>
+</div>
+
+<script>
+(function(){
+  var t=document.getElementById('ticks');
+  for(var i=0;i<60;i++){var d=document.createElement('div');d.className='tick';
+    d.style.transform='rotate('+(i*6)+'deg)';t.appendChild(d);}
+
+  var s=document.getElementById('score'),n=0;
+  var iv=setInterval(function(){n+=2;if(n>=72){n=72;clearInterval(iv);}s.textContent=n;},26);
+
+  document.getElementById('tabs').addEventListener('click',function(e){
+    var b=e.target.closest('.tab');if(!b)return;
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.p)});
+  });
+
+  var EUR=function(v){return new Intl.NumberFormat('fr-FR').format(Math.round(v))+' €';};
+  var BAR=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
+  function droits(b){var t=0,p=0;for(var i=0;i<BAR.length;i++){var s=BAR[i][0],x=BAR[i][1];
+    if(b>p){t+=(Math.min(b,s)-p)*x;p=s;}else break;}return t;}
+  function calc(){
+    var m=+document.getElementById('r1').value, n=+document.getElementById('r2').value;
+    document.getElementById('v1').textContent=EUR(m);
+    document.getElementById('v2').textContent=n;
+    var ab=n*100000, par=m/n, tax=Math.max(par-100000,0), d=droits(tax)*n;
+    document.getElementById('o1').textContent=EUR(ab);
+    document.getElementById('o2').textContent=EUR(Math.max(m-ab,0));
+    document.getElementById('o3').textContent=EUR(d);
+    document.getElementById('o4').textContent=EUR(m-d);
+  }
+  document.getElementById('r1').addEventListener('input',calc);
+  document.getElementById('r2').addEventListener('input',calc);
+  calc();
+})();
+</script>
+</body>
+</html>

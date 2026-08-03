@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Refonte B — Éditorial · IKCP.EU</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3EA; --paper-2:#EFE9DC; --paper-3:#E5DDCB;
+  --navy:#1B2A4A; --navy-soft:#3A4A6B;
+  --gold:#C9A96E; --gold-deep:#8B6F3F;
+  --ink:#241F18; --mute:#6B6154; --faint:#A0968A;
+  --rule:rgba(139,111,63,.28);
+  --font-d:'Playfair Display',serif; --font-b:'Outfit',sans-serif; --font-m:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-b);font-weight:300;line-height:1.72;
+  -webkit-font-smoothing:antialiased}
+/* texture papier */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.35'/%3E%3C/svg%3E")}
+.sheet{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,60px)}
+
+/* ─── ourlet de tête ─── */
+.masthead{border-bottom:2px solid var(--navy);padding:26px 0 16px;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.title-blk .name{font-family:var(--font-d);font-size:clamp(30px,4.6vw,46px);font-weight:600;letter-spacing:.02em;color:var(--navy);line-height:1}
+.title-blk .name i{color:var(--gold-deep);font-style:normal}
+.title-blk .sub{font-family:var(--font-m);font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--mute);margin-top:8px}
+.mast-sp{flex:1}
+.mast-meta{font-family:var(--font-m);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);text-align:right;line-height:2}
+.rubriques{display:flex;gap:26px;flex-wrap:wrap;padding:13px 0;border-bottom:1px solid var(--rule);
+  font-family:var(--font-m);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.rubriques a{color:inherit;text-decoration:none;padding-bottom:3px;border-bottom:1px solid transparent;transition:.2s}
+.rubriques a:hover,.rubriques a.on{color:var(--navy);border-color:var(--gold)}
+
+/* ─── UNE ─── */
+.une{display:grid;grid-template-columns:1.55fr 1fr;gap:clamp(28px,5vw,64px);padding:clamp(40px,7vw,78px) 0;
+  border-bottom:1px solid var(--rule);align-items:start}
+@media(max-width:900px){.une{grid-template-columns:1fr}}
+.kicker{font-family:var(--font-m);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-deep);
+  margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.kicker::before{content:'';width:38px;height:1px;background:var(--gold-deep)}
+h1{font-family:var(--font-d);font-weight:400;font-size:clamp(44px,8.2vw,96px);line-height:.96;letter-spacing:-.028em;color:var(--navy)}
+h1 em{font-style:italic;font-weight:600;color:var(--gold-deep)}
+.chapo{font-size:clamp(17px,2vw,20px);color:var(--navy-soft);margin-top:30px;max-width:34ch;font-weight:300;line-height:1.62}
+.chapo::first-letter{font-family:var(--font-d);font-size:3.6em;float:left;line-height:.76;margin:6px 12px 0 0;color:var(--gold-deep);font-weight:600}
+.signature{margin-top:34px;padding-top:18px;border-top:1px solid var(--rule);display:flex;gap:14px;align-items:center}
+.sig-txt{font-size:12.5px;color:var(--mute);line-height:1.5}
+.sig-txt b{display:block;font-family:var(--font-d);font-size:15px;color:var(--navy);font-weight:500}
+
+/* colonne latérale = sommaire */
+.sommaire{border-left:1px solid var(--rule);padding-left:clamp(20px,3vw,36px)}
+@media(max-width:900px){.sommaire{border-left:none;border-top:1px solid var(--rule);padding:28px 0 0}}
+.som-h{font-family:var(--font-m);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);margin-bottom:20px}
+.som-item{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:14px 0;border-bottom:1px solid rgba(139,111,63,.14);
+  cursor:pointer;transition:.2s}
+.som-item:hover{padding-left:5px}
+.som-n{font-family:var(--font-d);font-style:italic;font-size:19px;color:var(--gold-deep);line-height:1}
+.som-t{font-family:var(--font-d);font-size:15.5px;color:var(--navy);font-weight:500;line-height:1.3}
+.som-d{font-size:12px;color:var(--mute);margin-top:3px}
+.som-lock{font-family:var(--font-m);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);
+  border:1px solid var(--rule);padding:2px 7px;border-radius:2px;display:inline-block;margin-top:6px}
+
+/* ─── rubriques / accès ─── */
+.section{padding:clamp(44px,6vw,72px) 0;border-bottom:1px solid var(--rule)}
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:34px;flex-wrap:wrap}
+.sec-num{font-family:var(--font-d);font-style:italic;font-size:clamp(30px,4vw,44px);color:var(--gold-deep);line-height:1}
+h2{font-family:var(--font-d);font-weight:400;font-size:clamp(25px,3.5vw,36px);color:var(--navy);letter-spacing:-.01em}
+.sec-note{margin-left:auto;font-family:var(--font-m);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+
+.cols{column-count:3;column-gap:clamp(20px,3vw,38px)}
+@media(max-width:940px){.cols{column-count:2}}
+@media(max-width:620px){.cols{column-count:1}}
+.art{break-inside:avoid;margin-bottom:clamp(20px,3vw,32px);padding-bottom:22px;border-bottom:1px solid rgba(139,111,63,.16)}
+.art-rub{font-family:var(--font-m);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:9px}
+.art h3{font-family:var(--font-d);font-weight:500;font-size:19px;color:var(--navy);line-height:1.25;margin-bottom:8px}
+.art p{font-size:13.5px;color:var(--mute);line-height:1.62}
+.art-foot{margin-top:12px;display:flex;align-items:center;gap:10px}
+.acc{font-family:var(--font-m);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:2px}
+.acc.libre{background:transparent;border:1px solid var(--navy);color:var(--navy)}
+.acc.abo{background:var(--navy);color:var(--paper)}
+.art.reserve h3{color:var(--navy-soft)}
+.art.reserve p{position:relative}
+.art.reserve p::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 30%,var(--paper) 96%)}
+
+/* ─── simulateur = encadré de revue ─── */
+.encart{background:var(--paper-2);border:1px solid var(--rule);padding:clamp(24px,3.5vw,40px);position:relative}
+.encart::before{content:'';position:absolute;top:-1px;left:-1px;width:44px;height:44px;
+  border-top:2px solid var(--gold-deep);border-left:2px solid var(--gold-deep)}
+.encart::after{content:'';position:absolute;bottom:-1px;right:-1px;width:44px;height:44px;
+  border-bottom:2px solid var(--gold-deep);border-right:2px solid var(--gold-deep)}
+.enc-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(24px,4vw,50px);align-items:center}
+@media(max-width:820px){.enc-grid{grid-template-columns:1fr}}
+.enc-lbl{font-family:var(--font-m);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:9px;display:block}
+.enc-field{margin-bottom:22px}
+.enc-field input[type=range]{width:100%;accent-color:var(--gold-deep);height:3px}
+.enc-val{font-family:var(--font-d);font-size:32px;color:var(--navy);line-height:1;margin-top:8px}
+.resultat{text-align:center;padding:clamp(20px,3vw,32px);background:var(--paper);border:1px solid var(--rule)}
+.res-lbl{font-family:var(--font-m);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.res-big{font-family:var(--font-d);font-size:clamp(38px,6vw,58px);color:var(--gold-deep);line-height:1.05;margin:12px 0}
+.res-sub{font-size:13px;color:var(--mute)}
+.question{margin-top:26px;padding-top:20px;border-top:1px solid var(--rule);font-family:var(--font-d);font-style:italic;
+  font-size:17px;color:var(--navy);line-height:1.5;text-align:center}
+
+/* ─── Marcel = tribune ─── */
+.tribune{display:grid;grid-template-columns:auto 1fr;gap:clamp(22px,3vw,40px);align-items:start}
+@media(max-width:720px){.tribune{grid-template-columns:1fr}}
+.portrait{width:132px;height:132px;border-radius:50%;background:var(--navy);display:grid;place-items:center;
+  border:1px solid var(--gold);position:relative}
+.portrait span{font-family:var(--font-d);font-style:italic;font-size:44px;color:var(--gold)}
+.portrait::after{content:'';position:absolute;inset:-9px;border:1px solid var(--rule);border-radius:50%}
+.trib-body p{font-size:15.5px;color:var(--navy-soft);max-width:56ch}
+.trib-body p+p{margin-top:14px}
+.trib-q{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.trib-q span{font-family:var(--font-d);font-style:italic;font-size:14px;color:var(--navy);
+  border-bottom:1px solid var(--gold);padding-bottom:2px;cursor:pointer;transition:.2s}
+.trib-q span:hover{color:var(--gold-deep)}
+
+/* offres */
+.offres{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.offre{background:var(--paper);padding:clamp(22px,3vw,32px)}
+.offre.mid{background:var(--navy);color:var(--paper)}
+.offre.mid .of-n,.offre.mid .of-d{color:rgba(247,243,234,.7)}
+.offre.mid .of-p{color:var(--gold)}
+.of-n{font-family:var(--font-m);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
+.of-p{font-family:var(--font-d);font-size:38px;color:var(--navy);margin:12px 0 4px;line-height:1}
+.of-p small{font-size:14px;font-family:var(--font-b);color:var(--mute)}
+.of-d{font-size:13px;color:var(--mute);line-height:1.55;margin-bottom:16px}
+.of-l{list-style:none;font-size:13px;line-height:2}
+.of-l li::before{content:'—';color:var(--gold-deep);margin-right:8px}
+
+.pied{padding:32px 0 60px;font-size:11px;color:var(--faint);line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="title-blk">
+      <div class="name">IKCP<i>.</i>EU</div>
+      <div class="sub">La plateforme patrimoniale indépendante</div>
+    </div>
+    <div class="mast-sp"></div>
+    <div class="mast-meta">Direction B · Éditorial<br>ORIAS 23001568 · CIF</div>
+  </header>
+
+  <nav class="rubriques">
+    <a href="#" class="on">Famille</a>
+    <a href="#">Investissements</a>
+    <a href="#">Placements</a>
+    <a href="#">Immobilier</a>
+    <a href="#">Retraite</a>
+    <a href="#">Entreprise</a>
+  </nav>
+
+  <section class="une">
+    <div>
+      <div class="kicker">Le bilan patrimonial — point de départ</div>
+      <h1>Prendre de la hauteur sur <em>votre patrimoine.</em></h1>
+      <p class="chapo">Comprendre pour décider par vous-même. Ni produit à vous placer, ni réseau derrière : une lecture claire de ce que vous possédez, et de ce que cela implique.</p>
+      <div class="signature">
+        <div class="sig-txt"><b>Une plateforme, pas un intermédiaire</b>Elle vit de ses abonnements — jamais de commissions sur ce que vous détenez.</div>
+      </div>
+    </div>
+    <aside class="sommaire">
+      <div class="som-h">Au sommaire</div>
+      <div class="som-item"><span class="som-n">I</span><div><div class="som-t">Votre bilan patrimonial</div><div class="som-d">Score, alertes, angles morts — en 4 minutes</div><span class="som-lock">Accès libre</span></div></div>
+      <div class="som-item"><span class="som-n">II</span><div><div class="som-t">Neuf simulateurs ouverts</div><div class="som-d">Succession, donation, IFI, conjoint…</div><span class="som-lock">Accès libre</span></div></div>
+      <div class="som-item"><span class="som-n">III</span><div><div class="som-t">La bibliothèque des stratégies</div><div class="som-d">Le mécanisme, chiffré, et ses limites</div><span class="som-lock">Réservé abonnés</span></div></div>
+      <div class="som-item"><span class="som-n">IV</span><div><div class="som-t">Marcel, en continu</div><div class="som-d">Il connaît votre dossier, il ne vend rien</div><span class="som-lock">Réservé abonnés</span></div></div>
+    </aside>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><span class="sec-num">I</span><h2>Famille</h2><span class="sec-note">Rubrique — 4 articles</span></div>
+    <div class="cols">
+      <article class="art">
+        <div class="art-rub">Simulateur</div>
+        <h3>Ce que votre conjoint percevrait demain</h3>
+        <p>Entre ce que l'on imagine et ce que le droit prévoit, l'écart surprend presque toujours. Renseignez votre situation : le calcul est immédiat.</p>
+        <div class="art-foot"><span class="acc libre">Accès libre</span></div>
+      </article>
+      <article class="art">
+        <div class="art-rub">Simulateur</div>
+        <h3>Familles recomposées : qui reçoit quoi</h3>
+        <p>Enfants d'un premier lit, enfants communs, conjoint survivant : la répartition légale n'est pas celle que l'on croit.</p>
+        <div class="art-foot"><span class="acc libre">Accès libre</span></div>
+      </article>
+      <article class="art reserve">
+        <div class="art-rub">Fiche stratégie</div>
+        <h3>Le régime matrimonial, cette décision qu'on ne revisite jamais</h3>
+        <p>Communauté réduite aux acquêts, séparation de biens, participation aux acquêts : chacun protège quelqu'un de différent. Le choix fait à vingt-cinq ans engage encore à soixante…</p>
+        <div class="art-foot"><span class="acc abo">Réservé abonnés</span></div>
+      </article>
+      <article class="art reserve">
+        <div class="art-rub">Fiche stratégie</div>
+        <h3>La clause bénéficiaire, ces quatre lignes décisives</h3>
+        <p>Rédigée une fois, rarement relue, elle décide pourtant de la destination d'un capital souvent supérieur au reste de la succession…</p>
+        <div class="art-foot"><span class="acc abo">Réservé abonnés</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><span class="sec-num">II</span><h2>L'encadré chiffré</h2><span class="sec-note">Donation en ligne directe</span></div>
+    <div class="encart">
+      <div class="enc-grid">
+        <div>
+          <div class="enc-field">
+            <label class="enc-lbl">Montant que vous envisagez de transmettre</label>
+            <input type="range" id="m" min="0" max="1000000" step="10000" value="300000">
+            <div class="enc-val" id="mv">300 000 €</div>
+          </div>
+          <div class="enc-field">
+            <label class="enc-lbl">Nombre d'enfants</label>
+            <input type="range" id="n" min="1" max="5" step="1" value="2">
+            <div class="enc-val" id="nv">2</div>
+          </div>
+        </div>
+        <div class="resultat">
+          <div class="res-lbl">Droits de donation estimés</div>
+          <div class="res-big" id="d">—</div>
+          <div class="res-sub" id="s">Abattement de 100 000 € par enfant et par parent, renouvelable tous les 15 ans.</div>
+        </div>
+      </div>
+      <div class="question">« Ces abattements se rechargent tous les quinze ans. Combien de fenêtres de transmission vous reste-t-il réellement ? »</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><span class="sec-num">III</span><h2>La tribune de Marcel</h2></div>
+    <div class="tribune">
+      <div class="portrait"><span>M</span></div>
+      <div class="trib-body">
+        <p>« Je ne vous dirai jamais quoi faire. Ce n'est pas de la prudence commerciale : c'est le cadre. Une recommandation personnalisée engage une responsabilité que seul un professionnel, mandaté par une lettre de mission, peut porter. »</p>
+        <p>« En revanche, je peux lire vos chiffres, vous montrer le mécanisme, poser l'ordre de grandeur — et vous rendre la question. C'est souvent là que la décision se forme. »</p>
+        <div class="trib-q">
+          <span>Pourquoi mon score plafonne-t-il ?</span>
+          <span>Quel est mon angle mort le plus coûteux ?</span>
+          <span>Prépare mes questions au notaire</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><span class="sec-num">IV</span><h2>Conditions d'accès</h2></div>
+    <div class="offres">
+      <div class="offre">
+        <div class="of-n">Découverte</div>
+        <div class="of-p">0 €<small> / pour toujours</small></div>
+        <div class="of-d">Le bilan patrimonial et les simulateurs essentiels, sans inscription payante.</div>
+        <ul class="of-l"><li>Bilan patrimonial complet</li><li>Neuf simulateurs ouverts</li><li>Score et alertes</li></ul>
+      </div>
+      <div class="offre mid">
+        <div class="of-n">Le pilotage</div>
+        <div class="of-p">9,99 €<small> / mois</small></div>
+        <div class="of-d">Marcel en continu, la veille, les univers Investissements et Placements.</div>
+        <ul class="of-l"><li>Marcel illimité</li><li>Tous les simulateurs</li><li>Bilan sauvegardé</li></ul>
+      </div>
+      <div class="offre">
+        <div class="of-n">Stratégies</div>
+        <div class="of-p">249 €<small> / an</small></div>
+        <div class="of-d">Le pilotage, plus la bibliothèque complète des montages patrimoniaux.</div>
+        <ul class="of-l"><li>Tout le pilotage</li><li>Bibliothèque de fiches</li><li>Mise à jour continue</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="pied">Maquette de travail — direction B. Chiffres illustratifs. Contenu à vocation pédagogique et informative, ne constituant ni un conseil juridique, fiscal ou financier personnalisé, ni une recommandation d'opération au sens de l'art. L.541-1 du Code monétaire et financier. IKCP · IKIGAÏ Conseil Patrimonial · ORIAS 23001568.</div>
+</div>
+
+<script>
+(function(){
+  var EUR=function(v){return new Intl.NumberFormat('fr-FR').format(Math.round(v))+' €';};
+  var BAR=[[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]];
+  function droits(b){var t=0,p=0;for(var i=0;i<BAR.length;i++){var s=BAR[i][0],x=BAR[i][1];
+    if(b>p){t+=(Math.min(b,s)-p)*x;p=s;}else break;}return t;}
+  var m=document.getElementById('m'),n=document.getElementById('n');
+  function calc(){
+    var M=+m.value,N=+n.value;
+    document.getElementById('mv').textContent=EUR(M);
+    document.getElementById('nv').textContent=N;
+    var par=M/N, tax=Math.max(par-100000,0), d=droits(tax)*N;
+    document.getElementById('d').textContent=EUR(d);
+    document.getElementById('s').textContent = d===0
+      ? 'Aucun droit dû : les abattements de 100 000 € par enfant absorbent la totalité.'
+      : 'Après abattement de 100 000 € par enfant. Barème en ligne directe 2026.';
+  }
+  m.addEventListener('input',calc);n.addEventListener('input',calc);calc();
+})();
+</script>
+</body>
+</html>
