@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<script>try{if(!localStorage.getItem('ikcp_token'))location.replace('/app/index.html')}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B2A4A">
+<title>Rédaction — fiches patrimoniales · IKCP</title>
+<link href="/assets/vendor/fonts.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0EA;--surface:#FFF;--surface-2:#FBF7EF;--line:#DCD3C4;
+  --ink:#1B2A4A;--mute:#6E7689;--faint:#A6ABB8;
+  --gold:#C9A96E;--gold-txt:#8B6F3F;--green:#3B7D5E;--red:#B91C1C;
+  --fd:'Playfair Display',serif;--fb:'Outfit',sans-serif;--fm:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6;font-size:15px}
+.top{position:sticky;top:0;z-index:50;background:rgba(242,240,234,.94);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:14px}
+.brand{font-family:var(--fd);font-size:17px;font-weight:600}
+.brand i{color:var(--gold-txt);font-style:normal}
+.badge{font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--mute)}
+.wrap{max-width:1300px;margin:0 auto;padding:20px;display:grid;grid-template-columns:290px 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel h2{font-family:var(--fd);font-size:17px;margin-bottom:4px}
+.panel .hint{font-size:12px;color:var(--mute);margin-bottom:12px}
+.btn{border:none;border-radius:9px;padding:10px 16px;font-family:var(--fb);font-weight:600;font-size:13.5px;cursor:pointer}
+.btn-g{background:linear-gradient(135deg,#E2C896,var(--gold));color:#20180c}
+.btn-o{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn-d{background:transparent;border:1px solid rgba(185,28,28,.4);color:var(--red)}
+.btn:disabled{opacity:.5;cursor:wait}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.list{display:flex;flex-direction:column;gap:5px;max-height:62vh;overflow:auto;margin-top:8px}
+.item{text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;
+  padding:9px 11px;cursor:pointer;font-family:var(--fb);font-size:13px;transition:.15s;width:100%}
+.item:hover{border-color:var(--gold)}
+.item.on{border-color:var(--gold);background:rgba(201,169,110,.12)}
+.item b{display:block;font-weight:600;color:var(--ink);line-height:1.3}
+.item small{color:var(--faint);font-size:10.5px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot.pub{background:var(--green)}.dot.dra{background:var(--gold)}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:5px}
+.fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--line);background:var(--surface-2);
+  color:var(--ink);border-radius:9px;padding:10px 12px;font-family:var(--fb);font-size:14px;min-height:42px}
+.fld textarea{min-height:88px;resize:vertical;line-height:1.6}
+.fld .sub{font-size:11.5px;color:var(--faint);margin-top:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.acc{border:1px solid var(--line);border-radius:11px;margin-bottom:9px;overflow:hidden;background:var(--surface)}
+.acc>summary{padding:12px 14px;cursor:pointer;font-weight:600;font-size:14px;background:var(--surface-2);
+  display:flex;align-items:center;gap:9px;list-style:none}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary::before{content:'\25B8';color:var(--gold-txt);transition:.2s}
+.acc[open]>summary::before{transform:rotate(90deg)}
+.acc .body{padding:14px}
+.n{font-family:var(--fm);font-size:10px;color:var(--gold-txt)}
+.warn{background:rgba(201,169,110,.1);border:1px solid var(--gold);border-radius:10px;padding:12px 14px;
+  font-size:12.5px;line-height:1.55;margin-bottom:14px}
+.warn b{color:var(--gold-txt)}
+.msg{font-size:12.5px;padding:9px 12px;border-radius:8px;margin-top:10px;display:none}
+.msg.ok{display:block;background:rgba(59,125,94,.12);color:var(--green)}
+.msg.err{display:block;background:rgba(185,28,28,.1);color:var(--red)}
+.empty{text-align:center;padding:50px 20px;color:var(--mute)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">Rédaction<i>.</i></div>
+  <span class="badge" id="who">vérification…</span>
+  <div style="flex:1"></div>
+  <a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Mon espace</a>
+</header>
+
+<div class="wrap" id="app" style="display:none">
+  <aside class="panel">
+    <h2>Fiches</h2>
+    <div class="hint">Vert = publié · Or = brouillon</div>
+    <button class="btn btn-g" style="width:100%" onclick="nouvelle()">+ Nouvelle fiche</button>
+    <div class="list" id="list"></div>
+  </aside>
+
+  <main>
+    <div id="editor" style="display:none">
+      <div class="panel" style="margin-bottom:14px">
+        <div class="row">
+          <button class="btn btn-g" onclick="save('publie')" id="bPub">Publier</button>
+          <button class="btn btn-o" onclick="save('brouillon')" id="bDra">Enregistrer en brouillon</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-d" onclick="suppr()">Supprimer</button>
+        </div>
+        <div class="msg" id="msg"></div>
+      </div>
+
+      <div class="warn">
+        <b>Rappel de cadre.</b> Chaque fiche informe, elle ne recommande jamais. Formulations à privilégier :
+        « peut représenter », « de l'ordre de », « à explorer ». Chaque chiffre porte son article et son
+        millésime. La fiche se termine par des <b>questions</b>, jamais par une conclusion.
+      </div>
+
+      <details class="acc" open><summary><span class="n">01</span> Identité</summary><div class="body">
+        <div class="two">
+          <div class="fld"><label>Slug (non modifiable après création)</label><input id="f_slug" placeholder="donation-enfants"><div class="sub">minuscules, tirets, sans accent</div></div>
+          <div class="fld"><label>Univers</label><select id="f_categorie">
+            <option>Mon couple</option><option>Mon immobilier</option><option>Ma retraite</option>
+            <option>Ma succession</option><option>Mon entreprise</option><option>Transverse</option>
+          </select></div>
+        </div>
+        <div class="fld"><label>Titre</label><input id="f_titre" placeholder="Donation aux enfants : abattements et calendrier"></div>
+        <div class="fld"><label>Sous-titre explicatif</label><input id="f_sousTitre"></div>
+        <div class="two">
+          <div class="fld"><label>Complexité</label><select id="f_complexite">
+            <option value="simple">simple</option><option value="intermediaire">intermédiaire</option>
+            <option value="avancee">avancée</option><option value="experte">experte</option></select></div>
+          <div class="fld"><label>Horizon de mise en œuvre</label><input id="f_horizonMiseEnOeuvre" placeholder="0-90 jours"></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label>Simulateur lié (id, ou vide)</label><input id="f_simulateurId" placeholder="transmission-donation"></div>
+          <div class="fld"><label>Validation humaine conseillée</label><select id="f_requiresHumanValidation">
+            <option value="false">non</option><option value="true">oui</option></select></div>
+        </div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">02</span> Résumé exécutif</summary><div class="body">
+        <div class="fld"><label>4 lignes — une par ligne</label><textarea id="f_resumeExecutif" placeholder="Ce que ça permet&#10;Pour qui&#10;Le bénéfice principal&#10;LA LIMITE principale"></textarea>
+        <div class="sub">La 4ᵉ ligne doit être la limite — c'est ce qui rend la fiche crédible.</div></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">03</span> Le problème</summary><div class="body">
+        <div class="fld"><label>La situation vécue, en « vous »</label><textarea id="f_probleme"></textarea></div>
+        <div class="fld"><label>Question type d'un lecteur</label><input id="f_questionType" placeholder="« Combien puis-je donner sans droits à payer ? »"></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">04</span> Pour qui · Quand éviter</summary><div class="body">
+        <div class="fld"><label>Profil cible — un par ligne</label><textarea id="f_profilCible"></textarea></div>
+        <div class="fld"><label>Quand éviter — un par ligne</label><textarea id="f_quandEviter"></textarea>
+        <div class="sub">Section obligatoire : c'est elle qui prouve l'indépendance.</div></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">05</span> Le mécanisme</summary><div class="body">
+        <div class="fld"><label>Explication en clair (300-450 mots)</label><textarea id="f_explicationClaire" style="min-height:200px"></textarea>
+        <div class="sub">Chaque terme technique défini à sa première apparition.</div></div>
+        <div class="fld"><label>À retenir (1-2 phrases)</label><textarea id="f_aRetenir" style="min-height:60px"></textarea></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">06</span> Ordres de grandeur — l'accroche chiffrée</summary><div class="body">
+        <div class="warn" style="margin-bottom:12px">
+          C'est ce bloc qui déclenche l'intérêt. Il s'affiche au membre sous la forme :
+          <b>« Au vu des éléments que vous avez renseignés, ce levier représente un ordre de grandeur de X € dans des situations comparables »</b>,
+          suivi d'une question et du rappel « piste de réflexion ». Jamais « vous économiserez ».
+        </div>
+        <div class="two">
+          <div class="fld"><label>AVANT — libellé</label><input id="f_avantLabel" placeholder="Sans anticipation"></div>
+          <div class="fld"><label>AVANT — montant (€)</label><input id="f_avantMontant" type="number"></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label>APRÈS — libellé</label><input id="f_apresLabel" placeholder="Avec donation étalée"></div>
+          <div class="fld"><label>APRÈS — montant (€)</label><input id="f_apresMontant" type="number"></div>
+        </div>
+        <div class="fld"><label>Hypothèses retenues — une par ligne</label><textarea id="f_hypotheses"></textarea></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">07</span> Bénéfices · Risques</summary><div class="body">
+        <div class="fld"><label>Bénéfices — un par ligne</label><textarea id="f_benefices"></textarea></div>
+        <div class="fld"><label>Risques et limites — un par ligne</label><textarea id="f_risques"></textarea></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">08</span> Mise en œuvre · Documents</summary><div class="body">
+        <div class="fld"><label>Étapes — une par ligne (Titre | description | acteurs)</label><textarea id="f_miseEnOeuvre" style="min-height:120px" placeholder="Faire le point | Estimer la valeur des biens | notaire, expert-comptable"></textarea></div>
+        <div class="fld"><label>Documents à réunir — un par ligne</label><textarea id="f_documents"></textarea></div>
+        <div class="fld"><label>Checklist — une par ligne (libellé | responsable)</label><textarea id="f_checklist" placeholder="Réunir les titres de propriété | vous"></textarea></div>
+      </div></details>
+
+      <details class="acc"><summary><span class="n">09</span> Questions · FAQ · Sources</summary><div class="body">
+        <div class="fld"><label>Questions à poser à Marcel — une par ligne</label><textarea id="f_questionsMarcel"></textarea></div>
+        <div class="fld"><label>FAQ — une par ligne (question | réponse)</label><textarea id="f_faq" style="min-height:110px"></textarea></div>
+        <div class="fld"><label>Sources — une par ligne</label><textarea id="f_sources" placeholder="Art. 779 CGI (abattements)&#10;Barème DMTG ligne directe 2026"></textarea>
+        <div class="sub">Obligatoire : chaque chiffre de la fiche doit être traçable ici.</div></div>
+      </div></details>
+    </div>
+
+    <div class="panel empty" id="empty">
+      <h2 style="margin-bottom:8px">Aucune fiche sélectionnée</h2>
+      <p style="font-size:13.5px">Choisissez une fiche à gauche, ou créez-en une nouvelle.<br>
+      Ce que vous publiez ici est en ligne immédiatement, sans déploiement.</p>
+    </div>
+  </main>
+</div>
+
+<div class="panel empty" id="denied" style="display:none;max-width:520px;margin:60px auto">
+  <h2 style="margin-bottom:8px">Espace réservé</h2>
+  <p style="font-size:13.5px">La rédaction des fiches est accessible au propriétaire du site uniquement.</p>
+  <p style="margin-top:14px"><a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Retour à mon espace</a></p>
+</div>
+
+<script>
+var API='https://ikcp-client.maxime-ead.workers.dev';
+function tok(){try{return localStorage.getItem('ikcp_token')||''}catch(e){return ''}}
+function H(){return{'Content-Type':'application/json','Authorization':'Bearer '+tok()}}
+var CUR=null, FICHES=[];
+function L(v){return (v||'').split('\n').map(function(s){return s.trim()}).filter(Boolean)}
+function J(a){return (a||[]).join('\n')}
+function g(id){var e=document.getElementById(id);return e?e.value:''}
+function s(id,v){var e=document.getElementById(id);if(e)e.value=(v==null?'':v)}
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){
+  return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function msg(t,ok){var m=document.getElementById('msg');m.textContent=t;m.className='msg '+(ok?'ok':'err');
+  setTimeout(function(){m.className='msg'},4500)}
+
+function renderList(){
+  document.getElementById('list').innerHTML=FICHES.map(function(f){
+    return '<button class="item'+(CUR&&CUR.slug===f.slug?' on':'')+'" data-s="'+esc(f.slug)+'">'
+      +'<b><span class="dot '+(f.statut==='publie'?'pub':'dra')+'"></span>'+esc(f.titre||f.slug)+'</b>'
+      +'<small>'+esc(f.categorie||'—')+(f.source==='seed'?' · semence':'')+'</small></button>';
+  }).join('')||'<div style="padding:14px;font-size:12.5px;color:var(--faint)">Aucune fiche.</div>';
+}
+document.getElementById('list').addEventListener('click',function(e){
+  var b=e.target.closest('.item'); if(b) open_(b.dataset.s);
+});
+
+function load(){
+  fetch(API+'/api/v1/atelier/fiches',{headers:H()}).then(function(r){
+    if(r.status===403||r.status===401){document.getElementById('denied').style.display='';return null}
+    return r.json();
+  }).then(function(d){
+    if(!d)return;
+    document.getElementById('app').style.display='grid';
+    document.getElementById('who').textContent='propriétaire';
+    FICHES=d.fiches||[];renderList();
+  }).catch(function(){document.getElementById('denied').style.display=''});
+}
+function open_(slug){
+  fetch(API+'/api/v1/atelier/fiches/'+encodeURIComponent(slug),{headers:H()})
+    .then(function(r){return r.json()}).then(function(f){
+      CUR=f;fill(f);renderList();
+      document.getElementById('editor').style.display='';
+      document.getElementById('empty').style.display='none';
+      document.getElementById('f_slug').disabled=true;
+    });
+}
+function nouvelle(){
+  CUR={slug:'',_statut:'brouillon'};fill(CUR);
+  document.getElementById('editor').style.display='';
+  document.getElementById('empty').style.display='none';
+  document.getElementById('f_slug').disabled=false;renderList();
+}
+function fill(f){
+  ['slug','categorie','titre','sousTitre','complexite','horizonMiseEnOeuvre','simulateurId',
+   'probleme','questionType','explicationClaire','aRetenir'].forEach(function(k){s('f_'+k,f[k])});
+  s('f_requiresHumanValidation',f.requiresHumanValidation?'true':'false');
+  ['resumeExecutif','profilCible','quandEviter','benefices','risques','documents',
+   'questionsMarcel','sources'].forEach(function(k){s('f_'+k,J(f[k]))});
+  var o=f.ordresDeGrandeur||{};
+  s('f_avantLabel',(o.avant||{}).label);s('f_avantMontant',(o.avant||{}).montant);
+  s('f_apresLabel',(o.apres||{}).label);s('f_apresMontant',(o.apres||{}).montant);
+  s('f_hypotheses',J(o.hypotheses));
+  s('f_miseEnOeuvre',(f.miseEnOeuvre||[]).map(function(e){
+    return [e.titre,e.description,(e.acteurs||[]).join(', ')].join(' | ')}).join('\n'));
+  s('f_checklist',(f.checklist||[]).map(function(c){return [c.label,c.responsable].join(' | ')}).join('\n'));
+  s('f_faq',(f.faq||[]).map(function(q){return [q.q,q.r].join(' | ')}).join('\n'));
+}
+function build(statut){
+  var slug=g('f_slug').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'-');
+  if(!slug)throw new Error('Le slug est obligatoire.');
+  if(!g('f_titre').trim())throw new Error('Le titre est obligatoire.');
+  var av=parseFloat(g('f_avantMontant')),ap=parseFloat(g('f_apresMontant'));
+  return {
+    slug:slug,categorie:g('f_categorie'),titre:g('f_titre'),sousTitre:g('f_sousTitre'),
+    complexite:g('f_complexite'),horizonMiseEnOeuvre:g('f_horizonMiseEnOeuvre'),
+    simulateurId:g('f_simulateurId')||null,
+    requiresHumanValidation:g('f_requiresHumanValidation')==='true',
+    resumeExecutif:L(g('f_resumeExecutif')),probleme:g('f_probleme'),questionType:g('f_questionType'),
+    profilCible:L(g('f_profilCible')),quandEviter:L(g('f_quandEviter')),
+    explicationClaire:g('f_explicationClaire'),aRetenir:g('f_aRetenir'),
+    ordresDeGrandeur:(isFinite(av)&&isFinite(ap))?{
+      avant:{label:g('f_avantLabel'),montant:av},apres:{label:g('f_apresLabel'),montant:ap},
+      hypotheses:L(g('f_hypotheses')),
+      mention:"Ces ordres de grandeur illustrent le mécanisme — votre situation réelle peut en différer sensiblement."
+    }:null,
+    benefices:L(g('f_benefices')),risques:L(g('f_risques')),
+    miseEnOeuvre:L(g('f_miseEnOeuvre')).map(function(l,i){var p=l.split('|');
+      return{etape:i+1,titre:(p[0]||'').trim(),description:(p[1]||'').trim(),
+        acteurs:(p[2]||'').split(',').map(function(x){return x.trim()}).filter(Boolean),documents:[]}}),
+    documents:L(g('f_documents')),
+    checklist:L(g('f_checklist')).map(function(l,i){var p=l.split('|');
+      return{id:'c'+(i+1),label:(p[0]||'').trim(),responsable:(p[1]||'vous').trim()}}),
+    questionsMarcel:L(g('f_questionsMarcel')),
+    faq:L(g('f_faq')).map(function(l){var p=l.split('|');return{q:(p[0]||'').trim(),r:(p[1]||'').trim()}}),
+    sources:L(g('f_sources')),
+    avertissement:"Cette fiche a une vocation pédagogique et informative. Elle ne constitue ni un conseil juridique, fiscal, financier, social ou d'investissement personnalisé, ni une recommandation d'opération. Toute décision doit être validée au regard de votre situation avec les professionnels compétents (art. L.541-1 du Code monétaire et financier).",
+    version:'1.0',dateRevue:new Date().toISOString().slice(0,10),auteur:'IKCP',_statut:statut
+  };
+}
+function save(statut){
+  var b1=document.getElementById('bPub'),b2=document.getElementById('bDra');
+  var f;try{f=build(statut)}catch(e){msg(e.message,false);return}
+  b1.disabled=b2.disabled=true;
+  fetch(API+'/api/v1/atelier/fiches/'+encodeURIComponent(f.slug),
+    {method:'PUT',headers:H(),body:JSON.stringify(f)})
+    .then(function(r){return r.json()}).then(function(d){
+      b1.disabled=b2.disabled=false;
+      if(d.ok){msg(statut==='publie'?'Publiée — en ligne immédiatement.':'Brouillon enregistré.',true);CUR=f;load();}
+      else msg(d.error||'Échec.',false);
+    }).catch(function(){b1.disabled=b2.disabled=false;msg('Réseau indisponible.',false)});
+}
+function suppr(){
+  if(!CUR||!CUR.slug)return;
+  if(!confirm('Supprimer « '+(CUR.titre||CUR.slug)+' » ?\n\nSi la fiche existe aussi dans la semence versionnée, elle réapparaîtra dans sa version d\'origine.'))return;
+  fetch(API+'/api/v1/atelier/fiches/'+encodeURIComponent(CUR.slug),{method:'DELETE',headers:H()})
+    .then(function(r){return r.json()}).then(function(){
+      CUR=null;document.getElementById('editor').style.display='none';
+      document.getElementById('empty').style.display='';load();
+    });
+}
+load();
+</script>
+</body>
+</html>

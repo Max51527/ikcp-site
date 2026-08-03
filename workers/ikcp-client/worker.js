@@ -115,9 +115,12 @@ export default {
       if (path === '/api/v1/me' && method === 'GET') return await handleMe(session, env);
       if (path === '/api/v1/me/password' && method === 'POST') return await handleSetPassword(request, session, env);
 
-      if (path === '/api/v1/strategies' && method === 'GET') return handleStrategiesCatalogue(session);
+      if (path === '/api/v1/strategies' && method === 'GET') return await handleStrategiesCatalogue(session, env);
       const stratM = path.match(/^\/api\/v1\/strategies\/([a-z0-9_-]+)$/);
-      if (stratM && method === 'GET') return handleStrategieDetail(stratM[1], session);
+      if (stratM && method === 'GET') return await handleStrategieDetail(stratM[1], session, env);
+
+      // ─── ATELIER — édition des fiches en direct (propriétaire uniquement) ──
+      if (path.startsWith('/api/v1/atelier/')) return await handleAtelier(request, session, env, path, method);
       if (path === '/api/v1/usage' && method === 'GET') return await handleUsage(session, env);
       if (path === '/api/v1/usage/marcel' && method === 'POST') return await handleMarcelUsage(session, env);
       if (path === '/api/v1/pappers/lookup' && method === 'POST') return await handlePappersLookup(request, session, env);
@@ -587,8 +590,92 @@ async function handleUsage(session, env) {
 // Catalogue : teaser accessible à tout membre connecté (titre + résumé tronqué,
 // sans les sections à valeur commerciale). Fiche complète : gated has_strategies,
 // vérifié ici côté serveur — jamais dans le HTML/JS statique du front.
-function handleStrategiesCatalogue(session) {
-  const list = (STRATEGIES_CONTENT.fiches || []).map(f => ({
+//
+// SOURCE DES FICHES : D1 (édition en direct depuis /app/redaction.html) fusionnée
+// avec strategies-content.json (semence versionnée). En cas de même slug, la
+// version D1 gagne — on peut donc corriger une fiche sans redéployer, et le JSON
+// reste le filet de sécurité si la base est vide ou indisponible.
+async function ensureFichesTable(env) {
+  await env.D1.prepare(
+    "CREATE TABLE IF NOT EXISTS fiches (slug TEXT PRIMARY KEY, data TEXT NOT NULL, " +
+    "statut TEXT DEFAULT 'brouillon', updated_at TEXT)"
+  ).run();
+}
+async function loadFiches(env, { includeDrafts = false } = {}) {
+  const seed = (STRATEGIES_CONTENT.fiches || []).map(f => ({ ...f, _statut: 'publie', _source: 'seed' }));
+  let live = [];
+  try {
+    await ensureFichesTable(env);
+    const q = includeDrafts
+      ? 'SELECT slug, data, statut, updated_at FROM fiches'
+      : "SELECT slug, data, statut, updated_at FROM fiches WHERE statut='publie'";
+    const rows = await env.D1.prepare(q).all();
+    live = (rows.results || []).map(r => {
+      try { return { ...JSON.parse(r.data), slug: r.slug, _statut: r.statut, _source: 'd1', _maj: r.updated_at }; }
+      catch (_) { return null; }
+    }).filter(Boolean);
+  } catch (_) { /* base indisponible → on sert la semence */ }
+  const bySlug = new Map();
+  seed.forEach(f => bySlug.set(f.slug, f));
+  live.forEach(f => bySlug.set(f.slug, f)); // D1 écrase la semence
+  return [...bySlug.values()];
+}
+
+// Édition réservée au propriétaire : empreintes SHA-256 des e-mails autorisés
+// (jamais l'e-mail en clair dans un dépôt public).
+const OWNER_HASHES = [
+  'c363eb19abba013b797cb98a4f5298485560d16d0ecbd5ba70c991dcb172d1a3',
+  'cdf3440f43feeaab6e08910642d2e85e3e6b7b4be5e2a702951691d324f8f030',
+  'd4c01e9f986be2d7c2c27d180463d6b5b528e6324f1555985043bdac8c832543',
+];
+async function isOwner(session) {
+  if (!session || !session.email) return false;
+  return OWNER_HASHES.includes(await sha256(String(session.email).trim().toLowerCase()));
+}
+
+// ── ATELIER : CRUD des fiches (propriétaire uniquement) ──
+async function handleAtelier(request, session, env, path, method) {
+  if (!(await isOwner(session))) return json({ error: 'forbidden' }, 403);
+  await ensureFichesTable(env);
+
+  if (path === '/api/v1/atelier/fiches' && method === 'GET') {
+    const all = await loadFiches(env, { includeDrafts: true });
+    return json({ fiches: all.map(f => ({
+      slug: f.slug, titre: f.titre, categorie: f.categorie, statut: f._statut,
+      source: f._source, maj: f._maj || null, simulateurId: f.simulateurId || null,
+    })) });
+  }
+
+  const m = path.match(/^\/api\/v1\/atelier\/fiches\/([a-z0-9_-]+)$/i);
+  if (m) {
+    const slug = m[1];
+    if (method === 'GET') {
+      const all = await loadFiches(env, { includeDrafts: true });
+      const f = all.find(x => x.slug === slug);
+      return f ? json(f) : json({ error: 'not_found' }, 404);
+    }
+    if (method === 'PUT') {
+      const body = await request.json().catch(() => null);
+      if (!body || typeof body !== 'object') return json({ error: 'bad_json' }, 400);
+      const statut = body._statut === 'publie' ? 'publie' : 'brouillon';
+      const data = { ...body }; delete data._statut; delete data._source; delete data._maj;
+      data.slug = slug;
+      await env.D1.prepare(
+        'INSERT INTO fiches (slug, data, statut, updated_at) VALUES (?,?,?,?) ' +
+        'ON CONFLICT(slug) DO UPDATE SET data=excluded.data, statut=excluded.statut, updated_at=excluded.updated_at'
+      ).bind(slug, JSON.stringify(data).slice(0, 400000), statut, new Date().toISOString()).run();
+      return json({ ok: true, slug, statut });
+    }
+    if (method === 'DELETE') {
+      await env.D1.prepare('DELETE FROM fiches WHERE slug=?').bind(slug).run();
+      return json({ ok: true, deleted: slug });
+    }
+  }
+  return json({ error: 'not_found' }, 404);
+}
+
+async function handleStrategiesCatalogue(session, env) {
+  const list = (await loadFiches(env)).map(f => ({
     slug: f.slug,
     categorie: f.categorie,
     titre: f.titre,
@@ -608,8 +695,8 @@ function handleStrategiesCatalogue(session) {
     fiches: list,
   });
 }
-function handleStrategieDetail(slug, session) {
-  const fiche = (STRATEGIES_CONTENT.fiches || []).find(f => f.slug === slug);
+async function handleStrategieDetail(slug, session, env) {
+  const fiche = (await loadFiches(env)).find(f => f.slug === slug);
   if (!fiche) return json({ error: 'not_found' }, 404);
   const unlocked = session.tier === 'premium' && session.has_strategies === true;
   if (!unlocked) {

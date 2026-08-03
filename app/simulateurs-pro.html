@@ -640,16 +640,19 @@ let chart;
 /* ═══ Freemium : 4 calculs de base gratuits, stratégie patrimoniale = Premium ═══ */
 const API_CLIENT = 'https://ikcp-client.maxime-ead.workers.dev';
 const API_CONFIG = 'https://ikcp-patrimoine.maxime-ead.workers.dev/config';
-let TIER = 'free', GATING_OFF = false, PREMIUM_EUR = 9.99;
+let TIER = 'free', HAS_STRATEGIES = false, GATING_OFF = false, PREMIUM_EUR = 9.99;
 function token(){ try{ return localStorage.getItem('ikcp_token') || ''; }catch(_){ return ''; } }
 async function loadTier(){
   const t = token();
   if (t){ try{ const r = await fetch(API_CLIENT+'/api/v1/me', { headers:{ 'Authorization':'Bearer '+t }, credentials:'include' });
-               if (r.ok){ const u = await r.json(); if (u && u.tier) TIER = u.tier; } }catch(_){} }
+               if (r.ok){ const u = await r.json(); if (u && u.tier) TIER = u.tier; HAS_STRATEGIES = u && u.has_strategies === true; } }catch(_){} }
   /* Pièce 3 : le Studio pilote le verrou et le prix */
   try{ const rc = await fetch(API_CONFIG); if (rc.ok){ const c = await rc.json(); if (c){ if (c.gating_360_only === false) GATING_OFF = true; if (c.premium_eur != null) PREMIUM_EUR = c.premium_eur; } } }catch(_){}
 }
-function isUnlocked(sim){ return GATING_OFF || !!sim.free || TIER !== 'free'; }
+// Palier Stratégies (249 €/an) : accès annuel à TOUS les simulateurs de l'espace
+// membre + toutes les fiches, maintenus à jour. Les simulateurs publics de la
+// racine du site (succession, donation, IFI…) restent gratuits et sans compte.
+function isUnlocked(sim){ return GATING_OFF || HAS_STRATEGIES; }
 
 function renderSimList() {
   const list = document.getElementById('simList');
@@ -659,7 +662,7 @@ function renderSimList() {
     btn.className = 'sim-item' + (sim.id === activeId ? ' active' : '');
     btn.style.cssText = 'width:100%;text-align:left';
     const locked = !isUnlocked(sim);
-    btn.innerHTML = `<div><strong>${sim.title}${locked?' 🔒':''}</strong><small>${sim.desc}</small></div><span class="tag">${locked?'Premium':sim.category}</span>`;
+    btn.innerHTML = `<div><strong>${sim.title}${locked?' 🔒':''}</strong><small>${sim.desc}</small></div><span class="tag">${locked?'Stratégies':sim.category}</span>`;
     btn.onclick = () => { activeId = sim.id; renderSimList(); (isUnlocked(sim) ? renderActive() : renderTeaser(sim)); switchScreen('screen-calcul'); setNav('screen-calcul'); };
     list.appendChild(btn);
   });
@@ -700,15 +703,15 @@ function renderActive() {
 }
 
 function renderTeaser(sim){
-  document.getElementById('simCategory').textContent = 'Premium';
+  document.getElementById('simCategory').textContent = 'Stratégies';
   document.getElementById('simTitle').textContent = sim.title + ' 🔒';
   document.getElementById('simDesc').textContent = sim.desc;
   document.getElementById('fields').innerHTML = '';
   document.getElementById('primaryResults').innerHTML =
-    `<div class="result-card" style="grid-column:1/-1"><span class="hint">Aperçu — résultat réservé au Premium</span><strong style="font-size:1.8rem;filter:blur(7px);user-select:none">●●● €</strong><div style="font-size:12px;color:#6B5D52;margin-top:4px">Le calcul fonctionne déjà — débloquez le chiffre exact et le détail.</div></div>`;
+    `<div class="result-card" style="grid-column:1/-1"><span class="hint">Aperçu — résultat réservé au palier Stratégies</span><strong style="font-size:1.8rem;filter:blur(7px);user-select:none">●●● €</strong><div style="font-size:12px;color:#6B5D52;margin-top:4px">Le calcul tourne déjà — le palier Stratégies débloque le chiffre exact, le détail et la sauvegarde.</div></div>`;
   document.getElementById('secondaryResults').innerHTML =
-    `<div class="result-card"><div>Les calculs de base — rémunération, revenu libéral, trésorerie, capacité d'emprunt — sont <strong>gratuits</strong>. Les simulateurs de stratégie — arbitrage dividendes, retraite, cession, transmission, prévoyance, homme-clé… — sont inclus dans <strong>Premium</strong>.</div></div>`
-    + `<a href="/app/profil.html" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Passer en Premium →</a>`;
+    `<div class="result-card"><div>Le palier <strong>Stratégies (249 €/an)</strong> donne accès à <strong>tous les simulateurs</strong> de votre espace et à <strong>toutes les fiches patrimoniales</strong>, maintenues à jour au fil des évolutions légales. Les simulateurs publics du site restent gratuits, sans compte.</div></div>`
+    + `<a href="/app/profil.html" class="result-card" style="display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,var(--color-gold),#E2C896);color:#20180c;font-weight:700">Débloquer tous les simulateurs — 249 €/an →</a>`;
   if (chart){ chart.destroy(); chart = null; }
 }
 
