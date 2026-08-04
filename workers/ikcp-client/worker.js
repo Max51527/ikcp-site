@@ -868,6 +868,13 @@ async function handleFeedback(request, env) {
   const type = (b.type || '').toString().slice(0, 30);
   const score = (typeof b.score === 'number') ? b.score : null;
   const esc = s => (s == null ? '' : String(s)).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+  // Gabarit de COURRIEL, pas d'interface web. Deux choix qui paraissent
+  // fautifs vus d'un navigateur et qui ne le sont pas ici :
+  //  · Arial — les clients de messagerie ne chargent pas de police distante.
+  //    Playfair ou Outfit retomberaient sur n'importe quoi selon le client.
+  //  · La bordure de 3 px du bloc cité — en courriel, un filet d'un pixel
+  //    disparaît purement et simplement chez Outlook.
+  // La charte IKCP s'applique au site ; un courriel obéit à ses propres règles.
   const html = `<div style="font-family:Arial,sans-serif;max-width:560px">
     <h2 style="color:#1B2A4A">📨 Retour bêta IKCP</h2>
     <p><b>Priorité :</b> ${esc(prio)} &nbsp;·&nbsp; <b>Catégories :</b> ${esc(cats) || '—'}</p>
