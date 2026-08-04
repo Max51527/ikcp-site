@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IKCP</title>
+<link href="/assets/vendor/fonts.css" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F2EDE3;--gold:#C9A96E;--gold-d:#7A6236;--ink:#221E18;--mute:#6B5D52;--line:rgba(27,42,74,.16)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:0 clamp(16px,4vw,28px)}
+.mesure{max-width:52ch}
+
+header{border-bottom:1px solid var(--line);background:var(--cream);position:sticky;top:0;z-index:20}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:14px;height:62px}
+.hd a{text-decoration:none}
+.marque{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:21px;color:var(--navy)}
+.marque span{color:var(--gold-d)}
+.cta{background:var(--navy);color:var(--cream);font-weight:700;font-size:14px;padding:10px 18px;border-radius:10px}
+
+/* ── Les blocs. Un seul gabarit, une seule charte, aucune dérive possible. ── */
+.b{padding:clamp(26px,4vw,42px) 0}
+.b + .b{padding-top:0}
+
+.b-titre h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(30px,5vw,50px);
+  color:var(--navy);line-height:1.06;letter-spacing:-.018em;max-width:18ch}
+.b-titre h1 em{font-style:italic;color:var(--gold-d)}
+.b-titre p{margin-top:14px;font-size:clamp(15.5px,2vw,18px);color:var(--mute);max-width:52ch}
+
+.b-texte h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(23px,3.2vw,31px);
+  color:var(--navy);line-height:1.14;margin-bottom:12px;max-width:22ch}
+.b-texte p{font-size:16px;color:var(--ink);max-width:52ch}
+.b-texte p + p{margin-top:12px}
+
+.b-colonnes{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,32px)}
+@media(max-width:760px){.b-colonnes{grid-template-columns:1fr}}
+.b-colonnes .col{background:var(--cream2);border:1px solid var(--line);border-radius:15px;padding:24px 26px}
+.b-colonnes h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:20px;color:var(--navy);margin-bottom:8px}
+.b-colonnes p{font-size:15px;color:var(--mute)}
+
+.b-liste ul{list-style:none;display:flex;flex-direction:column;gap:10px;max-width:56ch}
+.b-liste li{font-size:16px;padding-left:18px;position:relative}
+.b-liste li::before{content:"";position:absolute;left:0;top:.68em;width:7px;height:1px;background:var(--gold)}
+
+.b-citation blockquote{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:clamp(21px,3vw,28px);
+  color:var(--navy);line-height:1.3;border-left:1px solid var(--gold);padding-left:20px;max-width:26ch}
+.b-citation figcaption{margin-top:10px;padding-left:21px;font-size:13px;color:var(--mute)}
+
+.b-appel{text-align:center;background:var(--cream2);border:1px solid var(--line);border-radius:18px;
+  padding:clamp(26px,4vw,42px);margin:clamp(20px,3vw,30px) 0}
+.b-appel h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(23px,3.2vw,30px);color:var(--navy)}
+.b-appel p{margin:10px auto 20px;color:var(--mute);max-width:46ch;font-size:15.5px}
+
+.b-filet{height:1px;background:var(--line);margin:clamp(18px,3vw,30px) 0}
+
+.disc{font-size:12.5px;color:var(--mute);line-height:1.55;border-left:1px solid var(--gold);padding-left:12px;max-width:60ch}
+
+footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0 40px;font-size:12px;color:var(--mute);line-height:1.7}
+.chargement,.absente{padding:70px 0;color:var(--mute)}
+.absente h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:30px;color:var(--navy);margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<header><div class="wrap hd">
+  <a class="marque" href="/">IKCP<span>.</span></a>
+  <a class="cta" href="/creer-mon-compte">Mon bilan — gratuit</a>
+</div></header>
+
+<main class="wrap" id="corps">
+  <div class="chargement">Chargement…</div>
+</main>
+
+<footer><div class="wrap">
+  <div><b>IKCP — IKIGAÏ Conseil Patrimonial</b> · ORIAS 23001568 · CIF — CNCEF Patrimoine · SIREN 947 972 436</div>
+  <div style="margin-top:6px">Les pistes proposées sont des pistes de réflexion. Elles ne constituent pas une
+    recommandation personnalisée au sens de l'art. L.541-1 du Code monétaire et financier.</div>
+</div></footer>
+
+<script>
+(function () {
+  var API = 'https://ikcp-client.maxime-ead.workers.dev';
+  var corps = document.getElementById('corps');
+
+  /* Le slug vient du chemin /p/<slug>, réécrit vers ce fichier. */
+  var slug = (location.pathname.replace(/^\/p\/?/, '').replace(/\/$/, '') || '').toLowerCase();
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+  function paras(t) { return String(t || '').split(/\n{2,}/).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join(''); }
+
+  /* Un bloc = un type et son contenu. Le type décide de la forme, jamais le
+     contenu : c'est ce qui garantit qu'une page écrite dans six mois
+     ressemblera à celles d'aujourd'hui. */
+  function rendre(b) {
+    switch (b.type) {
+      case 'titre':
+        return '<section class="b b-titre"><h1>' + esc(b.titre) + '</h1>' +
+          (b.texte ? '<p>' + esc(b.texte) + '</p>' : '') + '</section>';
+      case 'texte':
+        return '<section class="b b-texte">' + (b.titre ? '<h2>' + esc(b.titre) + '</h2>' : '') +
+          paras(b.texte) + '</section>';
+      case 'colonnes':
+        return '<section class="b b-colonnes">' + (b.colonnes || []).map(function (c) {
+          return '<div class="col"><h3>' + esc(c.titre) + '</h3>' + paras(c.texte) + '</div>';
+        }).join('') + '</section>';
+      case 'liste':
+        return '<section class="b b-liste">' + (b.titre ? '<h2 style="font-family:\'Playfair Display\',serif;font-weight:600;font-size:26px;color:var(--navy);margin-bottom:14px">' + esc(b.titre) + '</h2>' : '') +
+          '<ul>' + (b.items || []).map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></section>';
+      case 'citation':
+        return '<section class="b b-citation"><figure><blockquote>' + esc(b.texte) + '</blockquote>' +
+          (b.source ? '<figcaption>' + esc(b.source) + '</figcaption>' : '') + '</figure></section>';
+      case 'appel':
+        return '<section class="b"><div class="b-appel"><h2>' + esc(b.titre) + '</h2>' +
+          (b.texte ? '<p>' + esc(b.texte) + '</p>' : '') +
+          '<a class="cta" href="' + esc(b.lien || '/creer-mon-compte') + '">' +
+          esc(b.bouton || 'Commencer mon bilan — gratuit') + '</a></div></section>';
+      case 'filet':
+        return '<div class="b-filet"></div>';
+      case 'avertissement':
+        return '<section class="b"><p class="disc">' + esc(b.texte) + '</p></section>';
+      default:
+        return '';
+    }
+  }
+
+  if (!slug) { montrerAbsente(); return; }
+
+  fetch(API + '/api/v1/page/' + encodeURIComponent(slug))
+    .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+    .then(function (page) {
+      document.title = (page.titre || 'IKCP') + ' — IKCP';
+      if (page.description) {
+        var m = document.createElement('meta');
+        m.name = 'description'; m.content = page.description;
+        document.head.appendChild(m);
+      }
+      var html = (page.blocs || []).map(rendre).join('');
+      corps.innerHTML = html || '<div class="absente"><h1>Cette page est vide</h1><p>Elle existe, mais aucun bloc n\'y a encore été écrit.</p></div>';
+    })
+    .catch(montrerAbsente);
+
+  function montrerAbsente() {
+    document.title = 'Page introuvable — IKCP';
+    corps.innerHTML = '<div class="absente"><h1>Cette page n\'existe pas</h1>' +
+      '<p>Elle a peut-être été renommée, ou n\'est pas encore publiée.</p>' +
+      '<p style="margin-top:18px"><a class="cta" href="/">Retour à l\'accueil</a></p></div>';
+  }
+})();
+</script>
+<script src="/protect.js?v=2" defer></script>
+</body>
+</html>

@@ -63,6 +63,10 @@ export default {
       // ─── CONTENU ÉDITORIAL — surcharges publiées depuis /app/redaction ──
       // Public et cacheable : cms-hydrate.js le fusionne par-dessus _data/*.json.
       // Renvoie {} tant que rien n'a été édité → coût quasi nul.
+      // Pages composées — le gabarit /p/<slug> les rend. Public : ces pages
+      // sont des pages de site, pas du contenu d'abonné.
+      const pageM = path.match(/^\/api\/v1\/page\/([a-z0-9-]+)$/);
+      if (pageM && method === 'GET') return await handlePagePublique(pageM[1], env);
       if (path === '/api/v1/contenu' && method === 'GET') return await handleContenuPublic(env);
       if (path === '/auth/send' && method === 'POST') return await handleAuthSend(request, env);
       if (path === '/auth/verify' && method === 'GET') return await handleAuthVerify(request, env);
@@ -672,6 +676,21 @@ async function ensureContenuTable(env) {
     'CREATE TABLE IF NOT EXISTS contenu (cle TEXT PRIMARY KEY, valeur TEXT, updated_at TEXT)'
   ).run();
 }
+async function handlePagePublique(slug, env) {
+  try {
+    const row = await env.D1.prepare(
+      "SELECT data FROM pages WHERE slug=? AND statut='publie'"
+    ).bind(slug).first();
+    if (!row) return json({ error: 'not_found' }, 404);
+    return new Response(row.data, {
+      headers: { ...cors(), 'Content-Type': 'application/json; charset=utf-8',
+                 'Cache-Control': 'public, max-age=60' },
+    });
+  } catch (e) {
+    return json({ error: 'indisponible' }, 503);
+  }
+}
+
 async function handleContenuPublic(env) {
   try {
     await ensureContenuTable(env);
