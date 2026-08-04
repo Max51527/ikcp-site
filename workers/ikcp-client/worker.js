@@ -28,7 +28,7 @@
  */
 
 import STRATEGIES_CONTENT from './strategies-content.json'; // bundlé par wrangler — graine des fiches, servie tant que Notion n'a rien écrit
-import { syncNotionToD1 } from './notion-sync.js';           // Notion → D1 : source unique des fiches
+import { syncNotionComplet } from './notion-sync.js';           // Notion → D1 : source unique des fiches
 
 // Règle Maxime : le FREE ne consomme AUCUN token LLM.
 // free = simulateurs (JS local, 0 token) + 1 cartographie SIREN/mois (Pappers, 0 token LLM).
@@ -697,7 +697,7 @@ async function handleAtelier(request, session, env, path, method) {
   // « Publié » et les écrit en base. Sens unique, rien ne remonte vers Notion.
   if (path === '/api/v1/atelier/sync-notion' && method === 'POST') {
     try {
-      return json(await syncNotionToD1(env));
+      return json(await syncNotionComplet(env));
     } catch (e) {
       return json({ ok: false, error: String(e.message || e).slice(0, 300) }, 502);
     }

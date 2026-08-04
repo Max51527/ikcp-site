@@ -78,8 +78,13 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
   <button class="btn btn-o" id="tabF" onclick="setTab('fiches')">Fiches</button>
   <button class="btn btn-o" id="tabS" onclick="setTab('simus')">Simulateurs</button>
   <button class="btn btn-o" id="tabT" onclick="setTab('textes')">Textes du site</button>
+  <button class="btn" id="btnSync" onclick="syncNotion()" title="Rapatrie les fiches et les textes marqués « Publié » dans Notion">Synchroniser Notion</button>
   <a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Mon espace</a>
 </header>
+
+<div id="syncRapport" hidden style="max-width:1100px;margin:14px auto 0;padding:0 20px">
+  <div class="panel" id="syncCorps" style="font-size:14px;line-height:1.6"></div>
+</div>
 
 <!-- ═══ Onglet SIMULATEURS ═══ -->
 <div id="vueSimus" style="display:none;max-width:1100px;margin:0 auto;padding:20px">
@@ -291,6 +296,36 @@ var API='https://ikcp-client.maxime-ead.workers.dev';
 function tok(){try{return localStorage.getItem('ikcp_token')||''}catch(e){return ''}}
 function H(){return{'Content-Type':'application/json','Authorization':'Bearer '+tok()}}
 var CUR=null, FICHES=[];
+/* Rapatrie Notion → base. Notion écrit, le site lit : ce bouton ne renvoie
+   jamais rien vers Notion. Le rapport dit ce qui est passé et ce qui a été
+   écarté, plutôt qu'un simple « c'est fait » qui n'apprend rien. */
+function syncNotion(){
+  var b=document.getElementById('btnSync');
+  var zone=document.getElementById('syncRapport');
+  var corps=document.getElementById('syncCorps');
+  var libelle=b.textContent;
+  b.disabled=true; b.textContent='Synchronisation…';
+  zone.hidden=false; corps.innerHTML='<span style="opacity:.6">Lecture de Notion…</span>';
+
+  fetch(API+'/api/v1/atelier/sync-notion',{method:'POST',headers:H()})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d.error){corps.innerHTML='<b>Impossible</b> — '+esc(d.error);return}
+      function bloc(titre,r){
+        if(!r) return '';
+        if(r.error) return '<div><b>'+titre+'</b> — impossible : '+esc(r.error)+'</div>';
+        var h='<div style="margin-bottom:6px"><b>'+titre+'</b> — '+r.lues+' lue(s), <b>'+r.ecrites+'</b> écrite(s)';
+        if(r.ignorees&&r.ignorees.length) h+=' · '+r.ignorees.length+' écartée(s) : '+esc(r.ignorees.join(', '));
+        h+='</div>';
+        if(r.erreurs&&r.erreurs.length) h+='<div style="color:#B91C1C">'+r.erreurs.map(function(e){return esc(e.message)}).join('<br>')+'</div>';
+        return h;
+      }
+      corps.innerHTML = bloc('Fiches',d.fiches) + bloc('Textes du site',d.textes) +
+        '<div style="margin-top:8px;opacity:.7">Le site affiche les nouveaux textes dans la minute — une mémoire tampon les garde ce temps-là.</div>';
+    })
+    .catch(function(e){corps.innerHTML='<b>Impossible</b> — '+esc(String(e.message||e))})
+    .finally(function(){b.disabled=false; b.textContent=libelle});
+}
 function L(v){return (v||'').split('\n').map(function(s){return s.trim()}).filter(Boolean)}
 function J(a){return (a||[]).join('\n')}
 function g(id){var e=document.getElementById(id);return e?e.value:''}

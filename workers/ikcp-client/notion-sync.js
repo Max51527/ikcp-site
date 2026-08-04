@@ -15,6 +15,7 @@
  * Secrets attendus sur le worker :
  *   NOTION_TOKEN        — jeton d'intégration Notion (interne)
  *   NOTION_FICHES_DB    — identifiant de la base Notion des fiches
+ *   NOTION_TEXTES_DB    — identifiant de la base Notion des textes du site
  *
  * Auteur : IKCP · dernière révision : 2026-08-04
  */
@@ -205,4 +206,73 @@ export async function syncNotionToD1(env) {
   }
   rapport.ok = rapport.erreurs.length === 0;
   return rapport;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Les textes du site — la seconde base Notion.
+
+   Même principe que les fiches : Notion écrit, le site lit. Chaque ligne
+   porte une clé (home.hero.headline_1, tarifs.o2.prix…) qui dit au site où
+   poser le texte. La clé ne se modifie jamais ; le texte, si.
+
+   Ces valeurs atterrissent dans la table `contenu`, que cms-hydrate.js
+   applique sur les balises data-cms au chargement de la page. Une zone
+   absente de Notion garde simplement le texte écrit dans le HTML : rien ne
+   peut disparaître par oubli.
+   ══════════════════════════════════════════════════════════════════════ */
+
+async function textesPublies(env) {
+  const out = [];
+  let cursor;
+  do {
+    const body = {
+      filter: { property: 'Statut', select: { equals: 'Publié' } },
+      page_size: 100,
+    };
+    if (cursor) body.start_cursor = cursor;
+    const r = await notion(env, '/databases/' + env.NOTION_TEXTES_DB + '/query', {
+      method: 'POST', body: JSON.stringify(body),
+    });
+    out.push(...(r.results || []));
+    cursor = r.has_more ? r.next_cursor : null;
+  } while (cursor);
+  return out;
+}
+
+export async function syncTextesToD1(env) {
+  if (!env.NOTION_TOKEN || !env.NOTION_TEXTES_DB) {
+    return { ok: false, error: 'NOTION_TOKEN ou NOTION_TEXTES_DB absent du worker' };
+  }
+  const pages = await textesPublies(env);
+  const rapport = { ok: true, lues: pages.length, ecrites: 0, ignorees: [], erreurs: [] };
+
+  for (const page of pages) {
+    try {
+      const p = page.properties || {};
+      const cle = texteDe((p['Clé'] && p['Clé'].rich_text) || []);
+      const valeur = texteDe((p['Texte'] && p['Texte'].rich_text) || []);
+
+      // Une clé vide n'a pas d'adresse sur le site ; un texte vide effacerait
+      // la zone sans qu'on l'ait voulu. Les deux sont écartés, et signalés.
+      if (!cle) { rapport.ignorees.push('(ligne sans clé)'); continue; }
+      if (!valeur) { rapport.ignorees.push(cle + ' (texte vide)'); continue; }
+
+      await env.D1.prepare(
+        'INSERT INTO contenu (cle, valeur) VALUES (?,?) ' +
+        'ON CONFLICT(cle) DO UPDATE SET valeur=excluded.valeur'
+      ).bind(cle, valeur.slice(0, 8000)).run();
+      rapport.ecrites++;
+    } catch (e) {
+      rapport.erreurs.push({ page: page.id, message: String(e.message || e).slice(0, 240) });
+    }
+  }
+  rapport.ok = rapport.erreurs.length === 0;
+  return rapport;
+}
+
+/** Les deux bases en un seul geste — c'est ce que déclenche le bouton. */
+export async function syncNotionComplet(env) {
+  const fiches = await syncNotionToD1(env).catch(e => ({ ok: false, error: String(e.message || e) }));
+  const textes = await syncTextesToD1(env).catch(e => ({ ok: false, error: String(e.message || e) }));
+  return { ok: !!(fiches.ok && textes.ok), fiches, textes };
 }
