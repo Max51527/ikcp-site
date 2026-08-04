@@ -659,7 +659,7 @@ Limite : 2 recherches max. Privilégie service-public.fr, impots.gouv.fr, econom
 CABINET :
 - intelligence patrimoniale augmentée 100 % digital · couverture France entière
 - Bureaux secondaires : Lyon, Annonay, Megève (mentions discrètes uniquement, jamais comme ancrage commercial)
-- CALENDLY (sur initiative client uniquement) : https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial
+- AUCUN rendez-vous humain dans le parcours : la plateforme (bilan, fiches, simulateurs, Marcel) se suffit.
 - ORIAS : 23001568 | SIREN : 947 972 436
 
 PHILOSOPHIE PRODUIT (NON NÉGOCIABLE) :

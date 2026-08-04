@@ -68,7 +68,7 @@ a.back{margin-left:auto;color:var(--mute);text-decoration:none;font-size:13px;bo
 
 <script src="/protect.js?v=2" defer></script>
 <script>
-var RDV='https://calendly.com/ikcp-/ensemble-construisons-votre-ikigai-patrimonial';
+var RDV='/app/marcel';
 var DISC="Article à caractère pédagogique — ne constitue pas un conseil personnalisé au sens de l'art. L.541-1 du Code monétaire et financier, ni une recommandation. Les dispositifs cités obéissent à des conditions précises et évoluent ; tout investissement comporte un risque de perte en capital. Toute mise en œuvre nécessite une étude personnalisée (lettre de mission). — IKCP · ORIAS 23001568.";
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
@@ -232,7 +232,7 @@ window.openArt=function(i){
   var aa=a.aa?('<div class="aa"><div class="c av"><div class="lab">Avant</div><p>'+esc(a.aa.av)+'</p></div><div class="c ap"><div class="lab">Après</div><p>'+esc(a.aa.ap)+'</p></div></div>'):'';
   var faq=a.faq&&a.faq.length?('<h3>Questions fréquentes</h3><div class="faq">'+a.faq.map(function(f){return '<div class="q">'+esc(f.q)+'</div><div class="r">'+esc(f.r)+'</div>';}).join('')+'</div>'):'';
   r.innerHTML='<div class="art"><div class="kick" style="color:var(--gold-d)">'+esc(a.tag)+'</div><h2>'+esc(a.t)+'</h2><div class="lede">'+esc(a.lede)+'</div>'+secs+aa+faq+
-    '<div class="cta">Envie d’appliquer ça à VOTRE situation ?<br><a href="'+RDV+'" target="_blank" rel="noopener">Échanger avec Maxime →</a></div>'+
+    '<div class="cta">Envie d’appliquer ça à VOTRE situation ?<br><a href="'+RDV+'" target="_blank" rel="noopener">Ouvrir mon espace &#8594;</a></div>'+
     '<div class="disc">'+esc(DISC)+'</div></div>';
   try{window.scrollTo({top:0,behavior:'smooth'});}catch(_){}
 };
