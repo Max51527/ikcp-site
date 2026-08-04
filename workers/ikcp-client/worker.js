@@ -683,8 +683,8 @@ async function handlePagePublique(slug, env) {
     ).bind(slug).first();
     if (!row) return json({ error: 'not_found' }, 404);
     return new Response(row.data, {
-      headers: { ...cors(), 'Content-Type': 'application/json; charset=utf-8',
-                 'Cache-Control': 'public, max-age=60' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8',
+                 'Cache-Control': 'public, max-age=60', ...corsHeaders() },
     });
   } catch (e) {
     return json({ error: 'indisponible' }, 503);
