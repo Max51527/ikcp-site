@@ -16,19 +16,19 @@
   --fd:'Playfair Display',serif;--fb:'Outfit',sans-serif;--fm:'JetBrains Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6;font-size:15px}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6;font-size:16px}
 .top{position:sticky;top:0;z-index:50;background:rgba(242,240,234,.94);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:14px}
-.brand{font-family:var(--fd);font-size:17px;font-weight:600}
+.brand{font-family:var(--fd);font-size:20px;font-weight:600}
 .brand i{color:var(--gold-txt);font-style:normal}
-.badge{font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+.badge{font-family:var(--fm);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
   padding:4px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--mute)}
 .wrap{max-width:1300px;margin:0 auto;padding:20px;display:grid;grid-template-columns:290px 1fr;gap:20px;align-items:start}
 @media(max-width:900px){.wrap{grid-template-columns:1fr}}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
-.panel h2{font-family:var(--fd);font-size:17px;margin-bottom:4px}
-.panel .hint{font-size:12px;color:var(--mute);margin-bottom:12px}
-.btn{border:none;border-radius:9px;padding:10px 16px;font-family:var(--fb);font-weight:600;font-size:13.5px;cursor:pointer}
+.panel h2{font-family:var(--fd);font-size:20px;margin-bottom:4px}
+.panel .hint{font-size:12.5px;color:var(--mute);margin-bottom:12px}
+.btn{border:none;border-radius:9px;padding:10px 16px;font-family:var(--fb);font-weight:600;font-size:16px;cursor:pointer}
 .btn-g{background:linear-gradient(135deg,#E2C896,var(--gold));color:#20180c}
 .btn-o{background:transparent;border:1px solid var(--line);color:var(--ink)}
 .btn-d{background:transparent;border:1px solid rgba(185,28,28,.4);color:var(--red)}
@@ -36,24 +36,24 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .list{display:flex;flex-direction:column;gap:5px;max-height:62vh;overflow:auto;margin-top:8px}
 .item{text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;
-  padding:9px 11px;cursor:pointer;font-family:var(--fb);font-size:13px;transition:.15s;width:100%}
+  padding:9px 11px;cursor:pointer;font-family:var(--fb);font-size:16px;transition:.15s;width:100%}
 .item:hover{border-color:var(--gold)}
 .item.on{border-color:var(--gold);background:rgba(201,169,110,.12)}
 .item b{display:block;font-weight:600;color:var(--ink);line-height:1.3}
-.item small{color:var(--faint);font-size:10.5px}
+.item small{color:var(--faint);font-size:10px}
 .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
 .dot.pub{background:var(--green)}.dot.dra{background:var(--gold)}
 .fld{margin-bottom:14px}
-.fld label{display:block;font-family:var(--fm);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+.fld label{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--mute);margin-bottom:5px}
 .fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--line);background:var(--surface-2);
-  color:var(--ink);border-radius:9px;padding:10px 12px;font-family:var(--fb);font-size:14px;min-height:42px}
+  color:var(--ink);border-radius:9px;padding:10px 12px;font-family:var(--fb);font-size:16px;min-height:42px}
 .fld textarea{min-height:88px;resize:vertical;line-height:1.6}
-.fld .sub{font-size:11.5px;color:var(--faint);margin-top:4px}
+.fld .sub{font-size:12.5px;color:var(--faint);margin-top:4px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:640px){.two{grid-template-columns:1fr}}
 .acc{border:1px solid var(--line);border-radius:11px;margin-bottom:9px;overflow:hidden;background:var(--surface)}
-.acc>summary{padding:12px 14px;cursor:pointer;font-weight:600;font-size:14px;background:var(--surface-2);
+.acc>summary{padding:12px 14px;cursor:pointer;font-weight:600;font-size:16px;background:var(--surface-2);
   display:flex;align-items:center;gap:9px;list-style:none}
 .acc>summary::-webkit-details-marker{display:none}
 .acc>summary::before{content:'\25B8';color:var(--gold-txt);transition:.2s}
@@ -78,12 +78,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
   <button class="btn btn-o" id="tabF" onclick="setTab('fiches')">Fiches</button>
   <button class="btn btn-o" id="tabS" onclick="setTab('simus')">Simulateurs</button>
   <button class="btn btn-o" id="tabT" onclick="setTab('textes')">Textes du site</button>
-  <button class="btn" id="btnSync" onclick="syncNotion()" title="Rapatrie les fiches et les textes marqués « Publié » dans Notion">Synchroniser Notion</button>
+  <button class="btn btn-g" id="btnSync" onclick="syncNotion()" title="Rapatrie les fiches et les textes marqués « Publié » dans Notion">Synchroniser Notion</button>
   <a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Mon espace</a>
 </header>
 
 <div id="syncRapport" hidden style="max-width:1100px;margin:14px auto 0;padding:0 20px">
-  <div class="panel" id="syncCorps" style="font-size:14px;line-height:1.6"></div>
+  <div class="panel" id="syncCorps" style="font-size:16px;line-height:1.6"></div>
 </div>
 
 <!-- ═══ Onglet SIMULATEURS ═══ -->
@@ -101,7 +101,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
 
   <div style="display:grid;grid-template-columns:250px 1fr;gap:16px;align-items:start" id="simuGrid">
     <aside class="panel">
-      <h2 style="font-size:15px">Mes simulateurs</h2>
+      <h2 style="font-size:16px">Mes simulateurs</h2>
       <div class="list" id="listS"></div>
     </aside>
 
@@ -130,14 +130,14 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
       </div>
 
       <div class="panel" style="margin-bottom:12px">
-        <div class="row"><h2 style="margin:0;font-size:15px">1 · Ce que l'utilisateur saisit</h2>
+        <div class="row"><h2 style="margin:0;font-size:16px">1 · Ce que l'utilisateur saisit</h2>
           <div style="flex:1"></div><button class="btn btn-o" onclick="addChamp()">+ Champ</button></div>
         <div class="hint">2 à 4 champs maximum.</div>
         <div id="champsS" style="margin-top:10px"></div>
       </div>
 
       <div class="panel" style="margin-bottom:12px">
-        <div class="row"><h2 style="margin:0;font-size:15px">2 · Les étapes de calcul</h2>
+        <div class="row"><h2 style="margin:0;font-size:16px">2 · Les étapes de calcul</h2>
           <div style="flex:1"></div><button class="btn btn-o" onclick="addEtape()">+ Étape</button></div>
         <div class="hint">Chaque étape combine deux valeurs. A et B peuvent être : un champ saisi,
           le résultat d'une étape précédente, une constante fiscale, ou un nombre fixe.</div>
@@ -150,7 +150,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
       </div>
 
       <div class="panel">
-        <h2 style="font-size:15px">Aperçu en direct</h2>
+        <h2 style="font-size:16px">Aperçu en direct</h2>
         <div class="hint">Le calcul tourne ici exactement comme il tournera pour vos membres.</div>
         <div id="apercu" style="margin-top:12px"></div>
       </div>
@@ -278,7 +278,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
 
     <div class="panel empty" id="empty">
       <h2 style="margin-bottom:8px">Aucune fiche sélectionnée</h2>
-      <p style="font-size:13.5px">Choisissez une fiche à gauche, ou créez-en une nouvelle.<br>
+      <p style="font-size:16px">Choisissez une fiche à gauche, ou créez-en une nouvelle.<br>
       Ce que vous publiez ici est en ligne immédiatement, sans déploiement.</p>
     </div>
   </main>
@@ -286,7 +286,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--fb);line-height:1.6
 
 <div class="panel empty" id="denied" style="display:none;max-width:520px;margin:60px auto">
   <h2 style="margin-bottom:8px">Espace réservé</h2>
-  <p style="font-size:13.5px">La rédaction des fiches est accessible au propriétaire du site uniquement.</p>
+  <p style="font-size:16px">La rédaction des fiches est accessible au propriétaire du site uniquement.</p>
   <p style="margin-top:14px"><a href="/app/dashboard.html" class="btn btn-o" style="text-decoration:none">← Retour à mon espace</a></p>
 </div>
 
