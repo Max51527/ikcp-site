@@ -1,6 +1,10 @@
 # Cloudflare Pages — Redirects 301
 # Format : /old-path  /new-path  status-code
 
+# Page cabinet redondante avec « Qui suis-je » de l accueil (04/08/2026)
+/cabinet                        /#philosophie               301
+/cabinet.html                   /#philosophie               301
+
 # Fix URLs indexées avec extension .html → canonical sans extension
 /family-office                  /marcel                     301
 /family-office.html             /marcel                     301

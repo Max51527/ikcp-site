@@ -63,9 +63,34 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 </head>
 <body>
 <div class="bar">
-  <button class="btn" onclick="window.print()">📄 Télécharger en PDF</button>
+  <button class="btn" id="btnPdf">Enregistrer en PDF</button>
+  <a class="btn ghost" href="/app/fiches">Les fiches patrimoniales</a>
+  <a class="btn ghost" href="/app/marcel?depuis=bilan">En parler à Marcel</a>
   <a class="btn ghost" href="/app/patrimoine-pro">← Mon cockpit</a>
-  <span class="hint">Astuce : dans la boîte d'impression, choisissez « Enregistrer en PDF ».</span>
+  <span class="hint" id="hintPdf">Astuce : dans la boîte d'impression, choisissez « Enregistrer en PDF ».</span>
+</div>
+
+<!-- L'enregistrement en PDF demande un compte. Gratuit, sans carte : c'est ce
+     qui permet de retrouver son bilan plus tard et d'y revenir. Le bilan se
+     consulte librement à l'écran — seule la sortie papier est conditionnée. -->
+<div id="murPdf" hidden style="position:fixed;inset:0;z-index:200;background:rgba(14,23,41,.55);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#FAF8F4;border:1px solid rgba(27,42,74,.16);border-radius:18px;max-width:480px;padding:30px 32px">
+    <h2 style="font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:26px;color:#1B2A4A;line-height:1.15;margin:0">
+      Votre bilan vous attend.
+    </h2>
+    <p style="font-family:'Outfit',system-ui,sans-serif;font-size:15.5px;color:#6B5D52;line-height:1.55;margin:14px 0 0">
+      L'enregistrement en PDF demande un compte. Il est <b style="color:#1B2A4A">gratuit</b>,
+      sans carte bancaire, et c'est lui qui vous permet de retrouver ce bilan plus tard —
+      et d'y revenir quand votre situation change.
+    </p>
+    <p style="font-family:'Outfit',system-ui,sans-serif;font-size:14px;color:#8B7F72;line-height:1.5;margin:12px 0 0">
+      Vous pouvez continuer à consulter votre bilan à l'écran sans compte.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+      <a href="/creer-mon-compte" style="flex:1;min-width:180px;text-align:center;background:#1B2A4A;color:#FAF8F4;text-decoration:none;font-family:'Outfit',system-ui,sans-serif;font-weight:700;font-size:15px;padding:13px 18px;border-radius:11px">Créer mon compte — gratuit</a>
+      <button type="button" id="murFermer" style="background:none;border:1px solid rgba(27,42,74,.2);color:#6B5D52;font-family:'Outfit',system-ui,sans-serif;font-size:14.5px;padding:13px 18px;border-radius:11px;cursor:pointer">Plus tard</button>
+    </div>
+  </div>
 </div>
 
 <div class="sheet" id="sheet">
@@ -241,6 +266,62 @@ window.addEventListener('ikcp-sync-hydrated', function(){
   if(biens.length || soc) render(biens, soc, null);
 });
 </script>
+<script>
+/* Verrou de l'export PDF — le bilan se lit librement, on ne conditionne que
+   la sortie. Deux raisons : un PDF qu'on ne peut pas retrouver ne sert à rien,
+   et c'est le moment naturel où créer un compte a du sens pour le visiteur.
+   Aucune carte bancaire, aucun engagement. */
+(function () {
+  var bouton = document.getElementById('btnPdf');
+  var mur    = document.getElementById('murPdf');
+  var fermer = document.getElementById('murFermer');
+  var hint   = document.getElementById('hintPdf');
+  if (!bouton || !mur) return;
+
+  function connecte() {
+    try { return !!localStorage.getItem('ikcp_token'); } catch (_) { return false; }
+  }
+
+  if (!connecte()) {
+    bouton.textContent = 'Enregistrer en PDF';
+    if (hint) hint.textContent = 'Gratuit, sans carte — un compte suffit pour conserver votre bilan.';
+  }
+
+  bouton.addEventListener('click', function () {
+    if (connecte()) { window.print(); return; }
+    mur.hidden = false;
+    var lien = mur.querySelector('a');
+    if (lien) lien.focus();
+  });
+
+  function refermer() { mur.hidden = true; bouton.focus(); }
+  if (fermer) fermer.addEventListener('click', refermer);
+  mur.addEventListener('click', function (e) { if (e.target === mur) refermer(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !mur.hidden) refermer();
+  });
+
+  /* Le raccourci d'impression du navigateur contournerait le verrou : on
+     masque la feuille à l'impression tant qu'aucun compte n'existe, et on
+     affiche à la place une invitation lisible sur le papier. */
+  window.addEventListener('beforeprint', function () {
+    if (!connecte()) document.documentElement.setAttribute('data-sans-compte', '');
+  });
+  window.addEventListener('afterprint', function () {
+    document.documentElement.removeAttribute('data-sans-compte');
+  });
+})();
+</script>
+<style>
+@media print {
+  html[data-sans-compte] .sheet { display: none; }
+  html[data-sans-compte] body::after {
+    content: "Créez votre compte gratuit sur ikcp.eu pour enregistrer ce bilan en PDF.";
+    display: block; padding: 40mm 20mm; text-align: center;
+    font-family: 'Outfit', system-ui, sans-serif; font-size: 14pt; color: #1B2A4A;
+  }
+}
+</style>
 <script src="/app/js/marcel-float.js" defer></script>
 <script src="/app/js/sync.js" defer></script>
 <script src="/app/js/appnav.js" defer></script>

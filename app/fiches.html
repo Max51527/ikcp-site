@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiches patrimoniales — IKCP</title>
+<link href="/assets/vendor/fonts.css" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F2EDE3;--gold:#C9A96E;--gold-d:#7A6236;--ink:#221E18;--mute:#6B5D52;--line:rgba(27,42,74,.16)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(16px,4vw,28px)}
+
+header{border-bottom:1px solid var(--line);background:var(--cream);position:sticky;top:0;z-index:20}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:14px;height:60px}
+.hd a.retour{font-size:14px;color:var(--mute);text-decoration:none}
+.hd a.retour:hover{color:var(--navy)}
+.hd .marque{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:20px;color:var(--navy);text-decoration:none}
+
+.intro{padding:clamp(30px,5vw,54px) 0 clamp(18px,3vw,26px)}
+h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(28px,4.4vw,42px);color:var(--navy);line-height:1.08;letter-spacing:-.015em}
+.lede{margin-top:12px;font-size:clamp(15px,1.8vw,17px);color:var(--mute);max-width:56ch}
+.compte{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold-d);letter-spacing:.04em}
+
+.filtres{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+.filtres button{font:inherit;font-size:13.5px;padding:8px 15px;border-radius:99px;border:1px solid var(--line);
+  background:transparent;color:var(--mute);cursor:pointer;transition:color .25s cubic-bezier(.22,.9,.3,1),border-color .25s cubic-bezier(.22,.9,.3,1)}
+.filtres button:hover{color:var(--navy)}
+.filtres button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+.filtres button:focus-visible{outline:2px solid var(--gold-d);outline-offset:2px}
+
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:14px 0 60px}
+.fiche{background:var(--cream2);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+  display:flex;flex-direction:column;gap:9px;text-align:left;font:inherit;cursor:pointer;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s cubic-bezier(.16,1,.3,1)}
+.fiche:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px rgba(27,42,74,.32)}
+.fiche:focus-visible{outline:2px solid var(--gold-d);outline-offset:3px}
+.fiche .cat{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--gold-d)}
+.fiche h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:19px;color:var(--navy);line-height:1.22}
+.fiche p{font-size:14px;color:var(--mute);line-height:1.5}
+.fiche .pied{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:6px}
+.tag{font-size:11.5px;padding:4px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.tag.simu{color:var(--gold-d);border-color:rgba(201,169,110,.55)}
+.tag.verrou{color:var(--navy);border-color:var(--line)}
+
+.vide{padding:60px 0;text-align:center;color:var(--mute)}
+.vide h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:24px;color:var(--navy);margin-bottom:10px}
+
+/* Panneau de lecture */
+.panneau[hidden]{display:none}
+.panneau{position:fixed;inset:0;z-index:40;background:rgba(14,23,41,.5);display:flex;justify-content:flex-end}
+.panneau .feuille{background:var(--cream);width:min(720px,100%);height:100%;overflow-y:auto;padding:clamp(22px,4vw,40px);border-left:1px solid var(--line)}
+.panneau .fermer{float:right;background:none;border:1px solid var(--line);border-radius:9px;color:var(--mute);font:inherit;font-size:14px;padding:8px 14px;cursor:pointer}
+.panneau h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(23px,3.2vw,31px);color:var(--navy);line-height:1.12;clear:none;max-width:24ch}
+.panneau .sst{color:var(--mute);margin-top:8px;font-size:15.5px;max-width:56ch}
+.sec{margin-top:26px}
+.sec h3{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--gold-d);margin-bottom:9px}
+.sec p{font-size:15px;color:var(--ink);line-height:1.6;max-width:62ch}
+.sec ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.sec li{font-size:15px;color:var(--ink);line-height:1.5;padding-left:16px;position:relative;max-width:62ch}
+.sec li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:1px;background:var(--gold)}
+.rule{height:1px;background:var(--line);margin:26px 0}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;font-size:14.5px;padding:12px 20px;border-radius:11px;border:0;cursor:pointer;font-family:inherit}
+.btn.navy{background:var(--navy);color:var(--cream)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--navy)}
+.disc{margin-top:26px;font-size:12.5px;color:var(--mute);line-height:1.55;border-left:1px solid var(--gold);padding-left:12px;max-width:62ch}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.fiche:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap hd">
+  <a class="marque" href="/app/dashboard">IKCP<span style="color:var(--gold-d)">.</span></a>
+  <a class="retour" href="/app/dashboard">← Mon espace</a>
+</div></header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>Les fiches patrimoniales</h1>
+    <p class="lede">Chaque fiche traite un levier et le chiffre : la situation avant, la situation après,
+      le coût, les conditions à remplir et le texte qui l'autorise. Le simulateur correspondant y est rattaché.</p>
+    <div class="compte" id="compte">chargement…</div>
+    <div class="filtres" id="filtres"></div>
+  </section>
+
+  <div class="grille" id="grille"></div>
+  <div class="vide" id="vide" hidden></div>
+</main>
+
+<div class="panneau" id="panneau" hidden>
+  <div class="feuille" id="feuille" role="dialog" aria-modal="true" aria-labelledby="pTitre"></div>
+</div>
+
+<script>
+(function () {
+  var API = 'https://ikcp-client.maxime-ead.workers.dev';
+  var grille = document.getElementById('grille');
+  var filtres = document.getElementById('filtres');
+  var compte = document.getElementById('compte');
+  var vide = document.getElementById('vide');
+  var panneau = document.getElementById('panneau');
+  var feuille = document.getElementById('feuille');
+  var TOUT = [], CAT = null, DEVERROUILLE = false;
+
+  function jeton() { try { return localStorage.getItem('ikcp_token') || ''; } catch (_) { return ''; } }
+  function entetes() { var t = jeton(); return t ? { 'Authorization': 'Bearer ' + t } : {}; }
+  function txt(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+  if (!jeton()) { location.href = '/creer-mon-compte'; return; }
+
+  fetch(API + '/api/v1/strategies', { headers: entetes() })
+    .then(function (r) {
+      // Une session expirée ne doit pas ressembler à une panne : on renvoie
+      // vers la connexion plutôt que d'afficher « unauthorized ».
+      if (r.status === 401 || r.status === 403) { location.href = '/creer-mon-compte?retour=/app/fiches'; throw new Error('session'); }
+      return r.json();
+    })
+    .then(function (d) {
+      if (d.error) throw new Error(d.error);
+      TOUT = d.fiches || [];
+      DEVERROUILLE = !!d.unlocked;
+      compte.textContent = TOUT.length + ' fiche' + (TOUT.length > 1 ? 's' : '') +
+        ' disponible' + (TOUT.length > 1 ? 's' : '') +
+        (d.total && d.total > TOUT.length ? ' · ' + d.total + ' prévues' : '') +
+        (DEVERROUILLE ? ' · accès complet' : ' · aperçu');
+      poserFiltres();
+      afficher();
+    })
+    .catch(function (e) {
+      if (e && e.message === 'session') return; // redirection déjà lancée
+      compte.textContent = '';
+      vide.hidden = false;
+      vide.innerHTML = '<h2>La bibliothèque ne répond pas</h2>' +
+        '<p>Le service est momentanément injoignable. Réessayez dans un instant.</p>' +
+        '<p style="margin-top:16px"><a class="btn ghost" href="/app/dashboard">Retour à mon espace</a></p>';
+    });
+
+  function poserFiltres() {
+    var cats = [];
+    TOUT.forEach(function (f) { if (f.categorie && cats.indexOf(f.categorie) < 0) cats.push(f.categorie); });
+    cats.sort();
+    var html = '<button data-cat="" aria-pressed="true">Toutes</button>';
+    cats.forEach(function (c) { html += '<button data-cat="' + txt(c) + '" aria-pressed="false">' + txt(c) + '</button>'; });
+    filtres.innerHTML = html;
+    filtres.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      CAT = b.getAttribute('data-cat') || null;
+      [].forEach.call(filtres.querySelectorAll('button'), function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      afficher();
+    });
+  }
+
+  function afficher() {
+    var liste = CAT ? TOUT.filter(function (f) { return f.categorie === CAT; }) : TOUT;
+    if (!liste.length) {
+      grille.innerHTML = '';
+      vide.hidden = false;
+      vide.innerHTML = '<h2>Aucune fiche dans cette catégorie</h2><p>Elle arrivera. Les fiches sont publiées au fil de leur rédaction.</p>';
+      return;
+    }
+    vide.hidden = true;
+    grille.innerHTML = liste.map(function (f) {
+      var tags = '';
+      if (f.hasSimulateur) tags += '<span class="tag simu">simulateur rattaché</span>';
+      if (f.complexite) tags += '<span class="tag">' + txt(f.complexite) + '</span>';
+      if (!DEVERROUILLE) tags += '<span class="tag verrou">aperçu</span>';
+      return '<button class="fiche" data-slug="' + txt(f.slug) + '">' +
+        '<span class="cat">' + txt(f.categorie || '—') + '</span>' +
+        '<h3>' + txt(f.titre) + '</h3>' +
+        '<p>' + txt(f.sousTitre || f.teaser || '') + '</p>' +
+        '<span class="pied">' + tags + '</span></button>';
+    }).join('');
+  }
+
+  grille.addEventListener('click', function (e) {
+    var b = e.target.closest('.fiche'); if (b) ouvrir(b.getAttribute('data-slug'));
+  });
+
+  function bloc(titre, valeur) {
+    if (!valeur || (Array.isArray(valeur) && !valeur.length)) return '';
+    var corps = Array.isArray(valeur)
+      ? '<ul>' + valeur.map(function (x) {
+          return '<li>' + txt(typeof x === 'string' ? x : (x.titre || x.label || JSON.stringify(x))) + '</li>';
+        }).join('') + '</ul>'
+      : '<p>' + txt(valeur).replace(/\n\n/g, '</p><p>') + '</p>';
+    return '<div class="sec"><h3>' + txt(titre) + '</h3>' + corps + '</div>';
+  }
+
+  function ouvrir(slug) {
+    feuille.innerHTML = '<button class="fermer" id="x">Fermer</button><p style="color:var(--mute)">chargement…</p>';
+    panneau.hidden = false;
+    document.body.style.overflow = 'hidden';
+
+    fetch(API + '/api/v1/strategies/' + encodeURIComponent(slug), { headers: entetes() })
+      .then(function (r) { return r.json(); })
+      .then(function (f) {
+        var h = '<button class="fermer" id="x">Fermer</button>' +
+          '<h2 id="pTitre">' + txt(f.titre) + '</h2>' +
+          (f.sousTitre ? '<p class="sst">' + txt(f.sousTitre) + '</p>' : '');
+
+        if (f.locked) {
+          h += '<div class="rule"></div>' +
+            bloc('Ce que traite cette fiche', f.teaser) +
+            '<div class="sec"><h3>Fiche complète</h3><p>Le détail chiffré — avant, après, coût, conditions, ' +
+            'texte applicable — et le simulateur rattaché font partie de l\'accès annuel.</p></div>' +
+            '<div class="actions"><a class="btn navy" href="/creer-mon-compte">Voir les offres</a>' +
+            '<a class="btn ghost" href="/app/marcel?sujet=' + encodeURIComponent(f.titre || slug) + '">Demander à Marcel</a></div>';
+        } else {
+          h += '<div class="rule"></div>' +
+            bloc('En bref', f.resumeExecutif) +
+            bloc('Pour qui', f.profilCible) +
+            bloc('Le problème', f.probleme) +
+            bloc('Explication claire', f.explicationClaire) +
+            bloc('À retenir', f.aRetenir) +
+            bloc('Les étapes', f.schemaEtapes) +
+            bloc('Quand éviter', f.quandEviter) +
+            bloc('Bénéfices', f.benefices) +
+            bloc('Risques', f.risques) +
+            bloc('Documents à réunir', f.documents) +
+            bloc('Sources', f.sources) +
+            '<div class="actions">' +
+            (f.simulateurId
+              ? '<a class="btn navy" href="/app/simulateurs-pro?strategie=' + encodeURIComponent(f.simulateurId) + '">Chiffrer sur mes montants</a>'
+              : '') +
+            '<a class="btn ghost" href="/app/marcel?sujet=' + encodeURIComponent(f.titre || slug) + '">En parler à Marcel</a>' +
+            '</div>';
+        }
+
+        h += '<p class="disc">' + txt(f.avertissement ||
+          'Cette fiche a une vocation pédagogique et informative. Elle ne constitue pas une recommandation ' +
+          'personnalisée au sens de l\'art. L.541-1 du Code monétaire et financier.') + '</p>';
+
+        feuille.innerHTML = h;
+        feuille.scrollTop = 0;
+        var x = document.getElementById('x'); if (x) x.focus();
+      })
+      .catch(function () {
+        feuille.innerHTML = '<button class="fermer" id="x">Fermer</button>' +
+          '<p style="color:var(--mute)">Cette fiche n\'a pas pu être chargée.</p>';
+      });
+  }
+
+  function fermer() { panneau.hidden = true; document.body.style.overflow = ''; }
+  feuille.addEventListener('click', function (e) { if (e.target.id === 'x') fermer(); });
+  panneau.addEventListener('click', function (e) { if (e.target === panneau) fermer(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panneau.hidden) fermer(); });
+})();
+</script>
+<script src="/app/js/appnav.js" defer></script>
+</body>
+</html>
