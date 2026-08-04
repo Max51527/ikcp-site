@@ -11,9 +11,16 @@
 
 name: Deploy → Hostinger FTP
 
+# ⏸ DÉSACTIVÉ EN AUTOMATIQUE — 3 août 2026
+# ikcp.eu est servi par Cloudflare Pages (vérifié : Server: cloudflare, CF-RAY).
+# Hostinger ne sert plus le site : ikcp.fr y affiche « Site is undergoing
+# maintenance ». Ce déploiement poussait donc le site à un endroit que personne
+# ne consulte, à chaque push.
+# Hostinger reste INDISPENSABLE pour la MESSAGERIE (MX mx1/mx2.hostinger.com) —
+# ne pas résilier le compte.
+# Le déclencheur « push » est retiré ; le workflow reste lançable à la main
+# (Actions → Run workflow) si l'hébergement Hostinger redevient utile.
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
