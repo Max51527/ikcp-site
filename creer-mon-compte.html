@@ -102,10 +102,10 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
 <main class="wrap">
   <section class="hero">
     <div class="sig"><span class="name">Marcel</span><span class="ia">IA</span></div>
-    <div class="kick">La plateforme patrimoniale indépendante · souveraine · en abonnement</div>
+    <div class="kick" data-cms="tarifs.kick">La plateforme patrimoniale indépendante · souveraine · en abonnement</div>
     <h1>Marcel, votre <em>copilote patrimonial</em>.</h1>
     <p class="lede">Commencez gratuitement. Passez au pilotage continu quand vous êtes prêt. Une intelligence française qui part de votre société pour éclairer vos décisions.</p>
-    <p class="audience">Pour tous les patrimoines — particuliers, familles, dirigeant(e)s, professions libérales, créateurs. Une expertise particulière : l'entrepreneur et sa société.</p>
+    <p class="audience" data-cms="tarifs.audience">Pour tous les patrimoines — particuliers, familles, dirigeant(e)s, professions libérales, créateurs. Une expertise particulière : l'entrepreneur et sa société.</p>
     <div class="heroCta">
       <a class="btn gold" href="/app/">Créer mon compte gratuit →</a>
       <span class="fine">Sans carte bancaire · 2 minutes</span>
@@ -157,9 +157,9 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
   <section id="offres">
     <div class="offres">
       <div class="offre">
-        <div class="nom">Découverte</div>
-        <div class="px">0 €<small> / pour toujours</small></div>
-        <div class="acc">Voir clair sur votre société et vos leviers, sans engagement.</div>
+        <div class="nom" data-cms="tarifs.o1.nom">Découverte</div>
+        <div class="px" data-cms-html data-cms="tarifs.o1.prix">0 €<small> / pour toujours</small></div>
+        <div class="acc" data-cms="tarifs.o1.accroche">Voir clair sur votre société et vos leviers, sans engagement.</div>
         <ul>
           <li>Audit éclair de votre société (SIREN, registre officiel)</li>
           <li>Marcel, l'IA patrimoniale (quota mensuel) + « Révèle mes angles »</li>
@@ -171,8 +171,8 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
         <div class="b"><a class="btn ghost" href="/app/" style="width:100%;text-align:center">Créer mon compte gratuit</a><div class="note">Sans carte bancaire · accès immédiat</div></div>
       </div>
       <div class="offre pro">
-        <div class="nom">Le pilotage · Premium</div>
-        <div class="px">9,99 €<small> / mois</small></div>
+        <div class="nom" data-cms="tarifs.o2.nom">Le pilotage · Premium</div>
+        <div class="px" data-cms-html data-cms="tarifs.o2.prix">9,99 €<small> / mois</small></div>
         <div class="acc">Le copilote continu du dirigeant : l'audit 360° complet et vos pistes de réflexion chiffrées.</div>
         <ul>
           <li>Tout Découverte, sans limite</li>
@@ -188,9 +188,9 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
         <div class="b"><a class="btn gold" href="/app/?plan=premium" style="width:100%;text-align:center">Passer en Premium</a><div class="note">9,99 €/mois · sans engagement</div></div>
       </div>
       <div class="offre">
-        <div class="nom">Stratégies · Annuel</div>
-        <div class="px">249 €<small> / an</small></div>
-        <div class="acc">Premium, plus la bibliothèque complète des montages patrimoniaux du dirigeant.</div>
+        <div class="nom" data-cms="tarifs.o3.nom">Stratégies · Annuel</div>
+        <div class="px" data-cms-html data-cms="tarifs.o3.prix">249 €<small> / an</small></div>
+        <div class="acc" data-cms="tarifs.o3.accroche">Premium, plus la bibliothèque complète des montages patrimoniaux du dirigeant.</div>
         <ul>
           <li>Tout Premium, sans limite</li>
           <li><b>Bibliothèque de stratégies patrimoniales</b> : ~70 fiches (structuration, rémunération, immobilier, placements, transmission, protection, fiscalité)</li>
@@ -201,7 +201,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
         <div class="b"><a class="btn ghost" href="/app/?plan=strategies" style="width:100%;text-align:center">Choisir Stratégies</a><div class="note">249 €/an · sans engagement</div></div>
       </div>
     </div>
-    <div class="mifii">Marcel propose des pistes de réflexion personnalisées à votre situation et conclut par une question — jamais une recommandation produit. Le conseil personnalisé formalisé relève d'une lettre de mission (art. L.541-1 du Code monétaire et financier). Marcel IA est édité par IKCP, cabinet de conseil indépendant (CIF · membre CNCEF Patrimoine) : aucun produit à placer, la plateforme vit de ses abonnements.</div>
+    <div class="mifii" data-cms-html data-cms="tarifs.mention_mifii">Marcel propose des pistes de réflexion personnalisées à votre situation et conclut par une question — jamais une recommandation produit. Le conseil personnalisé formalisé relève d'une lettre de mission (art. L.541-1 du Code monétaire et financier). Marcel IA est édité par IKCP, cabinet de conseil indépendant (CIF · membre CNCEF Patrimoine) : aucun produit à placer, la plateforme vit de ses abonnements.</div>
   </section>
 
   <section class="blk">
@@ -261,5 +261,6 @@ footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-si
   </div>
 </footer>
 <script src="/protect.js?v=2" defer></script>
+<script src="/cms-hydrate.js?v=2" defer></script>
 </body>
 </html>
