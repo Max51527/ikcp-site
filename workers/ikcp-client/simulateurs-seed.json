@@ -1,0 +1,344 @@
+{
+  "_meta": {
+    "note": "Simulateurs déclaratifs — aucune ligne de code exécutable n'est stockée. Chaque étape nomme une opération de la liste fermée d'app/js/formule.js. Ajouter une opération est un acte de développement, jamais une saisie.",
+    "revision": "2026-08-04"
+  },
+  "simulateurs": [
+    {
+      "id": "transmission-donation",
+      "titre": "Donation & droits réels",
+      "categorie": "Transmission",
+      "description": "Droits de donation en ligne directe, au barème officiel 2026.",
+      "champs": [
+        {
+          "cle": "donne",
+          "label": "Valeur donnée (total, 1 parent)",
+          "defaut": 600000,
+          "unite": "€"
+        },
+        {
+          "cle": "enfants",
+          "label": "Nombre d'enfants",
+          "defaut": 2,
+          "unite": ""
+        },
+        {
+          "cle": "abattement",
+          "label": "Abattement par enfant (100 000 € / 15 ans)",
+          "defaut": 100000,
+          "unite": "€"
+        }
+      ],
+      "etapes": [
+        {
+          "cle": "nb",
+          "label": "Nombre d'enfants retenu",
+          "op": "maximum",
+          "a": "enfants",
+          "b": "nb:1"
+        },
+        {
+          "cle": "part",
+          "label": "Part par enfant",
+          "op": "diviser",
+          "a": "donne",
+          "b": "nb"
+        },
+        {
+          "cle": "taxablePart",
+          "label": "Part taxable par enfant",
+          "op": "soustraire_min0",
+          "a": "part",
+          "b": "abattement"
+        },
+        {
+          "cle": "droitsPart",
+          "label": "Droits par enfant",
+          "op": "bareme_donation",
+          "a": "taxablePart",
+          "b": "nb:0"
+        },
+        {
+          "cle": "droits",
+          "label": "Droits de donation 2026",
+          "op": "multiplier",
+          "a": "droitsPart",
+          "b": "nb"
+        },
+        {
+          "cle": "abattements",
+          "label": "Abattements cumulés",
+          "op": "multiplier",
+          "a": "abattement",
+          "b": "nb"
+        },
+        {
+          "cle": "assiette",
+          "label": "Assiette taxable totale",
+          "op": "multiplier",
+          "a": "taxablePart",
+          "b": "nb"
+        },
+        {
+          "cle": "net",
+          "label": "Net reçu par les enfants",
+          "op": "soustraire_min0",
+          "a": "donne",
+          "b": "droits"
+        }
+      ],
+      "resultats": [
+        "abattements",
+        "assiette",
+        "droits",
+        "net"
+      ],
+      "notes": [
+        "Barème progressif officiel des droits en ligne directe 2026 (5 % à 45 %), appliqué part par part après l'abattement de 100 000 € par enfant et par parent (art. 779 CGI).",
+        "L'abattement se reconstitue tous les quinze ans."
+      ]
+    },
+    {
+      "id": "ifi",
+      "titre": "Exposition à l'IFI",
+      "categorie": "Fiscal",
+      "description": "Impôt sur la fortune immobilière — barème et décote entre 1,3 et 1,4 M€.",
+      "champs": [
+        {
+          "cle": "patrimoine",
+          "label": "Patrimoine immobilier net taxable",
+          "defaut": 1800000,
+          "unite": "€"
+        }
+      ],
+      "etapes": [
+        {
+          "cle": "ifiBrut",
+          "label": "IFI au barème",
+          "op": "bareme_ifi",
+          "a": "patrimoine",
+          "b": "nb:0"
+        },
+        {
+          "cle": "decoteBrute",
+          "label": "1,25 % du patrimoine",
+          "op": "pourcentage",
+          "a": "patrimoine",
+          "b": "nb:1.25"
+        },
+        {
+          "cle": "decoteTheorique",
+          "label": "Décote théorique",
+          "op": "soustraire_min0",
+          "a": "nb:17500",
+          "b": "decoteBrute"
+        },
+        {
+          "cle": "decote",
+          "label": "Décote (1,3–1,4 M€)",
+          "op": "minimum",
+          "a": "decoteTheorique",
+          "b": "ifiBrut"
+        },
+        {
+          "cle": "ifi",
+          "label": "IFI estimé",
+          "op": "soustraire_min0",
+          "a": "ifiBrut",
+          "b": "decote"
+        }
+      ],
+      "resultats": [
+        "patrimoine",
+        "ifiBrut",
+        "decote",
+        "ifi"
+      ],
+      "notes": [
+        "Sous 1 300 000 € il n'y a pas d'assujettissement : ce n'est pas un barème à taux nul, c'est une absence d'impôt.",
+        "La décote s'éteint d'elle-même à 1 400 000 € : 17 500 − 1,25 % de 1 400 000 = 0.",
+        "Le passif déductible et l'exonération de l'outil professionnel ne sont pas pris en compte ici."
+      ]
+    },
+    {
+      "id": "dividendes-vs-salaire",
+      "titre": "Dividendes ou salaire",
+      "categorie": "Arbitrage",
+      "description": "Compare le disponible net entre rémunération et distribution.",
+      "champs": [
+        {
+          "cle": "resultat",
+          "label": "Résultat distribuable",
+          "defaut": 80000,
+          "unite": "€"
+        },
+        {
+          "cle": "partSalaire",
+          "label": "Part en salaire (0 à 1)",
+          "defaut": 0.5,
+          "unite": ""
+        },
+        {
+          "cle": "coutSalaire",
+          "label": "Taux de coût du salaire",
+          "defaut": 0.82,
+          "unite": ""
+        },
+        {
+          "cle": "flatTax",
+          "label": "Prélèvement forfaitaire sur dividendes",
+          "defaut": 0.3,
+          "unite": ""
+        }
+      ],
+      "etapes": [
+        {
+          "cle": "budgetSalaire",
+          "label": "Budget consacré au salaire",
+          "op": "multiplier",
+          "a": "resultat",
+          "b": "partSalaire"
+        },
+        {
+          "cle": "dividendeBrut",
+          "label": "Dividende brut",
+          "op": "soustraire_min0",
+          "a": "resultat",
+          "b": "budgetSalaire"
+        },
+        {
+          "cle": "diviseur",
+          "label": "1 + taux de coût",
+          "op": "additionner",
+          "a": "nb:1",
+          "b": "coutSalaire"
+        },
+        {
+          "cle": "salaireNet",
+          "label": "Salaire net",
+          "op": "diviser",
+          "a": "budgetSalaire",
+          "b": "diviseur"
+        },
+        {
+          "cle": "resteFlat",
+          "label": "Part conservée après prélèvement",
+          "op": "soustraire",
+          "a": "nb:1",
+          "b": "flatTax"
+        },
+        {
+          "cle": "dividendeNet",
+          "label": "Dividendes nets",
+          "op": "multiplier",
+          "a": "dividendeBrut",
+          "b": "resteFlat"
+        },
+        {
+          "cle": "total",
+          "label": "Disponible total",
+          "op": "additionner",
+          "a": "salaireNet",
+          "b": "dividendeNet"
+        }
+      ],
+      "resultats": [
+        "salaireNet",
+        "dividendeNet",
+        "total"
+      ],
+      "notes": [
+        "Les dividendes n'ouvrent pas de droits à la retraite ni à la prévoyance : le disponible net ne dit pas tout.",
+        "Le taux de coût du salaire dépend du statut social du dirigeant (assimilé salarié ou travailleur non salarié)."
+      ]
+    },
+    {
+      "id": "versement-per",
+      "titre": "Effort d'épargne retraite",
+      "categorie": "Retraite",
+      "description": "Traduit un objectif de capital en versement mensuel.",
+      "champs": [
+        {
+          "cle": "cible",
+          "label": "Capital visé",
+          "defaut": 450000,
+          "unite": "€"
+        },
+        {
+          "cle": "annees",
+          "label": "Années avant la retraite",
+          "defaut": 18,
+          "unite": "ans"
+        },
+        {
+          "cle": "rendement",
+          "label": "Rendement annuel net (%)",
+          "defaut": 4,
+          "unite": "%"
+        }
+      ],
+      "etapes": [
+        {
+          "cle": "mois",
+          "label": "Nombre de versements",
+          "op": "multiplier",
+          "a": "annees",
+          "b": "nb:12"
+        },
+        {
+          "cle": "tauxMensuel",
+          "label": "Rendement mensuel (%)",
+          "op": "diviser",
+          "a": "rendement",
+          "b": "nb:12"
+        },
+        {
+          "cle": "facteur",
+          "label": "Facteur d'annuité",
+          "op": "facteur_annuite",
+          "a": "tauxMensuel",
+          "b": "mois"
+        },
+        {
+          "cle": "mensuel",
+          "label": "Versement mensuel",
+          "op": "diviser",
+          "a": "cible",
+          "b": "facteur"
+        },
+        {
+          "cle": "annuel",
+          "label": "Versement annuel",
+          "op": "multiplier",
+          "a": "mensuel",
+          "b": "nb:12"
+        },
+        {
+          "cle": "verseTotal",
+          "label": "Total versé sur la période",
+          "op": "multiplier",
+          "a": "mensuel",
+          "b": "mois"
+        },
+        {
+          "cle": "gains",
+          "label": "Part venant du rendement",
+          "op": "soustraire_min0",
+          "a": "cible",
+          "b": "verseTotal"
+        }
+      ],
+      "resultats": [
+        "mensuel",
+        "annuel",
+        "verseTotal",
+        "gains"
+      ],
+      "notes": [
+        "Versements constants, rendement supposé constant : la réalité ne l'est jamais. C'est un ordre de grandeur, pas une projection.",
+        "Le plafond de déduction du plan d'épargne retraite est de 88 911 € pour 2026.",
+        "Exemple générique — votre situation peut différer."
+      ]
+    }
+  ]
+}

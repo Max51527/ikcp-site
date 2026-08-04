@@ -59,6 +59,33 @@
     bareme_donation:  function (a) { return progressif(Math.max(a, 0), BAREMES.donation); },
     bareme_ifi:       function (a) { return a < CONSTANTES.seuil_ifi ? 0 : progressif(a, BAREMES.ifi); },
     capitalisation:   function (a, b) { return a * Math.pow(1 + (b / 100), 1); }, // 1 période
+
+    /* Les trois opérations ci-dessous rendent un FACTEUR, pas un montant : le
+       moteur n'accepte que des opérations à deux entrées, et la capitalisation
+       en demande trois (capital, taux, durée). On calcule donc le facteur ici,
+       et l'étape suivante le multiplie par le capital. Les exposants sont
+       bornés : un simulateur mal saisi ne doit pas figer le navigateur. */
+    puissance: function (a, b) {
+      var n = Math.max(-1200, Math.min(1200, b));
+      var r = Math.pow(a, n);
+      return isFinite(r) ? r : 0;
+    },
+    /* (1 + taux%)^n — combien un euro devient au bout de n périodes. */
+    facteur_capitalisation: function (taux, n) {
+      var p = Math.max(0, Math.min(1200, n));
+      var r = Math.pow(1 + (taux / 100), p);
+      return isFinite(r) ? r : 0;
+    },
+    /* ((1 + taux%)^n − 1) ÷ taux% — le facteur d'une suite de versements
+       constants. Sert aussi bien à l'effort d'épargne qu'à la mensualité
+       d'emprunt. Taux nul : le facteur vaut simplement le nombre de périodes. */
+    facteur_annuite: function (taux, n) {
+      var t = taux / 100;
+      var p = Math.max(0, Math.min(1200, n));
+      if (t === 0) return p;
+      var r = (Math.pow(1 + t, p) - 1) / t;
+      return isFinite(r) ? r : 0;
+    },
   };
 
   var LIBELLES = {
@@ -74,6 +101,9 @@
     bareme_donation: 'Barème des droits de donation en ligne directe (sur A)',
     bareme_ifi: 'Barème de l\'IFI 2026 (sur A)',
     capitalisation: 'Capitaliser A au taux B %',
+    puissance: 'A puissance B',
+    facteur_capitalisation: 'Facteur de capitalisation — taux A %, sur B périodes',
+    facteur_annuite: 'Facteur d\'annuité — taux A %, sur B périodes',
   };
 
   /* Résout une référence : nom d'un champ, d'une étape précédente,
