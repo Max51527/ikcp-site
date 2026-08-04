@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "createdAt": "2026-08-04T17:13:23.020Z",
+        "reason": "Gabarit de courriel uniquement — les clients de messagerie ne chargent pas de police distante. Arial reste signalé partout ailleurs.",
+        "files": [
+          "workers/ikcp-client/worker.js"
+        ]
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "workers/ikcp-client/worker.js"
+        ],
+        "createdAt": "2026-08-04T17:13:23.201Z",
+        "reason": "Gabarit de courriel : un filet d un pixel disparait chez Outlook"
+      }
+    ]
+  }
+}
