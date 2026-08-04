@@ -14,7 +14,7 @@
  *
  * Secrets attendus sur le worker :
  *   NOTION_TOKEN        — jeton d'intégration Notion (interne)
- *   NOTION_FICHES_DS    — identifiant de la source de données (collection)
+ *   NOTION_FICHES_DB    — identifiant de la base Notion des fiches
  *
  * Auteur : IKCP · dernière révision : 2026-08-04
  */
@@ -83,7 +83,7 @@ async function pagesPubliees(env) {
       page_size: 100,
     };
     if (cursor) body.start_cursor = cursor;
-    const r = await notion(env, '/data_sources/' + env.NOTION_FICHES_DS + '/query', {
+    const r = await notion(env, '/databases/' + env.NOTION_FICHES_DB + '/query', {
       method: 'POST', body: JSON.stringify(body),
     });
     out.push(...(r.results || []));
@@ -174,8 +174,8 @@ function versFiche(page, sections) {
  * ne vide pas le site ici.
  */
 export async function syncNotionToD1(env) {
-  if (!env.NOTION_TOKEN || !env.NOTION_FICHES_DS) {
-    return { ok: false, error: 'NOTION_TOKEN ou NOTION_FICHES_DS absent du worker' };
+  if (!env.NOTION_TOKEN || !env.NOTION_FICHES_DB) {
+    return { ok: false, error: 'NOTION_TOKEN ou NOTION_FICHES_DB absent du worker' };
   }
   const pages = await pagesPubliees(env);
   const rapport = { ok: true, lues: pages.length, ecrites: 0, ignorees: [], erreurs: [] };
