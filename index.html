@@ -904,6 +904,15 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
           .bb-long { display: none; }
           .music-player { top: 46px !important; }
         }
+        /* Sous 1024 px, le lecteur musical passait AU-DESSUS de la navigation
+           (z-index 200 contre 50) : taper le menu ☰ ouvrait la playlist, et
+           un visiteur mobile ne pouvait atteindre aucune page. Il est retiré
+           du mobile — la barre y sert à naviguer, pas à écouter de la musique
+           (que le navigateur bloque de toute façon en lecture automatique).
+           Il reste entier sur ordinateur. */
+        @media (max-width: 1023px) {
+          .music-player { display: none !important; }
+        }
         .music-player {
           position: fixed;
           top: 14px;
@@ -2426,7 +2435,10 @@ TON : expert mais accessible, jamais condescendant, légèrement chaleureux. Com
                 <a href="/cabinet" class="text-sm font-medium transition" :class="scrolled?'text-[#6d5c4a] hover:text-[#b8956e]':'text-[#6d5c4a]/80 hover:text-[#b8956e]'">Le Cabinet</a>
                 <a href="/creer-mon-compte" class="px-5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-sm font-bold rounded-lg hover:bg-[#f9f6f0] transition-all shadow-lg hover:-translate-y-0.5">Créer mon compte →</a>
             </div>
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-xl p-2" :class="scrolled?'text-[#1f1a16]':'text-white'">☰</button>
+            <div class="lg:hidden flex items-center gap-2">
+                <a href="/creer-mon-compte" class="px-3.5 py-2.5 bg-[#b8956e] text-[#1f1a16] text-[13px] font-bold rounded-lg whitespace-nowrap">Mon bilan</a>
+                <button @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Ouvrir le menu" class="text-xl w-11 h-11 flex items-center justify-center" :class="scrolled?'text-[#1f1a16]':'text-white'">☰</button>
+            </div>
         </div>
         <div x-show="mobileMenuOpen" x-transition.opacity class="fixed inset-0 bg-white z-40 flex flex-col justify-center items-center space-y-6 p-6" style="display:none;">
             <button @click="mobileMenuOpen=false" class="absolute top-5 right-5 text-[#1f1a16] text-2xl p-2">✕</button>
