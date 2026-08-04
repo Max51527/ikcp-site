@@ -1,7 +1,7 @@
 # Pages composées — /p/<slug> est servi par le gabarit unique p.html,
 # qui lit les blocs depuis la base. Statut 200 : réécriture, pas redirection,
 # pour que l URL reste propre dans la barre d adresse.
-/p/*                            /p.html                     200
+/p/*                            /gabarit-page.html          200
 
 # Cloudflare Pages — Redirects 301
 # Format : /old-path  /new-path  status-code
