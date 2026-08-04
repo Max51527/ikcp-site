@@ -320,7 +320,7 @@ function syncNotion(){
         if(r.erreurs&&r.erreurs.length) h+='<div style="color:#B91C1C">'+r.erreurs.map(function(e){return esc(e.message)}).join('<br>')+'</div>';
         return h;
       }
-      corps.innerHTML = bloc('Fiches',d.fiches) + bloc('Textes du site',d.textes) +
+      corps.innerHTML = bloc('Fiches',d.fiches) + bloc('Textes du site',d.textes) + bloc('Pages du site',d.pages) +
         '<div style="margin-top:8px;opacity:.7">Le site affiche les nouveaux textes dans la minute — une mémoire tampon les garde ce temps-là.</div>';
     })
     .catch(function(e){corps.innerHTML='<b>Impossible</b> — '+esc(String(e.message||e))})

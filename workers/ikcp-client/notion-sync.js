@@ -16,6 +16,7 @@
  *   NOTION_TOKEN        — jeton d'intégration Notion (interne)
  *   NOTION_FICHES_DB    — identifiant de la base Notion des fiches
  *   NOTION_TEXTES_DB    — identifiant de la base Notion des textes du site
+ *   NOTION_PAGES_DB     — identifiant de la base Notion des pages du site
  *
  * Auteur : IKCP · dernière révision : 2026-08-04
  */
@@ -274,5 +275,140 @@ export async function syncTextesToD1(env) {
 export async function syncNotionComplet(env) {
   const fiches = await syncNotionToD1(env).catch(e => ({ ok: false, error: String(e.message || e) }));
   const textes = await syncTextesToD1(env).catch(e => ({ ok: false, error: String(e.message || e) }));
-  return { ok: !!(fiches.ok && textes.ok), fiches, textes };
+  const pages  = await syncPagesToD1(env).catch(e => ({ ok: false, error: String(e.message || e) }));
+  return { ok: !!(fiches.ok && textes.ok && pages.ok), fiches, textes, pages };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Les pages du site — la troisième base Notion.
+
+   Une page est une suite de blocs. Dans Notion, chaque titre de niveau 2
+   nomme un type ; le contenu qui suit lui appartient. Le type décide de la
+   forme, jamais le contenu — c'est ce qui garantit qu'une page écrite dans
+   six mois ressemblera à celles d'aujourd'hui.
+
+   Un type inconnu est ignoré sans bruit plutôt que de casser la page.
+   ══════════════════════════════════════════════════════════════════════ */
+
+const TYPES_BLOC = {
+  'titre': 'titre',
+  'texte': 'texte',
+  'deux colonnes': 'colonnes',
+  'liste': 'liste',
+  'citation': 'citation',
+  "appel à l'action": 'appel',
+  'filet': 'filet',
+  'avertissement': 'avertissement',
+};
+
+/** Transforme les blocs Notion d'une page en blocs du site. */
+function versBlocs(blocsNotion) {
+  const out = [];
+  let type = null, lignes = [], puces = [];
+
+  const vider = () => {
+    if (!type) return;
+    const t = TYPES_BLOC[type];
+    if (t === 'titre') {
+      if (lignes[0]) out.push({ type: 'titre', titre: lignes[0], texte: lignes.slice(1).join('\n\n') });
+    } else if (t === 'texte') {
+      if (lignes.length) out.push({ type: 'texte', titre: lignes[0], texte: lignes.slice(1).join('\n\n') });
+    } else if (t === 'colonnes') {
+      // Un paragraphe = une colonne. Sa première phrase avant un tiret cadratin
+      // sert de titre, le reste de corps.
+      const cols = lignes.slice(0, 2).map(p => {
+        const i = p.indexOf('—');
+        return i > 0
+          ? { titre: p.slice(0, i).trim(), texte: p.slice(i + 1).trim() }
+          : { titre: '', texte: p };
+      });
+      if (cols.length) out.push({ type: 'colonnes', colonnes: cols });
+    } else if (t === 'liste') {
+      if (puces.length) out.push({ type: 'liste', titre: lignes[0] || '', items: puces });
+    } else if (t === 'citation') {
+      if (lignes[0]) out.push({ type: 'citation', texte: lignes[0], source: lignes[1] || '' });
+    } else if (t === 'appel') {
+      if (lignes[0]) out.push({ type: 'appel', titre: lignes[0], texte: lignes[1] || '', bouton: lignes[2] || '' });
+    } else if (t === 'filet') {
+      out.push({ type: 'filet' });
+    } else if (t === 'avertissement') {
+      if (lignes[0]) out.push({ type: 'avertissement', texte: lignes.join(' ') });
+    }
+    lignes = []; puces = [];
+  };
+
+  for (const b of blocsNotion) {
+    if (b.type === 'heading_2') {
+      vider();
+      const k = cle(texteDe(b.heading_2.rich_text));
+      type = TYPES_BLOC[k] ? k : null;
+      continue;
+    }
+    if (!type) continue;
+    if (b.type === 'bulleted_list_item') { const t = texteDe(b.bulleted_list_item.rich_text); if (t) puces.push(t); }
+    else if (b.type === 'numbered_list_item') { const t = texteDe(b.numbered_list_item.rich_text); if (t) puces.push(t); }
+    else if (b.type === 'paragraph') { const t = texteDe(b.paragraph.rich_text); if (t) lignes.push(t); }
+    else if (b.type === 'quote') { const t = texteDe(b.quote.rich_text); if (t) lignes.push(t); }
+  }
+  vider();
+  return out;
+}
+
+async function pagesSitePubliees(env) {
+  const out = [];
+  let cursor;
+  do {
+    const body = { filter: { property: 'Statut', select: { equals: 'Publié' } }, page_size: 100 };
+    if (cursor) body.start_cursor = cursor;
+    const r = await notion(env, '/databases/' + env.NOTION_PAGES_DB + '/query', {
+      method: 'POST', body: JSON.stringify(body),
+    });
+    out.push(...(r.results || []));
+    cursor = r.has_more ? r.next_cursor : null;
+  } while (cursor);
+  return out;
+}
+
+export async function syncPagesToD1(env) {
+  if (!env.NOTION_TOKEN || !env.NOTION_PAGES_DB) {
+    return { ok: false, error: 'NOTION_TOKEN ou NOTION_PAGES_DB absent du worker' };
+  }
+  const pages = await pagesSitePubliees(env);
+  const rapport = { ok: true, lues: pages.length, ecrites: 0, ignorees: [], erreurs: [] };
+
+  for (const page of pages) {
+    try {
+      const p = page.properties || {};
+      const txt = n => texteDe((p[n] && (p[n].rich_text || p[n].title)) || []);
+      const slug = txt('slug');
+
+      if (!slug || slug === 'modele-ne-pas-publier') { rapport.ignorees.push(slug || '(sans slug)'); continue; }
+
+      const blocs = versBlocs(await blocsDe(env, page.id));
+      if (!blocs.length) { rapport.ignorees.push(slug + ' (aucun bloc reconnu)'); continue; }
+
+      // Filet de sécurité réglementaire : une page publiée sans avertissement
+      // en reçoit un. Un oubli de rédaction ne doit pas devenir un défaut.
+      if (!blocs.some(b => b.type === 'avertissement')) {
+        blocs.push({ type: 'avertissement', texte:
+          'Les pistes proposées sont des pistes de réflexion. Elles ne constituent pas une ' +
+          'recommandation personnalisée au sens de l\'art. L.541-1 du Code monétaire et financier.' });
+      }
+
+      const data = JSON.stringify({
+        slug, titre: txt('Titre'), description: txt('Description'),
+        blocs, _source: 'notion', _notionId: page.id,
+      });
+
+      await env.D1.prepare(
+        'INSERT INTO pages (slug, data, statut, updated_at) VALUES (?,?,?,?) ' +
+        'ON CONFLICT(slug) DO UPDATE SET data=excluded.data, statut=excluded.statut, updated_at=excluded.updated_at'
+      ).bind(slug, data.slice(0, 400000), 'publie', new Date().toISOString()).run();
+      rapport.ecrites++;
+    } catch (e) {
+      rapport.erreurs.push({ page: page.id, message: String(e.message || e).slice(0, 240) });
+    }
+  }
+  rapport.ok = rapport.erreurs.length === 0;
+  return rapport;
 }
