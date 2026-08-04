@@ -27,7 +27,8 @@
  *  → ou via Cloudflare Dashboard → Workers → ikcp-client → Logs
  */
 
-import STRATEGIES_CONTENT from './strategies-content.json'; // bundlé par wrangler — Bibliothèque des stratégies dirigeant (gated has_strategies)
+import STRATEGIES_CONTENT from './strategies-content.json'; // bundlé par wrangler — graine des fiches, servie tant que Notion n'a rien écrit
+import { syncNotionToD1 } from './notion-sync.js';           // Notion → D1 : source unique des fiches
 
 // Règle Maxime : le FREE ne consomme AUCUN token LLM.
 // free = simulateurs (JS local, 0 token) + 1 cartographie SIREN/mois (Pappers, 0 token LLM).
@@ -692,6 +693,16 @@ async function handleAtelier(request, session, env, path, method) {
   // Simulateurs — formules guidées (aucun code exécutable stocké : le worker
   // ne fait que persister une liste d'étapes, évaluée par app/js/formule.js
   // au moyen d'une liste fermée d'opérations).
+  // Notion est la source unique des fiches : ce bouton tire les pages
+  // « Publié » et les écrit en base. Sens unique, rien ne remonte vers Notion.
+  if (path === '/api/v1/atelier/sync-notion' && method === 'POST') {
+    try {
+      return json(await syncNotionToD1(env));
+    } catch (e) {
+      return json({ ok: false, error: String(e.message || e).slice(0, 300) }, 502);
+    }
+  }
+
   if (path === '/api/v1/atelier/simulateurs') {
     await ensureSimulateursTable(env);
     if (method === 'GET') {
