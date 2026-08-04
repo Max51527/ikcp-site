@@ -68,6 +68,21 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
 .disc{margin-top:26px;font-size:12.5px;color:var(--mute);line-height:1.55;border-left:1px solid var(--gold);padding-left:12px;max-width:62ch}
 
 @media(prefers-reduced-motion:reduce){*{transition:none!important}.fiche:hover{transform:none}}
+
+/* Les fiches ne sont pas téléchargeables. À l'impression, rien du contenu ne
+   part sur le papier — seule une mention reste. La sélection et le glisser
+   sont neutralisés sur le texte des fiches. Ce sont des mesures de dissuasion,
+   pas de sécurité : la vraie protection est le verrou serveur, qui ne renvoie
+   simplement pas le contenu à qui n'y a pas droit. */
+@media print{
+  body > *{display:none!important}
+  body::after{
+    content:"Les fiches patrimoniales IKCP ne sont pas téléchargeables. Consultez-les sur ikcp.eu — © IKCP · ORIAS 23001568";
+    display:block;padding:60mm 20mm;text-align:center;
+    font:600 12pt 'Outfit',Arial,sans-serif;color:#1B2A4A;line-height:1.6;
+  }
+}
+.feuille,.fiche{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 </style>
 </head>
 <body>
@@ -251,6 +266,7 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panneau.hidden) fermer(); });
 })();
 </script>
+<script src="/protect.js?v=2" defer></script>
 <script src="/app/js/appnav.js" defer></script>
 </body>
 </html>
