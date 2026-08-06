@@ -180,7 +180,7 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/app/sw.js
 
 // Plan choisi sur la page tarifs (?plan=premium|strategies) : mémorisé pour être
 // finalisé (redirection Stripe) une fois connecté — voir dashboard.html.
-const PLAN_LABEL = { premium: 'Finaliser Premium — 9,99 €/mois', strategies: 'Finaliser Stratégies — 249 €/an' };
+const PLAN_LABEL = { dossier: 'Obtenir mon dossier — 290 €', consultation: 'Reserver une consultation — 150 €' };
 try {
   const _plan = new URLSearchParams(location.search).get('plan');
   if (_plan && PLAN_LABEL[_plan]) {
