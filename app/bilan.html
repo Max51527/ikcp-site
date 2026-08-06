@@ -40,6 +40,52 @@ th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute
 td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 .barline{height:8px;border-radius:5px;background:var(--cream2);overflow:hidden;margin-top:5px}
 .barline>i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),#E2C896)}
+
+/* ── Graphiques ───────────────────────────────────────────────────────────
+   SVG écrit à la main à partir des chiffres du membre. Aucune bibliothèque,
+   aucun appel réseau : le graphique existe même hors ligne et s'imprime en
+   vectoriel dans le PDF. Doctrine de profondeur : rien ne flotte au repos,
+   séparation par filet 1px et aplats crème — aucune ombre portée ici. */
+.viz{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;
+     background:var(--cream2);border:1px solid var(--line);border-radius:11px;
+     padding:18px 20px;margin:14px 0}
+.viz svg{display:block;width:190px;height:190px}
+.viz .lg{display:flex;flex-direction:column;gap:9px;min-width:0}
+.viz .lg .li{display:grid;grid-template-columns:10px 1fr auto;gap:9px;align-items:baseline;font-size:13px}
+.viz .lg .li .pu{width:10px;height:10px;border-radius:2px;align-self:center}
+.viz .lg .li .nm{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viz .lg .li .vl{font-variant-numeric:tabular-nums;color:var(--mute);white-space:nowrap}
+.viz .lg .li .vl b{color:var(--navy)}
+.donutC{font-family:'Playfair Display',serif;fill:var(--navy)}
+.donutL{font-family:'Outfit',sans-serif;fill:var(--mute);letter-spacing:.06em}
+.seg{transform:rotate(-90deg);transform-origin:100px 100px}
+
+.flux{background:var(--cream2);border:1px solid var(--line);border-radius:11px;padding:18px 20px;margin:14px 0}
+.flux svg{display:block;width:100%;height:auto}
+/* Pas de font-size ici : c'est la géométrie du SVG qui la fixe, différente
+   sur mobile et sur écran large. Une règle CSS l'écraserait. */
+.flux .fl{font-family:'Outfit',sans-serif;fill:var(--mute)}
+.flux .fv{font-family:'Outfit',sans-serif;font-weight:600;fill:var(--navy)}
+
+.eva{background:var(--cream2);border:1px solid var(--line);border-radius:11px;padding:18px 20px;margin:14px 0}
+.eva svg{display:block;width:100%;height:auto}
+.eva .ax{stroke:var(--line);stroke-width:1}
+.eva .gl{font-family:'Outfit',sans-serif;fill:var(--mute)}
+.vizt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-d);font-weight:700;margin:18px 0 0}
+.vizn{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.5}
+
+/* L'animation ne sert qu'à faire lire le graphique dans l'ordre des montants.
+   Elle disparaît à l'impression et pour qui demande moins de mouvement. */
+@media(prefers-reduced-motion:no-preference){
+  .seg{animation:trace .9s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes trace{from{stroke-dasharray:0 9999}}
+  .flux rect.gr{animation:grow .7s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes grow{from{width:0}}
+}
+@media(max-width:560px){
+  .viz{grid-template-columns:1fr;justify-items:center}
+  .viz .lg{width:100%}
+}
 .piste{background:var(--cream2);border:1px solid var(--line);border-left:1px solid var(--gold);border-radius:11px;padding:13px 16px;margin:10px 0}
 .dim.jur .piste{border-left-color:var(--navy)}.dim.fis .piste{border-left-color:var(--green)}
 .piste .t{font-weight:700;color:var(--navy);font-size:15px}
@@ -58,6 +104,12 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
   .bar{display:none}
   .sheet{box-shadow:none;max-width:none;border-radius:0;padding:14mm 14mm 18mm;min-height:auto}
   .dim h2{break-after:avoid}.piste,.kpi,table,.alert{break-inside:avoid}
+  /* Un graphique coupé en deux ne veut plus rien dire : il reste d'un bloc.
+     Le SVG s'imprime en vectoriel, net à n'importe quel agrandissement. */
+  .viz,.flux,.eva{break-inside:avoid;page-break-inside:avoid;background:#fff;border-color:rgba(139,111,63,.3)}
+  .vizt{break-after:avoid}
+  .viz svg,.flux svg,.eva svg{animation:none!important}
+  .seg,.flux rect.gr{animation:none!important}
 }
 </style>
 </head>
@@ -128,6 +180,166 @@ function readBiens(){
   return [];
 }
 function readSociete(){ try{ return JSON.parse(localStorage.getItem('ikcp_societe')||'null'); }catch(_){ return null; } }
+
+/* ════════════════════════════════════════════════════════════════════════
+   GRAPHIQUES — SVG écrit à partir des chiffres réels du membre.
+   Pas de bibliothèque, pas de CDN : la page reste hors ligne et souveraine,
+   et le PDF sort en vectoriel net à n'importe quel zoom.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Anneau de répartition. Chaque arc est un cercle dont on ne dessine qu'une
+   portion (stroke-dasharray), décalé du cumul des précédents. */
+function vizRepartition(byCat, brut, net){
+  var cats = Object.keys(byCat).filter(function(c){ return byCat[c]>0; })
+                   .sort(function(a,b){ return byCat[b]-byCat[a]; });
+  if(!cats.length || !brut) return '';
+  var r=78, C=2*Math.PI*r, cumul=0, i=0;
+  var arcs='', legende='';
+  cats.forEach(function(cat){
+    var meta=CATS[cat]||{l:cat,c:'#6B655A'};
+    var part=byCat[cat]/brut, len=part*C, pct=Math.round(part*100);
+    arcs+='<circle class="seg" cx="100" cy="100" r="'+r+'" fill="none" stroke="'+meta.c+'"'
+        + ' stroke-width="26" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'"'
+        + ' stroke-dashoffset="'+(-cumul).toFixed(2)+'"'
+        + ' style="animation-delay:'+(i*0.09).toFixed(2)+'s"></circle>';
+    legende+='<div class="li"><span class="pu" style="background:'+meta.c+'"></span>'
+          +  '<span class="nm">'+esc(meta.l)+'</span>'
+          +  '<span class="vl"><b>'+pct+' %</b> · '+eur(byCat[cat])+'</span></div>';
+    cumul+=len; i++;
+  });
+  var lisible = cats.map(function(c){
+    return (CATS[c]||{l:c}).l+' '+Math.round(byCat[c]/brut*100)+' %';
+  }).join(', ');
+  return '<div class="viz">'
+    + '<svg viewBox="0 0 200 200" role="img" aria-label="Répartition du patrimoine : '+esc(lisible)+'">'
+    +   '<title>Répartition de votre patrimoine brut</title>'
+    +   '<circle cx="100" cy="100" r="78" fill="none" stroke="#EDE6D8" stroke-width="26"></circle>'
+    +   arcs
+    +   '<text class="donutL" x="100" y="92" text-anchor="middle" font-size="9.5">ACTIF NET</text>'
+    +   '<text class="donutC" x="100" y="114" text-anchor="middle" font-size="19">'+esc(eur(net))+'</text>'
+    + '</svg>'
+    + '<div class="lg">'+legende+'</div>'
+    + '</div>';
+}
+
+/* Du brut au net : trois barres alignées sur la même échelle. On voit
+   d'un coup ce que la dette retire réellement au patrimoine. */
+/* Un SVG se réduit uniformément : à 640 de large ramenés à 300 px, un texte de
+   12 s'affiche à 5. Sur petit écran on change donc la GÉOMÉTRIE — libellé et
+   montant au-dessus de la barre, cadre deux fois moins large — au lieu de
+   laisser la mise à l'échelle rendre le graphique illisible. */
+function etroit(){ try{ return window.innerWidth < 620; }catch(_){ return false; } }
+
+/* Sur l'axe vertical d'un petit écran, « 2 505 000 € » ne tient pas dans la
+   marge et se fait couper. On abrège : 2,5 M€. Le montant exact reste lisible
+   au survol du point et dans le texte sous le graphique. */
+function eurCourt(n){
+  var a=Math.abs(n);
+  if(a>=1e6) return (n/1e6).toFixed(a>=1e7?0:1).replace('.',',')+' M€';
+  if(a>=1e3) return Math.round(n/1e3)+' k€';
+  return Math.round(n)+' €';
+}
+
+function vizFlux(brut, passif, net){
+  if(!brut) return '';
+  var lignes=[
+    {l:'Actif brut', v:brut,   c:'#1B2A4A'},
+    {l:'Passif',     v:passif, c:'#C24722'},
+    {l:'Actif net',  v:net,    c:'#C9A96E'}
+  ];
+  var etiquette='Actif brut '+eur(brut)+', passif '+eur(passif)+', actif net '+eur(net);
+  var svg='', W, H;
+
+  if(etroit()){
+    // Mobile : libellé et montant AU-DESSUS de la barre, cadre étroit. La
+    // fenêtre fait ~330 px pour un cadre de 340 → le texte s'affiche presque
+    // à sa taille nominale.
+    W=340; H=192;
+    var wm=W-8;
+    lignes.forEach(function(li,k){
+      var y=k*64, lw=Math.max(0,Math.min(1,li.v/brut))*wm;
+      svg+='<text class="fl" font-size="13" x="4" y="'+(y+13)+'">'+esc(li.l)+'</text>'
+        +  '<text class="fv" font-size="14" x="'+(W-4)+'" y="'+(y+13)+'" text-anchor="end">'+esc(eur(li.v))+'</text>'
+        +  '<rect x="4" y="'+(y+22)+'" width="'+wm+'" height="20" rx="4" fill="#EDE6D8"></rect>'
+        +  '<rect class="gr" x="4" y="'+(y+22)+'" width="'+lw.toFixed(1)+'" height="20" rx="4" fill="'+li.c+'"'
+        +  ' style="animation-delay:'+(k*0.11).toFixed(2)+'s"></rect>';
+    });
+  } else {
+    W=640; H=132;
+    var x0=96, w=W-x0-96;
+    lignes.forEach(function(li,k){
+      var y=16+k*42, lw=Math.max(0,Math.min(1,li.v/brut))*w;
+      svg+='<text class="fl" font-size="11.5" x="'+(x0-12)+'" y="'+(y+15)+'" text-anchor="end">'+esc(li.l)+'</text>'
+        +  '<rect x="'+x0+'" y="'+y+'" width="'+w+'" height="22" rx="4" fill="#EDE6D8"></rect>'
+        +  '<rect class="gr" x="'+x0+'" y="'+y+'" width="'+lw.toFixed(1)+'" height="22" rx="4" fill="'+li.c+'"'
+        +  ' style="animation-delay:'+(k*0.11).toFixed(2)+'s"></rect>'
+        +  '<text class="fv" font-size="12.5" x="'+(x0+w+10)+'" y="'+(y+16)+'">'+esc(eur(li.v))+'</text>';
+    });
+  }
+  return '<div class="flux">'
+    + '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(etiquette)+'">'
+    + '<title>De l’actif brut à l’actif net</title>'+svg+'</svg></div>';
+}
+
+/* Historique de l'actif net. N'apparaît qu'à partir de deux relevés :
+   avant, une courbe à un point ne dit rien et ferait du décor. */
+function vizEvolution(hist){
+  if(!hist || hist.length<2) return '';
+  var etr=etroit();
+  var W = etr?340:640, H = etr?160:170, x0 = etr?58:70, y0=14,
+      w = W-x0-(etr?12:22), h = H-y0-(etr?26:32),
+      fs = etr?12:10.5;
+  var vals=hist.map(function(p){ return p.net; });
+  var mx=Math.max.apply(null,vals), mn=Math.min.apply(null,vals);
+  if(mx===mn){ mx=mx*1.06+1; mn=Math.max(0,mn*0.94-1); }
+  // L'axe des abscisses est le temps réel, pas le rang du relevé : deux mesures
+  // à trois jours d'écart doivent se toucher, pas occuper le même espace que
+  // deux mesures séparées d'un an.
+  var t=hist.map(function(p){ return Date.parse(p.d)||0; });
+  var t0=t[0], t1=t[t.length-1], span=(t1-t0)||1;
+  var px=function(i){ return x0 + ((t[i]-t0)/span)*w; };
+  var py=function(v){ return y0 + (1-(v-mn)/(mx-mn))*h; };
+  var pts=hist.map(function(p,i){ return px(i).toFixed(1)+','+py(p.net).toFixed(1); }).join(' ');
+  var aire='M'+px(0).toFixed(1)+','+(y0+h)+' L'+pts.split(' ').join(' L')+' L'+px(hist.length-1).toFixed(1)+','+(y0+h)+' Z';
+  var points=hist.map(function(p,i){
+    return '<circle cx="'+px(i).toFixed(1)+'" cy="'+py(p.net).toFixed(1)+'" r="3.2" fill="#C9A96E"'
+         + ' stroke="#FAF8F4" stroke-width="1.5"><title>'+esc(p.d)+' — '+esc(eur(p.net))+'</title></circle>';
+  }).join('');
+  var prem=hist[0], dern=hist[hist.length-1], delta=dern.net-prem.net;
+  var sens = delta>0 ? 'en hausse de '+eur(delta) : (delta<0 ? 'en baisse de '+eur(-delta) : 'stable');
+  return '<div class="eva">'
+    + '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Actif net '+esc(sens)
+    +   ' entre le '+esc(prem.d)+' et le '+esc(dern.d)+'">'
+    +   '<title>Évolution de votre actif net</title>'
+    +   '<line class="ax" x1="'+x0+'" y1="'+(y0+h)+'" x2="'+(x0+w)+'" y2="'+(y0+h)+'"></line>'
+    +   '<path d="'+aire+'" fill="rgba(201,169,110,.16)"></path>'
+    +   '<polyline points="'+pts+'" fill="none" stroke="#C9A96E" stroke-width="2.2"'
+    +     ' stroke-linejoin="round" stroke-linecap="round"></polyline>'
+    +   points
+    +   '<text class="gl" font-size="'+fs+'" x="'+(x0-8)+'" y="'+(y0+5)+'" text-anchor="end">'+esc(etr?eurCourt(mx):eur(mx))+'</text>'
+    +   '<text class="gl" font-size="'+fs+'" x="'+(x0-8)+'" y="'+(y0+h+4)+'" text-anchor="end">'+esc(etr?eurCourt(mn):eur(mn))+'</text>'
+    +   '<text class="gl" font-size="'+fs+'" x="'+x0+'" y="'+(H-7)+'">'+esc(prem.d)+'</text>'
+    +   '<text class="gl" font-size="'+fs+'" x="'+(x0+w)+'" y="'+(H-7)+'" text-anchor="end">'+esc(dern.d)+'</text>'
+    + '</svg></div>';
+}
+
+/* Un relevé daté par jour. C'est ce qui permet à la courbe d'exister, et
+   c'est ce que la synchro pousse au coffre pour un compte connecté. */
+function noteHistorique(brut, passif, net){
+  try{
+    var h=JSON.parse(localStorage.getItem('ikcp_bilan_hist')||'[]');
+    if(!Array.isArray(h)) h=[];
+    var jour=new Date().toISOString().slice(0,10);
+    var pt={d:jour, brut:Math.round(brut), passif:Math.round(passif), net:Math.round(net)};
+    var dernier=h[h.length-1];
+    if(dernier && dernier.d===jour) h[h.length-1]=pt;                       // même jour : on corrige
+    else if(dernier && dernier.brut===pt.brut && dernier.net===pt.net) {}   // rien n'a bougé
+    else h.push(pt);
+    if(h.length>60) h=h.slice(-60);                                        // ~5 ans de relevés mensuels
+    localStorage.setItem('ikcp_bilan_hist', JSON.stringify(h));
+    return h;
+  }catch(_){ return []; }
+}
 function payloadFromBiens(biens){
   var actifs=[],hasSoc=false;
   biens.forEach(function(b){ var v=(+b.value||0)*100;
@@ -137,7 +349,18 @@ function payloadFromBiens(biens){
     else if(b.cat==='liquidites') actifs.push({categorie:'compte',valorisation_cents:v});
     else actifs.push({categorie:'autre',valorisation_cents:v});
   });
-  return { personnes:[{role:'dirigeant'}], societes: hasSoc?[{regime_fiscal:'IS',is_holding:0}]:[], actifs:actifs, beneficiaires:[] };
+  // Le passif saisi au cockpit doit voyager avec les actifs : sans lui, le
+  // serveur calcule un actif net égal à l'actif brut et cette réponse écrase
+  // la valeur locale — le bilan surestimait alors le patrimoine du montant
+  // exact des dettes déclarées.
+  var dettes=[];
+  try{
+    var p=JSON.parse(localStorage.getItem('ikcp_patrimoine')||'null');
+    var d=(p && typeof p==='object' && !Array.isArray(p)) ? +p.passif||0 : 0;
+    if(d>0) dettes.push({ type:'emprunt', capital_restant_cents: Math.round(d*100), source_donnee:'declaratif' });
+  }catch(_){}
+  return { personnes:[{role:'dirigeant'}], societes: hasSoc?[{regime_fiscal:'IS',is_holding:0}]:[],
+           actifs:actifs, dettes:dettes, beneficiaires:[] };
 }
 
 function render(biens, soc, data){
@@ -171,8 +394,20 @@ function render(biens, soc, data){
     var meta=CATS[cat]||{l:cat,c:'#6B655A'}; var val=byCat[cat]; var pct=brut?Math.round(val/brut*100):0;
     return '<tr><td><b style="color:'+meta.c+'">●</b> '+esc(meta.l)+'</td><td class="r">'+eur(val)+'</td><td class="r">'+pct+' %<div class="barline"><i style="width:'+pct+'%"></i></div></td></tr>';
   }).join('');
+  var hist = noteHistorique(brut, passif, net);
   html+='<div class="dim fin"><span class="dimtag">1 · Financier</span><h2>Composition & équilibre de votre patrimoine</h2>'+
+    vizRepartition(byCat, brut, net)+
+    vizFlux(brut, passif, net)+
     '<table><thead><tr><th>Poste</th><th class="r">Valeur</th><th class="r">Part</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  if(hist.length>=2){
+    var d0=hist[0], dn=hist[hist.length-1], ecart=dn.net-d0.net;
+    html+='<div class="vizt">Évolution de votre actif net</div>'+vizEvolution(hist)+
+      '<div class="vizn">'+hist.length+' relevés depuis le '+esc(d0.d)+'. '+
+      (ecart>0 ? 'Votre actif net a progressé de <b>'+eur(ecart)+'</b>.'
+       : ecart<0 ? 'Votre actif net a reculé de <b>'+eur(-ecart)+'</b>.'
+       : 'Votre actif net est stable sur la période.')+
+      ' Chaque passage sur cette page ajoute un relevé daté.</div>';
+  }
   var topCat=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];})[0];
   var topShare=brut?Math.round((byCat[topCat]||0)/brut*100):0;
   if(topShare>=50) html+='<div class="alert">⚠ Concentration : '+topShare+' % de votre patrimoine repose sur un seul poste ('+esc((CATS[topCat]||{l:topCat}).l)+'). Diversifier réduit votre risque global.</div>';

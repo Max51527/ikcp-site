@@ -23,20 +23,39 @@
   var H = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
   // Clés simples (objet JSON) synchronisées via le coffre. (Les biens patrimoniaux
   // gardent leur propre flux dans le Dashboard.)
-  var KEYS = ['ikcp_societe', 'ikcp_score', 'ikcp_recueil', 'ikcp_patrimoine'];
+  var KEYS = ['ikcp_societe', 'ikcp_score', 'ikcp_recueil', 'ikcp_patrimoine', 'ikcp_bilan_hist'];
+
+  // L'historique du bilan est le seul journal cumulatif de l'espace : chaque
+  // relevé daté est un fait, pas un état. La règle « on n'écrase pas le local »
+  // ferait perdre les relevés faits sur l'autre appareil — on les FUSIONNE par
+  // date, et le plus récent l'emporte à date égale.
+  var CUMULATIVES = { ikcp_bilan_hist: true };
+  function fusionParDate(local, serveur) {
+    var par = {};
+    (Array.isArray(serveur) ? serveur : []).forEach(function (p) { if (p && p.d) par[p.d] = p; });
+    (Array.isArray(local) ? local : []).forEach(function (p) { if (p && p.d) par[p.d] = p; });
+    return Object.keys(par).sort().map(function (d) { return par[d]; }).slice(-60);
+  }
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
+  function lsJson(k) { try { return JSON.parse(lsGet(k) || 'null'); } catch (_) { return null; } }
 
-  // ── PULL : hydrate au chargement (sans jamais écraser une valeur locale existante) ──
+  // ── PULL : hydrate au chargement (sans jamais écraser une valeur locale existante,
+  //    sauf les clés cumulatives, qui fusionnent au lieu de se remplacer) ──
   fetch(PAT + '/state', { headers: H })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (res) {
       var d = (res && res.data) || {};
       var changed = false;
       KEYS.forEach(function (k) {
-        var serverKey = k.replace('ikcp_', '');            // societe | score
-        if (d[serverKey] != null && !lsGet(k)) {           // le serveur a la donnée, pas ce device
+        var serverKey = k.replace('ikcp_', '');            // societe | score | bilan_hist
+        if (d[serverKey] == null) return;
+        if (CUMULATIVES[k]) {                              // journal : on additionne les deux côtés
+          var avant = lsGet(k);
+          var apres = JSON.stringify(fusionParDate(lsJson(k), d[serverKey]));
+          if (apres !== avant) { lsSet(k, apres); changed = true; }
+        } else if (!lsGet(k)) {                            // le serveur a la donnée, pas ce device
           lsSet(k, JSON.stringify(d[serverKey])); changed = true;
         }
       });
