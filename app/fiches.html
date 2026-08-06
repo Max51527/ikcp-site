@@ -59,6 +59,20 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
 /* La clôture : la fiche finit sur une question posée au lecteur, pas sur un
    avantage. On lui donne le poids du serif pour qu'elle ne se lise pas comme
    un paragraphe de plus. */
+/* « Ce que votre bilan indique » : les données du membre en tête de fiche,
+   chaque ligne avec son champ d'origine en chasse fixe. */
+.sec.bilanbloc{background:var(--cream2);border:1px solid var(--line);border-radius:11px;padding:15px 17px}
+.bdon{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:13.5px}
+.bdon dt{color:var(--mute);white-space:nowrap}
+.bdon dd{margin:0;color:var(--navy);font-weight:600}
+.bdon dd i{font-style:normal;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;
+           color:var(--mute);font-weight:400;margin-left:8px}
+.bvide{font-size:13.5px;color:var(--mute);margin:0}
+.bmanque{background:rgba(139,111,63,.07);border:1px dashed rgba(139,111,63,.5);border-radius:9px;
+         padding:11px 13px;margin-top:10px;font-size:13px;color:var(--ink);line-height:1.5}
+.bmanque a{display:block;margin-top:7px;font-weight:600;color:var(--navy);text-decoration:none;
+           border-bottom:0}
+@media(max-width:560px){.bdon{grid-template-columns:1fr}.bdon dt{margin-top:6px}}
 .sec.cloture{border-top:1px solid var(--line);padding-top:20px}
 .sec.cloture p{font-family:'Playfair Display',Georgia,serif;font-size:19px;
                line-height:1.35;color:var(--navy);font-style:italic}
@@ -206,6 +220,90 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
     var b = e.target.closest('.fiche'); if (b) ouvrir(b.getAttribute('data-slug'));
   });
 
+  /* ── « Ce que votre bilan indique » ─────────────────────────────────────
+     La fiche lit les données que le membre a déjà saisies — recueil, cockpit —
+     et les affiche EN TÊTE, chaque ligne avec son champ d'origine. Sans source
+     affichée, on ne distingue plus un fait d'une supposition. Quand une donnée
+     manque, on le dit et on s'arrête : aucune moyenne, aucun exemple type —
+     une moyenne ne serait pas sa situation. */
+  function lireLocal(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (_) { return null; } }
+  function eurFmt(n) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(n || 0)); }
+  function ageDepuis(dateNaissance) {
+    var d = new Date(dateNaissance); if (isNaN(d)) return null;
+    var now = new Date(), a = now.getFullYear() - d.getFullYear();
+    if (now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate())) a--;
+    return (a > 0 && a < 120) ? a : null;
+  }
+  function actifNetLocal() {
+    var p = lireLocal('ikcp_patrimoine');
+    if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+    var brut = 0, passif = +p.passif || 0;
+    Object.keys(p).forEach(function (k) { if (k !== 'passif') brut += (+p[k] || 0); });
+    return brut > 0 ? (brut - passif) : null;
+  }
+  var SITLIB = { celibataire: 'Célibataire', marie: 'Marié(e)', pacse: 'Pacsé(e)', concubinage: 'Concubinage', divorce: 'Divorcé(e)', veuf: 'Veuf(ve)' };
+  var STATLIB = { tns: 'Travailleur non salarié', assimile: 'Assimilé salarié', salarie: 'Salarié', mixte: 'TNS et assimilé' };
+
+  function blocBilan(f) {
+    var rec = lireLocal('ikcp_recueil') || {};
+    var fam = rec.famille || {}, rev = rec.revenus || {};
+    var lignes = [], manques = [];
+    function L(nom, val, src) { if (val != null && val !== '') lignes.push('<dt>' + txt(nom) + '</dt><dd>' + txt(val) + '<i>' + txt(src) + '</i></dd>'); }
+
+    if (fam.situation) L('Situation', SITLIB[fam.situation] || fam.situation, 'recueil · situation');
+    if (fam.enfants !== '' && fam.enfants != null) L('Enfants', fam.enfants, 'recueil · enfants');
+    var age = fam.naissance ? ageDepuis(fam.naissance) : null;
+    if (age) L('Âge', age + ' ans', 'recueil · naissance');
+    var net = actifNetLocal();
+    if (net != null) L('Actif net', eurFmt(net), 'cockpit · postes − passif');
+
+    var cat = String(f.categorie || '').toLowerCase();
+
+    if (cat.indexOf('transmission') > -1) {
+      var dons = Array.isArray(rec.donations) ? rec.donations.filter(function (d) { return d && d.date; }) : [];
+      if (dons.length) {
+        dons.forEach(function (d) {
+          var dt = new Date(d.date);
+          if (!isNaN(dt)) {
+            // Fait légal, pas une pression : le délai de rappel court quinze
+            // ans depuis chaque acte (art. 784 CGI), date à date.
+            var rec15 = new Date(dt); rec15.setFullYear(rec15.getFullYear() + 15);
+            L('Donation du ' + dt.toLocaleDateString('fr-FR'),
+              (d.val ? eurFmt(d.val) + ' — ' : '') + 'abattement reconstitué le ' + rec15.toLocaleDateString('fr-FR'),
+              'recueil · donations');
+          }
+        });
+      } else {
+        manques.push({ quoi: 'vos donations antérieures (date et montant)',
+          pourquoi: 'l\'abattement disponible dépend du délai de quinze ans écoulé depuis chaque acte' });
+      }
+    }
+    if (cat.indexOf('retraite') > -1 || cat.indexOf('rémunération') > -1 || cat.indexOf('remuneration') > -1) {
+      if (rev.statut) L('Statut social', STATLIB[rev.statut] || rev.statut, 'recueil · revenus');
+      else manques.push({ quoi: 'votre statut social (TNS ou assimilé salarié)',
+        pourquoi: 'le régime de cotisations et les plafonds en dépendent' });
+    }
+    if (cat.indexOf('retraite') > -1) {
+      if (rev.departRetraite) L('Départ envisagé', rev.departRetraite, 'recueil · horizon');
+    }
+    if (cat.indexOf('fiscalité') > -1 || cat.indexOf('fiscalite') > -1) {
+      if (rev.revenuImposable) L('Revenu imposable', eurFmt(rev.revenuImposable) + ' / an', 'recueil · revenus');
+      else manques.push({ quoi: 'votre revenu net imposable',
+        pourquoi: 'la tranche marginale et les plafonds de déduction en découlent' });
+    }
+
+    if (!lignes.length && !manques.length) return '';
+    var h = '<div class="sec bilanbloc"><h3>Ce que votre bilan indique</h3>';
+    if (lignes.length) h += '<dl class="bdon">' + lignes.join('') + '</dl>';
+    if (!lignes.length) h += '<p class="bvide">Votre bilan ne contient pas encore ces informations.</p>';
+    manques.forEach(function (m) {
+      h += '<div class="bmanque">Votre bilan n\'indique pas encore ' + txt(m.quoi) + ' — ' + txt(m.pourquoi) + '.' +
+           '<a href="/app/recueil">Compléter mon recueil →</a></div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
   function bloc(titre, valeur) {
     if (!valeur || (Array.isArray(valeur) && !valeur.length)) return '';
     var corps = Array.isArray(valeur)
@@ -232,11 +330,12 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
           h += '<div class="rule"></div>' +
             bloc('Ce que traite cette fiche', f.teaser) +
             '<div class="sec"><h3>Fiche complète</h3><p>Le détail chiffré — avant, après, coût, conditions, ' +
-            'texte applicable — et le simulateur rattaché font partie de l\'accès annuel.</p></div>' +
+            'texte applicable — et le simulateur rattaché font partie du dossier chiffré (290 €, une fois).</p></div>' +
             '<div class="actions"><a class="btn navy" href="/creer-mon-compte">Voir les offres</a>' +
             '<a class="btn ghost" href="/app/marcel?sujet=' + encodeURIComponent(f.titre || slug) + '">Demander à Marcel</a></div>';
         } else {
           h += '<div class="rule"></div>' +
+            blocBilan(f) +
             bloc('En bref', f.resumeExecutif) +
             bloc('Pour qui', f.profilCible) +
             bloc('Le problème', f.probleme) +
