@@ -56,6 +56,12 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
 .panneau .sst{color:var(--mute);margin-top:8px;font-size:15.5px;max-width:56ch}
 .sec{margin-top:26px}
 .sec h3{font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--gold-d);margin-bottom:9px}
+/* La clôture : la fiche finit sur une question posée au lecteur, pas sur un
+   avantage. On lui donne le poids du serif pour qu'elle ne se lise pas comme
+   un paragraphe de plus. */
+.sec.cloture{border-top:1px solid var(--line);padding-top:20px}
+.sec.cloture p{font-family:'Playfair Display',Georgia,serif;font-size:19px;
+               line-height:1.35;color:var(--navy);font-style:italic}
 .sec p{font-size:15px;color:var(--ink);line-height:1.6;max-width:62ch}
 .sec ul{list-style:none;display:flex;flex-direction:column;gap:7px}
 .sec li{font-size:15px;color:var(--ink);line-height:1.5;padding-left:16px;position:relative;max-width:62ch}
@@ -238,10 +244,18 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
             bloc('À retenir', f.aRetenir) +
             bloc('Les étapes', f.schemaEtapes) +
             bloc('Quand éviter', f.quandEviter) +
+            bloc('Prérequis', f.prerequis) +
             bloc('Bénéfices', f.benefices) +
             bloc('Risques', f.risques) +
+            bloc('Ce que ça touche ailleurs', f.impacts360) +
             bloc('Documents à réunir', f.documents) +
+            bloc('Questions fréquentes', f.faq) +
             bloc('Sources', f.sources) +
+            // La fiche se termine sur une question, jamais sur un avantage :
+            // c'est la règle éditoriale, et c'est aussi ce que MIF II impose.
+            // Ces deux champs étaient écrits mais n'étaient pas affichés.
+            (f.questionType ? '<div class="sec cloture"><h3>La question qu\'on se pose</h3><p>' + txt(f.questionType) + '</p></div>' : '') +
+            bloc('À demander à Marcel', f.questionsMarcel) +
             '<div class="actions">' +
             (f.simulateurId
               ? '<a class="btn navy" href="/app/simulateurs-pro?strategie=' + encodeURIComponent(f.simulateurId) + '">Chiffrer sur mes montants</a>'
