@@ -573,7 +573,7 @@ async function handleMe(session, env) {
     id:           userRow?.id || session.user_id,
     email:        userRow?.email || session.email,
     tier:         session.tier,                                          // tier EFFECTIF (essai = premium)
-    has_strategies: session.has_strategies === true,                     // palier 249€/an (affichage seul — le vrai gate est côté /api/v1/strategies)
+    has_strategies: session.has_strategies === true,                     // dossier chiffré acheté — droit acquis (le vrai gate est côté /api/v1/strategies)
     stored_tier:  session.stored_tier || userRow?.tier || 'free',
     trial:        trialInfo(session.stored_tier || userRow?.tier, userRow?.created_at),
     display_name: userRow?.display_name || null,
@@ -656,7 +656,8 @@ async function ensureSimulateursTable(env) {
 }
 // Simulateurs publiés — servis au membre du palier Stratégies (249 €/an).
 async function handleSimulateursMembre(session, env) {
-  const unlocked = session.tier === 'premium' && session.has_strategies === true;
+  // Achat unique : l'accès est acquis, il ne dépend d'aucun abonnement en cours.
+  const unlocked = session.has_strategies === true;
   try {
     await ensureSimulateursTable(env);
     const rows = await env.D1.prepare("SELECT id, data FROM simulateurs WHERE statut='publie'").all();
@@ -836,14 +837,15 @@ async function handleStrategiesCatalogue(session, env) {
   return json({
     catalogue: STRATEGIES_CONTENT._meta?.catalogue || list.length,
     disponibles: list.length,
-    unlocked: session.tier === 'premium' && session.has_strategies === true,
+    unlocked: session.has_strategies === true,   // acquis par l'achat du dossier, à vie
     fiches: list,
   });
 }
 async function handleStrategieDetail(slug, session, env) {
   const fiche = (await loadFiches(env)).find(f => f.slug === slug);
   if (!fiche) return json({ error: 'not_found' }, 404);
-  const unlocked = session.tier === 'premium' && session.has_strategies === true;
+  // Achat unique : l'accès est acquis, il ne dépend d'aucun abonnement en cours.
+  const unlocked = session.has_strategies === true;
   if (!unlocked) {
     return json({
       locked: true,
@@ -1018,16 +1020,30 @@ async function handlePappersLookup(request, session, env) {
 // ──────────────────────────────────────────────────────────────
 // STRIPE — checkout + webhook + portal
 // ──────────────────────────────────────────────────────────────
+/* Grille arrêtée le 6 août 2026. Le changement de fond : on ne vend plus
+   d'abonnement. Un bilan patrimonial se refait une à deux fois par an, pas
+   tous les mois — facturer en récurrent un usage ponctuel produisait une
+   résiliation programmée au mois 2.
+
+   L'abonnement annuel (490 €) n'ouvre QUE le jour où quelque chose se consomme
+   en continu : agrégation bancaire, alertes de fenêtre, veille personnalisée.
+   Aucun des trois ne tourne — il n'est donc pas dans la table ci-dessous, et
+   ce n'est pas un oubli.
+
+   Le sur-mesure (390 €) relève du conseil personnalisé : DER + lettre de
+   mission AVANT toute production (art. L.541-1 CoMoFi). Il ne passe donc pas
+   par un paiement en libre-service et n'a pas de route ici. */
 async function handleStripeCheckout(request, session, env) {
   const { plan } = await request.json().catch(() => ({}));
-  // 3 paliers (verrouillés le 27/07/2026) : Découverte 0€ (pas de checkout),
-  // Premium 9,99€/mois, Stratégies 249€/an (Premium + bibliothèque ~70 fiches).
-  const priceMap = { monthly: env.STRIPE_PRICE_PREMIUM_MONTHLY, strategies: env.STRIPE_PRICE_STRATEGIES_ANNUAL };
+  const priceMap = {
+    dossier:      env.STRIPE_PRICE_DOSSIER,        // 290 € — paiement unique
+    consultation: env.STRIPE_PRICE_CONSULTATION,   // 150 € — paiement unique
+  };
   const priceId = priceMap[plan];
   if (!priceId) return json({ error: 'invalid_plan' }, 400);
 
   const params = new URLSearchParams();
-  params.append('mode', 'subscription');
+  params.append('mode', 'payment');   // paiement unique, jamais d'abonnement
   params.append('line_items[0][price]', priceId);
   params.append('line_items[0][quantity]', '1');
   params.append('customer_email', session.email);
@@ -1082,21 +1098,32 @@ async function handleStripeWebhook(request, env) {
   switch (event.type) {
     case 'checkout.session.completed':
       if (userId) {
-        await ensureUserColumns(env); // has_strategies peut manquer sur une base ancienne
-        const hasStrategies = obj.metadata?.plan === 'strategies' ? 1 : 0;
-        await env.D1.prepare('UPDATE users SET tier = ?, stripe_customer_id = ?, stripe_subscription_id = ?, has_strategies = MAX(has_strategies, ?) WHERE id = ?')
-          .bind('premium', obj.customer, obj.subscription, hasStrategies, userId).run();
-        await audit(env, userId, 'tier_upgraded', request, { from: 'free', to: 'premium', plan: obj.metadata?.plan || 'inconnu' });
-        await emitEvent(env, userId, 'subscription_upgraded', { from_tier: 'free', to_tier: 'premium' });
-        const u = await env.D1.prepare('SELECT email FROM users WHERE id = ?').bind(userId).first();
-        if (u) await sendEmail(env, { to: u.email, subject: 'Bienvenue Premium · IKCP', html: emailTemplatePremiumWelcome() });
+        await ensureUserColumns(env);
+        const plan = obj.metadata?.plan || 'inconnu';
+        // Le dossier chiffré est un achat unique qui ouvre définitivement
+        // l'audit 360° et les fiches. La consultation est une prestation :
+        // elle s'encaisse et se trace, elle n'ouvre rien dans l'application.
+        if (plan === 'dossier') {
+          await env.D1.prepare('UPDATE users SET tier = ?, stripe_customer_id = ?, has_strategies = 1 WHERE id = ?')
+            .bind('premium', obj.customer, userId).run();
+          await audit(env, userId, 'dossier_achete', request, { plan, montant_cents: obj.amount_total || null });
+          await emitEvent(env, userId, 'dossier_achete', { plan });
+          const u = await env.D1.prepare('SELECT email FROM users WHERE id = ?').bind(userId).first();
+          if (u) await sendEmail(env, { to: u.email, subject: 'Votre dossier chiffré · IKCP', html: emailTemplatePremiumWelcome() });
+        } else {
+          await env.D1.prepare('UPDATE users SET stripe_customer_id = ? WHERE id = ?')
+            .bind(obj.customer, userId).run();
+          await audit(env, userId, 'prestation_payee', request, { plan, montant_cents: obj.amount_total || null });
+        }
       }
       break;
     case 'customer.subscription.deleted': {
       const u = await env.D1.prepare('SELECT id, email FROM users WHERE stripe_customer_id = ?').bind(obj.customer).first();
       if (u) {
+        // On ne reprend jamais ce qui a été payé une fois : le dossier chiffré
+        // ouvre un droit acquis, indépendant de tout abonnement.
         await env.D1.prepare('UPDATE users SET tier = ? WHERE id = ?').bind('free', u.id).run();
-        await audit(env, u.id, 'tier_downgraded', request, { from: 'premium', to: 'free' });
+        await audit(env, u.id, 'tier_downgraded', request, { from: 'premium', to: 'free', note: 'has_strategies conserve' });
         await emitEvent(env, u.id, 'subscription_canceled', { from_tier: 'premium', to_tier: 'free' });
         await sendEmail(env, { to: u.email, subject: 'On vous regrette · IKCP', html: emailTemplateCancelRetention() });
       }

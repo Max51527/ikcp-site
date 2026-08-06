@@ -218,39 +218,28 @@ if(me){
     return b;
   };
   card.style.display = '';
-  if(me.tier === 'free'){
-    desc.innerHTML = 'Vous êtes en <b>Découverte</b> (gratuit). Passez en <b>Premium</b> pour Marcel en illimité + la veille augmentée, ou <b>Stratégies</b> pour la bibliothèque de fiches en plus.';
-    const go = async (plan, el) => {
-      el.disabled = true; el.textContent = 'Redirection…';
-      try { const r = await Marcel.Billing.checkout(plan); if(r.checkout_url) location.href = r.checkout_url; else throw 0; }
-      catch(_){ el.disabled = false; el.textContent = 'Réessayer'; alert('Paiement momentanément indisponible. Réessayez plus tard.'); }
-    };
-    const bM = btn('Passer Premium · 9,99€/mois', e => go('monthly', e.target));
-    const bS = btn('Stratégies · 249€/an', e => go('strategies', e.target), false);
-    actions.append(bM, document.createTextNode(' '), bS);
-  } else if(me.tier === 'premium'){
-    desc.innerHTML = me.has_strategies
-      ? 'Vous êtes en <b>Stratégies</b>. Gérez votre abonnement (facture, moyen de paiement, résiliation) via le portail sécurisé.'
-      : 'Vous êtes en <b>Premium</b>. Gérez votre abonnement, ou ajoutez la <b>bibliothèque Stratégies</b> (249€/an).';
-    const bP = btn('Gérer mon abonnement', async e => {
-      e.target.disabled = true; e.target.textContent = 'Ouverture…';
-      try { const r = await Marcel.Billing.portal(); if(r.portal_url) location.href = r.portal_url; else throw 0; }
-      catch(_){ e.target.disabled = false; e.target.textContent = 'Réessayer'; alert('Portail momentanément indisponible.'); }
-    });
-    actions.append(bP);
-    if (!me.has_strategies) {
-      const go = async (plan, el) => {
-        el.disabled = true; el.textContent = 'Redirection…';
-        try { const r = await Marcel.Billing.checkout(plan); if(r.checkout_url) location.href = r.checkout_url; else throw 0; }
-        catch(_){ el.disabled = false; el.textContent = 'Réessayer'; alert('Paiement momentanément indisponible. Réessayez plus tard.'); }
-      };
-      const bS = btn('Ajouter Stratégies · 249€/an', e => go('strategies', e.target), false);
-      actions.append(document.createTextNode(' '), bS);
-    }
-  } else { // fo
-    desc.innerHTML = 'Vous êtes en <b>intelligence patrimoniale</b> — accès complet aux 11 spécialistes. Pour toute question sur votre formule, contactez Maxime.';
-    const bC = btn('Contacter Maxime', () => location.href = 'mailto:maxime@ikcp.eu?subject=Mon%20abonnement%20Family%20Office', false);
-    actions.append(bC);
+  // Grille du 6 août 2026 : plus aucun abonnement. Le dossier chiffré s'achète
+  // une fois et ouvre un droit acquis ; la consultation est une prestation.
+  // C'est has_strategies qui porte le droit, pas le tier — un achat unique ne
+  // doit pas dépendre d'un abonnement en cours.
+  const go = async (plan, el) => {
+    el.disabled = true; el.textContent = 'Redirection…';
+    try { const r = await Marcel.Billing.checkout(plan); if(r.checkout_url) location.href = r.checkout_url; else throw 0; }
+    catch(_){ el.disabled = false; el.textContent = 'Réessayer'; alert('Paiement momentanément indisponible. Réessayez plus tard.'); }
+  };
+  if(me.tier === 'fo'){
+    desc.innerHTML = 'Vous êtes en <b>intelligence patrimoniale</b> — accès complet aux spécialistes. Pour toute question sur votre formule, écrivez à Maxime.';
+    actions.append(btn('Écrire à Maxime', () => location.href = 'mailto:maxime@ikcp.eu?subject=Ma%20formule', false));
+  } else if(me.has_strategies){
+    desc.innerHTML = 'Votre <b>dossier chiffré</b> est acquis : l\'audit 360° et les fiches vous restent ouverts, sans reconduction ni prélèvement. Une heure de consultation reste disponible quand vous en avez besoin.';
+    actions.append(btn('Réserver une consultation · 150 €', e => go('consultation', e.target), false));
+  } else {
+    desc.innerHTML = 'Vous êtes en <b>Découverte</b> (gratuit). Le <b>dossier chiffré</b> ouvre l\'audit 360° complet et les fiches déclenchées par votre situation, chiffrées sur vos montants. Achat unique — rien à résilier.';
+    actions.append(
+      btn('Obtenir mon dossier · 290 €', e => go('dossier', e.target)),
+      document.createTextNode(' '),
+      btn('Réserver une consultation · 150 €', e => go('consultation', e.target), false)
+    );
   }
 }
 
