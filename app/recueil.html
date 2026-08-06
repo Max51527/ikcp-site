@@ -92,6 +92,16 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
       <div class="fld"><label>Votre date de naissance</label><input type="date" id="f_naissance"></div>
       <div class="fld"><label>Enfant(s) d'une autre union ?</label><select id="f_autreUnion"><option value="">—</option><option value="oui">Oui</option><option value="non">Non</option></select></div>
     </div>
+
+    <!-- Donations déjà consenties. Le volet juridique demande déjà « avez-vous
+         donné il y a moins de 15 ans ? » en oui/non — utile pour alerter, mais
+         insuffisant pour calculer : l'abattement disponible dépend de la DATE
+         exacte de chaque acte et du montant déjà utilisé. Sans ces deux
+         valeurs, aucune fiche de transmission ne peut chiffrer sans inventer. -->
+    <div class="tl" style="font-size:11px;font-weight:700;color:var(--mute);letter-spacing:.04em;margin-top:16px">DONATIONS DÉJÀ CONSENTIES</div>
+    <div class="hint" style="margin-top:4px">Le délai de quinze ans court acte par acte. La date conditionne l'abattement encore disponible.</div>
+    <div class="rows" id="rows_donations"></div>
+    <button class="add" onclick="addRow('donations')">+ Ajouter une donation passée</button>
   </section>
 
   <!-- 2 · SOCIÉTÉ & BÉNÉFICIAIRES EFFECTIFS -->
@@ -105,6 +115,30 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
     <div class="tl" style="font-size:11px;font-weight:700;color:var(--mute);letter-spacing:.04em">ASSOCIÉS / BÉNÉFICIAIRES EFFECTIFS (≥ 25 % ou contrôle)</div>
     <div class="rows" id="rows_benef"></div>
     <button class="add" onclick="addRow('benef')">+ Ajouter un bénéficiaire effectif</button>
+  </section>
+
+  <!-- 2 bis · REVENUS & HORIZON
+       Ces cinq valeurs manquaient au recueil. Sans elles, dix-sept fiches ne
+       peuvent afficher aucun chiffre : le plafond PER dépend du revenu, la
+       prévoyance dépend du statut, l'abattement dirigeant dépend de la date
+       de départ. Une fiche qui devinerait ces valeurs mentirait. -->
+  <section class="blk">
+    <h2>💶 Revenus &amp; horizon</h2>
+    <div class="hint">Ce que le bilan ne pouvait pas déduire de vos actifs. Chaque champ débloque le chiffrage de fiches précises — laissez vide ce que vous ne connaissez pas, rien ne sera inventé à la place.</div>
+    <div class="frm">
+      <div class="fld"><label>Revenu net imposable du foyer (€/an)</label><input type="number" id="h_revenuImposable" min="0" placeholder="ex : 140 000"></div>
+      <div class="fld"><label>Nombre de parts fiscales</label><input type="number" id="h_parts" min="1" step="0.5" placeholder="ex : 3"></div>
+      <div class="fld"><label>Votre statut social</label><select id="h_statut">
+        <option value="">—</option>
+        <option value="tns">Travailleur non salarié (TNS)</option>
+        <option value="assimile">Assimilé salarié</option>
+        <option value="salarie">Salarié</option>
+        <option value="mixte">Les deux</option>
+        <option value="nsp">Je ne sais pas</option></select></div>
+      <div class="fld"><label>Rémunération annuelle brute (€)</label><input type="number" id="h_remuneration" min="0" placeholder="ex : 90 000"></div>
+      <div class="fld"><label>Dividendes perçus l'an dernier (€)</label><input type="number" id="h_dividendes" min="0" placeholder="ex : 40 000"></div>
+      <div class="fld"><label>Départ en retraite envisagé</label><input type="month" id="h_departRetraite"></div>
+    </div>
   </section>
 
   <!-- 3 · IMMOBILIER -->
@@ -170,7 +204,7 @@ section.blk{background:#fff;border:1px solid var(--line);border-radius:16px;padd
 
 <script>
 /* ═══ Recueil patrimonial — stockage ikcp_recueil + pont vers ikcp_patrimoine (cockpit/audit/veille) ═══ */
-var R = { famille:{}, s_valo:0, s_nb:1, benef:[], immo:[], fin:[], autres:[], passifs:[], juridique:{}, maj:0 };
+var R = { famille:{}, revenus:{}, s_valo:0, s_nb:1, benef:[], donations:[], immo:[], fin:[], autres:[], passifs:[], juridique:{}, maj:0 };
 try{ var saved=JSON.parse(localStorage.getItem('ikcp_recueil')||'null'); if(saved&&typeof saved==='object') R=Object.assign(R,saved); }catch(_){}
 
 function eur(n){ n=Math.round(+n||0); var c=Math.abs(n)>=1e6; return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:c?1:0,notation:c?'compact':'standard'}).format(n); }
@@ -199,7 +233,15 @@ var DEFS = {
     {k:'val',   ph:'Valeur €',             t:'number'} ] },
   passifs:{ cols:'1.6fr .8fr auto', fields:[
     {k:'label', ph:'ex : prêt personnel, CCA débiteur', t:'text'},
-    {k:'val',   ph:'Restant dû €',         t:'number'} ] }
+    {k:'val',   ph:'Restant dû €',         t:'number'} ] },
+  /* Une ligne par acte : le délai de quinze ans court séparément pour chacun.
+     La nature compte autant que le montant — une donation en nue-propriété
+     ne consomme l'abattement que sur la valeur de la nue-propriété. */
+  donations:{ cols:'.9fr 1.1fr .8fr 1fr auto', fields:[
+    {k:'date',  ph:'',                     t:'date'},
+    {k:'benef', ph:'Bénéficiaire',         t:'text'},
+    {k:'val',   ph:'Montant donné €',      t:'number'},
+    {k:'nature',t:'select', opts:['Pleine propriété','Nue-propriété','Somme d\'argent (art. 790 G)','Je ne sais pas']} ] }
 };
 
 function renderRows(key){
@@ -224,11 +266,15 @@ document.addEventListener('input', function(e){
   if(el.id==='s_valo'){ R.s_valo=+el.value||0; save(); }
   if(el.id==='s_nb'){ R.s_nb=Math.max(1,Math.round(+el.value||1)); save(); }
   if(el.id&&el.id.indexOf('f_')===0){ R.famille[el.id.slice(2)]=el.value; save(); }
+  // Revenus & horizon. Un champ vide reste vide : on n'écrit pas 0, sinon une
+  // fiche croirait à un revenu nul là où la donnée est simplement absente.
+  if(el.id&&el.id.indexOf('h_')===0){ R.revenus[el.id.slice(2)]=(el.value===''?'':(el.type==='number'?(+el.value||0):el.value)); save(); }
 });
 document.addEventListener('change', function(e){
   var el=e.target;
   if(el.getAttribute&&el.getAttribute('data-k')){ var k=el.getAttribute('data-k'); R[k][+el.getAttribute('data-i')][el.getAttribute('data-f')]=el.value; save(); }
   else if(el.id&&el.id.indexOf('f_')===0){ R.famille[el.id.slice(2)]=el.value; save(); }
+  else if(el.id&&el.id.indexOf('h_')===0){ R.revenus[el.id.slice(2)]=(el.value===''?'':(el.type==='number'?(+el.value||0):el.value)); save(); }
 });
 
 /* ── volet juridique (questions fermées oui/non/nsp) ── */
@@ -353,6 +399,11 @@ function renderPense(){
     if(soc&&soc.nom) document.getElementById('socHint').innerHTML='<b>'+esc(soc.nom)+'</b>'+(soc.forme?' · '+esc(soc.forme):'')+(soc.ca!=null?' · CA '+eur(soc.ca):'')+' — identité automatique (SIREN). Les bénéficiaires effectifs sont <b>déclaratifs</b> (le registre officiel n\'est plus en accès public libre depuis 2022).';
   }catch(_){}
   ['f_situation','f_regime','f_enfants','f_autreUnion','f_naissance'].forEach(function(id){ var el=document.getElementById(id); if(el&&R.famille[id.slice(2)]!=null) el.value=R.famille[id.slice(2)]; });
+  // Revenus & horizon. On ne réécrit que ce qui a une valeur : un champ laissé
+  // vide doit rester vide au rechargement, pas se remplir d'un zéro.
+  ['h_revenuImposable','h_parts','h_statut','h_remuneration','h_dividendes','h_departRetraite']
+    .forEach(function(id){ var el=document.getElementById(id), v=R.revenus?R.revenus[id.slice(2)]:null;
+      if(el && v!=null && v!=='') el.value=v; });
   var sv=document.getElementById('s_valo'); if(sv&&R.s_valo) sv.value=R.s_valo;
   var snb=document.getElementById('s_nb'); if(snb&&R.s_nb>1) snb.value=R.s_nb;
   Object.keys(DEFS).forEach(renderRows);
