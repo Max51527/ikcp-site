@@ -2,8 +2,9 @@
   "_meta": {
     "role": "Bibliothèque des stratégies dirigeant — contenu client-facing de la fiche (gated : servi uniquement si session.tier==='premium' && has_strategies===1, jamais embarqué en HTML statique). Distinct de workers/ikcp-patrimoine/strategies.json qui porte le moteur de scoring d'éligibilité (score_eligibilite.regles) — les deux se raccrochent par slug/strategie_key quand ils coexistent.",
     "version": "v1",
-    "cible": 70,
-    "actuel": 4
+    "actuel": 4,
+    "catalogue": 76,
+    "note_catalogue": "catalogue = nombre de fiches réellement inscrites au catalogue éditorial (base Notion « Fiches patrimoniales IKCP » + celles rédigées ici). Ce n est pas un objectif : si le catalogue change, ce nombre change. Vérifié le 5 août 2026."
   },
   "fiches": [
     {

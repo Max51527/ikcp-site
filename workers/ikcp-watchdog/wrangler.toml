@@ -4,9 +4,74 @@ main = "worker.js"
 compatibility_date = "2026-05-01"
 keep_vars = true  # secrets dashboard preserves au deploy CI (incident Powens)
 
-# Vérification toutes les 6 heures
-[triggers]
-crons = ["0 */6 * * *"]
+# Pas de [triggers] : le compte est au plan gratuit, plafonné à 5 déclencheurs
+# CRON, déjà pris (ikcp-collector, ikcp-veille, et trois autres). La
+# vérification se lance donc à la demande sur /check. Passer au plan payant
+# lèverait la limite à 1 000 et permettrait de rétablir crons = ["0 */6 * * *"].
+
+# Appels entre workers : OBLIGATOIRE. Deux workers du même domaine
+# *.workers.dev ne peuvent PAS s'appeler par leur URL publique — Cloudflare
+# renvoie l'erreur 1042. Le service binding est le seul chemin supporté, et il
+# est gratuit. C'est ce défaut qui rendait ce worker inopérant.
+[[services]]
+binding = "S_CLIENT"
+service = "ikcp-client"
+
+[[services]]
+binding = "S_PATRIMOINE"
+service = "ikcp-patrimoine"
+
+[[services]]
+binding = "S_CHAT"
+service = "ikcp-chat"
+
+[[services]]
+binding = "S_RAG"
+service = "ikcp-rag"
+
+[[services]]
+binding = "S_CODEX"
+service = "ikcp-codex"
+
+[[services]]
+binding = "S_HERMES"
+service = "ikcp-hermes"
+
+[[services]]
+binding = "S_BATISSEUR"
+service = "ikcp-batisseur"
+
+[[services]]
+binding = "S_LIFESTYLE"
+service = "ikcp-lifestyle"
+
+[[services]]
+binding = "S_PAPPERS"
+service = "ikcp-pappers"
+
+[[services]]
+binding = "S_TEMOIN"
+service = "ikcp-temoin"
+
+[[services]]
+binding = "S_VEILLE"
+service = "ikcp-veille"
+
+[[services]]
+binding = "S_VOICE"
+service = "ikcp-voice"
+
+[[services]]
+binding = "S_COLLECTOR"
+service = "ikcp-collector"
+
+[[services]]
+binding = "S_FEEDBACK"
+service = "ikcp-feedback"
+
+[[services]]
+binding = "S_POWENS"
+service = "ikcp-powens"
 
 [observability]
 enabled = true

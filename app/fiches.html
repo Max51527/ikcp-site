@@ -137,9 +137,13 @@ h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(
       if (d.error) throw new Error(d.error);
       TOUT = d.fiches || [];
       DEVERROUILLE = !!d.unlocked;
+      // On n'annonce que du vérifiable : ce qui est lisible ici, et la taille
+      // réelle du catalogue éditorial. Jamais un objectif — « 70 prévues »
+      // était une promesse sans fait derrière.
+      var cat = d.catalogue || d.total || 0;
       compte.textContent = TOUT.length + ' fiche' + (TOUT.length > 1 ? 's' : '') +
-        ' disponible' + (TOUT.length > 1 ? 's' : '') +
-        (d.total && d.total > TOUT.length ? ' · ' + d.total + ' prévues' : '') +
+        ' à lire' +
+        (cat > TOUT.length ? ' · ' + cat + ' au catalogue' : '') +
         (DEVERROUILLE ? ' · accès complet' : ' · aperçu');
       poserFiltres();
       afficher();

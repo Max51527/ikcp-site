@@ -829,8 +829,12 @@ async function handleStrategiesCatalogue(session, env) {
     version: f.version,
     dateRevue: f.dateRevue,
   }));
+  // « catalogue » = le nombre de fiches réellement inscrites au catalogue
+  // éditorial (Notion), pas un objectif annoncé. Une page publique qui promet
+  // un chiffre non adossé à un fait tombe sous l'art. L.121-2 du Code de la
+  // consommation ; ce compteur doit donc suivre le réel et rien d'autre.
   return json({
-    total: STRATEGIES_CONTENT._meta?.cible || list.length,
+    catalogue: STRATEGIES_CONTENT._meta?.catalogue || list.length,
     disponibles: list.length,
     unlocked: session.tier === 'premium' && session.has_strategies === true,
     fiches: list,
