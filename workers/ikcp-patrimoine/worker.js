@@ -37,6 +37,16 @@ function cors(o) {
 function json(d, s = 200, o = '') {
   return new Response(JSON.stringify(d), { status: s, headers: { 'Content-Type': 'application/json; charset=utf-8', ...cors(o) } });
 }
+// Valide un jeton membre auprès d'ikcp-client. Par service binding en priorité
+// (seul appel worker-vers-worker que Cloudflare accepte sur un même domaine) ;
+// l'URL publique reste en repli pour le développement local.
+async function fetchMe(env, auth) {
+  if (env && env.S_CLIENT) {
+    try { return await env.S_CLIENT.fetch('https://interne/api/v1/me', { headers: { 'Authorization': auth } }); } catch (_) {}
+  }
+  return fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+}
+
 const DISCLAIMER = "Information, pas un conseil personnalisé (art. L.541-1 CoMoFi). Les pistes ci-dessus sont des hypothèses à valider avec un conseiller CIF (ORIAS 23001568).";
 
 // Tables qu'on accepte en écriture (upsert) — clé = nom de table, valeur = colonnes autorisées.
@@ -309,7 +319,7 @@ export default {
       const auth = req.headers.get('Authorization') || '';
       if (auth.startsWith('Bearer ')) {
         try {
-          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          const me = await fetchMe(env, auth);
           if (me.ok) {
             const u = await me.json();
             if (u && u.email) {
@@ -368,7 +378,7 @@ export default {
       const auth = req.headers.get('Authorization') || '';
       if (auth.startsWith('Bearer ')) {
         try {
-          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          const me = await fetchMe(env, auth);
           if (me.ok) {
             const u = await me.json();
             if (u && u.email) {
@@ -400,7 +410,7 @@ export default {
       const auth = req.headers.get('Authorization') || '';
       if (auth.startsWith('Bearer ')) {
         try {
-          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          const me = await fetchMe(env, auth);
           if (me.ok) { const u = await me.json(); if (u && u.email) {
             const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(u.email).trim().toLowerCase()));
             const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -454,7 +464,7 @@ export default {
       const auth = req.headers.get('Authorization') || '';
       if (auth.startsWith('Bearer ')) {
         try {
-          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': auth } });
+          const me = await fetchMe(env, auth);
           if (me.ok) { const u = await me.json(); if (u && u.email) {
             const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(u.email).trim().toLowerCase()));
             const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -532,7 +542,7 @@ export default {
       const _auth = req.headers.get('Authorization') || '';
       if (_auth.startsWith('Bearer ')) {
         try {
-          const me = await fetch('https://ikcp-client.maxime-ead.workers.dev/api/v1/me', { headers: { 'Authorization': _auth } });
+          const me = await fetchMe(env, _auth);
           if (me.ok) { const u = await me.json(); member = String((u && (u.id || u.email)) || ''); }
         } catch (_) {}
       }

@@ -14,3 +14,11 @@ enabled = true
 binding = "PATRIMOINE_DB"
 database_name = "ikcp-patrimoine-db"
 database_id = "a028ea28-b641-4cae-9b0d-f8cf18cf41aa"
+
+# Validation des jetons membres : deux workers du même domaine *.workers.dev ne
+# peuvent pas s'appeler par leur URL publique (erreur Cloudflare 1042). Sans ce
+# binding, /state répondait 401 à des jetons parfaitement valides — la synchro
+# entre appareils était morte côté serveur. Même défaut que le watchdog.
+[[services]]
+binding = "S_CLIENT"
+service = "ikcp-client"
