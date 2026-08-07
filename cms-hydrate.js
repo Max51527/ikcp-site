@@ -65,3 +65,17 @@
       .catch(function () { /* silencieux */ });
   }
 })();
+
+/* ── Mode édition en direct ─────────────────────────────────────────────
+   Quand la Régie a posé le drapeau, on charge l'éditeur sur cette page.
+   Un seul point d'inclusion : toute page qui hydrate ses textes sait
+   aussi les éditer. Le verrou réel reste côté serveur (propriétaire). */
+(function () {
+  try {
+    if (localStorage.getItem('ikcp_edition') === '1' && localStorage.getItem('ikcp_token')) {
+      var s = document.createElement('script');
+      s.src = '/app/js/edition.js'; s.defer = true;
+      document.head.appendChild(s);
+    }
+  } catch (_) {}
+})();

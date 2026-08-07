@@ -95,6 +95,7 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,5vw
       <button class="btn" id="btnSync" onclick="synchro()">Synchroniser Notion → site</button>
       <a class="btn ghost" href="https://app.notion.com/8e55fe6ed2ab4175a1f2499b44672496" target="_blank" rel="noopener">Relire les fiches (Notion)</a>
       <a class="btn ghost" href="/app/fiches" target="_blank">Voir le rendu</a>
+      <button class="btn" onclick="edition()">✏️ Modifier le site en direct</button>
     </div>
     <div class="out" id="outSync"></div>
   </div>
@@ -216,6 +217,13 @@ function contenu(){
   fetch(API+'/api/v1/contenu').then(function(r){return r.json();}).then(function(d){
     document.getElementById('nTxt').textContent=Object.keys(d).length;
   }).catch(function(){});
+}
+
+function edition(){
+  // Pose le drapeau puis ouvre l'accueil : chaque texte du site devient
+  // éditable sur place, l'enregistrement passe par l'atelier (propriétaire).
+  try{localStorage.setItem('ikcp_edition','1');}catch(_){}
+  window.open('/', '_blank');
 }
 
 function synchro(){
