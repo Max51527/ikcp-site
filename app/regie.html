@@ -44,6 +44,13 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,5vw
 .liens a{display:block;background:var(--cream2);border:1px solid var(--line);border-radius:10px;
   padding:10px 13px;text-decoration:none;color:var(--navy);font-weight:600;font-size:13.5px}
 .liens a small{display:block;font-weight:400;color:var(--mute);font-size:11px;margin-top:1px}
+
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;
+  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--navy);cursor:pointer}
+.tab.on{background:var(--navy);color:var(--gold-b);border-color:var(--navy)}
+.frame{width:100%;height:calc(100vh - 150px);min-height:520px;border:1px solid var(--line);
+  border-radius:14px;background:#fff}
 .refus{max-width:520px;margin:80px auto;text-align:center;color:var(--mute)}
 .todo li{font-size:13.5px;padding:6px 0;border-bottom:1px dashed var(--line);list-style:none}
 .todo li:last-child{border:0}
@@ -53,7 +60,21 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,5vw
 <body>
 <div class="wrap" id="app" hidden>
   <h1>Régie</h1>
-  <div class="sub">L'outil unique. État vérifié en direct — rien ici n'est déclaratif.</div>
+  <div class="sub">L'outil unique — pilotage, atelier, membres. Une adresse, une session.</div>
+
+  <!-- Trois onglets, un seul outil. L'atelier et la console existent déjà en
+       pages autonomes : on les sert ici en cadres même origine — la session
+       (localStorage) est partagée, aucun droit dupliqué, aucune double
+       maintenance. -->
+  <div class="tabs">
+    <button class="tab on" data-t="pilotage" onclick="onglet('pilotage')">🎛️ Pilotage</button>
+    <button class="tab" data-t="atelier" onclick="onglet('atelier')">🛠️ Atelier</button>
+    <button class="tab" data-t="membres" onclick="onglet('membres')">👥 Membres</button>
+  </div>
+
+  <div id="p_atelier" class="pane" hidden><iframe id="f_atelier" class="frame" title="Atelier — fiches, simulateurs, synchro"></iframe></div>
+  <div id="p_membres" class="pane" hidden><iframe id="f_membres" class="frame" title="Console membres"></iframe></div>
+  <div id="p_pilotage" class="pane">
 
   <!-- 1 · SANTÉ -->
   <div class="blk">
@@ -129,6 +150,8 @@ h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,5vw
     </div>
   </div>
 </div>
+  </div><!-- /p_pilotage -->
+</div>
 
 <div class="refus" id="refus" hidden>
   <p>Cette page est réservée à l'administrateur.</p>
@@ -157,6 +180,15 @@ function st(id,txt,cls){ var e=document.getElementById(id); e.textContent=txt; e
     st('stPay','à éprouver','att'); st('stMail','à éprouver','att');
   }).catch(function(){ document.getElementById('refus').hidden=false; });
 })();
+
+var SRC={atelier:'/app/redaction',membres:'/app/console'};
+function onglet(t){
+  ['pilotage','atelier','membres'].forEach(function(k){
+    document.getElementById('p_'+k).hidden=(k!==t);
+    var b=document.querySelector('.tab[data-t='+k+']'); if(b) b.className='tab'+(k===t?' on':'');
+  });
+  if(SRC[t]){ var f=document.getElementById('f_'+t); if(f && !f.src) f.src=SRC[t]; }
+}
 
 function sante(){
   st('stSante','vérification…','att');
