@@ -983,9 +983,16 @@
   async function marcelInto(elId, message){
     var el=document.getElementById(elId); if(!el) return;
     el.innerHTML='<div class="loader"><span class="ld"></span><span class="ld"></span><span class="ld"></span><em id="ld_'+elId+'">Marcel mobilise ses spécialistes…</em></div>';
-    var i=0, iv=setInterval(function(){ var m=document.getElementById('ld_'+elId); if(m) m.textContent='Marcel consulte '+SPK[i++%SPK.length]+'…'; }, 950);
+    // La rotation des spécialistes ne doit jamais tourner sans fin : au-delà
+    // de ~15 s on dit la vérité (« plus long que d'habitude »), et la requête
+    // elle-même est bornée à 45 s — après quoi le catch affiche l'échec
+    // proprement au lieu d'un faux travail perpétuel.
+    var i=0, iv=setInterval(function(){ var m=document.getElementById('ld_'+elId); if(!m) return;
+      m.textContent = (i<16) ? 'Marcel consulte '+SPK[i%SPK.length]+'…'
+                             : 'L\'analyse prend un peu plus de temps que d\'habitude…';
+      i++; }, 950);
     try{
-      var r=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message,history:[]})});
+      var r=await fetch('https://ikcp-chat.maxime-ead.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message,history:[]}),signal:(window.AbortSignal&&AbortSignal.timeout)?AbortSignal.timeout(45000):undefined});
       var d=await r.json(); clearInterval(iv);
       var reply=d.reply||"Un instant — réessayez.";
       window._spk[elId]=String(reply).replace(/[*_#>`]/g,'').replace(/\s+/g,' ');
@@ -1027,6 +1034,12 @@
       // Finances (gouv, comptes déposés)
       var ca=null, rnet=null, fyear=null;
       if(gv&&gv.finances){ var ys=Object.keys(gv.finances).filter(function(y){return gv.finances[y];}).sort(); var ly=ys[ys.length-1]; if(ly){ ca=gv.finances[ly].ca; rnet=gv.finances[ly].resultat_net; fyear=ly; } }
+      // L'API recherche-entreprises code la donnée absente par 0 (vérifié sur
+      // Danone : CA 27 Md€, resultat_net 0). Afficher ce zéro serait un faux
+      // chiffre — on le traite comme « non communiqué ». Coût : un résultat
+      // réellement égal à zéro s'affichera n.c., cas rarissime et sans enjeu.
+      if(ca===0) ca=null;
+      if(rnet===0) rnet=null;
       // Identité : Pappers prioritaire (plus riche), gouv en repli
       var nom    = (d&&d.nom) || (gv&&gv.nom_complet) || '—';
       var forme  = (d&&d.forme_juridique) || (gv?formeFromCode(gv.nature_juridique):'') || '';
