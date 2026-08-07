@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Régie — IKCP</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="/assets/vendor/fonts.css" rel="stylesheet">
+<style>
+/* La Régie : l'outil unique de pilotage de Maxime. Une page, quatre pouvoirs —
+   voir l'état, publier le contenu, éprouver l'encaissement, éprouver l'accès.
+   Tout passe par les API déjà verrouillées côté serveur (propriétaire only) :
+   cette page n'ajoute aucun droit, elle rassemble ceux qui existent. */
+:root{--navy:#1B2A4A;--navy2:#0E1729;--cream:#FAF8F4;--cream2:#F4EFE7;--gold:#C9A96E;
+--gold-b:#E2C896;--gold-d:#8B6F3F;--ink:#221E18;--mute:#6B5D52;--line:rgba(139,111,63,.22);
+--vert:#3B7D5E;--terre:#C24722}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.5;padding-bottom:60px}
+.wrap{max-width:920px;margin:0 auto;padding:18px}
+h1{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(26px,5vw,34px);color:var(--navy)}
+.sub{color:var(--mute);font-size:13.5px;margin:4px 0 18px}
+.blk{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.blk h2{font-family:'Playfair Display',serif;font-weight:600;font-size:19px;color:var(--navy);
+  display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.blk h2 .st{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ok{color:var(--vert)}.ko{color:var(--terre)}.att{color:var(--gold-d)}
+.btn{display:inline-block;border:0;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:700;
+  font-size:13.5px;padding:11px 16px;background:linear-gradient(135deg,var(--gold-b),var(--gold));
+  color:#20180c;text-decoration:none}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy);font-weight:600}
+.btn[disabled]{opacity:.55;cursor:default}
+.rowbtns{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin:8px 0}
+.kv .c{background:var(--cream2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kv .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);font-weight:700}
+.kv .v{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy)}
+.out{font-size:12.5px;color:var(--mute);background:var(--cream2);border:1px solid var(--line);
+  border-radius:9px;padding:9px 12px;margin-top:9px;white-space:pre-wrap;display:none}
+.out.show{display:block}
+.svc{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.svc span{font-size:11.5px;border-radius:999px;padding:4px 10px;border:1px solid var(--line);background:var(--cream2)}
+.svc span.down{border-color:rgba(194,71,34,.5);color:var(--terre);font-weight:700}
+.liens{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.liens a{display:block;background:var(--cream2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 13px;text-decoration:none;color:var(--navy);font-weight:600;font-size:13.5px}
+.liens a small{display:block;font-weight:400;color:var(--mute);font-size:11px;margin-top:1px}
+.refus{max-width:520px;margin:80px auto;text-align:center;color:var(--mute)}
+.todo li{font-size:13.5px;padding:6px 0;border-bottom:1px dashed var(--line);list-style:none}
+.todo li:last-child{border:0}
+.todo b{color:var(--navy)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" hidden>
+  <h1>Régie</h1>
+  <div class="sub">L'outil unique. État vérifié en direct — rien ici n'est déclaratif.</div>
+
+  <!-- 1 · SANTÉ -->
+  <div class="blk">
+    <h2>Plateforme <span class="st" id="stSante">…</span></h2>
+    <div class="svc" id="svcList">chargement…</div>
+    <div class="rowbtns"><button class="btn ghost" onclick="sante()">Revérifier</button></div>
+  </div>
+
+  <!-- 2 · CONTENU -->
+  <div class="blk">
+    <h2>Contenu <span class="st" id="stCont">…</span></h2>
+    <div class="kv">
+      <div class="c"><div class="l">Publiées</div><div class="v" id="nPub">–</div></div>
+      <div class="c"><div class="l">Brouillons</div><div class="v" id="nBrou">–</div></div>
+      <div class="c"><div class="l">Textes site</div><div class="v" id="nTxt">–</div></div>
+    </div>
+    <div class="rowbtns">
+      <button class="btn" id="btnSync" onclick="synchro()">Synchroniser Notion → site</button>
+      <a class="btn ghost" href="https://app.notion.com/8e55fe6ed2ab4175a1f2499b44672496" target="_blank" rel="noopener">Relire les fiches (Notion)</a>
+      <a class="btn ghost" href="/app/fiches" target="_blank">Voir le rendu</a>
+    </div>
+    <div class="out" id="outSync"></div>
+  </div>
+
+  <!-- 3 · ENCAISSEMENT -->
+  <div class="blk">
+    <h2>Encaissement <span class="st" id="stPay">…</span></h2>
+    <p style="font-size:13px;color:var(--mute)">Le test crée une vraie session de paiement Stripe (sans la payer) : c'est la preuve que la chaîne fonctionne.</p>
+    <div class="rowbtns">
+      <button class="btn ghost" onclick="testPay('dossier')">Tester le dossier 290 €</button>
+      <button class="btn ghost" onclick="testPay('consultation')">Tester la consultation 150 €</button>
+      <a class="btn ghost" href="https://dashboard.stripe.com" target="_blank" rel="noopener">Ouvrir Stripe</a>
+    </div>
+    <div class="out" id="outPay"></div>
+  </div>
+
+  <!-- 4 · ACCÈS CLIENTS -->
+  <div class="blk">
+    <h2>Accès clients <span class="st" id="stMail">…</span></h2>
+    <p style="font-size:13px;color:var(--mute)">Envoie un vrai lien de connexion à votre adresse : s'il n'arrive pas, aucun client ne peut entrer.</p>
+    <div class="rowbtns">
+      <button class="btn ghost" onclick="testMail()">Tester l'e-mail de connexion</button>
+      <a class="btn ghost" href="https://resend.com" target="_blank" rel="noopener">Ouvrir Resend</a>
+      <a class="btn ghost" href="/app/console" target="_blank">Console membres</a>
+    </div>
+    <div class="out" id="outMail"></div>
+  </div>
+
+  <!-- 5 · CE QU'IL RESTE -->
+  <div class="blk">
+    <h2>Il reste, dans l'ordre</h2>
+    <ul class="todo">
+      <li><b>1. Stripe</b> — créer les 2 produits (paiement unique) puis poser STRIPE_PRICE_DOSSIER et STRIPE_PRICE_CONSULTATION. Le test ci-dessus passera au vert.</li>
+      <li><b>2. Relire les fiches</b> — Notion → « Publié » → bouton Synchroniser ci-dessus.</li>
+      <li><b>3. Resend</b> — si le test e-mail n'arrive pas : dashboard → Domains → ikcp.eu vérifié ?</li>
+      <li><b>4. Pappers</b> — réabonner, ou demander la bascule INPI.</li>
+      <li><b>5. Play Store</b> — compte 25 $ ; le paquet et la clé sont prêts (OneDrive/IKCP-Backups).</li>
+    </ul>
+  </div>
+
+  <!-- 6 · TOUS LES ACCÈS -->
+  <div class="blk">
+    <h2>Accès directs</h2>
+    <div class="liens">
+      <a href="/app/console">Console<small>membres · candidatures · retours</small></a>
+      <a href="/app/redaction">Atelier<small>synchro · simulateurs</small></a>
+      <a href="https://app.notion.com/8e55fe6ed2ab4175a1f2499b44672496" target="_blank" rel="noopener">Fiches (Notion)<small>72 fiches · relecture</small></a>
+      <a href="https://app.notion.com/dc93dfceba234ffd8eaf04949347d7fe" target="_blank" rel="noopener">Textes du site (Notion)<small>22 zones</small></a>
+      <a href="https://app.notion.com/477fc36871ad4fdca2a03802a9a8fb95" target="_blank" rel="noopener">Pages libres (Notion)<small>ikcp.eu/p/…</small></a>
+      <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">Cloudflare<small>hébergement · bases · secrets</small></a>
+      <a href="https://github.com/Max51527/ikcp-site" target="_blank" rel="noopener">Le dépôt<small>source de vérité</small></a>
+      <a href="https://play.google.com/console" target="_blank" rel="noopener">Play Console<small>l'app Android</small></a>
+    </div>
+  </div>
+</div>
+
+<div class="refus" id="refus" hidden>
+  <p>Cette page est réservée à l'administrateur.</p>
+  <p style="margin-top:10px"><a href="/app/" style="color:var(--gold-d)">Se connecter</a></p>
+</div>
+
+<script>
+var API='https://ikcp-client.maxime-ead.workers.dev';
+var DOG='https://ikcp-watchdog.maxime-ead.workers.dev';
+function tok(){ try{return localStorage.getItem('ikcp_token')||'';}catch(_){return '';} }
+function H(){ return {'Authorization':'Bearer '+tok(),'Content-Type':'application/json'}; }
+function out(id,txt){ var e=document.getElementById(id); e.textContent=txt; e.classList.add('show'); }
+function st(id,txt,cls){ var e=document.getElementById(id); e.textContent=txt; e.className='st '+cls; }
+
+/* Garde d'entrée : la page ne s'affiche qu'au propriétaire. Le vrai verrou
+   reste côté serveur (chaque endpoint atelier vérifie isOwner) — ceci évite
+   seulement d'afficher une régie vide à un membre égaré. */
+(function(){
+  // La session peut arriver dans l'URL (#s=…) comme sur le tableau de bord.
+  try{ var m=location.hash.match(/#s=([a-f0-9]{32,})/); if(m){ localStorage.setItem('ikcp_token',m[1]); history.replaceState(null,'',location.pathname); } }catch(_){}
+  if(!tok()){ document.getElementById('refus').hidden=false; return; }
+  fetch(API+'/api/v1/me',{headers:H()}).then(function(r){return r.json();}).then(function(me){
+    if(!me||!me.email){ document.getElementById('refus').hidden=false; return; }
+    document.getElementById('app').hidden=false;
+    sante(); contenu();
+    st('stPay','à éprouver','att'); st('stMail','à éprouver','att');
+  }).catch(function(){ document.getElementById('refus').hidden=false; });
+})();
+
+function sante(){
+  st('stSante','vérification…','att');
+  document.getElementById('svcList').textContent='vérification en cours (≈10 s)…';
+  fetch(DOG+'/check').then(function(r){return r.json();}).then(function(d){
+    var down=d.results.filter(function(x){return !x.ok;});
+    st('stSante',(d.results.length-down.length)+'/'+d.results.length+' au vert', down.length?'ko':'ok');
+    document.getElementById('svcList').innerHTML=d.results.map(function(x){
+      return '<span class="'+(x.ok?'':'down')+'">'+(x.ok?'🟢':'🔴')+' '+x.n+'</span>';
+    }).join('');
+  }).catch(function(){ st('stSante','injoignable','ko'); });
+}
+
+function contenu(){
+  fetch(API+'/api/v1/atelier/fiches',{headers:H()}).then(function(r){
+    if(r.status===403||r.status===401) throw new Error('propriétaire requis');
+    return r.json();
+  }).then(function(d){
+    var f=d.fiches||[];
+    var pub=f.filter(function(x){return x.statut==='publie';}).length;
+    document.getElementById('nPub').textContent=pub;
+    document.getElementById('nBrou').textContent=f.length-pub;
+    st('stCont',pub+' en ligne', pub>0?'ok':'att');
+  }).catch(function(e){ st('stCont',e.message,'ko'); });
+  fetch(API+'/api/v1/contenu').then(function(r){return r.json();}).then(function(d){
+    document.getElementById('nTxt').textContent=Object.keys(d).length;
+  }).catch(function(){});
+}
+
+function synchro(){
+  var b=document.getElementById('btnSync');
+  b.disabled=true; b.textContent='Synchronisation…';
+  out('outSync','Lecture de Notion — pages « Publié » uniquement…');
+  fetch(API+'/api/v1/atelier/sync-notion',{method:'POST',headers:H()})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      b.disabled=false; b.textContent='Synchroniser Notion → site';
+      out('outSync', d.error ? ('Impossible — '+d.error) : ('Terminé.\n'+JSON.stringify(d,null,1).slice(0,900)));
+      contenu();
+    })
+    .catch(function(e){ b.disabled=false; b.textContent='Synchroniser Notion → site'; out('outSync','Échec réseau : '+e.message); });
+}
+
+function testPay(plan){
+  out('outPay','Création d\'une session de paiement '+plan+'…');
+  fetch(API+'/api/v1/stripe/checkout',{method:'POST',headers:H(),body:JSON.stringify({plan:plan})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.checkout_url){ st('stPay','opérationnel','ok');
+        out('outPay','✅ La chaîne fonctionne — Stripe a créé la session.\nLien (ne payez que pour tester réellement) :\n'+d.checkout_url); }
+      else if(d.error==='invalid_plan'){ st('stPay','prix manquants','ko');
+        out('outPay','🔴 Les identifiants de prix ne sont pas posés sur le worker.\nStripe → créer le produit → wrangler secret put STRIPE_PRICE_'+(plan==='dossier'?'DOSSIER':'CONSULTATION')); }
+      else { st('stPay','échec','ko'); out('outPay','🔴 '+JSON.stringify(d)); }
+    })
+    .catch(function(e){ st('stPay','échec réseau','ko'); out('outPay','🔴 '+e.message); });
+}
+
+function testMail(){
+  out('outMail','Envoi d\'un lien de connexion à votre adresse…');
+  fetch(API+'/api/v1/me',{headers:H()}).then(function(r){return r.json();}).then(function(me){
+    return fetch(API+'/auth/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:me.email})});
+  }).then(function(r){return r.json();}).then(function(d){
+    out('outMail',(d.ok?'Le serveur a accepté : « '+d.message+' »\n→ Vérifiez votre boîte MAINTENANT. Rien sous 2 minutes = problème Resend (domaine non vérifié ou clé en mode test) — le dashboard Resend le dira.':'🔴 '+JSON.stringify(d)));
+    st('stMail','envoyé — vérifiez la boîte','att');
+  }).catch(function(e){ st('stMail','échec','ko'); out('outMail','🔴 '+e.message); });
+}
+</script>
+</body>
+</html>

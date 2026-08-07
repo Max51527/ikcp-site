@@ -71,20 +71,23 @@ async function sendAlert(env, down) {
   return r.ok;
 }
 
+const CORS = { 'Access-Control-Allow-Origin': 'https://ikcp.eu', 'Vary': 'Origin' };
+function jres(o, status) { return Response.json(o, { status: status || 200, headers: CORS }); }
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/health') {
-      return Response.json({ status: 'ok', service: 'ikcp-watchdog', monitors: SERVICES.length, configured: { resend: !!env.RESEND_API_KEY } });
+      return jres({ status: 'ok', service: 'ikcp-watchdog', monitors: SERVICES.length, configured: { resend: !!env.RESEND_API_KEY } });
     }
     if (url.pathname === '/check') {
       const results = await runCheck(env);
       const down = results.filter(r => !r.ok);
       let emailed = false;
       if (down.length && url.searchParams.get('email') === '1') emailed = await sendAlert(env, down);
-      return Response.json({ checked_at: new Date().toISOString(), down: down.length, emailed, results });
+      return jres({ checked_at: new Date().toISOString(), down: down.length, emailed, results });
     }
-    return Response.json({ error: 'not_found' }, { status: 404 });
+    return jres({ error: 'not_found' }, 404);
   },
   async scheduled(event, env, ctx) {
     const results = await runCheck(env);
